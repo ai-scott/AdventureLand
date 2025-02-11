@@ -1,0 +1,31 @@
+{
+	"name": "UI_Font_DESCR",
+	"plugin-id": "Spritefont2",
+	"sid": 415319901053902,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "ID",
+			"type": "string",
+			"desc": "What is this being used for?",
+			"show": true,
+			"sid": 458257226209102
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"image": {
+		"width": 256,
+		"height": 1024,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"fileType": "image/png",
+		"imageSpriteId": 2258503,
+		"useCollisionPoly": true,
+		"tag": ""
+	}
+}

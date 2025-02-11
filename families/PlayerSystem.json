@@ -1,0 +1,75 @@
+{
+	"name": "PlayerSystem",
+	"plugin-id": "Sprite",
+	"sid": 720461169136712,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_outfit_1"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_outfit_2"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_outfit_3"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_hair_1"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_hair_2"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_hair_3"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_hair_4"
+		},
+		{
+			"effectId": "replacecolor",
+			"name": "ReplaceColor_hair_5"
+		}
+	],
+	"members": [
+		"Player_Mask",
+		"weapons_effects",
+		"97_fbas_04lwr1_longpants_00a_tan",
+		"96_fbas_06lwr2_overalls_00a_bluejeans",
+		"95_fbas_04lwr1_shorts_00a_brown",
+		"94_fbas_08lwr3_frillydress_00a_rose",
+		"93_fbas_04lwr1_shorts_00a_red",
+		"92_fbas_08lwr3_longskirt_00a_purple_heart",
+		"76_fbas_05shrt_longshirt_00a_purple",
+		"75_fbas_05shrt_shortshirt_00a_golden_tee",
+		"74_fbas_05shrt_shortshirt_00a_red_tee",
+		"73_fbas_05shrt_tanktop_00a_orange_red_vest",
+		"72_fbas_05shrt_longshirt_00a_emerald",
+		"71_fbas_05shrt_tanktop_00a_green_gold_waistcoat",
+		"63_fbas_11neck_cloakwithmantleplain_00b_pink",
+		"62_fbas_11neck_cloakwithmantleplain_00_dark",
+		"61_fbas_11neck_scarf_00b_sunset",
+		"56_fbas_14head_floppyhat_00d_rosy",
+		"55_fbas_14head_strawhat_00d_light",
+		"54_fbas_14head_cowboyhat_01",
+		"53_fbas_14head_boaterhat_00d_beige_green",
+		"52_fbas_14head_boaterhat_00d_cornflower_blue",
+		"51_fbas_14head_boaterhat_00d_straw_boat",
+		"107_fbas_07fot2_cuffedboots_00a_forest_green",
+		"106_fbas_07fot2_curlytoeshoes_00a_red",
+		"105_fbas_03fot1_sandals_00a_green_flops",
+		"104_fbas_03fot1_shoes_00a_ballet",
+		"103_fbas_03fot1_shoes_00a_brown",
+		"102_fbas_07fot2_fbas_07fot2_cuffedboots_00a_red",
+		"101_fbas_03fot1_shoes_00a_blue",
+		"98_fbas_08lwr3_longdress_00a_blue",
+		"fbas_13hair_bob1_00_violet_bob"
+	]
+}

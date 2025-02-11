@@ -1,0 +1,40 @@
+{
+	"name": "Inventories",
+	"plugin-id": "Arr",
+	"sid": 856618974762598,
+	"instanceVariables": [
+		{
+			"name": "SizeX",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 710631671823318
+		},
+		{
+			"name": "SizeY",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 313490862636268
+		},
+		{
+			"name": "CategoryName",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 681327604278955
+		},
+		{
+			"name": "InvPages",
+			"type": "number",
+			"desc": "number of pages of inventory",
+			"show": true,
+			"sid": 562226981587495
+		}
+	],
+	"members": [
+		"Arr_Equip",
+		"Arr_InvCollection",
+		"Arr_ItemTriggersCollected"
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"name": "obj_Text_I",
+	"plugin-id": "Text",
+	"sid": 310499130365352,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": []
+}

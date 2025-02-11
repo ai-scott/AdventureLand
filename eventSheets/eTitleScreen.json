@@ -1,0 +1,343 @@
+{
+	"name": "eTitleScreen",
+	"events": [
+		{
+			"eventType": "include",
+			"includeSheet": "eGlobal"
+		},
+		{
+			"bookmark": true,
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 559717648183104
+				}
+			],
+			"actions": [
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 985493889799764,
+					"parameters": {
+						"variable": "Current_Menu",
+						"value": "LayoutName"
+					}
+				},
+				{
+					"id": "set-opacity",
+					"objectClass": "obj_Text_A",
+					"sid": 732916487694420,
+					"parameters": {
+						"opacity": "0"
+					}
+				},
+				{
+					"id": "set-group-active",
+					"objectClass": "System",
+					"sid": 800263150985032,
+					"parameters": {
+						"group-name": "\"Menu\"",
+						"state": "deactivated"
+					}
+				},
+				{
+					"id": "set-opacity",
+					"objectClass": "SpriteFont_Menu",
+					"sid": 237659079865556,
+					"parameters": {
+						"opacity": "0"
+					}
+				},
+				{
+					"callFunction": "Transition",
+					"sid": 938631289080618,
+					"parameters": [
+						"\"In\"",
+						"\"LayoutChange\"",
+						"\"\""
+					]
+				},
+				{
+					"id": "wait-for-signal",
+					"objectClass": "System",
+					"sid": 912907680403853,
+					"disabled": true,
+					"parameters": {
+						"tag": "\"LayoutChange\""
+					}
+				},
+				{
+					"id": "tween-one-property",
+					"objectClass": "GameOverScreen",
+					"sid": 463408375446233,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"\"",
+						"property": "offsetY",
+						"end-value": "-34",
+						"time": "4",
+						"ease": "easeinoutquad",
+						"destroy-on-complete": "no",
+						"loop": "no",
+						"ping-pong": "no",
+						"repeat-count": "1"
+					}
+				},
+				{
+					"id": "tween-one-property",
+					"objectClass": "Title_Screen",
+					"sid": 711256561968640,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"\"",
+						"property": "offsetY",
+						"end-value": "0",
+						"time": "4",
+						"ease": "easeinoutquad",
+						"destroy-on-complete": "no",
+						"loop": "no",
+						"ping-pong": "no",
+						"repeat-count": "1"
+					}
+				},
+				{
+					"id": "wait",
+					"objectClass": "System",
+					"sid": 316666112803135,
+					"parameters": {
+						"seconds": "1",
+						"use-timescale": true
+					}
+				},
+				{
+					"id": "set-group-active",
+					"objectClass": "System",
+					"sid": 378921341027577,
+					"parameters": {
+						"group-name": "\"Menu\"",
+						"state": "activated"
+					}
+				},
+				{
+					"id": "check-item-exists",
+					"objectClass": "LocalStorage",
+					"sid": 597618717316112,
+					"parameters": {
+						"key": "\"SaveGameData\""
+					}
+				}
+			],
+			"sid": 450564890008662,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "obj_Text_A",
+							"sid": 781155964688707,
+							"parameters": {
+								"instance-variable": "field",
+								"comparison": 0,
+								"value": "\"over\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "flash",
+							"objectClass": "obj_Text_A",
+							"sid": 755269144674716,
+							"behaviorType": "Flash",
+							"parameters": {
+								"on-time": "0.1",
+								"off-time": "0.15",
+								"duration": "1.0"
+							}
+						},
+						{
+							"id": "set-opacity",
+							"objectClass": "obj_Text_A",
+							"sid": 990502918454788,
+							"parameters": {
+								"opacity": "100"
+							}
+						}
+					],
+					"sid": 860541664887794
+				},
+				{
+					"eventType": "block",
+					"conditions": [],
+					"actions": [],
+					"sid": 662742812732771
+				}
+			]
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-item-missing",
+					"objectClass": "LocalStorage",
+					"sid": 735787410800163,
+					"parameters": {
+						"key": "\"SaveGameData\""
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "set-instvar-value",
+					"objectClass": "Ctrl_Menu",
+					"sid": 859808314495088,
+					"parameters": {
+						"instance-variable": "MaxLinks",
+						"value": "0"
+					}
+				}
+			],
+			"sid": 719360742422244,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-text",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 934079447801619,
+							"parameters": {
+								"text-to-compare": "\"Load Game\"",
+								"case-sensitivity": "ignore-case"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 602033866560511
+						}
+					],
+					"sid": 967830082374958
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-text",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 692789582321497,
+							"parameters": {
+								"text-to-compare": "\"New Game\"",
+								"case-sensitivity": "ignore-case"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-instvar-value",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 312467508493330,
+							"parameters": {
+								"instance-variable": "Link_ID",
+								"value": "0"
+							}
+						}
+					],
+					"sid": 260466825823124
+				}
+			]
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Menu",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-opacity",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 435811904062677,
+							"parameters": {
+								"comparison": 2,
+								"opacity": "100"
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "obj_Text_A",
+							"sid": 636826993740689,
+							"parameters": {
+								"instance-variable": "field",
+								"comparison": 0,
+								"value": "\"begin\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-opacity",
+							"objectClass": "SpriteFont_Menu",
+							"sid": 751576521818257,
+							"parameters": {
+								"opacity": "Self.Opacity + 80 * dt"
+							}
+						},
+						{
+							"id": "set-opacity",
+							"objectClass": "obj_Text_A",
+							"sid": 499168187793881,
+							"parameters": {
+								"opacity": "Self.Opacity + 80 * dt"
+							}
+						}
+					],
+					"sid": 440594779344809
+				}
+			],
+			"sid": 631683362100214
+		},
+		{
+			"eventType": "comment",
+			"text": "//Trigger music!"
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 119261364500468
+				}
+			],
+			"actions": [
+				{
+					"id": "stop-all",
+					"objectClass": "Audio",
+					"sid": 106618565767213
+				},
+				{
+					"id": "play",
+					"objectClass": "Audio",
+					"sid": 993291637147757,
+					"parameters": {
+						"audio-file": "Credits",
+						"loop": "looping",
+						"volume": "AudioLevel",
+						"stereo-pan": "0",
+						"tag-optional": "\"Town\""
+					}
+				}
+			],
+			"sid": 389899665010926
+		}
+	],
+	"sid": 384687214467482
+}

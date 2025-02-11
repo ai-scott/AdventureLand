@@ -1,0 +1,8 @@
+{
+	"name": "JSON_ItemsLibrary",
+	"plugin-id": "Json",
+	"sid": 503570686091872,
+	"isGlobal": true,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": []
+}

@@ -1,0 +1,49 @@
+{
+	"name": "EnemyMasks",
+	"plugin-id": "Sprite",
+	"sid": 385647032810001,
+	"instanceVariables": [
+		{
+			"name": "Hurt_FX",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 587545052323693
+		},
+		{
+			"name": "Active",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 866379550897858
+		},
+		{
+			"name": "DontActivate",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 747232161106927
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Flash",
+			"name": "Flash",
+			"sid": 953145759387670
+		}
+	],
+	"effectTypes": [
+		{
+			"effectId": "brightness",
+			"name": "Brightness"
+		}
+	],
+	"members": [
+		"En_Slime_Mask",
+		"En_Slime_Mask2",
+		"En_Skeleton_Mask",
+		"En_Ghost_Mask",
+		"En_Golem_Mask",
+		"En_Demon_Mask"
+	]
+}

@@ -1,0 +1,47 @@
+{
+	"name": "SpriteFont_Menu",
+	"plugin-id": "Spritefont2",
+	"sid": 923844730415620,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "Menu",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 897208743802496
+		},
+		{
+			"name": "Link_ID",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 261910736696716
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [
+		{
+			"effectId": "brightness",
+			"name": "Brightness"
+		},
+		{
+			"effectId": "inverse",
+			"name": "Inverse"
+		}
+	],
+	"image": {
+		"width": 256,
+		"height": 128,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"fileType": "image/png",
+		"imageSpriteId": 1147937,
+		"useCollisionPoly": true,
+		"tag": ""
+	}
+}

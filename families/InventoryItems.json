@@ -1,0 +1,48 @@
+{
+	"name": "InventoryItems",
+	"plugin-id": "Sprite",
+	"sid": 477706959943542,
+	"instanceVariables": [
+		{
+			"name": "NumberOfItems",
+			"type": "number",
+			"desc": "number of these items found in this pickup",
+			"show": true,
+			"sid": 829713502108367
+		},
+		{
+			"name": "Stack",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 392663942304868
+		},
+		{
+			"name": "ItemID",
+			"type": "number",
+			"desc": "The ID of the item in the ItemData_JSON",
+			"show": true,
+			"sid": 946462157276402
+		},
+		{
+			"name": "ItemName",
+			"type": "string",
+			"desc": "The item name in the ItemData_JSON and the ItemNumbers",
+			"show": true,
+			"sid": 556732028460638
+		},
+		{
+			"name": "ItemCat",
+			"type": "string",
+			"desc": "Type of item (weapon, boot, food, etc)",
+			"show": true,
+			"sid": 336930737853388
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"ItemShowcase",
+		"ItemSlot"
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"name": "Collectibles",
+	"plugin-id": "Sprite",
+	"sid": 778695539902070,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"Sparkly"
+	]
+}

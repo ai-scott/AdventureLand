@@ -1,0 +1,52 @@
+{
+	"name": "obj_TextItemFrame",
+	"plugin-id": "Sprite",
+	"sid": 663297607904662,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 2537275,
+						"collisionPoly": {
+							"points": [
+								0.7214285714285714,
+								0.26153846153846155,
+								0.6595238095238095,
+								0.7538461538461538,
+								0.6476190476190476,
+								0.7153846153846154,
+								0.6523809523809524,
+								0.33076923076923076
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 129347762558198,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

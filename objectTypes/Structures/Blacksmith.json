@@ -1,0 +1,76 @@
+{
+	"name": "Blacksmith",
+	"plugin-id": "Sprite",
+	"sid": 815531621228933,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 135032584990187
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 120,
+						"height": 112,
+						"originX": 0.5083333333333333,
+						"originY": 0.6875,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1575529,
+						"collisionPoly": {
+							"points": [
+								0.9,
+								0.2767857142857143,
+								0.9074684651692705,
+								0.6966644287109375,
+								0.8666666666666667,
+								0.9732142857142857,
+								0.7812000630791971,
+								0.8549790133658375,
+								0.5734906180812966,
+								0.8456596588990565,
+								0.5103005566571684,
+								0.9447141673468065,
+								0.4032938767342027,
+								0.6790255244303615,
+								0.21973196257712418,
+								0.6831799797869745,
+								0.18129889563283544,
+								0.9403932530998642,
+								0.004264424734355997,
+								0.9361765528639271,
+								0.009143153675798526,
+								0.5347430335196274,
+								0.1447245986536548,
+								0.5184177840891403,
+								0.15014301350601267,
+								0.2730735857321655
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 874644780785203,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

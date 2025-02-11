@@ -1,0 +1,6577 @@
+{
+	"name": "eInventory",
+	"events": [
+		{
+			"eventType": "comment",
+			"text": ""
+		},
+		{
+			"eventType": "variable",
+			"name": "StackMAX",
+			"type": "number",
+			"initialValue": "10",
+			"comment": "Here you set the MAXIMUM quantity in Stack for stacked items",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 699647709530516
+		},
+		{
+			"eventType": "variable",
+			"name": "SelectedItemUID",
+			"type": "number",
+			"initialValue": "-1",
+			"comment": "UID (unique identifier) of the active (selected) Item",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 734481422116079
+		},
+		{
+			"eventType": "variable",
+			"name": "StartInvWindow",
+			"type": "string",
+			"initialValue": "none",
+			"comment": "Remembers the \"window\"/inventory (\"main\", \"equip\") in which the Active item was located",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 795346760030104
+		},
+		{
+			"eventType": "variable",
+			"name": "Replace_ITEM_UID",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Sometimes used to swap two different Items",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 200819588328052
+		},
+		{
+			"eventType": "variable",
+			"name": "Health",
+			"type": "number",
+			"initialValue": "10",
+			"comment": "Health. Replenished by eating food when you press the \"USE\" button",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 750180880161341
+		},
+		{
+			"eventType": "variable",
+			"name": "Attack",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Attack is calculated from Equipped weapon in the Slot of the same name",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 374479136860547
+		},
+		{
+			"eventType": "variable",
+			"name": "Speed",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "The protection value of the Equipped Boot on the Character's Doll",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 696555253788855
+		},
+		{
+			"eventType": "variable",
+			"name": "Defense",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "The sum of the protection values of all Equipped clothing items on the Character's Doll",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 326582004243805
+		},
+		{
+			"eventType": "variable",
+			"name": "TempVarX",
+			"type": "string",
+			"initialValue": "",
+			"comment": "dev tool var 1",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 238927457398195
+		},
+		{
+			"eventType": "variable",
+			"name": "TempVarY",
+			"type": "string",
+			"initialValue": "",
+			"comment": "dev tool var 2",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 105029098615106
+		},
+		{
+			"eventType": "variable",
+			"name": "ItemShowing",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Is the item hint visible?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 723736002782217
+		},
+		{
+			"eventType": "variable",
+			"name": "ItemIdx",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Inventory_Item Array Index",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 985317987249498
+		},
+		{
+			"eventType": "variable",
+			"name": "ItemZIdx",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Inventory_Item Array Z Index",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 735823185361920
+		},
+		{
+			"eventType": "comment",
+			"text": "Current Inventory Attributes"
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentItemSlot",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Which item slot is the player currently looking at?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 698752665206556
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentItemID",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "ID number of currently selected item - shows the correct animation in the Showcase",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 126094732083752
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentInvPage",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Which page in the current category is currently being displayed?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 151939730321163
+		},
+		{
+			"eventType": "comment",
+			"text": "Scrolling Booleans"
+		},
+		{
+			"eventType": "variable",
+			"name": "ScrollPageLeft",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Should the inventory be able to scroll left through pages?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 759340335602295
+		},
+		{
+			"eventType": "variable",
+			"name": "ScrollPageRight",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Should the inventory be able to scroll right through pages?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 268322497406739
+		},
+		{
+			"eventType": "comment",
+			"text": "Need to make PlayerName pull from Dictionary"
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "INITIATE INVENTORY",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "At the start of the layout, we add all items into the Inventory layer (loaded from eGlobal)"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-signal",
+							"objectClass": "System",
+							"sid": 120149855114485,
+							"parameters": {
+								"tag": "\"Game Layers Created\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "drawInventoryUI",
+							"sid": 250397351758507
+						}
+					],
+					"sid": 598137856932926
+				},
+				{
+					"eventType": "comment",
+					"text": "After Inventory layer is created, draw UI elements"
+				},
+				{
+					"functionName": "drawInventoryUI",
+					"functionDescription": "create UI elements on Inventory layer",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 650023696635377,
+							"parameters": {
+								"object-to-create": "TiledBackground",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "TiledBackground",
+							"sid": 463241015387187,
+							"parameters": {
+								"width": "840",
+								"height": "480"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 905421891938965,
+							"parameters": {
+								"object-to-create": "Background",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 830598715077092,
+							"parameters": {
+								"object-to-create": "Bag",
+								"layer": "\"Inventory\"",
+								"x": "790",
+								"y": "6",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 503484598137653,
+							"parameters": {
+								"object-name": "\"Character_Cameos\"",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "Character_Cameos",
+							"sid": 891108075467422,
+							"parameters": {
+								"scale": "2"
+							}
+						},
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Character_Cameos",
+							"sid": 832213949724659,
+							"parameters": {
+								"frame-number": "\"AL\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 108806171204342,
+							"parameters": {
+								"object-name": "\"SquareActive\"",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 474836611477884,
+							"parameters": {
+								"object-name": "\"SquareEquip\"",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 910136186022131,
+							"parameters": {
+								"object-name": "\"SlotCURSOR\"",
+								"layer": "\"Inventory\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 140543545640447,
+							"parameters": {
+								"object-name": "\"Inv_TBack\"",
+								"layer": "\"Inventory\"",
+								"x": "548",
+								"y": "134",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 784234063248681,
+							"parameters": {
+								"variable": "ItemShowing",
+								"value": "false"
+							}
+						},
+						{
+							"id": "add-to-instvar",
+							"objectClass": "Inv_TBack",
+							"sid": 949866871212845,
+							"parameters": {
+								"instance-variable": "state",
+								"value": "\"main\""
+							}
+						},
+						{
+							"id": "create-object-by-name",
+							"objectClass": "System",
+							"sid": 289764713398313,
+							"parameters": {
+								"object-name": "\"Inv_TBack\"",
+								"layer": "\"Inventory\"",
+								"x": "72",
+								"y": "314",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "add-to-instvar",
+							"objectClass": "Inv_TBack",
+							"sid": 825053757251197,
+							"parameters": {
+								"instance-variable": "state",
+								"value": "\"equip\""
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SquareEquip",
+							"sid": 340513652829136,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SquareActive",
+							"sid": 561634183561675,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SlotCURSOR",
+							"sid": 198575976576712,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 852511181691273,
+							"parameters": {
+								"object-to-create": "PlayerImage",
+								"layer": "\"Inventory\"",
+								"x": "456",
+								"y": "208",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 496156650760845,
+							"parameters": {
+								"object-to-create": "UI_Font_DESCR",
+								"layer": "\"Inventory\"",
+								"x": "425",
+								"y": "400",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 733350062383933,
+							"parameters": {
+								"instance-variable": "ID",
+								"value": "\"HowTo\""
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 367034737020941,
+							"parameters": {
+								"text": "\"Click items in your Collection to use them, or drag them your Appearance to wear them. Use Appearance arrows to change colors.\""
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 543625721840223,
+							"parameters": {
+								"width": "350",
+								"height": "65"
+							}
+						},
+						{
+							"id": "set-default-color",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 989175310383481,
+							"parameters": {
+								"color": "rgbEx255(251, 255, 189)"
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 833127416442403,
+							"parameters": {
+								"scale": ".5"
+							}
+						},
+						{
+							"callFunction": "createTitle",
+							"sid": 630447912237413,
+							"parameters": [
+								"\"Theo\"",
+								"\"PlayerName\"",
+								"136",
+								"30",
+								true
+							]
+						},
+						{
+							"callFunction": "createTitle",
+							"sid": 828671987063835,
+							"parameters": [
+								"\"Abilities\"",
+								"\"\"",
+								"128",
+								"102",
+								true
+							]
+						},
+						{
+							"callFunction": "createTitle",
+							"sid": 178215518518993,
+							"parameters": [
+								"\"Appearance\"",
+								"\"\"",
+								"82",
+								"274",
+								true
+							]
+						},
+						{
+							"callFunction": "createTitle",
+							"sid": 411696595275400,
+							"parameters": [
+								"\"Collection\"",
+								"\"\"",
+								"552",
+								"64",
+								true
+							]
+						},
+						{
+							"callFunction": "createTitle",
+							"sid": 401466107311278,
+							"parameters": [
+								"\"How To\"",
+								"\"\"",
+								"428",
+								"356",
+								true
+							]
+						},
+						{
+							"callFunction": "createStat",
+							"sid": 166438853450184,
+							"parameters": [
+								"\"Attack\"",
+								"\"attack\"",
+								"126",
+								"162",
+								"-1",
+								"\"Inventory\""
+							]
+						},
+						{
+							"callFunction": "createStat",
+							"sid": 972331177381108,
+							"parameters": [
+								"\"Max Hearts\"",
+								"\"health\"",
+								"126",
+								"194",
+								"1",
+								"\"Inventory\""
+							]
+						},
+						{
+							"callFunction": "createStat",
+							"sid": 387005900066466,
+							"parameters": [
+								"\"Defense\"",
+								"\"defense\"",
+								"126",
+								"226",
+								"2",
+								"\"Inventory\""
+							]
+						},
+						{
+							"callFunction": "createStat",
+							"sid": 195331407260027,
+							"parameters": [
+								"\"Speed\"",
+								"\"speed\"",
+								"126",
+								"258",
+								"3",
+								"\"Inventory\""
+							]
+						},
+						{
+							"callFunction": "createStat",
+							"sid": 538191372588375,
+							"parameters": [
+								"\"Gems\"",
+								"\"gems\"",
+								"578",
+								"120",
+								"4",
+								"\"Inventory\""
+							]
+						},
+						{
+							"callFunction": "drawInventorySlots",
+							"sid": 401275727217384
+						}
+					],
+					"sid": 553491854125415
+				},
+				{
+					"functionName": "drawInventorySlots",
+					"functionDescription": "create the Collection and Equip slots",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 973581343323695,
+							"parameters": {
+								"seconds": ".01",
+								"use-timescale": true
+							}
+						}
+					],
+					"sid": 254990319775860,
+					"children": [
+						{
+							"eventType": "variable",
+							"name": "SlotWIDTH",
+							"type": "number",
+							"initialValue": "20",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 152019591447292
+						},
+						{
+							"eventType": "comment",
+							"text": "Create Main collection slots"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Inv_TBack",
+									"sid": 397896501497449,
+									"parameters": {
+										"instance-variable": "state",
+										"comparison": 0,
+										"value": "\"main\""
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Inventories",
+									"sid": 804391478356880,
+									"parameters": {
+										"instance-variable": "CategoryName",
+										"comparison": 0,
+										"value": "\"main\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-size",
+									"objectClass": "Inv_TBack",
+									"sid": 544277023789387,
+									"parameters": {
+										"width": "Inventories.SizeX*52+3*Inventories.SizeX+3",
+										"height": "Inventories.SizeY*52+3*Inventories.SizeY+3"
+									}
+								}
+							],
+							"sid": 421709781451143,
+							"children": [
+								{
+									"eventType": "variable",
+									"name": "VarX",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 427635645405115
+								},
+								{
+									"eventType": "variable",
+									"name": "VarY",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 588338268243804
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "repeat",
+											"objectClass": "System",
+											"sid": 829020077284968,
+											"parameters": {
+												"count": "25"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 895684463356490,
+											"parameters": {
+												"object-to-create": "ItemSlot",
+												"layer": "\"Inventory\"",
+												"x": "Inv_TBack.X+SlotWIDTH+(((SlotWIDTH+3)*VarX)*2)",
+												"y": "Inv_TBack.Y+SlotWIDTH+(((SlotWIDTH+3)*VarY)*2)",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 811050190413167,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"value": "loopindex"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 992351896641923,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"value": "loopindex"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 902871839681687,
+											"parameters": {
+												"instance-variable": "InventoryState",
+												"value": "\"main\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "ItemSlot",
+											"sid": 421453557257101,
+											"parameters": {
+												"scale": "2"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 706133572287873,
+											"parameters": {
+												"frame-number": "0"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 112359483877479,
+											"parameters": {
+												"object-to-create": "ItemBG",
+												"layer": "\"Inventory\"",
+												"x": "Inv_TBack.X+SlotWIDTH+(((SlotWIDTH+3)*VarX)*2)",
+												"y": "Inv_TBack.Y+SlotWIDTH+(((SlotWIDTH+3)*VarY)*2)",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "ItemBG",
+											"sid": 436994691029614,
+											"parameters": {
+												"where": "behind",
+												"object": "ItemSlot"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 913983125522748,
+											"parameters": {
+												"object-to-create": "UI_Font_Stack",
+												"layer": "\"Inventory\"",
+												"x": "0",
+												"y": "0",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "ItemSlot",
+											"sid": 300818231257809,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": false,
+												"transform-h": false,
+												"transform-a": false,
+												"transform-o": false,
+												"transform-z-elevation": true,
+												"transform-visibility": false,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "UI_Font_Stack",
+											"sid": 714765935902904,
+											"parameters": {
+												"width": "16",
+												"height": "12"
+											}
+										},
+										{
+											"id": "set-horizontal-alignment",
+											"objectClass": "UI_Font_Stack",
+											"sid": 896381487254921,
+											"parameters": {
+												"horizontal-alignment": "right"
+											}
+										},
+										{
+											"id": "set-vertical-alignment",
+											"objectClass": "UI_Font_Stack",
+											"sid": 748099520671067,
+											"parameters": {
+												"vertical-alignment": "bottom"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "UI_Font_Stack",
+											"sid": 671735242432542,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"id": "set-default-color",
+											"objectClass": "UI_Font_Stack",
+											"sid": 641632975796257,
+											"parameters": {
+												"color": " rgbEx(100,100,100)"
+											}
+										},
+										{
+											"id": "set-position-to-another-object",
+											"objectClass": "UI_Font_Stack",
+											"sid": 669092135783254,
+											"parameters": {
+												"object": "ItemSlot",
+												"image-point-optional": "1"
+											}
+										},
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 459511484712259,
+											"parameters": {
+												"variable": "VarX",
+												"value": "1"
+											}
+										}
+									],
+									"sid": 156733466259244,
+									"children": [
+										{
+											"eventType": "comment",
+											"text": "Move to another row"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 344521587984755,
+													"parameters": {
+														"variable": "VarX",
+														"comparison": 0,
+														"value": "Inventories.SizeX"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 754164949646664,
+													"parameters": {
+														"variable": "VarY",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 453738184881945,
+													"parameters": {
+														"variable": "VarX",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 489302768575935
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Create Equip collection slots"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Inv_TBack",
+									"sid": 585734447553736,
+									"parameters": {
+										"instance-variable": "state",
+										"comparison": 0,
+										"value": "\"equip\""
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Inventories",
+									"sid": 995075073945727,
+									"parameters": {
+										"instance-variable": "CategoryName",
+										"comparison": 0,
+										"value": "\"equip\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-size",
+									"objectClass": "Inv_TBack",
+									"sid": 108288705261193,
+									"parameters": {
+										"width": "Inventories.SizeX*52+3*Inventories.SizeX+3",
+										"height": "Inventories.SizeY*52+3*Inventories.SizeY+3"
+									}
+								},
+								{
+									"id": "set-position",
+									"objectClass": "Inv_TBack",
+									"sid": 385388769140541,
+									"parameters": {
+										"x": "80",
+										"y": "135"
+									}
+								}
+							],
+							"sid": 712483078683814,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Auxiliary variables for tracking rows and switching columns when forming Slots"
+								},
+								{
+									"eventType": "variable",
+									"name": "VarX",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 243161999030459
+								},
+								{
+									"eventType": "variable",
+									"name": "VarY",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 630172105297964
+								},
+								{
+									"eventType": "comment",
+									"text": "Create Equipped Slots, set ID = loopindex and set ✦state✦ = equip"
+								},
+								{
+									"eventType": "comment",
+									"text": "For the Equipment Slots we create additional graphic elements showing the Type of the equipped Item"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "repeat",
+											"objectClass": "System",
+											"sid": 989890181194500,
+											"parameters": {
+												"count": "7"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Inventories",
+											"sid": 797123779259367,
+											"parameters": {
+												"instance-variable": "CategoryName",
+												"comparison": 0,
+												"value": "\"equip\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 969482596667930,
+											"parameters": {
+												"object-to-create": "ItemSlot",
+												"layer": "\"Inventory\"",
+												"x": "Inv_TBack.X+(SlotWIDTH)",
+												"y": "178+Inv_TBack.Y+SlotWIDTH+(((SlotWIDTH+3)*VarY)*2)",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 686360199999782,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"value": "loopindex"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "ItemSlot",
+											"sid": 156862996519615,
+											"parameters": {
+												"scale": "2"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 820775305420612,
+											"parameters": {
+												"frame-number": "0"
+											}
+										},
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 332035943646223,
+											"parameters": {
+												"variable": "VarX",
+												"value": "1"
+											}
+										},
+										{
+											"id": "spawn-another-object",
+											"objectClass": "ItemSlot",
+											"sid": 886757500070685,
+											"parameters": {
+												"object": "EquipSlot",
+												"layer": "\"Inventory\"",
+												"image-point": "0",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "Inv_TBack",
+											"sid": 219365249787665,
+											"parameters": {
+												"width": "290",
+												"height": "310"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "EquipSlot",
+											"sid": 949990164190808,
+											"parameters": {
+												"frame-number": "loopindex"
+											}
+										}
+									],
+									"sid": 779437920682571,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 770641570746335,
+													"parameters": {
+														"value": "loopindex = 0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-y",
+													"objectClass": "ItemSlot",
+													"sid": 647078278172218,
+													"parameters": {
+														"y": "154"
+													}
+												},
+												{
+													"id": "set-y",
+													"objectClass": "EquipSlot",
+													"sid": 999876734746669,
+													"parameters": {
+														"y": "154"
+													}
+												},
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 202102520854663,
+													"parameters": {
+														"variable": "VarX",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "ItemSlot",
+													"sid": 592728614750272,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"value": "\"Weapon\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "EquipSlot",
+													"sid": 398558188337614,
+													"parameters": {
+														"instance-variable": "CategoryName",
+														"value": "ItemSlot.InventoryState"
+													}
+												}
+											],
+											"sid": 463549051054568
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 136072865929184,
+													"parameters": {
+														"value": "loopindex > 1"
+													}
+												},
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 435803677169158,
+													"parameters": {
+														"value": "loopindex % 2 = 0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "spawn-another-object",
+													"objectClass": "ItemSlot",
+													"sid": 691606494207484,
+													"parameters": {
+														"object": "UI_Font",
+														"layer": "\"Inventory\"",
+														"image-point": "0",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "ItemSlot",
+													"sid": 186975210676894,
+													"parameters": {
+														"x": "ItemSlot.X + 140"
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "EquipSlot",
+													"sid": 324215558309580,
+													"parameters": {
+														"x": "EquipSlot.X + 140"
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "UI_Font",
+													"sid": 265856929253082,
+													"parameters": {
+														"x": "EquipSlot.X + 34"
+													}
+												}
+											],
+											"sid": 140376856446449,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 589634019004759,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "2"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 469720514926185,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Hair\""
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "UI_Font",
+															"sid": 792504943502532,
+															"parameters": {
+																"instance-variable": "state",
+																"value": "\"Head\""
+															}
+														}
+													],
+													"sid": 348198769433228
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 503318105607099,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "4"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 371176227232846,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Body\""
+															}
+														}
+													],
+													"sid": 613140584145261
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 203482160030210,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "6"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 865412497438966,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Boot\""
+															}
+														}
+													],
+													"sid": 975016144797312
+												},
+												{
+													"eventType": "block",
+													"conditions": [],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "UI_Font",
+															"sid": 481712777811525,
+															"parameters": {
+																"instance-variable": "state",
+																"value": "ItemSlot.InventoryState"
+															}
+														},
+														{
+															"id": "set-text",
+															"objectClass": "UI_Font",
+															"sid": 847428979139108,
+															"parameters": {
+																"text": "Self.state"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "EquipSlot",
+															"sid": 554235423665287,
+															"parameters": {
+																"instance-variable": "CategoryName",
+																"value": "ItemSlot.InventoryState"
+															}
+														}
+													],
+													"sid": 171508347520823
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "else",
+													"objectClass": "System",
+													"sid": 289045005883810
+												},
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 204426588450822,
+													"parameters": {
+														"value": "loopindex > 0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "spawn-another-object",
+													"objectClass": "ItemSlot",
+													"sid": 247669548944458,
+													"parameters": {
+														"object": "UI_Font",
+														"layer": "\"Inventory\"",
+														"image-point": "0",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "UI_Font",
+													"sid": 976741808661094,
+													"parameters": {
+														"x": "EquipSlot.X + 30"
+													}
+												}
+											],
+											"sid": 203919631393961,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 938715759273299,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 568101921831453,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Head\""
+															}
+														}
+													],
+													"sid": 135313302198633
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 548300610394166,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "3"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 106978702313913,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Neck\""
+															}
+														}
+													],
+													"sid": 995929419092203
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 391713693405732,
+															"parameters": {
+																"first-value": "loopindex",
+																"comparison": 0,
+																"second-value": "5"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "ItemSlot",
+															"sid": 779218256767679,
+															"parameters": {
+																"instance-variable": "InventoryState",
+																"value": "\"Legs\""
+															}
+														}
+													],
+													"sid": 982898096403991
+												},
+												{
+													"eventType": "block",
+													"conditions": [],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "UI_Font",
+															"sid": 431485300185064,
+															"parameters": {
+																"instance-variable": "state",
+																"value": "ItemSlot.InventoryState"
+															}
+														},
+														{
+															"id": "set-text",
+															"objectClass": "UI_Font",
+															"sid": 450216496840421,
+															"parameters": {
+																"text": "Self.state"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "EquipSlot",
+															"sid": 687010806036277,
+															"parameters": {
+																"instance-variable": "CategoryName",
+																"value": "ItemSlot.InventoryState"
+															}
+														}
+													],
+													"sid": 759218219797836
+												}
+											]
+										},
+										{
+											"eventType": "comment",
+											"text": "Move to another row"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 330588121629195,
+													"parameters": {
+														"variable": "VarX",
+														"comparison": 0,
+														"value": "Inventories.SizeX"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 283780456713189,
+													"parameters": {
+														"variable": "VarY",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 518561278001370,
+													"parameters": {
+														"variable": "VarX",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 331215668429621
+										},
+										{
+											"eventType": "block",
+											"conditions": [],
+											"actions": [
+												{
+													"id": "spawn-another-object",
+													"objectClass": "ItemSlot",
+													"sid": 206570023975217,
+													"parameters": {
+														"object": "ItemBG",
+														"layer": "\"Inventory\"",
+														"image-point": "0",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "move-to-object",
+													"objectClass": "ItemBG",
+													"sid": 948322053479377,
+													"parameters": {
+														"where": "behind",
+														"object": "ItemSlot"
+													}
+												}
+											],
+											"sid": 410856329237341
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 783750596400806
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Inv_TBack",
+											"sid": 580937097541204,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"equip\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 251390254203390,
+											"parameters": {
+												"seconds": ".01",
+												"use-timescale": true
+											}
+										}
+									],
+									"sid": 469151688730498
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 344785728421354
+								}
+							],
+							"actions": [
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 746902906903595,
+									"parameters": {
+										"seconds": ".01",
+										"use-timescale": true
+									}
+								},
+								{
+									"id": "signal",
+									"objectClass": "System",
+									"sid": 275537224866926,
+									"parameters": {
+										"tag": "\"Inventory UI Drawn\""
+									}
+								}
+							],
+							"sid": 253999224315122
+						}
+					]
+				},
+				{
+					"functionName": "createTitle",
+					"functionDescription": "creation of titles",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "text",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 434621275913092
+						},
+						{
+							"name": "title",
+							"type": "string",
+							"initialValue": "",
+							"comment": "what title is this?",
+							"sid": 909610534448606
+						},
+						{
+							"name": "x",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "x position",
+							"sid": 172804455206318
+						},
+						{
+							"name": "y",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "y position",
+							"sid": 312190334925756
+						},
+						{
+							"name": "shadow",
+							"type": "boolean",
+							"initialValue": "false",
+							"comment": "is there a shadow behind it?",
+							"sid": 553511570196355
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 864128935415350,
+							"parameters": {
+								"object-to-create": "obj_TitleText",
+								"layer": "\"Inventory\"",
+								"x": "x",
+								"y": "y",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "obj_TitleText",
+							"sid": 353072957576199,
+							"parameters": {
+								"width": "200",
+								"height": "36"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TitleText",
+							"sid": 476139806926586,
+							"parameters": {
+								"text": "text"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "obj_TitleText",
+							"sid": 296195094684103,
+							"parameters": {
+								"instance-variable": "title",
+								"value": "title"
+							}
+						},
+						{
+							"id": "set-font-size",
+							"objectClass": "obj_TitleText",
+							"sid": 846138307982021,
+							"parameters": {
+								"size-pt": "20"
+							}
+						},
+						{
+							"id": "set-font-color",
+							"objectClass": "obj_TitleText",
+							"sid": 674725115219144,
+							"parameters": {
+								"color": "rgbEx255(251, 255, 189)"
+							}
+						}
+					],
+					"sid": 819522304852713,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 895841993644463,
+									"parameters": {
+										"variable": "shadow"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "obj_TitleText",
+									"sid": 496169463410167,
+									"parameters": {
+										"x": "obj_TitleText.X + 2",
+										"y": "obj_TitleText.Y + 2"
+									}
+								},
+								{
+									"id": "set-font-color",
+									"objectClass": "obj_TitleText",
+									"sid": 118578394272747,
+									"parameters": {
+										"color": "rgbEx255(60, 105, 26)"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 778148322972942,
+									"parameters": {
+										"object-to-create": "obj_TitleText",
+										"layer": "\"Inventory\"",
+										"x": "x",
+										"y": "y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "obj_TitleText",
+									"sid": 895840261123341,
+									"parameters": {
+										"width": "200",
+										"height": "36"
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TitleText",
+									"sid": 647604976650585,
+									"parameters": {
+										"size-pt": "20"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 142560485245987,
+									"parameters": {
+										"text": "text"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_TitleText",
+									"sid": 116714801154408,
+									"parameters": {
+										"instance-variable": "title",
+										"value": "title"
+									}
+								},
+								{
+									"id": "set-font-color",
+									"objectClass": "obj_TitleText",
+									"sid": 922176685321043,
+									"parameters": {
+										"color": "rgbEx255(251, 255, 189)"
+									}
+								}
+							],
+							"sid": 593936475128434
+						}
+					]
+				},
+				{
+					"functionName": "createStat",
+					"functionDescription": "creation of abilities and gems",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "text",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 244741392351633
+						},
+						{
+							"name": "state",
+							"type": "string",
+							"initialValue": "",
+							"comment": "what state is this?",
+							"sid": 490632627777199
+						},
+						{
+							"name": "x",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "x position",
+							"sid": 382373817791931
+						},
+						{
+							"name": "y",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "y position",
+							"sid": 856839349000058
+						},
+						{
+							"name": "ui_sprite_frame",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "animation frame of UI_StateSprite",
+							"sid": 685227933347717
+						},
+						{
+							"name": "layer",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 487559966786396
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 956229421731675,
+							"parameters": {
+								"object-to-create": "UI_Font",
+								"layer": "layer",
+								"x": "x+4",
+								"y": "y",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "UI_Font",
+							"sid": 506061329614336,
+							"parameters": {
+								"text": "00"
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_Font",
+							"sid": 993515587391135,
+							"parameters": {
+								"scale": "1.0"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "UI_Font",
+							"sid": 346755943902043,
+							"parameters": {
+								"instance-variable": "state",
+								"value": "state"
+							}
+						},
+						{
+							"id": "set-default-color",
+							"objectClass": "UI_Font",
+							"sid": 871358168393404,
+							"parameters": {
+								"color": "rgbEx255(60, 105, 26)"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 863669366024096,
+							"parameters": {
+								"object-to-create": "UI_Font",
+								"layer": "layer",
+								"x": "x+42",
+								"y": "y",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_Font",
+							"sid": 906537454215159,
+							"parameters": {
+								"scale": "1.0"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "UI_Font",
+							"sid": 701642976998403,
+							"parameters": {
+								"text": "text"
+							}
+						},
+						{
+							"id": "set-character-spacing",
+							"objectClass": "UI_Font",
+							"sid": 684530642641396,
+							"parameters": {
+								"character-spacing": "-2"
+							}
+						},
+						{
+							"id": "set-default-color",
+							"objectClass": "UI_Font",
+							"sid": 433132080225461,
+							"parameters": {
+								"color": "rgbEx255(60, 105, 26)"
+							}
+						}
+					],
+					"sid": 925745067555712,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 834313506313931,
+									"parameters": {
+										"variable": "ui_sprite_frame",
+										"comparison": 4,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 432633512651842,
+									"parameters": {
+										"object-to-create": "UI_StateSprite",
+										"layer": "\"Inventory\"",
+										"x": "UI_Font.X - 68",
+										"y": "UI_Font.Y-2",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "UI_StateSprite",
+									"sid": 662601731806737,
+									"parameters": {
+										"frame-number": "ui_sprite_frame"
+									}
+								}
+							],
+							"sid": 876177367338772,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 283307909900235,
+											"parameters": {
+												"variable": "ui_sprite_frame",
+												"comparison": 0,
+												"value": "4"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-x",
+											"objectClass": "UI_StateSprite",
+											"sid": 397875556656812,
+											"parameters": {
+												"x": "UI_StateSprite.X+6"
+											}
+										}
+									],
+									"sid": 303049388841703
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "At the start of the layout, we add all items into the Inventory layer"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-signal",
+							"objectClass": "System",
+							"sid": 821832433919871,
+							"parameters": {
+								"tag": "\"Inventory UI Drawn\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "populateDictionaryItems",
+							"sid": 909650222339697
+						}
+					],
+					"sid": 443191555829982
+				}
+			],
+			"sid": 527921857146824
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "INVENTORY DISPLAY",
+			"description": "Status of Inventory - updates continuously while Inventory is open",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "✪ All basic interactions with inventories and items can be performed only if the layer of the same name is Visible.\nThus, by simply hiding the layer, the ability to perform any actions with Items is disabled"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "layer-is-visible",
+							"objectClass": "System",
+							"sid": 619909331511357,
+							"parameters": {
+								"layer": "\"Inventory\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "populateItemSlots",
+							"sid": 922601336206656
+						}
+					],
+					"sid": 203495177913114,
+					"isOrBlock": true
+				},
+				{
+					"functionName": "populateItemSlots",
+					"functionDescription": "assign data to inventory item slots",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 510458451289429,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "New way of setting all items in the main collection - after this works, see about using for equip too"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 346031418805161,
+									"parameters": {
+										"object": "ItemSlot"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 145690416624111,
+									"parameters": {
+										"instance-variable": "InventoryState",
+										"comparison": 0,
+										"value": "\"main\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 905749844918249,
+									"parameters": {
+										"instance-variable": "ItemID",
+										"value": "Arr_InvCollection.At(0,(Self.SlotID+(CurrentInvPage*25)))"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "ItemSlot",
+									"sid": 385039701836761,
+									"parameters": {
+										"frame-number": "Self.ItemID"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 646596387361727,
+									"parameters": {
+										"instance-variable": "ItemCat",
+										"value": "Functions.GetItemCategory(Self.ItemID)"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 412929427448315,
+									"parameters": {
+										"instance-variable": "ItemName",
+										"value": "Functions.GetItemName(Self.ItemID)"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 527504177249038,
+									"parameters": {
+										"instance-variable": "NumberOfItems",
+										"value": "Dict_ItemNumbers.Get(Self.ItemName)"
+									}
+								}
+							],
+							"sid": 263100994215459,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 874937499687563,
+											"parameters": {
+												"instance-variable": "NumberOfItems",
+												"comparison": 4,
+												"value": "1"
+											}
+										},
+										{
+											"id": "pick-children",
+											"objectClass": "ItemSlot",
+											"sid": 519402508532139,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"which": "own"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "UI_Font_Stack",
+											"sid": 580434275831587,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_Stack",
+											"sid": 291213036322343,
+											"parameters": {
+												"text": "ItemSlot.NumberOfItems"
+											}
+										}
+									],
+									"sid": 380109119072892
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 745266944407183,
+											"parameters": {
+												"instance-variable": "NumberOfItems",
+												"comparison": 2,
+												"value": "2"
+											}
+										},
+										{
+											"id": "pick-children",
+											"objectClass": "ItemSlot",
+											"sid": 100957477886244,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"which": "own"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "UI_Font_Stack",
+											"sid": 944712718413954,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_Stack",
+											"sid": 118317818138722,
+											"parameters": {
+												"text": "\"\""
+											}
+										}
+									],
+									"sid": 718157336883303
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "SET SLOTITEMS BASED ON DICTIONARY VALUES"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 903044285205840,
+									"parameters": {
+										"object": "ItemSlot"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "EquipSlot",
+									"sid": 953508575321954,
+									"parameters": {
+										"instance-variable": "CategoryName",
+										"comparison": 0,
+										"value": "ItemSlot.InventoryState"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 886140678474013,
+									"parameters": {
+										"instance-variable": "InventoryState",
+										"comparison": 0,
+										"value": "\"main\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 277462036054473,
+									"parameters": {
+										"instance-variable": "ItemName",
+										"value": "Dict_SaveGameData.Get(Self.InventoryState)"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 447861396856483,
+									"parameters": {
+										"instance-variable": "ItemCat",
+										"value": "Functions.GetItemCategory(Self.ItemID)"
+									}
+								}
+							],
+							"sid": 578390684740372,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 994897202379319,
+											"parameters": {
+												"instance-variable": "ItemName",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 760018881347921,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"value": "Functions.GetItemID(Self.ItemName)"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 492480857424775,
+											"parameters": {
+												"frame-number": "Self.ItemID"
+											}
+										}
+									],
+									"sid": 109416971794049
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-value",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 764327447489278,
+											"parameters": {
+												"key": "ItemSlot.InventoryState",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-opacity",
+											"objectClass": "EquipSlot",
+											"sid": 407145327729146,
+											"parameters": {
+												"opacity": "0"
+											}
+										}
+									],
+									"sid": 342885852545398
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 129427226168485
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 739401725869328,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-opacity",
+											"objectClass": "EquipSlot",
+											"sid": 785536529934886,
+											"parameters": {
+												"opacity": "60"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 350089968333264,
+											"parameters": {
+												"frame-number": "0"
+											}
+										}
+									],
+									"sid": 296126557162537
+								}
+							]
+						}
+					]
+				}
+			],
+			"sid": 797456979065367
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Buttons & Active ITEM",
+			"description": "Buttons and Active Item",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Single Click on an Item in World or Inventory - Set the variables of the Active Item and highlight this Active Item"
+				},
+				{
+					"functionName": "inspectItem",
+					"functionDescription": "On touch of inventory item",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "InventoryItemUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "UID of the item inspecting",
+							"sid": 440152592380479
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 559002008703973,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "InventoryItems",
+									"sid": 485603364643235,
+									"parameters": {
+										"unique-id": "InventoryItemUID"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 377679819604885,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "\"triggering inspecting item uid\"&InventoryItemUID&\" invitem.uid = \"&InventoryItems.UID"
+									}
+								}
+							],
+							"sid": 648016389506632,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If in world (not inventory) pick the showcase item "
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemShowcase",
+											"sid": 716464315755673,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										},
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 253094987454921,
+											"parameters": {
+												"layer": "\"Inventory\""
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-scale",
+											"objectClass": "SquareActive",
+											"sid": 836400282455760,
+											"parameters": {
+												"scale": ".5"
+											}
+										},
+										{
+											"callFunction": "displayItemHint",
+											"sid": 846847557417542,
+											"parameters": [
+												"ItemShowcase.UID",
+												"\"\"",
+												"StartInvWindow"
+											]
+										}
+									],
+									"sid": 994072347484274
+								},
+								{
+									"eventType": "comment",
+									"text": "If in Inventory - pick the item slot and set currentitemslot and inv section (StartInvWindow)"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 346076038478893,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										},
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemSlot",
+											"sid": 736700219658611,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 601448045886736,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "ItemSlot.SlotID"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 597462183168460,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"value": "ItemSlot.InventoryState=\"main\" ?\"main\" :\"equip\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "SquareActive",
+											"sid": 838719145173311,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"callFunction": "displayItemHint",
+											"sid": 336663965709554,
+											"parameters": [
+												"InventoryItems.UID",
+												"\"\"",
+												"StartInvWindow"
+											]
+										}
+									],
+									"sid": 343996427379859
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "\"DROP\" Button - Item Usage"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 205855903416830,
+							"parameters": {
+								"object": "Btn_Drop"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Drop",
+							"sid": 964529393774718,
+							"parameters": {
+								"frame-number": "1"
+							}
+						}
+					],
+					"sid": 936646284504078
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 509471346247773,
+							"parameters": {
+								"object": "Btn_Drop"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Drop",
+							"sid": 228554498184692,
+							"parameters": {
+								"frame-number": "0"
+							}
+						}
+					],
+					"sid": 253783671680553
+				},
+				{
+					"eventType": "comment",
+					"text": "The \"DROP\" button - deletes the Active Item and clears the array cell (or reduces Qty by 1 for stackable items)"
+				},
+				{
+					"functionName": "dropItem",
+					"functionDescription": "When in inventory screen, delete an item from player collection",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 995169444613362,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Drop",
+									"sid": 933993225269242
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "InventoryItems",
+									"sid": 574021595128868,
+									"parameters": {
+										"instance-variable": "ItemID",
+										"comparison": 0,
+										"value": "CurrentItemID"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 187188636775653,
+									"parameters": {
+										"audio-file": "delete",
+										"loop": "not-looping",
+										"volume": "-5",
+										"stereo-pan": "0",
+										"tag-optional": "\"\""
+									}
+								},
+								{
+									"id": "set-opacity",
+									"objectClass": "EquipSlot",
+									"sid": 270432467455632,
+									"parameters": {
+										"opacity": "60"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "SquareActive",
+									"sid": 225992109705525,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								},
+								{
+									"callFunction": "UpdateNumbersOnDrop",
+									"sid": 525572252024391,
+									"parameters": [
+										"CurrentItemID"
+									]
+								},
+								{
+									"callFunction": "hideItemHint",
+									"sid": 867748285740967
+								},
+								{
+									"type": "comment",
+									"text": "not sure if we just need to say \"main\" for category here"
+								}
+							],
+							"sid": 244421810221944,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If on the map (and in Shop mode) offer to Sell the item"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 488929937840069,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "sellItem",
+											"sid": 210368019981080,
+											"parameters": [
+												"InventoryItems.ItemID",
+												"Functions.GetItemCostbyID(InventoryItems.ItemID)/2"
+											]
+										}
+									],
+									"sid": 821439848262724
+								},
+								{
+									"eventType": "comment",
+									"text": "NOTE: reinstate SpFont_Stack once we've solved the stack number issue"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-children",
+											"objectClass": "InventoryItems",
+											"sid": 303858545626322,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"which": "own"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_Stack",
+											"sid": 233512564891120,
+											"parameters": {
+												"text": "InventoryItems.NumberOfItems"
+											}
+										}
+									],
+									"sid": 193086332437180
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "\"USE\" Button - Item Usage"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 588433554099052,
+							"parameters": {
+								"object": "Btn_Use"
+							}
+						},
+						{
+							"id": "is-on-layer",
+							"objectClass": "Btn_Use",
+							"sid": 640849791653786,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Use",
+							"sid": 752483637093369,
+							"parameters": {
+								"frame-number": "1"
+							}
+						}
+					],
+					"sid": 664102350670575
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 560360174195301,
+							"parameters": {
+								"object": "Btn_Use"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "is-on-layer",
+							"objectClass": "Btn_Use",
+							"sid": 708078411734770,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Use",
+							"sid": 616696671829660,
+							"parameters": {
+								"frame-number": "0"
+							}
+						}
+					],
+					"sid": 565541551263938
+				},
+				{
+					"eventType": "comment",
+					"text": "Btn_Use to equip, drop or pickup an item"
+				},
+				{
+					"functionName": "useItem",
+					"functionDescription": "Equip, consume, or remove item in Collection",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 988212434169943,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "Btn_Use",
+									"sid": 218447329559658
+								},
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "InventoryItems",
+									"sid": 434089904900211,
+									"parameters": {
+										"unique-id": "SelectedItemUID"
+									}
+								},
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 675620249606560,
+									"parameters": {
+										"variable": "ItemShowing"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "SquareActive",
+									"sid": 465067239515712,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 666559006515152,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If on the map (and in Shop mode) offer to Buy the item"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 482771588052160,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											}
+										},
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemShowcase",
+											"sid": 601396421659360,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 491048252093048,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "purchaseItem",
+											"sid": 857945562518641,
+											"parameters": [
+												"InventoryItems.ItemID",
+												"Functions.GetItemCostbyID(InventoryItems.ItemID)",
+												"ItemShowcase.NumberOfItems"
+											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "ItemShowcase",
+											"sid": 376993800158275
+										},
+										{
+											"callFunction": "collectItem",
+											"sid": 813615723274801,
+											"parameters": [
+												"InventoryItems.UID"
+											]
+										}
+									],
+									"sid": 822405727940884
+								},
+								{
+									"eventType": "comment",
+									"text": "If on the map (not in Inventory yet) TAKE the item into inventory "
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 660411849532073,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											}
+										},
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemShowcase",
+											"sid": 332211188820605,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 678898609610818,
+											"parameters": {
+												"variable": "ShopMode"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "signal",
+											"objectClass": "System",
+											"sid": 610339244981414,
+											"parameters": {
+												"tag": "\"Item Taken\""
+											}
+										},
+										{
+											"id": "destroy",
+											"objectClass": "ItemShowcase",
+											"sid": 357680518091838
+										},
+										{
+											"callFunction": "collectItem",
+											"sid": 171670198978004,
+											"parameters": [
+												"InventoryItems.UID"
+											]
+										}
+									],
+									"sid": 800323107074768,
+									"children": [
+										{
+											"eventType": "comment",
+											"text": "If Item is > 110 and < 121 then add the \"strength\" directly to the Gems count"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 322103089448583,
+													"parameters": {
+														"first-value": "InventoryItems.ItemID",
+														"comparison": 5,
+														"second-value": "111"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 583164471711390,
+													"parameters": {
+														"first-value": "InventoryItems.ItemID",
+														"comparison": 2,
+														"second-value": "121"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Adjust_Gems",
+													"sid": 375562665572434,
+													"parameters": [
+														"Functions.GetItemCostbyID(InventoryItems.ItemID)"
+													]
+												}
+											],
+											"sid": 527448493607251
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 251401573549751,
+													"parameters": {
+														"first-value": "InventoryItems.ItemID",
+														"comparison": 2,
+														"second-value": "111"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 127230550387387,
+													"parameters": {
+														"first-value": "InventoryItems.ItemID",
+														"comparison": 5,
+														"second-value": "121"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "UpdateNumbersOnPickup",
+													"sid": 175091490326075,
+													"parameters": [
+														"InventoryItems.ItemID",
+														"InventoryItems.NumberOfItems"
+													]
+												}
+											],
+											"sid": 857441274045386,
+											"isOrBlock": true
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "If in Main Collection, and it's of the right category to equip - then equip the item"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 439333283509904,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"main\""
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 192878194235021,
+											"parameters": {
+												"first-value": "InventoryItems.ItemCat",
+												"comparison": 0,
+												"second-value": "\"Food\""
+											},
+											"isInverted": true
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 966846207255369,
+											"parameters": {
+												"first-value": "InventoryItems.ItemCat",
+												"comparison": 0,
+												"second-value": "\"General\""
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "changeEquippedItem",
+											"sid": 534313468425514,
+											"parameters": [
+												"\"equipment\""
+											]
+										}
+									],
+									"sid": 590667896600167
+								},
+								{
+									"eventType": "comment",
+									"text": "If Equipped, then move to main Collection"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 111036623319111,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											},
+											"isInverted": true
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 714315823845277,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"equip\""
+											}
+										},
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemSlot",
+											"sid": 191228495992214,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										},
+										{
+											"id": "is-boolean-instance-variable-set",
+											"objectClass": "InventoryItems",
+											"sid": 183531772032866,
+											"parameters": {
+												"instance-variable": "Stack"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 335853551775271,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "ItemSlot.SlotID"
+											}
+										},
+										{
+											"callFunction": "changeEquippedItem",
+											"sid": 222374889966441,
+											"parameters": [
+												"\"collection\""
+											]
+										}
+									],
+									"sid": 482995961234216
+								},
+								{
+									"eventType": "comment",
+									"text": "If Food, then eat to make up for the Hunger variable"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 479218474724918,
+											"parameters": {
+												"first-value": "InventoryItems.ItemCat",
+												"comparison": 0,
+												"second-value": "\"Food\""
+											}
+										},
+										{
+											"id": "pick-children",
+											"objectClass": "InventoryItems",
+											"sid": 357120182939125,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"which": "own"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "play",
+											"objectClass": "Audio",
+											"sid": 318685068259089,
+											"parameters": {
+												"audio-file": "eat",
+												"loop": "not-looping",
+												"volume": "-5",
+												"stereo-pan": "0",
+												"tag-optional": "\"\""
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 366178312030096,
+											"parameters": {
+												"variable": "CurrentItemID",
+												"value": "int(InventoryItems.ItemID)"
+											}
+										},
+										{
+											"callFunction": "UpdateNumbersOnDrop",
+											"sid": 854425634400916,
+											"parameters": [
+												"CurrentItemID"
+											]
+										},
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_Stack",
+											"sid": 605398118222787,
+											"parameters": {
+												"text": "InventoryItems.NumberOfItems"
+											}
+										},
+										{
+											"callFunction": "adjustHealth",
+											"sid": 374737570311963,
+											"parameters": [
+												"Functions.GetItemStrength(CurrentItemID)",
+												false
+											]
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 871175310292962,
+											"parameters": {
+												"seconds": "0.01",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "Calc_Hero_Stats",
+											"sid": 505182931282631,
+											"disabled": true,
+											"parameters": [
+												"\"hunger\""
+											]
+										}
+									],
+									"sid": 524426638508057
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"callFunction": "hideItemHint",
+											"sid": 347190508422656
+										}
+									],
+									"sid": 793749688996469
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "Equipment Change Function ..."
+				},
+				{
+					"functionName": "changeEquippedItem",
+					"functionDescription": "change which items are equipped",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "destination",
+							"type": "string",
+							"initialValue": "",
+							"comment": "Is this going to Equipment or Collection?",
+							"sid": 247256905844919
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [
+						{
+							"id": "pick-by-unique-id",
+							"objectClass": "InventoryItems",
+							"sid": 430712304168985,
+							"parameters": {
+								"unique-id": "SelectedItemUID"
+							}
+						},
+						{
+							"id": "pick-by-unique-id",
+							"objectClass": "ItemSlot",
+							"sid": 650329147103785,
+							"parameters": {
+								"unique-id": "InventoryItems.UID"
+							}
+						}
+					],
+					"actions": [],
+					"sid": 481937915030330,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 553906301214159,
+									"parameters": {
+										"variable": "destination",
+										"comparison": 0,
+										"value": "\"equipment\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 199710565454029,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each-element",
+											"objectClass": "Arr_InvCollection",
+											"sid": 399789297642300,
+											"parameters": {
+												"axes": "xy"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 833390379530228,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-at-xy",
+													"objectClass": "Arr_InvCollection",
+													"sid": 331824171363080,
+													"parameters": {
+														"x": "0",
+														"y": "Arr_InvCollection.CurY",
+														"comparison": 0,
+														"value": "ItemSlot.ItemID"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "UpdateNumbersOnDrop",
+													"sid": 517660374151184,
+													"parameters": [
+														"ItemSlot.ItemID"
+													]
+												}
+											],
+											"sid": 493287677555258
+										}
+									]
+								},
+								{
+									"bookmark": true,
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-value",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 157003947840654,
+											"parameters": {
+												"key": "ItemSlot.ItemCat",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "changeOutfit",
+											"sid": 649141187475743,
+											"parameters": [
+												"ItemSlot.ItemCat",
+												"ItemSlot.ItemName",
+												"Dict_SaveGameData.Get(ItemSlot.ItemCat)",
+												"\"\"",
+												"\"\""
+											]
+										},
+										{
+											"callFunction": "UpdateNumbersOnPickup",
+											"sid": 808864458783002,
+											"parameters": [
+												"Functions.GetItemID(Dict_SaveGameData.Get(ItemSlot.ItemCat))",
+												"1"
+											]
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 254276771415292,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "\"Dict_SaveGameData.Get(ItemSlot.ItemCat) = \"&Dict_SaveGameData.Get(ItemSlot.ItemCat)"
+											}
+										}
+									],
+									"sid": 845529368557063
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 766668107753054,
+											"parameters": {
+												"key": "ItemSlot.ItemCat",
+												"value": "ItemSlot.ItemName"
+											}
+										}
+									],
+									"sid": 844108726314906
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 865871976374502,
+									"parameters": {
+										"variable": "destination",
+										"comparison": 0,
+										"value": "\"collection\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 629291780528810,
+									"parameters": {
+										"key": "ItemSlot.ItemCat",
+										"value": "\"\""
+									}
+								},
+								{
+									"callFunction": "UpdateNumbersOnPickup",
+									"sid": 299016636704747,
+									"parameters": [
+										"ItemSlot.ItemID",
+										"1"
+									]
+								}
+							],
+							"sid": 478266805670598,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "EquipSlot",
+											"sid": 927895294160443,
+											"parameters": {
+												"instance-variable": "CategoryName",
+												"comparison": 0,
+												"value": "ItemSlot.ItemCat"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-opacity",
+											"objectClass": "EquipSlot",
+											"sid": 542634241516775,
+											"parameters": {
+												"opacity": "60"
+											}
+										}
+									],
+									"sid": 414556221616525
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 832007213125079,
+									"parameters": {
+										"audio-file": "item",
+										"loop": "not-looping",
+										"volume": "-5",
+										"stereo-pan": "0",
+										"tag-optional": "\"\""
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 528764215467183
+								},
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 478996036283420,
+									"parameters": {
+										"seconds": "0.1",
+										"use-timescale": true
+									}
+								},
+								{
+									"callFunction": "Calc_Hero_Stats",
+									"sid": 420980733324549,
+									"parameters": [
+										"\"equip\""
+									]
+								}
+							],
+							"sid": 225701930730805
+						}
+					]
+				},
+				{
+					"functionName": "purchaseItem",
+					"functionDescription": "Buy an item (if enough Gems)",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "inventoryItemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 293156458035046
+						},
+						{
+							"name": "purchasePrice",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "How many gems does this item cost",
+							"sid": 623490741482421
+						},
+						{
+							"name": "qty",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "how many did you get?",
+							"sid": 420308916083481
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 525962826302822,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "InventoryItems",
+									"sid": 638697637648101,
+									"parameters": {
+										"instance-variable": "ItemID",
+										"comparison": 0,
+										"value": "inventoryItemID"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "Adjust_Gems",
+									"sid": 772221503374492,
+									"parameters": [
+										"-purchasePrice"
+									]
+								},
+								{
+									"callFunction": "UpdateNumbersOnPickup",
+									"sid": 365674733767781,
+									"parameters": [
+										"InventoryItems.ItemID",
+										"qty"
+									]
+								}
+							],
+							"sid": 262109371730317
+						}
+					]
+				},
+				{
+					"functionName": "sellItem",
+					"functionDescription": "",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "InventoryItemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 919293552674654
+						},
+						{
+							"name": "sellPrice",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 688539157357742
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"callFunction": "Adjust_Gems",
+							"sid": 881761720510829,
+							"parameters": [
+								"sellPrice"
+							]
+						}
+					],
+					"sid": 592847506068074
+				},
+				{
+					"functionName": "collectItem",
+					"functionDescription": "register an item as collected (if unique)",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "itemUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 698549460528690
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 935007394317735,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "If item is unique set collected to true"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "JSON_ItemTriggers",
+									"sid": 507040931267165,
+									"parameters": {
+										"path": "\"items\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 685704560629553,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-value",
+											"objectClass": "JSON_ItemTriggers",
+											"sid": 856298403814773,
+											"parameters": {
+												"path": "\".uid\"",
+												"cmp": 0,
+												"value": "itemUID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 169810827047194,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "\"setting collected for id \"&JSON_ItemTriggers.Get(\".itemTriggerID\")"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 241318706145384,
+											"parameters": {
+												"variable": "TempVarX",
+												"value": "\"setting collected for uid \"&JSON_ItemTriggers.Get(\".uid\")"
+											}
+										},
+										{
+											"id": "set-boolean",
+											"objectClass": "JSON_ItemTriggers",
+											"sid": 850304827626673,
+											"parameters": {
+												"path": "\".collected\"",
+												"value": "true"
+											}
+										},
+										{
+											"id": "insert",
+											"objectClass": "Arr_ItemTriggersCollected",
+											"sid": 893696753607662,
+											"parameters": {
+												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")",
+												"index": "0",
+												"axis": "x"
+											}
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 635493349007820
+										}
+									],
+									"sid": 292894488569860
+								}
+							]
+						}
+					]
+				}
+			],
+			"sid": 921811365614930
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "HERO STATE",
+			"description": "Setting the values of your Hero's variables",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Your hero's statistics function. When calling a function, you must specify what needs to be done in its parameter - NEED TO REWRITE TO USE NEW ITEM STRUCTURE",
+					"background-color": [
+						0.8313725490196079,
+						1,
+						0,
+						1
+					]
+				},
+				{
+					"functionName": "Calc_Hero_Stats",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "Mode",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 370128759697059
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 419092822182234,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Resetting Attack, Speed and Defense variables"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 982855970633928,
+									"parameters": {
+										"variable": "Mode",
+										"comparison": 0,
+										"value": "\"equip\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 428909960035872,
+									"parameters": {
+										"variable": "Defense",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 914007185040124,
+									"parameters": {
+										"variable": "Attack",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 650197262998887,
+									"parameters": {
+										"variable": "Speed",
+										"value": "0"
+									}
+								}
+							],
+							"sid": 684025493818711,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Write \"0\" to text blocks"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font",
+											"sid": 788929920003507,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"attack\""
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font",
+											"sid": 429825546621362,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"defense\""
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font",
+											"sid": 850954217768083,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"speed\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font",
+											"sid": 204319524481199,
+											"parameters": {
+												"text": "0"
+											}
+										}
+									],
+									"sid": 298483887401723,
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each",
+											"objectClass": "System",
+											"sid": 189487113776075,
+											"parameters": {
+												"object": "ItemSlot"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 301613019924690,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 170460446488300,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Weapon\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "UI_Font",
+													"sid": 991924616372560,
+													"parameters": {
+														"instance-variable": "state",
+														"comparison": 0,
+														"value": "\"attack\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 442317557281783,
+													"parameters": {
+														"variable": "Attack",
+														"value": "Functions.GetItemStrength(ItemSlot.ItemID) "
+													}
+												},
+												{
+													"id": "set-text",
+													"objectClass": "UI_Font",
+													"sid": 224296718239662,
+													"parameters": {
+														"text": "Attack"
+													}
+												}
+											],
+											"sid": 738398783677823
+										},
+										{
+											"bookmark": true,
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 233268158257373,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Head\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 117933682980220,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 665549572930070,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Neck\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 383741427918916,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Body\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 332439340774111,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Legs\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"type": "comment",
+													"text": "Show corresponding variable values in text blocks"
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 685493909836868,
+													"parameters": {
+														"variable": "Defense",
+														"value": "Defense+Functions.GetItemStrength(ItemSlot.ItemID)"
+													}
+												}
+											],
+											"sid": 350162911172995,
+											"isOrBlock": true
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 339999009130532,
+													"parameters": {
+														"instance-variable": "InventoryState",
+														"comparison": 0,
+														"value": "\"Boot\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "UI_Font",
+													"sid": 858154870466171,
+													"parameters": {
+														"instance-variable": "state",
+														"comparison": 0,
+														"value": "\"speed\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 461556346997642,
+													"parameters": {
+														"variable": "Speed",
+														"value": "Functions.GetItemStrength(ItemSlot.ItemID) "
+													}
+												},
+												{
+													"id": "set-text",
+													"objectClass": "UI_Font",
+													"sid": 866870842685039,
+													"parameters": {
+														"text": "Speed"
+													}
+												}
+											],
+											"sid": 415972024160858
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font",
+											"sid": 318982746997243,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"defense\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font",
+											"sid": 437743636909651,
+											"parameters": {
+												"text": "Defense"
+											}
+										}
+									],
+									"sid": 210756727932288
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 382809118428580,
+											"parameters": {
+												"variable": "Attack",
+												"comparison": 4,
+												"value": "0"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 119799024849680,
+											"parameters": {
+												"variable": "ShopMode"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 133568558219381,
+											"parameters": {
+												"variable": "Armed",
+												"value": "true"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 660643939214113,
+											"parameters": {
+												"group-name": "\"Player Attack\"",
+												"state": "activated"
+											}
+										},
+										{
+											"callFunction": "showAttackHint",
+											"sid": 727933029152593
+										}
+									],
+									"sid": 566813146155333
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 611375601388356,
+											"parameters": {
+												"variable": "Attack",
+												"comparison": 0,
+												"value": "0"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 941644483139518,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 815176992447403,
+											"parameters": {
+												"variable": "Armed",
+												"value": "false"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 237294729015003,
+											"parameters": {
+												"group-name": "\"Player Attack\"",
+												"state": "deactivated"
+											}
+										},
+										{
+											"callFunction": "hideAttackHint",
+											"sid": 780798825390994
+										}
+									],
+									"sid": 573122476702919,
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 826592578758014,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 242534352828090,
+											"parameters": {
+												"variable": "Armed",
+												"value": "false"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 203190791516720,
+											"parameters": {
+												"group-name": "\"Player Attack\"",
+												"state": "deactivated"
+											}
+										},
+										{
+											"callFunction": "showGemsInHUD",
+											"sid": 939267307633965
+										}
+									],
+									"sid": 948825915152561,
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 971037069809389
+										}
+									],
+									"actions": [
+										{
+											"id": "add-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 253662350139159,
+											"parameters": {
+												"key": "\"Attack\"",
+												"value": "Attack"
+											}
+										},
+										{
+											"id": "set-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 803751276316104,
+											"parameters": {
+												"key": "\"Defense\"",
+												"value": "Defense"
+											}
+										},
+										{
+											"id": "add-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 392619872715396,
+											"parameters": {
+												"key": "\"Speed\"",
+												"value": "Speed"
+											}
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 477345494517390
+										}
+									],
+									"sid": 707683838293457
+								}
+							]
+						}
+					]
+				}
+			],
+			"sid": 653759536135029
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "HINT & DESCRIPTION",
+			"description": "Hint and Description of Items with characteristics. Appears when tapping an Item in World or Inventory",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Function of calling Hints and Descriptions\nWe select the UID of the item passed through the function parameter.",
+					"background-color": [
+						0.0196078431372549,
+						1,
+						0.03529411764705882,
+						1
+					]
+				},
+				{
+					"functionName": "displayItemHint",
+					"functionDescription": "",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "FuncObjUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 202539807529573
+						},
+						{
+							"name": "layer",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 572906620278691
+						},
+						{
+							"name": "window",
+							"type": "string",
+							"initialValue": "",
+							"comment": "where this hint is located",
+							"sid": 984843580296484
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [
+						{
+							"id": "pick-by-unique-id",
+							"objectClass": "InventoryItems",
+							"sid": 520233492771989,
+							"parameters": {
+								"unique-id": "FuncObjUID"
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 378336524041999,
+							"parameters": {
+								"variable": "ItemShowing"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-layer-visible",
+							"objectClass": "System",
+							"sid": 934158294538317,
+							"parameters": {
+								"layer": "\"Hint\"",
+								"visibility": "visible"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 164287373384375,
+							"parameters": {
+								"variable": "ItemShowing",
+								"value": "true"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 513046280446428,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "deactivated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 460449611128935,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "deactivated"
+							}
+						},
+						{
+							"id": "play",
+							"objectClass": "Audio",
+							"sid": 113883687468236,
+							"parameters": {
+								"audio-file": "tap",
+								"loop": "not-looping",
+								"volume": "-5",
+								"stereo-pan": "0",
+								"tag-optional": "\"\""
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 548140948972829,
+							"parameters": {
+								"variable": "CurrentItemID",
+								"value": "InventoryItems.ItemID"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 186612819489776,
+							"parameters": {
+								"variable": "SelectedItemUID",
+								"value": "InventoryItems.UID"
+							}
+						},
+						{
+							"id": "set-position-to-another-object",
+							"objectClass": "SquareActive",
+							"sid": 448353140516838,
+							"parameters": {
+								"object": "InventoryItems",
+								"image-point-optional": "0"
+							}
+						},
+						{
+							"id": "move-to-object",
+							"objectClass": "SquareActive",
+							"sid": 466798159724397,
+							"parameters": {
+								"where": "in-front",
+								"object": "InventoryItems"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SquareActive",
+							"sid": 171736368175386,
+							"parameters": {
+								"visibility": "visible"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 232504781564606,
+							"parameters": {
+								"object-to-create": "Hint_9patch",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 539698285272314,
+							"parameters": {
+								"object-to-create": "UI_Font_DESCR",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 314736051850036,
+							"parameters": {
+								"instance-variable": "ID",
+								"value": "\"hint\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 649387916816458,
+							"parameters": {
+								"object-to-create": "UI_Font_DescrNUM",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"type": "comment",
+							"text": "Set the strength"
+						},
+						{
+							"id": "set-text",
+							"objectClass": "UI_Font_DescrNUM",
+							"sid": 281012019865983,
+							"parameters": {
+								"text": "Functions.GetItemStrength(CurrentItemID)"
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_Font_DescrNUM",
+							"sid": 434833803679077,
+							"parameters": {
+								"scale": "0.7"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 912669127905220,
+							"parameters": {
+								"object-to-create": "UI_StateSprite",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 740565537057609,
+							"parameters": {
+								"object-to-create": "UI_HintArrow",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "UI_StateSprite",
+							"sid": 266838078795275,
+							"parameters": {
+								"instance-variable": "ui",
+								"value": "\"hint\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_StateSprite",
+							"sid": 142949546813613,
+							"parameters": {
+								"scale": "0.6"
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "UI_HintArrow",
+							"sid": 776126272303440,
+							"parameters": {
+								"scale": "0.7"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 287567564248028,
+							"parameters": {
+								"object-to-create": "Btn_Use",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "Btn_Use",
+							"sid": 192930395208217,
+							"parameters": {
+								"scale": "0.6"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "Btn_Use",
+							"sid": 421617938708267,
+							"parameters": {
+								"visibility": "visible"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 337885365615903,
+							"parameters": {
+								"object-to-create": "Btn_Drop",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "Btn_Drop",
+							"sid": 665073625199084,
+							"parameters": {
+								"scale": "0.6"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "Btn_Drop",
+							"sid": 214205959949656,
+							"parameters": {
+								"visibility": "visible"
+							}
+						}
+					],
+					"sid": 557280665239637,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 991756470753582,
+									"parameters": {
+										"instance-variable": "ID",
+										"comparison": 0,
+										"value": "\"hint\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-scale",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 720146687098537,
+									"parameters": {
+										"scale": "1"
+									}
+								}
+							],
+							"sid": 439479177351951
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 854193499737950,
+									"parameters": {
+										"variable": "window",
+										"comparison": 0,
+										"value": "\"main\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Drop",
+									"sid": 577932974651138,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 914051564362269
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 115271294333946,
+									"parameters": {
+										"layer": "\"Inventory\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Drop",
+									"sid": 445737593398146,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 202987347440997
+						},
+						{
+							"eventType": "comment",
+							"text": "Find the current item Y & Z indices by the picked item's tag and name respectively"
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [],
+							"sid": 253309770731627
+						},
+						{
+							"eventType": "comment",
+							"text": "If the Item is NOT Stackable - We display information about the Item in the text through the data from the Description array. Separate different parts of the string with a tokenat.\nSet the size of the Hint window approximately equal to the size of the displayed text",
+							"background-color": [
+								0,
+								1,
+								0.25098039215686274,
+								1
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 858009841285494,
+									"parameters": {
+										"instance-variable": "ID",
+										"comparison": 0,
+										"value": "\"hint\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 974359657744894,
+									"parameters": {
+										"object": "InventoryItems",
+										"image-point-optional": "0"
+									}
+								},
+								{
+									"id": "set-position",
+									"objectClass": "Hint_9patch",
+									"sid": 400154846654499,
+									"parameters": {
+										"x": "200",
+										"y": "200"
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "Hint_9patch",
+									"sid": 106317172200594,
+									"parameters": {
+										"width": "250",
+										"height": "80"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 474286776618218,
+									"parameters": {
+										"text": "Functions.GetItemName(CurrentItemID)&newline&Functions.GetItemDescription(CurrentItemID)"
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "UI_Font_DESCR",
+									"sid": 678528846573143,
+									"parameters": {
+										"scale": "0.5"
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "Hint_9patch",
+									"sid": 974206986875883,
+									"parameters": {
+										"width": "UI_Font_DESCR.TextWidth<115?125:UI_Font_DESCR.TextWidth+10",
+										"height": "UI_Font_DESCR.TextHeight+26"
+									}
+								}
+							],
+							"sid": 950585268098058
+						},
+						{
+							"eventType": "comment",
+							"text": "Set the position for the Hints window. So that the window does not appear outside the screen. We select the best option",
+							"background-color": [
+								0,
+								1,
+								0.3843137254901961,
+								1
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 762459695765454,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 212678996630180,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-x",
+											"objectClass": "InventoryItems",
+											"sid": 375152558149488,
+											"parameters": {
+												"comparison": 4,
+												"x-co-ordinate": "400"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 429501107865887,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 528120423074134,
+											"parameters": {
+												"x": "(InventoryItems.ImagePointX(0)/2)-(Hint_9patch.Width)+ViewportLeft(\"Hint\")",
+												"y": "InventoryItems.Y\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 294400171920093,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 945712753779473
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-y",
+											"objectClass": "InventoryItems",
+											"sid": 919477838577530,
+											"parameters": {
+												"comparison": 4,
+												"y-co-ordinate": "240"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 143728572661074,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 101267314583865,
+											"parameters": {
+												"x": "InventoryItems.X",
+												"y": "(InventoryItems.ImagePointY(0)/2)-(Hint_9patch.Height)+ViewportTop(\"Hint\")\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 993365124233319,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 772062080106981
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-y",
+											"objectClass": "InventoryItems",
+											"sid": 939816945723484,
+											"parameters": {
+												"comparison": 3,
+												"y-co-ordinate": "240"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 349689734219658,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 411621525122295,
+											"parameters": {
+												"x": "Hint_9patch.X",
+												"y": "(InventoryItems.ImagePointY(0)/2)+ViewportTop(\"Hint\")\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 298667395160109,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 695674926434641
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-x",
+											"objectClass": "InventoryItems",
+											"sid": 883906026849719,
+											"parameters": {
+												"comparison": 3,
+												"x-co-ordinate": "400"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 136781542302394,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 563000794350367,
+											"parameters": {
+												"x": "(InventoryItems.ImagePointX(0)/2)+ViewportLeft(\"Hint\")",
+												"y": "Hint_9patch.Y\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 336355751263625,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 340370209878458
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 961901174489491,
+									"parameters": {
+										"layer": "\"Inventory\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [],
+							"sid": 702160264108215,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-x",
+											"objectClass": "InventoryItems",
+											"sid": 983233818251056,
+											"parameters": {
+												"comparison": 4,
+												"x-co-ordinate": "int(180+int(ViewportLeft(\"Objects\")))"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 786266486552461,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 741637352691369,
+											"parameters": {
+												"x": "(InventoryItems.ImagePointX(0)-((Hint_9patch.Width)/2))",
+												"y": "InventoryItems.Y\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 499016376599853,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 448287465818710
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-y",
+											"objectClass": "InventoryItems",
+											"sid": 277473786283470,
+											"parameters": {
+												"comparison": 4,
+												"y-co-ordinate": "120+ViewportTop(\"Objects\")"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 468634046974495,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 347994149199343,
+											"parameters": {
+												"x": "Hint_9patch.X",
+												"y": "(InventoryItems.ImagePointY(0)-((Hint_9patch.Height)))\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 341416680322977,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 377808909210239
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-y",
+											"objectClass": "InventoryItems",
+											"sid": 705939185974817,
+											"parameters": {
+												"comparison": 3,
+												"y-co-ordinate": "120+ViewportTop(\"Objects\")"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 615122412031621,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 456861877025811,
+											"parameters": {
+												"x": "Hint_9patch.X",
+												"y": "(InventoryItems.ImagePointY(0))\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 985328943950739,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 187930023333853
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-x",
+											"objectClass": "InventoryItems",
+											"sid": 587678215519356,
+											"parameters": {
+												"comparison": 3,
+												"x-co-ordinate": "int(180+int(ViewportLeft(\"Objects\")))"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 213664122983252,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "\"hint\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 915476967065318,
+											"parameters": {
+												"x": "(InventoryItems.ImagePointX(0))",
+												"y": "Hint_9patch.Y\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 935415187170690,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 657860037101324
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 423062148161627,
+											"parameters": {
+												"variable": "Interior"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "Hint_9patch",
+											"sid": 383299954333082,
+											"parameters": {
+												"x": "Self.X*0.8",
+												"y": "Self.Y*0.8\n"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_Font_DESCR",
+											"sid": 551601418327974,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+3",
+												"y": "Hint_9patch.BBoxTop+3"
+											}
+										}
+									],
+									"sid": 455468453800339
+								}
+							]
+						},
+						{
+							"bookmark": true,
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "UI_StateSprite",
+									"sid": 568799737949595,
+									"parameters": {
+										"instance-variable": "ui",
+										"comparison": 0,
+										"value": "\"hint\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-width",
+									"objectClass": "Btn_Use",
+									"sid": 587875608028466,
+									"parameters": {
+										"width": "50"
+									}
+								},
+								{
+									"id": "set-position",
+									"objectClass": "Btn_Use",
+									"sid": 186417255961719,
+									"parameters": {
+										"x": "Hint_9patch.BBoxLeft+6",
+										"y": "Hint_9patch.BBoxBottom-23"
+									}
+								},
+								{
+									"id": "set-position",
+									"objectClass": "Btn_Drop",
+									"sid": 846549986775824,
+									"parameters": {
+										"x": "Btn_Use.X+Btn_Use.Width+4",
+										"y": "Btn_Use.Y"
+									}
+								},
+								{
+									"id": "set-width",
+									"objectClass": "Btn_Drop",
+									"sid": 926387101286792,
+									"parameters": {
+										"width": "44"
+									}
+								},
+								{
+									"id": "move-at-angle",
+									"objectClass": "UI_Font_DescrNUM",
+									"sid": 378587525402382,
+									"parameters": {
+										"angle": "90",
+										"distance": "2"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "UI_Font_DescrNUM",
+									"sid": 716110922801164,
+									"parameters": {
+										"visibility": "visible"
+									}
+								}
+							],
+							"sid": 608031213430164,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Set value for strength (if strength exists) ",
+									"background-color": [
+										0.16862745098039217,
+										1,
+										0,
+										1
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 433331377799317,
+											"parameters": {
+												"value": "Functions.GetItemStrength(CurrentItemID)>0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "UI_StateSprite",
+											"sid": 304203494000668,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+10",
+												"y": "Hint_9patch.BBoxBottom-10"
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "UI_StateSprite",
+											"sid": 120918976781351,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-position-to-another-object",
+											"objectClass": "UI_Font_DescrNUM",
+											"sid": 572039077088191,
+											"parameters": {
+												"object": "UI_StateSprite",
+												"image-point-optional": "1"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "UI_StateSprite",
+											"sid": 844345782525519,
+											"parameters": {
+												"frame-number": "Functions.GetItemCategory(CurrentItemID)=\"Weapon\" ?0:2"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_HintArrow",
+											"sid": 329695420654795,
+											"parameters": {
+												"x": "UI_StateSprite.ImagePointX(1)+7+UI_Font_DescrNUM.TextWidth",
+												"y": "UI_StateSprite.ImagePointY(1)"
+											}
+										},
+										{
+											"id": "set-animation",
+											"objectClass": "UI_HintArrow",
+											"sid": 887349873735460,
+											"parameters": {
+												"animation": "\"up\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "UI_HintArrow",
+											"sid": 740795086367087,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Use",
+											"sid": 374798196101372,
+											"parameters": {
+												"x": "UI_HintArrow.ImagePointX(1)+12",
+												"y": "UI_HintArrow.ImagePointY(1)-12"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Drop",
+											"sid": 536059568418841,
+											"parameters": {
+												"x": "Btn_Use.X+Btn_Use.Width+4",
+												"y": "Btn_Use.Y"
+											}
+										}
+									],
+									"sid": 927907647405083
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 989551435202915,
+											"parameters": {
+												"value": "Functions.GetItemCategory(CurrentItemID)=\"Food\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "UI_StateSprite",
+											"sid": 201508254603395,
+											"parameters": {
+												"frame-number": "1"
+											}
+										}
+									],
+									"sid": 887320892216172
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 573096071764157,
+											"parameters": {
+												"value": "Functions.GetItemCategory(CurrentItemID)=\"Boot\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "UI_StateSprite",
+											"sid": 729663108735755,
+											"parameters": {
+												"frame-number": "3"
+											}
+										}
+									],
+									"sid": 352407258039247
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 663321321058400,
+											"parameters": {
+												"value": "Functions.GetItemCategory(CurrentItemID)=\"Money\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "UI_StateSprite",
+											"sid": 577955321491363,
+											"parameters": {
+												"x": "Hint_9patch.BBoxLeft+10",
+												"y": "Hint_9patch.BBoxBottom-10"
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "UI_StateSprite",
+											"sid": 903044672079359,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_DescrNUM",
+											"sid": 414148457014539,
+											"parameters": {
+												"text": "Functions.GetItemCostbyID(CurrentItemID)"
+											}
+										},
+										{
+											"id": "set-position-to-another-object",
+											"objectClass": "UI_Font_DescrNUM",
+											"sid": 829454314703490,
+											"parameters": {
+												"object": "UI_StateSprite",
+												"image-point-optional": "1"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "UI_StateSprite",
+											"sid": 263948215005903,
+											"parameters": {
+												"frame-number": "4"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "UI_HintArrow",
+											"sid": 754376451107549,
+											"parameters": {
+												"x": "UI_StateSprite.ImagePointX(1)+7+UI_Font_DescrNUM.TextWidth",
+												"y": "UI_StateSprite.ImagePointY(1)"
+											}
+										},
+										{
+											"id": "set-animation",
+											"objectClass": "UI_HintArrow",
+											"sid": 536541515340893,
+											"parameters": {
+												"animation": "\"up\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "UI_HintArrow",
+											"sid": 190118313937741,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Use",
+											"sid": 433692665403416,
+											"parameters": {
+												"x": "UI_HintArrow.ImagePointX(1)+12",
+												"y": "UI_HintArrow.ImagePointY(1)-12"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Drop",
+											"sid": 939040711759842,
+											"parameters": {
+												"x": "Btn_Use.X+Btn_Use.Width+4",
+												"y": "Btn_Use.Y"
+											}
+										}
+									],
+									"sid": 473485080489798
+								},
+								{
+									"eventType": "comment",
+									"text": "The Arrow displays information which Item is better. The one that is equipped, or the one that is in the inventory.\nTo do this, compare the values of the above ▲ Items and set the corresponding animation to the Arrow",
+									"background-color": [
+										0,
+										1,
+										0.01568627450980392,
+										1
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 627010513142033,
+											"parameters": {
+												"value": "Functions.GetItemStrength(CurrentItemID)>0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "UI_HintArrow",
+											"sid": 436962937159987,
+											"parameters": {
+												"animation": "Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat)))<Functions.GetItemStrength(InventoryItems.ItemID)?\"up\" :Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat)))>Functions.GetItemStrength(InventoryItems.ItemID) ?\"down\" :\"default\"",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 168889244454153
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Set the position for the action buttons and label appropriately."
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Drop",
+									"sid": 793206393521611
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 159864079765078,
+									"parameters": {
+										"object-to-create": "obj_TitleText",
+										"layer": "\"Hint\"",
+										"x": "0",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_TitleText",
+									"sid": 539184307252084,
+									"parameters": {
+										"instance-variable": "title",
+										"value": "\"drop\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 466574708545901,
+									"parameters": {
+										"text": "\"Drop\""
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TitleText",
+									"sid": 448511498626697,
+									"parameters": {
+										"size-pt": "12"
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "obj_TitleText",
+									"sid": 704592356417358,
+									"parameters": {
+										"where": "in-front",
+										"object": "Btn_Drop"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 197744309759172,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "obj_TitleText",
+									"sid": 227328281699688,
+									"parameters": {
+										"object": "Btn_Drop",
+										"image-point-optional": "0"
+									}
+								}
+							],
+							"sid": 328263023092462,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 303012513822930,
+											"parameters": {
+												"variable": "ShopMode"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_TitleText",
+											"sid": 780252940451364,
+											"parameters": {
+												"instance-variable": "title",
+												"value": "\"drop\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 341629296864868,
+											"parameters": {
+												"text": "\"Drop\""
+											}
+										}
+									],
+									"sid": 254593016735300
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 384625023356857,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_TitleText",
+											"sid": 775865329228708,
+											"parameters": {
+												"instance-variable": "title",
+												"value": "\"drop\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 274709775445084,
+											"parameters": {
+												"text": "\"Sell [icon=Gem] \"&(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Drop",
+											"sid": 192354719858394,
+											"parameters": {
+												"width": "obj_TitleText.TextWidth+8"
+											}
+										}
+									],
+									"sid": 351619733629051
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Use",
+									"sid": 633072640109688
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 384630124687032,
+									"parameters": {
+										"object-to-create": "obj_TitleText",
+										"layer": "\"Hint\"",
+										"x": "0",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_TitleText",
+									"sid": 330668586474706,
+									"parameters": {
+										"instance-variable": "title",
+										"value": "\"use\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 923833815527709,
+									"parameters": {
+										"text": "\"Use\""
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TitleText",
+									"sid": 385113093938170,
+									"parameters": {
+										"size-pt": "12"
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "obj_TitleText",
+									"sid": 963129603973486,
+									"parameters": {
+										"where": "in-front",
+										"object": "Btn_Use"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 875982906496314,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "obj_TitleText",
+									"sid": 611064337358580,
+									"parameters": {
+										"object": "Btn_Use",
+										"image-point-optional": "0"
+									}
+								}
+							],
+							"sid": 709027182662773,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 905143009522316,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"main\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 230705274525118,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 550627186357431,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"Food\""
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 348184040994962,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"General\""
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 496558418014481,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"Weapon\""
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "set-text",
+													"objectClass": "obj_TitleText",
+													"sid": 611310324686676,
+													"parameters": {
+														"text": "\"Wear\""
+													}
+												}
+											],
+											"sid": 194249569178810
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 692308893850575,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"Food\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-text",
+													"objectClass": "obj_TitleText",
+													"sid": 491076906775424,
+													"parameters": {
+														"text": "\"Eat\""
+													}
+												}
+											],
+											"sid": 524772803379699
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 839710025932371,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"Weapon\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-text",
+													"objectClass": "obj_TitleText",
+													"sid": 703320897737230,
+													"parameters": {
+														"text": "\"Equip\""
+													}
+												},
+												{
+													"id": "set-width",
+													"objectClass": "Btn_Use",
+													"sid": 551965607449187,
+													"parameters": {
+														"width": "52"
+													}
+												}
+											],
+											"sid": 547212458551971
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 490021770795459,
+													"parameters": {
+														"first-value": "InventoryItems.ItemCat",
+														"comparison": 0,
+														"second-value": "\"General\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-text",
+													"objectClass": "obj_TitleText",
+													"sid": 709230060996548,
+													"parameters": {
+														"text": "\"Use\""
+													}
+												}
+											],
+											"sid": 690449165901132
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 892384708096533,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"equip\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 728438274406248,
+											"parameters": {
+												"text": "\"Remove\""
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Use",
+											"sid": 696315719394824,
+											"parameters": {
+												"width": "70"
+											}
+										}
+									],
+									"sid": 269650507958406
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 290840245851306,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 920960668291939,
+											"parameters": {
+												"text": "\"Take\""
+											}
+										}
+									],
+									"sid": 768415126158474
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 797937720855680,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 663758343487821,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 388356848824850,
+											"parameters": {
+												"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
+												"comparison": 3,
+												"second-value": "Dict_SaveGameData.Get(\"Gems\")"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 211036865351567,
+											"parameters": {
+												"text": "\"[icon=Gem] \" & Functions.GetItemCostbyID(InventoryItems.ItemID)&\" Buy\""
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Use",
+											"sid": 571540825784182,
+											"parameters": {
+												"width": "40"
+											}
+										},
+										{
+											"id": "set-x",
+											"objectClass": "Btn_Use",
+											"sid": 245949070890922,
+											"parameters": {
+												"x": "Self.X+36"
+											}
+										}
+									],
+									"sid": 224215047401071
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 852390166984229,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"comparison": 0,
+												"value": "\"none\""
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 433176951134964,
+											"parameters": {
+												"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
+												"comparison": 4,
+												"second-value": "Dict_SaveGameData.Get(\"Gems\")"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 131602055634935,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 819179757478243,
+											"parameters": {
+												"text": "\"[icon=Gem] \" & Functions.GetItemCostbyID(InventoryItems.ItemID)&\" Not Enough\""
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Btn_Use",
+											"sid": 611089531434357,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										}
+									],
+									"sid": 459035690453350
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "The function of hiding the Hint and its additional elements",
+					"background-color": [
+						0,
+						1,
+						0.25098039215686274,
+						1
+					]
+				},
+				{
+					"functionName": "hideItemHint",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 354649133030071,
+							"parameters": {
+								"variable": "ItemShowing"
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "UI_StateSprite",
+							"sid": 836132927329701,
+							"parameters": {
+								"instance-variable": "ui",
+								"comparison": 0,
+								"value": "\"hint\""
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 447223997692038,
+							"parameters": {
+								"instance-variable": "ID",
+								"comparison": 0,
+								"value": "\"hint\""
+							}
+						},
+						{
+							"id": "is-on-layer",
+							"objectClass": "Btn_Use",
+							"sid": 361283613520744,
+							"parameters": {
+								"layer": "\"Hint\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-layer-visible",
+							"objectClass": "System",
+							"sid": 492327609239476,
+							"parameters": {
+								"layer": "\"Hint\"",
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 287057040962000,
+							"parameters": {
+								"variable": "ItemShowing",
+								"value": "false"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 254503804845764,
+							"parameters": {
+								"variable": "StartInvWindow",
+								"value": "\"none\""
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 557800246231848,
+							"parameters": {
+								"variable": "SelectedItemUID",
+								"value": "-1"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SquareActive",
+							"sid": 349196404871951,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Btn_Drop",
+							"sid": 432476432893186
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Btn_Use",
+							"sid": 510448112254737
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Hint_9patch",
+							"sid": 328273911888681
+						},
+						{
+							"id": "destroy",
+							"objectClass": "UI_Font_DESCR",
+							"sid": 337836759898591
+						},
+						{
+							"id": "destroy",
+							"objectClass": "UI_Font_DescrNUM",
+							"sid": 180478181743926
+						},
+						{
+							"id": "destroy",
+							"objectClass": "UI_StateSprite",
+							"sid": 463062106249434
+						},
+						{
+							"id": "destroy",
+							"objectClass": "UI_HintArrow",
+							"sid": 236570328957008
+						}
+					],
+					"sid": 618391788572328,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 206093208022704,
+									"parameters": {
+										"layer": "\"Inventory\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 574664038919183,
+									"parameters": {
+										"group-name": "\"Player Engine\"",
+										"state": "activated"
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 283467967319202,
+									"parameters": {
+										"group-name": "\"Enemies\"",
+										"state": "activated"
+									}
+								}
+							],
+							"sid": 288211007817488
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "obj_TitleText",
+									"sid": 769521253473796,
+									"parameters": {
+										"instance-variable": "title",
+										"comparison": 0,
+										"value": "\"use\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TitleText",
+									"sid": 400696679804794
+								}
+							],
+							"sid": 400088116389002
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "obj_TitleText",
+									"sid": 306101692732067,
+									"parameters": {
+										"instance-variable": "title",
+										"comparison": 0,
+										"value": "\"drop\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TitleText",
+									"sid": 362545438501086
+								}
+							],
+							"sid": 692507846744139
+						}
+					]
+				}
+			],
+			"sid": 190105241329988
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Other",
+			"description": "Miscellaneous, other ...",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Visual design when Stacking the same Items. A short increase in the scale of the SpriteFont via the \"Tween\" plugin"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-playing",
+							"objectClass": "UI_Font_Stack",
+							"sid": 783213787204594,
+							"behaviorType": "Tween",
+							"parameters": {
+								"tags": "\"up\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-scale",
+							"objectClass": "UI_Font_Stack",
+							"sid": 366800098962972,
+							"disabled": true,
+							"parameters": {
+								"scale": "UI_Font_Stack.Tween.Value(\"up\")"
+							}
+						}
+					],
+					"sid": 314605161039895
+				},
+				{
+					"eventType": "comment",
+					"text": "When the Scale is over, disable plugin for the optimization"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-any-tweens-finished",
+							"objectClass": "UI_Font_Stack",
+							"sid": 385966197490946,
+							"behaviorType": "Tween"
+						}
+					],
+					"actions": [
+						{
+							"id": "set-enabled",
+							"objectClass": "UI_Font_Stack",
+							"sid": 145387443762267,
+							"behaviorType": "Tween",
+							"parameters": {
+								"mode": "disabled"
+							}
+						}
+					],
+					"sid": 874434988570223
+				}
+			],
+			"sid": 167277142790907
+		}
+	],
+	"sid": 193736870048772
+}

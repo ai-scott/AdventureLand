@@ -1,0 +1,27 @@
+{
+	"name": "CharactersTriggers",
+	"plugin-id": "Sprite",
+	"sid": 894018001221970,
+	"instanceVariables": [
+		{
+			"name": "ID",
+			"type": "number",
+			"desc": "The trigger ID to match the dialog Z index",
+			"show": true,
+			"sid": 248034240329517
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"Player_Girl",
+		"Player_Boy",
+		"Penny",
+		"Nun",
+		"Windmill_Nick",
+		"WaterfallCave_Bill",
+		"Shopkeeper_Sally",
+		"Shopkeeper_Sophie",
+		"Shopkeeper_Sarah"
+	]
+}

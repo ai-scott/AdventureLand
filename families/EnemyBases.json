@@ -1,0 +1,100 @@
+{
+	"name": "EnemyBases",
+	"plugin-id": "Sprite",
+	"sid": 920623184619071,
+	"instanceVariables": [
+		{
+			"name": "Health",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 441675473203242
+		},
+		{
+			"name": "Strength",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 993905044259829
+		},
+		{
+			"name": "Pair_ID",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 177296783830483
+		},
+		{
+			"name": "Direction",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 760173033032481
+		},
+		{
+			"name": "Player_AngleDiff",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 542246475511501
+		},
+		{
+			"name": "Knockback_Timer",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 609904125647246
+		},
+		{
+			"name": "Default_MaxSpeed",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 587644825118236
+		},
+		{
+			"name": "Default_Acceleration",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 642778588947255
+		},
+		{
+			"name": "Default_Deceleration",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 947778322187357
+		},
+		{
+			"name": "Hurt",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 977342714112445
+		},
+		{
+			"name": "CanBeKnockedBack",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 712534201022940
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "EightDir",
+			"name": "8Direction",
+			"sid": 806062331157889
+		}
+	],
+	"effectTypes": [],
+	"members": [
+		"En_Slime_Base",
+		"En_Slime_Base2",
+		"En_Skeleton_Base",
+		"En_Ghost_Base",
+		"En_Golem_Base",
+		"En_Demon_Base"
+	]
+}

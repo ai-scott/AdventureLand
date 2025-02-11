@@ -1,0 +1,58 @@
+{
+	"name": "CabinLight",
+	"plugin-id": "Sprite",
+	"sid": 962575312623746,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 809442675000433
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 48,
+						"height": 80,
+						"originX": 0.5208333333333334,
+						"originY": 0.925,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 4065966,
+						"collisionPoly": {
+							"points": [
+								0.9414503309461802,
+								0.5991655985514323,
+								0.9353745071976272,
+								0.9437074449327257,
+								0.07780654342086228,
+								0.9499967787000869,
+								0.044498019748263895,
+								0.6073562622070314
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 268000040370155,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

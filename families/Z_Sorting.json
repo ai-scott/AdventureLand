@@ -1,0 +1,20 @@
+{
+	"name": "Z_Sorting",
+	"plugin-id": "Sprite",
+	"sid": 830322524627126,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"En_Slime_Mask",
+		"En_Slime_Mask2",
+		"En_Skeleton_Mask",
+		"En_Ghost_Mask",
+		"En_Golem_Mask",
+		"En_Demon_Mask",
+		"Particle",
+		"Destructible",
+		"Gem",
+		"Sparkly"
+	]
+}

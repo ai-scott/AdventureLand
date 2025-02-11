@@ -1,0 +1,260 @@
+{
+	"name": "Character_Cameos",
+	"plugin-id": "Sprite",
+	"sid": 520592698742956,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 3239926,
+						"collisionPoly": {
+							"points": [
+								0.09523809523809523,
+								0.08461538461538462,
+								0.11666666666666667,
+								0.43846153846153846,
+								0.09523809523809523,
+								0.47692307692307695,
+								0.03571428571428571,
+								0.4461538461538462,
+								0.01904761904761905,
+								0.38461538461538464,
+								0.03571428571428571,
+								0.16923076923076924
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Penny"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 4110482,
+						"collisionPoly": {
+							"points": [
+								0.05714285714285714,
+								0.09230769230769231,
+								0.12380952380952381,
+								0.13846153846153847,
+								0.13095238095238096,
+								0.2846153846153846,
+								0.09523809523809523,
+								0.43846153846153846,
+								0.04285714285714286,
+								0.43846153846153846
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Rosie"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9124885,
+						"collisionPoly": {
+							"points": [
+								0.09285714285714286,
+								0.06923076923076923,
+								0.10476190476190476,
+								0.1076923076923077,
+								0.12142857142857143,
+								0.2230769230769231,
+								0.02619047619047619,
+								0.4153846153846154,
+								0.02619047619047619,
+								0.2230769230769231,
+								0.04285714285714286,
+								0.1076923076923077
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Blacksmith_Sally"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9822107,
+						"collisionPoly": {
+							"points": [
+								0.09285714285714286,
+								0.06923076923076923,
+								0.10476190476190476,
+								0.1076923076923077,
+								0.12380952380952381,
+								0.2230769230769231,
+								0.02619047619047619,
+								0.4153846153846154,
+								0.02619047619047619,
+								0.2230769230769231
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "General_Sally"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 950595,
+						"collisionPoly": {
+							"points": [
+								0.09285714285714286,
+								0.06923076923076923,
+								0.10476190476190476,
+								0.1076923076923077,
+								0.12142857142857143,
+								0.2230769230769231,
+								0.02619047619047619,
+								0.4153846153846154,
+								0.02619047619047619,
+								0.2230769230769231
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Adventure_Sally"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 4572261,
+						"collisionPoly": {
+							"points": [
+								0.10714285714285714,
+								0.07692307692307693,
+								0.1261904761904762,
+								0.16923076923076924,
+								0.1261904761904762,
+								0.4076923076923077,
+								0.03571428571428571,
+								0.4461538461538462,
+								0.02142857142857143,
+								0.3923076923076923,
+								0.02142857142857143,
+								0.16923076923076924
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Windmill_Nick"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1552598,
+						"collisionPoly": {
+							"points": [
+								0.10952380952380952,
+								0.08461538461538462,
+								0.1261904761904762,
+								0.17692307692307693,
+								0.1261904761904762,
+								0.4153846153846154,
+								0.03571428571428571,
+								0.45384615384615384,
+								0.023809523809523808,
+								0.4153846153846154,
+								0.023809523809523808,
+								0.17692307692307693
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "WaterfallCave_Bill"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8136069,
+						"collisionPoly": {
+							"points": [
+								0.09285714285714286,
+								0.1,
+								0.11190476190476191,
+								0.3153846153846154,
+								0.10952380952380952,
+								0.3923076923076923,
+								0.0761904761904762,
+								0.4307692307692308,
+								0.030952380952380953,
+								0.4,
+								0.03333333333333333,
+								0.18461538461538463
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "AL"
+					}
+				],
+				"sid": 824608184242087,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

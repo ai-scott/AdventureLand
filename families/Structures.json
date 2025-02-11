@@ -1,0 +1,19 @@
+{
+	"name": "Structures",
+	"plugin-id": "Sprite",
+	"sid": 935872143268744,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"CabinDark",
+		"CabinLight",
+		"Shirne",
+		"WeaponShop",
+		"Well",
+		"Windmill",
+		"Shop",
+		"Blacksmith",
+		"TreeSign"
+	]
+}

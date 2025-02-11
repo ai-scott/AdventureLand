@@ -1,0 +1,687 @@
+{
+	"name": "eScene00",
+	"events": [
+		{
+			"eventType": "include",
+			"includeSheet": "eGameRoom"
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 498163587782318
+				}
+			],
+			"actions": [
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 394823902987383,
+					"parameters": {
+						"variable": "TextArrayZIndex",
+						"value": "0"
+					}
+				},
+				{
+					"id": "wait-for-signal",
+					"objectClass": "System",
+					"sid": 181921455461454,
+					"parameters": {
+						"tag": "\"Inventory UI Drawn\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 672073675308572,
+					"parameters": {
+						"object-to-create": "En_Slime_Mask",
+						"layer": "\"Objects\"",
+						"x": "480",
+						"y": "304",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
+					"sid": 198695848498209,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"DeployRosie\"",
+						"function": "AddRosieInScene"
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
+					"sid": 842051886354173,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"PennyOpensHome\"",
+						"function": "PennyOpensHome"
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
+					"sid": 116102845844237,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"CatchRosie\"",
+						"function": "CatchRosie"
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
+					"sid": 322124417578056,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"SeaMonsterKeyFound\"",
+						"function": "FindSeaMonsterKey"
+					}
+				}
+			],
+			"sid": 803443797666277,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Setup of layers based on interior"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 821965272975598,
+							"parameters": {
+								"first-value": "tokenat(LayoutName,2,\"_\")",
+								"comparison": 1,
+								"second-value": "\"\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-y",
+							"objectClass": "Player_Base",
+							"sid": 177028540982075,
+							"parameters": {
+								"y": "(Player_Base.Y+24)"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 942472540308590,
+							"parameters": {
+								"variable": "Interior",
+								"value": "true"
+							}
+						}
+					],
+					"sid": 121021514483204,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for",
+									"objectClass": "System",
+									"sid": 492081208341608,
+									"parameters": {
+										"name": "\"Layers\"",
+										"start-index": "0",
+										"end-index": "6"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-layer-scale-rate",
+									"objectClass": "System",
+									"sid": 125521353656391,
+									"parameters": {
+										"layer": "\"HUD_UI\"",
+										"scale-rate": "1"
+									}
+								},
+								{
+									"id": "set-layer-scale",
+									"objectClass": "System",
+									"sid": 398834025211154,
+									"parameters": {
+										"layer": "loopindex",
+										"scale": "1.25"
+									}
+								},
+								{
+									"id": "set-layer-scroll",
+									"objectClass": "System",
+									"sid": 886680385668607,
+									"parameters": {
+										"layer": "loopindex",
+										"scroll-x": "90",
+										"scroll-y": "0"
+									}
+								}
+							],
+							"sid": 550874319269387
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 273954393421684,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 0,
+								"second-value": "\"World_00_Blacksmith\""
+							}
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 771219159757006,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 0,
+								"second-value": "\"World_00_General_Store\""
+							}
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 750098496825186,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 0,
+								"second-value": "\"World_00_Adventure_Shop\""
+							}
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 553868233012381,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 0,
+								"second-value": "\"World_00_Pennys_House\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 705143007131737,
+							"parameters": {
+								"variable": "ShopMode",
+								"value": "true"
+							}
+						}
+					],
+					"sid": 439157041525642,
+					"isOrBlock": true
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 284578178284580,
+							"parameters": {
+								"key": "\"WelcomeQuest\"",
+								"comparison": 0,
+								"value": "\"Not_Started:000\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "initiateDialogue",
+							"sid": 277140473801482,
+							"parameters": [
+								"\"Welcome\""
+							]
+						}
+					],
+					"sid": 935607148344938
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 852305470332105,
+							"parameters": {
+								"key": "\"PennyQuest\"",
+								"comparison": 0,
+								"value": "\"Not_Started:000\""
+							}
+						}
+					],
+					"actions": [],
+					"sid": 153049096061852,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Trigger_Door",
+									"sid": 955736178592736,
+									"parameters": {
+										"instance-variable": "ID",
+										"comparison": 0,
+										"value": "6"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Trigger_Door",
+									"sid": 568991372313876
+								}
+							],
+							"sid": 653784612937030
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 985611792651485,
+							"parameters": {
+								"key": "\"PennyQuest\"",
+								"comparison": 0,
+								"value": "\"Start_Cat_Quest:010\" "
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "AddRosieInScene",
+							"sid": 518498768697869
+						}
+					],
+					"sid": 236906520672814,
+					"isOrBlock": true
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 946963351636853,
+							"parameters": {
+								"key": "\"PennyQuest\"",
+								"comparison": 0,
+								"value": "\"End_Cat_Quest:015\""
+							}
+						},
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 671980269844201,
+							"parameters": {
+								"key": "\"PennyQuest\"",
+								"comparison": 0,
+								"value": "\"After_Cat_Quest:017\""
+							}
+						}
+					],
+					"actions": [],
+					"sid": 151113611251652,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 967841503366564,
+									"parameters": {
+										"first-value": "tokenat(LayoutName,2,\"_\")",
+										"comparison": 0,
+										"second-value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Penny",
+									"sid": 193146058421883
+								}
+							],
+							"sid": 495689516402417
+						}
+					],
+					"isOrBlock": true
+				}
+			]
+		},
+		{
+			"functionName": "AddRosieInScene",
+			"functionDescription": "",
+			"functionCategory": "DialogueEvent",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"type": "script",
+					"script": "console.log(\"Adding Rosie\")"
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 601062306952114,
+					"parameters": {
+						"object-to-create": "Rosie",
+						"layer": "\"TM_Pass - Decorations 1 - OverP\"",
+						"x": "656",
+						"y": "416",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 264373217478394,
+					"parameters": {
+						"object-to-create": "Trigger_Scene",
+						"layer": "\"Objects\"",
+						"x": "710",
+						"y": "474",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "set-instvar-value",
+					"objectClass": "Trigger_Scene",
+					"sid": 590457322296645,
+					"parameters": {
+						"instance-variable": "ID",
+						"value": "3"
+					}
+				},
+				{
+					"id": "set-animation",
+					"objectClass": "Rosie",
+					"sid": 525292727400682,
+					"parameters": {
+						"animation": "\"Tail_Wag_Left\"",
+						"from": "beginning"
+					}
+				}
+			],
+			"sid": 534993334847665
+		},
+		{
+			"functionName": "CatchRosie",
+			"functionDescription": "",
+			"functionCategory": "",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"id": "destroy",
+					"objectClass": "Rosie",
+					"sid": 481749397717093
+				}
+			],
+			"sid": 350103097360180,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "Trigger_Scene",
+							"sid": 753576971893018,
+							"parameters": {
+								"instance-variable": "ID",
+								"comparison": 0,
+								"value": "3"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "Trigger_Scene",
+							"sid": 685659725089388
+						}
+					],
+					"sid": 470269512660752
+				}
+			]
+		},
+		{
+			"functionName": "FindSeaMonsterKey",
+			"functionDescription": "",
+			"functionCategory": "",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"id": "destroy",
+					"objectClass": "Sparkly",
+					"sid": 487099609718636
+				}
+			],
+			"sid": 689790005287846,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "Trigger_Scene",
+							"sid": 523081179720281,
+							"parameters": {
+								"instance-variable": "ID",
+								"comparison": 0,
+								"value": "4"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "Trigger_Scene",
+							"sid": 415720610883455
+						},
+						{
+							"callFunction": "UpdateNumbersOnPickup",
+							"sid": 273307974837779,
+							"parameters": [
+								"121",
+								"1"
+							]
+						}
+					],
+					"sid": 214485876160325
+				}
+			]
+		},
+		{
+			"functionName": "PennyOpensHome",
+			"functionDescription": "",
+			"functionCategory": "DialogueEvent",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"type": "script",
+					"script": "console.log(\"Penny enters house\")"
+				},
+				{
+					"id": "play-timeline",
+					"objectClass": "TimelineController",
+					"sid": 320775554380971,
+					"parameters": {
+						"timeline": "Penny_Enters_House",
+						"tags": "\"transition\""
+					}
+				},
+				{
+					"id": "wait",
+					"objectClass": "System",
+					"sid": 191228439211771,
+					"parameters": {
+						"seconds": "1.0",
+						"use-timescale": true
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 402741245373633,
+					"parameters": {
+						"variable": "Door_ID",
+						"value": "6"
+					}
+				},
+				{
+					"id": "set-enabled",
+					"objectClass": "Player_Base",
+					"sid": 354579216301969,
+					"behaviorType": "8Direction",
+					"parameters": {
+						"state": "disabled"
+					}
+				},
+				{
+					"id": "set-animation-frame",
+					"objectClass": "PlayerSystem",
+					"sid": 940912044500630,
+					"parameters": {
+						"frame-number": "0"
+					}
+				},
+				{
+					"id": "stop-animation",
+					"objectClass": "PlayerSystem",
+					"sid": 617656689132805
+				},
+				{
+					"id": "set-group-active",
+					"objectClass": "System",
+					"sid": 450504985873595,
+					"parameters": {
+						"group-name": "\"Player Engine\"",
+						"state": "deactivated"
+					}
+				},
+				{
+					"callFunction": "Transition",
+					"sid": 229760283191754,
+					"parameters": [
+						"\"Out\"",
+						"\"LayoutChange\"",
+						"\"\""
+					]
+				},
+				{
+					"id": "wait-for-signal",
+					"objectClass": "System",
+					"sid": 112829241730178,
+					"parameters": {
+						"tag": "\"LayoutChange\""
+					}
+				},
+				{
+					"id": "destroy",
+					"objectClass": "Penny",
+					"sid": 968689356118379
+				},
+				{
+					"id": "go-to-layout-by-name",
+					"objectClass": "System",
+					"sid": 588630188698799,
+					"parameters": {
+						"layout": "\"World_00_Pennys_House\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 681536390204651,
+					"parameters": {
+						"object-to-create": "Trigger_Door",
+						"layer": "0",
+						"x": "65",
+						"y": "335",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "set-instvar-value",
+					"objectClass": "Trigger_Door",
+					"sid": 933403838449730,
+					"parameters": {
+						"instance-variable": "ID",
+						"value": "6"
+					}
+				},
+				{
+					"id": "set-instvar-value",
+					"objectClass": "Trigger_Door",
+					"sid": 362406604490076,
+					"parameters": {
+						"instance-variable": "Direction",
+						"value": "\"Down\""
+					}
+				},
+				{
+					"id": "set-instvar-value",
+					"objectClass": "Trigger_Door",
+					"sid": 632697510375524,
+					"parameters": {
+						"instance-variable": "Room",
+						"value": "\"World_00_Pennys_House\""
+					}
+				}
+			],
+			"sid": 835496645361954
+		}
+	],
+	"sid": 911891923434025
+}

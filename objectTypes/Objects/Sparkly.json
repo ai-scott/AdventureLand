@@ -1,0 +1,143 @@
+{
+	"name": "Sparkly",
+	"plugin-id": "Sprite",
+	"sid": 703897638818818,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "Collected",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 293058646908951
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [
+		{
+			"effectId": "brightness",
+			"name": "Brightness"
+		}
+	],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 24,
+						"height": 24,
+						"originX": 0.5,
+						"originY": 0.375,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 885076,
+						"collisionPoly": {
+							"points": [
+								0.169271,
+								0.166667,
+								0.833333,
+								0.166667,
+								0.833333,
+								0.833333,
+								0.166667,
+								0.833333
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 24,
+						"height": 24,
+						"originX": 0.5,
+						"originY": 0.375,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9499823,
+						"collisionPoly": {
+							"points": [
+								0.169271,
+								0.166667,
+								0.833333,
+								0.166667,
+								0.833333,
+								0.833333,
+								0.166667,
+								0.833333
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 24,
+						"height": 24,
+						"originX": 0.5,
+						"originY": 0.375,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1181014,
+						"collisionPoly": {
+							"points": [
+								0.169271,
+								0.166667,
+								0.833333,
+								0.166667,
+								0.833333,
+								0.833333,
+								0.166667,
+								0.833333
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 24,
+						"height": 24,
+						"originX": 0.5,
+						"originY": 0.375,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 7710178,
+						"collisionPoly": {
+							"points": [
+								0.169271,
+								0.166667,
+								0.833333,
+								0.166667,
+								0.833333,
+								0.833333,
+								0.166667,
+								0.833333
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 661253925170503,
+				"name": "Sparkly",
+				"isLooping": true,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 10
+			}
+		],
+		"subfolders": []
+	}
+}

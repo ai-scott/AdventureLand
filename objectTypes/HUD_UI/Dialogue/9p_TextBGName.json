@@ -1,0 +1,23 @@
+{
+	"name": "9p_TextBGName",
+	"plugin-id": "NinePatch",
+	"sid": 256956965293982,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"image": {
+		"width": 420,
+		"height": 130,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"fileType": "image/png",
+		"imageSpriteId": 5686093,
+		"useCollisionPoly": true,
+		"tag": ""
+	}
+}

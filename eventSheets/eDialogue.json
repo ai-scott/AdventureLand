@@ -1,0 +1,2249 @@
+{
+	"name": "eDialogue",
+	"events": [
+		{
+			"eventType": "variable",
+			"name": "CurrentCharacter",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Character that is currently speaking",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 335298531677413
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentDialogueLine",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "index number of current dialogue",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 378515490750298
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentDialogueSelection",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Option user has chosen",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 735566670154260
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentDialogueText",
+			"type": "string",
+			"initialValue": "",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 496124452810070
+		},
+		{
+			"eventType": "variable",
+			"name": "CurrentDialogueTextEnd",
+			"type": "string",
+			"initialValue": "",
+			"comment": "If there's a TextVar, this is the string of Text after the TextVar",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 965777147795341
+		},
+		{
+			"eventType": "variable",
+			"name": "CharacterQuest",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Character:Quest value from Dialogue Array",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 177461037244068
+		},
+		{
+			"eventType": "variable",
+			"name": "QuestStatus",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Current Quest status:dialogue line",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 691599808810954
+		},
+		{
+			"eventType": "variable",
+			"name": "Quest",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Name of the Quest ",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 227431942917150
+		},
+		{
+			"eventType": "variable",
+			"name": "DialogueResult",
+			"type": "string",
+			"initialValue": "",
+			"comment": "The Result is what happens after the current line of dialogue",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 701758460260615
+		},
+		{
+			"eventType": "variable",
+			"name": "DynamicText",
+			"type": "string",
+			"initialValue": "",
+			"comment": "The dynamic var's text stored in the Dictionary ",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 838911763641777
+		},
+		{
+			"eventType": "variable",
+			"name": "DynamicTextVar",
+			"type": "string",
+			"initialValue": "",
+			"comment": "A dynamic value to be inserted into the text",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 472706261537326
+		},
+		{
+			"eventType": "variable",
+			"name": "OptionsOpen",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Does the user have dialogue options to choose from",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 237553660999010
+		},
+		{
+			"eventType": "variable",
+			"name": "InDialogue",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Is user currently interacting with dialogue",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 545302659861888
+		},
+		{
+			"eventType": "variable",
+			"name": "InputVar",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Variable to set from TextInput",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 173463828716428
+		},
+		{
+			"eventType": "variable",
+			"name": "OptionSelection",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Current cursor selection",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 631431078947192
+		},
+		{
+			"eventType": "variable",
+			"name": "TextArrayZIndex",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Value of current Dialogue sheet Z index",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 443537107664822
+		},
+		{
+			"eventType": "variable",
+			"name": "KeyItem",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 529576260474950
+		},
+		{
+			"eventType": "variable",
+			"name": "TypewriterSpeed",
+			"type": "number",
+			"initialValue": "100",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 986286888382805
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 241220432332495
+				}
+			],
+			"actions": [
+				{
+					"type": "comment",
+					"text": "Set current World "
+				},
+				{
+					"id": "set-key",
+					"objectClass": "Dict_SaveGameData",
+					"sid": 468648524878440,
+					"parameters": {
+						"key": "\"CurrentWorld\"",
+						"value": "LayoutName"
+					}
+				},
+				{
+					"callFunction": "SaveGameData",
+					"sid": 338382869541574
+				},
+				{
+					"type": "comment",
+					"text": "Load current world text - will need to rewrite to be dynamic",
+					"background-color": [
+						0.984313725490196,
+						1,
+						0,
+						1
+					]
+				},
+				{
+					"id": "request-project-file",
+					"objectClass": "AJAX",
+					"sid": 118431860698335,
+					"parameters": {
+						"tag": "\"LoadGameText\"",
+						"file": "World00_text.json"
+					}
+				},
+				{
+					"id": "set-group-active",
+					"objectClass": "System",
+					"sid": 144187087482516,
+					"parameters": {
+						"group-name": "\"Listen for Player Choice\"",
+						"state": "deactivated"
+					}
+				}
+			],
+			"sid": 614505262987865
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-completed",
+					"objectClass": "AJAX",
+					"sid": 884193476716695,
+					"parameters": {
+						"tag": "\"LoadGameText\""
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "load",
+					"objectClass": "Arr_Dialogue",
+					"sid": 173956730414071,
+					"parameters": {
+						"json": "AJAX.LastData"
+					}
+				}
+			],
+			"sid": 564500952482174
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Hit Character or Trigger",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "checkCharacter",
+					"functionDescription": "see if user is overlapping an NPC",
+					"functionCategory": "DialogueEvent",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "comment",
+							"text": "see if the user is overlapping an NPC or trigger point"
+						}
+					],
+					"sid": 413543371052340,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-nearestfurthest",
+									"objectClass": "CharactersTriggers",
+									"sid": 909128760194127,
+									"parameters": {
+										"which": "nearest",
+										"x": "Player_Base.X",
+										"y": "Player_Base.Y"
+									}
+								},
+								{
+									"id": "is-overlapping-another-object",
+									"objectClass": "CharactersTriggers",
+									"sid": 342628405726915,
+									"parameters": {
+										"object": "Trigger_Player"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 622560522833656,
+									"parameters": {
+										"variable": "TextArrayZIndex",
+										"value": "CharactersTriggers.ID"
+									}
+								},
+								{
+									"callFunction": "initiateDialogue",
+									"sid": 330819785500288,
+									"parameters": [
+										"CharactersTriggers.ObjectTypeName"
+									]
+								}
+							],
+							"sid": 184412931045519,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [],
+									"sid": 716823360405141
+								}
+							]
+						}
+					]
+				},
+				{
+					"functionName": "checkScene",
+					"functionDescription": "see if player is overlapping a scene trigger",
+					"functionCategory": "DialogueEvent",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 193938357845246,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-nearestfurthest",
+									"objectClass": "Trigger_Scene",
+									"sid": 881128152601898,
+									"parameters": {
+										"which": "nearest",
+										"x": "Player_Base.X",
+										"y": "Player_Base.Y"
+									}
+								},
+								{
+									"id": "is-overlapping-another-object",
+									"objectClass": "Trigger_Scene",
+									"sid": 532515768992596,
+									"parameters": {
+										"object": "Trigger_Player"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 842279075640510,
+									"parameters": {
+										"variable": "TextArrayZIndex",
+										"value": "Trigger_Scene.ID"
+									}
+								},
+								{
+									"callFunction": "initiateDialogue",
+									"sid": 836685755295917,
+									"parameters": [
+										"Trigger_Scene.ObjectTypeName"
+									]
+								}
+							],
+							"sid": 517355972450278,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [],
+									"sid": 317940608059165
+								}
+							]
+						}
+					]
+				}
+			],
+			"sid": 139897680202436
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Initiate Dialogue",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "initiateDialogue",
+					"functionDescription": "initiate dialogue session",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "trigger",
+							"type": "string",
+							"initialValue": "",
+							"comment": "The hit box that triggered the dialogue",
+							"sid": 123001007928908
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 428454802097250,
+							"parameters": {
+								"variable": "CharacterQuest",
+								"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 980374849152969,
+							"parameters": {
+								"variable": "CurrentCharacter",
+								"value": "CharacterQuest"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 648235734141227,
+							"parameters": {
+								"variable": "Quest",
+								"value": "CharacterQuest&\"Quest\""
+							}
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "PlayerSystem",
+							"sid": 151904353198083
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 243680344714072,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "deactivated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 715958807235296,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "deactivated"
+							}
+						}
+					],
+					"sid": 864020133847971,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": " if Character and Quest targets are different (separated by \":\" in CharacterQuest), update those values accordingly"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 910966739812293,
+									"parameters": {
+										"first-value": "find(CharacterQuest,\":\")",
+										"comparison": 1,
+										"second-value": "-1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 646925097190702,
+									"parameters": {
+										"variable": "Quest",
+										"value": "Quest&\"Quest\""
+									}
+								}
+							],
+							"sid": 493698898657431
+						},
+						{
+							"eventType": "comment",
+							"text": "look up dialogue line by Character Quest name and set CurrentDialogue to after \":\" "
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "has-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 397038855981501,
+									"parameters": {
+										"key": "trigger&\"Quest\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 519732938385432,
+									"parameters": {
+										"variable": "QuestStatus",
+										"value": "Dict_SaveGameData.Get(trigger&\"Quest\")"
+									}
+								},
+								{
+									"type": "script",
+									"script": "if(runtime.globalVars.QuestStatus){\n\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");\n\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);\n}"
+								}
+							],
+							"sid": 559065694700618
+						},
+						{
+							"eventType": "comment",
+							"text": "if Quest isn't present in dictionary based on the trigger name, get Quest status from Quest name in JSON"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "else",
+									"objectClass": "System",
+									"sid": 347558015595268
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 954403472392883,
+									"parameters": {
+										"variable": "QuestStatus",
+										"value": "Dict_SaveGameData.Get(Quest)"
+									}
+								}
+							],
+							"sid": 259059696041048
+						},
+						{
+							"eventType": "comment",
+							"text": "call dialogue and send in line from Quest"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 581111452686076,
+									"parameters": {
+										"variable": "QuestStatus",
+										"comparison": 1,
+										"value": "\"Complete\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 948617808759982,
+									"parameters": {
+										"variable": "InDialogue",
+										"value": "true"
+									}
+								},
+								{
+									"callFunction": "processDialogueLine",
+									"sid": 184521665408078,
+									"parameters": [
+										"CurrentDialogueLine"
+									]
+								}
+							],
+							"sid": 829658735913954
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 227770552364498,
+									"parameters": {
+										"variable": "QuestStatus",
+										"comparison": 0,
+										"value": "\"Complete\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "endDialogue",
+									"sid": 721335678197859
+								}
+							],
+							"sid": 423126987009111
+						}
+					]
+				}
+			],
+			"sid": 388643027528216
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Process Current Dialogue Line",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "processDialogueLine",
+					"functionDescription": "display text",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "dialogueIndex",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 348993458604278
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"callFunction": "destroyDialogueUI",
+							"sid": 569190725707516
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 468771243892051,
+							"parameters": {
+								"variable": "CurrentDialogueText",
+								"value": "Arr_Dialogue.At(0, dialogueIndex,TextArrayZIndex)"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 855919865612093,
+							"parameters": {
+								"variable": "DialogueResult",
+								"value": "Arr_Dialogue.At(4, CurrentDialogueLine,TextArrayZIndex)"
+							}
+						}
+					],
+					"sid": 554747244248817,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Check to see if there are Options for the player to choose (Choice1 column != empty)"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-at-xyz",
+									"objectClass": "Arr_Dialogue",
+									"sid": 449428750596660,
+									"parameters": {
+										"x": "1",
+										"y": "CurrentDialogueLine",
+										"z": "TextArrayZIndex",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 812648999586484,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If \"Listen for Player Choice\" is active, then process Player's choice - update dialogueIndex and process new Dialogue line"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-group-active",
+											"objectClass": "System",
+											"sid": 201356718182973,
+											"parameters": {
+												"group-name": "\"Listen for Player Choice\""
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 412448531067471,
+											"parameters": {
+												"variable": "OptionsOpen"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 979039115457087,
+											"parameters": {
+												"group-name": "\"Listen for Player Choice\"",
+												"state": "deactivated"
+											}
+										},
+										{
+											"type": "script",
+											"script": "const optionsArray = runtime.globalVars.DialogueResult.split(\":\");\nif(runtime.globalVars.OptionSelection){\n\truntime.globalVars.CurrentDialogueLine = optionsArray[1];\n}\nelse{\n\truntime.globalVars.CurrentDialogueLine = optionsArray[0];\n}\n"
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 510583954217125,
+											"parameters": {
+												"variable": "OptionSelection",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 455251956861325,
+											"parameters": {
+												"variable": "OptionsOpen",
+												"value": "false"
+											}
+										},
+										{
+											"callFunction": "processDialogueLine",
+											"sid": 487174783678704,
+											"parameters": [
+												"CurrentDialogueLine"
+											]
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 745314018837390,
+											"parameters": {
+												"variable": "DynamicText",
+												"value": "\"processing options\""
+											}
+										}
+									],
+									"sid": 313344888508410
+								},
+								{
+									"eventType": "comment",
+									"text": "If \"Listen for Player Choice\" isn't active yet, display them"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 922745260357573
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "displayUserOptions",
+											"sid": 949233698763176
+										}
+									],
+									"sid": 818854419895091
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Check for user Input and InputVariable"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 134942915920648,
+									"parameters": {
+										"first-value": "find(DialogueResult,\"Input\")",
+										"comparison": 1,
+										"second-value": "-1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": ""
+								},
+								{
+									"type": "script",
+									"script": "const inputArray = runtime.globalVars.DialogueResult.split(\":\");\nruntime.globalVars.InputVar = inputArray[1];"
+								},
+								{
+									"callFunction": "getUserText",
+									"sid": 279453549424864,
+									"parameters": [
+										"\"Enter your name\""
+									]
+								}
+							],
+							"sid": 439617669701992
+						},
+						{
+							"eventType": "comment",
+							"text": "Check to see if the user has unlocked a Quest (and update Quest status)!"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-at-xyz",
+									"objectClass": "Arr_Dialogue",
+									"sid": 317993969384417,
+									"parameters": {
+										"x": "5",
+										"y": "CurrentDialogueLine",
+										"z": "TextArrayZIndex",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 330937999746342,
+									"parameters": {
+										"variable": "CharacterQuest",
+										"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
+									}
+								}
+							],
+							"sid": 518562867079115,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Check for \":\" in CharacterQuest then update Quest accordingly"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 124129603233914,
+											"parameters": {
+												"first-value": "find(CharacterQuest,\":\")",
+												"comparison": 1,
+												"second-value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 401077436766589,
+											"parameters": {
+												"variable": "Quest",
+												"value": "Quest&\"Quest\""
+											}
+										}
+									],
+									"sid": 202984431071791
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 378550068046580
+										}
+									],
+									"actions": [
+										{
+											"type": "comment",
+											"text": "If no split, set Quest the same as the speaking Character"
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 803270669901593,
+											"parameters": {
+												"variable": "CurrentCharacter",
+												"value": "CharacterQuest"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 355986100503516,
+											"parameters": {
+												"variable": "Quest",
+												"value": "CurrentCharacter&\"Quest\""
+											}
+										}
+									],
+									"sid": 516290459930053
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 136927697814420,
+											"parameters": {
+												"key": "Quest",
+												"value": "Arr_Dialogue.At(5, CurrentDialogueLine,TextArrayZIndex)"
+											}
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 800076606186590
+										}
+									],
+									"sid": 296966325276807
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Check to see if an Event has been triggered and call event function"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-at-xyz",
+									"objectClass": "Arr_Dialogue",
+									"sid": 419663578850978,
+									"parameters": {
+										"x": "6",
+										"y": "CurrentDialogueLine",
+										"z": "TextArrayZIndex",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "call-mapped-function",
+									"objectClass": "Functions",
+									"sid": 119358042734633,
+									"parameters": {
+										"name": "\"DialogueFunctions\"",
+										"string": "Arr_Dialogue.At(6,CurrentDialogueLine,TextArrayZIndex)",
+										"forward-params": "0"
+									}
+								}
+							],
+							"sid": 218446058008139
+						},
+						{
+							"eventType": "comment",
+							"text": "Check to see if a Key Item has been found"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-at-xyz",
+									"objectClass": "Arr_Dialogue",
+									"sid": 513539672397414,
+									"parameters": {
+										"x": "7",
+										"y": "CurrentDialogueLine",
+										"z": "TextArrayZIndex",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 259375447605022,
+									"parameters": {
+										"variable": "KeyItem",
+										"value": "Functions.GetItemID(Arr_Dialogue.At(7,CurrentDialogueLine,TextArrayZIndex))"
+									}
+								}
+							],
+							"sid": 411375020445170
+						},
+						{
+							"eventType": "comment",
+							"text": "Check to see if dialogue exists, then show it"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-at-xyz",
+									"objectClass": "Arr_Dialogue",
+									"sid": 952761386980728,
+									"parameters": {
+										"x": "0",
+										"y": "CurrentDialogueLine",
+										"z": "TextArrayZIndex",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "displayDialogue",
+									"sid": 186526813584057
+								}
+							],
+							"sid": 901830020110080
+						}
+					]
+				}
+			],
+			"sid": 703812526953493
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Display Dialogue",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "displayDialogue",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 138045838504734,
+							"parameters": {
+								"object-to-create": "9p_TextBG",
+								"layer": "\"HUD_UI\"",
+								"x": "0",
+								"y": "130",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 298204321558578,
+							"parameters": {
+								"object-to-create": "obj_TextBlock",
+								"layer": "\"HUD_UI\"",
+								"x": "68",
+								"y": "172",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"type": "script",
+							"script": "if(runtime.globalVars.CurrentDialogueText.includes(\"|\")){\n\tconst dynamicDialogueArray = runtime.globalVars.CurrentDialogueText.split(\"|\");\n\truntime.globalVars.CurrentDialogueText = dynamicDialogueArray[0];\n\truntime.globalVars.DynamicTextVar = dynamicDialogueArray[1];\n\truntime.globalVars.CurrentDialogueTextEnd = dynamicDialogueArray[2];\n}\n\n"
+						}
+					],
+					"sid": 569699011908156,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 211342639658776,
+									"parameters": {
+										"variable": "CurrentCharacter",
+										"comparison": 0,
+										"value": "\"AL\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 203080234411924,
+									"parameters": {
+										"object-to-create": "obj_TextCameo",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 795864225843404,
+									"parameters": {
+										"object-to-create": "Character_Cameos",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "Character_Cameos",
+									"sid": 810719373279674,
+									"parameters": {
+										"frame-number": "\"AL\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "Character_Cameos",
+									"sid": 283316008590758
+								}
+							],
+							"sid": 958289449885796
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 596421650215436,
+									"parameters": {
+										"variable": "CurrentCharacter",
+										"comparison": 0,
+										"value": "\"AL\""
+									},
+									"isInverted": true
+								},
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 508751795047140,
+									"parameters": {
+										"variable": "CurrentCharacter",
+										"comparison": 0,
+										"value": "\"\""
+									},
+									"isInverted": true
+								},
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 646502015386284,
+									"parameters": {
+										"variable": "CurrentCharacter",
+										"comparison": 0,
+										"value": "\"You\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 788271077625419,
+									"parameters": {
+										"object-to-create": "obj_TextNameFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 867581243893302,
+									"parameters": {
+										"object-to-create": "obj_TextCameo",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 995113573101390,
+									"parameters": {
+										"object-to-create": "Character_Cameos",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 717373269436615,
+									"parameters": {
+										"object-to-create": "obj_TextName",
+										"layer": "\"HUD_UI\"",
+										"x": "68",
+										"y": "152",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "Character_Cameos",
+									"sid": 565344595776863,
+									"parameters": {
+										"frame-number": "CurrentCharacter"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "Character_Cameos",
+									"sid": 660636935941946
+								},
+								{
+									"id": "set-y",
+									"objectClass": "obj_TextBlock",
+									"sid": 488219211725847,
+									"parameters": {
+										"y": "obj_TextBlock.Y + 10"
+									}
+								}
+							],
+							"sid": 548330118516549,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 716381289187231,
+											"parameters": {
+												"first-value": "find(CurrentCharacter,\"_\")",
+												"comparison": 1,
+												"second-value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"script": "const characterNameArray = runtime.globalVars.CurrentCharacter.split(\"_\");\n//runtime.globalVars.DynamicText = characterNameArray[1];\nconst tempVar = characterNameArray[1];\n//runtime.objects.obj_TextName.getFirstInstance().text = tempVar.toString();\nruntime.objects.obj_TextName.getFirstPickedInstance().text = tempVar;\n//runtime.objects.obj_TextName.getFirstInstance().text = \"Sally?\";"
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextName",
+											"sid": 481211780584485,
+											"disabled": true,
+											"parameters": {
+												"text": "DynamicText"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 214206846237122,
+											"disabled": true,
+											"parameters": {
+												"variable": "DynamicText",
+												"value": "\"\""
+											}
+										}
+									],
+									"sid": 922594193034328
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 935037845387532
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextName",
+											"sid": 677035050612743,
+											"parameters": {
+												"text": "CurrentCharacter"
+											}
+										}
+									],
+									"sid": 520000977446288
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 326372813290708,
+									"parameters": {
+										"variable": "KeyItem",
+										"comparison": 1,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 106909978296121,
+									"parameters": {
+										"object-to-create": "ItemShowcase",
+										"layer": "\"HUD_UI\"",
+										"x": "354",
+										"y": "200",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "ItemShowcase",
+									"sid": 470144247432673,
+									"parameters": {
+										"scale": "3"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "ItemShowcase",
+									"sid": 385134489487344,
+									"parameters": {
+										"frame-number": "KeyItem"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "ItemShowcase",
+									"sid": 191905790885102
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "ItemShowcase",
+									"sid": 487901275490216,
+									"parameters": {
+										"where": "in-front",
+										"object": "9p_TextBG"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 992231425439216,
+									"parameters": {
+										"object-to-create": "obj_TextItemFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "20",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 242344070119478
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 611078263212337,
+									"parameters": {
+										"variable": "DynamicTextVar",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 889815090371869,
+									"parameters": {
+										"variable": "DynamicText",
+										"value": "Dict_SaveGameData.Get(DynamicTextVar)"
+									}
+								},
+								{
+									"id": "typewriter-text",
+									"objectClass": "obj_TextBlock",
+									"sid": 251529059918265,
+									"parameters": {
+										"text": "CurrentDialogueText&DynamicText&CurrentDialogueTextEnd",
+										"duration": "len(CurrentDialogueText)/TypewriterSpeed"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 740533741403140,
+									"parameters": {
+										"variable": "DynamicText",
+										"value": "\"\""
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 457296729399423,
+									"parameters": {
+										"variable": "DynamicTextVar",
+										"value": "\"\""
+									}
+								},
+								{
+									"callFunction": "processEndOfDialogue",
+									"sid": 424889132561559
+								}
+							],
+							"sid": 366339046383823
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "else",
+									"objectClass": "System",
+									"sid": 137051449995402
+								}
+							],
+							"actions": [
+								{
+									"id": "typewriter-text",
+									"objectClass": "obj_TextBlock",
+									"sid": 926606065123825,
+									"parameters": {
+										"text": "CurrentDialogueText",
+										"duration": "len(CurrentDialogueText)/TypewriterSpeed"
+									}
+								},
+								{
+									"callFunction": "processEndOfDialogue",
+									"sid": 355643343189276
+								}
+							],
+							"sid": 601268201440962
+						}
+					]
+				},
+				{
+					"functionName": "processEndOfDialogue",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 494706381863297,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "if DialogueResult contains \"Goto\" override the CDL"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 639274114611110,
+									"parameters": {
+										"first-value": "find(DialogueResult,\"Goto\")",
+										"comparison": 1,
+										"second-value": "-1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": ""
+								},
+								{
+									"type": "script",
+									"script": "console.log(\"goto DialogueResult\")"
+								},
+								{
+									"type": "script",
+									"script": "const gotoDialogueArray = runtime.globalVars.DialogueResult.split(\":\");\nruntime.globalVars.CurrentDialogueLine = gotoDialogueArray[1];"
+								}
+							],
+							"sid": 793810881822657
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 298164169145900,
+									"parameters": {
+										"variable": "DialogueResult",
+										"comparison": 1,
+										"value": "\"End\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "add-to-eventvar",
+									"objectClass": "System",
+									"sid": 973906838696609,
+									"parameters": {
+										"variable": "CurrentDialogueLine",
+										"value": "1"
+									}
+								}
+							],
+							"sid": 140727251164592
+						}
+					]
+				}
+			],
+			"sid": 856375767517880
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Get User Input",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Get User Text",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"functionName": "getUserText",
+							"functionDescription": "",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "placeholderText",
+									"type": "string",
+									"initialValue": "",
+									"comment": "",
+									"sid": 727449795804964
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "destroyDialogueUI",
+									"sid": 426247817222399
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 262884074079806,
+									"parameters": {
+										"object-to-create": "9p_TextBG",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 899584187283525,
+									"parameters": {
+										"property-name": "\"font-face\"",
+										"value": "\"Verdana\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 214376681699626,
+									"parameters": {
+										"property-name": "\"background-color\"",
+										"value": "\"ff0000\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 506924601040336,
+									"parameters": {
+										"property-name": "\"color\"",
+										"value": "\"FFFF00\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 966772407877898,
+									"parameters": {
+										"object-to-create": "obj_textInput",
+										"layer": "\"HUD_UI\"",
+										"x": "40",
+										"y": "180",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-placeholder",
+									"objectClass": "obj_textInput",
+									"sid": 488927814726986,
+									"parameters": {
+										"placeholder": "placeholderText"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 442875713272405,
+									"parameters": {
+										"object-to-create": "GoButton",
+										"layer": "\"HUD_UI\"",
+										"x": "280",
+										"y": "180",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 137043849684222
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-clicked",
+									"objectClass": "GoButton",
+									"sid": 189568547132596
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": "Wait for user to hit the Go Button next to the Text Input and process accordingly"
+								},
+								{
+									"id": "destroy",
+									"objectClass": "obj_textInput",
+									"sid": 480801161989167
+								},
+								{
+									"id": "destroy",
+									"objectClass": "GoButton",
+									"sid": 388081669452205
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 651898765584746,
+									"parameters": {
+										"key": "InputVar",
+										"value": "obj_textInput.Text"
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 343095455120596
+								},
+								{
+									"id": "add-to-eventvar",
+									"objectClass": "System",
+									"sid": 435583312457444,
+									"parameters": {
+										"variable": "CurrentDialogueLine",
+										"value": "1"
+									}
+								},
+								{
+									"callFunction": "processDialogueLine",
+									"sid": 776101437446710,
+									"parameters": [
+										"CurrentDialogueLine"
+									]
+								}
+							],
+							"sid": 782889026671448
+						}
+					],
+					"sid": 765262175635742
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Get User Choice",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "group",
+							"disabled": false,
+							"title": "Listen for Player Choice",
+							"description": "",
+							"isActiveOnStart": true,
+							"children": [
+								{
+									"functionName": "changeSelection",
+									"functionDescription": "Change currently selected dialogue",
+									"functionCategory": "",
+									"functionReturnType": "none",
+									"functionCopyPicked": false,
+									"functionIsAsync": false,
+									"functionParameters": [],
+									"eventType": "function-block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 504943945462863,
+											"parameters": {
+												"value": "obj_TextOption1.Text <> \"\" & obj_TextOption2.Text <> \"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 585564108893745,
+											"parameters": {
+												"variable": "OptionSelection",
+												"value": "abs(OptionSelection - 1)"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextOption1",
+											"sid": 351321837789931,
+											"parameters": {
+												"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextOption2",
+											"sid": 227310774604121,
+											"parameters": {
+												"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+											}
+										}
+									],
+									"sid": 984079627490642
+								},
+								{
+									"eventType": "comment",
+									"text": "Arrows change the option"
+								}
+							],
+							"sid": 228096021688406
+						},
+						{
+							"eventType": "comment",
+							"text": "Change currently selected dialogue"
+						},
+						{
+							"functionName": "displayUserOptions",
+							"functionDescription": "Add dialogue box only with Options",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"type": "script",
+									"script": "console.log(\"displaying options\")"
+								},
+								{
+									"callFunction": "destroyDialogueUI",
+									"sid": 163589052800649
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 996082647269377,
+									"parameters": {
+										"object-to-create": "9p_TextBG",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 799293850602961,
+									"parameters": {
+										"object-to-create": "obj_TextOption1",
+										"layer": "\"HUD_UI\"",
+										"x": "35",
+										"y": "170",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 909667023425373,
+									"parameters": {
+										"object-to-create": "obj_TextOption2",
+										"layer": "\"HUD_UI\"",
+										"x": "35",
+										"y": "190",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 905288731882706,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-at-xyz",
+											"objectClass": "Arr_Dialogue",
+											"sid": 439431660431446,
+											"parameters": {
+												"x": "1",
+												"y": "CurrentDialogueLine",
+												"z": "TextArrayZIndex",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextOption1",
+											"sid": 127612808026697,
+											"parameters": {
+												"text": "\"[icon=Arrow] \" & Arr_Dialogue.At(1, CurrentDialogueLine,TextArrayZIndex)"
+											}
+										}
+									],
+									"sid": 850631228031391
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-at-xyz",
+											"objectClass": "Arr_Dialogue",
+											"sid": 385055376948333,
+											"parameters": {
+												"x": "2",
+												"y": "CurrentDialogueLine",
+												"z": "TextArrayZIndex",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "obj_TextOption2",
+											"sid": 209778987777009,
+											"parameters": {
+												"text": "\"[icon=Empty] \" & Arr_Dialogue.At(2, CurrentDialogueLine,TextArrayZIndex)"
+											}
+										}
+									],
+									"sid": 968511988864382
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 354907153079123,
+											"parameters": {
+												"group-name": "\"Listen for Player Choice\"",
+												"state": "activated"
+											}
+										},
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 393479239641326,
+											"parameters": {
+												"variable": "OptionsOpen",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 949996674660156
+								}
+							]
+						}
+					],
+					"sid": 333062859736687
+				}
+			],
+			"sid": 431592748172594
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "End Dialogue",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "endDialogue",
+					"functionDescription": "reset the dialogue vars",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"callFunction": "destroyDialogueUI",
+							"sid": 736252162137982
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 951282809925270,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "activated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 834965331262614,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "activated"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 382754591925032,
+							"parameters": {
+								"variable": "CurrentDialogueLine",
+								"value": "0"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 550307501863682,
+							"parameters": {
+								"variable": "CharacterQuest"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 912159149680274,
+							"parameters": {
+								"variable": "CurrentCharacter"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 994052034216823,
+							"parameters": {
+								"variable": "CurrentDialogueText"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 591135595243485,
+							"parameters": {
+								"variable": "Quest"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 471157254435963,
+							"parameters": {
+								"variable": "QuestStatus"
+							}
+						},
+						{
+							"id": "reset-eventvar",
+							"objectClass": "System",
+							"sid": 844744646307609,
+							"parameters": {
+								"variable": "DialogueResult"
+							}
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 704896941198021,
+							"parameters": {
+								"seconds": ".1",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 696209314698294,
+							"parameters": {
+								"variable": "InDialogue",
+								"value": "false"
+							}
+						}
+					],
+					"sid": 907377757676493
+				},
+				{
+					"functionName": "destroyDialogueUI",
+					"functionDescription": "end text ",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextBlock",
+							"sid": 151312541812597
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextOption1",
+							"sid": 134106548649016
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextOption2",
+							"sid": 141622145413967
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_textInput",
+							"sid": 761076534711564
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextName",
+							"sid": 633667294742716
+						},
+						{
+							"id": "destroy",
+							"objectClass": "9p_TextBG",
+							"sid": 752896100138967
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextNameFrame",
+							"sid": 857956504883856
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Item_Cameos",
+							"sid": 428714601700215
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextItemFrame",
+							"sid": 388223919252149
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_TextCameo",
+							"sid": 514644938466801
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 411959461240124,
+							"parameters": {
+								"variable": "KeyItem",
+								"value": "0"
+							}
+						},
+						{
+							"id": "destroy",
+							"objectClass": "GoButton",
+							"sid": 628919863097641
+						}
+					],
+					"sid": 647562806740159,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "Character_Cameos",
+									"sid": 559029030058766,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Character_Cameos",
+									"sid": 515965021204980
+								}
+							],
+							"sid": 796807582919135
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "ItemShowcase",
+									"sid": 584816975256147,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "ItemShowcase",
+									"sid": 192552434121108
+								}
+							],
+							"sid": 650806011641796
+						}
+					]
+				}
+			],
+			"sid": 487433652367603
+		}
+	],
+	"sid": 594044861408521
+}

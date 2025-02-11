@@ -1,0 +1,29 @@
+{
+	"name": "UI_Font_Stack",
+	"plugin-id": "Spritefont2",
+	"sid": 669973292294862,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Tween",
+			"name": "Tween",
+			"sid": 801516612236034
+		}
+	],
+	"effectTypes": [],
+	"image": {
+		"width": 80,
+		"height": 12,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"fileType": "image/png",
+		"imageSpriteId": 1429686,
+		"useCollisionPoly": true,
+		"tag": ""
+	}
+}

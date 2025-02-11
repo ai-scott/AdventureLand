@@ -1,0 +1,448 @@
+{
+	"name": "eAnimateTiles",
+	"events": [
+		{
+			"eventType": "variable",
+			"name": "StartingIndex",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 369471325393265
+		},
+		{
+			"eventType": "variable",
+			"name": "TilemapWidth",
+			"type": "number",
+			"initialValue": "16",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 793214549373555
+		},
+		{
+			"eventType": "variable",
+			"name": "TilemapDisplayWidth",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 886813106836863
+		},
+		{
+			"eventType": "variable",
+			"name": "TilemapPositionX",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 580954476211750
+		},
+		{
+			"eventType": "variable",
+			"name": "TilemapPositionY",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 111397316738155
+		},
+		{
+			"eventType": "variable",
+			"name": "Row",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 419823226715174
+		},
+		{
+			"eventType": "variable",
+			"name": "TileIndex",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 610373724541607
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 385966850886471
+				}
+			],
+			"actions": [
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 535474561412852,
+					"parameters": {
+						"variable": "TilemapDisplayWidth",
+						"value": "Tilemap2.MapDisplayWidth"
+					}
+				},
+				{
+					"callFunction": "Function1",
+					"sid": 851698121196692,
+					"disabled": true,
+					"parameters": [
+						"Tilemap2.TileAt(0,0)",
+						"0",
+						"0",
+						"0"
+					]
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 121048313239633,
+					"disabled": true,
+					"parameters": {
+						"variable": "StartingIndex",
+						"value": "Tilemap2.TileAt(0,0)"
+					}
+				}
+			],
+			"sid": 365217793553725,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for",
+							"objectClass": "System",
+							"sid": 309247914689624,
+							"parameters": {
+								"name": "\"x\"",
+								"start-index": "0",
+								"end-index": "Tilemap2.MapDisplayWidth-1"
+							}
+						}
+					],
+					"actions": [],
+					"sid": 713063804339357,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for",
+									"objectClass": "System",
+									"sid": 666024980459642,
+									"parameters": {
+										"name": "\"y\"",
+										"start-index": "0",
+										"end-index": "Tilemap2.MapDisplayHeight-1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 357300052119885,
+									"disabled": true,
+									"parameters": {
+										"variable": "TilemapPositionX",
+										"value": "loopindex(\"x\")"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 541059380334658,
+									"disabled": true,
+									"parameters": {
+										"variable": "TilemapPositionY",
+										"value": "loopindex(\"y\")"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 991871553817135,
+									"disabled": true,
+									"parameters": {
+										"variable": "StartingIndex",
+										"value": "Tilemap2.TileAt(2,2)"
+									}
+								},
+								{
+									"callFunction": "Function1",
+									"sid": 153537219933082,
+									"parameters": [
+										"Tilemap2.TileAt(loopindex(\"x\"),loopindex(\"y\"))",
+										"loopindex(\"x\")",
+										"loopindex(\"y\")",
+										"0"
+									]
+								},
+								{
+									"callFunction": "Function1",
+									"sid": 688588989035851,
+									"disabled": true,
+									"parameters": [
+										"Tilemap2.TileAt(loopindex(0),loopindex(0))",
+										"loopindex(0)",
+										"loopindex(0)",
+										"0"
+									]
+								}
+							],
+							"sid": 491951738347021
+						}
+					]
+				}
+			]
+		},
+		{
+			"eventType": "comment",
+			"text": "Cat"
+		},
+		{
+			"functionName": "Function1",
+			"functionDescription": "",
+			"functionCategory": "",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [
+				{
+					"name": "initialIndex",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 583531713455483
+				},
+				{
+					"name": "tilemapX",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 350578820594493
+				},
+				{
+					"name": "tilemapY",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 770015021020055
+				},
+				{
+					"name": "currentIndex",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 496198960930045
+				}
+			],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 965506706856684,
+					"parameters": {
+						"variable": "currentIndex",
+						"value": "initialIndex"
+					}
+				},
+				{
+					"id": "wait",
+					"objectClass": "System",
+					"sid": 494057762886605,
+					"parameters": {
+						"seconds": "0",
+						"use-timescale": true
+					}
+				},
+				{
+					"callFunction": "Function2",
+					"sid": 911900564831446,
+					"parameters": [
+						"tilemapX",
+						"tilemapY",
+						"initialIndex",
+						"currentIndex"
+					]
+				}
+			],
+			"sid": 906858824070831
+		},
+		{
+			"functionName": "Function2",
+			"functionDescription": "set the tile",
+			"functionCategory": "",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [
+				{
+					"name": "tilemapX",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 711259719963405
+				},
+				{
+					"name": "tilemapY",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 342366725822766
+				},
+				{
+					"name": "initialIndex",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 162972919691972
+				},
+				{
+					"name": "currentIndex",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"sid": 660103552722422
+				}
+			],
+			"eventType": "function-block",
+			"conditions": [
+				{
+					"id": "repeat",
+					"objectClass": "System",
+					"sid": 374889265845208,
+					"parameters": {
+						"count": "10000"
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "add-to-eventvar",
+					"objectClass": "System",
+					"sid": 599827373600597,
+					"parameters": {
+						"variable": "currentIndex",
+						"value": "2"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 349843626709980,
+					"disabled": true,
+					"parameters": {
+						"variable": "Row",
+						"value": "initialIndex"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 392382324382683,
+					"disabled": true,
+					"parameters": {
+						"variable": "TilemapPositionX",
+						"value": "tilemapX"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 187645486910418,
+					"disabled": true,
+					"parameters": {
+						"variable": "TilemapPositionY",
+						"value": "tilemapY"
+					}
+				}
+			],
+			"sid": 466431702164202,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-eventvar",
+							"objectClass": "System",
+							"sid": 450880132505314,
+							"parameters": {
+								"variable": "currentIndex",
+								"comparison": 0,
+								"value": "TilemapWidth+initialIndex"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 527535354921523,
+							"parameters": {
+								"seconds": "loopindex*0.1",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 623101133895656,
+							"disabled": true,
+							"parameters": {
+								"variable": "TileIndex",
+								"value": "currentIndex"
+							}
+						},
+						{
+							"id": "set-tile",
+							"objectClass": "Tilemap2",
+							"sid": 490898974556946,
+							"parameters": {
+								"tile-x": "tilemapX",
+								"tile-y": "tilemapY",
+								"tile": "currentIndex",
+								"state": "normal"
+							}
+						}
+					],
+					"sid": 636132506404197
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "else",
+							"objectClass": "System",
+							"sid": 673886505278005
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 555241941146762,
+							"parameters": {
+								"variable": "currentIndex",
+								"value": "initialIndex"
+							}
+						}
+					],
+					"sid": 998965350035864
+				}
+			]
+		}
+	],
+	"sid": 387743419661068
+}

@@ -1,0 +1,13 @@
+{
+	"name": "InventoryBtns",
+	"plugin-id": "Sprite",
+	"sid": 685223315183277,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"members": [
+		"Btn_Drop",
+		"Btn_Use",
+		"Btn_Action"
+	]
+}

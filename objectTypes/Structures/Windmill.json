@@ -1,0 +1,58 @@
+{
+	"name": "Windmill",
+	"plugin-id": "Sprite",
+	"sid": 314872009991913,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 992964251963867
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 102,
+						"height": 112,
+						"originX": 0.5098039215686274,
+						"originY": 0.8839285714285714,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8698432,
+						"collisionPoly": {
+							"points": [
+								0.7142700993157681,
+								0.4870571863083613,
+								0.7214925928053515,
+								0.8859387352353052,
+								0.27201454312193635,
+								0.8917654128301712,
+								0.26273041768790856,
+								0.5015432266961958
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 380285006245838,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

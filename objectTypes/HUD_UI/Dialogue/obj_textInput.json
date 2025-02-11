@@ -1,0 +1,9 @@
+{
+	"name": "obj_textInput",
+	"plugin-id": "TextBox",
+	"sid": 129145565733272,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": []
+}

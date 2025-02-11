@@ -1,0 +1,24 @@
+{
+	"name": "obj_Text_A",
+	"plugin-id": "Text",
+	"sid": 877014908376298,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "field",
+			"type": "string",
+			"desc": "what is this text displaying?",
+			"show": true,
+			"sid": 754724684410505
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Flash",
+			"name": "Flash",
+			"sid": 785937407572829
+		}
+	],
+	"effectTypes": []
+}

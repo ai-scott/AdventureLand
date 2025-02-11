@@ -1,0 +1,54 @@
+{
+	"name": "Item_Cameos",
+	"plugin-id": "Sprite",
+	"sid": 824089325504789,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 3235415,
+						"collisionPoly": {
+							"points": [
+								0.8142857142857143,
+								0.34615384615384615,
+								0.9119047619047619,
+								0.4846153846153846,
+								0.9119047619047619,
+								0.5692307692307692,
+								0.719047619047619,
+								0.5923076923076923,
+								0.75,
+								0.45384615384615384
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "SeaMonsterKey"
+					}
+				],
+				"sid": 694346711474677,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

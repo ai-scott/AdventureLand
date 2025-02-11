@@ -1,0 +1,265 @@
+{
+	"items": [
+		{
+			"id": 0,
+			"description": "Empty Slot"
+		},
+		{
+			"itemTriggerID": 1,
+			"itemName": "Axe",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 2,
+			"itemName": "Red Apple",
+			"collected": false,
+			"unique": false,
+			"uid":0,
+			"loc":"World_00",
+			"numOfItems": 2
+
+		},
+		{
+			"itemTriggerID": 3,
+			"itemName": "Axe",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Blacksmith",
+			"numOfItems": 1
+		},
+
+		{
+			"itemTriggerID": 4,
+			"itemName": "Sword",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Blacksmith",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 5,
+			"itemName": "Pike",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Blacksmith",
+			"numOfItems": 1
+
+		},
+		{
+			"itemTriggerID": 6,
+			"itemName": "Sunset Scarf",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Pennys_House",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 7,
+			"itemName": "A Whole Chicken",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Pennys_House",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 8,
+			"itemName": "Fresh Strawberry",
+			"collected": false,
+			"unique": false,
+			"uid":0,
+			"loc":"World_00_Pennys_House",
+			"numOfItems": 1
+
+		},
+		{
+			"itemTriggerID": 9,
+			"itemName": "Money Bag",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Windmill_F0",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 10,
+			"itemName": "Birthday Cake!",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 11,
+			"itemName": "Standard Boater",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 12,
+			"itemName": "The Wrangler",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 13,
+			"itemName": "Lavender Cloud Hat",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 14,
+			"itemName": "Emerald Tunic",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 15,
+			"itemName": "Red Tee-Shirt",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 16,
+			"itemName": "Purple Tunic",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 17,
+			"itemName": "Ballet Slippers",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 18,
+			"itemName": "Plain Brown Shoes",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 19,
+			"itemName": "Green Flops",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 20,
+			"itemName": "Purple Heart Skort",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 21,
+			"itemName": "Brown Jeans",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 22,
+			"itemName": "Red Shorts",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_General_Store",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 23,
+			"itemName": "Green Waistcoat",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 24,
+			"itemName": "Forest Green Boots",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 25,
+			"itemName": "Gold + Purple Ring",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 26,
+			"itemName": "Silver + Emerald Ring",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 27,
+			"itemName": "Cloak of Billowing",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		},
+		{
+			"itemTriggerID": 28,
+			"itemName": "Pink Mantle Cloak",
+			"collected": false,
+			"unique": true,
+			"uid":0,
+			"loc":"World_00_Adventure_Shop",
+			"numOfItems": 1
+		}
+		
+	]
+	
+}

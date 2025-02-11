@@ -1,0 +1,220 @@
+{
+	"name": "Player_Sword",
+	"plugin-id": "Sprite",
+	"sid": 854219068162364,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "Direction",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 294769068000086
+		},
+		{
+			"name": "Attacking",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 997724195672431
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 64,
+						"height": 64,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 6638041,
+						"collisionPoly": {
+							"points": [
+								0.453125,
+								0.328125,
+								0.546875,
+								0.328125,
+								0.578125,
+								0.359375,
+								0.625,
+								0.46875,
+								0.6266113281599246,
+								0.7417723486888916,
+								0.5025393680694834,
+								0.9707765259152439,
+								0.3957518769421767,
+								0.9184081509093402,
+								0.390625,
+								0.5625,
+								0.421875,
+								0.359375
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 732212056505227,
+				"name": "Slash_Down",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 20
+			},
+			{
+				"frames": [
+					{
+						"width": 64,
+						"height": 64,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 3046676,
+						"collisionPoly": {
+							"points": [
+								0.42705043736209514,
+								0.007104611239208233,
+								0.6098389066991787,
+								0.0012696311017520718,
+								0.6157717522197799,
+								0.24248041102789555,
+								0.609375,
+								0.328125,
+								0.625,
+								0.609375,
+								0.59375,
+								0.640625,
+								0.46875,
+								0.703125,
+								0.390625,
+								0.703125,
+								0.359375,
+								0.640625,
+								0.3786376943753568,
+								0.26462421415067183
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 141970521443399,
+				"name": "Slash_Up",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 20
+			},
+			{
+				"frames": [
+					{
+						"width": 64,
+						"height": 64,
+						"originX": 0.28125,
+						"originY": 0.515625,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8446153,
+						"collisionPoly": {
+							"points": [
+								0.32524398221739836,
+								0.28403337518536786,
+								0.6263673006159025,
+								0.3355467811480822,
+								0.8438473919326043,
+								0.3516112720909178,
+								0.8508791356250186,
+								0.4446534158349777,
+								0.838232307653152,
+								0.5399169361708802,
+								0.5338378876331266,
+								0.5464843535474073,
+								0.4553221873467012,
+								0.6542478935663895,
+								0.19348113484775237,
+								0.6758055497067744,
+								0.2858643689668043,
+								0.4991942950637627
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 577421035385653,
+				"name": "Slash_Right",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 20
+			},
+			{
+				"frames": [
+					{
+						"width": 64,
+						"height": 64,
+						"originX": 0.71875,
+						"originY": 0.515625,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9477853,
+						"collisionPoly": {
+							"points": [
+								0.8442386306792736,
+								0.7163085957290606,
+								0.5812258152252072,
+								0.659790038800566,
+								0.4739988331550648,
+								0.5187744294789586,
+								0.24572738468868915,
+								0.5462646842006048,
+								0.12106948742421081,
+								0.4453613463528883,
+								0.18474086789360625,
+								0.3298339057474551,
+								0.4295408662512274,
+								0.38937992296446283,
+								0.4791746938591588,
+								0.3057374199978315,
+								0.6950193086270705,
+								0.2677977753156483
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 196605487469867,
+				"name": "Slash_Left",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 20
+			}
+		],
+		"subfolders": []
+	}
+}

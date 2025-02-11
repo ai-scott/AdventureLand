@@ -1,0 +1,82 @@
+{
+	"name": "Trigger_Door",
+	"plugin-id": "Sprite",
+	"sid": 113434455573423,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "Room",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 573529795051438
+		},
+		{
+			"name": "ID",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 827526693890140
+		},
+		{
+			"name": "Direction",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 605539452651555
+		},
+		{
+			"name": "StartingDoor",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 762407099244830
+		},
+		{
+			"name": "Void",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 981324365899580
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 925445219167758
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 24,
+						"height": 24,
+						"originX": 0.5,
+						"originY": 0.4583333333333333,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8336204,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 409468202798262,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

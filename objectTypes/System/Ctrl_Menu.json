@@ -1,0 +1,69 @@
+{
+	"name": "Ctrl_Menu",
+	"plugin-id": "Sprite",
+	"sid": 186406712465068,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "IsCurrentMenu",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 157037059471583
+		},
+		{
+			"name": "Menu",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 195660553374665
+		},
+		{
+			"name": "CurrentLink",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 902229634378359
+		},
+		{
+			"name": "MaxLinks",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 949568928553081
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 16,
+						"height": 16,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 6953577,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 403486447077040,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

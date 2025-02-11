@@ -1,0 +1,102 @@
+{
+	"name": "Projectile_Golem",
+	"plugin-id": "Sprite",
+	"sid": 780600593263238,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "ID",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 470663914346177
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Bullet",
+			"name": "Bullet",
+			"sid": 310920806462422
+		},
+		{
+			"behaviorId": "Pin",
+			"name": "Pin",
+			"sid": 355191339948037
+		},
+		{
+			"behaviorId": "Timer",
+			"name": "Timer",
+			"sid": 809603789856438
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 29,
+						"height": 26,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 5152057,
+						"collisionPoly": {
+							"points": [
+								0.034482758620689655,
+								0.038461538461538464,
+								0.9655172413793103,
+								0.038461538461538464,
+								0.9655172413793103,
+								0.9615384615384616,
+								0.034482758620689655,
+								0.9615384615384616
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 29,
+						"height": 26,
+						"originX": 0.4827586206896552,
+						"originY": 0.4230769230769231,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 3557526,
+						"collisionPoly": {
+							"points": [
+								0.034482758620689655,
+								0.038461538461538464,
+								0.9655172413793103,
+								0.038461538461538464,
+								0.9655172413793103,
+								0.9615384615384616,
+								0.034482758620689655,
+								0.9615384615384616
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 311316409031667,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 15
+			}
+		],
+		"subfolders": []
+	}
+}

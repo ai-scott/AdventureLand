@@ -1,0 +1,56 @@
+{
+	"name": "obj_TextCameo",
+	"plugin-id": "Sprite",
+	"sid": 181680842856035,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1113396,
+						"collisionPoly": {
+							"points": [
+								0.12857142857142856,
+								0.07692307692307693,
+								0.14523809523809525,
+								0.18461538461538463,
+								0.14523809523809525,
+								0.33076923076923076,
+								0.02142857142857143,
+								0.43846153846153846,
+								0.004761904761904762,
+								0.33076923076923076,
+								0.004761904761904762,
+								0.18461538461538463
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 933857731060042,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

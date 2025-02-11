@@ -1,0 +1,64 @@
+{
+	"name": "Shirne",
+	"plugin-id": "Sprite",
+	"sid": 767566127095207,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 528185797959018
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 36,
+						"height": 68,
+						"originX": 0.5,
+						"originY": 0.9558823529411765,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 5415817,
+						"collisionPoly": {
+							"points": [
+								0.49216391153381633,
+								0.5024548308623721,
+								0.8284027541893116,
+								0.5345374690297313,
+								1,
+								0.6029411764705882,
+								0.9742632142587562,
+								0.97353134740649,
+								0,
+								0.9705882352941176,
+								0,
+								0.6029411764705882,
+								0.17126936613073668,
+								0.5523033825027972
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 458408972222057,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

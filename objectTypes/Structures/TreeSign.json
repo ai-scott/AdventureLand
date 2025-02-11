@@ -1,0 +1,64 @@
+{
+	"name": "TreeSign",
+	"plugin-id": "Sprite",
+	"sid": 209125259577223,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 721289217703456
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 52,
+						"height": 45,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8379689,
+						"collisionPoly": {
+							"points": [
+								0.9946663488552497,
+								0.5093750014073319,
+								0.9615384615384616,
+								0.7333333333333333,
+								0.8653846153846154,
+								0.9555555555555556,
+								0.8269230769230769,
+								1,
+								0.1346153846153846,
+								0.9777777777777777,
+								0.038461538461538464,
+								0.7333333333333333,
+								0.005314607001834632,
+								0.5148655720763499
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 779816543953083,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

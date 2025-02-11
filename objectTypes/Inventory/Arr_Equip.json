@@ -1,0 +1,8 @@
+{
+	"name": "Arr_Equip",
+	"plugin-id": "Arr",
+	"sid": 693270189660031,
+	"isGlobal": true,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": []
+}
