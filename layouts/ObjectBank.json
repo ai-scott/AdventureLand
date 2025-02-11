@@ -19,6 +19,7 @@
 					"sid": 491301691162882,
 					"tags": "",
 					"instanceVariables": {
+						"layer": 2,
 						"DashTimer": 0,
 						"Walking": false,
 						"Attacking": false,
@@ -2895,220 +2896,6 @@
 					}
 				},
 				{
-					"type": "51_fbas_14head_boaterhat_00d_straw_boat",
-					"properties": {
-						"initially-visible": false,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 37,
-					"sid": 793246881878912,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {},
-					"effects": {
-						"ReplaceColor_outfit_1": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_outfit_2": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_outfit_3": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_hair_1": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_hair_2": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_hair_3": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_hair_4": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						},
-						"ReplaceColor_hair_5": {
-							"isEnabled": true,
-							"parameters": {
-								"source-color": [
-									1,
-									1,
-									1,
-									1
-								],
-								"replace-color": [
-									0,
-									0,
-									0,
-									1
-								],
-								"tolerance": 0.01
-							}
-						}
-					},
-					"sceneGraphData": {
-						"parent-uid": 50,
-						"uid": 37,
-						"flags": {
-							"x": true,
-							"y": true,
-							"z": true,
-							"w": true,
-							"h": true,
-							"a": true,
-							"o": false,
-							"v": false,
-							"d": true,
-							"sm": "normal"
-						},
-						"preview": {
-							"transformX": 0,
-							"transformY": 0,
-							"transformZElevation": 0,
-							"transformW": 0,
-							"transformH": 0,
-							"transformA": 0,
-							"transformSX": 0,
-							"transformSY": 0,
-							"transformO": 0,
-							"previewSceneGraph": false
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 793246881878912,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": -9.789914164450408,
-						"y": -167.6683256849568,
-						"width": 64,
-						"height": 64,
-						"originX": 0.5,
-						"originY": 0.5,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
 					"type": "52_fbas_14head_boaterhat_00d_cornflower_blue",
 					"properties": {
 						"initially-visible": false,
@@ -3120,7 +2907,9 @@
 					"uid": 38,
 					"sid": 841717599552116,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 15
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -3306,8 +3095,224 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": -7.116739135152329,
-						"y": -174.96105705709536,
+						"x": 68.98481100563484,
+						"y": -127.06726652017844,
+						"width": 64,
+						"height": 64,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "51_fbas_14head_boaterhat_00d_straw_boat",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 37,
+					"sid": 793246881878912,
+					"tags": "",
+					"instanceVariables": {
+						"layer": 15
+					},
+					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": true,
+							"parameters": {
+								"source-color": [
+									1,
+									1,
+									1,
+									1
+								],
+								"replace-color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
+					"sceneGraphData": {
+						"parent-uid": 50,
+						"uid": 37,
+						"flags": {
+							"x": true,
+							"y": true,
+							"z": true,
+							"w": true,
+							"h": true,
+							"a": true,
+							"o": false,
+							"v": false,
+							"d": true,
+							"sm": "normal"
+						},
+						"preview": {
+							"transformX": 0,
+							"transformY": 0,
+							"transformZElevation": 0,
+							"transformW": 0,
+							"transformH": 0,
+							"transformA": 0,
+							"transformSX": 0,
+							"transformSY": 0,
+							"transformO": 0,
+							"previewSceneGraph": false
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 793246881878912,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 74.96282790668147,
+						"y": -130.74845026390844,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -3334,7 +3339,9 @@
 					"uid": 39,
 					"sid": 914742674095568,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 15
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -3520,8 +3527,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": -10.863781432513406,
-						"y": -167.99531873172748,
+						"x": 78.6200812255257,
+						"y": -130.1006611213445,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -3548,7 +3555,9 @@
 					"uid": 40,
 					"sid": 815141193188019,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 15
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -3734,8 +3743,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 268.3230629426085,
-						"y": -137.90661882379067,
+						"x": 93.11421196085425,
+						"y": -122.50621721413407,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -3762,7 +3771,9 @@
 					"uid": 41,
 					"sid": 542861305454524,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 15
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -3948,8 +3959,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 22.148425649906358,
-						"y": -153.31911765033618,
+						"x": 79.43591798795015,
+						"y": -121.1760557313201,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -3976,7 +3987,9 @@
 					"uid": 42,
 					"sid": 584916973532483,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 15
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -4162,8 +4175,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 10.895005545403507,
-						"y": -165.58653950113862,
+						"x": 83.67620385376966,
+						"y": -125.33869676181504,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -4190,7 +4203,9 @@
 					"uid": 43,
 					"sid": 140301662510236,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 12
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -4376,8 +4391,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 130.37019951706878,
-						"y": -140.1471883247,
+						"x": 238.99939361250802,
+						"y": -109.0379286103884,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -4404,7 +4419,9 @@
 					"uid": 44,
 					"sid": 712501783299593,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 12
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -4590,8 +4607,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 144.0555371189808,
-						"y": -116.1781088837524,
+						"x": 244.32102387507052,
+						"y": -114.13715867483306,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -4618,7 +4635,9 @@
 					"uid": 45,
 					"sid": 203385191465242,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 12
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -4804,8 +4823,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 92.60200569440336,
-						"y": -126.6160777115541,
+						"x": 243.0326016434182,
+						"y": -108.42648974885319,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -4832,7 +4851,9 @@
 					"uid": 46,
 					"sid": 488685732041444,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 14
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -5018,8 +5039,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": -91.49285901053852,
-						"y": -157.19875124236202,
+						"x": -26.174836839265467,
+						"y": -216.02457172294945,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -5046,7 +5067,9 @@
 					"uid": 47,
 					"sid": 775553062958292,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -5232,8 +5255,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 259.4173783589184,
-						"y": -153.43363723730835,
+						"x": 336.7875117311093,
+						"y": -103.07556330391989,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -5260,7 +5283,9 @@
 					"uid": 48,
 					"sid": 158383050316416,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -5446,8 +5471,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 262.7167863179028,
-						"y": -153.0370918271521,
+						"x": 348.4483705374483,
+						"y": -100.47015023836917,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -5474,7 +5499,9 @@
 					"uid": 49,
 					"sid": 188450912413720,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -5660,8 +5687,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 257.8247269917309,
-						"y": -156.25355300879272,
+						"x": 345.149275622612,
+						"y": -103.46411234231314,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -5688,7 +5715,9 @@
 					"uid": 116,
 					"sid": 144348783110775,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -5874,8 +5903,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 260.8116654682934,
-						"y": -159.84132156348022,
+						"x": 339.89729897576876,
+						"y": -101.51520094909938,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -5902,7 +5931,9 @@
 					"uid": 234,
 					"sid": 928942423470275,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -6088,8 +6119,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 256.89177411087155,
-						"y": -161.1390968320349,
+						"x": 337.1737432390058,
+						"y": -103.05482304123743,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -6116,7 +6147,9 @@
 					"uid": 235,
 					"sid": 840503225819777,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 6
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -6302,8 +6335,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 266.0242933168848,
-						"y": -158.85275765140534,
+						"x": 337.2208544461087,
+						"y": -100.80202221077349,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -6330,8 +6363,156 @@
 					"uid": 236,
 					"sid": 727777022972940,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 5
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 236,
@@ -6370,8 +6551,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 386.8140876116707,
-						"y": -166.47215423856886,
+						"x": 441.5773450626185,
+						"y": -106.35676870318287,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -6398,7 +6579,9 @@
 					"uid": 237,
 					"sid": 699234077654712,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 9
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -6584,8 +6767,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 382.67298296597716,
-						"y": -166.20978352052418,
+						"x": 539.3869433555628,
+						"y": -173.10925509328962,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -6612,7 +6795,9 @@
 					"uid": 239,
 					"sid": 204322946171961,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 5
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -6798,8 +6983,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 382.28123373810774,
-						"y": -172.41322103925046,
+						"x": 435.90564316550865,
+						"y": -113.4521430028442,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -6826,7 +7011,9 @@
 					"uid": 242,
 					"sid": 972115463896281,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 9
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -7012,8 +7199,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 371.966821395028,
-						"y": -176.34246130309387,
+						"x": 533.8047390308285,
+						"y": -166.87378383154763,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -7040,7 +7227,9 @@
 					"uid": 245,
 					"sid": 374378588715809,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 5
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -7226,8 +7415,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 378.0446217445089,
-						"y": -176.2942569708994,
+						"x": 436.6435468222747,
+						"y": -104.18747165816644,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -7254,7 +7443,9 @@
 					"uid": 246,
 					"sid": 196007181654016,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 7
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -7440,8 +7631,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 388.4884066292102,
-						"y": -176.51837355789726,
+						"x": 493.5129657492924,
+						"y": -129.2734261430486,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -7468,7 +7659,9 @@
 					"uid": 247,
 					"sid": 125339565379159,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 5
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -7654,8 +7847,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 381.4356040231891,
-						"y": -162.32573112632883,
+						"x": 441.49802610858984,
+						"y": -113.416747560204,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -7682,7 +7875,9 @@
 					"uid": 248,
 					"sid": 379532759384322,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 9
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -7868,8 +8063,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 385.1438644915455,
-						"y": -165.40715432099282,
+						"x": 534.5695410743293,
+						"y": -167.23935339079682,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -7896,7 +8091,9 @@
 					"uid": 249,
 					"sid": 355411662498085,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 4
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -8082,8 +8279,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 499.38952408327725,
-						"y": -187.99428836119947,
+						"x": 615.2873655775405,
+						"y": -210.21689939655244,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -8110,7 +8307,9 @@
 					"uid": 250,
 					"sid": 774777540707194,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 8
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -8296,8 +8495,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 492.08788834108975,
-						"y": -184.07627383483228,
+						"x": 558.9377518927417,
+						"y": -289.474114518712,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -8324,7 +8523,9 @@
 					"uid": 251,
 					"sid": 158621673103001,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 4
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -8510,8 +8711,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 491.9191261340585,
-						"y": -184.53747073424634,
+						"x": 608.7874791416009,
+						"y": -198.8362417505617,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -8538,7 +8739,9 @@
 					"uid": 252,
 					"sid": 175332914762270,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 4
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -8724,8 +8927,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 491.132138829371,
-						"y": -190.08681765807447,
+						"x": 609.99476416774,
+						"y": -202.0220066526695,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -8752,7 +8955,9 @@
 					"uid": 253,
 					"sid": 685443362497016,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 4
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -8938,8 +9143,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 483.88378677858975,
-						"y": -187.5093335272151,
+						"x": 608.8271391205124,
+						"y": -206.05774256804793,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -8950,7 +9155,7 @@
 							1,
 							1
 						],
-						"angle": 0,
+						"angle": 0.0015409051477202063,
 						"zElevation": 0
 					}
 				},
@@ -8966,7 +9171,9 @@
 					"uid": 254,
 					"sid": 109236857941306,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 8
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -9152,8 +9359,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 487.0929542590585,
-						"y": -187.6206616522151,
+						"x": 569.8059573242185,
+						"y": -285.3317076070262,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,
@@ -9180,7 +9387,9 @@
 					"uid": 255,
 					"sid": 833418807917787,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 8
+					},
 					"behaviors": {},
 					"effects": {
 						"ReplaceColor_outfit_1": {
@@ -9366,8 +9575,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 491.187558751246,
-						"y": -186.20308963073072,
+						"x": 559.7551417954273,
+						"y": -287.7669804072851,
 						"width": 64,
 						"height": 64,
 						"originX": 0.5,

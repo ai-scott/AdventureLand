@@ -975,6 +975,18 @@
 												"x": "Player_Base.X",
 												"y": "Player_Base.Y"
 											}
+										},
+										{
+											"id": "sort-z-order",
+											"objectClass": "System",
+											"sid": 578443584769423,
+											"parameters": {
+												"object": "PlayerSystem",
+												"instance-variable": {
+													"name": "layer",
+													"objectClass": "PlayerSystem"
+												}
+											}
 										}
 									],
 									"sid": 765619192007108
@@ -1594,114 +1606,133 @@
 																"variable": "InteractionHintOn"
 															},
 															"isInverted": true
-														},
-														{
-															"id": "compare-value",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 109400460223754,
-															"parameters": {
-																"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
-																"comparison": 1,
-																"value": "\"Complete\"\n"
-															}
 														}
 													],
-													"actions": [
+													"actions": [],
+													"sid": 693634571011521,
+													"children": [
 														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 584039492532553,
-															"parameters": {
-																"variable": "InteractionHintOn",
-																"value": "true"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 897627147824933,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "38",
-																"y": "37",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 831474996801469,
-															"parameters": {
-																"text": "lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-font-color",
-															"objectClass": "obj_Text_A",
-															"sid": 159553827257870,
-															"parameters": {
-																"color": "rgbEx255(31, 107, 7)"
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 837235314115920,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 475395310037010,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 870379301563898,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "6",
-																"y": "36",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 674505078081074,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 302293658927563,
-															"parameters": {
-																"text": "\"[icon=Pointer][icon=Spc] \"&lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 178510579744381,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "compare-value",
+																	"objectClass": "Dict_SaveGameData",
+																	"sid": 491864500290922,
+																	"parameters": {
+																		"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
+																		"comparison": 1,
+																		"value": "\"Complete\"\n"
+																	}
+																},
+																{
+																	"id": "has-key",
+																	"objectClass": "Dict_SaveGameData",
+																	"sid": 461204387351449,
+																	"parameters": {
+																		"key": "CharactersTriggers.ObjectTypeName&\"Quest\""
+																	},
+																	"isInverted": true
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-boolean-eventvar",
+																	"objectClass": "System",
+																	"sid": 474330253178904,
+																	"parameters": {
+																		"variable": "InteractionHintOn",
+																		"value": "true"
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
+																	"sid": 580126983326275,
+																	"parameters": {
+																		"object-to-create": "obj_Text_A",
+																		"layer": "\"HUD_UI\"",
+																		"x": "38",
+																		"y": "37",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "set-text",
+																	"objectClass": "obj_Text_A",
+																	"sid": 907654132101141,
+																	"parameters": {
+																		"text": "lowercase(Action)"
+																	}
+																},
+																{
+																	"id": "set-font-color",
+																	"objectClass": "obj_Text_A",
+																	"sid": 839456414010050,
+																	"parameters": {
+																		"color": "rgbEx255(31, 107, 7)"
+																	}
+																},
+																{
+																	"id": "set-font-size",
+																	"objectClass": "obj_Text_A",
+																	"sid": 348328462727137,
+																	"parameters": {
+																		"size-pt": "10"
+																	}
+																},
+																{
+																	"id": "set-instvar-value",
+																	"objectClass": "obj_Text_A",
+																	"sid": 446793832384454,
+																	"parameters": {
+																		"instance-variable": "field",
+																		"value": "\"HUD space\""
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
+																	"sid": 427837479482610,
+																	"parameters": {
+																		"object-to-create": "obj_Text_A",
+																		"layer": "\"HUD_UI\"",
+																		"x": "6",
+																		"y": "36",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "set-font-size",
+																	"objectClass": "obj_Text_A",
+																	"sid": 475938142831366,
+																	"parameters": {
+																		"size-pt": "10"
+																	}
+																},
+																{
+																	"id": "set-text",
+																	"objectClass": "obj_Text_A",
+																	"sid": 285193922711175,
+																	"parameters": {
+																		"text": "\"[icon=Pointer][icon=Spc] \"&lowercase(Action)"
+																	}
+																},
+																{
+																	"id": "set-instvar-value",
+																	"objectClass": "obj_Text_A",
+																	"sid": 476287284482628,
+																	"parameters": {
+																		"instance-variable": "field",
+																		"value": "\"HUD space\""
+																	}
+																}
+															],
+															"sid": 345531170653059,
+															"isOrBlock": true
 														}
-													],
-													"sid": 693634571011521
+													]
 												}
 											],
 											"isOrBlock": true

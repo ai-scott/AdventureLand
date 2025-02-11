@@ -68,6 +68,16 @@
 				{
 					"id": "map-function",
 					"objectClass": "Functions",
+					"sid": 715837054150360,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"checkYourself\"",
+						"function": "OpenClose_Inventory"
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
 					"sid": 116102845844237,
 					"parameters": {
 						"name": "\"DialogueFunctions\"",

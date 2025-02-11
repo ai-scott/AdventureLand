@@ -43,7 +43,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 90.39978628435946,
+						"x": 130.39978628435946,
 						"y": 24.000101654745045,
 						"width": 160,
 						"height": 160,
@@ -71,9 +71,9 @@
 				1
 			],
 			"backgroundColor": [
-				0.3686274509803922,
-				0.3686274509803922,
-				0.3686274509803922,
+				0.09411764705882353,
+				0.09411764705882353,
+				0.12549019607843137,
 				1
 			],
 			"isTransparent": false,
@@ -130,7 +130,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 90,
+						"x": 130,
 						"y": 24,
 						"width": 160,
 						"height": 160,
@@ -217,7 +217,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 90,
+						"x": 130,
 						"y": 24,
 						"width": 160,
 						"height": 160,
@@ -304,7 +304,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 90,
+						"x": 130,
 						"y": 24,
 						"width": 160,
 						"height": 160,
@@ -349,7 +349,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 160.28801202290185,
+						"x": 200.28801202290185,
 						"y": 112.80214672782097,
 						"width": 16,
 						"height": 16,
@@ -430,12 +430,54 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 170.57670684844308,
+						"x": 210.57670684844308,
 						"y": 177.2032225921428,
 						"width": 31.666771194764692,
 						"height": 24,
 						"originX": 0.5,
 						"originY": 0.4583333333333333,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Trigger_Scene",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 256,
+					"sid": 756435034645589,
+					"tags": "",
+					"instanceVariables": {
+						"ID": 9
+					},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 756435034645589,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 181.65046651607696,
+						"y": 144.2902321922736,
+						"width": 18.256915119198354,
+						"height": 40.29596051932338,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
 						"color": [
 							1,
 							1,
@@ -559,7 +601,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 90,
+						"x": 130,
 						"y": 24,
 						"width": 160.3144966291104,
 						"height": 176.30481724832893,

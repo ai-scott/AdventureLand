@@ -2,7 +2,15 @@
 	"name": "PlayerSystem",
 	"plugin-id": "Sprite",
 	"sid": 720461169136712,
-	"instanceVariables": [],
+	"instanceVariables": [
+		{
+			"name": "layer",
+			"type": "number",
+			"desc": "layer the costume is on",
+			"show": true,
+			"sid": 690731060669857
+		}
+	],
 	"behaviorTypes": [],
 	"effectTypes": [
 		{
@@ -70,6 +78,7 @@
 		"102_fbas_07fot2_fbas_07fot2_cuffedboots_00a_red",
 		"101_fbas_03fot1_shoes_00a_blue",
 		"98_fbas_08lwr3_longdress_00a_blue",
-		"fbas_13hair_bob1_00_violet_bob"
+		"fbas_13hair_bob1_00_violet_bob",
+		"91_fbas_04lwr1_longpants_00a_pinkblack"
 	]
 }

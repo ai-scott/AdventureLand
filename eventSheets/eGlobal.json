@@ -3781,7 +3781,7 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "Else - If Inventory is visible, close it"
+									"text": "Else - If Inventory is visible, close it, and dismiss interaction hint"
 								},
 								{
 									"eventType": "block",
@@ -3828,6 +3828,13 @@
 												"group-name": "\"Enemies\"",
 												"state": "activated"
 											}
+										},
+										{
+											"callFunction": "displayInteractionHint",
+											"sid": 310729975125097,
+											"parameters": [
+												"\"None\""
+											]
 										}
 									],
 									"sid": 870746260891856
