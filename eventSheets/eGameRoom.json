@@ -51,93 +51,132 @@
 							"initialValue": "0",
 							"comment": "",
 							"sid": 781848006139573
+						},
+						{
+							"name": "layer",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 931816637326904
 						}
 					],
 					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [
+					"actions": [],
+					"sid": 606631371249326,
+					"children": [
 						{
-							"id": "destroy",
-							"objectClass": "Player_Base",
-							"sid": 457980889367946
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "PlayerSystem",
+									"sid": 303763436430197,
+									"parameters": {
+										"layer": "layer"
+									}
+								},
+								{
+									"id": "is-on-layer",
+									"objectClass": "Player_Base",
+									"sid": 903606212919009,
+									"parameters": {
+										"layer": "layer"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Player_Base",
+									"sid": 713546520275516
+								},
+								{
+									"id": "destroy",
+									"objectClass": "PlayerSystem",
+									"sid": 672985633837750
+								}
+							],
+							"sid": 538769120632103
 						},
 						{
-							"id": "destroy",
-							"objectClass": "PlayerSystem",
-							"sid": 662697262328330
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 280793829939752,
-							"parameters": {
-								"object-to-create": "Player_Base",
-								"layer": "\"Objects\"",
-								"x": "DestX",
-								"y": "DestY",
-								"create-hierarchy": true,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-max-speed",
-							"objectClass": "Player_Base",
-							"sid": 891971965691456,
-							"behaviorType": "8Direction",
-							"parameters": {
-								"max-speed": "PlayerSpeed"
-							}
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 938523172453000,
-							"parameters": {
-								"object-to-create": "Trigger_Player",
-								"layer": "\"Objects\"",
-								"x": "DestX",
-								"y": "DestY",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-visible",
-							"objectClass": "Trigger_Player",
-							"sid": 869780417646456,
-							"parameters": {
-								"visibility": "invisible"
-							}
-						},
-						{
-							"id": "add-child",
-							"objectClass": "Player_Mask",
-							"sid": 135873451454954,
-							"parameters": {
-								"child": "Trigger_Player",
-								"transform-x": true,
-								"transform-y": true,
-								"transform-w": true,
-								"transform-h": true,
-								"transform-a": true,
-								"transform-o": false,
-								"transform-z-elevation": true,
-								"transform-visibility": false,
-								"destroy-with-parent": true
-							}
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 390219532253606,
-							"parameters": {
-								"group-name": "\"Player Attack\"",
-								"state": "deactivated"
-							}
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 720962471279217,
+									"parameters": {
+										"object-to-create": "Player_Base",
+										"layer": "layer",
+										"x": "DestX",
+										"y": "DestY",
+										"create-hierarchy": true,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-max-speed",
+									"objectClass": "Player_Base",
+									"sid": 126392445911138,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"max-speed": "PlayerSpeed"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 798840591599716,
+									"parameters": {
+										"object-to-create": "Trigger_Player",
+										"layer": "layer",
+										"x": "DestX",
+										"y": "DestY",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "Trigger_Player",
+									"sid": 492180909723527,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								},
+								{
+									"id": "add-child",
+									"objectClass": "Player_Mask",
+									"sid": 690327716854903,
+									"parameters": {
+										"child": "Trigger_Player",
+										"transform-x": true,
+										"transform-y": true,
+										"transform-w": true,
+										"transform-h": true,
+										"transform-a": true,
+										"transform-o": false,
+										"transform-z-elevation": true,
+										"transform-visibility": false,
+										"destroy-with-parent": true
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 395247008902910,
+									"parameters": {
+										"group-name": "\"Player Attack\"",
+										"state": "deactivated"
+									}
+								}
+							],
+							"sid": 584256868717015
 						}
-					],
-					"sid": 606631371249326
+					]
 				},
 				{
 					"eventType": "block",
@@ -244,10 +283,11 @@
 							"actions": [
 								{
 									"callFunction": "Create_Player",
-									"sid": 758657428938379,
+									"sid": 220280144622027,
 									"parameters": [
 										"Trigger_Door.X",
-										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8"
+										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
+										"\"Objects\""
 									]
 								},
 								{
@@ -305,10 +345,11 @@
 							"actions": [
 								{
 									"callFunction": "Create_Player",
-									"sid": 659190971611864,
+									"sid": 186769871539808,
 									"parameters": [
 										"Trigger_Door.X",
-										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8"
+										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
+										"\"Objects\""
 									]
 								},
 								{
@@ -366,10 +407,11 @@
 							"actions": [
 								{
 									"callFunction": "Create_Player",
-									"sid": 488151826797371,
+									"sid": 800902956966983,
 									"parameters": [
 										"Player_WorldStart_X",
-										"Player_WorldStart_Y"
+										"Player_WorldStart_Y",
+										"\"Objects\""
 									]
 								},
 								{
@@ -436,8 +478,26 @@
 					],
 					"actions": [
 						{
+							"callFunction": "updateOutfit",
+							"sid": 714662265761236
+						}
+					],
+					"sid": 568659072698040
+				},
+				{
+					"functionName": "updateOutfit",
+					"functionDescription": "redraw outfit items",
+					"functionCategory": "Player",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
 							"callFunction": "changeOutfit",
-							"sid": 755241800908270,
+							"sid": 891469337687551,
 							"parameters": [
 								"\"Hair\"",
 								"Dict_SaveGameData.Get(\"Hair\")",
@@ -448,7 +508,7 @@
 						},
 						{
 							"callFunction": "changeOutfit",
-							"sid": 721595611060649,
+							"sid": 363978794161988,
 							"parameters": [
 								"\"Head\"",
 								"Dict_SaveGameData.Get(\"Head\")",
@@ -459,7 +519,7 @@
 						},
 						{
 							"callFunction": "changeOutfit",
-							"sid": 320964177061491,
+							"sid": 753209401327350,
 							"parameters": [
 								"\"Neck\"",
 								"Dict_SaveGameData.Get(\"Neck\")",
@@ -470,7 +530,7 @@
 						},
 						{
 							"callFunction": "changeOutfit",
-							"sid": 825707583319959,
+							"sid": 715124188295082,
 							"parameters": [
 								"\"Body\"",
 								"Dict_SaveGameData.Get(\"Body\")",
@@ -481,7 +541,7 @@
 						},
 						{
 							"callFunction": "changeOutfit",
-							"sid": 670030114512904,
+							"sid": 714031946957944,
 							"parameters": [
 								"\"Legs\"",
 								"Dict_SaveGameData.Get(\"Legs\")",
@@ -492,7 +552,7 @@
 						},
 						{
 							"callFunction": "changeOutfit",
-							"sid": 614837840846331,
+							"sid": 240959254424861,
 							"parameters": [
 								"\"Boot\"",
 								"Dict_SaveGameData.Get(\"Boot\")",
@@ -502,7 +562,7 @@
 							]
 						}
 					],
-					"sid": 568659072698040
+					"sid": 625089250008160
 				}
 			],
 			"sid": 670751244126356
@@ -779,6 +839,10 @@
 									"id": "move-to-top",
 									"objectClass": "Player_Base",
 									"sid": 748594407451735
+								},
+								{
+									"callFunction": "updateOutfit",
+									"sid": 746450374367206
 								},
 								{
 									"callFunction": "displayInteractionHint",
@@ -4900,7 +4964,35 @@
 									}
 								}
 							],
-							"sid": 684366535548189
+							"sid": 684366535548189,
+							"disabled": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-by-comparison",
+									"objectClass": "System",
+									"sid": 432826554664234,
+									"parameters": {
+										"object": "PlayerSystem",
+										"expression": "PlayerSystem.category",
+										"comparison": 0,
+										"value": "category"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "PlayerSystem",
+									"sid": 217119146820539,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 670897204936502
 						},
 						{
 							"eventType": "block",

@@ -113,6 +113,26 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "Player_WorldX",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 530909886725992
+		},
+		{
+			"eventType": "variable",
+			"name": "Player_WorldY",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 430989629421168
+		},
+		{
+			"eventType": "variable",
 			"name": "DataLoaded",
 			"type": "boolean",
 			"initialValue": "false",
@@ -3706,8 +3726,35 @@
 							"conditions": [],
 							"actions": [
 								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 906819367482514,
+									"parameters": {
+										"group-name": "\"Player Engine\"",
+										"state": "deactivated"
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 817721059329517,
+									"parameters": {
+										"group-name": "\"Enemies\"",
+										"state": "deactivated"
+									}
+								},
+								{
 									"callFunction": "hideItemHint",
 									"sid": 545374664722762
+								},
+								{
+									"id": "set-enabled",
+									"objectClass": "Player_Base",
+									"sid": 717427234881252,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"state": "disabled"
+									}
 								}
 							],
 							"sid": 192841212808491,
@@ -3751,23 +3798,159 @@
 										{
 											"id": "set-group-active",
 											"objectClass": "System",
-											"sid": 774545312624102,
+											"sid": 228078571871586,
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "deactivated"
 											}
 										},
 										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 587186439361495,
+											"id": "move-to-layer",
+											"objectClass": "Player_Base",
+											"sid": 157245985085604,
 											"parameters": {
-												"group-name": "\"Enemies\"",
-												"state": "deactivated"
+												"layer": "\"Inventory\""
+											}
+										},
+										{
+											"id": "move-to-layer",
+											"objectClass": "Player_Mask",
+											"sid": 172104246376737,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										},
+										{
+											"id": "move-to-layer",
+											"objectClass": "PlayerSystem",
+											"sid": 601955323025210,
+											"parameters": {
+												"layer": "\"Inventory\""
 											}
 										}
 									],
-									"sid": 493409480799105
+									"sid": 493409480799105,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-on-layer",
+													"objectClass": "PlayerSystem",
+													"sid": 959162036220209,
+													"parameters": {
+														"layer": "\"Inventory\""
+													}
+												},
+												{
+													"id": "is-on-layer",
+													"objectClass": "Player_Mask",
+													"sid": 462918281976588,
+													"parameters": {
+														"layer": "\"Inventory\""
+													}
+												},
+												{
+													"id": "is-on-layer",
+													"objectClass": "Player_Base",
+													"sid": 966368956930223,
+													"parameters": {
+														"layer": "\"Inventory\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "updateOutfit",
+													"sid": 115713698515921
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 331360997204493,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Down\""
+													}
+												},
+												{
+													"id": "set-mirrored",
+													"objectClass": "PlayerSystem",
+													"sid": 115328139677334,
+													"parameters": {
+														"state": "not-mirrored"
+													}
+												},
+												{
+													"id": "move-to-top",
+													"objectClass": "PlayerSystem",
+													"sid": 247784513313121
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "PlayerSystem",
+													"sid": 705485095250133,
+													"parameters": {
+														"frame-number": "0"
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "PlayerSystem",
+													"sid": 835072150265783
+												},
+												{
+													"id": "set-scale",
+													"objectClass": "PlayerSystem",
+													"sid": 330990879072533,
+													"parameters": {
+														"scale": "8"
+													}
+												},
+												{
+													"id": "set-group-active",
+													"objectClass": "System",
+													"sid": 845567280403477,
+													"parameters": {
+														"group-name": "\"Player Engine\"",
+														"state": "deactivated"
+													}
+												},
+												{
+													"id": "set-position",
+													"objectClass": "Player_Mask",
+													"sid": 350516080287985,
+													"disabled": true,
+													"parameters": {
+														"x": "430",
+														"y": "240"
+													}
+												},
+												{
+													"id": "set-position",
+													"objectClass": "PlayerSystem",
+													"sid": 982199551368952,
+													"parameters": {
+														"x": "430",
+														"y": "240"
+													}
+												},
+												{
+													"id": "sort-z-order",
+													"objectClass": "System",
+													"sid": 120955520221755,
+													"parameters": {
+														"object": "PlayerSystem",
+														"instance-variable": {
+															"name": "layer",
+															"objectClass": "PlayerSystem"
+														}
+													}
+												}
+											],
+											"sid": 866728746194799
+										}
+									]
 								},
 								{
 									"eventType": "comment",
@@ -3784,9 +3967,60 @@
 									],
 									"actions": [
 										{
+											"id": "move-to-layer",
+											"objectClass": "Player_Base",
+											"sid": 787083514311227,
+											"parameters": {
+												"layer": "\"Objects\""
+											}
+										},
+										{
+											"id": "move-to-layer",
+											"objectClass": "PlayerSystem",
+											"sid": 353208811492845,
+											"parameters": {
+												"layer": "\"Objects\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Player_Base",
+											"sid": 109128067142592,
+											"disabled": true,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "PlayerSystem",
+											"sid": 847860908714463,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Player_Base",
+											"sid": 211991206950111,
+											"parameters": {
+												"x": "Player_WorldX",
+												"y": "Player_WorldY"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Player_Mask",
+											"sid": 524580578763311,
+											"disabled": true,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
 											"id": "set-layer-visible",
 											"objectClass": "System",
-											"sid": 985500560901103,
+											"sid": 322102703645954,
 											"parameters": {
 												"layer": "\"Inventory\"",
 												"visibility": "invisible"
@@ -3808,6 +4042,15 @@
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
+											}
+										},
+										{
+											"id": "set-enabled",
+											"objectClass": "Player_Base",
+											"sid": 510591271110964,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"state": "enabled"
 											}
 										},
 										{
@@ -5306,13 +5549,56 @@
 									}
 								}
 							],
-							"actions": [
+							"actions": [],
+							"sid": 457362754182035,
+							"children": [
 								{
-									"callFunction": "OpenClose_Inventory",
-									"sid": 427147044173732
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 903106817640138,
+											"parameters": {
+												"layer": "\"Inventory\""
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 203009190930063,
+											"parameters": {
+												"variable": "Player_WorldX",
+												"value": "Player_Base.X"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 176161590389569,
+											"parameters": {
+												"variable": "Player_WorldY",
+												"value": "Player_Base.Y"
+											}
+										}
+									],
+									"sid": 792778980281047
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"callFunction": "OpenClose_Inventory",
+											"sid": 385699255881152
+										}
+									],
+									"sid": 187893250917970
 								}
-							],
-							"sid": 457362754182035
+							]
 						},
 						{
 							"eventType": "block",
@@ -5346,8 +5632,26 @@
 							],
 							"actions": [
 								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 588364877486904,
+									"parameters": {
+										"variable": "Player_WorldX",
+										"value": "Player_Base.X"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 613084564862956,
+									"parameters": {
+										"variable": "Player_WorldY",
+										"value": "Player_Base.Y"
+									}
+								},
+								{
 									"callFunction": "OpenClose_Inventory",
-									"sid": 995972057264104
+									"sid": 597524847398540
 								}
 							],
 							"sid": 895544055943428

@@ -9,6 +9,13 @@
 			"desc": "layer the costume is on",
 			"show": true,
 			"sid": 690731060669857
+		},
+		{
+			"name": "category",
+			"type": "string",
+			"desc": "head,neck,etc",
+			"show": true,
+			"sid": 424425627315691
 		}
 	],
 	"behaviorTypes": [],
@@ -79,6 +86,15 @@
 		"101_fbas_03fot1_shoes_00a_blue",
 		"98_fbas_08lwr3_longdress_00a_blue",
 		"fbas_13hair_bob1_00_violet_bob",
-		"91_fbas_04lwr1_longpants_00a_pinkblack"
+		"91_fbas_04lwr1_longpants_00a_pinkblack",
+		"fbas_13hair_bob1_00_blonde_bob",
+		"fbas_13hair_bob1_00_brown_bob",
+		"fbas_13hair_dapper_00_brown",
+		"fbas_13hair_longwavy_00_blonde",
+		"fbas_13hair_longwavy_00_brown",
+		"fbas_13hair_longwavy_00_rainbow_waves",
+		"fbas_13hair_spiky1_00_blonde_spikes",
+		"fbas_13hair_spiky1_00_purple_rain",
+		"fbas_13hair_twintail_00_tangerine"
 	]
 }

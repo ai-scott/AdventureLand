@@ -440,6 +440,7 @@
 							"id": "create-object",
 							"objectClass": "System",
 							"sid": 852511181691273,
+							"disabled": true,
 							"parameters": {
 								"object-to-create": "PlayerImage",
 								"layer": "\"Inventory\"",
@@ -2153,6 +2154,32 @@
 					"sid": 510458451289429,
 					"children": [
 						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "obj_TitleText",
+									"sid": 481147184992947,
+									"parameters": {
+										"instance-variable": "title",
+										"comparison": 0,
+										"value": "\"PlayerName\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 863387283330223,
+									"parameters": {
+										"text": "Dict_SaveGameData.Get(\"PlayerName\")"
+									}
+								}
+							],
+							"sid": 156312182037925
+						},
+						{
 							"eventType": "comment",
 							"text": "New way of setting all items in the main collection - after this works, see about using for equip too"
 						},
@@ -3683,6 +3710,10 @@
 										"seconds": "0.1",
 										"use-timescale": true
 									}
+								},
+								{
+									"callFunction": "updateOutfit",
+									"sid": 792564533341709
 								},
 								{
 									"callFunction": "Calc_Hero_Stats",

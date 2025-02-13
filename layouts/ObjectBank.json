@@ -20,6 +20,7 @@
 					"tags": "",
 					"instanceVariables": {
 						"layer": 2,
+						"category": "",
 						"DashTimer": 0,
 						"Walking": false,
 						"Attacking": false,
@@ -3043,7 +3044,8 @@
 					"sid": 841717599552116,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -3259,7 +3261,8 @@
 					"sid": 793246881878912,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -3475,7 +3478,8 @@
 					"sid": 914742674095568,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -3691,7 +3695,8 @@
 					"sid": 815141193188019,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -3907,7 +3912,8 @@
 					"sid": 542861305454524,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -4123,7 +4129,8 @@
 					"sid": 584916973532483,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 15
+						"layer": 15,
+						"category": "Head"
 					},
 					"behaviors": {},
 					"effects": {
@@ -4339,7 +4346,8 @@
 					"sid": 140301662510236,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 12
+						"layer": 12,
+						"category": "Neck"
 					},
 					"behaviors": {},
 					"effects": {
@@ -4555,7 +4563,8 @@
 					"sid": 712501783299593,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 12
+						"layer": 12,
+						"category": "Neck"
 					},
 					"behaviors": {},
 					"effects": {
@@ -4771,7 +4780,8 @@
 					"sid": 203385191465242,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 12
+						"layer": 12,
+						"category": "Neck"
 					},
 					"behaviors": {},
 					"effects": {
@@ -4987,7 +4997,8 @@
 					"sid": 488685732041444,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 14
+						"layer": 14,
+						"category": "Hair"
 					},
 					"behaviors": {},
 					"effects": {
@@ -5203,7 +5214,8 @@
 					"sid": 775553062958292,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -5419,7 +5431,8 @@
 					"sid": 158383050316416,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -5635,7 +5648,8 @@
 					"sid": 188450912413720,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -5851,7 +5865,8 @@
 					"sid": 144348783110775,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -6067,7 +6082,8 @@
 					"sid": 928942423470275,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -6283,7 +6299,8 @@
 					"sid": 840503225819777,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 6
+						"layer": 6,
+						"category": "Body"
 					},
 					"behaviors": {},
 					"effects": {
@@ -6499,7 +6516,8 @@
 					"sid": 727777022972940,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 5
+						"layer": 5,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -6715,7 +6733,8 @@
 					"sid": 699234077654712,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 9
+						"layer": 9,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -6931,7 +6950,8 @@
 					"sid": 204322946171961,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 5
+						"layer": 5,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -7147,7 +7167,8 @@
 					"sid": 972115463896281,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 9
+						"layer": 9,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -7363,7 +7384,8 @@
 					"sid": 374378588715809,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 5
+						"layer": 5,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -7579,7 +7601,8 @@
 					"sid": 196007181654016,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 7
+						"layer": 7,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -7795,7 +7818,8 @@
 					"sid": 125339565379159,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 5
+						"layer": 5,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -8011,7 +8035,8 @@
 					"sid": 379532759384322,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 9
+						"layer": 9,
+						"category": "Legs"
 					},
 					"behaviors": {},
 					"effects": {
@@ -8227,7 +8252,8 @@
 					"sid": 355411662498085,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 4
+						"layer": 4,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -8443,7 +8469,8 @@
 					"sid": 774777540707194,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 8
+						"layer": 8,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -8659,7 +8686,8 @@
 					"sid": 158621673103001,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 4
+						"layer": 4,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -8875,7 +8903,8 @@
 					"sid": 175332914762270,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 4
+						"layer": 4,
+						"category": ""
 					},
 					"behaviors": {},
 					"effects": {
@@ -9091,7 +9120,8 @@
 					"sid": 685443362497016,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 4
+						"layer": 4,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -9307,7 +9337,8 @@
 					"sid": 109236857941306,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 8
+						"layer": 8,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -9523,7 +9554,8 @@
 					"sid": 833418807917787,
 					"tags": "",
 					"instanceVariables": {
-						"layer": 8
+						"layer": 8,
+						"category": "Boot"
 					},
 					"behaviors": {},
 					"effects": {
@@ -9738,8 +9770,157 @@
 					"uid": 257,
 					"sid": 135431257383957,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 257,
@@ -9806,8 +9987,157 @@
 					"uid": 258,
 					"sid": 998247507473671,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 258,
@@ -9874,8 +10204,157 @@
 					"uid": 259,
 					"sid": 482539378162782,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 259,
@@ -9942,8 +10421,157 @@
 					"uid": 260,
 					"sid": 599536459793007,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 260,
@@ -10010,8 +10638,157 @@
 					"uid": 261,
 					"sid": 786049891160240,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 261,
@@ -10078,8 +10855,157 @@
 					"uid": 262,
 					"sid": 372666201491824,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 262,
@@ -10146,8 +11072,157 @@
 					"uid": 263,
 					"sid": 749024153017038,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 263,
@@ -10214,8 +11289,157 @@
 					"uid": 264,
 					"sid": 806192464260378,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 264,
@@ -10282,8 +11506,157 @@
 					"uid": 265,
 					"sid": 690420973514255,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"layer": 2,
+						"category": "Hair"
+					},
 					"behaviors": {},
+					"effects": {
+						"ReplaceColor_outfit_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.34509803921568627,
+									0.8784313725490196,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"replace-color": [
+									0.1568627450980392,
+									0.596078431372549,
+									0.3764705882352941,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_outfit_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"replace-color": [
+									0.12549019607843137,
+									0.3137254901960784,
+									0.25098039215686274,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_1": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"replace-color": [
+									0.9725490196078431,
+									0.9411764705882353,
+									0.8784313725490196,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_2": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"replace-color": [
+									0.7843137254901961,
+									0.7843137254901961,
+									0.7215686274509804,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_3": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"replace-color": [
+									0.5333333333333333,
+									0.596078431372549,
+									0.6274509803921569,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_4": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"replace-color": [
+									0.40784313725490196,
+									0.40784313725490196,
+									0.47058823529411764,
+									1
+								],
+								"tolerance": 0.01
+							}
+						},
+						"ReplaceColor_hair_5": {
+							"isEnabled": false,
+							"parameters": {
+								"source-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"replace-color": [
+									0.3137254901960784,
+									0.2196078431372549,
+									0.3137254901960784,
+									1
+								],
+								"tolerance": 0.01
+							}
+						}
+					},
 					"sceneGraphData": {
 						"parent-uid": 50,
 						"uid": 265,
