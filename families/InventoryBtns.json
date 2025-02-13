@@ -6,8 +6,9 @@
 	"behaviorTypes": [],
 	"effectTypes": [],
 	"members": [
-		"Btn_Drop",
-		"Btn_Use",
-		"Btn_Action"
+		"Btn_Discard",
+		"Btn_Select",
+		"Btn_Action",
+		"Btn_Cancel"
 	]
 }

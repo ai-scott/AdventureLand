@@ -5426,13 +5426,13 @@
 									"objectClass": "Touch",
 									"sid": 349785687077463,
 									"parameters": {
-										"object": "Btn_Use"
+										"object": "Btn_Select"
 									}
 								}
 							],
 							"actions": [
 								{
-									"callFunction": "useItem",
+									"callFunction": "selectItem",
 									"sid": 250867029098571
 								}
 							],
@@ -5444,9 +5444,38 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
+									"sid": 910786885605339,
+									"parameters": {
+										"object": "Btn_Cancel"
+									}
+								},
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 822987887079681,
+									"disabled": true,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "hideItemHint",
+									"sid": 855846955537203
+								}
+							],
+							"sid": 830470648893945
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
 									"sid": 616708074966960,
 									"parameters": {
-										"object": "Btn_Drop"
+										"object": "Btn_Discard"
 									}
 								},
 								{
@@ -5464,7 +5493,7 @@
 									"text": "Drop item out of collection (add \"D\" and ctrl_menu style nav + space)"
 								},
 								{
-									"callFunction": "dropItem",
+									"callFunction": "discardItem",
 									"sid": 643634199002041
 								}
 							],

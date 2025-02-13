@@ -1,7 +1,7 @@
 {
-	"name": "Btn_Use",
+	"name": "Btn_Cancel",
 	"plugin-id": "Sprite",
-	"sid": 161319018359841,
+	"sid": 464628156751198,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [
@@ -10,7 +10,7 @@
 			"type": "string",
 			"desc": "What is the action when using this button?",
 			"show": true,
-			"sid": 113202276831292
+			"sid": 908001578323753
 		}
 	],
 	"behaviorTypes": [],
@@ -28,7 +28,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 6067983,
+						"imageSpriteId": 600090,
 						"collisionPoly": {
 							"points": [
 								0.014285714285714285,
@@ -54,7 +54,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 7636953,
+						"imageSpriteId": 8324695,
 						"collisionPoly": {
 							"points": [
 								0.014285714285714285,
@@ -80,7 +80,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 9358902,
+						"imageSpriteId": 1586522,
 						"collisionPoly": {
 							"points": [
 								0.014285714285714285,
@@ -98,7 +98,7 @@
 						"tag": "Gray"
 					}
 				],
-				"sid": 674479308285155,
+				"sid": 790467776925974,
 				"name": "Animation 1",
 				"isLooping": false,
 				"isPingPong": false,

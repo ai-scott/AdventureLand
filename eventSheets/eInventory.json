@@ -2651,6 +2651,59 @@
 				},
 				{
 					"eventType": "comment",
+					"text": "\"CANCEL\" Button - Item Usage"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 315545392251042,
+							"parameters": {
+								"object": "Btn_Cancel"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Cancel",
+							"sid": 118381674746373,
+							"parameters": {
+								"frame-number": "1"
+							}
+						}
+					],
+					"sid": 515288818081438
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 541835479404117,
+							"parameters": {
+								"object": "Btn_Cancel"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Cancel",
+							"sid": 101864907382668,
+							"parameters": {
+								"frame-number": "0"
+							}
+						}
+					],
+					"sid": 301876128575932
+				},
+				{
+					"eventType": "comment",
 					"text": "\"DROP\" Button - Item Usage"
 				},
 				{
@@ -2661,14 +2714,14 @@
 							"objectClass": "Mouse",
 							"sid": 205855903416830,
 							"parameters": {
-								"object": "Btn_Drop"
+								"object": "Btn_Discard"
 							}
 						}
 					],
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Drop",
+							"objectClass": "Btn_Discard",
 							"sid": 964529393774718,
 							"parameters": {
 								"frame-number": "1"
@@ -2685,7 +2738,7 @@
 							"objectClass": "Mouse",
 							"sid": 509471346247773,
 							"parameters": {
-								"object": "Btn_Drop"
+								"object": "Btn_Discard"
 							},
 							"isInverted": true
 						}
@@ -2693,7 +2746,7 @@
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Drop",
+							"objectClass": "Btn_Discard",
 							"sid": 228554498184692,
 							"parameters": {
 								"frame-number": "0"
@@ -2707,7 +2760,7 @@
 					"text": "The \"DROP\" button - deletes the Active Item and clears the array cell (or reduces Qty by 1 for stackable items)"
 				},
 				{
-					"functionName": "dropItem",
+					"functionName": "discardItem",
 					"functionDescription": "When in inventory screen, delete an item from player collection",
 					"functionCategory": "Inventory",
 					"functionReturnType": "none",
@@ -2724,7 +2777,7 @@
 							"conditions": [
 								{
 									"id": "is-visible",
-									"objectClass": "Btn_Drop",
+									"objectClass": "Btn_Discard",
 									"sid": 933993225269242
 								},
 								{
@@ -2858,12 +2911,12 @@
 							"objectClass": "Mouse",
 							"sid": 588433554099052,
 							"parameters": {
-								"object": "Btn_Use"
+								"object": "Btn_Select"
 							}
 						},
 						{
 							"id": "is-on-layer",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 640849791653786,
 							"parameters": {
 								"layer": "\"HUD_UI\""
@@ -2874,7 +2927,7 @@
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 752483637093369,
 							"parameters": {
 								"frame-number": "1"
@@ -2891,13 +2944,13 @@
 							"objectClass": "Mouse",
 							"sid": 560360174195301,
 							"parameters": {
-								"object": "Btn_Use"
+								"object": "Btn_Select"
 							},
 							"isInverted": true
 						},
 						{
 							"id": "is-on-layer",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 708078411734770,
 							"parameters": {
 								"layer": "\"HUD_UI\""
@@ -2908,7 +2961,7 @@
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 616696671829660,
 							"parameters": {
 								"frame-number": "0"
@@ -2919,10 +2972,10 @@
 				},
 				{
 					"eventType": "comment",
-					"text": "Btn_Use to equip, drop or pickup an item"
+					"text": "Btn_Select to move forward - like equip, remove or take an item"
 				},
 				{
-					"functionName": "useItem",
+					"functionName": "selectItem",
 					"functionDescription": "Equip, consume, or remove item in Collection",
 					"functionCategory": "Inventory",
 					"functionReturnType": "none",
@@ -2939,7 +2992,7 @@
 							"conditions": [
 								{
 									"id": "is-on-screen",
-									"objectClass": "Btn_Use",
+									"objectClass": "Btn_Select",
 									"sid": 218447329559658
 								},
 								{
@@ -4415,13 +4468,7 @@
 			"children": [
 				{
 					"eventType": "comment",
-					"text": "Function of calling Hints and Descriptions\nWe select the UID of the item passed through the function parameter.",
-					"background-color": [
-						0.0196078431372549,
-						1,
-						0.03529411764705882,
-						1
-					]
+					"text": "Function of calling Hints and Descriptions\nWe select the UID of the item passed through the function parameter."
 				},
 				{
 					"functionName": "displayItemHint",
@@ -4690,7 +4737,7 @@
 							"objectClass": "System",
 							"sid": 287567564248028,
 							"parameters": {
-								"object-to-create": "Btn_Use",
+								"object-to-create": "Btn_Select",
 								"layer": "\"Hint\"",
 								"x": "0",
 								"y": "0",
@@ -4700,7 +4747,7 @@
 						},
 						{
 							"id": "set-scale",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 192930395208217,
 							"parameters": {
 								"scale": "0.6"
@@ -4708,7 +4755,7 @@
 						},
 						{
 							"id": "set-visible",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 421617938708267,
 							"parameters": {
 								"visibility": "visible"
@@ -4719,7 +4766,7 @@
 							"objectClass": "System",
 							"sid": 337885365615903,
 							"parameters": {
-								"object-to-create": "Btn_Drop",
+								"object-to-create": "Btn_Discard",
 								"layer": "\"Hint\"",
 								"x": "0",
 								"y": "0",
@@ -4729,7 +4776,7 @@
 						},
 						{
 							"id": "set-scale",
-							"objectClass": "Btn_Drop",
+							"objectClass": "Btn_Discard",
 							"sid": 665073625199084,
 							"parameters": {
 								"scale": "0.6"
@@ -4737,8 +4784,37 @@
 						},
 						{
 							"id": "set-visible",
-							"objectClass": "Btn_Drop",
+							"objectClass": "Btn_Discard",
 							"sid": 214205959949656,
+							"parameters": {
+								"visibility": "visible"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 302415237868125,
+							"parameters": {
+								"object-to-create": "Btn_Cancel",
+								"layer": "\"Hint\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "Btn_Cancel",
+							"sid": 973755248369960,
+							"parameters": {
+								"scale": "0.6"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "Btn_Cancel",
+							"sid": 682046639941107,
 							"parameters": {
 								"visibility": "visible"
 							}
@@ -4790,7 +4866,7 @@
 							"actions": [
 								{
 									"id": "set-visible",
-									"objectClass": "Btn_Drop",
+									"objectClass": "Btn_Discard",
 									"sid": 577932974651138,
 									"parameters": {
 										"visibility": "invisible"
@@ -4815,7 +4891,7 @@
 							"actions": [
 								{
 									"id": "set-visible",
-									"objectClass": "Btn_Drop",
+									"objectClass": "Btn_Discard",
 									"sid": 445737593398146,
 									"parameters": {
 										"visibility": "invisible"
@@ -4826,23 +4902,7 @@
 						},
 						{
 							"eventType": "comment",
-							"text": "Find the current item Y & Z indices by the picked item's tag and name respectively"
-						},
-						{
-							"eventType": "block",
-							"conditions": [],
-							"actions": [],
-							"sid": 253309770731627
-						},
-						{
-							"eventType": "comment",
-							"text": "If the Item is NOT Stackable - We display information about the Item in the text through the data from the Description array. Separate different parts of the string with a tokenat.\nSet the size of the Hint window approximately equal to the size of the displayed text",
-							"background-color": [
-								0,
-								1,
-								0.25098039215686274,
-								1
-							]
+							"text": "If the Item is NOT Stackable - We display information about the Item in the text through the data from the Description array. Separate different parts of the string with a tokenat.\nSet the size of the Hint window approximately equal to the size of the displayed text"
 						},
 						{
 							"eventType": "block",
@@ -4916,13 +4976,7 @@
 						},
 						{
 							"eventType": "comment",
-							"text": "Set the position for the Hints window. So that the window does not appear outside the screen. We select the best option",
-							"background-color": [
-								0,
-								1,
-								0.3843137254901961,
-								1
-							]
+							"text": "Set the position for the Hints window. So that the window does not appear outside the screen. We select the best option"
 						},
 						{
 							"eventType": "block",
@@ -5371,7 +5425,7 @@
 							"actions": [
 								{
 									"id": "set-width",
-									"objectClass": "Btn_Use",
+									"objectClass": "Btn_Select",
 									"sid": 587875608028466,
 									"parameters": {
 										"width": "50"
@@ -5379,7 +5433,7 @@
 								},
 								{
 									"id": "set-position",
-									"objectClass": "Btn_Use",
+									"objectClass": "Btn_Select",
 									"sid": 186417255961719,
 									"parameters": {
 										"x": "Hint_9patch.BBoxLeft+6",
@@ -5388,16 +5442,16 @@
 								},
 								{
 									"id": "set-position",
-									"objectClass": "Btn_Drop",
+									"objectClass": "Btn_Discard",
 									"sid": 846549986775824,
 									"parameters": {
-										"x": "Btn_Use.X+Btn_Use.Width+4",
-										"y": "Btn_Use.Y"
+										"x": "Btn_Select.X+Btn_Select.Width+4",
+										"y": "Btn_Select.Y"
 									}
 								},
 								{
 									"id": "set-width",
-									"objectClass": "Btn_Drop",
+									"objectClass": "Btn_Discard",
 									"sid": 926387101286792,
 									"parameters": {
 										"width": "44"
@@ -5406,7 +5460,7 @@
 								{
 									"id": "move-at-angle",
 									"objectClass": "UI_Font_DescrNUM",
-									"sid": 378587525402382,
+									"sid": 218218637332221,
 									"parameters": {
 										"angle": "90",
 										"distance": "2"
@@ -5415,9 +5469,26 @@
 								{
 									"id": "set-visible",
 									"objectClass": "UI_Font_DescrNUM",
-									"sid": 716110922801164,
+									"sid": 432820943082037,
 									"parameters": {
 										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-position",
+									"objectClass": "Btn_Cancel",
+									"sid": 901117140681417,
+									"parameters": {
+										"x": "Btn_Discard.X+Btn_Discard.Width+4",
+										"y": "Btn_Discard.Y"
+									}
+								},
+								{
+									"id": "set-width",
+									"objectClass": "Btn_Cancel",
+									"sid": 824255533225324,
+									"parameters": {
+										"width": "44"
 									}
 								}
 							],
@@ -5425,13 +5496,7 @@
 							"children": [
 								{
 									"eventType": "comment",
-									"text": "Set value for strength (if strength exists) ",
-									"background-color": [
-										0.16862745098039217,
-										1,
-										0,
-										1
-									]
+									"text": "Set value for strength (if strength exists) "
 								},
 								{
 									"eventType": "block",
@@ -5508,7 +5573,7 @@
 										},
 										{
 											"id": "set-position",
-											"objectClass": "Btn_Use",
+											"objectClass": "Btn_Select",
 											"sid": 374798196101372,
 											"parameters": {
 												"x": "UI_HintArrow.ImagePointX(1)+12",
@@ -5517,15 +5582,65 @@
 										},
 										{
 											"id": "set-position",
-											"objectClass": "Btn_Drop",
+											"objectClass": "Btn_Discard",
 											"sid": 536059568418841,
 											"parameters": {
-												"x": "Btn_Use.X+Btn_Use.Width+4",
-												"y": "Btn_Use.Y"
+												"x": "Btn_Select.X+Btn_Select.Width+4",
+												"y": "Btn_Select.Y"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Cancel",
+											"sid": 891385630954948,
+											"parameters": {
+												"x": "Btn_Discard.X+Btn_Discard.Width+4",
+												"y": "Btn_Discard.Y"
 											}
 										}
 									],
 									"sid": 927907647405083
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 600366726209343,
+											"parameters": {
+												"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "Btn_Select",
+											"sid": 353596636253173,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Btn_Discard",
+											"sid": 753468377576268,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Btn_Cancel",
+											"sid": 365483326201341,
+											"parameters": {
+												"x": "Btn_Select.X",
+												"y": "Btn_Select.Y"
+											}
+										}
+									],
+									"sid": 210862135538463
 								},
 								{
 									"eventType": "block",
@@ -5658,7 +5773,7 @@
 										},
 										{
 											"id": "set-position",
-											"objectClass": "Btn_Use",
+											"objectClass": "Btn_Select",
 											"sid": 433692665403416,
 											"parameters": {
 												"x": "UI_HintArrow.ImagePointX(1)+12",
@@ -5667,11 +5782,11 @@
 										},
 										{
 											"id": "set-position",
-											"objectClass": "Btn_Drop",
+											"objectClass": "Btn_Discard",
 											"sid": 939040711759842,
 											"parameters": {
-												"x": "Btn_Use.X+Btn_Use.Width+4",
-												"y": "Btn_Use.Y"
+												"x": "Btn_Select.X+Btn_Select.Width+4",
+												"y": "Btn_Select.Y"
 											}
 										}
 									],
@@ -5679,13 +5794,7 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "The Arrow displays information which Item is better. The one that is equipped, or the one that is in the inventory.\nTo do this, compare the values of the above ▲ Items and set the corresponding animation to the Arrow",
-									"background-color": [
-										0,
-										1,
-										0.01568627450980392,
-										1
-									]
+									"text": "The Arrow displays information which Item is better. The one that is equipped, or the one that is in the inventory.\nTo do this, compare the values of the above ▲ Items and set the corresponding animation to the Arrow"
 								},
 								{
 									"eventType": "block",
@@ -5723,161 +5832,7 @@
 							"conditions": [
 								{
 									"id": "is-visible",
-									"objectClass": "Btn_Drop",
-									"sid": 793206393521611
-								}
-							],
-							"actions": [
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 159864079765078,
-									"parameters": {
-										"object-to-create": "obj_TitleText",
-										"layer": "\"Hint\"",
-										"x": "0",
-										"y": "0",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "obj_TitleText",
-									"sid": 539184307252084,
-									"parameters": {
-										"instance-variable": "title",
-										"value": "\"drop\""
-									}
-								},
-								{
-									"id": "set-text",
-									"objectClass": "obj_TitleText",
-									"sid": 466574708545901,
-									"parameters": {
-										"text": "\"Drop\""
-									}
-								},
-								{
-									"id": "set-font-size",
-									"objectClass": "obj_TitleText",
-									"sid": 448511498626697,
-									"parameters": {
-										"size-pt": "12"
-									}
-								},
-								{
-									"id": "move-to-object",
-									"objectClass": "obj_TitleText",
-									"sid": 704592356417358,
-									"parameters": {
-										"where": "in-front",
-										"object": "Btn_Drop"
-									}
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "obj_TitleText",
-									"sid": 197744309759172,
-									"parameters": {
-										"visibility": "visible"
-									}
-								},
-								{
-									"id": "set-position-to-another-object",
-									"objectClass": "obj_TitleText",
-									"sid": 227328281699688,
-									"parameters": {
-										"object": "Btn_Drop",
-										"image-point-optional": "0"
-									}
-								}
-							],
-							"sid": 328263023092462,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 303012513822930,
-											"parameters": {
-												"variable": "ShopMode"
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [
-										{
-											"id": "set-instvar-value",
-											"objectClass": "obj_TitleText",
-											"sid": 780252940451364,
-											"parameters": {
-												"instance-variable": "title",
-												"value": "\"drop\""
-											}
-										},
-										{
-											"id": "set-text",
-											"objectClass": "obj_TitleText",
-											"sid": 341629296864868,
-											"parameters": {
-												"text": "\"Drop\""
-											}
-										}
-									],
-									"sid": 254593016735300
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 384625023356857,
-											"parameters": {
-												"variable": "ShopMode"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-instvar-value",
-											"objectClass": "obj_TitleText",
-											"sid": 775865329228708,
-											"parameters": {
-												"instance-variable": "title",
-												"value": "\"drop\""
-											}
-										},
-										{
-											"id": "set-text",
-											"objectClass": "obj_TitleText",
-											"sid": 274709775445084,
-											"parameters": {
-												"text": "\"Sell [icon=Gem] \"&(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
-											}
-										},
-										{
-											"id": "set-width",
-											"objectClass": "Btn_Drop",
-											"sid": 192354719858394,
-											"parameters": {
-												"width": "obj_TitleText.TextWidth+8"
-											}
-										}
-									],
-									"sid": 351619733629051
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-visible",
-									"objectClass": "Btn_Use",
+									"objectClass": "Btn_Select",
 									"sid": 633072640109688
 								}
 							],
@@ -5926,7 +5881,7 @@
 									"sid": 963129603973486,
 									"parameters": {
 										"where": "in-front",
-										"object": "Btn_Use"
+										"object": "Btn_Select"
 									}
 								},
 								{
@@ -5942,7 +5897,7 @@
 									"objectClass": "obj_TitleText",
 									"sid": 611064337358580,
 									"parameters": {
-										"object": "Btn_Use",
+										"object": "Btn_Select",
 										"image-point-optional": "0"
 									}
 								}
@@ -6066,7 +6021,7 @@
 												},
 												{
 													"id": "set-width",
-													"objectClass": "Btn_Use",
+													"objectClass": "Btn_Select",
 													"sid": 551965607449187,
 													"parameters": {
 														"width": "52"
@@ -6128,7 +6083,7 @@
 										},
 										{
 											"id": "set-width",
-											"objectClass": "Btn_Use",
+											"objectClass": "Btn_Select",
 											"sid": 696315719394824,
 											"parameters": {
 												"width": "70"
@@ -6164,6 +6119,11 @@
 									"sid": 768415126158474
 								},
 								{
+									"eventType": "comment",
+									"text": "Create Buy UI"
+								},
+								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -6197,31 +6157,91 @@
 									],
 									"actions": [
 										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 401071960909442,
+											"parameters": {
+												"object-to-create": "obj_TitleText",
+												"layer": "\"Hint\"",
+												"x": "Btn_Select.X",
+												"y": "Btn_Select.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
 											"id": "set-text",
 											"objectClass": "obj_TitleText",
-											"sid": 211036865351567,
+											"sid": 323852579753504,
 											"parameters": {
-												"text": "\"[icon=Gem] \" & Functions.GetItemCostbyID(InventoryItems.ItemID)&\" Buy\""
+												"text": "\"[icon=Gem] \" & Functions.GetItemCostbyID(InventoryItems.ItemID)"
 											}
 										},
 										{
-											"id": "set-width",
-											"objectClass": "Btn_Use",
-											"sid": 571540825784182,
+											"id": "set-instvar-value",
+											"objectClass": "obj_TitleText",
+											"sid": 911709980841091,
 											"parameters": {
-												"width": "40"
+												"instance-variable": "title",
+												"value": "\"cost\""
 											}
 										},
 										{
-											"id": "set-x",
-											"objectClass": "Btn_Use",
-											"sid": 245949070890922,
+											"id": "set-font-size",
+											"objectClass": "obj_TitleText",
+											"sid": 275892182961334,
 											"parameters": {
-												"x": "Self.X+36"
+												"size-pt": "12"
 											}
 										}
 									],
-									"sid": 224215047401071
+									"sid": 224215047401071,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "obj_TitleText",
+													"sid": 762404386455782,
+													"parameters": {
+														"instance-variable": "title",
+														"comparison": 0,
+														"value": "\"use\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-text",
+													"objectClass": "obj_TitleText",
+													"sid": 806393926443739,
+													"parameters": {
+														"text": "\"Buy\""
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "Btn_Select",
+													"sid": 494693250380079,
+													"disabled": true,
+													"parameters": {
+														"x": "obj_TitleText(\"cost\").BBoxRight\n\n"
+													}
+												},
+												{
+													"id": "set-x",
+													"objectClass": "Btn_Select",
+													"sid": 210637938889527,
+													"disabled": true,
+													"parameters": {
+														"x": "Self.X+36"
+													}
+												}
+											],
+											"sid": 141015836698608
+										}
+									]
 								},
 								{
 									"eventType": "block",
@@ -6253,6 +6273,16 @@
 											"parameters": {
 												"variable": "ShopMode"
 											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "obj_TitleText",
+											"sid": 229685767479349,
+											"parameters": {
+												"instance-variable": "title",
+												"comparison": 0,
+												"value": "\"use\""
+											}
 										}
 									],
 									"actions": [
@@ -6266,7 +6296,7 @@
 										},
 										{
 											"id": "set-visible",
-											"objectClass": "Btn_Use",
+											"objectClass": "Btn_Select",
 											"sid": 611089531434357,
 											"parameters": {
 												"visibility": "invisible"
@@ -6274,6 +6304,308 @@
 										}
 									],
 									"sid": 459035690453350
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Select",
+											"sid": 309280573199268,
+											"parameters": {
+												"width": "obj_TitleText.TextWidth+6"
+											}
+										}
+									],
+									"sid": 707224030117120
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Discard",
+									"sid": 925875669206800
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 976694463204234,
+									"parameters": {
+										"object-to-create": "obj_TitleText",
+										"layer": "\"Hint\"",
+										"x": "Btn_Select.BBoxRight+2",
+										"y": "Btn_Select.Y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_TitleText",
+									"sid": 316773373183681,
+									"parameters": {
+										"instance-variable": "title",
+										"value": "\"drop\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 898645108109221,
+									"parameters": {
+										"text": "\"Drop\""
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TitleText",
+									"sid": 153477066078429,
+									"parameters": {
+										"size-pt": "12"
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "obj_TitleText",
+									"sid": 990344839713426,
+									"parameters": {
+										"where": "in-front",
+										"object": "Btn_Discard"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 956454167130438,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "obj_TitleText",
+									"sid": 626114476073160,
+									"parameters": {
+										"object": "Btn_Discard",
+										"image-point-optional": "0"
+									}
+								},
+								{
+									"id": "set-width",
+									"objectClass": "Btn_Discard",
+									"sid": 750899458514777,
+									"parameters": {
+										"width": "obj_TitleText.TextWidth+6"
+									}
+								}
+							],
+							"sid": 515340092999748,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 811733194702333,
+											"parameters": {
+												"variable": "ShopMode"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_TitleText",
+											"sid": 848446932653742,
+											"parameters": {
+												"instance-variable": "title",
+												"value": "\"drop\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 492806725395423,
+											"parameters": {
+												"text": "\"Drop\""
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Discard",
+											"sid": 799818997230741,
+											"parameters": {
+												"width": "obj_TitleText.TextWidth+6"
+											}
+										}
+									],
+									"sid": 471396028943712
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 184840506785286,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_TitleText",
+											"sid": 395435117615300,
+											"parameters": {
+												"instance-variable": "title",
+												"value": "\"drop\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_TitleText",
+											"sid": 875400723076666,
+											"parameters": {
+												"text": "\"Sell [icon=Gem] \"&(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "Btn_Discard",
+											"sid": 184392164146248,
+											"parameters": {
+												"width": "obj_TitleText.TextWidth+8"
+											}
+										}
+									],
+									"sid": 876976625291216
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Cancel",
+									"sid": 527777943963749
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 457769567975895,
+									"parameters": {
+										"object-to-create": "obj_TitleText",
+										"layer": "\"Hint\"",
+										"x": "Btn_Select.BBoxRight+4",
+										"y": "Btn_Select.Y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_TitleText",
+									"sid": 680424377519935,
+									"parameters": {
+										"instance-variable": "title",
+										"value": "\"cancel\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TitleText",
+									"sid": 821973185961440,
+									"parameters": {
+										"text": "\"Cancel\""
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TitleText",
+									"sid": 911941985257726,
+									"parameters": {
+										"size-pt": "12"
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "obj_TitleText",
+									"sid": 887252582494803,
+									"parameters": {
+										"where": "in-front",
+										"object": "Btn_Cancel"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 644513374662298,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "obj_TitleText",
+									"sid": 793676021709015,
+									"parameters": {
+										"object": "Btn_Cancel",
+										"image-point-optional": "0"
+									}
+								},
+								{
+									"id": "set-width",
+									"objectClass": "Btn_Cancel",
+									"sid": 154827724227576,
+									"parameters": {
+										"width": "obj_TitleText.TextWidth+6"
+									}
+								}
+							],
+							"sid": 748102458574887,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-visible",
+											"objectClass": "Btn_Discard",
+											"sid": 636743402456778
+										}
+									],
+									"actions": [
+										{
+											"id": "set-x",
+											"objectClass": "Btn_Cancel",
+											"sid": 230216196471250,
+											"parameters": {
+												"x": "Btn_Select.BBoxRight+4+Btn_Discard.Width"
+											}
+										},
+										{
+											"id": "set-position-to-another-object",
+											"objectClass": "obj_TitleText",
+											"sid": 389249345276371,
+											"parameters": {
+												"object": "Btn_Cancel",
+												"image-point-optional": "0"
+											}
+										}
+									],
+									"sid": 997802332796658
 								}
 							]
 						}
@@ -6281,13 +6613,7 @@
 				},
 				{
 					"eventType": "comment",
-					"text": "The function of hiding the Hint and its additional elements",
-					"background-color": [
-						0,
-						1,
-						0.25098039215686274,
-						1
-					]
+					"text": "The function of hiding the Hint and its additional elements"
 				},
 				{
 					"functionName": "hideItemHint",
@@ -6329,7 +6655,7 @@
 						},
 						{
 							"id": "is-on-layer",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 361283613520744,
 							"parameters": {
 								"layer": "\"Hint\""
@@ -6383,13 +6709,18 @@
 						},
 						{
 							"id": "destroy",
-							"objectClass": "Btn_Drop",
+							"objectClass": "Btn_Discard",
 							"sid": 432476432893186
 						},
 						{
 							"id": "destroy",
-							"objectClass": "Btn_Use",
+							"objectClass": "Btn_Select",
 							"sid": 510448112254737
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Btn_Cancel",
+							"sid": 147970743273545
 						},
 						{
 							"id": "destroy",
@@ -6483,6 +6814,29 @@
 								{
 									"id": "compare-instance-variable",
 									"objectClass": "obj_TitleText",
+									"sid": 272150177608772,
+									"parameters": {
+										"instance-variable": "title",
+										"comparison": 0,
+										"value": "\"cost\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TitleText",
+									"sid": 917143342093802
+								}
+							],
+							"sid": 440560108347802
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "obj_TitleText",
 									"sid": 306101692732067,
 									"parameters": {
 										"instance-variable": "title",
@@ -6499,6 +6853,29 @@
 								}
 							],
 							"sid": 692507846744139
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "obj_TitleText",
+									"sid": 132418348051665,
+									"parameters": {
+										"instance-variable": "title",
+										"comparison": 0,
+										"value": "\"cancel\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TitleText",
+									"sid": 808427665660153
+								}
+							],
+							"sid": 151643713266367
 						}
 					]
 				}

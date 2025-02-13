@@ -552,15 +552,16 @@
 					"Inv_TBack",
 					"Hint_9patch",
 					"EquipSlot",
-					"Btn_Use",
-					"Btn_Drop",
+					"Btn_Select",
+					"Btn_Discard",
 					"Bag",
 					"Background",
 					"Arr_Equip",
 					"Arr_InvCollection",
 					"ItemBG",
 					"Btn_Action",
-					"Arr_ItemTriggersCollected"
+					"Arr_ItemTriggersCollected",
+					"Btn_Cancel"
 				],
 				"subfolders": [],
 				"name": "Inventory"
