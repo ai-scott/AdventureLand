@@ -1410,15 +1410,6 @@
 													],
 													"actions": [
 														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 683968177450204,
-															"parameters": {
-																"variable": "TempVarY",
-																"value": "\"display Talk\""
-															}
-														},
-														{
 															"id": "set-boolean-eventvar",
 															"objectClass": "System",
 															"sid": 980601680923937,
