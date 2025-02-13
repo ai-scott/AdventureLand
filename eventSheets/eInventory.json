@@ -5259,15 +5259,6 @@
 										"comparison": 0,
 										"value": "\"main\""
 									}
-								},
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 824401962388910,
-									"disabled": true,
-									"parameters": {
-										"layer": "\"Inventory\""
-									}
 								}
 							],
 							"actions": [
@@ -6179,47 +6170,6 @@
 										{
 											"id": "evaluate-expression",
 											"objectClass": "System",
-											"sid": 600366726209343,
-											"parameters": {
-												"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-visible",
-											"objectClass": "Btn_Select",
-											"sid": 353596636253173,
-											"parameters": {
-												"visibility": "invisible"
-											}
-										},
-										{
-											"id": "set-visible",
-											"objectClass": "Btn_Discard",
-											"sid": 753468377576268,
-											"parameters": {
-												"visibility": "invisible"
-											}
-										},
-										{
-											"id": "set-position",
-											"objectClass": "Btn_Cancel",
-											"sid": 365483326201341,
-											"parameters": {
-												"x": "Btn_Select.X",
-												"y": "Btn_Select.Y"
-											}
-										}
-									],
-									"sid": 210862135538463
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "evaluate-expression",
-											"objectClass": "System",
 											"sid": 989551435202915,
 											"parameters": {
 												"value": "Functions.GetItemCategory(CurrentItemID)=\"Food\""
@@ -6426,7 +6376,41 @@
 							}
 						}
 					],
-					"sid": 658549834929633
+					"sid": 658549834929633,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 871840351884593,
+									"parameters": {
+										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 521741994855064,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Select",
+									"sid": 713115739056618,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 557531044298465
+						}
+					]
 				},
 				{
 					"bookmark": true,
@@ -6479,7 +6463,41 @@
 							}
 						}
 					],
-					"sid": 604481513899825
+					"sid": 604481513899825,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 626442504682702,
+									"parameters": {
+										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "obj_TitleText",
+									"sid": 615261092853380,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Discard",
+									"sid": 252339924426529,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 256377679837434
+						}
+					]
 				},
 				{
 					"bookmark": true,
@@ -6498,6 +6516,15 @@
 					],
 					"actions": [
 						{
+							"id": "set-position",
+							"objectClass": "Btn_Cancel",
+							"sid": 588302336085272,
+							"parameters": {
+								"x": "Btn_Select.X+Btn_Select.Width+2+Btn_Discard.Width",
+								"y": "Btn_Select.Y"
+							}
+						},
+						{
 							"id": "set-position-to-another-object",
 							"objectClass": "obj_TitleText",
 							"sid": 438618650581630,
@@ -6513,18 +6540,45 @@
 							"parameters": {
 								"width": "obj_TitleText.TextWidth+6"
 							}
-						},
-						{
-							"id": "set-position",
-							"objectClass": "Btn_Cancel",
-							"sid": 574011029216996,
-							"parameters": {
-								"x": "Btn_Select.X+Btn_Select.Width+2+Btn_Discard.Width",
-								"y": "Btn_Select.Y"
-							}
 						}
 					],
-					"sid": 958253272256481
+					"sid": 958253272256481,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 774287106040077,
+									"parameters": {
+										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "Btn_Cancel",
+									"sid": 670648664600556,
+									"parameters": {
+										"x": "Btn_Select.X",
+										"y": "Btn_Select.Y"
+									}
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "obj_TitleText",
+									"sid": 678384491930781,
+									"parameters": {
+										"object": "Btn_Cancel",
+										"image-point-optional": "0"
+									}
+								}
+							],
+							"sid": 804327321826474
+						}
+					]
 				},
 				{
 					"eventType": "comment",
