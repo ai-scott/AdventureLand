@@ -97,7 +97,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "Blacksmith_Sally"
+						"tag": "Shopkeeper_Sally"
 					},
 					{
 						"width": 420,
@@ -125,7 +125,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "General_Sally"
+						"tag": "Shopkeeper_Sophie"
 					},
 					{
 						"width": 420,
@@ -153,7 +153,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "Adventure_Sally"
+						"tag": "Shopkeeper_Sarah"
 					},
 					{
 						"width": 420,

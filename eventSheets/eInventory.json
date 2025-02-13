@@ -5259,15 +5259,6 @@
 										"comparison": 0,
 										"value": "\"main\""
 									}
-								},
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 824401962388910,
-									"disabled": true,
-									"parameters": {
-										"layer": "\"Inventory\""
-									}
 								}
 							],
 							"actions": [

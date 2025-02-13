@@ -326,7 +326,15 @@
 							{
 								"items": [
 									"fbas_13hair_bob1_00_violet_bob",
-									"fbas_13hair_dapper_00_brown"
+									"fbas_13hair_dapper_00_brown",
+									"fbas_13hair_bob1_00_blonde_bob",
+									"fbas_13hair_bob1_00_brown_bob",
+									"fbas_13hair_longwavy_00_blonde",
+									"fbas_13hair_longwavy_00_brown",
+									"fbas_13hair_longwavy_00_rainbow_waves",
+									"fbas_13hair_spiky1_00_blonde_spikes",
+									"fbas_13hair_spiky1_00_purple_rain",
+									"fbas_13hair_twintail_00_tangerine"
 								],
 								"subfolders": [],
 								"name": "00_Hair"

@@ -1089,6 +1089,96 @@
 			"category": "Key",
 			"strength": 0,
 			"cost": 0
+		},
+		{
+			"id": 141,
+			"name": "Blonde Bob",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_bob1_00_blonde_bob",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 142,
+			"name": "Brown Bob",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_bob1_00_brown_bob",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 143,
+			"name": "Purple Bob",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_bob1_00_violet_bob",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 144,
+			"name": "Brown Dapper Cut",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_dapper_00_brown",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 145,
+			"name": "Long Wavy Blonde",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_longwavy_00_blonde",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 146,
+			"name": "Long Wavy Brown",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_longwavy_00_brown",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 147,
+			"name": "Long Wavy Rainbow",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_longwavy_00_rainbow_waves",			
+			"strength": 0,
+			"cost": 0
+		},
+		{
+			"id": 148,
+			"name": "Blonde Spikes",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_spiky1_00_blonde_spikes",			
+			"strength": 0,
+			"cost": 0
+		},
+				{
+			"id": 149,
+			"name": "Purple Rain",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_spiky1_00_purple_rain",			
+			"strength": 0,
+			"cost": 0
+		},
+				{
+			"id": 150,
+			"name": "Tangerine Tails",
+			"description": "",
+			"category": "Hair",
+			"costume":"fbas_13hair_twintail_00_tangerine",			
+			"strength": 0,
+			"cost": 0
 		}
 		
 ]

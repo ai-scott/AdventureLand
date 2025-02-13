@@ -437,12 +437,12 @@
 					"actions": [
 						{
 							"callFunction": "changeOutfit",
-							"sid": 634525921877786,
+							"sid": 755241800908270,
 							"parameters": [
 								"\"Hair\"",
-								"\"\"",
-								"\"\"",
 								"Dict_SaveGameData.Get(\"Hair\")",
+								"\"\"",
+								"\"\"",
 								"\"\""
 							]
 						},
