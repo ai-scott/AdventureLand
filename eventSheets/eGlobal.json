@@ -3349,16 +3349,6 @@
 														"key": "Functions.GetItemName(DropItemID)",
 														"value": "0"
 													}
-												},
-												{
-													"id": "set-eventvar-value",
-													"objectClass": "System",
-													"sid": 615207926961868,
-													"disabled": true,
-													"parameters": {
-														"variable": "TempVarX",
-														"value": "DropItemID&\" = Drop Item Id\""
-													}
 												}
 											],
 											"sid": 367345789824600,
