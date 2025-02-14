@@ -3229,7 +3229,6 @@
 							"sid": 594697497963806
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -3266,7 +3265,9 @@
 									"parameters": [
 										"direction",
 										"0",
-										"\"Hair\""
+										"\"Hair\"",
+										"0",
+										"0"
 									]
 								}
 							],
@@ -3851,7 +3852,6 @@
 									]
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4204,7 +4204,17 @@
 							]
 						}
 					]
-				},
+				}
+			],
+			"sid": 921811365614930
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "HERO STATE",
+			"description": "Setting the values of your Hero's variables",
+			"isActiveOnStart": true,
+			"children": [
 				{
 					"functionName": "changeHairstyle",
 					"functionDescription": "",
@@ -4233,32 +4243,54 @@
 							"initialValue": "\"Hair\"",
 							"comment": "",
 							"sid": 362858752042255
+						},
+						{
+							"name": "minHairID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 994437747119449
+						},
+						{
+							"name": "maxHairID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 250210982839034
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 728706027873700,
+							"sid": 653290047020355,
 							"parameters": {
-								"variable": "TempVarX",
-								"value": "currentHairstyleID&\" = currentHairstyleID \"&direction&\" = direction\""
+								"variable": "currentHairstyleID",
+								"value": "Functions.GetItemID(Dict_SaveGameData.Get(\"Hair\"))"
 							}
 						},
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 569681071001388,
+							"sid": 499930788961239,
 							"parameters": {
-								"variable": "currentHairstyleID",
-								"value": "Functions.GetItemID(Dict_SaveGameData.Get(\"Hair\"))"
+								"variable": "minHairID",
+								"value": "141"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 280918634357285,
+							"parameters": {
+								"variable": "maxHairID",
+								"value": "150"
 							}
 						}
 					],
-					"sid": 985133323843144,
+					"sid": 931779701296680,
 					"children": [
 						{
 							"eventType": "block",
@@ -4266,7 +4298,7 @@
 								{
 									"id": "pick-by-comparison",
 									"objectClass": "System",
-									"sid": 869073861900961,
+									"sid": 395314878358152,
 									"parameters": {
 										"object": "PlayerSystem",
 										"expression": "PlayerSystem.category",
@@ -4279,13 +4311,13 @@
 								{
 									"id": "set-visible",
 									"objectClass": "PlayerSystem",
-									"sid": 453168802220580,
+									"sid": 412599580213885,
 									"parameters": {
 										"visibility": "invisible"
 									}
 								}
 							],
-							"sid": 462750512186684
+							"sid": 522541335407388
 						},
 						{
 							"eventType": "block",
@@ -4293,7 +4325,7 @@
 								{
 									"id": "compare-eventvar",
 									"objectClass": "System",
-									"sid": 808512838891646,
+									"sid": 666584035140749,
 									"parameters": {
 										"variable": "direction",
 										"comparison": 0,
@@ -4303,16 +4335,45 @@
 							],
 							"actions": [
 								{
-									"id": "set-eventvar-value",
+									"id": "subtract-from-eventvar",
 									"objectClass": "System",
-									"sid": 352594728399639,
+									"sid": 305250564696770,
 									"parameters": {
 										"variable": "currentHairstyleID",
-										"value": "currentHairstyleID-1"
+										"value": "1"
 									}
 								}
 							],
-							"sid": 144749374308412
+							"sid": 117008394672294,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 833932760207340,
+											"parameters": {
+												"first-value": "currentHairstyleID",
+												"comparison": 2,
+												"second-value": "minHairID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 157142237633854,
+											"parameters": {
+												"variable": "currentHairstyleID",
+												"value": "maxHairID"
+											}
+										}
+									],
+									"sid": 446264947558119
+								}
+							]
 						},
 						{
 							"eventType": "block",
@@ -4320,44 +4381,64 @@
 								{
 									"id": "compare-eventvar",
 									"objectClass": "System",
-									"sid": 603669626500408,
+									"sid": 203916350505437,
 									"parameters": {
 										"variable": "direction",
 										"comparison": 0,
-										"value": "\"prev\""
+										"value": "\"next\""
 									}
 								}
 							],
 							"actions": [
 								{
-									"id": "set-eventvar-value",
+									"id": "add-to-eventvar",
 									"objectClass": "System",
-									"sid": 828983534161847,
+									"sid": 740093337847006,
 									"parameters": {
 										"variable": "currentHairstyleID",
-										"value": "currentHairstyleID+1"
+										"value": "1"
 									}
 								}
 							],
-							"sid": 704268428099199
+							"sid": 640483696847241,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 917166865054620,
+											"parameters": {
+												"first-value": "currentHairstyleID",
+												"comparison": 4,
+												"second-value": "maxHairID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 249846726813269,
+											"parameters": {
+												"variable": "currentHairstyleID",
+												"value": "minHairID"
+											}
+										}
+									],
+									"sid": 553981817381349
+								}
+							]
 						},
 						{
 							"eventType": "block",
 							"conditions": [],
 							"actions": [
 								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 836949210309349,
-									"parameters": {
-										"variable": "TempVarY",
-										"value": "currentHairstyleID&\" = currentHairstyleID\""
-									}
-								},
-								{
 									"id": "set-key",
 									"objectClass": "Dict_SaveGameData",
-									"sid": 586491157247741,
+									"sid": 821812802664271,
 									"parameters": {
 										"key": "\"Hair\"",
 										"value": "Functions.GetItemName(currentHairstyleID)"
@@ -4365,10 +4446,10 @@
 								},
 								{
 									"callFunction": "SaveGameData",
-									"sid": 994839818306142
+									"sid": 588977566808130
 								}
 							],
-							"sid": 734687608138540
+							"sid": 499862028248886
 						},
 						{
 							"eventType": "block",
@@ -4376,7 +4457,7 @@
 								{
 									"id": "pick-by-comparison",
 									"objectClass": "System",
-									"sid": 658763663973619,
+									"sid": 433433222312463,
 									"parameters": {
 										"object": "PlayerSystem",
 										"expression": "PlayerSystem.ObjectTypeName",
@@ -4389,44 +4470,19 @@
 								{
 									"id": "set-visible",
 									"objectClass": "PlayerSystem",
-									"sid": 888485420607628,
+									"sid": 959663323422349,
 									"parameters": {
 										"visibility": "visible"
 									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 549993817686620,
-									"parameters": {
-										"variable": "TempVarY",
-										"value": "currentHairstyleID&\" = currentHairstyleID\""
-									}
 								}
 							],
-							"sid": 353728642183597
+							"sid": 701152425051179
 						}
 					]
-				}
-			],
-			"sid": 921811365614930
-		},
-		{
-			"eventType": "group",
-			"disabled": false,
-			"title": "HERO STATE",
-			"description": "Setting the values of your Hero's variables",
-			"isActiveOnStart": true,
-			"children": [
+				},
 				{
 					"eventType": "comment",
-					"text": "Your hero's statistics function. When calling a function, you must specify what needs to be done in its parameter - NEED TO REWRITE TO USE NEW ITEM STRUCTURE",
-					"background-color": [
-						0.8313725490196079,
-						1,
-						0,
-						1
-					]
+					"text": "Your hero's statistics function. When calling a function, you must specify what needs to be done in its parameter - NEED TO REWRITE TO USE NEW ITEM STRUCTURE"
 				},
 				{
 					"functionName": "Calc_Hero_Stats",
@@ -5587,9 +5643,14 @@
 							"sid": 846457891862036,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
+										{
+											"type": "comment",
+											"text": "Add \"Cost\" text"
+										},
 										{
 											"id": "create-object",
 											"objectClass": "System",
@@ -5626,14 +5687,6 @@
 											"sid": 759588954864638,
 											"parameters": {
 												"size-pt": "12"
-											}
-										},
-										{
-											"id": "set-x",
-											"objectClass": "Btn_Select",
-											"sid": 688588473552563,
-											"parameters": {
-												"x": "obj_TitleText.TextWidth+obj_TitleText.X+4\n"
 											}
 										}
 									],
@@ -5743,7 +5796,6 @@
 							"sid": 137989773547334
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6828,6 +6880,30 @@
 									"sid": 473485080489798
 								},
 								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "evaluate-expression",
+											"objectClass": "System",
+											"sid": 583781487758731,
+											"parameters": {
+												"value": "Functions.GetItemCategory(CurrentItemID)=\"Boot\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "UI_StateSprite",
+											"sid": 950869695277747,
+											"parameters": {
+												"frame-number": "3"
+											}
+										}
+									],
+									"sid": 473743951471530
+								},
+								{
 									"eventType": "comment",
 									"text": "The Arrow displays information which Item is better. The one that is equipped, or the one that is in the inventory.\nTo do this, compare the values of the above ▲ Items and set the corresponding animation to the Arrow"
 								},
@@ -6865,6 +6941,61 @@
 					]
 				},
 				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "obj_TitleText",
+							"sid": 493352709060225,
+							"parameters": {
+								"instance-variable": "title",
+								"comparison": 0,
+								"value": "\"cost\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-position-to-another-object",
+							"objectClass": "obj_TitleText",
+							"sid": 400568769980536,
+							"disabled": true,
+							"parameters": {
+								"object": "Btn_Select",
+								"image-point-optional": "0"
+							}
+						},
+						{
+							"id": "set-position",
+							"objectClass": "obj_TitleText",
+							"sid": 639533473857647,
+							"parameters": {
+								"x": "UI_HintArrow.ImagePointX(1)+12",
+								"y": "UI_HintArrow.ImagePointY(1)-12"
+							}
+						},
+						{
+							"id": "set-width",
+							"objectClass": "obj_TitleText",
+							"sid": 971545883656917,
+							"parameters": {
+								"width": "obj_TitleText.TextWidth+8"
+							}
+						},
+						{
+							"id": "set-position",
+							"objectClass": "Btn_Select",
+							"sid": 838550989742693,
+							"parameters": {
+								"x": "obj_TitleText.BBoxRight+4",
+								"y": "Btn_Select.Y"
+							}
+						}
+					],
+					"sid": 914750369323616
+				},
+				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6934,6 +7065,7 @@
 					]
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
