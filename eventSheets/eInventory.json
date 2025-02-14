@@ -550,17 +550,6 @@
 							]
 						},
 						{
-							"callFunction": "createTitle",
-							"sid": 401466107311278,
-							"parameters": [
-								"\"How To\"",
-								"\"\"",
-								"428",
-								"356",
-								true
-							]
-						},
-						{
 							"callFunction": "createStat",
 							"sid": 166438853450184,
 							"parameters": [
@@ -1269,16 +1258,17 @@
 														{
 															"id": "set-instvar-value",
 															"objectClass": "ItemSlot",
-															"sid": 469720514926185,
+															"sid": 889774684482017,
 															"parameters": {
 																"instance-variable": "InventoryState",
-																"value": "\"Hair\""
+																"value": "\"Hand\""
 															}
 														},
 														{
 															"id": "set-instvar-value",
 															"objectClass": "UI_Font",
 															"sid": 792504943502532,
+															"disabled": true,
 															"parameters": {
 																"instance-variable": "state",
 																"value": "\"Head\""
@@ -1634,6 +1624,160 @@
 										}
 									],
 									"sid": 469151688730498
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 216440088455521
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 465416240232509,
+											"parameters": {
+												"object-to-create": "UI_Font",
+												"layer": "\"Inventory\"",
+												"x": "400",
+												"y": "356",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font",
+											"sid": 115913567583492,
+											"parameters": {
+												"text": "\"Hair\""
+											}
+										},
+										{
+											"id": "set-width",
+											"objectClass": "UI_Font",
+											"sid": 550436676682050,
+											"parameters": {
+												"width": "Self.TextWidth"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 951624550832498,
+											"parameters": {
+												"object-to-create": "Btn_Arrow",
+												"layer": "\"Inventory\"",
+												"x": "UI_Font.X-14",
+												"y": "UI_Font.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Btn_Arrow",
+											"sid": 907945668977204,
+											"parameters": {
+												"scale": "1.4"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Arrow",
+											"sid": 907236993828083,
+											"parameters": {
+												"instance-variable": "direction",
+												"value": "\"prev\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Arrow",
+											"sid": 109739668988902,
+											"parameters": {
+												"instance-variable": "state",
+												"value": "\"hair\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Btn_Arrow",
+											"sid": 765232684071285,
+											"parameters": {
+												"frame-number": "\"off\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Btn_Arrow",
+											"sid": 308260512019454
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 558354712020546,
+											"parameters": {
+												"object-to-create": "Btn_Arrow",
+												"layer": "\"Inventory\"",
+												"x": "UI_Font.BBoxRight + 12",
+												"y": "UI_Font.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "rotate-counter-clockwise",
+											"objectClass": "Btn_Arrow",
+											"sid": 481192198007361,
+											"parameters": {
+												"degrees": "180"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Btn_Arrow",
+											"sid": 170031312880119,
+											"parameters": {
+												"scale": "1.4"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Arrow",
+											"sid": 799189029643985,
+											"parameters": {
+												"instance-variable": "direction",
+												"value": "\"next\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Arrow",
+											"sid": 180507710883128,
+											"parameters": {
+												"instance-variable": "state",
+												"value": "\"hair\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Btn_Arrow",
+											"sid": 547108222268129,
+											"parameters": {
+												"frame-number": "\"off\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Btn_Arrow",
+											"sid": 312402589648894
+										}
+									],
+									"sid": 161699144045041
 								}
 							]
 						},
@@ -2989,6 +3133,149 @@
 				},
 				{
 					"eventType": "comment",
+					"text": "\"Arrow\" Button - Item Selection"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 890241306635003,
+							"parameters": {
+								"object": "Btn_Arrow"
+							}
+						},
+						{
+							"id": "is-on-layer",
+							"objectClass": "Btn_Arrow",
+							"sid": 952729329541251,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Arrow",
+							"sid": 714685786805623,
+							"parameters": {
+								"frame-number": "1"
+							}
+						}
+					],
+					"sid": 942129492318187
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 106326844505690,
+							"parameters": {
+								"object": "Btn_Arrow"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "is-on-layer",
+							"objectClass": "Btn_Arrow",
+							"sid": 730061532102444,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Btn_Arrow",
+							"sid": 134268161334314,
+							"parameters": {
+								"frame-number": "0"
+							}
+						}
+					],
+					"sid": 623482026582514
+				},
+				{
+					"eventType": "comment",
+					"text": "Btn_Arrow to change the selected item, like the chosen hairstyle"
+				},
+				{
+					"functionName": "switchSelection",
+					"functionDescription": "go through an array of items with prev/next btns",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "state",
+							"type": "string",
+							"initialValue": "",
+							"comment": "what state are you switching?",
+							"sid": 457489264509279
+						},
+						{
+							"name": "direction",
+							"type": "string",
+							"initialValue": "",
+							"comment": "which way are you going?",
+							"sid": 594697497963806
+						}
+					],
+					"bookmark": true,
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 180647012300145,
+							"parameters": {
+								"variable": "TempVarY",
+								"value": "\"switching selection in direction \"&direction"
+							}
+						}
+					],
+					"sid": 654002734659572,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 631661912212016,
+									"parameters": {
+										"first-value": "state",
+										"comparison": 0,
+										"second-value": "\"hair\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "changeHairstyle",
+									"sid": 703635064545551,
+									"parameters": [
+										"direction",
+										"0",
+										"\"Hair\""
+									]
+								}
+							],
+							"sid": 240362232547577
+						}
+					]
+				},
+				{
+					"eventType": "comment",
 					"text": "Btn_Select to move forward - like equip, remove or take an item"
 				},
 				{
@@ -3915,6 +4202,209 @@
 									"sid": 292894488569860
 								}
 							]
+						}
+					]
+				},
+				{
+					"functionName": "changeHairstyle",
+					"functionDescription": "",
+					"functionCategory": "Player",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "direction",
+							"type": "string",
+							"initialValue": "",
+							"comment": "next or prev",
+							"sid": 987704700009723
+						},
+						{
+							"name": "currentHairstyleID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 857269383340096
+						},
+						{
+							"name": "category",
+							"type": "string",
+							"initialValue": "\"Hair\"",
+							"comment": "",
+							"sid": 362858752042255
+						}
+					],
+					"bookmark": true,
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 728706027873700,
+							"parameters": {
+								"variable": "TempVarX",
+								"value": "currentHairstyleID&\" = currentHairstyleID \"&direction&\" = direction\""
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 569681071001388,
+							"parameters": {
+								"variable": "currentHairstyleID",
+								"value": "Functions.GetItemID(Dict_SaveGameData.Get(\"Hair\"))"
+							}
+						}
+					],
+					"sid": 985133323843144,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-by-comparison",
+									"objectClass": "System",
+									"sid": 869073861900961,
+									"parameters": {
+										"object": "PlayerSystem",
+										"expression": "PlayerSystem.category",
+										"comparison": 0,
+										"value": "category"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "PlayerSystem",
+									"sid": 453168802220580,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 462750512186684
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 808512838891646,
+									"parameters": {
+										"variable": "direction",
+										"comparison": 0,
+										"value": "\"prev\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 352594728399639,
+									"parameters": {
+										"variable": "currentHairstyleID",
+										"value": "currentHairstyleID-1"
+									}
+								}
+							],
+							"sid": 144749374308412
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 603669626500408,
+									"parameters": {
+										"variable": "direction",
+										"comparison": 0,
+										"value": "\"prev\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 828983534161847,
+									"parameters": {
+										"variable": "currentHairstyleID",
+										"value": "currentHairstyleID+1"
+									}
+								}
+							],
+							"sid": 704268428099199
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 836949210309349,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "currentHairstyleID&\" = currentHairstyleID\""
+									}
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 586491157247741,
+									"parameters": {
+										"key": "\"Hair\"",
+										"value": "Functions.GetItemName(currentHairstyleID)"
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 994839818306142
+								}
+							],
+							"sid": 734687608138540
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-by-comparison",
+									"objectClass": "System",
+									"sid": 658763663973619,
+									"parameters": {
+										"object": "PlayerSystem",
+										"expression": "PlayerSystem.ObjectTypeName",
+										"comparison": 0,
+										"value": "Functions.GetItemCostume(currentHairstyleID)"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "PlayerSystem",
+									"sid": 888485420607628,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 549993817686620,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "currentHairstyleID&\" = currentHairstyleID\""
+									}
+								}
+							],
+							"sid": 353728642183597
 						}
 					]
 				}
@@ -5253,6 +5743,7 @@
 							"sid": 137989773547334
 						},
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6374,7 +6865,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6444,7 +6934,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

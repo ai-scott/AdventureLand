@@ -569,7 +569,8 @@
 					"ItemBG",
 					"Btn_Action",
 					"Arr_ItemTriggersCollected",
-					"Btn_Cancel"
+					"Btn_Cancel",
+					"Btn_Arrow"
 				],
 				"subfolders": [],
 				"name": "Inventory"

@@ -885,6 +885,7 @@
 					"sid": 395682133315497
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5738,18 +5739,33 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
+									"sid": 274187068440652,
+									"parameters": {
+										"object": "Btn_Arrow"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "switchSelection",
+									"sid": 751986743531454,
+									"parameters": [
+										"Btn_Arrow.state",
+										"Btn_Arrow.direction"
+									]
+								}
+							],
+							"sid": 592665081958842
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
 									"sid": 910786885605339,
 									"parameters": {
 										"object": "Btn_Cancel"
-									}
-								},
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 822987887079681,
-									"disabled": true,
-									"parameters": {
-										"layer": "\"Inventory\""
 									}
 								}
 							],

@@ -1,0 +1,69 @@
+{
+	"name": "Btn_Arrow",
+	"plugin-id": "Sprite",
+	"sid": 808422891159149,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "direction",
+			"type": "string",
+			"desc": "prev, next, up, down",
+			"show": true,
+			"sid": 376254082694755
+		},
+		{
+			"name": "state",
+			"type": "string",
+			"desc": "what are you switching?",
+			"show": true,
+			"sid": 970894196399717
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 5812964,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Off"
+					},
+					{
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9724702,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Highlight"
+					}
+				],
+				"sid": 791011957198293,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}
