@@ -589,9 +589,9 @@
 						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
-							"sid": 112265488833096,
+							"sid": 299672694609488,
 							"parameters": {
-								"opacity": "Self.Opacity + 240 * dt"
+								"opacity": "Self.Opacity + 100 * dt"
 							}
 						}
 					],
@@ -608,11 +608,6 @@
 										"comparison": 5,
 										"opacity": "100"
 									}
-								},
-								{
-									"id": "trigger-once-while-true",
-									"objectClass": "System",
-									"sid": 117133744499214
 								}
 							],
 							"actions": [
@@ -624,17 +619,68 @@
 										"seconds": "0.2",
 										"use-timescale": true
 									}
-								},
-								{
-									"id": "signal",
-									"objectClass": "System",
-									"sid": 172834380462193,
-									"parameters": {
-										"tag": "Transition.Tag"
-									}
 								}
 							],
-							"sid": 614872835902693
+							"sid": 614872835902693,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 690687890517149,
+											"parameters": {
+												"first-value": "tokenat(LayoutName,2,\"_\")",
+												"comparison": 0,
+												"second-value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "displayWorldName",
+											"sid": 409783277728913
+										}
+									],
+									"sid": 435140152942386
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 779077276730932
+										},
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 604190607301791
+										}
+									],
+									"actions": [
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 870983945767879,
+											"parameters": {
+												"seconds": "0.2",
+												"use-timescale": true
+											}
+										},
+										{
+											"id": "signal",
+											"objectClass": "System",
+											"sid": 742549808840444,
+											"parameters": {
+												"tag": "Transition.Tag"
+											}
+										}
+									],
+									"sid": 657452413864796
+								}
+							]
 						}
 					]
 				},
@@ -656,9 +702,9 @@
 						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
-							"sid": 455191003448264,
+							"sid": 721048751343029,
 							"parameters": {
-								"opacity": "Self.Opacity - 240 * dt"
+								"opacity": "Self.Opacity - 100 * dt"
 							}
 						}
 					],
@@ -714,6 +760,82 @@
 							"sid": 187040172172229
 						}
 					]
+				},
+				{
+					"functionName": "displayWorldName",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 964596449088664,
+							"parameters": {
+								"object-to-create": "obj_TextBlock",
+								"layer": "\"Transitions\"",
+								"x": "120",
+								"y": "120",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-font-size",
+							"objectClass": "obj_TextBlock",
+							"sid": 861799375217952,
+							"parameters": {
+								"size-pt": "16"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 476093348600072,
+							"parameters": {
+								"text": "\"Leafwood Village\""
+							}
+						},
+						{
+							"id": "set-opacity",
+							"objectClass": "obj_TextBlock",
+							"sid": 343045217189552,
+							"parameters": {
+								"opacity": "0"
+							}
+						},
+						{
+							"id": "set-opacity",
+							"objectClass": "obj_TextBlock",
+							"sid": 897314914512989,
+							"parameters": {
+								"opacity": "Self.Opacity + 240 * dt"
+							}
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 834474215909709,
+							"parameters": {
+								"seconds": "1.5",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "signal",
+							"objectClass": "System",
+							"sid": 290322005045019,
+							"parameters": {
+								"tag": "Transition.Tag"
+							}
+						}
+					],
+					"sid": 639882704167002
 				}
 			],
 			"sid": 462325072773049
