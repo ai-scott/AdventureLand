@@ -119,6 +119,40 @@
 					},
 					{
 						"width": 18,
+						"height": 18,
+						"originX": 0.5555555555555556,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1772053,
+						"collisionPoly": {
+							"points": [
+								0.05555555555555555,
+								0.2222222222222222,
+								0.9444444444444444,
+								0.2222222222222222,
+								1,
+								0.2777777777777778,
+								1,
+								0.6666666666666666,
+								0.9444444444444444,
+								0.7222222222222222,
+								0.05555555555555555,
+								0.7222222222222222,
+								0,
+								0.6666666666666666,
+								0,
+								0.2777777777777778
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Esc"
+					},
+					{
+						"width": 18,
 						"height": 22,
 						"originX": 0.5,
 						"originY": 0.5,
@@ -140,7 +174,35 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 5203582,
+						"imageSpriteId": 4688322,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "UpArrow"
+					},
+					{
+						"width": 23,
+						"height": 25,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8936463,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "DownArrow"
+					},
+					{
+						"width": 23,
+						"height": 25,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 6776669,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": "LeftArrow"
@@ -170,6 +232,60 @@
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": "RightArrow"
+					},
+					{
+						"width": 9,
+						"height": 17,
+						"originX": 0.5,
+						"originY": 0.20588235294117646,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 438915,
+						"collisionPoly": {
+							"points": [
+								0,
+								0,
+								1,
+								0,
+								1,
+								0.9411764705882353,
+								0,
+								0.9411764705882353
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Sword"
+					},
+					{
+						"width": 13,
+						"height": 11,
+						"originX": 0.5,
+						"originY": 0.045454545454545456,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 863304,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Heart"
+					},
+					{
+						"width": 13,
+						"height": 14,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 1833677,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Bag"
 					}
 				],
 				"sid": 580021074402934,

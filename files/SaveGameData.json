@@ -27,6 +27,9 @@
         "Hand": "",
         "Legs": "Brown Shorts",
         "Boot": "Blue Slippers",
+        "WeaponFound": "",
+        "ClothingFound": "",
+        "FoodFound": "",
         "InvCollection": "",
         "ItemTriggersCollected": ""
     }

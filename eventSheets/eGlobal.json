@@ -3554,6 +3554,7 @@
 									"sid": 318452935104219
 								}
 							],
+							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [],

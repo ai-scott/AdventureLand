@@ -1601,6 +1601,249 @@
 							"sid": 140727251164592
 						}
 					]
+				},
+				{
+					"functionName": "showMessage",
+					"functionDescription": "show a special message outside of regular dialogue",
+					"functionCategory": "DialogueEvent",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "mainMessage",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 303964406744255
+						},
+						{
+							"name": "subMessage",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 488981697524835
+						}
+					],
+					"bookmark": true,
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 696387684954369,
+							"parameters": {
+								"object-to-create": "9p_TextBG",
+								"layer": "\"HUD_UI\"",
+								"x": "0",
+								"y": "130",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 154172643113649,
+							"parameters": {
+								"object-to-create": "obj_TextCameo",
+								"layer": "\"HUD_UI\"",
+								"x": "0",
+								"y": "130",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 979180595350547,
+							"parameters": {
+								"object-to-create": "Character_Cameos",
+								"layer": "\"HUD_UI\"",
+								"x": "0",
+								"y": "130",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-animation-frame",
+							"objectClass": "Character_Cameos",
+							"sid": 414289738184180,
+							"parameters": {
+								"frame-number": "\"AL\""
+							}
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "Character_Cameos",
+							"sid": 885105569985067
+						}
+					],
+					"sid": 556501407597780,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 986693962558671,
+									"parameters": {
+										"variable": "KeyItem",
+										"comparison": 1,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 146188248501903,
+									"parameters": {
+										"object-to-create": "ItemShowcase",
+										"layer": "\"HUD_UI\"",
+										"x": "354",
+										"y": "200",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "ItemShowcase",
+									"sid": 884189123200575,
+									"parameters": {
+										"scale": "3"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "ItemShowcase",
+									"sid": 294299660452875,
+									"parameters": {
+										"frame-number": "KeyItem"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "ItemShowcase",
+									"sid": 458518809691300
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "ItemShowcase",
+									"sid": 842888037089571,
+									"parameters": {
+										"where": "in-front",
+										"object": "9p_TextBG"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 231367850855702,
+									"parameters": {
+										"object-to-create": "obj_TextItemFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "20",
+										"y": "130",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 675200358032041,
+									"parameters": {
+										"variable": "InDialogue",
+										"value": "true"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 436875577963253,
+									"parameters": {
+										"variable": "DialogueResult",
+										"value": "\"End\""
+									}
+								}
+							],
+							"sid": 493091345802031
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 571864986695885,
+									"parameters": {
+										"object-to-create": "obj_TextBlock",
+										"layer": "\"HUD_UI\"",
+										"x": "68",
+										"y": "172",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "typewriter-text",
+									"objectClass": "obj_TextBlock",
+									"sid": 707665222657853,
+									"parameters": {
+										"text": "mainMessage",
+										"duration": "len(mainMessage)/TypewriterSpeed"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 840170890172378,
+									"parameters": {
+										"object-to-create": "obj_TextBlock",
+										"layer": "\"HUD_UI\"",
+										"x": "68",
+										"y": "190",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-width",
+									"objectClass": "obj_TextBlock",
+									"sid": 317928722907696,
+									"parameters": {
+										"width": "230"
+									}
+								},
+								{
+									"id": "set-font-size",
+									"objectClass": "obj_TextBlock",
+									"sid": 728753655657466,
+									"parameters": {
+										"size-pt": "10"
+									}
+								},
+								{
+									"id": "typewriter-text",
+									"objectClass": "obj_TextBlock",
+									"sid": 702710430316370,
+									"parameters": {
+										"text": "subMessage",
+										"duration": "len(subMessage)/TypewriterSpeed"
+									}
+								}
+							],
+							"sid": 932892998279187
+						}
+					]
 				}
 			],
 			"sid": 856375767517880
@@ -2164,11 +2407,6 @@
 							"id": "destroy",
 							"objectClass": "obj_TextNameFrame",
 							"sid": 857956504883856
-						},
-						{
-							"id": "destroy",
-							"objectClass": "Item_Cameos",
-							"sid": 428714601700215
 						},
 						{
 							"id": "destroy",

@@ -439,70 +439,178 @@
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 852511181691273,
-							"disabled": true,
+							"sid": 342435615698264,
 							"parameters": {
-								"object-to-create": "PlayerImage",
+								"object-to-create": "UI_Font",
 								"layer": "\"Inventory\"",
-								"x": "456",
-								"y": "208",
+								"x": "370",
+								"y": "380",
 								"create-hierarchy": false,
 								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "UI_Font",
+							"sid": 414656268364599,
+							"parameters": {
+								"text": "\"Controls\""
+							}
+						},
+						{
+							"id": "set-width",
+							"objectClass": "UI_Font",
+							"sid": 295315592015362,
+							"parameters": {
+								"width": "Self.TextWidth"
 							}
 						},
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 496156650760845,
+							"sid": 978391104821678,
 							"parameters": {
-								"object-to-create": "UI_Font_DESCR",
+								"object-to-create": "obj_TextBlock",
 								"layer": "\"Inventory\"",
-								"x": "425",
-								"y": "400",
+								"x": "370",
+								"y": "386",
 								"create-hierarchy": false,
 								"template-name": "\"\""
 							}
 						},
 						{
-							"id": "set-instvar-value",
-							"objectClass": "UI_Font_DESCR",
-							"sid": 733350062383933,
+							"id": "set-width",
+							"objectClass": "obj_TextBlock",
+							"sid": 578514594006566,
 							"parameters": {
-								"instance-variable": "ID",
-								"value": "\"HowTo\""
+								"width": "400"
+							}
+						},
+						{
+							"id": "set-font-size",
+							"objectClass": "obj_TextBlock",
+							"sid": 551022899129692,
+							"parameters": {
+								"size-pt": "12"
 							}
 						},
 						{
 							"id": "set-text",
-							"objectClass": "UI_Font_DESCR",
-							"sid": 367034737020941,
+							"objectClass": "obj_TextBlock",
+							"sid": 180228050250440,
 							"parameters": {
-								"text": "\"Click items in your Collection to use them, or drag them your Appearance to wear them. Use Appearance arrows to change colors.\""
+								"text": "\"Use [icon=LeftArrow][icon=UpArrow][icon=RightArrow][icon=DownArrow] to move or change a selection\""
 							}
 						},
 						{
-							"id": "set-size",
-							"objectClass": "UI_Font_DESCR",
-							"sid": 543625721840223,
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 368335350449104,
 							"parameters": {
-								"width": "350",
-								"height": "65"
+								"object-to-create": "obj_TextBlock",
+								"layer": "\"Inventory\"",
+								"x": "370",
+								"y": "404",
+								"create-hierarchy": false,
+								"template-name": "\"\""
 							}
 						},
 						{
-							"id": "set-default-color",
-							"objectClass": "UI_Font_DESCR",
-							"sid": 989175310383481,
+							"id": "set-width",
+							"objectClass": "obj_TextBlock",
+							"sid": 606287536119034,
 							"parameters": {
-								"color": "rgbEx255(251, 255, 189)"
+								"width": "400"
 							}
 						},
 						{
-							"id": "set-scale",
-							"objectClass": "UI_Font_DESCR",
-							"sid": 833127416442403,
+							"id": "set-font-size",
+							"objectClass": "obj_TextBlock",
+							"sid": 992344836761407,
 							"parameters": {
-								"scale": ".5"
+								"size-pt": "12"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 997774890328563,
+							"parameters": {
+								"text": "\"Tap or hit [icon=Spc] to continue or cancel or [icon=Esc] to go back\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 568172944885487,
+							"parameters": {
+								"object-to-create": "obj_TextBlock",
+								"layer": "\"Inventory\"",
+								"x": "370",
+								"y": "422",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-width",
+							"objectClass": "obj_TextBlock",
+							"sid": 436793322885463,
+							"parameters": {
+								"width": "400"
+							}
+						},
+						{
+							"id": "set-font-size",
+							"objectClass": "obj_TextBlock",
+							"sid": 652385123287822,
+							"parameters": {
+								"size-pt": "12"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 187789382442717,
+							"parameters": {
+								"text": "\"Tap 'a' or [icon=Sword] to attack and 'i' or [icon=Bag] to open inventory\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 410093117810305,
+							"parameters": {
+								"object-to-create": "obj_TextBlock",
+								"layer": "\"Inventory\"",
+								"x": "370",
+								"y": "440",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-width",
+							"objectClass": "obj_TextBlock",
+							"sid": 435705374416787,
+							"parameters": {
+								"width": "420"
+							}
+						},
+						{
+							"id": "set-font-size",
+							"objectClass": "obj_TextBlock",
+							"sid": 225848869170810,
+							"parameters": {
+								"size-pt": "12"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 570317573723771,
+							"parameters": {
+								"text": "\"Do quests to unlock stuff and save Adventure Land!\""
 							}
 						},
 						{
@@ -1638,12 +1746,12 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 465416240232509,
+											"sid": 579800413855379,
 											"parameters": {
 												"object-to-create": "UI_Font",
 												"layer": "\"Inventory\"",
-												"x": "400",
-												"y": "356",
+												"x": "396",
+												"y": "354",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -3380,9 +3488,10 @@
 										},
 										{
 											"callFunction": "collectItem",
-											"sid": 813615723274801,
+											"sid": 111579039505126,
 											"parameters": [
-												"InventoryItems.UID"
+												"InventoryItems.UID",
+												"InventoryItems.ItemID"
 											]
 										}
 									],
@@ -3439,9 +3548,10 @@
 										},
 										{
 											"callFunction": "collectItem",
-											"sid": 171670198978004,
+											"sid": 683804351296741,
 											"parameters": [
-												"InventoryItems.UID"
+												"InventoryItems.UID",
+												"InventoryItems.ItemID"
 											]
 										}
 									],
@@ -3485,6 +3595,10 @@
 												}
 											],
 											"sid": 527448493607251
+										},
+										{
+											"eventType": "comment",
+											"text": "If Item is outside of > 110 and < 121 then add the item to the collection"
 										},
 										{
 											"eventType": "block",
@@ -4134,13 +4248,229 @@
 							"initialValue": "0",
 							"comment": "",
 							"sid": 698549460528690
+						},
+						{
+							"name": "itemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "InventoryItems.ItemID",
+							"sid": 361862412131002
 						}
 					],
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 961037733220597,
+							"disabled": true,
+							"parameters": {
+								"variable": "KeyItem",
+								"value": "itemID"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 990466429554155,
+							"parameters": {
+								"variable": "TempVarY",
+								"value": "\"Functions.GetItemCategory(itemID) =\"&Functions.GetItemCategory(itemID)"
+							}
+						}
+					],
 					"sid": 935007394317735,
 					"children": [
+						{
+							"eventType": "comment",
+							"text": "If Item is a new type, display a hint"
+						},
+						{
+							"bookmark": true,
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-value",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 546887555045857,
+									"parameters": {
+										"key": "\"WeaponFound\"",
+										"comparison": 0,
+										"value": "\"\""
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 877496358679227,
+									"parameters": {
+										"first-value": "Functions.GetItemCategory(itemID)",
+										"comparison": 0,
+										"second-value": "\"Weapon\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 701278114160499,
+									"parameters": {
+										"variable": "KeyItem",
+										"value": "itemID"
+									}
+								},
+								{
+									"callFunction": "showMessage",
+									"sid": 321117663378328,
+									"parameters": [
+										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"\"Open [icon=Bag] with 'i' and equip it, then tap [icon=Sword] or 'a' to attack\""
+									]
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 545116966635458,
+									"parameters": {
+										"key": "\"WeaponFound\"",
+										"value": "\"True\""
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 121976554994133
+								}
+							],
+							"sid": 348083679259106
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-value",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 758213685890071,
+									"parameters": {
+										"key": "\"ClothingFound\"",
+										"comparison": 0,
+										"value": "\"\""
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 249576875933088,
+									"parameters": {
+										"first-value": "itemID",
+										"comparison": 5,
+										"second-value": "51"
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 891368736563596,
+									"parameters": {
+										"first-value": "itemID",
+										"comparison": 2,
+										"second-value": "111"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 109703417467176,
+									"parameters": {
+										"variable": "KeyItem",
+										"value": "itemID"
+									}
+								},
+								{
+									"callFunction": "showMessage",
+									"sid": 754834325902015,
+									"parameters": [
+										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"\"Open inventory with 'i' or [icon=Bag] and wear it to power up your skills!\""
+									]
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 172415373509906,
+									"parameters": {
+										"key": "\"ClothingFound\"",
+										"value": "\"True\""
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 189914787406640
+								}
+							],
+							"sid": 344664516152093
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-value",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 266440650138913,
+									"parameters": {
+										"key": "\"FoodFound\"",
+										"comparison": 0,
+										"value": "\"\""
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 311822475159946,
+									"parameters": {
+										"first-value": "Functions.GetItemCategory(itemID)",
+										"comparison": 0,
+										"second-value": "\"Food\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 355686913448861,
+									"parameters": {
+										"variable": "KeyItem",
+										"value": "itemID"
+									}
+								},
+								{
+									"callFunction": "showMessage",
+									"sid": 702792779676721,
+									"parameters": [
+										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"\"Open [icon=Bag] with 'i' to eat it when you need  [icon=Heart]\""
+									]
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 652194560597431,
+									"parameters": {
+										"key": "\"FoodFound\"",
+										"value": "\"True\""
+									}
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 569622559475373
+								}
+							],
+							"sid": 427978291178877
+						},
 						{
 							"eventType": "comment",
 							"text": "If item is unique set collected to true"
@@ -5779,9 +6109,9 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_TitleText",
-									"sid": 345723900791494,
+									"sid": 678778674261459,
 									"parameters": {
-										"text": "\"[icon=Gem] \" & Functions.GetItemCostbyID(InventoryItems.ItemID)&\" Not Enough\""
+										"text": "\"You Need \"& Functions.GetItemCostbyID(InventoryItems.ItemID)&\"[icon=Gem]\""
 									}
 								},
 								{
@@ -6155,9 +6485,9 @@
 								{
 									"id": "set-size",
 									"objectClass": "Hint_9patch",
-									"sid": 782806713457825,
+									"sid": 739608601041924,
 									"parameters": {
-										"width": "UI_Font_DESCR.TextWidth<170?200:UI_Font_DESCR.TextWidth+10",
+										"width": "UI_Font_DESCR.TextWidth<200?220:UI_Font_DESCR.TextWidth+10",
 										"height": "UI_Font_DESCR.TextHeight+26"
 									}
 								}
