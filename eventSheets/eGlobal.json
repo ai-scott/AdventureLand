@@ -165,7 +165,7 @@
 			"eventType": "variable",
 			"name": "PlayerSpeed",
 			"type": "number",
-			"initialValue": "150",
+			"initialValue": "120",
 			"comment": "",
 			"isStatic": false,
 			"isConstant": false,
@@ -195,7 +195,7 @@
 			"eventType": "variable",
 			"name": "AudioLevel",
 			"type": "number",
-			"initialValue": "-50",
+			"initialValue": "-10",
 			"comment": "//set at 0 is \"normal\"",
 			"isStatic": false,
 			"isConstant": false,
@@ -635,6 +635,16 @@
 												"comparison": 0,
 												"second-value": "\"\""
 											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 178140715409236,
+											"parameters": {
+												"first-value": "Dict_SaveGameData.Get(LayoutName&\"Loaded\")",
+												"comparison": 1,
+												"second-value": "\"true\""
+											}
 										}
 									],
 									"actions": [
@@ -775,12 +785,12 @@
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 964596449088664,
+							"sid": 379481740069282,
 							"parameters": {
 								"object-to-create": "obj_TextBlock",
 								"layer": "\"Transitions\"",
 								"x": "120",
-								"y": "120",
+								"y": "100",
 								"create-hierarchy": false,
 								"template-name": "\"\""
 							}
