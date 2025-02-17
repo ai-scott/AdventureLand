@@ -4226,9 +4226,9 @@
 					"actions": [
 						{
 							"callFunction": "Adjust_Gems",
-							"sid": 881761720510829,
+							"sid": 660452735372688,
 							"parameters": [
-								"sellPrice"
+								"ceil(sellPrice)"
 							]
 						}
 					],
@@ -6320,9 +6320,9 @@
 										{
 											"id": "set-text",
 											"objectClass": "obj_TitleText",
-											"sid": 718059019464577,
+											"sid": 230379472295630,
 											"parameters": {
-												"text": "\"Sell [icon=Gem] \"&(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
+												"text": "\"Sell [icon=Gem] \"&ceil(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
 											}
 										},
 										{

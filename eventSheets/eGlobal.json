@@ -195,7 +195,7 @@
 			"eventType": "variable",
 			"name": "AudioLevel",
 			"type": "number",
-			"initialValue": "-10",
+			"initialValue": "-50",
 			"comment": "//set at 0 is \"normal\"",
 			"isStatic": false,
 			"isConstant": false,
@@ -4850,6 +4850,32 @@
 									}
 								},
 								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 152501343085300,
+									"parameters": {
+										"object-to-create": "HUD_BG",
+										"layer": "\"HUD_UI\"",
+										"x": "-20",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 426511979192535,
+									"parameters": {
+										"object-to-create": "obj_TextNameFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "-51",
+										"y": "-19",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
 									"id": "set-animation-frame",
 									"objectClass": "Btn_Action",
 									"sid": 142242900707887,
@@ -4887,6 +4913,22 @@
 										"width": "24",
 										"height": "24"
 									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "obj_TextNameFrame",
+									"sid": 274751871763926,
+									"parameters": {
+										"scale": ".5"
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "HUD_BG",
+									"sid": 371202479322702,
+									"parameters": {
+										"scale": ".5"
+									}
 								}
 							],
 							"sid": 817697174611036
@@ -4908,12 +4950,106 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 926481045173149,
+									"sid": 789692370584845,
+									"parameters": {
+										"object-to-create": "HUD_BG",
+										"layer": "\"HUD_UI\"",
+										"x": "-10",
+										"y": "4",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "HUD_BG",
+									"sid": 944644870747114,
+									"parameters": {
+										"scale": ".5"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 113262516224516,
+									"parameters": {
+										"object-to-create": "obj_HeartsFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "obj_HeartsFrame",
+									"sid": 558735785540991,
+									"parameters": {
+										"scale": ".6"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 564992491812001,
+									"parameters": {
+										"object-to-create": "Btn_Action",
+										"layer": "\"HUD_UI\"",
+										"x": "8",
+										"y": "18",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "Btn_Action",
+									"sid": 243711737573769,
+									"parameters": {
+										"frame-number": "\"Gray\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Action",
+									"sid": 237502793849618,
+									"parameters": {
+										"instance-variable": "Action",
+										"value": "\"Inventory\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "Btn_Action",
+									"sid": 388730777158678
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Action",
+									"sid": 857308411288142,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "Btn_Action",
+									"sid": 281517634380474,
+									"parameters": {
+										"width": "24",
+										"height": "24"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 477952175524533,
 									"parameters": {
 										"object-to-create": "Collection",
 										"layer": "\"HUD_UI\"",
-										"x": "6",
-										"y": "16",
+										"x": "8",
+										"y": "22",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
@@ -4921,12 +5057,12 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 533617624167230,
+									"sid": 905563209728068,
 									"parameters": {
 										"object-to-create": "obj_Text_I",
 										"layer": "\"HUD_UI\"",
 										"x": "22",
-										"y": "14",
+										"y": "18",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
@@ -4950,12 +5086,12 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 116674408935235,
+									"sid": 334828686949808,
 									"parameters": {
 										"object-to-create": "obj_Text_I",
 										"layer": "\"HUD_UI\"",
-										"x": "21",
-										"y": "13",
+										"x": "23",
+										"y": "19",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}

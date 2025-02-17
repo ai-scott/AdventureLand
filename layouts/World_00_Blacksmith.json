@@ -40,6 +40,13 @@
 						"tile-x-spacing": 0,
 						"tile-y-spacing": 0
 					},
+					"instanceFolderItem": {
+						"sid": 840086561180658,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": false,
 					"world": {
@@ -161,6 +168,13 @@
 						"tile-x-spacing": 0,
 						"tile-y-spacing": 0
 					},
+					"instanceFolderItem": {
+						"sid": 377789093810270,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": false,
 					"world": {
@@ -248,6 +262,13 @@
 						"tile-x-spacing": 0,
 						"tile-y-spacing": 0
 					},
+					"instanceFolderItem": {
+						"sid": 919817231800553,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": true,
 					"world": {
@@ -299,6 +320,13 @@
 						"tile-y-offset": 0,
 						"tile-x-spacing": 0,
 						"tile-y-spacing": 0
+					},
+					"instanceFolderItem": {
+						"sid": 355783154614024,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
 					},
 					"showing": true,
 					"locked": true,
@@ -518,6 +546,13 @@
 							}
 						}
 					},
+					"instanceFolderItem": {
+						"sid": 725380911559240,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": false,
 					"world": {
@@ -563,6 +598,13 @@
 								"tags": ""
 							}
 						}
+					},
+					"instanceFolderItem": {
+						"sid": 327818111802455,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
 					},
 					"showing": true,
 					"locked": false,
@@ -610,6 +652,13 @@
 							}
 						}
 					},
+					"instanceFolderItem": {
+						"sid": 193909905441464,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": false,
 					"world": {
@@ -651,6 +700,13 @@
 								"tags": ""
 							}
 						}
+					},
+					"instanceFolderItem": {
+						"sid": 168501442162872,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
 					},
 					"showing": true,
 					"locked": false,
@@ -781,6 +837,13 @@
 						"tile-x-spacing": 0,
 						"tile-y-spacing": 0
 					},
+					"instanceFolderItem": {
+						"sid": 496406751057883,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
 					"showing": true,
 					"locked": false,
 					"world": {
@@ -865,7 +928,92 @@
 		}
 	],
 	"scene-graphs-folder-root": {
-		"items": [],
+		"items": [
+			{
+				"sid": 840086561180658,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 377789093810270,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 919817231800553,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 355783154614024,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 244823867628471,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 859123117397592,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 440949824448673,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 725380911559240,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 327818111802455,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 193909905441464,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 168501442162872,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			},
+			{
+				"sid": 496406751057883,
+				"expanded": true,
+				"folderName": "",
+				"indexInFolder": -1,
+				"folderNestingLevel": -1
+			}
+		],
 		"subfolders": []
 	},
 	"sid": 545444866015294,

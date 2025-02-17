@@ -464,7 +464,9 @@
 							"Character_Cameos",
 							"obj_TextName",
 							"obj_Text_I",
-							"obj_Text_A"
+							"obj_Text_A",
+							"obj_HeartsFrame",
+							"obj_TriggerFrame"
 						],
 						"subfolders": [],
 						"name": "Dialogue"
@@ -474,7 +476,8 @@
 							"Heart",
 							"Collection",
 							"Attack",
-							"DPad_Arrow"
+							"DPad_Arrow",
+							"HUD_BG"
 						],
 						"subfolders": [],
 						"name": "HUD"

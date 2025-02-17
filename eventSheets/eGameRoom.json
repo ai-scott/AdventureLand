@@ -1485,6 +1485,40 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
+															"sid": 953087253781810,
+															"parameters": {
+																"object-to-create": "obj_HeartsFrame",
+																"layer": "\"HUD_UI\"",
+																"x": "38",
+																"y": "37",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 895504914965088,
+															"parameters": {
+																"object-to-create": "obj_HeartsFrame",
+																"layer": "\"HUD_UI\"",
+																"x": "0",
+																"y": "39",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-scale",
+															"objectClass": "obj_HeartsFrame",
+															"sid": 415772950711691,
+															"parameters": {
+																"scale": ".7"
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
 															"sid": 586898568806329,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
@@ -1531,12 +1565,12 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
-															"sid": 630040860731142,
+															"sid": 493520660945259,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
-																"x": "6",
-																"y": "36",
+																"x": "4",
+																"y": "39",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -1702,6 +1736,27 @@
 																{
 																	"id": "create-object",
 																	"objectClass": "System",
+																	"sid": 530374956941878,
+																	"parameters": {
+																		"object-to-create": "obj_HeartsFrame",
+																		"layer": "\"HUD_UI\"",
+																		"x": "-12",
+																		"y": "39",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "set-scale",
+																	"objectClass": "obj_HeartsFrame",
+																	"sid": 993488307068276,
+																	"parameters": {
+																		"scale": ".7"
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
 																	"sid": 580126983326275,
 																	"parameters": {
 																		"object-to-create": "obj_Text_A",
@@ -1748,12 +1803,12 @@
 																{
 																	"id": "create-object",
 																	"objectClass": "System",
-																	"sid": 427837479482610,
+																	"sid": 570656720174617,
 																	"parameters": {
 																		"object-to-create": "obj_Text_A",
 																		"layer": "\"HUD_UI\"",
-																		"x": "6",
-																		"y": "36",
+																		"x": "4",
+																		"y": "39",
 																		"create-hierarchy": false,
 																		"template-name": "\"\""
 																	}
@@ -1885,12 +1940,41 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
-															"sid": 829154207417889,
+															"sid": 512697138089905,
+															"parameters": {
+																"object-to-create": "obj_TriggerFrame",
+																"layer": "\"HUD_UI\"",
+																"x": "-4",
+																"y": "39",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-scale",
+															"objectClass": "obj_TriggerFrame",
+															"sid": 747016003280541,
+															"parameters": {
+																"scale": ".7"
+															}
+														},
+														{
+															"id": "set-width",
+															"objectClass": "obj_TriggerFrame",
+															"sid": 595262799660834,
+															"parameters": {
+																"width": "93"
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 645235322054520,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
-																"x": "38",
-																"y": "37",
+																"x": "33",
+																"y": "38",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -1931,12 +2015,12 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
-															"sid": 113540627929505,
+															"sid": 598736483692916,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
-																"x": "6",
-																"y": "36",
+																"x": "3",
+																"y": "39",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
