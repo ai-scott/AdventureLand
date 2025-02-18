@@ -619,6 +619,48 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "Trigger_Scene",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 139,
+					"sid": 625265436580470,
+					"tags": "",
+					"instanceVariables": {
+						"ID": 9
+					},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 625265436580470,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 330,
+						"y": 176,
+						"width": 18.256915119198354,
+						"height": 40.29596051932338,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 103318241584490,

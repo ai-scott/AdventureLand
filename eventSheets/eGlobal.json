@@ -6108,6 +6108,7 @@
 							"sid": 821376274257705
 						},
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6243,15 +6244,7 @@
 															]
 														}
 													],
-													"sid": 235249729970626,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [],
-															"actions": [],
-															"sid": 416419371287737
-														}
-													]
+													"sid": 235249729970626
 												}
 											]
 										},
