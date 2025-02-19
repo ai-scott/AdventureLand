@@ -169,11 +169,11 @@
 				],
 				"sid": 466194103341300,
 				"name": "Sparkle",
-				"isLooping": false,
-				"isPingPong": false,
+				"isLooping": true,
+				"isPingPong": true,
 				"repeatCount": 1,
 				"repeatTo": 0,
-				"speed": 10
+				"speed": 6
 			},
 			{
 				"frames": [

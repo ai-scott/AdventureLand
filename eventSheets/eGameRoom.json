@@ -636,7 +636,6 @@
 							"sid": 964660401401353,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -941,15 +940,6 @@
 													"id": "move-to-top",
 													"objectClass": "PlayerSystem",
 													"sid": 932611109713727
-												},
-												{
-													"id": "move-to-object",
-													"objectClass": "Collectibles",
-													"sid": 826212149561323,
-													"parameters": {
-														"where": "behind",
-														"object": "PlayerSystem"
-													}
 												}
 											],
 											"sid": 725713693220604,
@@ -1012,15 +1002,6 @@
 													"id": "move-to-top",
 													"objectClass": "PlayerSystem",
 													"sid": 144876447086091
-												},
-												{
-													"id": "move-to-object",
-													"objectClass": "Collectibles",
-													"sid": 987694306856527,
-													"parameters": {
-														"where": "behind",
-														"object": "PlayerSystem"
-													}
 												}
 											],
 											"sid": 302257215247610,
@@ -1113,6 +1094,16 @@
 														"variable": "CurrentAction",
 														"comparison": 0,
 														"value": "\"None\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "CharactersTriggers",
+													"sid": 915844237693487,
+													"parameters": {
+														"instance-variable": "ID",
+														"comparison": 1,
+														"value": "-1"
 													}
 												},
 												{
@@ -1577,6 +1568,14 @@
 											"disabled": true,
 											"parameters": {
 												"unique-id": "itemUID"
+											}
+										},
+										{
+											"id": "is-animation-playing",
+											"objectClass": "Particle",
+											"sid": 709964380097042,
+											"parameters": {
+												"animation": "\"Glimmer\""
 											}
 										}
 									],
@@ -12445,7 +12444,8 @@
 							"sid": 349565116043128
 						}
 					],
-					"sid": 705124192410320
+					"sid": 705124192410320,
+					"disabled": true
 				}
 			],
 			"sid": 605217890541925

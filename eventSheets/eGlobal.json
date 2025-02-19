@@ -524,15 +524,6 @@
 						{
 							"id": "set-group-active",
 							"objectClass": "System",
-							"sid": 448248791533092,
-							"parameters": {
-								"group-name": "\"Player Engine\"",
-								"state": "deactivated"
-							}
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
 							"sid": 370586864779919,
 							"disabled": true,
 							"parameters": {
@@ -586,6 +577,24 @@
 						}
 					],
 					"actions": [
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 337534451207592,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "deactivated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 467243079246997,
+							"parameters": {
+								"group-name": "\"Triggers\"",
+								"state": "deactivated"
+							}
+						},
 						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
@@ -753,6 +762,15 @@
 									"sid": 506912980602774,
 									"parameters": {
 										"group-name": "\"Player Engine\"",
+										"state": "activated"
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 231308805879766,
+									"parameters": {
+										"group-name": "\"Triggers\"",
 										"state": "activated"
 									}
 								},
@@ -1468,1004 +1486,6 @@
 				}
 			],
 			"sid": 731698851710396
-		},
-		{
-			"eventType": "group",
-			"disabled": false,
-			"title": "Menus_Mechanics",
-			"description": "",
-			"isActiveOnStart": true,
-			"children": [
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "for-each",
-							"objectClass": "System",
-							"sid": 721979584261566,
-							"parameters": {
-								"object": "Ctrl_Menu"
-							}
-						}
-					],
-					"actions": [],
-					"sid": 174858470707331,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "Ctrl_Menu",
-									"sid": 264609040264426,
-									"parameters": {
-										"instance-variable": "Menu",
-										"comparison": 0,
-										"value": "Current_Menu"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-boolean-instvar",
-									"objectClass": "Ctrl_Menu",
-									"sid": 423076172039183,
-									"parameters": {
-										"instance-variable": "IsCurrentMenu",
-										"value": "true"
-									}
-								}
-							],
-							"sid": 501417142542925
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "Ctrl_Menu",
-									"sid": 638711091231626,
-									"parameters": {
-										"instance-variable": "Menu",
-										"comparison": 1,
-										"value": "Current_Menu"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-boolean-instvar",
-									"objectClass": "Ctrl_Menu",
-									"sid": 952254672465248,
-									"parameters": {
-										"instance-variable": "IsCurrentMenu",
-										"value": "false"
-									}
-								}
-							],
-							"sid": 678892665917383
-						}
-					]
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "is-boolean-instance-variable-set",
-							"objectClass": "Ctrl_Menu",
-							"sid": 719669817254865,
-							"parameters": {
-								"instance-variable": "IsCurrentMenu"
-							}
-						}
-					],
-					"actions": [],
-					"sid": 997754084819026,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 579214916492785,
-									"parameters": {
-										"key": 40
-									}
-								},
-								{
-									"id": "on-button-pressed",
-									"objectClass": "Gamepad",
-									"sid": 693735981214131,
-									"parameters": {
-										"gamepad": "0",
-										"button": "d-pad-down"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 768093397334666,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 733421250729390,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"comparison": 2,
-												"value": "Self.MaxLinks"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "add-to-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 922968771590223,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"value": "1"
-											}
-										}
-									],
-									"sid": 729114188898036
-								}
-							],
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 916016844393763,
-									"parameters": {
-										"key": 38
-									}
-								},
-								{
-									"id": "on-button-pressed",
-									"objectClass": "Gamepad",
-									"sid": 273864958053147,
-									"parameters": {
-										"gamepad": "0",
-										"button": "d-pad-up"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 520785756712299,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 157182295985602,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"comparison": 4,
-												"value": "0"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "subtract-from-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 826282490397627,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"value": "1"
-											}
-										}
-									],
-									"sid": 504579994365925
-								}
-							],
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "SpriteFont_Menu",
-									"sid": 278414461684571,
-									"parameters": {
-										"instance-variable": "Menu",
-										"comparison": 0,
-										"value": "Ctrl_Menu.Menu"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 446709222158935,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 815542697876891,
-											"parameters": {
-												"instance-variable": "Link_ID",
-												"comparison": 0,
-												"value": "Ctrl_Menu.CurrentLink"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-effect-parameter",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 446670212288837,
-											"parameters": {
-												"effect": "\"Brightness\"",
-												"parameter-index": "0",
-												"value": "100"
-											}
-										}
-									],
-									"sid": 872568502919023,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "on-key-pressed",
-													"objectClass": "Keyboard",
-													"sid": 552833948183298,
-													"parameters": {
-														"key": 90
-													}
-												},
-												{
-													"id": "on-button-pressed",
-													"objectClass": "Gamepad",
-													"sid": 984437837267554,
-													"parameters": {
-														"gamepad": "0",
-														"button": "button-b"
-													}
-												},
-												{
-													"id": "on-key-pressed",
-													"objectClass": "Keyboard",
-													"sid": 747177589217898,
-													"parameters": {
-														"key": 32
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "Menu_Select",
-													"sid": 715468522340507,
-													"parameters": [
-														"SpriteFont_Menu.Text",
-														"SpriteFont_Menu.Menu"
-													]
-												}
-											],
-											"sid": 662771871487494,
-											"isOrBlock": true
-										}
-									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 953592254837818,
-											"parameters": {
-												"instance-variable": "Link_ID",
-												"comparison": 1,
-												"value": "Ctrl_Menu.CurrentLink"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-effect-parameter",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 622050482409355,
-											"parameters": {
-												"effect": "\"Brightness\"",
-												"parameter-index": "0",
-												"value": "50"
-											}
-										}
-									],
-									"sid": 317287523449095
-								}
-							]
-						}
-					]
-				},
-				{
-					"functionName": "Menu_Select",
-					"functionDescription": "determining what to do when someone selects a menu item",
-					"functionCategory": "",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [
-						{
-							"name": "Text",
-							"type": "string",
-							"initialValue": "",
-							"comment": "",
-							"sid": 374022091547949
-						},
-						{
-							"name": "Menu",
-							"type": "string",
-							"initialValue": "",
-							"comment": "",
-							"sid": 983184567620411
-						}
-					],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 590970472443667,
-					"children": [
-						{
-							"eventType": "comment",
-							"text": "Title screen commands"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 631236458904910,
-									"parameters": {
-										"variable": "Text",
-										"comparison": 0,
-										"value": "\"New Game\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "remove-item",
-									"objectClass": "LocalStorage",
-									"sid": 491918348050933,
-									"parameters": {
-										"key": "\"SaveGameData\""
-									}
-								},
-								{
-									"id": "remove-item",
-									"objectClass": "LocalStorage",
-									"sid": 494553612742697,
-									"parameters": {
-										"key": "\"InvCollection\""
-									}
-								},
-								{
-									"id": "remove-item",
-									"objectClass": "LocalStorage",
-									"sid": 709991876781766,
-									"parameters": {
-										"key": "\"ItemNumbers\""
-									}
-								},
-								{
-									"id": "remove-item",
-									"objectClass": "LocalStorage",
-									"sid": 180099666680475,
-									"parameters": {
-										"key": "\"ItemTriggersCollected\""
-									}
-								},
-								{
-									"id": "clear",
-									"objectClass": "Inventories",
-									"sid": 140424725488656,
-									"parameters": {
-										"value": "0"
-									}
-								},
-								{
-									"id": "clear",
-									"objectClass": "Dict_ItemNumbers",
-									"sid": 760611270465584
-								},
-								{
-									"id": "clear",
-									"objectClass": "Dict_SaveGameData",
-									"sid": 215930620021108
-								},
-								{
-									"id": "clear-storage",
-									"objectClass": "LocalStorage",
-									"sid": 507246632171920
-								},
-								{
-									"id": "wait",
-									"objectClass": "System",
-									"sid": 486560221729888,
-									"parameters": {
-										"seconds": "0.1",
-										"use-timescale": true
-									}
-								},
-								{
-									"callFunction": "initializeGameData",
-									"sid": 398809240013368
-								},
-								{
-									"callFunction": "Transition",
-									"sid": 434298836124607,
-									"parameters": [
-										"\"Out\"",
-										"\"LayoutChange\"",
-										"\"\""
-									]
-								},
-								{
-									"id": "wait-for-signal",
-									"objectClass": "System",
-									"sid": 682382155407091,
-									"parameters": {
-										"tag": "\"LayoutChange\""
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 137993977534420,
-									"parameters": {
-										"group-name": "\"Player Engine\"",
-										"state": "activated"
-									}
-								},
-								{
-									"id": "go-to-layout-by-name",
-									"objectClass": "System",
-									"sid": 418120071061277,
-									"parameters": {
-										"layout": "\"World_00\""
-									}
-								}
-							],
-							"sid": 147964719778852
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 947844987843459,
-									"parameters": {
-										"variable": "Text",
-										"comparison": 0,
-										"value": "\"Load Game\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "initializeGameData",
-									"sid": 230926312001930
-								},
-								{
-									"id": "wait",
-									"objectClass": "System",
-									"sid": 617309807432366,
-									"parameters": {
-										"seconds": "0.1",
-										"use-timescale": true
-									}
-								},
-								{
-									"callFunction": "Transition",
-									"sid": 333303490057139,
-									"parameters": [
-										"\"Out\"",
-										"\"LayoutChange\"",
-										"\"\""
-									]
-								},
-								{
-									"id": "wait-for-signal",
-									"objectClass": "System",
-									"sid": 274046430397079,
-									"parameters": {
-										"tag": "\"LayoutChange\""
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 492613253404124,
-									"parameters": {
-										"group-name": "\"Player Engine\"",
-										"state": "activated"
-									}
-								},
-								{
-									"id": "go-to-layout-by-name",
-									"objectClass": "System",
-									"sid": 184293034075489,
-									"parameters": {
-										"layout": "\"World_00\""
-									}
-								},
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 880157174485445,
-									"parameters": {
-										"variable": "RecoveringFromDeath",
-										"value": "true"
-									}
-								}
-							],
-							"sid": 684615806275223
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 782864181192591,
-									"parameters": {
-										"variable": "Text",
-										"comparison": 0,
-										"value": "\"Try Again\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "initializeGameData",
-									"sid": 422543670404205
-								},
-								{
-									"id": "wait",
-									"objectClass": "System",
-									"sid": 855261881539175,
-									"parameters": {
-										"seconds": "0.1",
-										"use-timescale": true
-									}
-								},
-								{
-									"callFunction": "Transition",
-									"sid": 891649428708225,
-									"parameters": [
-										"\"Out\"",
-										"\"LayoutChange\"",
-										"\"\""
-									]
-								},
-								{
-									"id": "wait-for-signal",
-									"objectClass": "System",
-									"sid": 918635309180486,
-									"parameters": {
-										"tag": "\"LayoutChange\""
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 138556603497870,
-									"parameters": {
-										"group-name": "\"Player Engine\"",
-										"state": "activated"
-									}
-								},
-								{
-									"id": "go-to-layout-by-name",
-									"objectClass": "System",
-									"sid": 286598272021524,
-									"parameters": {
-										"layout": "\"World_00\""
-									}
-								},
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 561176765095346,
-									"parameters": {
-										"variable": "RecoveringFromDeath",
-										"value": "true"
-									}
-								}
-							],
-							"sid": 555308836300530
-						}
-					]
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-tap-object",
-							"objectClass": "Touch",
-							"sid": 915561016515891,
-							"parameters": {
-								"object": "SpriteFont_Menu"
-							}
-						}
-					],
-					"actions": [
-						{
-							"callFunction": "Menu_Select",
-							"sid": 351868967017817,
-							"parameters": [
-								"SpriteFont_Menu.Text",
-								"SpriteFont_Menu.Menu"
-							]
-						},
-						{
-							"id": "set-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 831835294268948,
-							"parameters": {
-								"variable": "TouchMode",
-								"value": "true"
-							}
-						}
-					],
-					"sid": 684280345331942
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 627226801069799,
-							"parameters": {
-								"object": "SpriteFont_Menu"
-							}
-						},
-						{
-							"id": "compare-instance-variable",
-							"objectClass": "SpriteFont_Menu",
-							"sid": 135895286652539,
-							"parameters": {
-								"instance-variable": "Menu",
-								"comparison": 1,
-								"value": "\"\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "set-effect-parameter",
-							"objectClass": "SpriteFont_Menu",
-							"sid": 143792419614717,
-							"parameters": {
-								"effect": "\"Brightness\"",
-								"parameter-index": "0",
-								"value": "100"
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "Ctrl_Menu",
-							"sid": 920350544604407,
-							"parameters": {
-								"instance-variable": "CurrentLink",
-								"value": "SpriteFont_Menu.Link_ID"
-							}
-						}
-					],
-					"sid": 749095936838332,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "SpriteFont_Menu",
-									"sid": 493636920039267,
-									"parameters": {
-										"instance-variable": "Link_ID",
-										"comparison": 1,
-										"value": "Ctrl_Menu.CurrentLink"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-effect-parameter",
-									"objectClass": "SpriteFont_Menu",
-									"sid": 762148174370926,
-									"parameters": {
-										"effect": "\"Brightness\"",
-										"parameter-index": "0",
-										"value": "50"
-									}
-								}
-							],
-							"sid": 473462122359576
-						}
-					]
-				},
-				{
-					"eventType": "comment",
-					"text": "Selection of hint buttons by keyboard",
-					"background-color": [
-						0.8352941176470589,
-						1,
-						0.0196078431372549,
-						1
-					]
-				},
-				{
-					"bookmark": true,
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "layer-is-visible",
-							"objectClass": "System",
-							"sid": 395667022372815,
-							"parameters": {
-								"layer": "\"Hint\""
-							}
-						}
-					],
-					"actions": [],
-					"sid": 988236028181194,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "for-each",
-									"objectClass": "System",
-									"sid": 219621480946326,
-									"parameters": {
-										"object": "InventoryBtns"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 392999287660517
-						}
-					]
-				},
-				{
-					"functionName": "displayMobileDirBtns",
-					"functionDescription": "Show directional arrows for player navigation",
-					"functionCategory": "HUD",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 756629342866474,
-							"parameters": {
-								"object-to-create": "DPad_Arrow",
-								"layer": "\"HUD_UI\"",
-								"x": "378",
-								"y": "46",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "DPad_Arrow",
-							"sid": 600611541620187,
-							"parameters": {
-								"scale": "2"
-							}
-						},
-						{
-							"id": "set-animation-frame",
-							"objectClass": "DPad_Arrow",
-							"sid": 153772422389792,
-							"parameters": {
-								"frame-number": "\"Empty\""
-							}
-						},
-						{
-							"id": "stop-animation",
-							"objectClass": "DPad_Arrow",
-							"sid": 728340457401808
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 768214405518397,
-							"parameters": {
-								"object-to-create": "DPad_Arrow",
-								"layer": "\"HUD_UI\"",
-								"x": "378",
-								"y": "20",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "DPad_Arrow",
-							"sid": 796584469809105,
-							"parameters": {
-								"scale": "1.6"
-							}
-						},
-						{
-							"id": "set-animation-frame",
-							"objectClass": "DPad_Arrow",
-							"sid": 645882562683654,
-							"parameters": {
-								"frame-number": "\"LtUp\""
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "DPad_Arrow",
-							"sid": 333738259220790,
-							"parameters": {
-								"instance-variable": "Direction",
-								"value": "\"Up\""
-							}
-						},
-						{
-							"id": "stop-animation",
-							"objectClass": "DPad_Arrow",
-							"sid": 575936983754893
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 386136407163376,
-							"parameters": {
-								"object-to-create": "DPad_Arrow",
-								"layer": "\"HUD_UI\"",
-								"x": "350",
-								"y": "46",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "DPad_Arrow",
-							"sid": 198169785805772,
-							"parameters": {
-								"scale": "1.6"
-							}
-						},
-						{
-							"id": "set-animation-frame",
-							"objectClass": "DPad_Arrow",
-							"sid": 768106809518279,
-							"parameters": {
-								"frame-number": "\"LtLeft\""
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "DPad_Arrow",
-							"sid": 813414674071064,
-							"parameters": {
-								"instance-variable": "Direction",
-								"value": "\"Left\""
-							}
-						},
-						{
-							"id": "stop-animation",
-							"objectClass": "DPad_Arrow",
-							"sid": 435491159163301
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 944029944066070,
-							"parameters": {
-								"object-to-create": "DPad_Arrow",
-								"layer": "\"HUD_UI\"",
-								"x": "378",
-								"y": "70",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "DPad_Arrow",
-							"sid": 987842032437556,
-							"parameters": {
-								"scale": "1.6"
-							}
-						},
-						{
-							"id": "set-animation-frame",
-							"objectClass": "DPad_Arrow",
-							"sid": 694730993928594,
-							"parameters": {
-								"frame-number": "\"LtDown\""
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "DPad_Arrow",
-							"sid": 441320702876807,
-							"parameters": {
-								"instance-variable": "Direction",
-								"value": "\"Down\""
-							}
-						},
-						{
-							"id": "stop-animation",
-							"objectClass": "DPad_Arrow",
-							"sid": 440269668542315
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 173941870974173,
-							"parameters": {
-								"object-to-create": "DPad_Arrow",
-								"layer": "\"HUD_UI\"",
-								"x": "404",
-								"y": "46",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "DPad_Arrow",
-							"sid": 798271563420697,
-							"parameters": {
-								"scale": "1.6"
-							}
-						},
-						{
-							"id": "set-animation-frame",
-							"objectClass": "DPad_Arrow",
-							"sid": 719910370581991,
-							"parameters": {
-								"frame-number": "\"LtRight\""
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "DPad_Arrow",
-							"sid": 421869268385763,
-							"parameters": {
-								"instance-variable": "Direction",
-								"value": "\"Right\""
-							}
-						},
-						{
-							"id": "stop-animation",
-							"objectClass": "DPad_Arrow",
-							"sid": 999126167053536
-						}
-					],
-					"sid": 660775891124114
-				}
-			],
-			"sid": 361554558683405
 		},
 		{
 			"eventType": "group",
@@ -4804,11 +3824,16 @@
 						{
 							"id": "on-start-of-layout",
 							"objectClass": "System",
-							"sid": 366223907614804
+							"sid": 166548278395195
 						}
 					],
-					"actions": [],
-					"sid": 682714725672920,
+					"actions": [
+						{
+							"type": "comment",
+							"text": "Create HUD display"
+						}
+					],
+					"sid": 446165356286726,
 					"children": [
 						{
 							"eventType": "block",
@@ -4816,7 +3841,7 @@
 								{
 									"id": "compare-boolean-eventvar",
 									"objectClass": "System",
-									"sid": 774102785647804,
+									"sid": 824838808476425,
 									"parameters": {
 										"variable": "TouchMode"
 									}
@@ -4826,131 +3851,7 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 529052421966877,
-									"parameters": {
-										"object-to-create": "Btn_Action",
-										"layer": "\"HUD_UI\"",
-										"x": "8",
-										"y": "16",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 416489086159792,
-									"parameters": {
-										"object-to-create": "Collection",
-										"layer": "\"HUD_UI\"",
-										"x": "12",
-										"y": "20",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 152501343085300,
-									"parameters": {
-										"object-to-create": "HUD_BG",
-										"layer": "\"HUD_UI\"",
-										"x": "-20",
-										"y": "0",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 426511979192535,
-									"parameters": {
-										"object-to-create": "obj_TextNameFrame",
-										"layer": "\"HUD_UI\"",
-										"x": "-51",
-										"y": "-19",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "set-animation-frame",
-									"objectClass": "Btn_Action",
-									"sid": 142242900707887,
-									"parameters": {
-										"frame-number": "\"Gray\""
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Btn_Action",
-									"sid": 929947877648554,
-									"parameters": {
-										"instance-variable": "Action",
-										"value": "\"Inventory\""
-									}
-								},
-								{
-									"id": "stop-animation",
-									"objectClass": "Btn_Action",
-									"sid": 775466537773373
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "Btn_Action",
-									"sid": 192812000191349,
-									"parameters": {
-										"visibility": "visible"
-									}
-								},
-								{
-									"id": "set-size",
-									"objectClass": "Btn_Action",
-									"sid": 792401791416886,
-									"parameters": {
-										"width": "24",
-										"height": "24"
-									}
-								},
-								{
-									"id": "set-scale",
-									"objectClass": "obj_TextNameFrame",
-									"sid": 274751871763926,
-									"parameters": {
-										"scale": ".5"
-									}
-								},
-								{
-									"id": "set-scale",
-									"objectClass": "HUD_BG",
-									"sid": 371202479322702,
-									"parameters": {
-										"scale": ".5"
-									}
-								}
-							],
-							"sid": 817697174611036
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 994805200933225,
-									"parameters": {
-										"variable": "TouchMode"
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 789692370584845,
+									"sid": 479630768867301,
 									"parameters": {
 										"object-to-create": "HUD_BG",
 										"layer": "\"HUD_UI\"",
@@ -4963,7 +3864,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "HUD_BG",
-									"sid": 944644870747114,
+									"sid": 458749984812529,
 									"parameters": {
 										"scale": ".5"
 									}
@@ -4971,7 +3872,7 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 113262516224516,
+									"sid": 936060222649989,
 									"parameters": {
 										"object-to-create": "obj_HeartsFrame",
 										"layer": "\"HUD_UI\"",
@@ -4984,7 +3885,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "obj_HeartsFrame",
-									"sid": 558735785540991,
+									"sid": 766403592762968,
 									"parameters": {
 										"scale": ".6"
 									}
@@ -4992,7 +3893,7 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 564992491812001,
+									"sid": 805875188780720,
 									"parameters": {
 										"object-to-create": "Btn_Action",
 										"layer": "\"HUD_UI\"",
@@ -5005,7 +3906,7 @@
 								{
 									"id": "set-animation-frame",
 									"objectClass": "Btn_Action",
-									"sid": 243711737573769,
+									"sid": 146822402479964,
 									"parameters": {
 										"frame-number": "\"Gray\""
 									}
@@ -5013,7 +3914,7 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "Btn_Action",
-									"sid": 237502793849618,
+									"sid": 484902769104724,
 									"parameters": {
 										"instance-variable": "Action",
 										"value": "\"Inventory\""
@@ -5022,12 +3923,12 @@
 								{
 									"id": "stop-animation",
 									"objectClass": "Btn_Action",
-									"sid": 388730777158678
+									"sid": 462533566430373
 								},
 								{
 									"id": "set-visible",
 									"objectClass": "Btn_Action",
-									"sid": 857308411288142,
+									"sid": 698158023667898,
 									"parameters": {
 										"visibility": "visible"
 									}
@@ -5035,7 +3936,7 @@
 								{
 									"id": "set-size",
 									"objectClass": "Btn_Action",
-									"sid": 281517634380474,
+									"sid": 108526811239722,
 									"parameters": {
 										"width": "24",
 										"height": "24"
@@ -5044,7 +3945,154 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 477952175524533,
+									"sid": 777562902505640,
+									"parameters": {
+										"object-to-create": "Collection",
+										"layer": "\"HUD_UI\"",
+										"x": "12",
+										"y": "22",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 485167631068231,
+									"disabled": true,
+									"parameters": {
+										"object-to-create": "obj_TextNameFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "-51",
+										"y": "-19",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "obj_TextNameFrame",
+									"sid": 320650678092956,
+									"disabled": true,
+									"parameters": {
+										"scale": ".5"
+									}
+								}
+							],
+							"sid": 461709111991991
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 514786621145001,
+									"parameters": {
+										"variable": "TouchMode"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 282314828014239,
+									"parameters": {
+										"object-to-create": "HUD_BG",
+										"layer": "\"HUD_UI\"",
+										"x": "-10",
+										"y": "4",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "HUD_BG",
+									"sid": 825361533746683,
+									"parameters": {
+										"scale": ".5"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 796353593403064,
+									"parameters": {
+										"object-to-create": "obj_HeartsFrame",
+										"layer": "\"HUD_UI\"",
+										"x": "0",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "obj_HeartsFrame",
+									"sid": 166394167380899,
+									"parameters": {
+										"scale": ".6"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 480724235103323,
+									"parameters": {
+										"object-to-create": "Btn_Action",
+										"layer": "\"HUD_UI\"",
+										"x": "8",
+										"y": "18",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "Btn_Action",
+									"sid": 678599149707118,
+									"parameters": {
+										"frame-number": "\"Gray\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Action",
+									"sid": 739422088562698,
+									"parameters": {
+										"instance-variable": "Action",
+										"value": "\"Inventory\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "Btn_Action",
+									"sid": 317268920285760
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "Btn_Action",
+									"sid": 398495129817992,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "Btn_Action",
+									"sid": 900132566163729,
+									"parameters": {
+										"width": "24",
+										"height": "24"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 353349321208587,
 									"parameters": {
 										"object-to-create": "Collection",
 										"layer": "\"HUD_UI\"",
@@ -5057,7 +4105,7 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 905563209728068,
+									"sid": 396409235392500,
 									"parameters": {
 										"object-to-create": "obj_Text_I",
 										"layer": "\"HUD_UI\"",
@@ -5070,7 +4118,7 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_Text_I",
-									"sid": 650909703353786,
+									"sid": 114586755639856,
 									"parameters": {
 										"text": "\"i\""
 									}
@@ -5078,7 +4126,7 @@
 								{
 									"id": "set-font-color",
 									"objectClass": "obj_Text_I",
-									"sid": 766347134915690,
+									"sid": 753500810712060,
 									"parameters": {
 										"color": "rgbEx255(31, 107, 7)"
 									}
@@ -5086,7 +4134,7 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 334828686949808,
+									"sid": 558042867004431,
 									"parameters": {
 										"object-to-create": "obj_Text_I",
 										"layer": "\"HUD_UI\"",
@@ -5099,167 +4147,659 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_Text_I",
-									"sid": 742469316965426,
+									"sid": 145693313329163,
 									"parameters": {
 										"text": "\"i\""
 									}
 								}
 							],
-							"sid": 391826031013285
+							"sid": 932203439264816
 						}
 					]
 				},
 				{
-					"functionName": "showAttackHint",
-					"functionDescription": "Add weapon + \"A\" in HUD",
-					"functionCategory": "",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 878698102915892,
+					"eventType": "group",
+					"disabled": false,
+					"title": "DPad",
+					"description": "",
+					"isActiveOnStart": true,
 					"children": [
 						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 870894173476014,
-									"parameters": {
-										"variable": "TouchMode"
-									}
-								}
-							],
+							"functionName": "displayMobileDirBtns",
+							"functionDescription": "Show directional arrows for player navigation",
+							"functionCategory": "HUD",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
 							"actions": [
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 885394452795126,
+									"sid": 745790579304039,
 									"parameters": {
-										"object-to-create": "Btn_Action",
+										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "34",
-										"y": "16",
+										"x": "376",
+										"y": "196",
 										"create-hierarchy": false,
 										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 385591238884445,
-									"parameters": {
-										"object-to-create": "Attack",
-										"layer": "\"HUD_UI\"",
-										"x": "40",
-										"y": "20",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "set-animation-frame",
-									"objectClass": "Attack",
-									"sid": 473592677899055,
-									"parameters": {
-										"frame-number": "\"Sword\""
-									}
-								},
-								{
-									"id": "stop-animation",
-									"objectClass": "Attack",
-									"sid": 777862322039734
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Btn_Action",
-									"sid": 728168418356547,
-									"parameters": {
-										"instance-variable": "Action",
-										"value": "\"Attack\""
-									}
-								},
-								{
-									"id": "set-animation-frame",
-									"objectClass": "Btn_Action",
-									"sid": 750812118045181,
-									"parameters": {
-										"frame-number": "\"Gray\""
-									}
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "Btn_Action",
-									"sid": 764384200956176,
-									"parameters": {
-										"visibility": "visible"
 									}
 								},
 								{
 									"id": "set-size",
-									"objectClass": "Btn_Action",
-									"sid": 588638284778192,
+									"objectClass": "DPad_Arrow",
+									"sid": 100638480830659,
 									"parameters": {
-										"width": "24",
-										"height": "24"
+										"width": "86",
+										"height": "86"
 									}
-								}
-							],
-							"sid": 960549713030460
-						},
-						{
-							"eventType": "block",
-							"conditions": [
+								},
 								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 117146926420325,
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 352291054459843,
 									"parameters": {
-										"variable": "TouchMode"
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
+										"frame-number": "\"Empty\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 300151455916952
+								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 480309947248372,
+									"sid": 895604989179950,
 									"parameters": {
-										"object-to-create": "Attack",
+										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "34",
-										"y": "16",
+										"x": "378",
+										"y": "170",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
 								},
 								{
-									"id": "set-animation-frame",
-									"objectClass": "Attack",
-									"sid": 298959106499978,
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 372943366569582,
 									"parameters": {
-										"frame-number": "\"Sword\""
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 121880784452719,
+									"parameters": {
+										"frame-number": "\"LtUp\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 132209142959290,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"Up\""
 									}
 								},
 								{
 									"id": "stop-animation",
-									"objectClass": "Attack",
-									"sid": 639169330635802
+									"objectClass": "DPad_Arrow",
+									"sid": 936732024112043
 								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 232734697269147,
+									"sid": 118279603984024,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "350",
+										"y": "196",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 153284192368303,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 289915333704337,
+									"parameters": {
+										"frame-number": "\"LtLeft\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 835968565087097,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"Left\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 583766969218520
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 225264347402362,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "378",
+										"y": "220",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 195918987545313,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 585713645003893,
+									"parameters": {
+										"frame-number": "\"LtDown\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 283572060592350,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"Down\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 773580919875709
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 539864042268560,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "404",
+										"y": "196",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 625066183399967,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 954475126640483,
+									"parameters": {
+										"frame-number": "\"LtRight\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 230590967519988,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"Right\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 388534456738390
+								}
+							],
+							"sid": 239044678680942
+						}
+					],
+					"sid": 593623740786653
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Hints & Gems",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"functionName": "showAttackHint",
+							"functionDescription": "Add weapon + \"A\" in HUD",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [],
+							"sid": 357916042724629,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 988089882312399,
+											"parameters": {
+												"variable": "TouchMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 671604298099436,
+											"parameters": {
+												"object-to-create": "Btn_Action",
+												"layer": "\"HUD_UI\"",
+												"x": "4",
+												"y": "200",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Action",
+											"sid": 445973899331218,
+											"parameters": {
+												"instance-variable": "Action",
+												"value": "\"Attack\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Btn_Action",
+											"sid": 431523806052612,
+											"parameters": {
+												"frame-number": "\"Gray\""
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Btn_Action",
+											"sid": 181304131263911,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "Btn_Action",
+											"sid": 172165051165213,
+											"parameters": {
+												"width": "40",
+												"height": "40"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 674662841709660,
+											"parameters": {
+												"object-to-create": "Attack",
+												"layer": "\"HUD_UI\"",
+												"x": "14",
+												"y": "202",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Attack",
+											"sid": 924189609313333,
+											"parameters": {
+												"frame-number": "\"Sword\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Attack",
+											"sid": 758261755611525
+										},
+										{
+											"id": "set-size",
+											"objectClass": "Attack",
+											"sid": 347336792137847,
+											"parameters": {
+												"width": "14",
+												"height": "30"
+											}
+										}
+									],
+									"sid": 963898536799267
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 831065755150348,
+											"parameters": {
+												"variable": "TouchMode"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 608645950270195,
+											"parameters": {
+												"object-to-create": "HUD_BG",
+												"layer": "\"HUD_UI\"",
+												"x": "14",
+												"y": "4",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "HUD_BG",
+											"sid": 430479349960021,
+											"parameters": {
+												"where": "behind",
+												"object": "obj_HeartsFrame"
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "HUD_BG",
+											"sid": 773777080406707,
+											"parameters": {
+												"scale": ".5"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 227693305154243,
+											"parameters": {
+												"object-to-create": "Btn_Action",
+												"layer": "\"HUD_UI\"",
+												"x": "34",
+												"y": "18",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Action",
+											"sid": 102218786322114,
+											"parameters": {
+												"instance-variable": "Action",
+												"value": "\"Attack\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Btn_Action",
+											"sid": 313756332660610,
+											"parameters": {
+												"frame-number": "\"Gray\""
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Btn_Action",
+											"sid": 758490909965344,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "Btn_Action",
+											"sid": 906256138646361,
+											"parameters": {
+												"width": "24",
+												"height": "24"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 352145525247108,
+											"parameters": {
+												"object-to-create": "Attack",
+												"layer": "\"HUD_UI\"",
+												"x": "37",
+												"y": "21",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Attack",
+											"sid": 262183911622176,
+											"parameters": {
+												"frame-number": "\"Sword\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Attack",
+											"sid": 178362993812208
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 719778154452228,
+											"parameters": {
+												"object-to-create": "obj_Text_A",
+												"layer": "\"HUD_UI\"",
+												"x": "48",
+												"y": "19",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_Text_A",
+											"sid": 637178037991954,
+											"parameters": {
+												"text": "\"a\""
+											}
+										},
+										{
+											"id": "set-font-color",
+											"objectClass": "obj_Text_A",
+											"sid": 465122487268389,
+											"parameters": {
+												"color": "rgbEx255(31, 107, 7)"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 914857015297854,
+											"parameters": {
+												"object-to-create": "obj_Text_A",
+												"layer": "\"HUD_UI\"",
+												"x": "47",
+												"y": "18",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_Text_A",
+											"sid": 911215227476382,
+											"parameters": {
+												"text": "\"a\""
+											}
+										}
+									],
+									"sid": 610791166323159
+								}
+							]
+						},
+						{
+							"functionName": "hideAttackHint",
+							"functionDescription": "Remove Weapon + \"A\" in HUD",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "Attack",
+									"sid": 226365554522988,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Attack",
+									"sid": 117068650113702
+								}
+							],
+							"sid": 406037209570786,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-text",
+											"objectClass": "obj_Text_A",
+											"sid": 549600410146390,
+											"parameters": {
+												"text-to-compare": "\"a\"",
+												"case-sensitivity": "ignore-case"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "obj_Text_A",
+											"sid": 228682313306712
+										},
+										{
+											"id": "destroy",
+											"objectClass": "obj_Text_A",
+											"sid": 873648129715019
+										}
+									],
+									"sid": 129274449287975
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Btn_Action",
+											"sid": 510091333995529,
+											"parameters": {
+												"instance-variable": "Action",
+												"comparison": 0,
+												"value": "\"Attack\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Btn_Action",
+											"sid": 236952846237202
+										}
+									],
+									"sid": 796971498737405
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-x",
+											"objectClass": "HUD_BG",
+											"sid": 692681954736230,
+											"parameters": {
+												"comparison": 0,
+												"x-co-ordinate": "14"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "HUD_BG",
+											"sid": 994329625726926
+										}
+									],
+									"sid": 457699616649283
+								}
+							]
+						},
+						{
+							"functionName": "showGemsInHUD",
+							"functionDescription": "Display Gems count in HUD",
+							"functionCategory": "HUD",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 979720487529658,
 									"parameters": {
 										"object-to-create": "obj_Text_A",
 										"layer": "\"HUD_UI\"",
-										"x": "48",
-										"y": "14",
+										"x": "32",
+										"y": "18",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
@@ -5267,15 +4807,75 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_Text_A",
-									"sid": 827517504869211,
+									"sid": 654211668362102,
 									"parameters": {
-										"text": "\"a\""
+										"text": "\"[icon=Gem]\""
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 645452665155407,
+									"parameters": {
+										"object-to-create": "HUD_BG",
+										"layer": "\"HUD_UI\"",
+										"x": "20",
+										"y": "4",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "HUD_BG",
+									"sid": 179272237321718,
+									"parameters": {
+										"where": "behind",
+										"object": "obj_HeartsFrame"
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "HUD_BG",
+									"sid": 101753994905757,
+									"parameters": {
+										"scale": ".5"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 515151642604955,
+									"parameters": {
+										"object-to-create": "obj_Text_A",
+										"layer": "\"HUD_UI\"",
+										"x": "46",
+										"y": "18",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_Text_A",
+									"sid": 563201006655611,
+									"parameters": {
+										"text": "Dict_SaveGameData.Get(\"Gems\")"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "obj_Text_A",
+									"sid": 884295764366622,
+									"parameters": {
+										"instance-variable": "field",
+										"value": "\"Gems\""
 									}
 								},
 								{
 									"id": "set-font-color",
 									"objectClass": "obj_Text_A",
-									"sid": 361764786184372,
+									"sid": 288769297374218,
 									"parameters": {
 										"color": "rgbEx255(31, 107, 7)"
 									}
@@ -5283,241 +4883,350 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 288146053217918,
+									"sid": 365439883128939,
 									"parameters": {
 										"object-to-create": "obj_Text_A",
 										"layer": "\"HUD_UI\"",
 										"x": "47",
-										"y": "13",
+										"y": "19",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
 								},
 								{
-									"id": "set-text",
+									"id": "set-instvar-value",
 									"objectClass": "obj_Text_A",
-									"sid": 164281267147541,
+									"sid": 183133882867942,
 									"parameters": {
-										"text": "\"a\""
+										"instance-variable": "field",
+										"value": "\"Gems\""
 									}
-								}
-							],
-							"sid": 985744459596935
-						}
-					]
-				},
-				{
-					"functionName": "hideAttackHint",
-					"functionDescription": "Remove Weapon + \"A\" in HUD",
-					"functionCategory": "",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [
-						{
-							"id": "is-on-layer",
-							"objectClass": "Attack",
-							"sid": 778737927646186,
-							"parameters": {
-								"layer": "\"HUD_UI\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "destroy",
-							"objectClass": "Attack",
-							"sid": 951323659429770
-						}
-					],
-					"sid": 851230083939932,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-text",
-									"objectClass": "obj_Text_A",
-									"sid": 268513399385882,
-									"parameters": {
-										"text-to-compare": "\"a\"",
-										"case-sensitivity": "ignore-case"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "destroy",
-									"objectClass": "obj_Text_A",
-									"sid": 749384475257067
 								},
 								{
-									"id": "destroy",
+									"id": "set-text",
 									"objectClass": "obj_Text_A",
-									"sid": 265147100280630
-								}
-							],
-							"sid": 189670013176559
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "Btn_Action",
-									"sid": 899650833093632,
+									"sid": 201311518482519,
 									"parameters": {
-										"instance-variable": "Action",
-										"comparison": 0,
-										"value": "\"Attack\""
+										"text": "Dict_SaveGameData.Get(\"Gems\")"
 									}
 								}
 							],
-							"actions": [
-								{
-									"id": "destroy",
-									"objectClass": "Btn_Action",
-									"sid": 990260951499637
-								}
-							],
-							"sid": 368571576015228
-						}
-					]
-				},
-				{
-					"functionName": "showGemsInHUD",
-					"functionDescription": "Display Gems count in HUD",
-					"functionCategory": "HUD",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 204206604013706,
-							"parameters": {
-								"object-to-create": "obj_Text_A",
-								"layer": "\"HUD_UI\"",
-								"x": "32",
-								"y": "18",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-text",
-							"objectClass": "obj_Text_A",
-							"sid": 297687358293061,
-							"parameters": {
-								"text": "\"[icon=Gem]\""
-							}
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 584097335827071,
-							"parameters": {
-								"object-to-create": "HUD_BG",
-								"layer": "\"HUD_UI\"",
-								"x": "20",
-								"y": "4",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "move-to-object",
-							"objectClass": "HUD_BG",
-							"sid": 567751807738968,
-							"parameters": {
-								"where": "behind",
-								"object": "obj_HeartsFrame"
-							}
-						},
-						{
-							"id": "set-scale",
-							"objectClass": "HUD_BG",
-							"sid": 442598069403887,
-							"parameters": {
-								"scale": ".5"
-							}
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 641066273139657,
-							"parameters": {
-								"object-to-create": "obj_Text_A",
-								"layer": "\"HUD_UI\"",
-								"x": "46",
-								"y": "18",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-text",
-							"objectClass": "obj_Text_A",
-							"sid": 811455986205551,
-							"parameters": {
-								"text": "Dict_SaveGameData.Get(\"Gems\")"
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "obj_Text_A",
-							"sid": 133068418354699,
-							"parameters": {
-								"instance-variable": "field",
-								"value": "\"Gems\""
-							}
-						},
-						{
-							"id": "set-font-color",
-							"objectClass": "obj_Text_A",
-							"sid": 425609736850771,
-							"parameters": {
-								"color": "rgbEx255(31, 107, 7)"
-							}
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
-							"sid": 692609603278389,
-							"parameters": {
-								"object-to-create": "obj_Text_A",
-								"layer": "\"HUD_UI\"",
-								"x": "47",
-								"y": "19",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "set-instvar-value",
-							"objectClass": "obj_Text_A",
-							"sid": 861946962942659,
-							"parameters": {
-								"instance-variable": "field",
-								"value": "\"Gems\""
-							}
-						},
-						{
-							"id": "set-text",
-							"objectClass": "obj_Text_A",
-							"sid": 879044256021313,
-							"parameters": {
-								"text": "Dict_SaveGameData.Get(\"Gems\")"
-							}
+							"sid": 658344682266942
 						}
 					],
-					"sid": 842709422043296
+					"sid": 201288502150000
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Option Menus",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"functionName": "Menu_Select",
+							"functionDescription": "determining what to do when someone selects a menu item",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "Text",
+									"type": "string",
+									"initialValue": "",
+									"comment": "",
+									"sid": 374022091547949
+								},
+								{
+									"name": "Menu",
+									"type": "string",
+									"initialValue": "",
+									"comment": "",
+									"sid": 983184567620411
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [],
+							"sid": 620714950063135,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Title screen commands"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 532341485847725,
+											"parameters": {
+												"variable": "Text",
+												"comparison": 0,
+												"value": "\"New Game\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "remove-item",
+											"objectClass": "LocalStorage",
+											"sid": 726941158165436,
+											"parameters": {
+												"key": "\"SaveGameData\""
+											}
+										},
+										{
+											"id": "remove-item",
+											"objectClass": "LocalStorage",
+											"sid": 556912895789149,
+											"parameters": {
+												"key": "\"InvCollection\""
+											}
+										},
+										{
+											"id": "remove-item",
+											"objectClass": "LocalStorage",
+											"sid": 232473198824923,
+											"parameters": {
+												"key": "\"ItemNumbers\""
+											}
+										},
+										{
+											"id": "remove-item",
+											"objectClass": "LocalStorage",
+											"sid": 237788938627399,
+											"parameters": {
+												"key": "\"ItemTriggersCollected\""
+											}
+										},
+										{
+											"id": "clear",
+											"objectClass": "Inventories",
+											"sid": 278965117739266,
+											"parameters": {
+												"value": "0"
+											}
+										},
+										{
+											"id": "clear",
+											"objectClass": "Dict_ItemNumbers",
+											"sid": 731315483329969
+										},
+										{
+											"id": "clear",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 945238197685527
+										},
+										{
+											"id": "clear-storage",
+											"objectClass": "LocalStorage",
+											"sid": 480929001068089
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 980310578084907,
+											"parameters": {
+												"seconds": "0.1",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "initializeGameData",
+											"sid": 336398925407177
+										},
+										{
+											"callFunction": "Transition",
+											"sid": 597241330840080,
+											"parameters": [
+												"\"Out\"",
+												"\"LayoutChange\"",
+												"\"\""
+											]
+										},
+										{
+											"id": "wait-for-signal",
+											"objectClass": "System",
+											"sid": 416381467077502,
+											"parameters": {
+												"tag": "\"LayoutChange\""
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 389462231105840,
+											"parameters": {
+												"group-name": "\"Player Engine\"",
+												"state": "activated"
+											}
+										},
+										{
+											"id": "go-to-layout-by-name",
+											"objectClass": "System",
+											"sid": 803607409628433,
+											"parameters": {
+												"layout": "\"World_00\""
+											}
+										}
+									],
+									"sid": 907293076980002
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 935787705581806,
+											"parameters": {
+												"variable": "Text",
+												"comparison": 0,
+												"value": "\"Load Game\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "initializeGameData",
+											"sid": 883730139555407
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 986916920107585,
+											"parameters": {
+												"seconds": "0.1",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "Transition",
+											"sid": 255749163244119,
+											"parameters": [
+												"\"Out\"",
+												"\"LayoutChange\"",
+												"\"\""
+											]
+										},
+										{
+											"id": "wait-for-signal",
+											"objectClass": "System",
+											"sid": 326190589552235,
+											"parameters": {
+												"tag": "\"LayoutChange\""
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 868785798795151,
+											"parameters": {
+												"group-name": "\"Player Engine\"",
+												"state": "activated"
+											}
+										},
+										{
+											"id": "go-to-layout-by-name",
+											"objectClass": "System",
+											"sid": 629939344369762,
+											"parameters": {
+												"layout": "\"World_00\""
+											}
+										},
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 385243274008696,
+											"parameters": {
+												"variable": "RecoveringFromDeath",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 631053329346557
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 365491021070135,
+											"parameters": {
+												"variable": "Text",
+												"comparison": 0,
+												"value": "\"Try Again\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "initializeGameData",
+											"sid": 379798149546579
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 103892649178941,
+											"parameters": {
+												"seconds": "0.1",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "Transition",
+											"sid": 320449100019733,
+											"parameters": [
+												"\"Out\"",
+												"\"LayoutChange\"",
+												"\"\""
+											]
+										},
+										{
+											"id": "wait-for-signal",
+											"objectClass": "System",
+											"sid": 621366276820206,
+											"parameters": {
+												"tag": "\"LayoutChange\""
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 218662415866229,
+											"parameters": {
+												"group-name": "\"Player Engine\"",
+												"state": "activated"
+											}
+										},
+										{
+											"id": "go-to-layout-by-name",
+											"objectClass": "System",
+											"sid": 522090960538783,
+											"parameters": {
+												"layout": "\"World_00\""
+											}
+										},
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 129108305905030,
+											"parameters": {
+												"variable": "RecoveringFromDeath",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 568159287244740
+								}
+							]
+						}
+					],
+					"sid": 596492412334612
 				}
 			],
 			"sid": 798673745992563
@@ -5529,6 +5238,482 @@
 			"description": "",
 			"isActiveOnStart": true,
 			"children": [
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Menus_Mechanics",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 414770972822927,
+									"parameters": {
+										"object": "Ctrl_Menu"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 868635600466012,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 236631404823550,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 0,
+												"value": "Current_Menu"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 224776057218376,
+											"parameters": {
+												"instance-variable": "IsCurrentMenu",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 719563536256883
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 274420033630414,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 1,
+												"value": "Current_Menu"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 561410298611165,
+											"parameters": {
+												"instance-variable": "IsCurrentMenu",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 695288954588621
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "Ctrl_Menu",
+									"sid": 207943299973308,
+									"parameters": {
+										"instance-variable": "IsCurrentMenu"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 323947983981432,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 328110018904399,
+											"parameters": {
+												"key": 40
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 859972631576152,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-down"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 155344650880038,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Menu",
+													"sid": 710782194728236,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 2,
+														"value": "Self.MaxLinks"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Menu",
+													"sid": 750187542893743,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 435773423148624
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 229983866891078,
+											"parameters": {
+												"key": 38
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 833006648602456,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-up"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 300130448840369,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Menu",
+													"sid": 848576698782025,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 4,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-instvar",
+													"objectClass": "Ctrl_Menu",
+													"sid": 837765805396614,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 511379936187045
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 420259055888338,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 0,
+												"value": "Ctrl_Menu.Menu"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 364799745001279,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 948167799554804,
+													"parameters": {
+														"instance-variable": "Link_ID",
+														"comparison": 0,
+														"value": "Ctrl_Menu.CurrentLink"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-effect-parameter",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 395293711828436,
+													"parameters": {
+														"effect": "\"Brightness\"",
+														"parameter-index": "0",
+														"value": "100"
+													}
+												}
+											],
+											"sid": 875042853279688,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "on-key-pressed",
+															"objectClass": "Keyboard",
+															"sid": 266085109811919,
+															"parameters": {
+																"key": 90
+															}
+														},
+														{
+															"id": "on-button-pressed",
+															"objectClass": "Gamepad",
+															"sid": 855966123006561,
+															"parameters": {
+																"gamepad": "0",
+																"button": "button-b"
+															}
+														},
+														{
+															"id": "on-key-pressed",
+															"objectClass": "Keyboard",
+															"sid": 888302166966407,
+															"parameters": {
+																"key": 32
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Menu_Select",
+															"sid": 589495010881820,
+															"parameters": [
+																"SpriteFont_Menu.Text",
+																"SpriteFont_Menu.Menu"
+															]
+														}
+													],
+													"sid": 614981061448494,
+													"isOrBlock": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 150670261608415,
+													"parameters": {
+														"instance-variable": "Link_ID",
+														"comparison": 1,
+														"value": "Ctrl_Menu.CurrentLink"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-effect-parameter",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 744179062430095,
+													"parameters": {
+														"effect": "\"Brightness\"",
+														"parameter-index": "0",
+														"value": "50"
+													}
+												}
+											],
+											"sid": 493143311212439
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
+									"sid": 539966429615680,
+									"parameters": {
+										"object": "SpriteFont_Menu"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "Menu_Select",
+									"sid": 874030647735520,
+									"parameters": [
+										"SpriteFont_Menu.Text",
+										"SpriteFont_Menu.Menu"
+									]
+								},
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 669901958785667,
+									"parameters": {
+										"variable": "TouchMode",
+										"value": "true"
+									}
+								}
+							],
+							"sid": 650232857313822
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 267585708105658,
+									"parameters": {
+										"object": "SpriteFont_Menu"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 370385780685653,
+									"parameters": {
+										"instance-variable": "Menu",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 972480910700284,
+									"parameters": {
+										"effect": "\"Brightness\"",
+										"parameter-index": "0",
+										"value": "100"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Menu",
+									"sid": 796130402622398,
+									"parameters": {
+										"instance-variable": "CurrentLink",
+										"value": "SpriteFont_Menu.Link_ID"
+									}
+								}
+							],
+							"sid": 716315776113892,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 250841387219557,
+											"parameters": {
+												"instance-variable": "Link_ID",
+												"comparison": 1,
+												"value": "Ctrl_Menu.CurrentLink"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-effect-parameter",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 242229249188455,
+											"parameters": {
+												"effect": "\"Brightness\"",
+												"parameter-index": "0",
+												"value": "50"
+											}
+										}
+									],
+									"sid": 273096875246628
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Selection of hint buttons by keyboard",
+							"background-color": [
+								0.8352941176470589,
+								1,
+								0.0196078431372549,
+								1
+							]
+						},
+						{
+							"bookmark": true,
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 183654324026747,
+									"parameters": {
+										"layer": "\"Hint\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 878896928274706,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each",
+											"objectClass": "System",
+											"sid": 931972036511261,
+											"parameters": {
+												"object": "InventoryBtns"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 309319839533720
+								}
+							]
+						}
+					],
+					"sid": 679437998879336
+				},
 				{
 					"eventType": "group",
 					"disabled": false,
@@ -6108,7 +6293,6 @@
 							"sid": 821376274257705
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6405,8 +6589,7 @@
 															"sid": 449069526845110
 														}
 													],
-													"sid": 194867010688502,
-													"isOrBlock": true
+													"sid": 194867010688502
 												},
 												{
 													"eventType": "block",

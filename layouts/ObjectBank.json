@@ -1504,7 +1504,9 @@
 					"uid": 98,
 					"sid": 461557274387053,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"ID": 1
+					},
 					"behaviors": {
 						"Bullet": {
 							"properties": {

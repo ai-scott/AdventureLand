@@ -319,21 +319,33 @@
 										"variable": "TextArrayZIndex",
 										"value": "CharactersTriggers.ID"
 									}
-								},
-								{
-									"callFunction": "initiateDialogue",
-									"sid": 330819785500288,
-									"parameters": [
-										"CharactersTriggers.ObjectTypeName"
-									]
 								}
 							],
 							"sid": 184412931045519,
 							"children": [
 								{
 									"eventType": "block",
-									"conditions": [],
-									"actions": [],
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 950507576607263,
+											"parameters": {
+												"variable": "TextArrayZIndex",
+												"comparison": 1,
+												"value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "initiateDialogue",
+											"sid": 907547859385234,
+											"parameters": [
+												"CharactersTriggers.ObjectTypeName"
+											]
+										}
+									],
 									"sid": 716823360405141
 								}
 							]
@@ -2370,33 +2382,23 @@
 					"functionCopyPicked": false,
 					"functionIsAsync": false,
 					"functionParameters": [],
+					"bookmark": true,
 					"eventType": "function-block",
-					"conditions": [],
+					"conditions": [
+						{
+							"id": "is-on-layer",
+							"objectClass": "obj_TextBlock",
+							"sid": 937790801671055,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							}
+						}
+					],
 					"actions": [
 						{
 							"id": "destroy",
 							"objectClass": "obj_TextBlock",
 							"sid": 151312541812597
-						},
-						{
-							"id": "destroy",
-							"objectClass": "obj_TextOption1",
-							"sid": 134106548649016
-						},
-						{
-							"id": "destroy",
-							"objectClass": "obj_TextOption2",
-							"sid": 141622145413967
-						},
-						{
-							"id": "destroy",
-							"objectClass": "obj_textInput",
-							"sid": 761076534711564
-						},
-						{
-							"id": "destroy",
-							"objectClass": "obj_TextName",
-							"sid": 633667294742716
 						},
 						{
 							"id": "destroy",
@@ -2426,11 +2428,6 @@
 								"variable": "KeyItem",
 								"value": "0"
 							}
-						},
-						{
-							"id": "destroy",
-							"objectClass": "GoButton",
-							"sid": 628919863097641
 						}
 					],
 					"sid": 647562806740159,
@@ -2455,6 +2452,87 @@
 								}
 							],
 							"sid": 796807582919135
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "obj_TextOption1",
+									"sid": 121940381358532,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								},
+								{
+									"id": "is-on-layer",
+									"objectClass": "obj_TextOption2",
+									"sid": 495882800303209,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TextOption1",
+									"sid": 455856370743351
+								},
+								{
+									"id": "destroy",
+									"objectClass": "obj_TextOption2",
+									"sid": 756228069151820
+								}
+							],
+							"sid": 843901122360149
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "obj_textInput",
+									"sid": 821551063355232,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "GoButton",
+									"sid": 467805428165698
+								},
+								{
+									"id": "destroy",
+									"objectClass": "obj_textInput",
+									"sid": 454948451202144
+								}
+							],
+							"sid": 570092432732975
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "obj_TextName",
+									"sid": 227666587442071,
+									"parameters": {
+										"layer": "\"HUD_UI\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "obj_TextName",
+									"sid": 236247359340544
+								}
+							],
+							"sid": 292692819821112
 						},
 						{
 							"eventType": "block",

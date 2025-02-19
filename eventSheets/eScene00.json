@@ -339,6 +339,37 @@
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
+							"sid": 425505533231219,
+							"parameters": {
+								"key": "\"Waterfall_BillQuest\"",
+								"comparison": 0,
+								"value": "\"SeaMonsterKeyFound:003\" "
+							}
+						},
+						{
+							"id": "has-tags",
+							"objectClass": "Particle",
+							"sid": 197794914893562,
+							"parameters": {
+								"tags": "\"SeaMonsterKey\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "Particle",
+							"sid": 262643510884029
+						}
+					],
+					"sid": 992258430712991
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
 							"sid": 946963351636853,
 							"parameters": {
 								"key": "\"PennyQuest\"",
@@ -503,11 +534,20 @@
 			"functionIsAsync": false,
 			"functionParameters": [],
 			"eventType": "function-block",
-			"conditions": [],
+			"conditions": [
+				{
+					"id": "has-tags",
+					"objectClass": "Particle",
+					"sid": 342603891685927,
+					"parameters": {
+						"tags": "\"SeaMonsterKey\""
+					}
+				}
+			],
 			"actions": [
 				{
 					"id": "destroy",
-					"objectClass": "Sparkly",
+					"objectClass": "Particle",
 					"sid": 487099609718636
 				}
 			],

@@ -415,8 +415,7 @@
 					"GateStatue",
 					"DungeonDoor",
 					"Door",
-					"Destructible",
-					"Sparkly"
+					"Destructible"
 				],
 				"subfolders": [],
 				"name": "Objects"
@@ -611,8 +610,7 @@
 			"Hazards",
 			"InventoryItems",
 			"InventoryBtns",
-			"Inventories",
-			"Collectibles"
+			"Inventories"
 		],
 		"subfolders": []
 	},
