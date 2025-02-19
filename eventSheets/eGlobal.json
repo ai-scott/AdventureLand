@@ -5246,6 +5246,7 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5689,6 +5690,11 @@
 									"parameters": {
 										"layer": "\"Hint\""
 									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 891538731413020
 								}
 							],
 							"actions": [],
@@ -5704,12 +5710,245 @@
 											"parameters": {
 												"object": "InventoryBtns"
 											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 593739933333861,
+											"parameters": {
+												"first-value": "InventoryBtns.ObjectTypeName",
+												"comparison": 1,
+												"second-value": "\"Btn_Action\""
+											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 172211123360883,
+											"parameters": {
+												"instance-variable": "MaxLinks",
+												"value": "1"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "InventoryBtns",
+											"sid": 287162367628532,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"value": "loopindex"
+											}
+										}
+									],
 									"sid": 309319839533720
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 342030496153395,
+									"parameters": {
+										"key": 37
+									}
+								},
+								{
+									"id": "on-button-pressed",
+									"objectClass": "Gamepad",
+									"sid": 183578180215845,
+									"parameters": {
+										"gamepad": "0",
+										"button": "d-pad-left"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 760474170050284,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 472629306897256,
+											"parameters": {
+												"instance-variable": "CurrentLink",
+												"comparison": 2,
+												"value": "Self.MaxLinks"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 106776095747833,
+											"parameters": {
+												"instance-variable": "CurrentLink",
+												"value": "1"
+											}
+										}
+									],
+									"sid": 844966510821648
+								}
+							],
+							"isOrBlock": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 882127954261982,
+									"parameters": {
+										"key": 39
+									}
+								},
+								{
+									"id": "on-button-pressed",
+									"objectClass": "Gamepad",
+									"sid": 101112335647295,
+									"parameters": {
+										"gamepad": "0",
+										"button": "d-pad-right"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 161024849685025,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 318652559373296,
+											"parameters": {
+												"instance-variable": "CurrentLink",
+												"comparison": 4,
+												"value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "subtract-from-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 235011408322861,
+											"parameters": {
+												"instance-variable": "CurrentLink",
+												"value": "1"
+											}
+										}
+									],
+									"sid": 410244789322828
+								}
+							],
+							"isOrBlock": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "InventoryBtns",
+									"sid": 109036632560938,
+									"parameters": {
+										"instance-variable": "LinkID",
+										"comparison": 0,
+										"value": "Ctrl_Menu.CurrentLink"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation-frame",
+									"objectClass": "InventoryBtns",
+									"sid": 568474296309723,
+									"parameters": {
+										"frame-number": "2"
+									}
+								}
+							],
+							"sid": 606235345965101,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 363574904609149,
+											"parameters": {
+												"key": 90
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 747412723718323,
+											"parameters": {
+												"gamepad": "0",
+												"button": "button-b"
+											}
+										},
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 853497769870161,
+											"parameters": {
+												"key": 32
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Menu_Select",
+											"sid": 765085870726343,
+											"parameters": [
+												"SpriteFont_Menu.Text",
+												"SpriteFont_Menu.Menu"
+											]
+										}
+									],
+									"sid": 682111384782166,
+									"isOrBlock": true
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "InventoryBtns",
+									"sid": 790843644942835,
+									"parameters": {
+										"instance-variable": "LinkID",
+										"comparison": 1,
+										"value": "Ctrl_Menu.CurrentLink"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation-frame",
+									"objectClass": "InventoryBtns",
+									"sid": 304339472929028,
+									"parameters": {
+										"frame-number": "1"
+									}
+								}
+							],
+							"sid": 307295588596891
 						}
 					],
 					"sid": 679437998879336

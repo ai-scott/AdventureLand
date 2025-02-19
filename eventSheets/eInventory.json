@@ -5370,6 +5370,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -5638,19 +5639,6 @@
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 436590706314388,
-							"parameters": {
-								"object-to-create": "Btn_Cancel",
-								"layer": "\"Hint\"",
-								"x": "0",
-								"y": "0",
-								"create-hierarchy": false,
-								"template-name": "\"\""
-							}
-						},
-						{
-							"id": "create-object",
-							"objectClass": "System",
 							"sid": 867981317210765,
 							"parameters": {
 								"object-to-create": "obj_TitleText",
@@ -5701,6 +5689,46 @@
 							"sid": 167543771226579,
 							"parameters": {
 								"visibility": "visible"
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 159448520987581,
+							"parameters": {
+								"object-to-create": "Ctrl_Menu",
+								"layer": "\"Hint\"",
+								"x": "-10",
+								"y": "-10",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "Ctrl_Menu",
+							"sid": 775335885462330,
+							"parameters": {
+								"instance-variable": "Menu",
+								"value": "\"ItemMenu\""
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "Ctrl_Menu",
+							"sid": 158380835584919,
+							"parameters": {
+								"instance-variable": "CurrentLink",
+								"value": "1"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "Ctrl_Menu",
+							"sid": 612219221880300,
+							"parameters": {
+								"instance-variable": "MaxLinks",
+								"value": "0"
 							}
 						}
 					],
@@ -6345,6 +6373,19 @@
 								{
 									"type": "comment",
 									"text": "Create Cancel button and label"
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 359975822444164,
+									"parameters": {
+										"object-to-create": "Btn_Cancel",
+										"layer": "\"Hint\"",
+										"x": "0",
+										"y": "0",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
 								},
 								{
 									"id": "set-scale",
@@ -7697,6 +7738,11 @@
 							"id": "destroy",
 							"objectClass": "UI_HintArrow",
 							"sid": 236570328957008
+						},
+						{
+							"id": "destroy",
+							"objectClass": "Ctrl_Menu",
+							"sid": 199486750280032
 						}
 					],
 					"sid": 618391788572328,

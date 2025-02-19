@@ -2,7 +2,15 @@
 	"name": "InventoryBtns",
 	"plugin-id": "Sprite",
 	"sid": 685223315183277,
-	"instanceVariables": [],
+	"instanceVariables": [
+		{
+			"name": "LinkID",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 933082388826874
+		}
+	],
 	"behaviorTypes": [],
 	"effectTypes": [],
 	"members": [
