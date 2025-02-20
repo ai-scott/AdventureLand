@@ -364,6 +364,48 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "Trigger_Function",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 267,
+					"sid": 548023115344903,
+					"tags": "",
+					"instanceVariables": {
+						"Function": "checkYourself"
+					},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 548023115344903,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 180.15474440606164,
+						"y": 143.01744887791432,
+						"width": 17.927451915537375,
+						"height": 42.88996812581321,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 751737981676681,
@@ -436,48 +478,6 @@
 						"height": 24,
 						"originX": 0.5,
 						"originY": 0.4583333333333333,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
-					"type": "Trigger_Scene",
-					"properties": {
-						"initially-visible": false,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 256,
-					"sid": 756435034645589,
-					"tags": "",
-					"instanceVariables": {
-						"ID": 9
-					},
-					"behaviors": {},
-					"instanceFolderItem": {
-						"sid": 756435034645589,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 181.65046651607696,
-						"y": 144.2902321922736,
-						"width": 18.256915119198354,
-						"height": 40.29596051932338,
-						"originX": 1.953125,
-						"originY": 2.0350877192982457,
 						"color": [
 							1,
 							1,

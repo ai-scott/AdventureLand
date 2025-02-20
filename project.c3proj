@@ -415,7 +415,8 @@
 					"GateStatue",
 					"DungeonDoor",
 					"Door",
-					"Destructible"
+					"Destructible",
+					"Trigger_Function"
 				],
 				"subfolders": [],
 				"name": "Objects"

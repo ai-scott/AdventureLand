@@ -105,9 +105,9 @@
 				{
 					"id": "wait",
 					"objectClass": "System",
-					"sid": 316666112803135,
+					"sid": 263140157393131,
 					"parameters": {
-						"seconds": "1",
+						"seconds": "2",
 						"use-timescale": true
 					}
 				},
@@ -146,6 +146,15 @@
 						}
 					],
 					"actions": [
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 690166659341017,
+							"parameters": {
+								"seconds": "2",
+								"use-timescale": true
+							}
+						},
 						{
 							"id": "flash",
 							"objectClass": "obj_Text_A",

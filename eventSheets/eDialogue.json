@@ -235,6 +235,15 @@
 						"group-name": "\"Listen for Player Choice\"",
 						"state": "deactivated"
 					}
+				},
+				{
+					"id": "set-boolean-eventvar",
+					"objectClass": "System",
+					"sid": 802729475130698,
+					"parameters": {
+						"variable": "InDialogue",
+						"value": "false"
+					}
 				}
 			],
 			"sid": 614505262987865
@@ -458,7 +467,7 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 980374849152969,
+							"sid": 909825309565916,
 							"parameters": {
 								"variable": "CurrentCharacter",
 								"value": "CharacterQuest"
@@ -467,7 +476,7 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 648235734141227,
+							"sid": 282027671637769,
 							"parameters": {
 								"variable": "Quest",
 								"value": "CharacterQuest&\"Quest\""
@@ -500,158 +509,187 @@
 					"sid": 864020133847971,
 					"children": [
 						{
-							"eventType": "comment",
-							"text": " if Character and Quest targets are different (separated by \":\" in CharacterQuest), update those values accordingly"
-						},
-						{
 							"eventType": "block",
-							"conditions": [
+							"conditions": [],
+							"actions": [],
+							"sid": 425702858151215,
+							"children": [
 								{
-									"id": "compare-two-values",
-									"objectClass": "System",
-									"sid": 910966739812293,
-									"parameters": {
-										"first-value": "find(CharacterQuest,\":\")",
-										"comparison": 1,
-										"second-value": "-1"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+									"eventType": "comment",
+									"text": " if Character and Quest targets are different (separated by \":\" in CharacterQuest), update those values accordingly"
 								},
 								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 646925097190702,
-									"parameters": {
-										"variable": "Quest",
-										"value": "Quest&\"Quest\""
-									}
-								}
-							],
-							"sid": 493698898657431
-						},
-						{
-							"eventType": "comment",
-							"text": "look up dialogue line by Character Quest name and set CurrentDialogue to after \":\" "
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "has-key",
-									"objectClass": "Dict_SaveGameData",
-									"sid": 397038855981501,
-									"parameters": {
-										"key": "trigger&\"Quest\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 519732938385432,
-									"parameters": {
-										"variable": "QuestStatus",
-										"value": "Dict_SaveGameData.Get(trigger&\"Quest\")"
-									}
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 340301190938306,
+											"parameters": {
+												"first-value": "find(CharacterQuest,\":\")",
+												"comparison": 1,
+												"second-value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 978241188583173,
+											"parameters": {
+												"variable": "Quest",
+												"value": "Quest&\"Quest\""
+											}
+										}
+									],
+									"sid": 507908450300416
 								},
 								{
-									"type": "script",
-									"script": "if(runtime.globalVars.QuestStatus){\n\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");\n\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);\n}"
-								}
-							],
-							"sid": 559065694700618
-						},
-						{
-							"eventType": "comment",
-							"text": "if Quest isn't present in dictionary based on the trigger name, get Quest status from Quest name in JSON"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "else",
-									"objectClass": "System",
-									"sid": 347558015595268
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 954403472392883,
-									"parameters": {
-										"variable": "QuestStatus",
-										"value": "Dict_SaveGameData.Get(Quest)"
-									}
-								}
-							],
-							"sid": 259059696041048
-						},
-						{
-							"eventType": "comment",
-							"text": "call dialogue and send in line from Quest"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 581111452686076,
-									"parameters": {
-										"variable": "QuestStatus",
-										"comparison": 1,
-										"value": "\"Complete\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 948617808759982,
-									"parameters": {
-										"variable": "InDialogue",
-										"value": "true"
-									}
+									"eventType": "comment",
+									"text": "look up dialogue line by Character Quest name and set CurrentDialogue to after \":\" "
 								},
 								{
-									"callFunction": "processDialogueLine",
-									"sid": 184521665408078,
-									"parameters": [
-										"CurrentDialogueLine"
-									]
-								}
-							],
-							"sid": 829658735913954
-						},
-						{
-							"eventType": "block",
-							"conditions": [
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "has-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 772822527583472,
+											"parameters": {
+												"key": "trigger&\"Quest\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 691302838411987,
+											"parameters": {
+												"variable": "QuestStatus",
+												"value": "Dict_SaveGameData.Get(trigger&\"Quest\")"
+											}
+										},
+										{
+											"type": "script",
+											"script": "if(runtime.globalVars.QuestStatus){\n\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");\n\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);\n}"
+										}
+									],
+									"sid": 691410557784407
+								},
 								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 227770552364498,
-									"parameters": {
-										"variable": "QuestStatus",
-										"comparison": 0,
-										"value": "\"Complete\""
-									}
-								}
-							],
-							"actions": [
+									"eventType": "comment",
+									"text": "if Quest isn't present in dictionary based on the trigger name, get Quest status from Quest name in JSON"
+								},
 								{
-									"callFunction": "endDialogue",
-									"sid": 721335678197859
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 910909585441881
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 992894424021972,
+											"parameters": {
+												"variable": "QuestStatus",
+												"value": "Dict_SaveGameData.Get(Quest)"
+											}
+										}
+									],
+									"sid": 695679321395346
+								},
+								{
+									"eventType": "comment",
+									"text": "call dialogue and send in line from Quest"
+								},
+								{
+									"bookmark": true,
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 971226435748381,
+											"parameters": {
+												"variable": "QuestStatus",
+												"comparison": 1,
+												"value": "\"Complete\""
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 373251604655772,
+											"disabled": true,
+											"parameters": {
+												"variable": "Quest",
+												"comparison": 1,
+												"value": "\"Quest\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 743520642686017,
+											"parameters": {
+												"variable": "InDialogue",
+												"value": "true"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 254439668923790,
+											"parameters": {
+												"variable": "TempVarX",
+												"value": "\"somehow here\""
+											}
+										},
+										{
+											"callFunction": "processDialogueLine",
+											"sid": 880585218810568,
+											"parameters": [
+												"CurrentDialogueLine"
+											]
+										}
+									],
+									"sid": 975030360979164
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 866553253580574,
+											"parameters": {
+												"variable": "QuestStatus",
+												"comparison": 0,
+												"value": "\"Complete\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "endDialogue",
+											"sid": 118152276453037
+										}
+									],
+									"sid": 235514599018614
 								}
-							],
-							"sid": 423126987009111
+							]
 						}
 					]
 				}
@@ -1611,6 +1649,38 @@
 								}
 							],
 							"sid": 140727251164592
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 449127883758057,
+									"parameters": {
+										"variable": "DialogueResult",
+										"comparison": 0,
+										"value": "\"End\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 412435396710551,
+									"parameters": {
+										"variable": "TempVarX",
+										"value": "\"ending dialogue\""
+									}
+								},
+								{
+									"callFunction": "endDialogue",
+									"sid": 433873205125983
+								}
+							],
+							"sid": 623911833041045,
+							"disabled": true
 						}
 					]
 				},
@@ -2382,7 +2452,6 @@
 					"functionCopyPicked": false,
 					"functionIsAsync": false,
 					"functionParameters": [],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{

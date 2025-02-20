@@ -1270,6 +1270,67 @@
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "pick-nearestfurthest",
+													"objectClass": "Trigger_Function",
+													"sid": 422275970681679,
+													"parameters": {
+														"which": "nearest",
+														"x": "Player_Base.X",
+														"y": "Player_Base.Y"
+													}
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 857664611398345,
+													"parameters": {
+														"variable": "CurrentAction",
+														"comparison": 0,
+														"value": "\"None\""
+													}
+												}
+											],
+											"actions": [],
+											"sid": 796938798000056,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-another-object",
+															"objectClass": "Trigger_Function",
+															"sid": 641466133595554,
+															"parameters": {
+																"object": "Trigger_Player"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 988811108702792,
+															"parameters": {
+																"variable": "CurrentAction",
+																"value": "\"Check\""
+															}
+														},
+														{
+															"callFunction": "displayInteractionHint",
+															"sid": 676746647528297,
+															"parameters": [
+																"CurrentAction"
+															]
+														}
+													],
+													"sid": 196963937291767
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
 													"id": "is-on-layer",
 													"objectClass": "InventoryItems",
 													"sid": 291592740551839,

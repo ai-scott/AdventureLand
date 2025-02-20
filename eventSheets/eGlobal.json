@@ -596,6 +596,15 @@
 							}
 						},
 						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 765822233467876,
+							"parameters": {
+								"group-name": "\"In Dialogue\"",
+								"state": "deactivated"
+							}
+						},
+						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
 							"sid": 299672694609488,
@@ -771,6 +780,15 @@
 									"sid": 231308805879766,
 									"parameters": {
 										"group-name": "\"Triggers\"",
+										"state": "activated"
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 392960354410255,
+									"parameters": {
+										"group-name": "\"In Dialogue\"",
 										"state": "activated"
 									}
 								},
@@ -2897,17 +2915,24 @@
 									}
 								},
 								{
-									"callFunction": "hideItemHint",
-									"sid": 545374664722762
-								},
-								{
 									"id": "set-enabled",
 									"objectClass": "Player_Base",
-									"sid": 717427234881252,
+									"sid": 487454495346396,
 									"behaviorType": "8Direction",
 									"parameters": {
 										"state": "disabled"
 									}
+								},
+								{
+									"callFunction": "hideItemHint",
+									"sid": 545374664722762
+								},
+								{
+									"callFunction": "displayInteractionHint",
+									"sid": 727499860833843,
+									"parameters": [
+										"\"None\""
+									]
 								}
 							],
 							"sid": 192841212808491,
@@ -6144,6 +6169,15 @@
 											"parameters": {
 												"variable": "TempInt",
 												"value": "1"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 249918750123408,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "\"touching inventory item on space\""
 											}
 										}
 									],
