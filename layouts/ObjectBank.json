@@ -2719,7 +2719,8 @@
 					"sid": 963121701031785,
 					"tags": "",
 					"instanceVariables": {
-						"LinkID": 0
+						"LinkID": 0,
+						"Actions": ""
 					},
 					"behaviors": {},
 					"instanceFolderItem": {
@@ -3046,6 +3047,7 @@
 					"tags": "",
 					"instanceVariables": {
 						"LinkID": 0,
+						"Actions": "",
 						"Action": ""
 					},
 					"behaviors": {},
@@ -3318,6 +3320,7 @@
 					"tags": "",
 					"instanceVariables": {
 						"LinkID": 0,
+						"Actions": "",
 						"Action": ""
 					},
 					"behaviors": {},

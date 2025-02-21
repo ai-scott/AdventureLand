@@ -9,6 +9,13 @@
 			"desc": "",
 			"show": true,
 			"sid": 933082388826874
+		},
+		{
+			"name": "Actions",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 105746733585133
 		}
 	],
 	"behaviorTypes": [],

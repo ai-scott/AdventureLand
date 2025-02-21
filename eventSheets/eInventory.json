@@ -2786,6 +2786,41 @@
 					"eventType": "block",
 					"conditions": [
 						{
+							"id": "compare-instance-variable",
+							"objectClass": "InventoryBtns",
+							"sid": 392819712277223,
+							"parameters": {
+								"instance-variable": "LinkID",
+								"comparison": 1,
+								"value": "Ctrl_Btns.CurrentLink"
+							}
+						},
+						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 762332797669740,
+							"parameters": {
+								"object": "InventoryBtns"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "InventoryBtns",
+							"sid": 398217616199420,
+							"parameters": {
+								"frame-number": "0"
+							}
+						}
+					],
+					"sid": 140658677584805
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
 							"id": "cursor-is-over-object",
 							"objectClass": "Mouse",
 							"sid": 863990548381759,
@@ -2805,41 +2840,6 @@
 						}
 					],
 					"sid": 263548752455597
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-instance-variable",
-							"objectClass": "InventoryBtns",
-							"sid": 339028071544143,
-							"parameters": {
-								"instance-variable": "LinkID",
-								"comparison": 1,
-								"value": "Ctrl_Btns.CurrentLink"
-							}
-						},
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 202594155423372,
-							"parameters": {
-								"object": "InventoryBtns"
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "InventoryBtns",
-							"sid": 105610698946009,
-							"parameters": {
-								"frame-number": "0"
-							}
-						}
-					],
-					"sid": 121508913834535
 				},
 				{
 					"eventType": "comment",
@@ -3236,7 +3236,6 @@
 							"sid": 594697497963806
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -5240,6 +5239,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -5870,6 +5870,7 @@
 							"sid": 846457891862036,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
@@ -6017,12 +6018,20 @@
 									"parameters": {
 										"visibility": "invisible"
 									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Select",
+									"sid": 870232935591492,
+									"parameters": {
+										"instance-variable": "Actions",
+										"value": "\"hidden\""
+									}
 								}
 							],
 							"sid": 137989773547334
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -7304,7 +7313,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -7469,6 +7477,48 @@
 							"sid": 804327321826474
 						}
 					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-eventvar",
+							"objectClass": "System",
+							"sid": 697508364780917,
+							"parameters": {
+								"variable": "StartInvWindow",
+								"comparison": 0,
+								"value": "\"none\""
+							}
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 221991661759410,
+							"parameters": {
+								"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
+								"comparison": 4,
+								"second-value": "Dict_SaveGameData.Get(\"Gems\")"
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 927919332621330,
+							"parameters": {
+								"variable": "ShopMode"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "Btn_Select",
+							"sid": 981164734442833
+						}
+					],
+					"sid": 195893932884817,
+					"disabled": true
 				},
 				{
 					"eventType": "comment",

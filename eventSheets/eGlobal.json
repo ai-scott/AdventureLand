@@ -1053,7 +1053,6 @@
 					"sid": 395682133315497
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -2957,9 +2956,27 @@
 									],
 									"actions": [
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 446204476490864,
+											"parameters": {
+												"variable": "Player_WorldX",
+												"value": "Player_Base.X"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 956552345809591,
+											"parameters": {
+												"variable": "Player_WorldY",
+												"value": "Player_Base.Y"
+											}
+										},
+										{
 											"id": "set-layer-scale",
 											"objectClass": "System",
-											"sid": 811085505097677,
+											"sid": 508620888222126,
 											"parameters": {
 												"layer": "\"Inventory\"",
 												"scale": ".5"
@@ -3949,9 +3966,9 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "Btn_Action",
-									"sid": 484902769104724,
+									"sid": 610422124152985,
 									"parameters": {
-										"instance-variable": "Action",
+										"instance-variable": "Actions",
 										"value": "\"Inventory\""
 									}
 								},
@@ -4105,9 +4122,9 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "Btn_Action",
-									"sid": 739422088562698,
+									"sid": 728377854592058,
 									"parameters": {
-										"instance-variable": "Action",
+										"instance-variable": "Actions",
 										"value": "\"Inventory\""
 									}
 								},
@@ -4490,9 +4507,9 @@
 										{
 											"id": "set-instvar-value",
 											"objectClass": "Btn_Action",
-											"sid": 445973899331218,
+											"sid": 138720207335323,
 											"parameters": {
-												"instance-variable": "Action",
+												"instance-variable": "Actions",
 												"value": "\"Attack\""
 											}
 										},
@@ -4628,9 +4645,9 @@
 										{
 											"id": "set-instvar-value",
 											"objectClass": "Btn_Action",
-											"sid": 102218786322114,
+											"sid": 692433049904931,
 											"parameters": {
-												"instance-variable": "Action",
+												"instance-variable": "Actions",
 												"value": "\"Attack\""
 											}
 										},
@@ -4801,9 +4818,9 @@
 										{
 											"id": "compare-instance-variable",
 											"objectClass": "Btn_Action",
-											"sid": 510091333995529,
+											"sid": 506759815543688,
 											"parameters": {
-												"instance-variable": "Action",
+												"instance-variable": "Actions",
 												"comparison": 0,
 												"value": "\"Attack\""
 											}
@@ -5308,6 +5325,7 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5786,14 +5804,6 @@
 									}
 								},
 								{
-									"id": "is-on-layer",
-									"objectClass": "InventoryBtns",
-									"sid": 677073979880037,
-									"parameters": {
-										"layer": "\"Hint\"\n"
-									}
-								},
-								{
 									"id": "trigger-once-while-true",
 									"objectClass": "System",
 									"sid": 891538731413020
@@ -5840,9 +5850,25 @@
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "compare-instance-variable",
+													"objectClass": "InventoryBtns",
+													"sid": 757724715850121,
+													"parameters": {
+														"instance-variable": "Actions",
+														"comparison": 1,
+														"value": "\"hidden\""
+													}
+												},
+												{
+													"id": "is-visible",
+													"objectClass": "InventoryBtns",
+													"sid": 251289484087791,
+													"disabled": true
+												},
+												{
 													"id": "compare-two-values",
 													"objectClass": "System",
-													"sid": 802105381694900,
+													"sid": 345846506379475,
 													"parameters": {
 														"first-value": "InventoryBtns.ObjectTypeName",
 														"comparison": 1,
@@ -5863,14 +5889,59 @@
 												{
 													"id": "set-instvar-value",
 													"objectClass": "InventoryBtns",
-													"sid": 990527332962946,
+													"sid": 882585073148359,
 													"parameters": {
 														"instance-variable": "LinkID",
-														"value": "loopindex"
+														"value": "Ctrl_Btns.MaxLinks"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 803257305178526,
+													"parameters": {
+														"variable": "TempVarX",
+														"value": "Ctrl_Btns.MaxLinks"
+													}
+												},
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 349457425362036,
+													"parameters": {
+														"variable": "TempInt",
+														"value": "1"
 													}
 												}
 											],
 											"sid": 652483005486461
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "InventoryBtns",
+													"sid": 253539454964264,
+													"parameters": {
+														"instance-variable": "Actions",
+														"comparison": 0,
+														"value": "\"hidden\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "InventoryBtns",
+													"sid": 376809144080589,
+													"parameters": {
+														"instance-variable": "LinkID",
+														"value": "-1"
+													}
+												}
+											],
+											"sid": 779143456792582
 										}
 									]
 								}
@@ -6606,26 +6677,7 @@
 											"isInverted": true
 										}
 									],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 203009190930063,
-											"parameters": {
-												"variable": "Player_WorldX",
-												"value": "Player_Base.X"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 176161590389569,
-											"parameters": {
-												"variable": "Player_WorldY",
-												"value": "Player_Base.Y"
-											}
-										}
-									],
+									"actions": [],
 									"sid": 792778980281047
 								},
 								{
@@ -6655,9 +6707,9 @@
 								{
 									"id": "compare-instance-variable",
 									"objectClass": "Btn_Action",
-									"sid": 644849217120906,
+									"sid": 782744392167662,
 									"parameters": {
-										"instance-variable": "Action",
+										"instance-variable": "Actions",
 										"comparison": 0,
 										"value": "\"Inventory\""
 									}
@@ -6672,24 +6724,6 @@
 								}
 							],
 							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 588364877486904,
-									"parameters": {
-										"variable": "Player_WorldX",
-										"value": "Player_Base.X"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 613084564862956,
-									"parameters": {
-										"variable": "Player_WorldY",
-										"value": "Player_Base.Y"
-									}
-								},
 								{
 									"callFunction": "OpenClose_Inventory",
 									"sid": 597524847398540
@@ -7352,9 +7386,9 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "Btn_Action",
-													"sid": 670202354166389,
+													"sid": 857503735451679,
 													"parameters": {
-														"instance-variable": "Action",
+														"instance-variable": "Actions",
 														"comparison": 0,
 														"value": "\"Attack\""
 													}

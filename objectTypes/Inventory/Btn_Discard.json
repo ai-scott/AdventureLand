@@ -35,7 +35,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": ""
+						"tag": "\"Off\""
 					},
 					{
 						"width": 67,
@@ -61,7 +61,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": ""
+						"tag": "\"On\""
 					}
 				],
 				"sid": 942719787196999,
