@@ -5894,24 +5894,6 @@
 														"instance-variable": "LinkID",
 														"value": "Ctrl_Btns.MaxLinks"
 													}
-												},
-												{
-													"id": "set-eventvar-value",
-													"objectClass": "System",
-													"sid": 803257305178526,
-													"parameters": {
-														"variable": "TempVarX",
-														"value": "Ctrl_Btns.MaxLinks"
-													}
-												},
-												{
-													"id": "add-to-eventvar",
-													"objectClass": "System",
-													"sid": 349457425362036,
-													"parameters": {
-														"variable": "TempInt",
-														"value": "1"
-													}
 												}
 											],
 											"sid": 652483005486461
@@ -6097,9 +6079,9 @@
 										{
 											"id": "set-animation-frame",
 											"objectClass": "InventoryBtns",
-											"sid": 728364373174650,
+											"sid": 541465198841684,
 											"parameters": {
-												"frame-number": "\"Off\""
+												"frame-number": "0"
 											}
 										},
 										{
@@ -6128,9 +6110,9 @@
 										{
 											"id": "set-animation-frame",
 											"objectClass": "InventoryBtns",
-											"sid": 983113444521625,
+											"sid": 185798274834678,
 											"parameters": {
-												"frame-number": "\"On\""
+												"frame-number": "1"
 											}
 										},
 										{

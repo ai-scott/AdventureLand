@@ -4,7 +4,15 @@
 	"sid": 848197140226001,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
-	"instanceVariables": [],
+	"instanceVariables": [
+		{
+			"name": "Action",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 671398063608824
+		}
+	],
 	"behaviorTypes": [],
 	"effectTypes": [],
 	"animations": {
@@ -35,7 +43,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "\"Off\""
+						"tag": "Off"
 					},
 					{
 						"width": 67,
@@ -61,7 +69,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "\"On\""
+						"tag": "On"
 					}
 				],
 				"sid": 942719787196999,

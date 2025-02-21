@@ -2720,7 +2720,8 @@
 					"tags": "",
 					"instanceVariables": {
 						"LinkID": 0,
-						"Actions": ""
+						"Actions": "",
+						"Action": ""
 					},
 					"behaviors": {},
 					"instanceFolderItem": {

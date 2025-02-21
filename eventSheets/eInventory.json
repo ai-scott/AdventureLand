@@ -2786,6 +2786,30 @@
 					"eventType": "block",
 					"conditions": [
 						{
+							"id": "cursor-is-over-object",
+							"objectClass": "Mouse",
+							"sid": 675388115896589,
+							"parameters": {
+								"object": "InventoryBtns"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-animation-frame",
+							"objectClass": "InventoryBtns",
+							"sid": 893050143336559,
+							"parameters": {
+								"frame-number": "1"
+							}
+						}
+					],
+					"sid": 386720716331262
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
 							"id": "compare-instance-variable",
 							"objectClass": "InventoryBtns",
 							"sid": 392819712277223,
@@ -2816,30 +2840,6 @@
 						}
 					],
 					"sid": 140658677584805
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 863990548381759,
-							"parameters": {
-								"object": "InventoryBtns"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "InventoryBtns",
-							"sid": 102474047517334,
-							"parameters": {
-								"frame-number": "1"
-							}
-						}
-					],
-					"sid": 263548752455597
 				},
 				{
 					"eventType": "comment",
