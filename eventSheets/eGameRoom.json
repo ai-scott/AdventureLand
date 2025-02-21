@@ -4551,6 +4551,7 @@
 											"sid": 469058466382776,
 											"children": [
 												{
+													"bookmark": true,
 													"eventType": "block",
 													"conditions": [
 														{

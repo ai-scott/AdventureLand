@@ -5783,16 +5783,9 @@
 						},
 						{
 							"eventType": "comment",
-							"text": "Selection of hint buttons by keyboard",
-							"background-color": [
-								0.8352941176470589,
-								1,
-								0.0196078431372549,
-								1
-							]
+							"text": "Selection of hint buttons by keyboard"
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5930,7 +5923,6 @@
 							]
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6261,7 +6253,7 @@
 							],
 							"actions": [
 								{
-									"callFunction": "changeSelection",
+									"callFunction": "changeDialogueSelection",
 									"sid": 409300808832882
 								}
 							],
@@ -6281,7 +6273,7 @@
 							],
 							"actions": [
 								{
-									"callFunction": "changeSelection",
+									"callFunction": "changeDialogueSelection",
 									"sid": 333509298682005
 								}
 							],
@@ -6532,104 +6524,280 @@
 							"eventType": "block",
 							"conditions": [
 								{
-									"id": "on-tap-object",
-									"objectClass": "Touch",
-									"sid": 804011384985679,
-									"parameters": {
-										"object": "CloseX"
-									}
-								},
-								{
 									"id": "layer-is-visible",
 									"objectClass": "System",
-									"sid": 875774077141804,
+									"sid": 205237557632037,
 									"parameters": {
 										"layer": "\"Inventory\""
 									}
 								}
 							],
-							"actions": [
+							"actions": [],
+							"sid": 645866893830976,
+							"children": [
 								{
-									"callFunction": "OpenClose_Inventory",
-									"sid": 817286769160366
-								}
-							],
-							"sid": 126506386552842
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 355951866392820,
-									"parameters": {
-										"layer": "\"Inventory\""
-									}
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 686605714966802,
+											"parameters": {
+												"variable": "ItemShowing"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [],
+									"sid": 487685431742025,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 916975851037904,
+													"parameters": {
+														"key": 40
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "changeItemSelection",
+													"sid": 770940113416774,
+													"parameters": [
+														"\"down\""
+													]
+												}
+											],
+											"sid": 783020101381917
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 474378458417354,
+													"parameters": {
+														"key": 38
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "changeItemSelection",
+													"sid": 827370231419986,
+													"parameters": [
+														"\"up\""
+													]
+												}
+											],
+											"sid": 309230448093863
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 336608748790784,
+													"parameters": {
+														"key": 39
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "changeItemSelection",
+													"sid": 151108955099522,
+													"parameters": [
+														"\"right\""
+													]
+												}
+											],
+											"sid": 526502787080268
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 353554002850303,
+													"parameters": {
+														"key": 37
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "changeItemSelection",
+													"sid": 356406068344859,
+													"parameters": [
+														"\"left\""
+													]
+												}
+											],
+											"sid": 955561533483477
+										}
+									]
 								},
 								{
-									"id": "cursor-is-over-object",
-									"objectClass": "Mouse",
-									"sid": 251237458804248,
-									"parameters": {
-										"object": "CloseX"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-animation-frame",
-									"objectClass": "CloseX",
-									"sid": 614108620177644,
-									"parameters": {
-										"frame-number": "1"
-									}
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-tap-object",
+											"objectClass": "Touch",
+											"sid": 332327587948551,
+											"parameters": {
+												"object": "CloseX"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "OpenClose_Inventory",
+											"sid": 648857609441579
+										}
+									],
+									"sid": 978439459617959
 								},
 								{
-									"id": "stop-animation",
-									"objectClass": "CloseX",
-									"sid": 841389204514687
-								}
-							],
-							"sid": 923337290002522
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 472664589243573,
-									"parameters": {
-										"layer": "\"Inventory\""
-									}
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "cursor-is-over-object",
+											"objectClass": "Mouse",
+											"sid": 355563353963115,
+											"parameters": {
+												"object": "CloseX"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "CloseX",
+											"sid": 939112822207833,
+											"parameters": {
+												"frame-number": "1"
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "CloseX",
+											"sid": 313852033050111
+										}
+									],
+									"sid": 943245390932415
 								},
 								{
-									"id": "cursor-is-over-object",
-									"objectClass": "Mouse",
-									"sid": 247057008525832,
-									"parameters": {
-										"object": "CloseX"
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
-								{
-									"id": "set-animation-frame",
-									"objectClass": "CloseX",
-									"sid": 640601925037082,
-									"parameters": {
-										"frame-number": "0"
-									}
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "cursor-is-over-object",
+											"objectClass": "Mouse",
+											"sid": 100815743235685,
+											"parameters": {
+												"object": "CloseX"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "CloseX",
+											"sid": 879744730859848,
+											"parameters": {
+												"frame-number": "0"
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "CloseX",
+											"sid": 325175324424974
+										}
+									],
+									"sid": 540511017533477
 								},
 								{
-									"id": "stop-animation",
-									"objectClass": "CloseX",
-									"sid": 669734101610373
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 654867679358320,
+											"parameters": {
+												"key": 32
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 850683068325979,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"comparison": 1,
+												"value": "0"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 677035889306175,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"comparison": 0,
+												"value": "CurrentItemSlot"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 189980842317482,
+											"parameters": {
+												"variable": "TempVarX",
+												"value": "\"trying to open \"&ItemSlot.UID"
+											}
+										},
+										{
+											"callFunction": "displayItemHint",
+											"sid": 964852657316878,
+											"parameters": [
+												"ItemSlot.UID",
+												"CurrentInvWindow"
+											]
+										}
+									],
+									"sid": 859127582914281
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 890579196098652,
+											"parameters": {
+												"key": 27
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "OpenClose_Inventory",
+											"sid": 744771910759811
+										}
+									],
+									"sid": 753536107092581
 								}
-							],
-							"sid": 914839190904320
+							]
 						},
 						{
 							"eventType": "block",
@@ -6712,34 +6880,6 @@
 								}
 							],
 							"sid": 895544055943428
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 480104643494058,
-									"parameters": {
-										"key": 27
-									}
-								},
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 396646502918956,
-									"parameters": {
-										"layer": "\"Inventory\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "OpenClose_Inventory",
-									"sid": 605736902241109
-								}
-							],
-							"sid": 619292744274398
 						},
 						{
 							"eventType": "block",

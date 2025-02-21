@@ -2110,7 +2110,7 @@
 							"isActiveOnStart": true,
 							"children": [
 								{
-									"functionName": "changeSelection",
+									"functionName": "changeDialogueSelection",
 									"functionDescription": "Change currently selected dialogue",
 									"functionCategory": "",
 									"functionReturnType": "none",

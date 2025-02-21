@@ -37,6 +37,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "CurrentInvWindow",
+			"type": "string",
+			"initialValue": "none",
+			"comment": "the inventory \"window\" (\"main\", \"equip\") in which the item Slot is located",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 972102840786894
+		},
+		{
+			"eventType": "variable",
 			"name": "Replace_ITEM_UID",
 			"type": "number",
 			"initialValue": "0",
@@ -2514,6 +2524,15 @@
 										"instance-variable": "NumberOfItems",
 										"value": "Dict_ItemNumbers.Get(Self.ItemName)"
 									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 132542214164466,
+									"parameters": {
+										"instance-variable": "InventoryWindow",
+										"value": "\"main\""
+									}
 								}
 							],
 							"sid": 263100994215459,
@@ -2661,6 +2680,15 @@
 										"instance-variable": "ItemCat",
 										"value": "Functions.GetItemCategory(Self.ItemID)"
 									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
+									"sid": 207475033275637,
+									"parameters": {
+										"instance-variable": "InventoryWindow",
+										"value": "\"equip\""
+									}
 								}
 							],
 							"sid": 578390684740372,
@@ -2763,6 +2791,419 @@
 										}
 									],
 									"sid": 296126557162537
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 630164990602938,
+									"parameters": {
+										"instance-variable": "InventoryState",
+										"comparison": 0,
+										"value": "\"main\""
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 541078727438745,
+									"parameters": {
+										"instance-variable": "SlotID",
+										"comparison": 0,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "SlotCURSOR",
+									"sid": 715842081815045,
+									"parameters": {
+										"object": "ItemSlot",
+										"image-point-optional": "0"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "SlotCURSOR",
+									"sid": 970346219587739,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "SlotCURSOR",
+									"sid": 646282293677643
+								},
+								{
+									"id": "set-position-to-another-object",
+									"objectClass": "SquareActive",
+									"sid": 421001116176301,
+									"parameters": {
+										"object": "ItemSlot",
+										"image-point-optional": "0"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "SquareActive",
+									"sid": 217172286726427,
+									"parameters": {
+										"visibility": "visible"
+									}
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "SquareActive",
+									"sid": 235792352785355
+								}
+							],
+							"sid": 584752649485594
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "ItemSlot",
+							"sid": 663468736673492,
+							"parameters": {
+								"instance-variable": "InventoryWindow",
+								"comparison": 0,
+								"value": "CurrentInvWindow"
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "ItemSlot",
+							"sid": 765290871401091,
+							"parameters": {
+								"instance-variable": "SlotID",
+								"comparison": 0,
+								"value": "CurrentItemSlot"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-position-to-another-object",
+							"objectClass": "SquareActive",
+							"sid": 891934951295599,
+							"parameters": {
+								"object": "ItemSlot",
+								"image-point-optional": "0"
+							}
+						},
+						{
+							"id": "set-position-to-another-object",
+							"objectClass": "SlotCURSOR",
+							"sid": 710049384677939,
+							"parameters": {
+								"object": "ItemSlot",
+								"image-point-optional": "0"
+							}
+						},
+						{
+							"id": "move-to-object",
+							"objectClass": "SlotCURSOR",
+							"sid": 980722199132348,
+							"parameters": {
+								"where": "in-front",
+								"object": "ItemBG"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 149378608701884,
+							"parameters": {
+								"variable": "TempVarX",
+								"value": "\"ItemSlot.SlotID = \"&ItemSlot.SlotID"
+							}
+						}
+					],
+					"sid": 997825667127366
+				},
+				{
+					"functionName": "changeItemSelection",
+					"functionDescription": "change which item is highlighted in inventory",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "direction",
+							"type": "string",
+							"initialValue": "",
+							"comment": "up right down left",
+							"sid": 238539580128191
+						}
+					],
+					"bookmark": true,
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 958530545515064,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 665142756066609,
+									"parameters": {
+										"instance-variable": "SlotID",
+										"comparison": 0,
+										"value": "CurrentItemSlot"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 253272045119617,
+									"parameters": {
+										"variable": "CurrentInvWindow",
+										"value": "ItemSlot.InventoryWindow"
+									}
+								}
+							],
+							"sid": 817125524611031,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 807009733856418,
+											"parameters": {
+												"variable": "direction",
+												"comparison": 0,
+												"value": "\"up\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 652669082512465,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 481738131595984,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 5,
+														"second-value": "5"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 490522805264292,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 457391117117629,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "5"
+													}
+												}
+											],
+											"sid": 213612362626722
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 784997135872803,
+											"parameters": {
+												"variable": "direction",
+												"comparison": 0,
+												"value": "\"right\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 248026625430458,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 926501892668975,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 2,
+														"second-value": "24"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 554074570319181,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 759293287593736,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 810136724601651
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 506621215002803,
+											"parameters": {
+												"variable": "direction",
+												"comparison": 0,
+												"value": "\"down\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 963671196941431,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 151688464437830,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 2,
+														"second-value": "20"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 127594660312752,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 469385788199560,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "5"
+													}
+												}
+											],
+											"sid": 127656081165745
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 907881176213470,
+											"parameters": {
+												"variable": "direction",
+												"comparison": 0,
+												"value": "\"left\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 897191684137868,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 718582931707510,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 4,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 431853461236484,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 357698413921485,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 319524783754313
+										}
+									]
 								}
 							]
 						}
@@ -2991,7 +3432,6 @@
 											"sid": 824982730400730,
 											"parameters": [
 												"ItemShowcase.UID",
-												"\"\"",
 												"StartInvWindow"
 											]
 										}
@@ -3054,7 +3494,6 @@
 											"sid": 765807760854004,
 											"parameters": [
 												"InventoryItems.UID",
-												"\"\"",
 												"StartInvWindow"
 											]
 										}
@@ -3855,7 +4294,6 @@
 									]
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -5225,14 +5663,7 @@
 							"sid": 202539807529573
 						},
 						{
-							"name": "layer",
-							"type": "string",
-							"initialValue": "",
-							"comment": "",
-							"sid": 572906620278691
-						},
-						{
-							"name": "window",
+							"name": "collection",
 							"type": "string",
 							"initialValue": "",
 							"comment": "where this hint is located",
@@ -5268,6 +5699,24 @@
 							"parameters": {
 								"layer": "\"Hint\"",
 								"visibility": "visible"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 103350555936763,
+							"parameters": {
+								"variable": "StartInvWindow",
+								"value": "collection"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 989349266017715,
+							"parameters": {
+								"variable": "CurrentInvWindow",
+								"value": "collection"
 							}
 						},
 						{
@@ -6065,7 +6514,7 @@
 									"objectClass": "System",
 									"sid": 854193499737950,
 									"parameters": {
-										"variable": "window",
+										"variable": "collection",
 										"comparison": 0,
 										"value": "\"main\""
 									}

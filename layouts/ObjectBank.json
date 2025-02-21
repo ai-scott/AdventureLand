@@ -2677,7 +2677,8 @@
 						"ItemCat": "",
 						"SlotID": 0,
 						"InventoryState": "",
-						"CurUID": -1
+						"CurUID": -1,
+						"InventoryWindow": ""
 					},
 					"behaviors": {},
 					"instanceFolderItem": {

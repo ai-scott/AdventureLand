@@ -25,6 +25,13 @@
 			"desc": "",
 			"show": true,
 			"sid": 391871449452133
+		},
+		{
+			"name": "InventoryWindow",
+			"type": "string",
+			"desc": "main or equip",
+			"show": true,
+			"sid": 525375071664218
 		}
 	],
 	"behaviorTypes": [],
