@@ -24,6 +24,7 @@
 		"Btn_Discard",
 		"Btn_Select",
 		"Btn_Action",
-		"Btn_Cancel"
+		"Btn_Cancel",
+		"Btn_Arrow"
 	]
 }

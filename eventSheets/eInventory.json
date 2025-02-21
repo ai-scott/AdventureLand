@@ -2837,9 +2837,22 @@
 									}
 								},
 								{
-									"id": "move-to-top",
+									"id": "move-to-object",
 									"objectClass": "SlotCURSOR",
-									"sid": 646282293677643
+									"sid": 384719271913298,
+									"parameters": {
+										"where": "in-front",
+										"object": "ItemBG"
+									}
+								},
+								{
+									"id": "move-to-object",
+									"objectClass": "SquareActive",
+									"sid": 650254246827620,
+									"parameters": {
+										"where": "in-front",
+										"object": "ItemSlot"
+									}
 								},
 								{
 									"id": "set-position-to-another-object",
@@ -2861,7 +2874,15 @@
 								{
 									"id": "move-to-top",
 									"objectClass": "SquareActive",
-									"sid": 235792352785355
+									"sid": 413406836601135
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "SquareActive",
+									"sid": 856920823419871,
+									"parameters": {
+										"scale": "1"
+									}
 								}
 							],
 							"sid": 584752649485594
@@ -2903,6 +2924,15 @@
 							}
 						},
 						{
+							"id": "move-to-object",
+							"objectClass": "SquareActive",
+							"sid": 322022637408704,
+							"parameters": {
+								"where": "in-front",
+								"object": "ItemSlot"
+							}
+						},
+						{
 							"id": "set-position-to-another-object",
 							"objectClass": "SlotCURSOR",
 							"sid": 710049384677939,
@@ -2919,6 +2949,11 @@
 								"where": "in-front",
 								"object": "ItemBG"
 							}
+						},
+						{
+							"id": "move-to-top",
+							"objectClass": "SquareActive",
+							"sid": 399820885029823
 						},
 						{
 							"id": "set-eventvar-value",
@@ -8063,6 +8098,14 @@
 							"sid": 349196404871951,
 							"parameters": {
 								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "set-scale",
+							"objectClass": "SquareActive",
+							"sid": 499116564654044,
+							"parameters": {
+								"scale": "1"
 							}
 						},
 						{

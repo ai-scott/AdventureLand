@@ -12045,6 +12045,8 @@
 					"sid": 996158784766361,
 					"tags": "",
 					"instanceVariables": {
+						"LinkID": 0,
+						"Actions": "",
 						"direction": "",
 						"state": ""
 					},

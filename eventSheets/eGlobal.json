@@ -5861,6 +5861,16 @@
 												{
 													"id": "compare-two-values",
 													"objectClass": "System",
+													"sid": 442363137329146,
+													"parameters": {
+														"first-value": "InventoryBtns.ObjectTypeName",
+														"comparison": 1,
+														"second-value": "\"Btn_Arrow\""
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
 													"sid": 345846506379475,
 													"parameters": {
 														"first-value": "InventoryBtns.ObjectTypeName",
