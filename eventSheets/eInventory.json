@@ -283,13 +283,26 @@
 							"objectClass": "System",
 							"sid": 830598715077092,
 							"parameters": {
-								"object-to-create": "Bag",
+								"object-to-create": "CloseX",
 								"layer": "\"Inventory\"",
 								"x": "790",
 								"y": "6",
 								"create-hierarchy": false,
 								"template-name": "\"\""
 							}
+						},
+						{
+							"id": "set-animation-frame",
+							"objectClass": "CloseX",
+							"sid": 826781935131606,
+							"parameters": {
+								"frame-number": "0"
+							}
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "CloseX",
+							"sid": 610474434507606
 						},
 						{
 							"id": "create-object-by-name",
@@ -2767,160 +2780,7 @@
 			"children": [
 				{
 					"eventType": "comment",
-					"text": "Single Click on an Item in World or Inventory - Set the variables of the Active Item and highlight this Active Item"
-				},
-				{
-					"functionName": "inspectItem",
-					"functionDescription": "On touch of inventory item",
-					"functionCategory": "Inventory",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [
-						{
-							"name": "InventoryItemUID",
-							"type": "number",
-							"initialValue": "0",
-							"comment": "UID of the item inspecting",
-							"sid": 440152592380479
-						}
-					],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 559002008703973,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "pick-by-unique-id",
-									"objectClass": "InventoryItems",
-									"sid": 485603364643235,
-									"parameters": {
-										"unique-id": "InventoryItemUID"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 648016389506632,
-							"children": [
-								{
-									"eventType": "comment",
-									"text": "If in world (not inventory) pick the showcase item "
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "pick-by-unique-id",
-											"objectClass": "ItemShowcase",
-											"sid": 716464315755673,
-											"parameters": {
-												"unique-id": "InventoryItems.UID"
-											}
-										},
-										{
-											"id": "layer-is-visible",
-											"objectClass": "System",
-											"sid": 253094987454921,
-											"parameters": {
-												"layer": "\"Inventory\""
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [
-										{
-											"id": "set-scale",
-											"objectClass": "SquareActive",
-											"sid": 836400282455760,
-											"parameters": {
-												"scale": ".5"
-											}
-										},
-										{
-											"callFunction": "displayItemHint",
-											"sid": 846847557417542,
-											"parameters": [
-												"ItemShowcase.UID",
-												"\"\"",
-												"StartInvWindow"
-											]
-										}
-									],
-									"sid": 994072347484274
-								},
-								{
-									"eventType": "comment",
-									"text": "If in Inventory - pick the item slot and set currentitemslot and inv section (StartInvWindow)"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "layer-is-visible",
-											"objectClass": "System",
-											"sid": 346076038478893,
-											"parameters": {
-												"layer": "\"Inventory\""
-											}
-										},
-										{
-											"id": "pick-by-unique-id",
-											"objectClass": "ItemSlot",
-											"sid": 736700219658611,
-											"parameters": {
-												"unique-id": "InventoryItems.UID"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 601448045886736,
-											"parameters": {
-												"variable": "CurrentItemSlot",
-												"value": "ItemSlot.SlotID"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 597462183168460,
-											"parameters": {
-												"variable": "StartInvWindow",
-												"value": "ItemSlot.InventoryState=\"main\" ?\"main\" :\"equip\""
-											}
-										},
-										{
-											"id": "set-scale",
-											"objectClass": "SquareActive",
-											"sid": 838719145173311,
-											"parameters": {
-												"scale": "1"
-											}
-										},
-										{
-											"callFunction": "displayItemHint",
-											"sid": 336663965709554,
-											"parameters": [
-												"InventoryItems.UID",
-												"\"\"",
-												"StartInvWindow"
-											]
-										}
-									],
-									"sid": 343996427379859
-								}
-							]
-						}
-					]
-				},
-				{
-					"eventType": "comment",
-					"text": "\"CANCEL\" Button - Item Usage"
+					"text": "Inv Button highlights"
 				},
 				{
 					"eventType": "block",
@@ -2928,301 +2788,43 @@
 						{
 							"id": "cursor-is-over-object",
 							"objectClass": "Mouse",
-							"sid": 315545392251042,
+							"sid": 863990548381759,
 							"parameters": {
-								"object": "Btn_Cancel"
+								"object": "InventoryBtns"
 							}
 						}
 					],
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Cancel",
-							"sid": 118381674746373,
+							"objectClass": "InventoryBtns",
+							"sid": 102474047517334,
 							"parameters": {
 								"frame-number": "1"
 							}
 						}
 					],
-					"sid": 515288818081438
+					"sid": 263548752455597
 				},
 				{
 					"eventType": "block",
 					"conditions": [
 						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 541835479404117,
+							"id": "compare-instance-variable",
+							"objectClass": "InventoryBtns",
+							"sid": 339028071544143,
 							"parameters": {
-								"object": "Btn_Cancel"
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "Btn_Cancel",
-							"sid": 101864907382668,
-							"parameters": {
-								"frame-number": "0"
-							}
-						}
-					],
-					"sid": 301876128575932
-				},
-				{
-					"eventType": "comment",
-					"text": "\"DROP\" Button - Item Usage"
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 205855903416830,
-							"parameters": {
-								"object": "Btn_Discard"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "Btn_Discard",
-							"sid": 964529393774718,
-							"parameters": {
-								"frame-number": "1"
-							}
-						}
-					],
-					"sid": 936646284504078
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 509471346247773,
-							"parameters": {
-								"object": "Btn_Discard"
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "Btn_Discard",
-							"sid": 228554498184692,
-							"parameters": {
-								"frame-number": "0"
-							}
-						}
-					],
-					"sid": 253783671680553
-				},
-				{
-					"eventType": "comment",
-					"text": "The \"DROP\" button - deletes the Active Item and clears the array cell (or reduces Qty by 1 for stackable items)"
-				},
-				{
-					"functionName": "discardItem",
-					"functionDescription": "When in inventory screen, delete an item from player collection",
-					"functionCategory": "Inventory",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 995169444613362,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-visible",
-									"objectClass": "Btn_Discard",
-									"sid": 933993225269242
-								},
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "InventoryItems",
-									"sid": 574021595128868,
-									"parameters": {
-										"instance-variable": "ItemID",
-										"comparison": 0,
-										"value": "CurrentItemID"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "play",
-									"objectClass": "Audio",
-									"sid": 187188636775653,
-									"parameters": {
-										"audio-file": "delete",
-										"loop": "not-looping",
-										"volume": "-5",
-										"stereo-pan": "0",
-										"tag-optional": "\"\""
-									}
-								},
-								{
-									"id": "set-opacity",
-									"objectClass": "EquipSlot",
-									"sid": 270432467455632,
-									"parameters": {
-										"opacity": "60"
-									}
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "SquareActive",
-									"sid": 225992109705525,
-									"parameters": {
-										"visibility": "invisible"
-									}
-								},
-								{
-									"callFunction": "UpdateNumbersOnDrop",
-									"sid": 525572252024391,
-									"parameters": [
-										"CurrentItemID"
-									]
-								},
-								{
-									"callFunction": "hideItemHint",
-									"sid": 867748285740967
-								},
-								{
-									"type": "comment",
-									"text": "not sure if we just need to say \"main\" for category here"
-								}
-							],
-							"sid": 244421810221944,
-							"children": [
-								{
-									"eventType": "comment",
-									"text": "If on the map (and in Shop mode) offer to Sell the item"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 488929937840069,
-											"parameters": {
-												"variable": "ShopMode"
-											}
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "sellItem",
-											"sid": 210368019981080,
-											"parameters": [
-												"InventoryItems.ItemID",
-												"Functions.GetItemCostbyID(InventoryItems.ItemID)/2"
-											]
-										}
-									],
-									"sid": 821439848262724
-								},
-								{
-									"eventType": "comment",
-									"text": "NOTE: reinstate SpFont_Stack once we've solved the stack number issue"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "pick-children",
-											"objectClass": "InventoryItems",
-											"sid": 303858545626322,
-											"parameters": {
-												"child": "UI_Font_Stack",
-												"which": "own"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-text",
-											"objectClass": "UI_Font_Stack",
-											"sid": 233512564891120,
-											"parameters": {
-												"text": "InventoryItems.NumberOfItems"
-											}
-										}
-									],
-									"sid": 193086332437180
-								}
-							]
-						}
-					]
-				},
-				{
-					"eventType": "comment",
-					"text": "\"USE\" Button - Item Usage"
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "cursor-is-over-object",
-							"objectClass": "Mouse",
-							"sid": 588433554099052,
-							"parameters": {
-								"object": "Btn_Select"
+								"instance-variable": "LinkID",
+								"comparison": 1,
+								"value": "Ctrl_Btns.CurrentLink"
 							}
 						},
 						{
-							"id": "is-on-layer",
-							"objectClass": "Btn_Select",
-							"sid": 640849791653786,
-							"parameters": {
-								"layer": "\"HUD_UI\""
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "set-animation-frame",
-							"objectClass": "Btn_Select",
-							"sid": 752483637093369,
-							"parameters": {
-								"frame-number": "1"
-							}
-						}
-					],
-					"sid": 664102350670575
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
 							"id": "cursor-is-over-object",
 							"objectClass": "Mouse",
-							"sid": 560360174195301,
+							"sid": 202594155423372,
 							"parameters": {
-								"object": "Btn_Select"
-							},
-							"isInverted": true
-						},
-						{
-							"id": "is-on-layer",
-							"objectClass": "Btn_Select",
-							"sid": 708078411734770,
-							"parameters": {
-								"layer": "\"HUD_UI\""
+								"object": "InventoryBtns"
 							},
 							"isInverted": true
 						}
@@ -3230,14 +2832,14 @@
 					"actions": [
 						{
 							"id": "set-animation-frame",
-							"objectClass": "Btn_Select",
-							"sid": 616696671829660,
+							"objectClass": "InventoryBtns",
+							"sid": 105610698946009,
 							"parameters": {
 								"frame-number": "0"
 							}
 						}
 					],
-					"sid": 565541551263938
+					"sid": 121508913834535
 				},
 				{
 					"eventType": "comment",
@@ -3312,6 +2914,303 @@
 				},
 				{
 					"eventType": "comment",
+					"text": "Single Click on an Item in World or Inventory - Set the variables of the Active Item and highlight this Active Item"
+				},
+				{
+					"functionName": "inspectItem",
+					"functionDescription": "On touch of inventory item",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "InventoryItemUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "UID of the item inspecting",
+							"sid": 440152592380479
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 133763708773208,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "InventoryItems",
+									"sid": 637935641807576,
+									"parameters": {
+										"unique-id": "InventoryItemUID"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 174950269857112,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If in world (not inventory) pick the showcase item "
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemShowcase",
+											"sid": 264238266607876,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										},
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 476240433765508,
+											"parameters": {
+												"layer": "\"Inventory\""
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-scale",
+											"objectClass": "SquareActive",
+											"sid": 853406505860572,
+											"parameters": {
+												"scale": ".5"
+											}
+										},
+										{
+											"callFunction": "displayItemHint",
+											"sid": 824982730400730,
+											"parameters": [
+												"ItemShowcase.UID",
+												"\"\"",
+												"StartInvWindow"
+											]
+										}
+									],
+									"sid": 706641302862956
+								},
+								{
+									"eventType": "comment",
+									"text": "If in Inventory - pick the item slot and set currentitemslot and inv section (StartInvWindow)"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 475546795486120,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										},
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "ItemSlot",
+											"sid": 275729810707686,
+											"parameters": {
+												"unique-id": "InventoryItems.UID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 370529874626540,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "ItemSlot.SlotID"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 221757546928787,
+											"parameters": {
+												"variable": "StartInvWindow",
+												"value": "ItemSlot.InventoryState=\"main\" ?\"main\" :\"equip\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "SquareActive",
+											"sid": 560397247740520,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"callFunction": "displayItemHint",
+											"sid": 765807760854004,
+											"parameters": [
+												"InventoryItems.UID",
+												"\"\"",
+												"StartInvWindow"
+											]
+										}
+									],
+									"sid": 323708144999572
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": "The \"DROP\" button - deletes the Active Item and clears the array cell (or reduces Qty by 1 for stackable items)"
+				},
+				{
+					"functionName": "discardItem",
+					"functionDescription": "When in inventory screen, delete an item from player collection",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 435680012914501,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-visible",
+									"objectClass": "Btn_Discard",
+									"sid": 922913195002718
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "InventoryItems",
+									"sid": 416747206910331,
+									"parameters": {
+										"instance-variable": "ItemID",
+										"comparison": 0,
+										"value": "CurrentItemID"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 141375739121645,
+									"parameters": {
+										"audio-file": "delete",
+										"loop": "not-looping",
+										"volume": "-5",
+										"stereo-pan": "0",
+										"tag-optional": "\"\""
+									}
+								},
+								{
+									"id": "set-opacity",
+									"objectClass": "EquipSlot",
+									"sid": 523505944647020,
+									"parameters": {
+										"opacity": "60"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "SquareActive",
+									"sid": 855321503104520,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								},
+								{
+									"callFunction": "UpdateNumbersOnDrop",
+									"sid": 222198734143688,
+									"parameters": [
+										"CurrentItemID"
+									]
+								},
+								{
+									"callFunction": "hideItemHint",
+									"sid": 798936923523399
+								},
+								{
+									"type": "comment",
+									"text": "not sure if we just need to say \"main\" for category here"
+								}
+							],
+							"sid": 673400102562641,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "If on the map (and in Shop mode) offer to Sell the item"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 902343850346740,
+											"parameters": {
+												"variable": "ShopMode"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "sellItem",
+											"sid": 986732945324619,
+											"parameters": [
+												"InventoryItems.ItemID",
+												"Functions.GetItemCostbyID(InventoryItems.ItemID)/2"
+											]
+										}
+									],
+									"sid": 372411578824204
+								},
+								{
+									"eventType": "comment",
+									"text": "NOTE: reinstate SpFont_Stack once we've solved the stack number issue"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-children",
+											"objectClass": "InventoryItems",
+											"sid": 290702528449692,
+											"parameters": {
+												"child": "UI_Font_Stack",
+												"which": "own"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-text",
+											"objectClass": "UI_Font_Stack",
+											"sid": 617498681241692,
+											"parameters": {
+												"text": "InventoryItems.NumberOfItems"
+											}
+										}
+									],
+									"sid": 834966915930437
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
 					"text": "Btn_Arrow to change the selected item, like the chosen hairstyle"
 				},
 				{
@@ -3337,19 +3236,10 @@
 							"sid": 594697497963806
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 180647012300145,
-							"parameters": {
-								"variable": "TempVarY",
-								"value": "\"switching selection in direction \"&direction"
-							}
-						}
-					],
+					"actions": [],
 					"sid": 654002734659572,
 					"children": [
 						{
@@ -3966,6 +3856,7 @@
 									]
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4259,27 +4150,7 @@
 					],
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 961037733220597,
-							"disabled": true,
-							"parameters": {
-								"variable": "KeyItem",
-								"value": "itemID"
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 990466429554155,
-							"parameters": {
-								"variable": "TempVarY",
-								"value": "\"Functions.GetItemCategory(itemID) =\"&Functions.GetItemCategory(itemID)"
-							}
-						}
-					],
+					"actions": [],
 					"sid": 935007394317735,
 					"children": [
 						{
@@ -4287,7 +4158,6 @@
 							"text": "If Item is a new type, display a hint"
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5370,7 +5240,6 @@
 							"sid": 984843580296484
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -5694,9 +5563,9 @@
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 159448520987581,
+							"sid": 150781736305308,
 							"parameters": {
-								"object-to-create": "Ctrl_Menu",
+								"object-to-create": "Ctrl_Btns",
 								"layer": "\"Hint\"",
 								"x": "-10",
 								"y": "-10",
@@ -5706,7 +5575,7 @@
 						},
 						{
 							"id": "set-instvar-value",
-							"objectClass": "Ctrl_Menu",
+							"objectClass": "Ctrl_Btns",
 							"sid": 775335885462330,
 							"parameters": {
 								"instance-variable": "Menu",
@@ -5715,7 +5584,7 @@
 						},
 						{
 							"id": "set-instvar-value",
-							"objectClass": "Ctrl_Menu",
+							"objectClass": "Ctrl_Btns",
 							"sid": 158380835584919,
 							"parameters": {
 								"instance-variable": "CurrentLink",
@@ -5724,7 +5593,7 @@
 						},
 						{
 							"id": "set-instvar-value",
-							"objectClass": "Ctrl_Menu",
+							"objectClass": "Ctrl_Btns",
 							"sid": 612219221880300,
 							"parameters": {
 								"instance-variable": "MaxLinks",
@@ -6001,7 +5870,6 @@
 							"sid": 846457891862036,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
@@ -6154,6 +6022,7 @@
 							"sid": 137989773547334
 						},
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -7366,7 +7235,6 @@
 					"sid": 914750369323616
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -7523,7 +7391,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -7656,21 +7523,21 @@
 					],
 					"actions": [
 						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 239093849387955,
+							"parameters": {
+								"variable": "TempVarY",
+								"value": "\"hiding hint\""
+							}
+						},
+						{
 							"id": "set-layer-visible",
 							"objectClass": "System",
 							"sid": 492327609239476,
 							"parameters": {
 								"layer": "\"Hint\"",
 								"visibility": "invisible"
-							}
-						},
-						{
-							"id": "set-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 287057040962000,
-							"parameters": {
-								"variable": "ItemShowing",
-								"value": "false"
 							}
 						},
 						{
@@ -7741,8 +7608,26 @@
 						},
 						{
 							"id": "destroy",
-							"objectClass": "Ctrl_Menu",
+							"objectClass": "Ctrl_Btns",
 							"sid": 199486750280032
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 598243497829079,
+							"parameters": {
+								"seconds": ".1",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 900092260873904,
+							"parameters": {
+								"variable": "ItemShowing",
+								"value": "false"
+							}
 						}
 					],
 					"sid": 618391788572328,

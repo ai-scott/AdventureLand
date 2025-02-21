@@ -1,0 +1,62 @@
+{
+	"name": "Ctrl_Btns",
+	"plugin-id": "Sprite",
+	"sid": 699643498541013,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "Menu",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 351975031890567
+		},
+		{
+			"name": "CurrentLink",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 400818754018202
+		},
+		{
+			"name": "MaxLinks",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 318107274190328
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 16,
+						"height": 16,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 6858222,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 761638513492680,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

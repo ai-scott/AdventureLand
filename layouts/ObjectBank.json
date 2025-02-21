@@ -2789,7 +2789,7 @@
 					}
 				},
 				{
-					"type": "Bag",
+					"type": "CloseX",
 					"properties": {
 						"initially-visible": true,
 						"initial-animation": "Animation 1",

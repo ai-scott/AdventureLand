@@ -671,7 +671,7 @@
                 "Windmill_Nick",
                 "Shopkeeper_Sophie",
                 "Shopkeeper_Sarah",
-                "AL"
+                ""
             ],
             [
                 "AL:Welcome",
@@ -889,7 +889,7 @@
                 "Next",
                 "Next",
                 "Next",
-                "End"
+                ""
             ],
             [
                 "End",
@@ -1107,7 +1107,7 @@
                 "Not_Started:000",
                 "Not_Started:000",
                 "Not_Started:000",
-                "Complete"
+                ""
             ],
             [
                 "Complete",
@@ -1325,7 +1325,7 @@
                 "",
                 "",
                 "",
-                "checkYourself"
+                ""
             ],
             [
                 "",

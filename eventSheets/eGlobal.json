@@ -1053,6 +1053,7 @@
 					"sid": 395682133315497
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -3929,6 +3930,15 @@
 									}
 								},
 								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Action",
+									"sid": 856390327795435,
+									"parameters": {
+										"instance-variable": "LinkID",
+										"value": "-1"
+									}
+								},
+								{
 									"id": "set-animation-frame",
 									"objectClass": "Btn_Action",
 									"sid": 146822402479964,
@@ -4073,6 +4083,15 @@
 										"y": "18",
 										"create-hierarchy": false,
 										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Action",
+									"sid": 299113040622089,
+									"parameters": {
+										"instance-variable": "LinkID",
+										"value": "-1"
 									}
 								},
 								{
@@ -4462,6 +4481,15 @@
 										{
 											"id": "set-instvar-value",
 											"objectClass": "Btn_Action",
+											"sid": 647929518766430,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"value": "-1"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Action",
 											"sid": 445973899331218,
 											"parameters": {
 												"instance-variable": "Action",
@@ -4586,6 +4614,15 @@
 												"y": "18",
 												"create-hierarchy": false,
 												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Btn_Action",
+											"sid": 658328320618925,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"value": "-1"
 											}
 										},
 										{
@@ -5266,12 +5303,44 @@
 				{
 					"eventType": "group",
 					"disabled": false,
+					"title": "Trigger Functions",
+					"description": "Functions triggered by interacting with objects in the game",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-start-of-layout",
+									"objectClass": "System",
+									"sid": 675832286558855
+								}
+							],
+							"actions": [
+								{
+									"id": "map-function",
+									"objectClass": "Functions",
+									"sid": 761153190447567,
+									"parameters": {
+										"name": "\"TriggerFunctions\"",
+										"string": "\"checkYourself\"",
+										"function": "OpenClose_Inventory"
+									}
+								}
+							],
+							"sid": 119729088397068
+						}
+					],
+					"sid": 638190920999623
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
 					"title": "Menus_Mechanics",
 					"description": "",
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5717,12 +5786,39 @@
 									}
 								},
 								{
+									"id": "is-on-layer",
+									"objectClass": "InventoryBtns",
+									"sid": 677073979880037,
+									"parameters": {
+										"layer": "\"Hint\"\n"
+									}
+								},
+								{
 									"id": "trigger-once-while-true",
 									"objectClass": "System",
 									"sid": 891538731413020
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Btns",
+									"sid": 281454250812843,
+									"parameters": {
+										"instance-variable": "MaxLinks",
+										"value": "-1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Btns",
+									"sid": 943358722356538,
+									"parameters": {
+										"instance-variable": "CurrentLink",
+										"value": "0"
+									}
+								}
+							],
 							"sid": 878896928274706,
 							"children": [
 								{
@@ -5735,175 +5831,74 @@
 											"parameters": {
 												"object": "InventoryBtns"
 											}
-										},
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 593739933333861,
-											"parameters": {
-												"first-value": "InventoryBtns.ObjectTypeName",
-												"comparison": 1,
-												"second-value": "\"Btn_Action\""
-											}
 										}
 									],
-									"actions": [
+									"actions": [],
+									"sid": 309319839533720,
+									"children": [
 										{
-											"id": "add-to-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 172211123360883,
-											"parameters": {
-												"instance-variable": "MaxLinks",
-												"value": "1"
-											}
-										},
-										{
-											"id": "set-instvar-value",
-											"objectClass": "InventoryBtns",
-											"sid": 287162367628532,
-											"parameters": {
-												"instance-variable": "LinkID",
-												"value": "loopindex"
-											}
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 802105381694900,
+													"parameters": {
+														"first-value": "InventoryBtns.ObjectTypeName",
+														"comparison": 1,
+														"second-value": "\"Btn_Action\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 324468219088094,
+													"parameters": {
+														"instance-variable": "MaxLinks",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "InventoryBtns",
+													"sid": 990527332962946,
+													"parameters": {
+														"instance-variable": "LinkID",
+														"value": "loopindex"
+													}
+												}
+											],
+											"sid": 652483005486461
 										}
-									],
-									"sid": 309319839533720
+									]
 								}
 							]
 						},
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 342030496153395,
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 873575793435700,
 									"parameters": {
-										"key": 37
+										"layer": "\"Hint\""
 									}
 								},
 								{
-									"id": "on-button-pressed",
-									"objectClass": "Gamepad",
-									"sid": 183578180215845,
+									"id": "is-on-layer",
+									"objectClass": "InventoryBtns",
+									"sid": 770876142628684,
 									"parameters": {
-										"gamepad": "0",
-										"button": "d-pad-left"
+										"layer": "\"Hint\"\n"
 									}
 								}
 							],
 							"actions": [],
-							"sid": 760474170050284,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 472629306897256,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"comparison": 2,
-												"value": "Self.MaxLinks"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "add-to-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 106776095747833,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"value": "1"
-											}
-										}
-									],
-									"sid": 844966510821648
-								}
-							],
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 882127954261982,
-									"parameters": {
-										"key": 39
-									}
-								},
-								{
-									"id": "on-button-pressed",
-									"objectClass": "Gamepad",
-									"sid": 101112335647295,
-									"parameters": {
-										"gamepad": "0",
-										"button": "d-pad-right"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 161024849685025,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 318652559373296,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"comparison": 4,
-												"value": "0"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "subtract-from-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 235011408322861,
-											"parameters": {
-												"instance-variable": "CurrentLink",
-												"value": "1"
-											}
-										}
-									],
-									"sid": 410244789322828
-								}
-							],
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "InventoryBtns",
-									"sid": 109036632560938,
-									"parameters": {
-										"instance-variable": "LinkID",
-										"comparison": 0,
-										"value": "Ctrl_Menu.CurrentLink"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-animation-frame",
-									"objectClass": "InventoryBtns",
-									"sid": 568474296309723,
-									"parameters": {
-										"frame-number": "2"
-									}
-								}
-							],
-							"sid": 606235345965101,
+							"sid": 995279100112227,
 							"children": [
 								{
 									"eventType": "block",
@@ -5911,69 +5906,283 @@
 										{
 											"id": "on-key-pressed",
 											"objectClass": "Keyboard",
-											"sid": 363574904609149,
+											"sid": 116040456031142,
 											"parameters": {
-												"key": 90
+												"key": 37
 											}
 										},
 										{
 											"id": "on-button-pressed",
 											"objectClass": "Gamepad",
-											"sid": 747412723718323,
+											"sid": 150857083586234,
 											"parameters": {
 												"gamepad": "0",
-												"button": "button-b"
+												"button": "d-pad-left"
 											}
-										},
+										}
+									],
+									"actions": [],
+									"sid": 793779815256163,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Btns",
+													"sid": 552068254426008,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 4,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 307524785700112,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 112944696339515
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
 										{
 											"id": "on-key-pressed",
 											"objectClass": "Keyboard",
-											"sid": 853497769870161,
+											"sid": 626798504837977,
 											"parameters": {
-												"key": 32
+												"key": 39
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 962983329060280,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-right"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 557863881201170,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Btns",
+													"sid": 941603971288719,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 2,
+														"value": "Self.MaxLinks"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 580328779487304,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 192967997754501
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "InventoryBtns",
+											"sid": 683465020399531,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"comparison": 1,
+												"value": "Ctrl_Btns.CurrentLink"
 											}
 										}
 									],
 									"actions": [
 										{
-											"callFunction": "Menu_Select",
-											"sid": 765085870726343,
-											"parameters": [
-												"SpriteFont_Menu.Text",
-												"SpriteFont_Menu.Menu"
-											]
+											"id": "set-animation-frame",
+											"objectClass": "InventoryBtns",
+											"sid": 728364373174650,
+											"parameters": {
+												"frame-number": "\"Off\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "InventoryBtns",
+											"sid": 474829464674598
 										}
 									],
-									"sid": 682111384782166,
-									"isOrBlock": true
+									"sid": 855235283690133
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "InventoryBtns",
+											"sid": 227846452866644,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"comparison": 0,
+												"value": "Ctrl_Btns.CurrentLink"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "InventoryBtns",
+											"sid": 983113444521625,
+											"parameters": {
+												"frame-number": "\"On\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "InventoryBtns",
+											"sid": 970166900067375
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 368748338421913,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "\"current link?\"&Ctrl_Btns.CurrentLink&\" ObjectTypeName = \"&InventoryBtns.ObjectTypeName&\" AnimationFrame = \"&InventoryBtns.AnimationFrame"
+											}
+										}
+									],
+									"sid": 406455848345900,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 550344924351867,
+													"parameters": {
+														"key": 90
+													}
+												},
+												{
+													"id": "on-button-pressed",
+													"objectClass": "Gamepad",
+													"sid": 953363082254164,
+													"parameters": {
+														"gamepad": "0",
+														"button": "button-b"
+													}
+												},
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 186267104819246,
+													"parameters": {
+														"key": 32
+													}
+												}
+											],
+											"actions": [],
+											"sid": 315109642839151,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 367858719957086,
+															"parameters": {
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Select\"\n"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "selectItem",
+															"sid": 756949137874105
+														}
+													],
+													"sid": 302600365443878
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 522508461810796,
+															"parameters": {
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Discard\"\n"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "discardItem",
+															"sid": 299803909163878
+														}
+													],
+													"sid": 436880036018066
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 114675335800265,
+															"parameters": {
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Cancel\"\n"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "hideItemHint",
+															"sid": 207072147375379
+														}
+													],
+													"sid": 720391369979197
+												}
+											],
+											"isOrBlock": true
+										}
+									]
 								}
 							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "InventoryBtns",
-									"sid": 790843644942835,
-									"parameters": {
-										"instance-variable": "LinkID",
-										"comparison": 1,
-										"value": "Ctrl_Menu.CurrentLink"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-animation-frame",
-									"objectClass": "InventoryBtns",
-									"sid": 304339472929028,
-									"parameters": {
-										"frame-number": "1"
-									}
-								}
-							],
-							"sid": 307295588596891
 						}
 					],
 					"sid": 679437998879336
@@ -6274,7 +6483,7 @@
 									"objectClass": "Touch",
 									"sid": 804011384985679,
 									"parameters": {
-										"object": "Bag"
+										"object": "CloseX"
 									}
 								},
 								{
@@ -6293,6 +6502,81 @@
 								}
 							],
 							"sid": 126506386552842
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 355951866392820,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								},
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 251237458804248,
+									"parameters": {
+										"object": "CloseX"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation-frame",
+									"objectClass": "CloseX",
+									"sid": 614108620177644,
+									"parameters": {
+										"frame-number": "1"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "CloseX",
+									"sid": 841389204514687
+								}
+							],
+							"sid": 923337290002522
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 472664589243573,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								},
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 247057008525832,
+									"parameters": {
+										"object": "CloseX"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation-frame",
+									"objectClass": "CloseX",
+									"sid": 640601925037082,
+									"parameters": {
+										"frame-number": "0"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "CloseX",
+									"sid": 669734101610373
+								}
+							],
+							"sid": 914839190904320
 						},
 						{
 							"eventType": "block",
@@ -6591,6 +6875,15 @@
 										{
 											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
+											"sid": 437078915969883,
+											"parameters": {
+												"variable": "ItemShowing"
+											},
+											"isInverted": true
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
 											"sid": 327945202545286,
 											"parameters": {
 												"variable": "InDialogue"
@@ -6886,6 +7179,53 @@
 													],
 													"sid": 199229126198146,
 													"isOrBlock": true
+												},
+												{
+													"bookmark": true,
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 210663282442984,
+															"parameters": {
+																"variable": "CurrentAction",
+																"comparison": 0,
+																"value": "\"Check\""
+															}
+														},
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Function",
+															"sid": 365052426316181,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														},
+														{
+															"id": "is-overlapping-another-object",
+															"objectClass": "Trigger_Function",
+															"sid": 827775143225138,
+															"parameters": {
+																"object": "Trigger_Player"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "call-mapped-function",
+															"objectClass": "Functions",
+															"sid": 566681222265261,
+															"parameters": {
+																"name": "\"TriggerFunctions\"",
+																"string": "Trigger_Function.Function",
+																"forward-params": "0"
+															}
+														}
+													],
+													"sid": 708431162903973
 												},
 												{
 													"eventType": "block",

@@ -439,7 +439,8 @@
 					"Touch",
 					"JSON_ItemsLibrary",
 					"Dict_ItemNumbers",
-					"JSON_ItemTriggers"
+					"JSON_ItemTriggers",
+					"Ctrl_Btns"
 				],
 				"subfolders": [],
 				"name": "System"
@@ -564,7 +565,7 @@
 					"EquipSlot",
 					"Btn_Select",
 					"Btn_Discard",
-					"Bag",
+					"CloseX",
 					"Background",
 					"Arr_Equip",
 					"Arr_InvCollection",

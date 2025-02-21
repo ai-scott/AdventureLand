@@ -621,7 +621,7 @@
 					}
 				},
 				{
-					"type": "Trigger_Scene",
+					"type": "Trigger_Function",
 					"properties": {
 						"initially-visible": false,
 						"initial-animation": "Animation 1",
@@ -629,15 +629,15 @@
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 139,
-					"sid": 625265436580470,
+					"uid": 256,
+					"sid": 202330097198835,
 					"tags": "",
 					"instanceVariables": {
-						"ID": 9
+						"Function": "checkYourself"
 					},
 					"behaviors": {},
 					"instanceFolderItem": {
-						"sid": 625265436580470,
+						"sid": 202330097198835,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -646,10 +646,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 330,
-						"y": 176,
-						"width": 18.256915119198354,
-						"height": 40.29596051932338,
+						"x": 330.8989678499407,
+						"y": 177.81937576697254,
+						"width": 17.927451915537375,
+						"height": 42.88996812581321,
 						"originX": 1.953125,
 						"originY": 2.0350877192982457,
 						"color": [

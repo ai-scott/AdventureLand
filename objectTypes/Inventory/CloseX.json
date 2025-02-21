@@ -1,5 +1,5 @@
 {
-	"name": "Bag",
+	"name": "CloseX",
 	"plugin-id": "Sprite",
 	"sid": 746565231033729,
 	"isGlobal": false,
@@ -21,6 +21,20 @@
 						"exportQuality": 0.8,
 						"fileType": "image/png",
 						"imageSpriteId": 6444957,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 16,
+						"height": 15,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 6687201,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": ""

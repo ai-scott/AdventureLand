@@ -43,7 +43,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": ""
+						"tag": "Off"
 					},
 					{
 						"width": 70,
@@ -69,7 +69,7 @@
 						},
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": ""
+						"tag": "On"
 					},
 					{
 						"width": 70,

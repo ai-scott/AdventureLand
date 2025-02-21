@@ -2138,6 +2138,16 @@
 												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
+													"sid": 540058682406215,
+													"parameters": {
+														"variable": "Action",
+														"comparison": 0,
+														"value": "\"Check\""
+													}
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
 													"sid": 999348408416571,
 													"parameters": {
 														"variable": "Action",
@@ -4541,7 +4551,6 @@
 											"sid": 469058466382776,
 											"children": [
 												{
-													"bookmark": true,
 													"eventType": "block",
 													"conditions": [
 														{
