@@ -5082,6 +5082,15 @@
 											}
 										},
 										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 628359067564965,
+											"parameters": {
+												"variable": "GameInitialized",
+												"value": "false"
+											}
+										},
+										{
 											"id": "clear",
 											"objectClass": "Inventories",
 											"sid": 278965117739266,
@@ -5166,6 +5175,16 @@
 												"comparison": 0,
 												"value": "\"Load Game\""
 											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 484203580013058,
+											"parameters": {
+												"variable": "Text",
+												"comparison": 0,
+												"value": "\"Try Again\""
+											}
 										}
 									],
 									"actions": [
@@ -5226,7 +5245,8 @@
 											}
 										}
 									],
-									"sid": 631053329346557
+									"sid": 631053329346557,
+									"isOrBlock": true
 								},
 								{
 									"eventType": "block",
@@ -5300,7 +5320,8 @@
 											}
 										}
 									],
-									"sid": 568159287244740
+									"sid": 568159287244740,
+									"disabled": true
 								}
 							]
 						}
