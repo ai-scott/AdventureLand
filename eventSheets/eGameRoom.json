@@ -5409,62 +5409,6 @@
 			"sid": 914632009346481
 		},
 		{
-			"eventType": "comment",
-			"text": "Change to DEV settings",
-			"background-color": [
-				0.7843137254901961,
-				1,
-				0,
-				1
-			]
-		},
-		{
-			"bookmark": true,
-			"eventType": "block",
-			"conditions": [
-				{
-					"id": "on-key-pressed",
-					"objectClass": "Keyboard",
-					"sid": 327720779191058,
-					"parameters": {
-						"key": 221
-					}
-				}
-			],
-			"actions": [
-				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 388402265279830,
-					"parameters": {
-						"variable": "AudioLevel",
-						"value": "-50"
-					}
-				},
-				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 106843664877553,
-					"parameters": {
-						"variable": "Speed",
-						"value": "120"
-					}
-				},
-				{
-					"callFunction": "changeOutfit",
-					"sid": 425183851085754,
-					"parameters": [
-						"\"06_Feet\"",
-						"\"\"",
-						"\"\"",
-						"\"101_fbas_03fot1_shoes_00a_blue\"",
-						"\"\""
-					]
-				}
-			],
-			"sid": 228975982211612
-		},
-		{
 			"eventType": "group",
 			"disabled": false,
 			"title": "Audio",
@@ -6825,6 +6769,15 @@
 												"y": "En_Slime_Mask.Y - 8",
 												"create-hierarchy": false,
 												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-animation",
+											"objectClass": "Particle",
+											"sid": 477854234255158,
+											"parameters": {
+												"animation": "\"Default\"",
+												"from": "beginning"
 											}
 										},
 										{
@@ -11980,6 +11933,7 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -12506,8 +12460,7 @@
 							"sid": 349565116043128
 						}
 					],
-					"sid": 705124192410320,
-					"disabled": true
+					"sid": 705124192410320
 				}
 			],
 			"sid": 605217890541925

@@ -195,7 +195,7 @@
 			"eventType": "variable",
 			"name": "AudioLevel",
 			"type": "number",
-			"initialValue": "-50",
+			"initialValue": "0",
 			"comment": "//set at 0 is \"normal\"",
 			"isStatic": false,
 			"isConstant": false,
@@ -5331,7 +5331,6 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5356,6 +5355,120 @@
 						}
 					],
 					"sid": 638190920999623
+				},
+				{
+					"eventType": "comment",
+					"text": "Change to DEV settings",
+					"background-color": [
+						0.7843137254901961,
+						1,
+						0,
+						1
+					]
+				},
+				{
+					"bookmark": true,
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 327720779191058,
+							"parameters": {
+								"key": 221
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 388402265279830,
+							"parameters": {
+								"variable": "AudioLevel",
+								"value": "-50"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 513343221801219,
+							"parameters": {
+								"variable": "PlayerSpeed",
+								"value": "150"
+							}
+						},
+						{
+							"id": "set-master-volume",
+							"objectClass": "Audio",
+							"sid": 546070310269227,
+							"parameters": {
+								"db": "-30"
+							}
+						},
+						{
+							"id": "set-max-speed",
+							"objectClass": "Player_Base",
+							"sid": 224528480009073,
+							"behaviorType": "8Direction",
+							"parameters": {
+								"max-speed": "PlayerSpeed"
+							}
+						}
+					],
+					"sid": 228975982211612
+				},
+				{
+					"bookmark": true,
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 781981875502777,
+							"parameters": {
+								"key": 219
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 328983152733239,
+							"parameters": {
+								"variable": "AudioLevel",
+								"value": "0"
+							}
+						},
+						{
+							"id": "set-master-volume",
+							"objectClass": "Audio",
+							"sid": 778955072059288,
+							"parameters": {
+								"db": "0"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 376548622815240,
+							"parameters": {
+								"variable": "PlayerSpeed",
+								"value": "90"
+							}
+						},
+						{
+							"id": "set-max-speed",
+							"objectClass": "Player_Base",
+							"sid": 202233895263475,
+							"behaviorType": "8Direction",
+							"parameters": {
+								"max-speed": "PlayerSpeed"
+							}
+						}
+					],
+					"sid": 536416927873779
 				},
 				{
 					"eventType": "group",

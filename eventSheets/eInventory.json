@@ -1757,6 +1757,7 @@
 									"sid": 469151688730498
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4572,7 +4573,6 @@
 									"text": "If on the map (and in Shop mode) offer to Buy the item"
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -6138,7 +6138,6 @@
 											"sid": 738398783677823
 										},
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -6505,7 +6504,6 @@
 							"sid": 984843580296484
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
