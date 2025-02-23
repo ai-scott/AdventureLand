@@ -2428,7 +2428,6 @@
 											"functionCopyPicked": false,
 											"functionIsAsync": false,
 											"functionParameters": [],
-											"bookmark": true,
 											"eventType": "function-block",
 											"conditions": [],
 											"actions": [
@@ -2500,6 +2499,14 @@
 													"parameters": {
 														"animation": "\"Slash_\" & Player_Mask.Direction",
 														"from": "beginning"
+													}
+												},
+												{
+													"id": "set-visible",
+													"objectClass": "Player_Sword",
+													"sid": 311491719324730,
+													"parameters": {
+														"visibility": "invisible"
 													}
 												},
 												{
@@ -2600,9 +2607,9 @@
 																{
 																	"id": "set-animation",
 																	"objectClass": "weapons_effects",
-																	"sid": 655518986997954,
+																	"sid": 718483032761108,
 																	"parameters": {
-																		"animation": "\"Axe_Left\"",
+																		"animation": "Dict_SaveGameData.Get(\"Weapon\")&\"_\"&Player_Mask.Direction",
 																		"from": "beginning"
 																	}
 																}
@@ -2697,9 +2704,9 @@
 																{
 																	"id": "set-animation",
 																	"objectClass": "weapons_effects",
-																	"sid": 786507496379632,
+																	"sid": 250053427105781,
 																	"parameters": {
-																		"animation": "\"Axe_Right\"",
+																		"animation": "Dict_SaveGameData.Get(\"Weapon\")&\"_\"&Player_Mask.Direction",
 																		"from": "beginning"
 																	}
 																}
@@ -2794,9 +2801,9 @@
 																{
 																	"id": "set-animation",
 																	"objectClass": "weapons_effects",
-																	"sid": 729455153936608,
+																	"sid": 145440662282529,
 																	"parameters": {
-																		"animation": "\"Axe_Down\"",
+																		"animation": "Dict_SaveGameData.Get(\"Weapon\")&\"_\"&Player_Mask.Direction",
 																		"from": "beginning"
 																	}
 																}
@@ -2891,9 +2898,9 @@
 																{
 																	"id": "set-animation",
 																	"objectClass": "weapons_effects",
-																	"sid": 557419532141829,
+																	"sid": 572905962108056,
 																	"parameters": {
-																		"animation": "\"Axe_Up\"",
+																		"animation": "Dict_SaveGameData.Get(\"Weapon\")&\"_\"&Player_Mask.Direction",
 																		"from": "beginning"
 																	}
 																}

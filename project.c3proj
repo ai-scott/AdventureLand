@@ -246,13 +246,6 @@
 		},
 		{
 			"type": "effect",
-			"id": "replacecolor",
-			"name": "Replace color",
-			"author": "Scirra",
-			"bundled": false
-		},
-		{
-			"type": "effect",
 			"id": "tint",
 			"name": "Tint",
 			"author": "Scirra",

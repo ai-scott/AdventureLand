@@ -19,40 +19,7 @@
 		}
 	],
 	"behaviorTypes": [],
-	"effectTypes": [
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_outfit_1"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_outfit_2"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_outfit_3"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_hair_1"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_hair_2"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_hair_3"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_hair_4"
-		},
-		{
-			"effectId": "replacecolor",
-			"name": "ReplaceColor_hair_5"
-		}
-	],
+	"effectTypes": [],
 	"members": [
 		"Player_Mask",
 		"weapons_effects",
