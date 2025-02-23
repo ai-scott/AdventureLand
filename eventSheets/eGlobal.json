@@ -2206,6 +2206,15 @@
 											"sid": 240126192393705
 										},
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 703914448011535,
+											"parameters": {
+												"variable": "CurrentInvWindow",
+												"value": "\"main\""
+											}
+										},
+										{
 											"id": "wait",
 											"objectClass": "System",
 											"sid": 716869172602322,
@@ -5346,7 +5355,6 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -6756,6 +6764,7 @@
 									"sid": 540511017533477
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -6769,17 +6778,17 @@
 										{
 											"id": "compare-instance-variable",
 											"objectClass": "ItemSlot",
-											"sid": 850683068325979,
+											"sid": 783839790644357,
 											"parameters": {
-												"instance-variable": "ItemID",
-												"comparison": 1,
-												"value": "0"
+												"instance-variable": "InventoryWindow",
+												"comparison": 0,
+												"value": "CurrentInvWindow"
 											}
 										},
 										{
 											"id": "compare-instance-variable",
 											"objectClass": "ItemSlot",
-											"sid": 677035889306175,
+											"sid": 715955854413464,
 											"parameters": {
 												"instance-variable": "SlotID",
 												"comparison": 0,
@@ -6787,26 +6796,118 @@
 											}
 										}
 									],
-									"actions": [
+									"actions": [],
+									"sid": 859127582914281,
+									"children": [
 										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 189980842317482,
-											"parameters": {
-												"variable": "TempVarX",
-												"value": "\"trying to open \"&ItemSlot.UID"
-											}
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 982314247395045,
+													"parameters": {
+														"instance-variable": "InventoryWindow",
+														"comparison": 1,
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 457492645569896,
+													"parameters": {
+														"instance-variable": "ItemID",
+														"comparison": 1,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "displayItemHint",
+													"sid": 542080715298125,
+													"parameters": [
+														"ItemSlot.UID",
+														"CurrentInvWindow"
+													]
+												}
+											],
+											"sid": 503418602948159
 										},
 										{
-											"callFunction": "displayItemHint",
-											"sid": 964852657316878,
-											"parameters": [
-												"ItemSlot.UID",
-												"CurrentInvWindow"
-											]
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 179733054720823,
+													"parameters": {
+														"instance-variable": "InventoryWindow",
+														"comparison": 0,
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 429761336259961,
+													"parameters": {
+														"instance-variable": "SlotID",
+														"comparison": 0,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "switchSelection",
+													"sid": 437383902937388,
+													"parameters": [
+														"\"hair\"",
+														"\"prev\""
+													]
+												}
+											],
+											"sid": 213643197826132
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 933897415121939,
+													"parameters": {
+														"instance-variable": "InventoryWindow",
+														"comparison": 0,
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 118825684228359,
+													"parameters": {
+														"instance-variable": "SlotID",
+														"comparison": 0,
+														"value": "1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "switchSelection",
+													"sid": 561297288481530,
+													"parameters": [
+														"\"hair\"",
+														"\"next\""
+													]
+												}
+											],
+											"sid": 760694012988947
 										}
-									],
-									"sid": 859127582914281
+									]
 								},
 								{
 									"eventType": "block",
@@ -6818,6 +6919,15 @@
 											"parameters": {
 												"key": 27
 											}
+										},
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 933524602527234,
+											"parameters": {
+												"layer": "\"Hint\""
+											},
+											"isInverted": true
 										}
 									],
 									"actions": [

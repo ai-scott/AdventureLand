@@ -1757,6 +1757,7 @@
 									"sid": 469151688730498
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -1793,6 +1794,45 @@
 											"sid": 550436676682050,
 											"parameters": {
 												"width": "Self.TextWidth"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 339682543748204,
+											"parameters": {
+												"object-to-create": "ItemSlot",
+												"layer": "\"Inventory\"",
+												"x": "UI_Font.X-14",
+												"y": "UI_Font.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 378293138980680,
+											"parameters": {
+												"instance-variable": "InventoryWindow",
+												"value": "\"hair\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 719668987744420,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 740156551171191,
+											"parameters": {
+												"frame-number": "0"
 											}
 										},
 										{
@@ -1846,6 +1886,45 @@
 											"id": "stop-animation",
 											"objectClass": "Btn_Arrow",
 											"sid": 308260512019454
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 629123160754943,
+											"parameters": {
+												"object-to-create": "ItemSlot",
+												"layer": "\"Inventory\"",
+												"x": "UI_Font.BBoxRight + 12",
+												"y": "UI_Font.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 462821924911883,
+											"parameters": {
+												"instance-variable": "InventoryWindow",
+												"value": "\"hair\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 124381640977803,
+											"parameters": {
+												"instance-variable": "SlotID",
+												"value": "1"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "ItemSlot",
+											"sid": 462895642498381,
+											"parameters": {
+												"frame-number": "0"
+											}
 										},
 										{
 											"id": "create-object",
@@ -2883,6 +2962,15 @@
 									"parameters": {
 										"scale": "1"
 									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 760523051902755,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow"
+									}
 								}
 							],
 							"sid": 584752649485594
@@ -2959,9 +3047,19 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 149378608701884,
+							"disabled": true,
 							"parameters": {
 								"variable": "TempVarX",
 								"value": "\"ItemSlot.SlotID = \"&ItemSlot.SlotID"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 304504965095931,
+							"parameters": {
+								"variable": "TempVarX",
+								"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow"
 							}
 						}
 					],
@@ -3001,16 +3099,26 @@
 										"comparison": 0,
 										"value": "CurrentItemSlot"
 									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "ItemSlot",
+									"sid": 440394895991749,
+									"parameters": {
+										"instance-variable": "InventoryWindow",
+										"comparison": 0,
+										"value": "CurrentInvWindow"
+									}
 								}
 							],
 							"actions": [
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 253272045119617,
+									"sid": 871524736249586,
 									"parameters": {
-										"variable": "CurrentInvWindow",
-										"value": "ItemSlot.InventoryWindow"
+										"variable": "TempVarY",
+										"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow&\" direction =\"&direction"
 									}
 								}
 							],
@@ -3069,6 +3177,117 @@
 												}
 											],
 											"sid": 213612362626722
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 898474184791453,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "1"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 587676575711826,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 296714989912520,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 864258287325510
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 599949691968242,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "2"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 830893031214815,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 114307474958060,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "2"
+													}
+												}
+											],
+											"sid": 362080210268488
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 228003659476703,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 5,
+														"second-value": "3"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 179911940783483,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 320121857207616,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "2"
+													}
+												}
+											],
+											"sid": 555082171441172
 										}
 									]
 								},
@@ -3125,6 +3344,227 @@
 												}
 											],
 											"sid": 810136724601651
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 414463854262413,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 4,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 808214049804836,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 833048901640776,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"main\""
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 676127847272763,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 265596541267505
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 552791347973574,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 656382260508805,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 256403623913033,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 107721939130865
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 203783980229293,
+													"parameters": {
+														"value": "CurrentItemSlot%2=0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 553878997723023,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 878599624484781,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 438105966570799,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 443969617850015,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 425296433390244
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 242851535688516,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "6"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 404614062603251,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 754577383552702,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 486342418402612,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 400705854639126
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 428869945783539,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 2,
+														"second-value": "6"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 400600780549874,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 939372218535747,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 682101280402492
 										}
 									]
 								},
@@ -3145,6 +3585,167 @@
 									"actions": [],
 									"sid": 963671196941431,
 									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 561142438071926,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "6"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 778787746023323,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 583540856796502,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 461170692627737,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 107200234602703
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 637559791182436,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 3,
+														"second-value": "5"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 933148593175328,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [],
+											"sid": 499106853294904,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 281550489484447,
+															"parameters": {
+																"first-value": "CurrentItemSlot",
+																"comparison": 0,
+																"second-value": "5"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 715335714420396,
+															"parameters": {
+																"variable": "CurrentItemSlot",
+																"value": "2"
+															}
+														}
+													],
+													"sid": 948351832258233
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "else",
+															"objectClass": "System",
+															"sid": 389123163114061
+														}
+													],
+													"actions": [
+														{
+															"id": "add-to-eventvar",
+															"objectClass": "System",
+															"sid": 864632132976336,
+															"parameters": {
+																"variable": "CurrentItemSlot",
+																"value": "2"
+															}
+														}
+													],
+													"sid": 115574811988496
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 322124313044806,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 309179177774980,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-eventvar",
+													"objectClass": "System",
+													"sid": 623967549719305,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 693374525493457
+										},
 										{
 											"eventType": "block",
 											"conditions": [
@@ -3207,7 +3808,7 @@
 												{
 													"id": "compare-two-values",
 													"objectClass": "System",
-													"sid": 718582931707510,
+													"sid": 934568419622488,
 													"parameters": {
 														"first-value": "CurrentItemSlot",
 														"comparison": 4,
@@ -3217,7 +3818,171 @@
 												{
 													"id": "compare-two-values",
 													"objectClass": "System",
-													"sid": 431853461236484,
+													"sid": 443146313109181,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"equip\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 816576050786937,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 142923095551308
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 470077389747734,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 207697860718019,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 411210656364775,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"equip\""
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 677839773083949,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "6"
+													}
+												}
+											],
+											"sid": 168804205214593
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 730954010565061,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 4,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 163146055908238,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 881401454778261,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 989688676465760
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "evaluate-expression",
+													"objectClass": "System",
+													"sid": 528350908416610,
+													"parameters": {
+														"value": "CurrentItemSlot%5=0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 107572322762152,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 874025383836474,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 525036306287263,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "\"hair\""
+													}
+												}
+											],
+											"sid": 812119238285214
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 913738560866777,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 4,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 850032170517672,
 													"parameters": {
 														"first-value": "CurrentInvWindow",
 														"comparison": 0,
@@ -3229,14 +3994,14 @@
 												{
 													"id": "subtract-from-eventvar",
 													"objectClass": "System",
-													"sid": 357698413921485,
+													"sid": 583061329020435,
 													"parameters": {
 														"variable": "CurrentItemSlot",
 														"value": "1"
 													}
 												}
 											],
-											"sid": 319524783754313
+											"sid": 294758197445899
 										}
 									]
 								}
@@ -5338,7 +6103,6 @@
 											"sid": 738398783677823
 										},
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -5705,7 +6469,6 @@
 							"sid": 984843580296484
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{

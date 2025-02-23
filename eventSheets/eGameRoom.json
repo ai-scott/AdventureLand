@@ -636,6 +636,7 @@
 							"sid": 964660401401353,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
