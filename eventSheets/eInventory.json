@@ -5233,14 +5233,6 @@
 									"parameters": [
 										"-purchasePrice"
 									]
-								},
-								{
-									"callFunction": "UpdateNumbersOnPickup",
-									"sid": 365674733767781,
-									"parameters": [
-										"InventoryItems.ItemID",
-										"qty"
-									]
 								}
 							],
 							"sid": 262109371730317
@@ -5322,7 +5314,6 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 410382317930707,
-							"disabled": true,
 							"parameters": {
 								"variable": "TempVarX",
 								"value": "\"collecting itemUID \"&itemUID& \" itemID = \"&itemID"
