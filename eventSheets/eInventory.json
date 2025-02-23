@@ -7143,7 +7143,6 @@
 							"sid": 846457891862036,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
@@ -7777,9 +7776,9 @@
 										{
 											"id": "set-position",
 											"objectClass": "Hint_9patch",
-											"sid": 101267314583865,
+											"sid": 969656874911768,
 											"parameters": {
-												"x": "InventoryItems.X",
+												"x": "Hint_9patch.X",
 												"y": "(InventoryItems.ImagePointY(0)/2)-(Hint_9patch.Height)+ViewportTop(\"Hint\")\n"
 											}
 										},
@@ -7930,9 +7929,9 @@
 										{
 											"id": "set-position",
 											"objectClass": "Hint_9patch",
-											"sid": 741637352691369,
+											"sid": 637533622362896,
 											"parameters": {
-												"x": "(InventoryItems.ImagePointX(0)-((Hint_9patch.Width)/2))",
+												"x": "(InventoryItems.ImagePointX(0)-((Hint_9patch.Width)))",
 												"y": "InventoryItems.Y\n"
 											}
 										},
