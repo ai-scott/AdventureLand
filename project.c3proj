@@ -271,8 +271,8 @@
 					"tm_castle_interiors",
 					"Tilemap_Collision",
 					"tm_mana_interiors",
+					"spr_water",
 					"tm_water",
-					"Tilemap2",
 					"Tilemap3",
 					"tm_forest_fort"
 				],

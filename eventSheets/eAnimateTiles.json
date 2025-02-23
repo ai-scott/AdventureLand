@@ -87,7 +87,7 @@
 					"sid": 535474561412852,
 					"parameters": {
 						"variable": "TilemapDisplayWidth",
-						"value": "Tilemap2.MapDisplayWidth"
+						"value": "tm_water.MapDisplayWidth"
 					}
 				},
 				{
@@ -95,7 +95,7 @@
 					"sid": 851698121196692,
 					"disabled": true,
 					"parameters": [
-						"Tilemap2.TileAt(0,0)",
+						"tm_water.TileAt(0,0)",
 						"0",
 						"0",
 						"0"
@@ -108,7 +108,7 @@
 					"disabled": true,
 					"parameters": {
 						"variable": "StartingIndex",
-						"value": "Tilemap2.TileAt(0,0)"
+						"value": "tm_water.TileAt(0,0)"
 					}
 				}
 			],
@@ -124,7 +124,7 @@
 							"parameters": {
 								"name": "\"x\"",
 								"start-index": "0",
-								"end-index": "Tilemap2.MapDisplayWidth-1"
+								"end-index": "tm_water.MapDisplayWidth-1"
 							}
 						}
 					],
@@ -141,7 +141,7 @@
 									"parameters": {
 										"name": "\"y\"",
 										"start-index": "0",
-										"end-index": "Tilemap2.MapDisplayHeight-1"
+										"end-index": "tm_water.MapDisplayHeight-1"
 									}
 								}
 							],
@@ -173,14 +173,14 @@
 									"disabled": true,
 									"parameters": {
 										"variable": "StartingIndex",
-										"value": "Tilemap2.TileAt(2,2)"
+										"value": "tm_water.TileAt(2,2)"
 									}
 								},
 								{
 									"callFunction": "Function1",
 									"sid": 153537219933082,
 									"parameters": [
-										"Tilemap2.TileAt(loopindex(\"x\"),loopindex(\"y\"))",
+										"tm_water.TileAt(loopindex(\"x\"),loopindex(\"y\"))",
 										"loopindex(\"x\")",
 										"loopindex(\"y\")",
 										"0"
@@ -191,7 +191,7 @@
 									"sid": 688588989035851,
 									"disabled": true,
 									"parameters": [
-										"Tilemap2.TileAt(loopindex(0),loopindex(0))",
+										"tm_water.TileAt(loopindex(0),loopindex(0))",
 										"loopindex(0)",
 										"loopindex(0)",
 										"0"
@@ -407,7 +407,7 @@
 						},
 						{
 							"id": "set-tile",
-							"objectClass": "Tilemap2",
+							"objectClass": "tm_water",
 							"sid": 490898974556946,
 							"parameters": {
 								"tile-x": "tilemapX",

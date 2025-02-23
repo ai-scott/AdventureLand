@@ -24,6 +24,10 @@
 			"includeSheet": "eInventory"
 		},
 		{
+			"eventType": "include",
+			"includeSheet": "eAnimateTiles"
+		},
+		{
 			"eventType": "group",
 			"disabled": false,
 			"title": "Start / Create Player",

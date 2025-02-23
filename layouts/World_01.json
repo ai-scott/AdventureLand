@@ -622,7 +622,7 @@
 					}
 				},
 				{
-					"type": "Tilemap2",
+					"type": "tm_water",
 					"properties": {
 						"initially-visible": true,
 						"tile-width": 16,
