@@ -8344,9 +8344,26 @@
 										},
 										{
 											"eventType": "block",
-											"conditions": [],
-											"actions": [],
-											"sid": 599046051501449
+											"conditions": [
+												{
+													"id": "on-any-key-released",
+													"objectClass": "Keyboard",
+													"sid": 330348177663993
+												}
+											],
+											"actions": [
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 286552109657842,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "false"
+													}
+												}
+											],
+											"sid": 599046051501449,
+											"disabled": true
 										},
 										{
 											"eventType": "block",

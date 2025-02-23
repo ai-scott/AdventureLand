@@ -3240,67 +3240,66 @@
 														}
 													],
 													"sid": 308994392278355,
-													"children": [
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
 														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 136957401678386
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 999308839679849,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 248143535366523,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																}
-															],
-															"sid": 156964530719165
-														},
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "else",
-																	"objectClass": "System",
-																	"sid": 175828394782891
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 605790591165600,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 185582731465168,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																}
-															],
-															"sid": 640876423395220
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 803210664687091
 														}
 													],
-													"isOrBlock": true
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 139478061996717,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 741099814499741,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														}
+													],
+													"sid": 988018535105272
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 444272994313720,
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 506646352463280,
+															"parameters": {
+																"state": "mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 774678968942147,
+															"parameters": {
+																"state": "mirrored"
+															}
+														}
+													],
+													"sid": 822493702729703
 												}
 											]
 										},
@@ -3362,67 +3361,66 @@
 														}
 													],
 													"sid": 323597379599848,
-													"children": [
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
 														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 650731266139382
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 508954288063758,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 328142954685935,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																}
-															],
-															"sid": 547929331938165
-														},
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "else",
-																	"objectClass": "System",
-																	"sid": 583359578710740
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 387039251226258,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 876711289950078,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																}
-															],
-															"sid": 281517360957790
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 111502824293367
 														}
 													],
-													"isOrBlock": true
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 879290297635572,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 192622802568200,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														}
+													],
+													"sid": 396004906191865
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 911235356908190,
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 789939169570454,
+															"parameters": {
+																"state": "mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 256346875123052,
+															"parameters": {
+																"state": "mirrored"
+															}
+														}
+													],
+													"sid": 688204370331741
 												}
 											]
 										},
@@ -3484,39 +3482,37 @@
 														}
 													],
 													"sid": 295756540452673,
-													"children": [
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
 														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 239217558493567,
-																	"isInverted": true
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 273280150394318,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 885325720263804,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																}
-															],
-															"sid": 839291852479507
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 884639684504704,
+															"isInverted": true
 														}
 													],
-													"isOrBlock": true
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 698830709158051,
+															"parameters": {
+																"state": "mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 204993299808743,
+															"parameters": {
+																"state": "mirrored"
+															}
+														}
+													],
+													"sid": 345797413242818
 												}
 											]
 										},
@@ -3578,38 +3574,36 @@
 														}
 													],
 													"sid": 287686475420510,
-													"children": [
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
 														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 813524813919516
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 872792740768682,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																},
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 432223552905058,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																}
-															],
-															"sid": 588363872671958
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 417147056788952
 														}
 													],
-													"isOrBlock": true
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 781856872101613,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 765917494223349,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														}
+													],
+													"sid": 763507550569873
 												}
 											]
 										}
