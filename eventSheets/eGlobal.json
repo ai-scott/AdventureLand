@@ -2737,7 +2737,17 @@
 							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 818628222022345,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "\"GainItemID \"&GainItemID"
+									}
+								}
+							],
 							"sid": 288686251962069,
 							"children": [
 								{
@@ -2956,6 +2966,15 @@
 									"parameters": [
 										"\"None\""
 									]
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 801991382871598,
+									"parameters": {
+										"variable": "CurrentInvWindow",
+										"value": "\"main\""
+									}
 								}
 							],
 							"sid": 192841212808491,

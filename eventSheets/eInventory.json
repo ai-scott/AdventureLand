@@ -2966,6 +2966,7 @@
 									"id": "set-eventvar-value",
 									"objectClass": "System",
 									"sid": 760523051902755,
+									"disabled": true,
 									"parameters": {
 										"variable": "TempVarY",
 										"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow"
@@ -3056,6 +3057,7 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 304504965095931,
+							"disabled": true,
 							"parameters": {
 								"variable": "TempVarX",
 								"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow"
@@ -3115,6 +3117,7 @@
 									"id": "set-eventvar-value",
 									"objectClass": "System",
 									"sid": 871524736249586,
+									"disabled": true,
 									"parameters": {
 										"variable": "TempVarY",
 										"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow&\" direction =\"&direction"
@@ -5304,7 +5307,16 @@
 						}
 					],
 					"eventType": "function-block",
-					"conditions": [],
+					"conditions": [
+						{
+							"id": "pick-by-unique-id",
+							"objectClass": "InventoryItems",
+							"sid": 910755620812444,
+							"parameters": {
+								"unique-id": "itemUID"
+							}
+						}
+					],
 					"actions": [
 						{
 							"id": "set-eventvar-value",
@@ -5570,16 +5582,6 @@
 											}
 										},
 										{
-											"id": "set-at-x",
-											"objectClass": "Arr_ItemTriggersCollected",
-											"sid": 699484181739731,
-											"disabled": true,
-											"parameters": {
-												"x": "0",
-												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")"
-											}
-										},
-										{
 											"id": "set-eventvar-value",
 											"objectClass": "System",
 											"sid": 405526461335280,
@@ -5587,21 +5589,6 @@
 												"variable": "TempVarY",
 												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")&\" = JSON_ItemTriggers.Get(.itemTriggerID)\""
 											}
-										},
-										{
-											"id": "wait",
-											"objectClass": "System",
-											"sid": 100514985219418,
-											"disabled": true,
-											"parameters": {
-												"seconds": ".1",
-												"use-timescale": true
-											}
-										},
-										{
-											"callFunction": "SaveGameData",
-											"sid": 635493349007820,
-											"disabled": true
 										}
 									],
 									"sid": 292894488569860
