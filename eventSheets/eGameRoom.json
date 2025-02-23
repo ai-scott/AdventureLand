@@ -650,16 +650,6 @@
 											}
 										},
 										{
-											"id": "is-boolean-set",
-											"objectClass": "JSON_ItemTriggers",
-											"sid": 475075052531942,
-											"disabled": true,
-											"parameters": {
-												"path": "\".collected\""
-											},
-											"isInverted": true
-										},
-										{
 											"id": "contains-value",
 											"objectClass": "Arr_ItemTriggersCollected",
 											"sid": 391333119601170,

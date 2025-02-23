@@ -5387,7 +5387,17 @@
 					],
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 410382317930707,
+							"parameters": {
+								"variable": "TempVarX",
+								"value": "\"collecting itemUID \"&itemUID& \" itemID = \"&itemID"
+							}
+						}
+					],
 					"sid": 935007394317735,
 					"children": [
 						{
@@ -5598,6 +5608,7 @@
 							"sid": 685704560629553,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -5622,18 +5633,38 @@
 											}
 										},
 										{
-											"id": "insert",
+											"id": "push",
 											"objectClass": "Arr_ItemTriggersCollected",
-											"sid": 893696753607662,
+											"sid": 921514592610302,
 											"parameters": {
+												"where": "front",
 												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")",
-												"index": "0",
 												"axis": "x"
 											}
 										},
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 405526461335280,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")&\" = JSON_ItemTriggers.Get(.itemTriggerID)\""
+											}
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 100514985219418,
+											"disabled": true,
+											"parameters": {
+												"seconds": ".1",
+												"use-timescale": true
+											}
+										},
+										{
 											"callFunction": "SaveGameData",
-											"sid": 635493349007820
+											"sid": 635493349007820,
+											"disabled": true
 										}
 									],
 									"sid": 292894488569860
@@ -8819,15 +8850,6 @@
 						}
 					],
 					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 239093849387955,
-							"parameters": {
-								"variable": "TempVarY",
-								"value": "\"hiding hint\""
-							}
-						},
 						{
 							"id": "set-layer-visible",
 							"objectClass": "System",

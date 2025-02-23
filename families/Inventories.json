@@ -34,7 +34,6 @@
 	],
 	"members": [
 		"Arr_Equip",
-		"Arr_InvCollection",
-		"Arr_ItemTriggersCollected"
+		"Arr_InvCollection"
 	]
 }

@@ -2690,12 +2690,7 @@
 			"uid": 197,
 			"sid": 356163147912914,
 			"tags": "",
-			"instanceVariables": {
-				"SizeX": 2,
-				"SizeY": 3,
-				"CategoryName": "equip",
-				"InvPages": 0
-			}
+			"instanceVariables": {}
 		},
 		{
 			"type": "JSON_ItemTriggers",
