@@ -1757,7 +1757,6 @@
 									"sid": 469151688730498
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4570,6 +4569,7 @@
 									"text": "If on the map (and in Shop mode) offer to Buy the item"
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4683,89 +4683,7 @@
 											]
 										}
 									],
-									"sid": 800323107074768,
-									"children": [
-										{
-											"eventType": "comment",
-											"text": "If Item is > 110 and < 121 then add the \"strength\" directly to the Gems count"
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 322103089448583,
-													"parameters": {
-														"first-value": "InventoryItems.ItemID",
-														"comparison": 5,
-														"second-value": "111"
-													}
-												},
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 583164471711390,
-													"parameters": {
-														"first-value": "InventoryItems.ItemID",
-														"comparison": 2,
-														"second-value": "121"
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "Adjust_Gems",
-													"sid": 375562665572434,
-													"parameters": [
-														"Functions.GetItemCostbyID(InventoryItems.ItemID)"
-													]
-												}
-											],
-											"sid": 527448493607251
-										},
-										{
-											"eventType": "comment",
-											"text": "If Item is outside of > 110 and < 121 then add the item to the collection"
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 251401573549751,
-													"parameters": {
-														"first-value": "InventoryItems.ItemID",
-														"comparison": 2,
-														"second-value": "111"
-													}
-												},
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 127230550387387,
-													"parameters": {
-														"first-value": "InventoryItems.ItemID",
-														"comparison": 5,
-														"second-value": "121"
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "UpdateNumbersOnPickup",
-													"sid": 175091490326075,
-													"parameters": [
-														"InventoryItems.ItemID",
-														"InventoryItems.NumberOfItems"
-													]
-												}
-											],
-											"sid": 857441274045386,
-											"isOrBlock": true
-										}
-									]
+									"sid": 800323107074768
 								},
 								{
 									"eventType": "comment",
@@ -5392,6 +5310,7 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 410382317930707,
+							"disabled": true,
 							"parameters": {
 								"variable": "TempVarX",
 								"value": "\"collecting itemUID \"&itemUID& \" itemID = \"&itemID"
@@ -5457,7 +5376,8 @@
 								},
 								{
 									"callFunction": "SaveGameData",
-									"sid": 121976554994133
+									"sid": 121976554994133,
+									"disabled": true
 								}
 							],
 							"sid": 348083679259106
@@ -5525,7 +5445,8 @@
 								},
 								{
 									"callFunction": "SaveGameData",
-									"sid": 189914787406640
+									"sid": 189914787406640,
+									"disabled": true
 								}
 							],
 							"sid": 344664516152093
@@ -5583,10 +5504,17 @@
 								},
 								{
 									"callFunction": "SaveGameData",
-									"sid": 569622559475373
+									"sid": 569622559475373,
+									"disabled": true
 								}
 							],
 							"sid": 427978291178877
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [],
+							"sid": 561039985438276
 						},
 						{
 							"eventType": "comment",
@@ -5608,7 +5536,6 @@
 							"sid": 685704560629553,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -5635,11 +5562,21 @@
 										{
 											"id": "push",
 											"objectClass": "Arr_ItemTriggersCollected",
-											"sid": 921514592610302,
+											"sid": 874506507167168,
 											"parameters": {
 												"where": "front",
 												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")",
-												"axis": "x"
+												"axis": "y"
+											}
+										},
+										{
+											"id": "set-at-x",
+											"objectClass": "Arr_ItemTriggersCollected",
+											"sid": 699484181739731,
+											"disabled": true,
+											"parameters": {
+												"x": "0",
+												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")"
 											}
 										},
 										{
@@ -5670,6 +5607,86 @@
 									"sid": 292894488569860
 								}
 							]
+						},
+						{
+							"eventType": "comment",
+							"text": "If Item is > 110 and < 121 then add the \"strength\" directly to the Gems count"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 169687384077653,
+									"parameters": {
+										"first-value": "InventoryItems.ItemID",
+										"comparison": 5,
+										"second-value": "111"
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 858567020102340,
+									"parameters": {
+										"first-value": "InventoryItems.ItemID",
+										"comparison": 2,
+										"second-value": "121"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "Adjust_Gems",
+									"sid": 448236466275463,
+									"parameters": [
+										"Functions.GetItemCostbyID(InventoryItems.ItemID)"
+									]
+								}
+							],
+							"sid": 510538199819727
+						},
+						{
+							"eventType": "comment",
+							"text": "If Item is outside of > 110 and < 121 then add the item to the collection"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 942260071243907,
+									"parameters": {
+										"first-value": "InventoryItems.ItemID",
+										"comparison": 2,
+										"second-value": "111"
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 444784820239840,
+									"parameters": {
+										"first-value": "InventoryItems.ItemID",
+										"comparison": 5,
+										"second-value": "121"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "UpdateNumbersOnPickup",
+									"sid": 800316788446015,
+									"parameters": [
+										"InventoryItems.ItemID",
+										"InventoryItems.NumberOfItems"
+									]
+								}
+							],
+							"sid": 876929990503483,
+							"isOrBlock": true
 						}
 					]
 				}
@@ -6134,6 +6151,7 @@
 											"sid": 738398783677823
 										},
 										{
+											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -6500,6 +6518,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{

@@ -2843,7 +2843,8 @@
 														},
 														{
 															"callFunction": "UpdateInvArray",
-															"sid": 472823843415431
+															"sid": 472823843415431,
+															"disabled": true
 														}
 													],
 													"sid": 342629802110256,
@@ -2884,12 +2885,24 @@
 														},
 														{
 															"callFunction": "UpdateInvArray",
-															"sid": 880166970725787
+															"sid": 880166970725787,
+															"disabled": true
 														}
 													],
 													"sid": 488848983470721
 												}
 											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [],
+											"actions": [
+												{
+													"callFunction": "SaveGameData",
+													"sid": 649078742436796
+												}
+											],
+											"sid": 316454020417933
 										}
 									]
 								}
@@ -5101,6 +5114,24 @@
 											}
 										},
 										{
+											"id": "set-size",
+											"objectClass": "Arr_ItemTriggersCollected",
+											"sid": 820956390256344,
+											"parameters": {
+												"width": "1",
+												"height": "1",
+												"depth": "1"
+											}
+										},
+										{
+											"id": "clear",
+											"objectClass": "Arr_ItemTriggersCollected",
+											"sid": 833060654729039,
+											"parameters": {
+												"value": "0"
+											}
+										},
+										{
 											"id": "clear",
 											"objectClass": "Inventories",
 											"sid": 278965117739266,
@@ -5257,81 +5288,6 @@
 									],
 									"sid": 631053329346557,
 									"isOrBlock": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 365491021070135,
-											"parameters": {
-												"variable": "Text",
-												"comparison": 0,
-												"value": "\"Try Again\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "initializeGameData",
-											"sid": 379798149546579
-										},
-										{
-											"id": "wait",
-											"objectClass": "System",
-											"sid": 103892649178941,
-											"parameters": {
-												"seconds": "0.1",
-												"use-timescale": true
-											}
-										},
-										{
-											"callFunction": "Transition",
-											"sid": 320449100019733,
-											"parameters": [
-												"\"Out\"",
-												"\"LayoutChange\"",
-												"\"\""
-											]
-										},
-										{
-											"id": "wait-for-signal",
-											"objectClass": "System",
-											"sid": 621366276820206,
-											"parameters": {
-												"tag": "\"LayoutChange\""
-											}
-										},
-										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 218662415866229,
-											"parameters": {
-												"group-name": "\"Player Engine\"",
-												"state": "activated"
-											}
-										},
-										{
-											"id": "go-to-layout-by-name",
-											"objectClass": "System",
-											"sid": 522090960538783,
-											"parameters": {
-												"layout": "\"World_00\""
-											}
-										},
-										{
-											"id": "set-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 129108305905030,
-											"parameters": {
-												"variable": "RecoveringFromDeath",
-												"value": "true"
-											}
-										}
-									],
-									"sid": 568159287244740,
-									"disabled": true
 								}
 							]
 						}
@@ -5356,6 +5312,7 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5380,6 +5337,283 @@
 						}
 					],
 					"sid": 638190920999623
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "In Dialogue",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 491493713159740,
+									"parameters": {
+										"key": 40
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "changeDialogueSelection",
+									"sid": 487291084264534
+								}
+							],
+							"sid": 457239912602609
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 733783135773026,
+									"parameters": {
+										"key": 38
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "changeDialogueSelection",
+									"sid": 204533901404190
+								}
+							],
+							"sid": 983607908481668
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
+									"sid": 471407440725116,
+									"parameters": {
+										"object": "obj_TextOption1"
+									}
+								},
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 278048902085716,
+									"parameters": {
+										"object": "obj_TextOption1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 403375209274899,
+									"parameters": {
+										"variable": "OptionSelection",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextOption1",
+									"sid": 755619168470625,
+									"parameters": {
+										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextOption2",
+									"sid": 748330333899126,
+									"parameters": {
+										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+									}
+								}
+							],
+							"sid": 845484017247259,
+							"isOrBlock": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
+									"sid": 370769027906275,
+									"parameters": {
+										"object": "obj_TextOption2"
+									}
+								},
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 217540463024363,
+									"parameters": {
+										"object": "obj_TextOption2"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 209840081349358,
+									"parameters": {
+										"variable": "OptionSelection",
+										"value": "1"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextOption1",
+									"sid": 575175597063576,
+									"parameters": {
+										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextOption2",
+									"sid": 715355432132851,
+									"parameters": {
+										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+									}
+								}
+							],
+							"sid": 163593874072956,
+							"isOrBlock": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap",
+									"objectClass": "Touch",
+									"sid": 146616275135362
+								},
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 895292514513976,
+									"parameters": {
+										"key": 32
+									}
+								}
+							],
+							"actions": [],
+							"sid": 798843219982903,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Only run if Player is in Dialogue already"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 539969424862564,
+											"parameters": {
+												"variable": "InDialogue"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 678745669796952,
+											"parameters": {
+												"variable": "TempInt",
+												"value": "1"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 172829222319669,
+											"parameters": {
+												"variable": "TempVarY",
+												"value": "\"touching inventory item on space\""
+											}
+										}
+									],
+									"sid": 671455362298072,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-running-typewriter-text",
+													"objectClass": "obj_TextBlock",
+													"sid": 876878091489966
+												}
+											],
+											"actions": [
+												{
+													"id": "typewriter-finish",
+													"objectClass": "obj_TextBlock",
+													"sid": 234296888880243
+												}
+											],
+											"sid": 431375157153390
+										},
+										{
+											"eventType": "comment",
+											"text": "if last Dialogue Result is \"End\" clean up dialogue"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 497486540097470,
+													"parameters": {
+														"variable": "DialogueResult",
+														"comparison": 0,
+														"value": "\"End\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "endDialogue",
+													"sid": 964637165648052
+												}
+											],
+											"sid": 231522065248876
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "else",
+													"objectClass": "System",
+													"sid": 392696224248407
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "processDialogueLine",
+													"sid": 685781626945851,
+													"parameters": [
+														"CurrentDialogueLine"
+													]
+												}
+											],
+											"sid": 712149555951124
+										}
+									]
+								}
+							],
+							"isOrBlock": true
+						}
+					],
+					"sid": 816640437289867
 				},
 				{
 					"eventType": "group",
@@ -6275,7 +6509,7 @@
 				{
 					"eventType": "group",
 					"disabled": false,
-					"title": "In Dialogue",
+					"title": "Inventory Triggers",
 					"description": "",
 					"isActiveOnStart": true,
 					"children": [
@@ -6285,241 +6519,148 @@
 								{
 									"id": "on-key-pressed",
 									"objectClass": "Keyboard",
-									"sid": 596637008232022,
-									"parameters": {
-										"key": 40
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "changeDialogueSelection",
-									"sid": 409300808832882
-								}
-							],
-							"sid": 690853136018466
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 326260889031548,
-									"parameters": {
-										"key": 38
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "changeDialogueSelection",
-									"sid": 333509298682005
-								}
-							],
-							"sid": 156976999460611
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-tap-object",
-									"objectClass": "Touch",
-									"sid": 450065318645212,
-									"parameters": {
-										"object": "obj_TextOption1"
-									}
-								},
-								{
-									"id": "cursor-is-over-object",
-									"objectClass": "Mouse",
-									"sid": 561029164194144,
-									"parameters": {
-										"object": "obj_TextOption1"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 160982102033935,
-									"parameters": {
-										"variable": "OptionSelection",
-										"value": "0"
-									}
-								},
-								{
-									"id": "set-text",
-									"objectClass": "obj_TextOption1",
-									"sid": 552017578139648,
-									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
-									}
-								},
-								{
-									"id": "set-text",
-									"objectClass": "obj_TextOption2",
-									"sid": 361975541892125,
-									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
-									}
-								}
-							],
-							"sid": 776259283272641,
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-tap-object",
-									"objectClass": "Touch",
-									"sid": 505361711573915,
-									"parameters": {
-										"object": "obj_TextOption2"
-									}
-								},
-								{
-									"id": "cursor-is-over-object",
-									"objectClass": "Mouse",
-									"sid": 378721371325707,
-									"parameters": {
-										"object": "obj_TextOption2"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 773148521686378,
-									"parameters": {
-										"variable": "OptionSelection",
-										"value": "1"
-									}
-								},
-								{
-									"id": "set-text",
-									"objectClass": "obj_TextOption1",
-									"sid": 498118358129762,
-									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
-									}
-								},
-								{
-									"id": "set-text",
-									"objectClass": "obj_TextOption2",
-									"sid": 353279530793251,
-									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
-									}
-								}
-							],
-							"sid": 474991722726406,
-							"isOrBlock": true
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-tap",
-									"objectClass": "Touch",
-									"sid": 345575399286703
-								},
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 677935827401522,
+									"sid": 448471478006751,
 									"parameters": {
 										"key": 32
 									}
+								},
+								{
+									"id": "on-tap",
+									"objectClass": "Touch",
+									"sid": 425771772919555
 								}
 							],
 							"actions": [],
-							"sid": 964473759993183,
+							"sid": 355893747347171,
 							"children": [
-								{
-									"eventType": "comment",
-									"text": "Only run if Player is in Dialogue already"
-								},
 								{
 									"eventType": "block",
 									"conditions": [
 										{
 											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
-											"sid": 412978702475366,
+											"sid": 202757059322368,
 											"parameters": {
-												"variable": "InDialogue"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "add-to-eventvar",
-											"objectClass": "System",
-											"sid": 559668866812907,
-											"parameters": {
-												"variable": "TempInt",
-												"value": "1"
-											}
+												"variable": "ItemShowing"
+											},
+											"isInverted": true
 										},
 										{
-											"id": "set-eventvar-value",
+											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
-											"sid": 249918750123408,
+											"sid": 263056988132660,
 											"parameters": {
-												"variable": "TempVarY",
-												"value": "\"touching inventory item on space\""
-											}
+												"variable": "InDialogue"
+											},
+											"isInverted": true
 										}
 									],
-									"sid": 965436052407513,
+									"actions": [],
+									"sid": 738735995174299,
 									"children": [
 										{
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "is-running-typewriter-text",
-													"objectClass": "obj_TextBlock",
-													"sid": 813252744185897
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 235163303051347,
+													"parameters": {
+														"object": "InventoryItems"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "InventoryItems",
+													"sid": 456385894406947,
+													"parameters": {
+														"instance-variable": "ItemName",
+														"comparison": 1,
+														"value": "\"\""
+													}
+												},
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 964787331385428,
+													"parameters": {
+														"variable": "ItemShowing"
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
 												{
-													"id": "typewriter-finish",
-													"objectClass": "obj_TextBlock",
-													"sid": 349960156601126
+													"callFunction": "inspectItem",
+													"sid": 219588947318110,
+													"parameters": [
+														"InventoryItems.UID"
+													]
 												}
 											],
-											"sid": 343595465775729
-										},
-										{
-											"eventType": "comment",
-											"text": "if last Dialogue Result is \"End\" clean up dialogue"
+											"sid": 290344389758137
 										},
 										{
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "is-on-layer",
+													"objectClass": "InventoryItems",
+													"sid": 407686595549554,
+													"parameters": {
+														"layer": "\"Inventory\""
+													},
+													"isInverted": true
+												},
+												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
-													"sid": 127996697096227,
+													"sid": 963343803555747,
 													"parameters": {
-														"variable": "DialogueResult",
+														"variable": "CurrentAction",
 														"comparison": 0,
-														"value": "\"End\""
+														"value": "\"Interact\""
 													}
-												}
-											],
-											"actions": [
+												},
 												{
-													"callFunction": "endDialogue",
-													"sid": 931080383390739
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 394344622701402,
+													"parameters": {
+														"variable": "ItemShowing"
+													},
+													"isInverted": true
 												}
 											],
-											"sid": 518728637485791
+											"actions": [],
+											"sid": 114083435250348,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "InventoryItems",
+															"sid": 636625556820989,
+															"parameters": {
+																"which": "nearest",
+																"x": "Trigger_Player.X",
+																"y": "Trigger_Player.Y"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "inspectItem",
+															"sid": 189901461830495,
+															"parameters": [
+																"InventoryItems.UID"
+															]
+														}
+													],
+													"sid": 772880099897211
+												}
+											]
 										},
 										{
 											"eventType": "block",
@@ -6527,35 +6668,39 @@
 												{
 													"id": "else",
 													"objectClass": "System",
-													"sid": 555112680285161
+													"sid": 568543348779029
+												},
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 955132758155882,
+													"parameters": {
+														"variable": "ItemShowing"
+													}
+												},
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 354592102368854,
+													"parameters": {
+														"object": "InventoryBtns"
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
 												{
-													"callFunction": "processDialogueLine",
-													"sid": 246669561449126,
-													"parameters": [
-														"CurrentDialogueLine"
-													]
+													"callFunction": "hideItemHint",
+													"sid": 433355007632712
 												}
 											],
-											"sid": 575632620136451
+											"sid": 432924443890070
 										}
 									]
 								}
 							],
 							"isOrBlock": true
-						}
-					],
-					"sid": 119865257068567
-				},
-				{
-					"eventType": "group",
-					"disabled": false,
-					"title": "Inventory Triggers",
-					"description": "",
-					"isActiveOnStart": true,
-					"children": [
+						},
 						{
 							"eventType": "comment",
 							"text": "Calling the function of Opening/Closing the Inventory"
@@ -6566,14 +6711,14 @@
 								{
 									"id": "layer-is-visible",
 									"objectClass": "System",
-									"sid": 205237557632037,
+									"sid": 179691752630825,
 									"parameters": {
 										"layer": "\"Inventory\""
 									}
 								}
 							],
 							"actions": [],
-							"sid": 645866893830976,
+							"sid": 145576335372063,
 							"children": [
 								{
 									"eventType": "block",
@@ -6581,7 +6726,7 @@
 										{
 											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
-											"sid": 686605714966802,
+											"sid": 725036445949915,
 											"parameters": {
 												"variable": "ItemShowing"
 											},
@@ -6589,7 +6734,7 @@
 										}
 									],
 									"actions": [],
-									"sid": 487685431742025,
+									"sid": 407883941319728,
 									"children": [
 										{
 											"eventType": "block",
@@ -6597,7 +6742,7 @@
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 916975851037904,
+													"sid": 585504188235437,
 													"parameters": {
 														"key": 40
 													}
@@ -6606,13 +6751,13 @@
 											"actions": [
 												{
 													"callFunction": "changeItemSelection",
-													"sid": 770940113416774,
+													"sid": 101377432996298,
 													"parameters": [
 														"\"down\""
 													]
 												}
 											],
-											"sid": 783020101381917
+											"sid": 671043085893583
 										},
 										{
 											"eventType": "block",
@@ -6620,7 +6765,7 @@
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 474378458417354,
+													"sid": 272072915688521,
 													"parameters": {
 														"key": 38
 													}
@@ -6629,13 +6774,13 @@
 											"actions": [
 												{
 													"callFunction": "changeItemSelection",
-													"sid": 827370231419986,
+													"sid": 529015814818399,
 													"parameters": [
 														"\"up\""
 													]
 												}
 											],
-											"sid": 309230448093863
+											"sid": 100659142242075
 										},
 										{
 											"eventType": "block",
@@ -6643,7 +6788,7 @@
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 336608748790784,
+													"sid": 748817956535745,
 													"parameters": {
 														"key": 39
 													}
@@ -6652,13 +6797,13 @@
 											"actions": [
 												{
 													"callFunction": "changeItemSelection",
-													"sid": 151108955099522,
+													"sid": 908843569900479,
 													"parameters": [
 														"\"right\""
 													]
 												}
 											],
-											"sid": 526502787080268
+											"sid": 175822460632179
 										},
 										{
 											"eventType": "block",
@@ -6666,7 +6811,7 @@
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 353554002850303,
+													"sid": 865543922070174,
 													"parameters": {
 														"key": 37
 													}
@@ -6675,13 +6820,13 @@
 											"actions": [
 												{
 													"callFunction": "changeItemSelection",
-													"sid": 356406068344859,
+													"sid": 806820875091165,
 													"parameters": [
 														"\"left\""
 													]
 												}
 											],
-											"sid": 955561533483477
+											"sid": 798394697118826
 										}
 									]
 								},
@@ -6691,7 +6836,7 @@
 										{
 											"id": "on-tap-object",
 											"objectClass": "Touch",
-											"sid": 332327587948551,
+											"sid": 306147994195537,
 											"parameters": {
 												"object": "CloseX"
 											}
@@ -6700,10 +6845,10 @@
 									"actions": [
 										{
 											"callFunction": "OpenClose_Inventory",
-											"sid": 648857609441579
+											"sid": 702362497006129
 										}
 									],
-									"sid": 978439459617959
+									"sid": 123762454490257
 								},
 								{
 									"eventType": "block",
@@ -6711,7 +6856,7 @@
 										{
 											"id": "cursor-is-over-object",
 											"objectClass": "Mouse",
-											"sid": 355563353963115,
+											"sid": 882540920809813,
 											"parameters": {
 												"object": "CloseX"
 											}
@@ -6721,7 +6866,7 @@
 										{
 											"id": "set-animation-frame",
 											"objectClass": "CloseX",
-											"sid": 939112822207833,
+											"sid": 857407473495380,
 											"parameters": {
 												"frame-number": "1"
 											}
@@ -6729,10 +6874,10 @@
 										{
 											"id": "stop-animation",
 											"objectClass": "CloseX",
-											"sid": 313852033050111
+											"sid": 796661840470174
 										}
 									],
-									"sid": 943245390932415
+									"sid": 998149888321256
 								},
 								{
 									"eventType": "block",
@@ -6740,7 +6885,7 @@
 										{
 											"id": "cursor-is-over-object",
 											"objectClass": "Mouse",
-											"sid": 100815743235685,
+											"sid": 722281264765876,
 											"parameters": {
 												"object": "CloseX"
 											},
@@ -6751,7 +6896,7 @@
 										{
 											"id": "set-animation-frame",
 											"objectClass": "CloseX",
-											"sid": 879744730859848,
+											"sid": 329017572030363,
 											"parameters": {
 												"frame-number": "0"
 											}
@@ -6759,19 +6904,18 @@
 										{
 											"id": "stop-animation",
 											"objectClass": "CloseX",
-											"sid": 325175324424974
+											"sid": 366392735427332
 										}
 									],
-									"sid": 540511017533477
+									"sid": 652137888404248
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
 											"id": "on-key-pressed",
 											"objectClass": "Keyboard",
-											"sid": 654867679358320,
+											"sid": 474366192475817,
 											"parameters": {
 												"key": 32
 											}
@@ -6779,7 +6923,7 @@
 										{
 											"id": "compare-instance-variable",
 											"objectClass": "ItemSlot",
-											"sid": 783839790644357,
+											"sid": 775832918782310,
 											"parameters": {
 												"instance-variable": "InventoryWindow",
 												"comparison": 0,
@@ -6789,7 +6933,7 @@
 										{
 											"id": "compare-instance-variable",
 											"objectClass": "ItemSlot",
-											"sid": 715955854413464,
+											"sid": 329598221818545,
 											"parameters": {
 												"instance-variable": "SlotID",
 												"comparison": 0,
@@ -6798,7 +6942,7 @@
 										}
 									],
 									"actions": [],
-									"sid": 859127582914281,
+									"sid": 254172541981131,
 									"children": [
 										{
 											"eventType": "block",
@@ -6806,7 +6950,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 982314247395045,
+													"sid": 728211024881183,
 													"parameters": {
 														"instance-variable": "InventoryWindow",
 														"comparison": 1,
@@ -6816,7 +6960,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 457492645569896,
+													"sid": 233008925907412,
 													"parameters": {
 														"instance-variable": "ItemID",
 														"comparison": 1,
@@ -6827,14 +6971,14 @@
 											"actions": [
 												{
 													"callFunction": "displayItemHint",
-													"sid": 542080715298125,
+													"sid": 199286213460538,
 													"parameters": [
 														"ItemSlot.UID",
 														"CurrentInvWindow"
 													]
 												}
 											],
-											"sid": 503418602948159
+											"sid": 831544389091444
 										},
 										{
 											"eventType": "block",
@@ -6842,7 +6986,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 179733054720823,
+													"sid": 983100351598722,
 													"parameters": {
 														"instance-variable": "InventoryWindow",
 														"comparison": 0,
@@ -6852,7 +6996,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 429761336259961,
+													"sid": 428106491039925,
 													"parameters": {
 														"instance-variable": "SlotID",
 														"comparison": 0,
@@ -6863,14 +7007,14 @@
 											"actions": [
 												{
 													"callFunction": "switchSelection",
-													"sid": 437383902937388,
+													"sid": 761422826164928,
 													"parameters": [
 														"\"hair\"",
 														"\"prev\""
 													]
 												}
 											],
-											"sid": 213643197826132
+											"sid": 559820121935785
 										},
 										{
 											"eventType": "block",
@@ -6878,7 +7022,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 933897415121939,
+													"sid": 360775534499393,
 													"parameters": {
 														"instance-variable": "InventoryWindow",
 														"comparison": 0,
@@ -6888,7 +7032,7 @@
 												{
 													"id": "compare-instance-variable",
 													"objectClass": "ItemSlot",
-													"sid": 118825684228359,
+													"sid": 265335101523578,
 													"parameters": {
 														"instance-variable": "SlotID",
 														"comparison": 0,
@@ -6899,14 +7043,14 @@
 											"actions": [
 												{
 													"callFunction": "switchSelection",
-													"sid": 561297288481530,
+													"sid": 992048854463797,
 													"parameters": [
 														"\"hair\"",
 														"\"next\""
 													]
 												}
 											],
-											"sid": 760694012988947
+											"sid": 333244952289754
 										}
 									]
 								},
@@ -6916,7 +7060,7 @@
 										{
 											"id": "on-key-pressed",
 											"objectClass": "Keyboard",
-											"sid": 890579196098652,
+											"sid": 947679810723909,
 											"parameters": {
 												"key": 27
 											}
@@ -6924,7 +7068,7 @@
 										{
 											"id": "layer-is-visible",
 											"objectClass": "System",
-											"sid": 933524602527234,
+											"sid": 891629512762608,
 											"parameters": {
 												"layer": "\"Hint\""
 											},
@@ -6934,10 +7078,10 @@
 									"actions": [
 										{
 											"callFunction": "OpenClose_Inventory",
-											"sid": 744771910759811
+											"sid": 411800108424268
 										}
 									],
-									"sid": 753536107092581
+									"sid": 760083822888863
 								}
 							]
 						},
@@ -6947,14 +7091,14 @@
 								{
 									"id": "on-key-pressed",
 									"objectClass": "Keyboard",
-									"sid": 644725862465758,
+									"sid": 490174466183957,
 									"parameters": {
 										"key": 73
 									}
 								}
 							],
 							"actions": [],
-							"sid": 457362754182035,
+							"sid": 603392249657769,
 							"children": [
 								{
 									"eventType": "block",
@@ -6962,7 +7106,7 @@
 										{
 											"id": "layer-is-visible",
 											"objectClass": "System",
-											"sid": 903106817640138,
+											"sid": 316181428048553,
 											"parameters": {
 												"layer": "\"Inventory\""
 											},
@@ -6970,7 +7114,7 @@
 										}
 									],
 									"actions": [],
-									"sid": 792778980281047
+									"sid": 409121780603019
 								},
 								{
 									"eventType": "block",
@@ -6978,10 +7122,10 @@
 									"actions": [
 										{
 											"callFunction": "OpenClose_Inventory",
-											"sid": 385699255881152
+											"sid": 115373567483699
 										}
 									],
-									"sid": 187893250917970
+									"sid": 168279953654630
 								}
 							]
 						},
@@ -6991,7 +7135,7 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
-									"sid": 109999886716715,
+									"sid": 789405050750941,
 									"parameters": {
 										"object": "Btn_Action"
 									}
@@ -6999,7 +7143,7 @@
 								{
 									"id": "compare-instance-variable",
 									"objectClass": "Btn_Action",
-									"sid": 782744392167662,
+									"sid": 112414453496615,
 									"parameters": {
 										"instance-variable": "Actions",
 										"comparison": 0,
@@ -7009,7 +7153,7 @@
 								{
 									"id": "is-group-active",
 									"objectClass": "System",
-									"sid": 509053415433574,
+									"sid": 579293560204963,
 									"parameters": {
 										"group-name": "\"Player Engine\""
 									}
@@ -7018,10 +7162,10 @@
 							"actions": [
 								{
 									"callFunction": "OpenClose_Inventory",
-									"sid": 597524847398540
+									"sid": 454559396505848
 								}
 							],
-							"sid": 895544055943428
+							"sid": 471682527668606
 						},
 						{
 							"eventType": "block",
@@ -7029,7 +7173,7 @@
 								{
 									"id": "on-key-pressed",
 									"objectClass": "Keyboard",
-									"sid": 959640005519952,
+									"sid": 478509106400168,
 									"parameters": {
 										"key": 27
 									}
@@ -7037,7 +7181,7 @@
 								{
 									"id": "layer-is-visible",
 									"objectClass": "System",
-									"sid": 384092117017659,
+									"sid": 289982353210153,
 									"parameters": {
 										"layer": "\"Hint\""
 									}
@@ -7046,10 +7190,10 @@
 							"actions": [
 								{
 									"callFunction": "hideItemHint",
-									"sid": 650596511091730
+									"sid": 796650545991102
 								}
 							],
-							"sid": 585961445783620
+							"sid": 883863944167091
 						},
 						{
 							"eventType": "block",
@@ -7057,7 +7201,7 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
-									"sid": 349785687077463,
+									"sid": 174612924911452,
 									"parameters": {
 										"object": "Btn_Select"
 									}
@@ -7066,10 +7210,10 @@
 							"actions": [
 								{
 									"callFunction": "selectItem",
-									"sid": 250867029098571
+									"sid": 486465395614548
 								}
 							],
-							"sid": 977470221351843
+							"sid": 635115090111655
 						},
 						{
 							"eventType": "block",
@@ -7077,7 +7221,7 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
-									"sid": 274187068440652,
+									"sid": 520634627170427,
 									"parameters": {
 										"object": "Btn_Arrow"
 									}
@@ -7086,14 +7230,14 @@
 							"actions": [
 								{
 									"callFunction": "switchSelection",
-									"sid": 751986743531454,
+									"sid": 924829978034590,
 									"parameters": [
 										"Btn_Arrow.state",
 										"Btn_Arrow.direction"
 									]
 								}
 							],
-							"sid": 592665081958842
+							"sid": 936337540589093
 						},
 						{
 							"eventType": "block",
@@ -7101,7 +7245,7 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
-									"sid": 910786885605339,
+									"sid": 812439067301844,
 									"parameters": {
 										"object": "Btn_Cancel"
 									}
@@ -7110,10 +7254,10 @@
 							"actions": [
 								{
 									"callFunction": "hideItemHint",
-									"sid": 855846955537203
+									"sid": 825688309068827
 								}
 							],
-							"sid": 830470648893945
+							"sid": 314537090438205
 						},
 						{
 							"eventType": "block",
@@ -7121,7 +7265,7 @@
 								{
 									"id": "on-tap-object",
 									"objectClass": "Touch",
-									"sid": 616708074966960,
+									"sid": 117059315973519,
 									"parameters": {
 										"object": "Btn_Discard"
 									}
@@ -7129,7 +7273,7 @@
 								{
 									"id": "layer-is-visible",
 									"objectClass": "System",
-									"sid": 162234223492968,
+									"sid": 443672953625301,
 									"parameters": {
 										"layer": "\"Inventory\""
 									}
@@ -7142,201 +7286,13 @@
 								},
 								{
 									"callFunction": "discardItem",
-									"sid": 643634199002041
+									"sid": 532237960715535
 								}
 							],
-							"sid": 821376274257705
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 790348648004452,
-									"parameters": {
-										"key": 32
-									}
-								},
-								{
-									"id": "on-tap",
-									"objectClass": "Touch",
-									"sid": 164356948506284
-								}
-							],
-							"actions": [],
-							"sid": 419768142766414,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 437078915969883,
-											"parameters": {
-												"variable": "ItemShowing"
-											},
-											"isInverted": true
-										},
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 327945202545286,
-											"parameters": {
-												"variable": "InDialogue"
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [],
-									"sid": 323220447692704,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 950958689014965,
-													"parameters": {
-														"object": "InventoryItems"
-													}
-												},
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "InventoryItems",
-													"sid": 184803236162905,
-													"parameters": {
-														"instance-variable": "ItemName",
-														"comparison": 1,
-														"value": "\"\""
-													}
-												},
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 152208286857587,
-													"parameters": {
-														"variable": "ItemShowing"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "inspectItem",
-													"sid": 921351093941471,
-													"parameters": [
-														"InventoryItems.UID"
-													]
-												}
-											],
-											"sid": 509307070274598
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "is-on-layer",
-													"objectClass": "InventoryItems",
-													"sid": 807206672884487,
-													"parameters": {
-														"layer": "\"Inventory\""
-													},
-													"isInverted": true
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 169502873249111,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"Interact\""
-													}
-												},
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 258878905327822,
-													"parameters": {
-														"variable": "ItemShowing"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [],
-											"sid": 366873257429759,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "pick-nearestfurthest",
-															"objectClass": "InventoryItems",
-															"sid": 430345822420482,
-															"parameters": {
-																"which": "nearest",
-																"x": "Trigger_Player.X",
-																"y": "Trigger_Player.Y"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "inspectItem",
-															"sid": 858748339503133,
-															"parameters": [
-																"InventoryItems.UID"
-															]
-														}
-													],
-													"sid": 235249729970626
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "else",
-													"objectClass": "System",
-													"sid": 816252424403162
-												},
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 806894045893611,
-													"parameters": {
-														"variable": "ItemShowing"
-													}
-												},
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 439149497608911,
-													"parameters": {
-														"object": "InventoryBtns"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "hideItemHint",
-													"sid": 147849232000670
-												}
-											],
-											"sid": 305230196112289
-										}
-									]
-								}
-							],
-							"isOrBlock": true
+							"sid": 254438342191936
 						}
 					],
-					"sid": 474034760007152
+					"sid": 513326323799788
 				},
 				{
 					"eventType": "group",
