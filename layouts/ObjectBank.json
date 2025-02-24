@@ -88,7 +88,7 @@
 								"deceleration": 2000,
 								"directions": "dir-8",
 								"set-angle": "no",
-								"allow-sliding": false,
+								"allow-sliding": true,
 								"default-controls": false,
 								"enabled": true
 							}

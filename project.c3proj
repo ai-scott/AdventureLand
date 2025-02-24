@@ -409,7 +409,8 @@
 					"DungeonDoor",
 					"Door",
 					"Destructible",
-					"Trigger_Function"
+					"Trigger_Function",
+					"Ramp"
 				],
 				"subfolders": [],
 				"name": "Objects"

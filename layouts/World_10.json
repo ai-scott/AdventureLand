@@ -388,6 +388,80 @@
 			"subLayers": [],
 			"instances": [
 				{
+					"type": "tm_water",
+					"properties": {
+						"initially-visible": true,
+						"tile-width": 16,
+						"tile-height": 16,
+						"tile-x-offset": 0,
+						"tile-y-offset": 0,
+						"tile-x-spacing": 0,
+						"tile-y-spacing": 0,
+						"tile-x-drawing-offset": 0,
+						"tile-y-drawing-offset": 0,
+						"drawing-mode": "top-to-right"
+					},
+					"uid": 52,
+					"sid": 771125208874132,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {
+						"Sine": {
+							"properties": {
+								"movement": "horizontal",
+								"wave": "sine",
+								"period": 4,
+								"period-random": 0,
+								"period-offset": 0,
+								"period-offset-random": 0,
+								"magnitude": 50,
+								"magnitude-random": 0,
+								"enabled": false,
+								"live-preview": false
+							}
+						}
+					},
+					"ownData": {
+						"tilemapData": {
+							"width": 6,
+							"height": 6,
+							"max-width": 50,
+							"max-height": 41,
+							"data": "305,225,241,97,113,289,35x0,305,33,49,65,81,289,35x0,305,33,49,65,81,289,35x0,305,33,49,65,81,289,35x0,305,257,273,129,145,289,35x0,7x305,34x0,305,1803x0"
+						},
+						"tile-width": 16,
+						"tile-height": 16,
+						"tile-x-offset": 0,
+						"tile-y-offset": 0,
+						"tile-x-spacing": 0,
+						"tile-y-spacing": 0
+					},
+					"instanceFolderItem": {
+						"sid": 771125208874132,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 288,
+						"y": 16,
+						"width": 96,
+						"height": 96,
+						"originX": 0,
+						"originY": 0,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"zElevation": 0
+					}
+				},
+				{
 					"type": "tm_forest_fort",
 					"properties": {
 						"initially-visible": true,
@@ -755,80 +829,6 @@
 						],
 						"zElevation": 0
 					}
-				},
-				{
-					"type": "tm_water",
-					"properties": {
-						"initially-visible": true,
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0,
-						"tile-x-drawing-offset": 0,
-						"tile-y-drawing-offset": 0,
-						"drawing-mode": "top-to-right"
-					},
-					"uid": 52,
-					"sid": 771125208874132,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {
-						"Sine": {
-							"properties": {
-								"movement": "horizontal",
-								"wave": "sine",
-								"period": 4,
-								"period-random": 0,
-								"period-offset": 0,
-								"period-offset-random": 0,
-								"magnitude": 50,
-								"magnitude-random": 0,
-								"enabled": false,
-								"live-preview": false
-							}
-						}
-					},
-					"ownData": {
-						"tilemapData": {
-							"width": 6,
-							"height": 6,
-							"max-width": 50,
-							"max-height": 41,
-							"data": "305,225,241,97,113,289,35x0,305,33,49,65,81,289,35x0,305,33,49,65,81,289,35x0,305,33,49,65,81,289,35x0,305,257,273,129,145,289,35x0,7x305,34x0,305,1803x0"
-						},
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0
-					},
-					"instanceFolderItem": {
-						"sid": 771125208874132,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 288,
-						"y": 16,
-						"width": 96,
-						"height": 96,
-						"originX": 0,
-						"originY": 0,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"zElevation": 0
-					}
 				}
 			],
 			"sid": 916837694580867,
@@ -931,7 +931,7 @@
 							"height": 30,
 							"max-width": 55,
 							"max-height": 36,
-							"data": "2,2x0,17,13x0,18,2x0,2,7x0,18,10,6x0,2,2x0,17,13x0,19,0,2,46,7x0,2x18,6x0,2,2x0,17,5x0,7x9,19,2x2,46,8x0,2x18,6x0,2,2x0,17,24x0,2x18,6x0,2,2x0,17,24x0,2x18,6x0,2,2x0,17,24x0,2x18,9x0,2,33,23x0,2x18,10x0,34,23x0,2x18,11x0,33,22x0,2x18,11x0,17,22x0,2x18,11x0,17,22x0,2x18,11x0,17,4x0,19,43,16x0,2x18,11x0,17,2x0,19,2,2x0,17,2x0,17,19,2,43,9x0,2x18,11x0,17,0,19,4x0,17,2x15,31,3x0,2,43,7x0,2x18,11x0,34,19,5x0,17,2x0,18,4x0,2,7x0,2x18,11x0,17,6x0,17,2x0,18,5x0,43,6x0,2x18,11x0,17,6x0,17,2x0,18,5x0,2,6x0,2x18,18x0,17,2x0,18,6x0,43,5x0,2x18,18x0,17,2x0,18,6x0,46,5x0,2x18,18x0,17,2x0,26,6x0,43,5x0,2x18,17x0,2,17,2x0,17,6x0,2,3x0,2x9,28,18,16x0,46,4x0,13,6x0,2,2x0,18,2,2x10,31,9x0,3x2,3x0,46,6x0,2,5x0,46,2x0,18,2,2x0,18,7x0,2x2,17,0,2,2x0,2,7x0,22,5x0,43,2x0,18,2,2x0,18,7x0,2,0,17,0,2,2x0,2,8x0,2,4x0,2,6x0,18,6x0,2,37,0,17,0,2,2x0,2,8x0,2,4x0,2,6x0,18,9x0,17,0,2,3x0,43,6x0,19,5x0,2,2x0,18,2,2x0,18,9x0,17,0,22,3x0,2,6x0,2,5x0,2,2x0,18,2,2x0,18,8x0,28,17,0,19,4x0,43,4x0,19,6x0,2,2x0,18,2,2x9,26,6x0,2x2,3x0,22,5x0,4x2,8x0,43,2x0,2x10,29,18,6x0,17,5x0,2,16x0,2,4x0,2x18,6x0,17,2x0,9,2x0,2,16x0,2,4x0,2x18,6x0,17,0,19,2,2x0,2,16x0,2,4x0,2x18,6x0,17,0,22,2,2x0,2,16x0,2,4x0,2x18,6x0,17,5x0,2,16x0,2,4x0,2x18,6x0,17,5x0,2,16x0,46,4x0,2x18,6x0,17,5x0,22,15x0,2,5x0,2x18,6x0,17,6x0,22,14x0,46,5x0,2x18,6x0,17,7x0,22,12x0,2,6x0,2x18,6x0,17,8x0,2,11x0,46,6x0,2x18,6x0,17,8x0,2x2,0,2x2,46,22,2,0,2x2,46,7x0,2x18,6x0,17,9x0,22,46,4x0,22,46,10x0,2x18,6x0,17,27x0,2x18,6x0,17,27x0,2x18,6x0,36,27x9,28,26,366x0"
+							"data": "2,2x0,17,0,48,11x0,18,2x0,2,7x0,18,10,6x0,2,2x0,17,0,48,11x0,19,0,2,46,7x0,2x18,6x0,2,2x0,17,0,64,2x0,6,7x9,19,2x2,46,8x0,2x18,6x0,2,2x0,17,2x0,50,0,50,19x0,2x18,6x0,2,2x0,17,3x0,49,0,49,18x0,2x18,6x0,2,2x0,17,3x0,50,0,50,18x0,2x18,9x0,2,33,3x0,49,0,49,17x0,2x18,10x0,34,23x0,2x18,11x0,33,22x0,2x18,11x0,17,22x0,2x18,11x0,17,22x0,2x18,11x0,17,4x0,19,43,16x0,2x18,11x0,17,2x0,19,2,2x0,33,2x0,28,2x2,43,9x0,2x18,11x0,17,0,19,4x0,17,2x0,31,3x0,2,43,7x0,2x18,11x0,34,19,5x0,17,2x0,18,4x0,2,7x0,2x18,11x0,17,6x0,17,2x0,18,5x0,43,6x0,2x18,11x0,17,6x0,17,2x0,18,5x0,2,6x0,2x18,18x0,17,2x0,18,6x0,43,5x0,2x18,18x0,17,2x0,18,6x0,46,5x0,2x18,18x0,17,2x0,26,6x0,43,5x0,2x18,17x0,2,40,2x0,17,6x0,2,3x0,2x9,28,18,16x0,46,39,3x0,13,6x0,2,2x0,18,2,2x10,31,9x0,3x2,3x0,46,0,17,4x0,2,5x0,46,2x0,18,2,2x0,18,7x0,2x2,17,0,2,2x0,2,0,2,40,4x0,22,5x0,43,2x0,18,2,2x0,18,7x0,2,0,17,0,2,2x0,2,0,2,6x0,2,4x0,2,6x0,18,6x0,2,37,0,17,0,2,2x0,2,0,2,33,5x0,2,4x0,2,6x0,18,9x0,17,0,2,3x0,43,0,17,4x0,19,5x0,2,2x0,18,2,2x0,18,9x0,17,0,22,3x0,2,10,5x0,2,5x0,2,2x0,18,2,2x0,18,8x0,28,17,0,19,4x0,43,4x0,19,6x0,2,2x0,18,2,2x9,26,6x0,2x2,3x0,22,5x0,4x2,8x0,43,2x0,2x10,29,18,6x0,17,5x0,2,16x0,2,4x0,2x18,6x0,17,2x0,9,2x0,2,16x0,2,4x0,2x18,6x0,17,0,19,2,2x0,2,16x0,2,4x0,2x18,6x0,17,0,22,2,2x0,2,16x0,2,4x0,2x18,6x0,17,5x0,2,16x0,2,4x0,2x18,6x0,17,5x0,2,16x0,46,4x0,2x18,6x0,17,5x0,22,15x0,2,5x0,2x18,6x0,17,6x0,22,14x0,46,5x0,2x18,6x0,17,7x0,22,12x0,2,6x0,2x18,6x0,17,8x0,2,11x0,46,6x0,2x18,6x0,17,8x0,2x2,0,2x2,46,22,2,0,2x2,46,7x0,2x18,6x0,17,9x0,22,46,4x0,22,46,10x0,2x18,6x0,17,27x0,2x18,6x0,17,27x0,2x18,6x0,36,27x9,28,26,366x0"
 						},
 						"tile-width": 16,
 						"tile-height": 16,
