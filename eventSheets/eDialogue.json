@@ -1973,33 +1973,6 @@
 									}
 								},
 								{
-									"id": "set-css-style",
-									"objectClass": "obj_textInput",
-									"sid": 899584187283525,
-									"parameters": {
-										"property-name": "\"font-face\"",
-										"value": "\"Verdana\""
-									}
-								},
-								{
-									"id": "set-css-style",
-									"objectClass": "obj_textInput",
-									"sid": 214376681699626,
-									"parameters": {
-										"property-name": "\"background-color\"",
-										"value": "\"ff0000\""
-									}
-								},
-								{
-									"id": "set-css-style",
-									"objectClass": "obj_textInput",
-									"sid": 506924601040336,
-									"parameters": {
-										"property-name": "\"color\"",
-										"value": "\"FFFF00\""
-									}
-								},
-								{
 									"id": "create-object",
 									"objectClass": "System",
 									"sid": 966772407877898,
@@ -2013,12 +1986,80 @@
 									}
 								},
 								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 553470252477423,
+									"parameters": {
+										"property-name": "\"font-face\"",
+										"value": "\"Verdana\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 374463795846284,
+									"parameters": {
+										"property-name": "\"background-color\"",
+										"value": "\"rgba(0,0,0,0)\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 974980676639862,
+									"parameters": {
+										"property-name": "\"color\"",
+										"value": "\"FFFF00\""
+									}
+								},
+								{
 									"id": "set-placeholder",
 									"objectClass": "obj_textInput",
 									"sid": 488927814726986,
 									"parameters": {
 										"placeholder": "placeholderText"
 									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 269255800508658,
+									"parameters": {
+										"property-name": "\"border-style\"",
+										"value": "\"none\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 938451799314034,
+									"parameters": {
+										"property-name": "\"outline-style\"",
+										"value": "\"solid\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 996034961128486,
+									"parameters": {
+										"property-name": "\"font\"",
+										"value": "\"Alagard_by_pix3m-11px\""
+									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "obj_textInput",
+									"sid": 462084752787966,
+									"parameters": {
+										"property-name": "\"outline-color\"",
+										"value": "\"#837d2b\""
+									}
+								},
+								{
+									"id": "set-focused",
+									"objectClass": "obj_textInput",
+									"sid": 419959704769311
 								},
 								{
 									"id": "create-object",
@@ -2032,9 +2073,221 @@
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
+								},
+								{
+									"id": "set-css-style",
+									"objectClass": "GoButton",
+									"sid": 767817506256090,
+									"parameters": {
+										"property-name": "\"background-color\"",
+										"value": "\"rgba(0,0,0,0)\""
+									}
 								}
 							],
 							"sid": 137043849684222
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 592840903753385
+								},
+								{
+									"id": "is-visible",
+									"objectClass": "obj_textInput",
+									"sid": 942276949948191
+								}
+							],
+							"actions": [
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextName",
+									"sid": 411778396431154,
+									"disabled": true,
+									"parameters": {
+										"text": "obj_textInput.Text"
+									}
+								},
+								{
+									"id": "set-focused",
+									"objectClass": "obj_textInput",
+									"sid": 106429040976554
+								},
+								{
+									"id": "set-text",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 942871939181865,
+									"parameters": {
+										"text": "obj_textInput.Text"
+									}
+								}
+							],
+							"sid": 658656797634996
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 429202402888193,
+									"parameters": {
+										"key": 9
+									}
+								},
+								{
+									"id": "is-visible",
+									"objectClass": "obj_textInput",
+									"sid": 665414871923544
+								}
+							],
+							"actions": [],
+							"sid": 442889661903657,
+							"disabled": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-focused",
+											"objectClass": "obj_textInput",
+											"sid": 585111756281280
+										}
+									],
+									"actions": [
+										{
+											"id": "set-focused",
+											"objectClass": "GoButton",
+											"sid": 577008437108488
+										}
+									],
+									"sid": 822444471649712,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-focused",
+											"objectClass": "obj_textInput",
+											"sid": 585255143533249,
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-focused",
+											"objectClass": "obj_textInput",
+											"sid": 862900687854639
+										}
+									],
+									"sid": 428433321422668,
+									"disabled": true
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 141916317048611,
+									"parameters": {
+										"key": 13
+									}
+								},
+								{
+									"id": "is-visible",
+									"objectClass": "obj_textInput",
+									"sid": 409837176004144
+								}
+							],
+							"actions": [],
+							"sid": 268362951307858,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-focused",
+											"objectClass": "obj_textInput",
+											"sid": 392100339936607
+										}
+									],
+									"actions": [
+										{
+											"id": "set-focused",
+											"objectClass": "GoButton",
+											"sid": 321686599703945
+										}
+									],
+									"sid": 100056532990666
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-focused",
+											"objectClass": "GoButton",
+											"sid": 258275077178799
+										}
+									],
+									"actions": [
+										{
+											"id": "set-focused",
+											"objectClass": "obj_textInput",
+											"sid": 635645872323295
+										},
+										{
+											"type": "comment",
+											"text": "Wait for user to hit the Go Button next to the Text Input and process accordingly"
+										},
+										{
+											"id": "destroy",
+											"objectClass": "obj_textInput",
+											"sid": 656234551547426
+										},
+										{
+											"id": "destroy",
+											"objectClass": "GoButton",
+											"sid": 755986974820394
+										},
+										{
+											"id": "set-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 862205176710361,
+											"parameters": {
+												"key": "InputVar",
+												"value": "obj_textInput.Text"
+											}
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 218215986719580
+										},
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 458204339325528,
+											"parameters": {
+												"variable": "CurrentDialogueLine",
+												"value": "1"
+											}
+										},
+										{
+											"callFunction": "processDialogueLine",
+											"sid": 204036576718619,
+											"parameters": [
+												"CurrentDialogueLine"
+											]
+										}
+									],
+									"sid": 477078997299729
+								}
+							]
 						},
 						{
 							"eventType": "block",
