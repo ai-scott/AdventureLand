@@ -3176,10 +3176,10 @@
 												{
 													"id": "set-position",
 													"objectClass": "PlayerSystem",
-													"sid": 982199551368952,
+													"sid": 692159191999721,
 													"parameters": {
 														"x": "430",
-														"y": "240"
+														"y": "230"
 													}
 												},
 												{
@@ -3231,15 +3231,6 @@
 										},
 										{
 											"id": "set-scale",
-											"objectClass": "Player_Base",
-											"sid": 109128067142592,
-											"disabled": true,
-											"parameters": {
-												"scale": "1"
-											}
-										},
-										{
-											"id": "set-scale",
 											"objectClass": "PlayerSystem",
 											"sid": 847860908714463,
 											"parameters": {
@@ -3256,21 +3247,21 @@
 											}
 										},
 										{
-											"id": "set-scale",
-											"objectClass": "Player_Mask",
-											"sid": 524580578763311,
-											"disabled": true,
-											"parameters": {
-												"scale": "1"
-											}
-										},
-										{
 											"id": "set-layer-visible",
 											"objectClass": "System",
 											"sid": 322102703645954,
 											"parameters": {
 												"layer": "\"Inventory\"",
 												"visibility": "invisible"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 204763122818007,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "0"
 											}
 										},
 										{
@@ -4290,11 +4281,11 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 745790579304039,
+									"sid": 878393627319368,
 									"parameters": {
 										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "376",
+										"x": "40",
 										"y": "196",
 										"create-hierarchy": false,
 										"template-name": "\"\""
@@ -4325,11 +4316,215 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 895604989179950,
+									"sid": 730437263757166,
 									"parameters": {
 										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "378",
+										"x": "16",
+										"y": "216",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 378462901855573,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "rotate-counter-clockwise",
+									"objectClass": "DPad_Arrow",
+									"sid": 726314023305298,
+									"parameters": {
+										"degrees": "135"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 180600022290124,
+									"parameters": {
+										"frame-number": "1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 524759611637409,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"DownLeft\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 834867727948463
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 608525077198976,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "16",
+										"y": "172",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 458013008686865,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "rotate-counter-clockwise",
+									"objectClass": "DPad_Arrow",
+									"sid": 114688728597838,
+									"parameters": {
+										"degrees": "45"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 259063525269460,
+									"parameters": {
+										"frame-number": "1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 691062864148278,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"UpLeft\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 757386468913783
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 835411151306533,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "64",
+										"y": "216",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 797149044551189,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "rotate-clockwise",
+									"objectClass": "DPad_Arrow",
+									"sid": 586178074503080,
+									"parameters": {
+										"degrees": "135"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 294925698429050,
+									"parameters": {
+										"frame-number": "1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 505165500621426,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"DownRight\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 421734946672139
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 742722707055937,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "64",
+										"y": "172",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-scale",
+									"objectClass": "DPad_Arrow",
+									"sid": 436291385461290,
+									"parameters": {
+										"scale": "1.6"
+									}
+								},
+								{
+									"id": "rotate-clockwise",
+									"objectClass": "DPad_Arrow",
+									"sid": 129481270190459,
+									"parameters": {
+										"degrees": "45"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "DPad_Arrow",
+									"sid": 568061155721837,
+									"parameters": {
+										"frame-number": "1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "DPad_Arrow",
+									"sid": 832598136045836,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "\"UpRight\""
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "DPad_Arrow",
+									"sid": 743119049639909
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 303068381570416,
+									"parameters": {
+										"object-to-create": "DPad_Arrow",
+										"layer": "\"HUD_UI\"",
+										"x": "40",
 										"y": "170",
 										"create-hierarchy": false,
 										"template-name": "\"\""
@@ -4338,7 +4533,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "DPad_Arrow",
-									"sid": 372943366569582,
+									"sid": 129601733902266,
 									"parameters": {
 										"scale": "1.6"
 									}
@@ -4346,7 +4541,7 @@
 								{
 									"id": "set-animation-frame",
 									"objectClass": "DPad_Arrow",
-									"sid": 121880784452719,
+									"sid": 484940829710221,
 									"parameters": {
 										"frame-number": "\"LtUp\""
 									}
@@ -4354,7 +4549,7 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "DPad_Arrow",
-									"sid": 132209142959290,
+									"sid": 576797613511532,
 									"parameters": {
 										"instance-variable": "Direction",
 										"value": "\"Up\""
@@ -4363,16 +4558,16 @@
 								{
 									"id": "stop-animation",
 									"objectClass": "DPad_Arrow",
-									"sid": 936732024112043
+									"sid": 273118304461559
 								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 118279603984024,
+									"sid": 229382007499309,
 									"parameters": {
 										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "350",
+										"x": "16",
 										"y": "196",
 										"create-hierarchy": false,
 										"template-name": "\"\""
@@ -4381,7 +4576,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "DPad_Arrow",
-									"sid": 153284192368303,
+									"sid": 542548698140529,
 									"parameters": {
 										"scale": "1.6"
 									}
@@ -4389,7 +4584,7 @@
 								{
 									"id": "set-animation-frame",
 									"objectClass": "DPad_Arrow",
-									"sid": 289915333704337,
+									"sid": 733985989071730,
 									"parameters": {
 										"frame-number": "\"LtLeft\""
 									}
@@ -4397,7 +4592,7 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "DPad_Arrow",
-									"sid": 835968565087097,
+									"sid": 157836702642882,
 									"parameters": {
 										"instance-variable": "Direction",
 										"value": "\"Left\""
@@ -4406,16 +4601,16 @@
 								{
 									"id": "stop-animation",
 									"objectClass": "DPad_Arrow",
-									"sid": 583766969218520
+									"sid": 413193031446488
 								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 225264347402362,
+									"sid": 454826846332974,
 									"parameters": {
 										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "378",
+										"x": "40",
 										"y": "220",
 										"create-hierarchy": false,
 										"template-name": "\"\""
@@ -4424,7 +4619,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "DPad_Arrow",
-									"sid": 195918987545313,
+									"sid": 240502255097536,
 									"parameters": {
 										"scale": "1.6"
 									}
@@ -4432,7 +4627,7 @@
 								{
 									"id": "set-animation-frame",
 									"objectClass": "DPad_Arrow",
-									"sid": 585713645003893,
+									"sid": 887736538776326,
 									"parameters": {
 										"frame-number": "\"LtDown\""
 									}
@@ -4440,7 +4635,7 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "DPad_Arrow",
-									"sid": 283572060592350,
+									"sid": 301355871104432,
 									"parameters": {
 										"instance-variable": "Direction",
 										"value": "\"Down\""
@@ -4449,16 +4644,16 @@
 								{
 									"id": "stop-animation",
 									"objectClass": "DPad_Arrow",
-									"sid": 773580919875709
+									"sid": 887336458367667
 								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 539864042268560,
+									"sid": 102943448581902,
 									"parameters": {
 										"object-to-create": "DPad_Arrow",
 										"layer": "\"HUD_UI\"",
-										"x": "404",
+										"x": "64",
 										"y": "196",
 										"create-hierarchy": false,
 										"template-name": "\"\""
@@ -4467,7 +4662,7 @@
 								{
 									"id": "set-scale",
 									"objectClass": "DPad_Arrow",
-									"sid": 625066183399967,
+									"sid": 206112003268462,
 									"parameters": {
 										"scale": "1.6"
 									}
@@ -4475,7 +4670,7 @@
 								{
 									"id": "set-animation-frame",
 									"objectClass": "DPad_Arrow",
-									"sid": 954475126640483,
+									"sid": 596270620032578,
 									"parameters": {
 										"frame-number": "\"LtRight\""
 									}
@@ -4483,7 +4678,7 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "DPad_Arrow",
-									"sid": 230590967519988,
+									"sid": 809600445635127,
 									"parameters": {
 										"instance-variable": "Direction",
 										"value": "\"Right\""
@@ -4492,7 +4687,7 @@
 								{
 									"id": "stop-animation",
 									"objectClass": "DPad_Arrow",
-									"sid": 388534456738390
+									"sid": 219006839678609
 								}
 							],
 							"sid": 239044678680942
@@ -4536,11 +4731,11 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 671604298099436,
+											"sid": 220714964220898,
 											"parameters": {
 												"object-to-create": "Btn_Action",
 												"layer": "\"HUD_UI\"",
-												"x": "4",
+												"x": "380",
 												"y": "200",
 												"create-hierarchy": false,
 												"template-name": "\"\""
@@ -4592,11 +4787,11 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 674662841709660,
+											"sid": 528991136986945,
 											"parameters": {
 												"object-to-create": "Attack",
 												"layer": "\"HUD_UI\"",
-												"x": "14",
+												"x": "390",
 												"y": "202",
 												"create-hierarchy": false,
 												"template-name": "\"\""
@@ -5376,7 +5571,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5428,7 +5622,6 @@
 					"sid": 228975982211612
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6114,6 +6307,35 @@
 									"eventType": "block",
 									"conditions": [
 										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 905565546140814,
+											"parameters": {
+												"key": 32
+											}
+										},
+										{
+											"id": "compare-animation-frame",
+											"objectClass": "CloseX",
+											"sid": 793877506542461,
+											"parameters": {
+												"comparison": 0,
+												"number": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "OpenClose_Inventory",
+											"sid": 669134067304578
+										}
+									],
+									"sid": 941284763051311
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
 											"id": "cursor-is-over-object",
 											"objectClass": "Mouse",
 											"sid": 172790032265226,
@@ -6121,6 +6343,16 @@
 												"object": "CloseX"
 											},
 											"isInverted": true
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 155255351834820,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"comparison": 1,
+												"value": "-1"
+											}
 										}
 									],
 									"actions": [
@@ -7824,6 +8056,68 @@
 														{
 															"id": "is-touching-object",
 															"objectClass": "Touch",
+															"sid": 612542983986249,
+															"parameters": {
+																"object": "DPad_Arrow"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "DPad_Arrow",
+															"sid": 382387026202191,
+															"parameters": {
+																"instance-variable": "Direction",
+																"comparison": 0,
+																"value": "\"UpLeft\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 695448373925660,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "up"
+															}
+														},
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 578799254401976,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "left"
+															}
+														},
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "Player_Mask",
+															"sid": 122230722985189,
+															"parameters": {
+																"instance-variable": "Walking",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Player_Mask",
+															"sid": 695735122546709,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Up\""
+															}
+														}
+													],
+													"sid": 212274240874380
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-touching-object",
+															"objectClass": "Touch",
 															"sid": 287342820602819,
 															"parameters": {
 																"object": "DPad_Arrow"
@@ -7869,6 +8163,68 @@
 														}
 													],
 													"sid": 228552511934932
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-touching-object",
+															"objectClass": "Touch",
+															"sid": 517528543921656,
+															"parameters": {
+																"object": "DPad_Arrow"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "DPad_Arrow",
+															"sid": 318138415449017,
+															"parameters": {
+																"instance-variable": "Direction",
+																"comparison": 0,
+																"value": "\"DownLeft\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 150412580481946,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "down"
+															}
+														},
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 620121368098997,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "left"
+															}
+														},
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "Player_Mask",
+															"sid": 391399809408321,
+															"parameters": {
+																"instance-variable": "Walking",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Player_Mask",
+															"sid": 474379819233332,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Down\""
+															}
+														}
+													],
+													"sid": 501069628493630
 												},
 												{
 													"eventType": "block",
@@ -7928,6 +8284,68 @@
 														{
 															"id": "is-touching-object",
 															"objectClass": "Touch",
+															"sid": 757389974176787,
+															"parameters": {
+																"object": "DPad_Arrow"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "DPad_Arrow",
+															"sid": 785451311056730,
+															"parameters": {
+																"instance-variable": "Direction",
+																"comparison": 0,
+																"value": "\"DownRight\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 971494058087512,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "down"
+															}
+														},
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 971811313160724,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "right"
+															}
+														},
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "Player_Mask",
+															"sid": 847233037039454,
+															"parameters": {
+																"instance-variable": "Walking",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Player_Mask",
+															"sid": 622872274115387,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Down\""
+															}
+														}
+													],
+													"sid": 765026566481185
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-touching-object",
+															"objectClass": "Touch",
 															"sid": 832304298598635,
 															"parameters": {
 																"object": "DPad_Arrow"
@@ -7973,6 +8391,68 @@
 														}
 													],
 													"sid": 770345138452735
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-touching-object",
+															"objectClass": "Touch",
+															"sid": 439611885890959,
+															"parameters": {
+																"object": "DPad_Arrow"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "DPad_Arrow",
+															"sid": 683618194779085,
+															"parameters": {
+																"instance-variable": "Direction",
+																"comparison": 0,
+																"value": "\"UpRight\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 433538874708948,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "up"
+															}
+														},
+														{
+															"id": "simulate-control",
+															"objectClass": "Player_Base",
+															"sid": 154577332759639,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "right"
+															}
+														},
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "Player_Mask",
+															"sid": 543083953122232,
+															"parameters": {
+																"instance-variable": "Walking",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Player_Mask",
+															"sid": 654394917886618,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Up\""
+															}
+														}
+													],
+													"sid": 667157819058846
 												}
 											]
 										},

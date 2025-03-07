@@ -1757,7 +1757,6 @@
 									"sid": 469151688730498
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -1770,12 +1769,12 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 579800413855379,
+											"sid": 418075926924026,
 											"parameters": {
 												"object-to-create": "UI_Font",
 												"layer": "\"Inventory\"",
 												"x": "396",
-												"y": "354",
+												"y": "350",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -1799,12 +1798,12 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 339682543748204,
+											"sid": 178840134509093,
 											"parameters": {
 												"object-to-create": "ItemSlot",
 												"layer": "\"Inventory\"",
-												"x": "UI_Font.X-14",
-												"y": "UI_Font.Y",
+												"x": "UI_Font.X-24",
+												"y": "UI_Font.Y-2",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -1838,12 +1837,34 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 951624550832498,
+											"sid": 766413681085802,
+											"parameters": {
+												"object-to-create": "ItemBG",
+												"layer": "\"Inventory\"",
+												"x": "ItemSlot.X",
+												"y": "ItemSlot.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "ItemBG",
+											"sid": 648581616951514,
+											"parameters": {
+												"where": "behind",
+												"object": "ItemSlot"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 493269933910234,
 											"parameters": {
 												"object-to-create": "Btn_Arrow",
 												"layer": "\"Inventory\"",
-												"x": "UI_Font.X-14",
-												"y": "UI_Font.Y",
+												"x": "UI_Font.X-24",
+												"y": "UI_Font.Y-2",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -1890,12 +1911,12 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 629123160754943,
+											"sid": 914771947159781,
 											"parameters": {
 												"object-to-create": "ItemSlot",
 												"layer": "\"Inventory\"",
-												"x": "UI_Font.BBoxRight + 12",
-												"y": "UI_Font.Y",
+												"x": "UI_Font.BBoxRight + 22",
+												"y": "UI_Font.Y-2",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -1929,12 +1950,34 @@
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 558354712020546,
+											"sid": 791399670476235,
+											"parameters": {
+												"object-to-create": "ItemBG",
+												"layer": "\"Inventory\"",
+												"x": "ItemSlot.X",
+												"y": "ItemSlot.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "ItemBG",
+											"sid": 376610891477652,
+											"parameters": {
+												"where": "behind",
+												"object": "ItemSlot"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 673731774572804,
 											"parameters": {
 												"object-to-create": "Btn_Arrow",
 												"layer": "\"Inventory\"",
-												"x": "UI_Font.BBoxRight + 12",
-												"y": "UI_Font.Y",
+												"x": "UI_Font.BBoxRight + 22",
+												"y": "UI_Font.Y-2",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -3068,6 +3111,40 @@
 					"sid": 997825667127366
 				},
 				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-eventvar",
+							"objectClass": "System",
+							"sid": 251563654810313,
+							"parameters": {
+								"variable": "CurrentItemSlot",
+								"comparison": 0,
+								"value": "-1"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-visible",
+							"objectClass": "SquareActive",
+							"sid": 764904196523087,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "SlotCURSOR",
+							"sid": 152738858727561,
+							"parameters": {
+								"visibility": "invisible"
+							}
+						}
+					],
+					"sid": 787145228832850
+				},
+				{
 					"functionName": "changeItemSelection",
 					"functionDescription": "change which item is highlighted in inventory",
 					"functionCategory": "Inventory",
@@ -3144,6 +3221,57 @@
 									"actions": [],
 									"sid": 652669082512465,
 									"children": [
+										{
+											"bookmark": true,
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 227935258110794,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 2,
+														"second-value": "5"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 451815402393982,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"main\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "CloseX",
+													"sid": 904237779588245,
+													"parameters": {
+														"frame-number": "1"
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "CloseX",
+													"sid": 339189782747595
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 102651435307685,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"value": "-1"
+													}
+												}
+											],
+											"sid": 396366078801116
+										},
 										{
 											"eventType": "block",
 											"conditions": [
@@ -4009,6 +4137,65 @@
 									]
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 962876343660218,
+									"parameters": {
+										"first-value": "CurrentItemSlot",
+										"comparison": 0,
+										"second-value": "-1"
+									}
+								},
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 897937751403838,
+									"parameters": {
+										"variable": "direction",
+										"comparison": 0,
+										"value": "\"down\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 994021773955569,
+									"parameters": {
+										"variable": "CurrentInvWindow",
+										"value": "\"main\""
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 439742380765510,
+									"parameters": {
+										"variable": "CurrentItemSlot",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "CloseX",
+									"sid": 398970220923437,
+									"parameters": {
+										"frame-number": "0"
+									}
+								},
+								{
+									"id": "stop-animation",
+									"objectClass": "CloseX",
+									"sid": 957618019324726
+								}
+							],
+							"sid": 384023478179564
 						}
 					]
 				}
@@ -5571,15 +5758,6 @@
 												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")",
 												"axis": "y"
 											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 405526461335280,
-											"parameters": {
-												"variable": "TempVarY",
-												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")&\" = JSON_ItemTriggers.Get(.itemTriggerID)\""
-											}
 										}
 									],
 									"sid": 292894488569860
@@ -5661,6 +5839,15 @@
 										"InventoryItems.ItemID",
 										"InventoryItems.NumberOfItems"
 									]
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 828886949991728,
+									"parameters": {
+										"variable": "TempVarY",
+										"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")&\" = JSON_ItemTriggers.Get(.itemTriggerID)\""
+									}
 								}
 							],
 							"sid": 876929990503483,
@@ -6129,6 +6316,7 @@
 											"sid": 738398783677823
 										},
 										{
+											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -6495,6 +6683,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -7143,6 +7332,7 @@
 							"sid": 846457891862036,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
@@ -8572,12 +8762,9 @@
 									}
 								},
 								{
-									"id": "set-visible",
+									"id": "destroy",
 									"objectClass": "Btn_Select",
-									"sid": 713115739056618,
-									"parameters": {
-										"visibility": "invisible"
-									}
+									"sid": 167277781900342
 								}
 							],
 							"sid": 557531044298465
@@ -8658,12 +8845,9 @@
 									}
 								},
 								{
-									"id": "set-visible",
+									"id": "destroy",
 									"objectClass": "Btn_Discard",
-									"sid": 252339924426529,
-									"parameters": {
-										"visibility": "invisible"
-									}
+									"sid": 916084748584533
 								}
 							],
 							"sid": 256377679837434
@@ -8730,10 +8914,10 @@
 								{
 									"id": "set-position",
 									"objectClass": "Btn_Cancel",
-									"sid": 670648664600556,
+									"sid": 237161665430374,
 									"parameters": {
-										"x": "Btn_Select.X",
-										"y": "Btn_Select.Y"
+										"x": "Hint_9patch.BBoxLeft+6",
+										"y": "Hint_9patch.BBoxBottom-23"
 									}
 								},
 								{
@@ -8744,53 +8928,29 @@
 										"object": "Btn_Cancel",
 										"image-point-optional": "0"
 									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Btn_Cancel",
+									"sid": 620142225630596,
+									"parameters": {
+										"instance-variable": "LinkID",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Btns",
+									"sid": 474244364071824,
+									"parameters": {
+										"instance-variable": "MaxLinks",
+										"value": "0"
+									}
 								}
 							],
 							"sid": 804327321826474
 						}
 					]
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-eventvar",
-							"objectClass": "System",
-							"sid": 697508364780917,
-							"parameters": {
-								"variable": "StartInvWindow",
-								"comparison": 0,
-								"value": "\"none\""
-							}
-						},
-						{
-							"id": "compare-two-values",
-							"objectClass": "System",
-							"sid": 221991661759410,
-							"parameters": {
-								"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
-								"comparison": 4,
-								"second-value": "Dict_SaveGameData.Get(\"Gems\")"
-							}
-						},
-						{
-							"id": "compare-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 927919332621330,
-							"parameters": {
-								"variable": "ShopMode"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "destroy",
-							"objectClass": "Btn_Select",
-							"sid": 981164734442833
-						}
-					],
-					"sid": 195893932884817,
-					"disabled": true
 				},
 				{
 					"eventType": "comment",
@@ -8838,6 +8998,7 @@
 							"id": "is-on-layer",
 							"objectClass": "Btn_Select",
 							"sid": 361283613520744,
+							"disabled": true,
 							"parameters": {
 								"layer": "\"Hint\""
 							}

@@ -486,6 +486,14 @@
 					"id": "destroy",
 					"objectClass": "Rosie",
 					"sid": 481749397717093
+				},
+				{
+					"callFunction": "UpdateNumbersOnPickup",
+					"sid": 166961385401568,
+					"parameters": [
+						"122",
+						"1"
+					]
 				}
 			],
 			"sid": 350103097360180,

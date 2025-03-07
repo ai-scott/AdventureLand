@@ -1641,38 +1641,6 @@
 								}
 							],
 							"sid": 140727251164592
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 449127883758057,
-									"parameters": {
-										"variable": "DialogueResult",
-										"comparison": 0,
-										"value": "\"End\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 412435396710551,
-									"parameters": {
-										"variable": "TempVarX",
-										"value": "\"ending dialogue\""
-									}
-								},
-								{
-									"callFunction": "endDialogue",
-									"sid": 433873205125983
-								}
-							],
-							"sid": 623911833041045,
-							"disabled": true
 						}
 					]
 				},
@@ -2456,12 +2424,12 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 799293850602961,
+									"sid": 576369339572778,
 									"parameters": {
 										"object-to-create": "obj_TextOption1",
 										"layer": "\"HUD_UI\"",
 										"x": "35",
-										"y": "170",
+										"y": "172",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
@@ -2469,12 +2437,12 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 909667023425373,
+									"sid": 549861727748642,
 									"parameters": {
 										"object-to-create": "obj_TextOption2",
 										"layer": "\"HUD_UI\"",
 										"x": "35",
-										"y": "190",
+										"y": "206",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}

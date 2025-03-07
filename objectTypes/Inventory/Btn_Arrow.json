@@ -35,7 +35,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 5812964,
+						"imageSpriteId": 5138512,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": "Off"
@@ -49,10 +49,24 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 9724702,
+						"imageSpriteId": 6498758,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": "Highlight"
+					},
+					{
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9251531,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "lit"
 					}
 				],
 				"sid": 791011957198293,
