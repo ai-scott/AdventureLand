@@ -64,7 +64,6 @@
 							"sid": 931816637326904
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -288,9 +287,19 @@
 								{
 									"callFunction": "Create_Player",
 									"sid": 220280144622027,
+									"disabled": true,
 									"parameters": [
 										"Trigger_Door.X",
 										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
+										"\"Objects\""
+									]
+								},
+								{
+									"callFunction": "Create_Player",
+									"sid": 980440533811621,
+									"parameters": [
+										"Trigger_Door.X",
+										"Trigger_Door.BBoxBottom-6",
 										"\"Objects\""
 									]
 								},
@@ -319,6 +328,7 @@
 							"sid": 749155047843843
 						},
 						{
+							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -350,9 +360,19 @@
 								{
 									"callFunction": "Create_Player",
 									"sid": 186769871539808,
+									"disabled": true,
 									"parameters": [
 										"Trigger_Door.X",
 										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
+										"\"Objects\""
+									]
+								},
+								{
+									"callFunction": "Create_Player",
+									"sid": 807840019778386,
+									"parameters": [
+										"Trigger_Door.X",
+										"Trigger_Door.BBoxBottom-6",
 										"\"Objects\""
 									]
 								},
@@ -640,7 +660,6 @@
 							"sid": 964660401401353,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -5296,7 +5315,6 @@
 							"sid": 343108707196427
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -5414,6 +5432,7 @@
 			"sid": 914632009346481
 		},
 		{
+			"bookmark": true,
 			"eventType": "group",
 			"disabled": false,
 			"title": "Audio",
@@ -5456,9 +5475,9 @@
 								{
 									"id": "is-tag-playing",
 									"objectClass": "Audio",
-									"sid": 909475805620964,
+									"sid": 866277178873048,
 									"parameters": {
-										"tag": "\"Windmill\""
+										"tag": "\"interior1\""
 									},
 									"isInverted": true
 								}
@@ -5472,17 +5491,61 @@
 								{
 									"id": "play",
 									"objectClass": "Audio",
-									"sid": 455391272106931,
+									"sid": 201991553128786,
 									"parameters": {
-										"audio-file": "Town",
+										"audio-file": "Adventureland2_01",
 										"loop": "looping",
 										"volume": "AudioLevel",
 										"stereo-pan": "0",
-										"tag-optional": "\"Windmill\""
+										"tag-optional": "\"interior1\""
 									}
 								}
 							],
 							"sid": 752940124853974
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 887168909033801,
+									"parameters": {
+										"first-value": "LayoutName",
+										"comparison": 0,
+										"second-value": "\"World_00_Pennys_House\""
+									}
+								},
+								{
+									"id": "is-tag-playing",
+									"objectClass": "Audio",
+									"sid": 486827869973583,
+									"parameters": {
+										"tag": "\"interior2\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "stop-all",
+									"objectClass": "Audio",
+									"sid": 999056932656992
+								},
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 757449464987305,
+									"parameters": {
+										"audio-file": "Adventureland3_01",
+										"loop": "looping",
+										"volume": "AudioLevel",
+										"stereo-pan": "0",
+										"tag-optional": "\"interior2\""
+									}
+								}
+							],
+							"sid": 412947171813198
 						},
 						{
 							"eventType": "comment",
@@ -5504,9 +5567,9 @@
 								{
 									"id": "is-tag-playing",
 									"objectClass": "Audio",
-									"sid": 786267778876968,
+									"sid": 458718620428860,
 									"parameters": {
-										"tag": "\"Town\""
+										"tag": "\"world\""
 									},
 									"isInverted": true
 								}
@@ -5521,6 +5584,7 @@
 									"id": "play",
 									"objectClass": "Audio",
 									"sid": 643084507644125,
+									"disabled": true,
 									"parameters": {
 										"audio-file": "Credits",
 										"loop": "looping",
@@ -5528,6 +5592,13 @@
 										"stereo-pan": "0",
 										"tag-optional": "\"Town\""
 									}
+								},
+								{
+									"callFunction": "playMusic",
+									"sid": 543661079046455,
+									"parameters": [
+										"\"world\""
+									]
 								}
 							],
 							"sid": 668889832379907
@@ -5709,6 +5780,396 @@
 							"sid": 743290284175322
 						}
 					]
+				},
+				{
+					"functionName": "playMusic",
+					"functionDescription": "start a set of tracks",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "scene",
+							"type": "string",
+							"initialValue": "",
+							"comment": "where is the music happening",
+							"sid": 748184488393546
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "comment",
+							"text": "switch based on scene - three tracks will be muted or leveled based on if an enemy is close (or not)"
+						}
+					],
+					"sid": 705478994965666,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 659147675410176,
+									"parameters": {
+										"variable": "scene",
+										"comparison": 0,
+										"value": "\"world\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "stop-all",
+									"objectClass": "Audio",
+									"sid": 134136821224147
+								},
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 898369929503198,
+									"parameters": {
+										"audio-file": "Adventureland1 Happy_01",
+										"loop": "looping",
+										"volume": "-100",
+										"stereo-pan": "0",
+										"tag-optional": "\"base\""
+									}
+								},
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 750167291157628,
+									"parameters": {
+										"audio-file": "Adventureland1 Stress_01",
+										"loop": "looping",
+										"volume": "-100",
+										"stereo-pan": "0",
+										"tag-optional": "\"mid\""
+									}
+								},
+								{
+									"id": "play",
+									"objectClass": "Audio",
+									"sid": 814157146566999,
+									"parameters": {
+										"audio-file": "Adventureland1 Danger_01",
+										"loop": "looping",
+										"volume": "-100",
+										"stereo-pan": "0",
+										"tag-optional": "\"high\""
+									}
+								},
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 792072704127498,
+									"parameters": {
+										"seconds": ".2",
+										"use-timescale": true
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 706169098263533,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "AudioLevel",
+										"duration": "1",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 829678921185048,
+									"parameters": {
+										"tag": "\"mid\"",
+										"db": "-100",
+										"duration": "1",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 174233282291014,
+									"parameters": {
+										"tag": "\"high\"",
+										"db": "-100",
+										"duration": "1",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "set-muted",
+									"objectClass": "Audio",
+									"sid": 298448883881231,
+									"disabled": true,
+									"parameters": {
+										"tag": "\"base\"",
+										"state": "unmuted"
+									}
+								},
+								{
+									"id": "set-muted",
+									"objectClass": "Audio",
+									"sid": 967740111869984,
+									"disabled": true,
+									"parameters": {
+										"tag": "\"mid\"",
+										"state": "muted"
+									}
+								},
+								{
+									"id": "set-muted",
+									"objectClass": "Audio",
+									"sid": 235612341342772,
+									"disabled": true,
+									"parameters": {
+										"tag": "\"high\"",
+										"state": "muted"
+									}
+								}
+							],
+							"sid": 781074187598066
+						}
+					]
+				},
+				{
+					"functionName": "enemyNearMusic",
+					"functionDescription": "change music when enemy is near",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 788467033774577,
+							"parameters": {
+								"tag": "\"base\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 576775710486627,
+							"parameters": {
+								"tag": "\"mid\"",
+								"db": "AudioLevel",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 930063283526199,
+							"parameters": {
+								"tag": "\"high\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 922096258473644,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"base\"",
+								"state": "muted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 394288376509302,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"mid\"",
+								"state": "unmuted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 843807322888873,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"high\"",
+								"state": "muted"
+							}
+						}
+					],
+					"sid": 289256551778095
+				},
+				{
+					"functionName": "enemyThreatMusic",
+					"functionDescription": "change music when fighting an enemy ",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 940986638873540,
+							"parameters": {
+								"tag": "\"base\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 201381185638498,
+							"parameters": {
+								"tag": "\"mid\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 164095720665725,
+							"parameters": {
+								"tag": "\"high\"",
+								"db": "AudioLevel",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 553082401169558,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"base\"",
+								"state": "muted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 658569206382191,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"mid\"",
+								"state": "muted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 957058693442390,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"high\"",
+								"state": "unmuted"
+							}
+						}
+					],
+					"sid": 456188128220590
+				},
+				{
+					"functionName": "enemyGoneMusic",
+					"functionDescription": "change music when enemy is defeated",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 239542925049496,
+							"parameters": {
+								"tag": "\"base\"",
+								"db": "AudioLevel",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 868224776205777,
+							"parameters": {
+								"tag": "\"mid\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 177006923168055,
+							"parameters": {
+								"tag": "\"high\"",
+								"db": "-100",
+								"duration": "1",
+								"ending": "keep-playing"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 285660491912304,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"base\"",
+								"state": "unmuted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 477445383376013,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"mid\"",
+								"state": "muted"
+							}
+						},
+						{
+							"id": "set-muted",
+							"objectClass": "Audio",
+							"sid": 765711668025074,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"high\"",
+								"state": "muted"
+							}
+						}
+					],
+					"sid": 434344922181538
 				}
 			],
 			"sid": 795946120113667
@@ -5790,6 +6251,124 @@
 								}
 							],
 							"sid": 941545233921721
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 628778239559638
+								}
+							],
+							"actions": [],
+							"sid": 992493409412153,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 546063791431825,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 3,
+												"second-value": "100"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyThreatMusic",
+											"sid": 164653100544218
+										}
+									],
+									"sid": 755764507005941
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 676915201933154
+								}
+							],
+							"actions": [],
+							"sid": 257262510327510,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 922990677788481,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 3,
+												"second-value": "250"
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 169998971546973,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 4,
+												"second-value": "100"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyNearMusic",
+											"sid": 490492084915310
+										}
+									],
+									"sid": 617367090308117
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 638252393588670
+								}
+							],
+							"actions": [],
+							"sid": 592616197879145,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 457211826664771,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 4,
+												"second-value": "250"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyGoneMusic",
+											"sid": 958636248765881
+										}
+									],
+									"sid": 482575992594933
+								}
+							]
 						},
 						{
 							"eventType": "comment",
@@ -6733,7 +7312,12 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
+							"actions": [
+								{
+									"callFunction": "enemyGoneMusic",
+									"sid": 829073434942266
+								}
+							],
 							"sid": 350436575910597,
 							"children": [
 								{
@@ -11938,7 +12522,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

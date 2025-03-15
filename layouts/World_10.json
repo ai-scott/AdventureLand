@@ -594,7 +594,7 @@
 							"height": 30,
 							"max-width": 45,
 							"max-height": 30,
-							"data": "745x0,2348,2448,2548,27x0,2349,2449,2549,2x0,2055,2155,2255,27x0,2056,2156,2256,537x0"
+							"data": "15x0,930,1030,28x0,931,1031,28x0,932,1032,668x0,2348,2448,2548,27x0,2349,2449,2549,2x0,2055,2155,2255,27x0,2056,2156,2256,537x0"
 						},
 						"tile-width": 16,
 						"tile-height": 16,
@@ -665,6 +665,61 @@
 						"height": 68,
 						"originX": 0.5277777777777778,
 						"originY": 0.6176470588235294,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Projectile_Demon_Bat",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 268,
+					"sid": 491063648525365,
+					"tags": "",
+					"instanceVariables": {
+						"Strength": 0,
+						"Direction": ""
+					},
+					"behaviors": {
+						"Bullet": {
+							"properties": {
+								"speed": 400,
+								"acceleration": 0,
+								"gravity": 0,
+								"bounce-off-solids": false,
+								"set-angle": true,
+								"step": false,
+								"enabled": true
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 491063648525365,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 144,
+						"y": 336,
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.59375,
 						"color": [
 							1,
 							1,

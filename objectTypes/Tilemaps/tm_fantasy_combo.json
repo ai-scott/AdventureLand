@@ -23268,32 +23268,40 @@
 		"1544": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.3125,
+					0.125,
+					0.4375,
+					0.125,
 					1,
-					0,
+					0.1875,
 					1,
 					1,
-					0,
-					1
+					0.1875,
+					1,
+					0.0625,
+					0.875,
+					0.0625,
+					0.75
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1545": {
 			"collisionPoly": {
 				"points": [
+					0.375,
 					0,
+					0.625,
 					0,
+					0.625,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.1875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1546": {
 			"collisionPoly": {
