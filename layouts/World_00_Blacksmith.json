@@ -229,124 +229,6 @@
 			"subLayers": [],
 			"instances": [
 				{
-					"type": "tm_mana_interiors",
-					"properties": {
-						"initially-visible": true,
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0,
-						"tile-x-drawing-offset": 0,
-						"tile-y-drawing-offset": 0,
-						"drawing-mode": "top-to-right"
-					},
-					"uid": 102,
-					"sid": 919817231800553,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {},
-					"ownData": {
-						"tilemapData": {
-							"width": 15,
-							"height": 12,
-							"max-width": 15,
-							"max-height": 12,
-							"data": "180x0"
-						},
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0
-					},
-					"instanceFolderItem": {
-						"sid": 919817231800553,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": true,
-					"world": {
-						"x": 90.44642020022198,
-						"y": 23.978663178222945,
-						"width": 240,
-						"height": 192,
-						"originX": 0,
-						"originY": 0,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"zElevation": 0
-					}
-				},
-				{
-					"type": "tm_mana_interiors",
-					"properties": {
-						"initially-visible": true,
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0,
-						"tile-x-drawing-offset": 0,
-						"tile-y-drawing-offset": 0,
-						"drawing-mode": "top-to-right"
-					},
-					"uid": 109,
-					"sid": 355783154614024,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {},
-					"ownData": {
-						"tilemapData": {
-							"width": 15,
-							"height": 12,
-							"max-width": 15,
-							"max-height": 12,
-							"data": "19x0,2844,2972,10x0,2845,2973,7x0,3990,11x0,3990,108x0,769h,897h,1025h,2x0,3494,13x0"
-						},
-						"tile-width": 16,
-						"tile-height": 16,
-						"tile-x-offset": 0,
-						"tile-y-offset": 0,
-						"tile-x-spacing": 0,
-						"tile-y-spacing": 0
-					},
-					"instanceFolderItem": {
-						"sid": 355783154614024,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": true,
-					"world": {
-						"x": 90,
-						"y": 24,
-						"width": 240,
-						"height": 192,
-						"originX": 0,
-						"originY": 0,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"zElevation": 0
-					}
-				},
-				{
 					"type": "Trigger_Item",
 					"properties": {
 						"initially-visible": false,
@@ -483,6 +365,65 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "tm_mana_interiors",
+					"properties": {
+						"initially-visible": true,
+						"tile-width": 16,
+						"tile-height": 16,
+						"tile-x-offset": 0,
+						"tile-y-offset": 0,
+						"tile-x-spacing": 0,
+						"tile-y-spacing": 0,
+						"tile-x-drawing-offset": 0,
+						"tile-y-drawing-offset": 0,
+						"drawing-mode": "top-to-right"
+					},
+					"uid": 109,
+					"sid": 355783154614024,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"ownData": {
+						"tilemapData": {
+							"width": 15,
+							"height": 12,
+							"max-width": 15,
+							"max-height": 12,
+							"data": "19x0,2844,2972,10x0,2845,2973,7x0,3990,120x0,769h,897h,1025h,2x0,3494,13x0"
+						},
+						"tile-width": 16,
+						"tile-height": 16,
+						"tile-x-offset": 0,
+						"tile-y-offset": 0,
+						"tile-x-spacing": 0,
+						"tile-y-spacing": 0
+					},
+					"instanceFolderItem": {
+						"sid": 355783154614024,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 90,
+						"y": 24,
+						"width": 240,
+						"height": 192,
+						"originX": 0,
+						"originY": 0,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 974015633127231,
@@ -557,7 +498,7 @@
 					"locked": false,
 					"world": {
 						"x": 265.73054107974144,
-						"y": 199.18337011027577,
+						"y": 194.18337011027577,
 						"width": 31.666771194764692,
 						"height": 24,
 						"originX": 0.5,
@@ -610,7 +551,7 @@
 					"locked": false,
 					"world": {
 						"x": 154.45130550117926,
-						"y": 167.60342776811694,
+						"y": 165.60342776811694,
 						"width": 31.408365135042118,
 						"height": 24,
 						"originX": 0.5,
@@ -828,7 +769,7 @@
 							"height": 12,
 							"max-width": 18,
 							"max-height": 13,
-							"data": "10x2,3x0,2,2x0,2x2,2x0,18,2x2,3x0,2,2x0,2,4x0,22,2x2,2x0,2,2x0,2x2,5x0,2,2x0,2,2x0,2x2,5x0,2,2x0,2,2x0,2,5x0,2x2,2x0,2,2x0,2,0,2,17,2x0,2,3x0,2,2x0,2,0,2,17,2x0,3x2,0,2,2x0,2,0,2,17,2x0,29,2x2,0,2,2x0,2,7x0,2,0,2,2x0,2x2,6x0,18,0,2,2x0,2,7x0,18,0,2,2x0,2,5x0,4,28,2,0,2,2x0,2x2,0,2x2,0,29,2x2,0,12x2,40x0"
+							"data": "10x2,3x0,2,2x0,2x2,2x0,18,2x2,3x0,2,2x0,2,4x0,22,2x2,2x0,2,2x0,2x2,5x0,2,2x0,2,2x0,2,6x0,2,2x0,2,2x0,2,5x0,2x2,2x0,2,2x0,2,0,2,17,2x0,2,3x0,2,2x0,2,0,2,17,2x0,3x2,0,2,2x0,2,0,2,17,2x0,29,2x2,0,2,2x0,2,7x0,2,0,2,2x0,2,36,6x0,18,0,2,2x0,2,7x0,18,0,2,2x0,2,5x0,4,28,2,0,2,2x0,2x2,0,2x2,0,29,2x2,0,12x2,40x0"
 						},
 						"tile-width": 16,
 						"tile-height": 16,
@@ -938,13 +879,6 @@
 			},
 			{
 				"sid": 377789093810270,
-				"expanded": true,
-				"folderName": "",
-				"indexInFolder": -1,
-				"folderNestingLevel": -1
-			},
-			{
-				"sid": 919817231800553,
 				"expanded": true,
 				"folderName": "",
 				"indexInFolder": -1,

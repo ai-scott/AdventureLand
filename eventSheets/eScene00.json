@@ -111,6 +111,7 @@
 							"id": "set-y",
 							"objectClass": "Player_Base",
 							"sid": 177028540982075,
+							"disabled": true,
 							"parameters": {
 								"y": "(Player_Base.Y+24)"
 							}
