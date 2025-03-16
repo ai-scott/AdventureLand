@@ -570,6 +570,15 @@
 										{
 											"type": "script",
 											"script": "if(runtime.globalVars.QuestStatus){\n\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");\n\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);\n}"
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 515895465233248,
+											"parameters": {
+												"variable": "CurrentCharacter",
+												"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
+											}
 										}
 									],
 									"sid": 691410557784407
@@ -621,17 +630,6 @@
 												"comparison": 1,
 												"value": "\"Complete\""
 											}
-										},
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 373251604655772,
-											"disabled": true,
-											"parameters": {
-												"variable": "Quest",
-												"comparison": 1,
-												"value": "\"Quest\""
-											}
 										}
 									],
 									"actions": [
@@ -642,15 +640,6 @@
 											"parameters": {
 												"variable": "InDialogue",
 												"value": "true"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 254439668923790,
-											"parameters": {
-												"variable": "TempVarX",
-												"value": "\"somehow here\""
 											}
 										},
 										{
@@ -1009,12 +998,21 @@
 									"conditions": [],
 									"actions": [
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 106465359475349,
+											"parameters": {
+												"variable": "QuestStatus",
+												"value": "Arr_Dialogue.At(5, CurrentDialogueLine,TextArrayZIndex)"
+											}
+										},
+										{
 											"id": "set-key",
 											"objectClass": "Dict_SaveGameData",
-											"sid": 136927697814420,
+											"sid": 194827986297458,
 											"parameters": {
 												"key": "Quest",
-												"value": "Arr_Dialogue.At(5, CurrentDialogueLine,TextArrayZIndex)"
+												"value": "QuestStatus"
 											}
 										},
 										{
