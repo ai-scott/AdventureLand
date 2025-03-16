@@ -64,6 +64,7 @@
 							"sid": 931816637326904
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -328,7 +329,6 @@
 							"sid": 749155047843843
 						},
 						{
-							"bookmark": true,
 							"eventType": "block",
 							"conditions": [
 								{
@@ -660,6 +660,7 @@
 							"sid": 964660401401353,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -3605,14 +3606,19 @@
 														{
 															"id": "is-mirrored",
 															"objectClass": "Player_Mask",
-															"sid": 417147056788952
+															"sid": 105179755883544
+														},
+														{
+															"id": "is-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 505197541791082
 														}
 													],
 													"actions": [
 														{
 															"id": "set-mirrored",
 															"objectClass": "Player_Mask",
-															"sid": 781856872101613,
+															"sid": 279295329344443,
 															"parameters": {
 																"state": "not-mirrored"
 															}
@@ -3620,13 +3626,14 @@
 														{
 															"id": "set-mirrored",
 															"objectClass": "PlayerSystem",
-															"sid": 765917494223349,
+															"sid": 528902268710830,
 															"parameters": {
 																"state": "not-mirrored"
 															}
 														}
 													],
-													"sid": 763507550569873
+													"sid": 926840671534066,
+													"isOrBlock": true
 												}
 											]
 										}
@@ -3881,6 +3888,36 @@
 													],
 													"sid": 741513892657410,
 													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 547115814804995,
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 290680187274856,
+															"parameters": {
+																"state": "mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 730316097840206,
+															"parameters": {
+																"state": "mirrored"
+															}
+														}
+													],
+													"sid": 404094606682693
 												}
 											]
 										},
@@ -3959,6 +3996,41 @@
 														}
 													],
 													"sid": 497050438428989,
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 775510605969886
+														},
+														{
+															"id": "is-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 475463475366894
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 465581121700053,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														},
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 921420391734133,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														}
+													],
+													"sid": 587636276117250,
 													"isOrBlock": true
 												}
 											]
@@ -5315,6 +5387,7 @@
 							"sid": 343108707196427
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -5432,7 +5505,6 @@
 			"sid": 914632009346481
 		},
 		{
-			"bookmark": true,
 			"eventType": "group",
 			"disabled": false,
 			"title": "Audio",
@@ -12429,6 +12501,7 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
