@@ -523,7 +523,7 @@
 					"locked": false,
 					"world": {
 						"x": 202.01062946274754,
-						"y": 191.802756329127,
+						"y": 190.802756329127,
 						"width": 31.666771194764692,
 						"height": 24,
 						"originX": 0.5,
@@ -650,6 +650,49 @@
 						"y": 177.81937576697254,
 						"width": 17.927451915537375,
 						"height": 42.88996812581321,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Trigger_Scene",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 269,
+					"sid": 116601910923248,
+					"tags": "",
+					"instanceVariables": {
+						"ID": 3,
+						"SceneName": "Rosie"
+					},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 116601910923248,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 243.70516294510475,
+						"y": 107.6572143011293,
+						"width": 17.520669404047112,
+						"height": 23.903651240687992,
 						"originX": 1.953125,
 						"originY": 2.0350877192982457,
 						"color": [

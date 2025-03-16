@@ -513,7 +513,8 @@
 					"sid": 523000190074324,
 					"tags": "",
 					"instanceVariables": {
-						"ID": 0
+						"ID": 0,
+						"SceneName": "Tree"
 					},
 					"behaviors": {},
 					"showing": true,

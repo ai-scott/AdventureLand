@@ -931,7 +931,8 @@
 					"sid": 517569966784390,
 					"tags": "",
 					"instanceVariables": {
-						"ID": 2
+						"ID": 2,
+						"SceneName": "Tree"
 					},
 					"behaviors": {},
 					"instanceFolderItem": {
@@ -1499,7 +1500,8 @@
 					"sid": 446816453303446,
 					"tags": "",
 					"instanceVariables": {
-						"ID": 4
+						"ID": 4,
+						"SceneName": "Shrine"
 					},
 					"behaviors": {},
 					"instanceFolderItem": {

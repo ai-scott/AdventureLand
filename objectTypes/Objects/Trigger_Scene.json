@@ -11,6 +11,13 @@
 			"desc": "",
 			"show": true,
 			"sid": 162928868529938
+		},
+		{
+			"name": "SceneName",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 674326867194894
 		}
 	],
 	"behaviorTypes": [],

@@ -400,7 +400,7 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 842279075640510,
+									"sid": 763399515053002,
 									"parameters": {
 										"variable": "TextArrayZIndex",
 										"value": "Trigger_Scene.ID"
@@ -408,9 +408,9 @@
 								},
 								{
 									"callFunction": "initiateDialogue",
-									"sid": 836685755295917,
+									"sid": 446466938593500,
 									"parameters": [
-										"Trigger_Scene.ObjectTypeName"
+										"Trigger_Scene.SceneName"
 									]
 								}
 							],
@@ -582,9 +582,13 @@
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "else",
-											"objectClass": "System",
-											"sid": 910909585441881
+											"id": "has-key",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 617572740014594,
+											"parameters": {
+												"key": "trigger&\"Quest\""
+											},
+											"isInverted": true
 										}
 									],
 									"actions": [

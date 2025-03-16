@@ -68,6 +68,16 @@
 				{
 					"id": "map-function",
 					"objectClass": "Functions",
+					"sid": 967496489592275,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"RosiesHome\"",
+						"function": "RosiesHome"
+					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
 					"sid": 116102845844237,
 					"parameters": {
 						"name": "\"DialogueFunctions\"",
@@ -134,24 +144,15 @@
 								{
 									"id": "for",
 									"objectClass": "System",
-									"sid": 492081208341608,
+									"sid": 805990072997876,
 									"parameters": {
 										"name": "\"Layers\"",
 										"start-index": "0",
-										"end-index": "6"
+										"end-index": "7"
 									}
 								}
 							],
 							"actions": [
-								{
-									"id": "set-layer-scale-rate",
-									"objectClass": "System",
-									"sid": 125521353656391,
-									"parameters": {
-										"layer": "\"HUD_UI\"",
-										"scale-rate": "1"
-									}
-								},
 								{
 									"id": "set-layer-scale",
 									"objectClass": "System",
@@ -169,6 +170,15 @@
 										"layer": "loopindex",
 										"scroll-x": "90",
 										"scroll-y": "0"
+									}
+								},
+								{
+									"id": "set-layer-scale",
+									"objectClass": "System",
+									"sid": 569288599206762,
+									"parameters": {
+										"layer": "\"HUD_UI\"",
+										"scale": "1"
 									}
 								}
 							],
@@ -461,6 +471,15 @@
 					}
 				},
 				{
+					"id": "set-instvar-value",
+					"objectClass": "Trigger_Scene",
+					"sid": 637426324274319,
+					"parameters": {
+						"instance-variable": "SceneName",
+						"value": "\"Rosie\""
+					}
+				},
+				{
 					"id": "set-animation",
 					"objectClass": "Rosie",
 					"sid": 525292727400682,
@@ -730,6 +749,27 @@
 				}
 			],
 			"sid": 835496645361954
+		},
+		{
+			"functionName": "RosiesHome",
+			"functionDescription": "Set Rosie up for being at Penny's - remove from inv.",
+			"functionCategory": "DialogueEvent",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [],
+			"actions": [
+				{
+					"callFunction": "UpdateNumbersOnDrop",
+					"sid": 174352337285507,
+					"parameters": [
+						"122"
+					]
+				}
+			],
+			"sid": 426256096190503
 		}
 	],
 	"sid": 911891923434025

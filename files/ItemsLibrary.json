@@ -7,7 +7,7 @@
 		{
 			"id": 1,
 			"name": "Axe",
-			"description": "A metal blade attached to a wooden handle. Good for chopping down trees and monsters.",
+			"description": "A metal blade attached to a wooden handle. Good for chopping down monsters.",
 			"category": "Weapon",
 			"strength": 3,
 			"cost": 6

@@ -605,6 +605,17 @@
 							}
 						},
 						{
+							"id": "fade-volume",
+							"objectClass": "Audio",
+							"sid": 714537895900102,
+							"parameters": {
+								"tag": "\"\"",
+								"db": "-100",
+								"duration": "0.5",
+								"ending": "stop"
+							}
+						},
+						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
 							"sid": 299672694609488,
@@ -632,9 +643,9 @@
 								{
 									"id": "wait",
 									"objectClass": "System",
-									"sid": 577105502062328,
+									"sid": 623387314397572,
 									"parameters": {
-										"seconds": "0.2",
+										"seconds": "0.1",
 										"use-timescale": true
 									}
 								}
@@ -669,6 +680,29 @@
 										{
 											"callFunction": "displayWorldName",
 											"sid": 409783277728913
+										},
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 361625956922166,
+											"parameters": {
+												"seconds": ".1",
+												"use-timescale": true
+											}
+										},
+										{
+											"id": "stop-all",
+											"objectClass": "Audio",
+											"sid": 762866115497985,
+											"disabled": true
+										},
+										{
+											"callFunction": "playMusic",
+											"sid": 212084017959957,
+											"disabled": true,
+											"parameters": [
+												"\"world\""
+											]
 										}
 									],
 									"sid": 435140152942386

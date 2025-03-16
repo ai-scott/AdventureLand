@@ -8098,10 +8098,10 @@
 										{
 											"id": "compare-x",
 											"objectClass": "InventoryItems",
-											"sid": 983233818251056,
+											"sid": 139489536961854,
 											"parameters": {
 												"comparison": 4,
-												"x-co-ordinate": "int(180+int(ViewportLeft(\"Objects\")))"
+												"x-co-ordinate": "int(200+int(ViewportLeft(\"Objects\")))"
 											}
 										},
 										{
@@ -8233,10 +8233,10 @@
 										{
 											"id": "compare-x",
 											"objectClass": "InventoryItems",
-											"sid": 587678215519356,
+											"sid": 623391563319613,
 											"parameters": {
 												"comparison": 3,
-												"x-co-ordinate": "int(180+int(ViewportLeft(\"Objects\")))"
+												"x-co-ordinate": "int(200+int(ViewportLeft(\"Objects\")))"
 											}
 										},
 										{

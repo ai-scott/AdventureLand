@@ -5466,11 +5466,33 @@
 									"id": "compare-two-values",
 									"objectClass": "System",
 									"sid": 382016721749149,
+									"disabled": true,
 									"parameters": {
 										"first-value": "LayoutName",
 										"comparison": 0,
 										"second-value": "\"World_00_Windmill_F0\""
 									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 700286428037418,
+									"parameters": {
+										"first-value": "tokenat(LayoutName,2,\"_\")",
+										"comparison": 1,
+										"second-value": "\"\""
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 469229838580743,
+									"parameters": {
+										"first-value": "LayoutName",
+										"comparison": 0,
+										"second-value": "\"World_00_Pennys_House\""
+									},
+									"isInverted": true
 								},
 								{
 									"id": "is-tag-playing",
@@ -5581,16 +5603,12 @@
 									"sid": 563718278122092
 								},
 								{
-									"id": "play",
-									"objectClass": "Audio",
-									"sid": 643084507644125,
-									"disabled": true,
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 439904838903139,
 									"parameters": {
-										"audio-file": "Credits",
-										"loop": "looping",
-										"volume": "AudioLevel",
-										"stereo-pan": "0",
-										"tag-optional": "\"Town\""
+										"seconds": ".1",
+										"use-timescale": true
 									}
 								},
 								{
@@ -5830,7 +5848,7 @@
 								{
 									"id": "play",
 									"objectClass": "Audio",
-									"sid": 898369929503198,
+									"sid": 668205237057864,
 									"parameters": {
 										"audio-file": "Adventureland1 Happy_01",
 										"loop": "looping",
@@ -5840,9 +5858,29 @@
 									}
 								},
 								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 127967669682715,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "AudioLevel",
+										"duration": ".5",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 562572656066528,
+									"parameters": {
+										"seconds": ".1",
+										"use-timescale": true
+									}
+								},
+								{
 									"id": "play",
 									"objectClass": "Audio",
-									"sid": 750167291157628,
+									"sid": 165045565736140,
 									"parameters": {
 										"audio-file": "Adventureland1 Stress_01",
 										"loop": "looping",
@@ -5854,7 +5892,7 @@
 								{
 									"id": "play",
 									"objectClass": "Audio",
-									"sid": 814157146566999,
+									"sid": 672250093225525,
 									"parameters": {
 										"audio-file": "Adventureland1 Danger_01",
 										"loop": "looping",
@@ -5866,73 +5904,32 @@
 								{
 									"id": "wait",
 									"objectClass": "System",
-									"sid": 792072704127498,
+									"sid": 992263863613553,
 									"parameters": {
-										"seconds": ".2",
+										"seconds": ".1",
 										"use-timescale": true
 									}
 								},
 								{
 									"id": "fade-volume",
 									"objectClass": "Audio",
-									"sid": 706169098263533,
+									"sid": 724821967704239,
 									"parameters": {
-										"tag": "\"base\"",
-										"db": "AudioLevel",
-										"duration": "1",
+										"tag": "\"mid\"",
+										"db": "-100",
+										"duration": ".5",
 										"ending": "keep-playing"
 									}
 								},
 								{
 									"id": "fade-volume",
 									"objectClass": "Audio",
-									"sid": 829678921185048,
-									"parameters": {
-										"tag": "\"mid\"",
-										"db": "-100",
-										"duration": "1",
-										"ending": "keep-playing"
-									}
-								},
-								{
-									"id": "fade-volume",
-									"objectClass": "Audio",
-									"sid": 174233282291014,
+									"sid": 556797512545745,
 									"parameters": {
 										"tag": "\"high\"",
 										"db": "-100",
-										"duration": "1",
+										"duration": ".5",
 										"ending": "keep-playing"
-									}
-								},
-								{
-									"id": "set-muted",
-									"objectClass": "Audio",
-									"sid": 298448883881231,
-									"disabled": true,
-									"parameters": {
-										"tag": "\"base\"",
-										"state": "unmuted"
-									}
-								},
-								{
-									"id": "set-muted",
-									"objectClass": "Audio",
-									"sid": 967740111869984,
-									"disabled": true,
-									"parameters": {
-										"tag": "\"mid\"",
-										"state": "muted"
-									}
-								},
-								{
-									"id": "set-muted",
-									"objectClass": "Audio",
-									"sid": 235612341342772,
-									"disabled": true,
-									"parameters": {
-										"tag": "\"high\"",
-										"state": "muted"
 									}
 								}
 							],
@@ -5954,64 +5951,34 @@
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 788467033774577,
+							"sid": 290743790437780,
 							"parameters": {
 								"tag": "\"base\"",
 								"db": "-100",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 576775710486627,
+							"sid": 573237492551041,
 							"parameters": {
 								"tag": "\"mid\"",
 								"db": "AudioLevel",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 930063283526199,
+							"sid": 597919327618610,
 							"parameters": {
 								"tag": "\"high\"",
 								"db": "-100",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 922096258473644,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"base\"",
-								"state": "muted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 394288376509302,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"mid\"",
-								"state": "unmuted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 843807322888873,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"high\"",
-								"state": "muted"
 							}
 						}
 					],
@@ -6031,64 +5998,34 @@
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 940986638873540,
+							"sid": 663401411271923,
 							"parameters": {
 								"tag": "\"base\"",
 								"db": "-100",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 201381185638498,
-							"parameters": {
-								"tag": "\"mid\"",
-								"db": "-100",
-								"duration": "1",
-								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 164095720665725,
+							"sid": 830070382260791,
 							"parameters": {
 								"tag": "\"high\"",
 								"db": "AudioLevel",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
-							"id": "set-muted",
+							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 553082401169558,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"base\"",
-								"state": "muted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 658569206382191,
-							"disabled": true,
+							"sid": 950391865016376,
 							"parameters": {
 								"tag": "\"mid\"",
-								"state": "muted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 957058693442390,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"high\"",
-								"state": "unmuted"
+								"db": "-100",
+								"duration": ".5",
+								"ending": "keep-playing"
 							}
 						}
 					],
@@ -6108,64 +6045,34 @@
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 239542925049496,
+							"sid": 151207673900009,
 							"parameters": {
 								"tag": "\"base\"",
 								"db": "AudioLevel",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 868224776205777,
+							"sid": 184836843812561,
 							"parameters": {
 								"tag": "\"mid\"",
 								"db": "-100",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
 							}
 						},
 						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
-							"sid": 177006923168055,
+							"sid": 222418563225689,
 							"parameters": {
 								"tag": "\"high\"",
 								"db": "-100",
-								"duration": "1",
+								"duration": ".5",
 								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 285660491912304,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"base\"",
-								"state": "unmuted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 477445383376013,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"mid\"",
-								"state": "muted"
-							}
-						},
-						{
-							"id": "set-muted",
-							"objectClass": "Audio",
-							"sid": 765711668025074,
-							"disabled": true,
-							"parameters": {
-								"tag": "\"high\"",
-								"state": "muted"
 							}
 						}
 					],
