@@ -1054,6 +1054,13 @@
 													"objectClass": "PlayerSystem"
 												}
 											}
+										},
+										{
+											"callFunction": "checkForInteractionHint",
+											"sid": 822495769714165,
+											"parameters": [
+												"\"\""
+											]
 										}
 									],
 									"sid": 765619192007108
@@ -1063,40 +1070,25 @@
 									"text": "Detect when near a trigger item and adjust HUD"
 								},
 								{
-									"eventType": "block",
-									"conditions": [
+									"functionName": "checkForInteractionHint",
+									"functionDescription": "check to see if we should display a hint to interact with something",
+									"functionCategory": "HUD",
+									"functionReturnType": "none",
+									"functionCopyPicked": false,
+									"functionIsAsync": false,
+									"functionParameters": [
 										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 907519565669450,
-											"parameters": {
-												"variable": "InDialogue"
-											},
-											"isInverted": true
-										},
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 960305607705833,
-											"disabled": true,
-											"parameters": {
-												"variable": "InteractionHintOn"
-											},
-											"isInverted": true
+											"name": "detectedAction",
+											"type": "string",
+											"initialValue": "",
+											"comment": "",
+											"sid": 354738603079271
 										}
 									],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 861346217315008,
-											"parameters": {
-												"variable": "CurrentAction",
-												"value": "\"None\""
-											}
-										}
-									],
-									"sid": 878369962950301,
+									"eventType": "function-block",
+									"conditions": [],
+									"actions": [],
+									"sid": 231265270708254,
 									"children": [
 										{
 											"eventType": "block",
@@ -1104,414 +1096,135 @@
 												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 177690171219278,
+													"sid": 421601129604588,
 													"parameters": {
-														"variable": "InteractionHintOn"
+														"variable": "InDialogue"
 													},
 													"isInverted": true
 												},
 												{
-													"id": "pick-nearestfurthest",
-													"objectClass": "CharactersTriggers",
-													"sid": 954420753146430,
-													"parameters": {
-														"which": "nearest",
-														"x": "Player_Base.X",
-														"y": "Player_Base.Y"
-													}
-												},
-												{
-													"id": "compare-eventvar",
+													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 821571787164810,
+													"sid": 398155561128514,
+													"disabled": true,
 													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"None\""
-													}
-												},
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "CharactersTriggers",
-													"sid": 915844237693487,
-													"parameters": {
-														"instance-variable": "ID",
-														"comparison": 1,
-														"value": "-1"
-													}
-												},
-												{
-													"id": "is-overlapping-another-object",
-													"objectClass": "CharactersTriggers",
-													"sid": 128638567653237,
-													"parameters": {
-														"object": "Trigger_Player"
-													}
+														"variable": "InteractionHintOn"
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
 												{
 													"id": "set-eventvar-value",
 													"objectClass": "System",
-													"sid": 391296028419529,
+													"sid": 262712244989483,
 													"parameters": {
-														"variable": "CurrentAction",
-														"value": "\"Talk\""
-													}
-												},
-												{
-													"callFunction": "displayInteractionHint",
-													"sid": 993838249159643,
-													"parameters": [
-														"CurrentAction"
-													]
-												}
-											],
-											"sid": 519260815124270
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "pick-nearestfurthest",
-													"objectClass": "Trigger_Door",
-													"sid": 603415575649910,
-													"parameters": {
-														"which": "nearest",
-														"x": "Player_Base.X",
-														"y": "Player_Base.Y"
-													}
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 440070688864631,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
+														"variable": "detectedAction",
 														"value": "\"None\""
 													}
 												}
 											],
-											"actions": [],
-											"sid": 310177547756226,
+											"sid": 241795993700792,
 											"children": [
 												{
 													"eventType": "block",
 													"conditions": [
 														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 135437295143802,
+															"disabled": true,
+															"parameters": {
+																"variable": "InteractionHintOn"
+															},
+															"isInverted": true
+														},
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "CharactersTriggers",
+															"sid": 442224132893902,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "CharactersTriggers",
+															"sid": 419820461534886,
+															"parameters": {
+																"instance-variable": "ID",
+																"comparison": 1,
+																"value": "-1"
+															}
+														},
+														{
 															"id": "is-overlapping-another-object",
+															"objectClass": "CharactersTriggers",
+															"sid": 903821312066723,
+															"parameters": {
+																"object": "Trigger_Player"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 302945803012230,
+															"parameters": {
+																"variable": "detectedAction",
+																"value": "\"Talk\""
+															}
+														}
+													],
+													"sid": 391344187416755
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
 															"objectClass": "Trigger_Door",
-															"sid": 715521289702756,
+															"sid": 492583513723474,
 															"parameters": {
-																"object": "Player_Base"
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
 															}
-														},
-														{
-															"id": "is-boolean-instance-variable-set",
-															"objectClass": "Trigger_Door",
-															"sid": 912062593597964,
-															"parameters": {
-																"instance-variable": "StartingDoor"
-															},
-															"isInverted": true
-														},
-														{
-															"id": "compare-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 925826170095403,
-															"parameters": {
-																"variable": "InteractionHintOn"
-															},
-															"isInverted": true
 														}
 													],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 748286836346070,
-															"parameters": {
-																"variable": "CurrentAction",
-																"value": "\"Enter\""
-															}
-														},
-														{
-															"callFunction": "displayInteractionHint",
-															"sid": 612811644120740,
-															"parameters": [
-																"CurrentAction"
-															]
-														}
-													],
-													"sid": 726498146840677
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "pick-nearestfurthest",
-													"objectClass": "Trigger_Scene",
-													"sid": 582634150764246,
-													"parameters": {
-														"which": "nearest",
-														"x": "Player_Base.X",
-														"y": "Player_Base.Y"
-													}
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 234836291946552,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"None\""
-													}
-												}
-											],
-											"actions": [],
-											"sid": 545048316513160,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "Trigger_Scene",
-															"sid": 537449605569999,
-															"parameters": {
-																"object": "Trigger_Player"
-															}
-														},
-														{
-															"id": "compare-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 601948924315984,
-															"parameters": {
-																"variable": "InteractionHintOn"
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 256268262955900,
-															"parameters": {
-																"variable": "CurrentAction",
-																"value": "\"Look\""
-															}
-														},
-														{
-															"callFunction": "displayInteractionHint",
-															"sid": 663053774651273,
-															"parameters": [
-																"CurrentAction"
-															]
-														}
-													],
-													"sid": 767825472809723
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "pick-nearestfurthest",
-													"objectClass": "Trigger_Function",
-													"sid": 422275970681679,
-													"parameters": {
-														"which": "nearest",
-														"x": "Player_Base.X",
-														"y": "Player_Base.Y"
-													}
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 857664611398345,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"None\""
-													}
-												}
-											],
-											"actions": [],
-											"sid": 796938798000056,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "Trigger_Function",
-															"sid": 641466133595554,
-															"parameters": {
-																"object": "Trigger_Player"
-															}
-														},
-														{
-															"id": "compare-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 563333703900341,
-															"parameters": {
-																"variable": "InteractionHintOn"
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 988811108702792,
-															"parameters": {
-																"variable": "CurrentAction",
-																"value": "\"Check\""
-															}
-														},
-														{
-															"callFunction": "displayInteractionHint",
-															"sid": 676746647528297,
-															"parameters": [
-																"CurrentAction"
-															]
-														}
-													],
-													"sid": 196963937291767
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "is-on-layer",
-													"objectClass": "InventoryItems",
-													"sid": 291592740551839,
-													"parameters": {
-														"layer": "\"Inventory\""
-													},
-													"isInverted": true
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 272072069920782,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"None\""
-													}
-												},
-												{
-													"id": "pick-nearestfurthest",
-													"objectClass": "InventoryItems",
-													"sid": 875551742925788,
-													"parameters": {
-														"which": "nearest",
-														"x": "Player_Base.X",
-														"y": "Player_Base.Y"
-													}
-												}
-											],
-											"actions": [
-												{
-													"type": "comment",
-													"text": "See if player is next to an item"
-												}
-											],
-											"sid": 931513397616231,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "InventoryItems",
-															"sid": 213837241688868,
-															"parameters": {
-																"object": "Trigger_Player"
-															}
-														},
-														{
-															"id": "compare-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 412404312508731,
-															"parameters": {
-																"variable": "InteractionHintOn"
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 987700218955195,
-															"parameters": {
-																"variable": "CurrentAction",
-																"value": "\"Interact\""
-															}
-														},
-														{
-															"callFunction": "displayInteractionHint",
-															"sid": 524897050032203,
-															"parameters": [
-																"CurrentAction"
-															]
-														}
-													],
-													"sid": 701315386041786,
+													"actions": [],
+													"sid": 573256621746638,
 													"children": [
 														{
 															"eventType": "block",
 															"conditions": [
 																{
-																	"id": "compare-two-values",
-																	"objectClass": "System",
-																	"sid": 791140397885161,
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "Trigger_Door",
+																	"sid": 746662292214923,
 																	"parameters": {
-																		"first-value": "SelectedItemUID",
-																		"comparison": 0,
-																		"second-value": "InventoryItems.UID"
+																		"object": "Player_Base"
+																	}
+																},
+																{
+																	"id": "is-boolean-instance-variable-set",
+																	"objectClass": "Trigger_Door",
+																	"sid": 740707807271734,
+																	"parameters": {
+																		"instance-variable": "StartingDoor"
 																	},
 																	"isInverted": true
 																},
 																{
-																	"id": "trigger-once-while-true",
+																	"id": "compare-boolean-eventvar",
 																	"objectClass": "System",
-																	"sid": 715223575041273
-																}
-															],
-															"actions": [
-																{
-																	"callFunction": "makeItemGlimmer",
-																	"sid": 406644232568569,
-																	"parameters": [
-																		"InventoryItems.UID"
-																	]
-																}
-															],
-															"sid": 706735889939801
-														},
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "compare-two-values",
-																	"objectClass": "System",
-																	"sid": 570896239478015,
+																	"sid": 995089080104308,
+																	"disabled": true,
 																	"parameters": {
-																		"first-value": "SelectedItemUID",
-																		"comparison": 0,
-																		"second-value": "InventoryItems.UID"
+																		"variable": "InteractionHintOn"
 																	},
 																	"isInverted": true
 																}
@@ -1520,23 +1233,283 @@
 																{
 																	"id": "set-eventvar-value",
 																	"objectClass": "System",
-																	"sid": 559640400735503,
+																	"sid": 268599551085552,
 																	"parameters": {
-																		"variable": "SelectedItemUID",
-																		"value": "InventoryItems.UID"
+																		"variable": "detectedAction",
+																		"value": "\"Enter\""
+																	}
+																}
+															],
+															"sid": 658173391834027
+														}
+													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Scene",
+															"sid": 940240005714365,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														}
+													],
+													"actions": [],
+													"sid": 829407826818106,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "Trigger_Scene",
+																	"sid": 161663834134804,
+																	"parameters": {
+																		"object": "Trigger_Player"
 																	}
 																},
 																{
-																	"callFunction": "removeItemGlimmer",
-																	"sid": 922453204726171,
-																	"parameters": [
-																		"InventoryItems.UID"
-																	]
+																	"id": "compare-boolean-eventvar",
+																	"objectClass": "System",
+																	"sid": 188381822664429,
+																	"disabled": true,
+																	"parameters": {
+																		"variable": "InteractionHintOn"
+																	},
+																	"isInverted": true
 																}
 															],
-															"sid": 307532428817216
+															"actions": [
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 979494088269174,
+																	"parameters": {
+																		"variable": "detectedAction",
+																		"value": "\"Look\""
+																	}
+																}
+															],
+															"sid": 181441943470152
 														}
 													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Function",
+															"sid": 967183168301053,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														}
+													],
+													"actions": [],
+													"sid": 545706726509810,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "Trigger_Function",
+																	"sid": 789587977986316,
+																	"parameters": {
+																		"object": "Trigger_Player"
+																	}
+																},
+																{
+																	"id": "compare-boolean-eventvar",
+																	"objectClass": "System",
+																	"sid": 288899716097000,
+																	"disabled": true,
+																	"parameters": {
+																		"variable": "InteractionHintOn"
+																	},
+																	"isInverted": true
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 225072518899005,
+																	"parameters": {
+																		"variable": "detectedAction",
+																		"value": "\"Check\""
+																	}
+																}
+															],
+															"sid": 856954530506157
+														}
+													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-on-layer",
+															"objectClass": "InventoryItems",
+															"sid": 814392202275717,
+															"parameters": {
+																"layer": "\"Inventory\""
+															},
+															"isInverted": true
+														},
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "InventoryItems",
+															"sid": 512305615230703,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														}
+													],
+													"actions": [
+														{
+															"type": "comment",
+															"text": "See if player is next to an item"
+														}
+													],
+													"sid": 199178766349691,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "InventoryItems",
+																	"sid": 812121537266786,
+																	"parameters": {
+																		"object": "Trigger_Player"
+																	}
+																},
+																{
+																	"id": "compare-boolean-eventvar",
+																	"objectClass": "System",
+																	"sid": 654303786005901,
+																	"disabled": true,
+																	"parameters": {
+																		"variable": "InteractionHintOn"
+																	},
+																	"isInverted": true
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 420267080047899,
+																	"parameters": {
+																		"variable": "detectedAction",
+																		"value": "\"Interact\""
+																	}
+																}
+															],
+															"sid": 267146359384315,
+															"children": [
+																{
+																	"eventType": "block",
+																	"conditions": [
+																		{
+																			"id": "compare-two-values",
+																			"objectClass": "System",
+																			"sid": 666919824115369,
+																			"parameters": {
+																				"first-value": "SelectedItemUID",
+																				"comparison": 0,
+																				"second-value": "InventoryItems.UID"
+																			},
+																			"isInverted": true
+																		},
+																		{
+																			"id": "trigger-once-while-true",
+																			"objectClass": "System",
+																			"sid": 955045231500446
+																		}
+																	],
+																	"actions": [
+																		{
+																			"callFunction": "makeItemGlimmer",
+																			"sid": 931740204454314,
+																			"parameters": [
+																				"InventoryItems.UID"
+																			]
+																		}
+																	],
+																	"sid": 502695993882306
+																},
+																{
+																	"eventType": "block",
+																	"conditions": [
+																		{
+																			"id": "compare-two-values",
+																			"objectClass": "System",
+																			"sid": 316676918214833,
+																			"parameters": {
+																				"first-value": "SelectedItemUID",
+																				"comparison": 0,
+																				"second-value": "InventoryItems.UID"
+																			},
+																			"isInverted": true
+																		}
+																	],
+																	"actions": [
+																		{
+																			"id": "set-eventvar-value",
+																			"objectClass": "System",
+																			"sid": 540100020580221,
+																			"parameters": {
+																				"variable": "SelectedItemUID",
+																				"value": "InventoryItems.UID"
+																			}
+																		},
+																		{
+																			"callFunction": "removeItemGlimmer",
+																			"sid": 726689839484481,
+																			"parameters": [
+																				"InventoryItems.UID"
+																			]
+																		}
+																	],
+																	"sid": 257316601661578
+																}
+															]
+														}
+													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [],
+													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 853180860456776,
+															"parameters": {
+																"variable": "CurrentAction",
+																"value": "detectedAction"
+															}
+														},
+														{
+															"callFunction": "displayInteractionHint",
+															"sid": 887102120145720,
+															"parameters": [
+																"CurrentAction"
+															]
+														}
+													],
+													"sid": 881819156121035
 												}
 											]
 										}
@@ -1565,13 +1538,6 @@
 										}
 									],
 									"actions": [
-										{
-											"callFunction": "displayInteractionHint",
-											"sid": 916866514423260,
-											"parameters": [
-												"\"None\""
-											]
-										},
 										{
 											"id": "set-eventvar-value",
 											"objectClass": "System",
@@ -1799,6 +1765,11 @@
 															"sid": 436301914291281
 														},
 														{
+															"id": "destroy",
+															"objectClass": "transArc",
+															"sid": 430726329107047
+														},
+														{
 															"id": "set-boolean-eventvar",
 															"objectClass": "System",
 															"sid": 897858750541295,
@@ -1835,150 +1806,11 @@
 													],
 													"actions": [
 														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 980601680923937,
-															"parameters": {
-																"variable": "InteractionHintOn",
-																"value": "true"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 208108766724834,
-															"parameters": {
-																"object-to-create": "transArc",
-																"layer": "\"HUD_UI\"",
-																"x": "385",
-																"y": "35",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "rotate-clockwise",
-															"objectClass": "transArc",
-															"sid": 848125199301833,
-															"parameters": {
-																"degrees": "180"
-															}
-														},
-														{
-															"id": "set-size",
-															"objectClass": "transArc",
-															"sid": 815998780609172,
-															"parameters": {
-																"width": "70",
-																"height": "70"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 895504914965088,
-															"disabled": true,
-															"parameters": {
-																"object-to-create": "obj_TriggerFrame",
-																"layer": "\"HUD_UI\"",
-																"x": "0",
-																"y": "39",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-scale",
-															"objectClass": "obj_TriggerFrame",
-															"sid": 415772950711691,
-															"disabled": true,
-															"parameters": {
-																"scale": ".7"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 491966275127844,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "390",
-																"y": "10",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 618962654890126,
-															"parameters": {
-																"text": "lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-font-color",
-															"objectClass": "obj_Text_A",
-															"sid": 787174722291333,
-															"parameters": {
-																"color": "rgbEx255(31, 107, 7)"
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 355422399870550,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 906784359851238,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 938307248629629,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "390",
-																"y": "11",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 434224436221732,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 704714043735363,
-															"parameters": {
-																"text": "\"[icon=Pointer][icon=Spc] \"&lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 498926194181308,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
+															"callFunction": "showInteractionHint",
+															"sid": 188149787068398,
+															"parameters": [
+																"Action"
+															]
 														}
 													],
 													"sid": 556089945849154
@@ -2063,6 +1895,11 @@
 														},
 														{
 															"id": "destroy",
+															"objectClass": "transArc",
+															"sid": 220540457174270
+														},
+														{
+															"id": "destroy",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 110706868650260
 														}
@@ -2110,178 +1947,11 @@
 															],
 															"actions": [
 																{
-																	"id": "set-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 474330253178904,
-																	"parameters": {
-																		"variable": "InteractionHintOn",
-																		"value": "true"
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 470496154154389,
-																	"parameters": {
-																		"object-to-create": "transArc",
-																		"layer": "\"HUD_UI\"",
-																		"x": "385",
-																		"y": "35",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "rotate-clockwise",
-																	"objectClass": "transArc",
-																	"sid": 720076657090173,
-																	"parameters": {
-																		"degrees": "180"
-																	}
-																},
-																{
-																	"id": "set-size",
-																	"objectClass": "transArc",
-																	"sid": 130159733593542,
-																	"parameters": {
-																		"width": "70",
-																		"height": "70"
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 530374956941878,
-																	"disabled": true,
-																	"parameters": {
-																		"object-to-create": "obj_TriggerFrame",
-																		"layer": "\"HUD_UI\"",
-																		"x": "-12",
-																		"y": "39",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "set-scale",
-																	"objectClass": "obj_TriggerFrame",
-																	"sid": 993488307068276,
-																	"disabled": true,
-																	"parameters": {
-																		"scale": ".7"
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 134891209017646,
-																	"disabled": true,
-																	"parameters": {
-																		"object-to-create": "obj_Text_A",
-																		"layer": "\"HUD_UI\"",
-																		"x": "34",
-																		"y": "38",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 217940567141682,
-																	"parameters": {
-																		"object-to-create": "obj_Text_A",
-																		"layer": "\"HUD_UI\"",
-																		"x": "390",
-																		"y": "10",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "set-text",
-																	"objectClass": "obj_Text_A",
-																	"sid": 907654132101141,
-																	"parameters": {
-																		"text": "lowercase(Action)"
-																	}
-																},
-																{
-																	"id": "set-font-color",
-																	"objectClass": "obj_Text_A",
-																	"sid": 839456414010050,
-																	"parameters": {
-																		"color": "rgbEx255(31, 107, 7)"
-																	}
-																},
-																{
-																	"id": "set-font-size",
-																	"objectClass": "obj_Text_A",
-																	"sid": 348328462727137,
-																	"parameters": {
-																		"size-pt": "10"
-																	}
-																},
-																{
-																	"id": "set-instvar-value",
-																	"objectClass": "obj_Text_A",
-																	"sid": 446793832384454,
-																	"parameters": {
-																		"instance-variable": "field",
-																		"value": "\"HUD space\""
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 570656720174617,
-																	"disabled": true,
-																	"parameters": {
-																		"object-to-create": "obj_Text_A",
-																		"layer": "\"HUD_UI\"",
-																		"x": "4",
-																		"y": "39",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 949775810191234,
-																	"parameters": {
-																		"object-to-create": "obj_Text_A",
-																		"layer": "\"HUD_UI\"",
-																		"x": "390",
-																		"y": "11",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "set-font-size",
-																	"objectClass": "obj_Text_A",
-																	"sid": 475938142831366,
-																	"parameters": {
-																		"size-pt": "10"
-																	}
-																},
-																{
-																	"id": "set-text",
-																	"objectClass": "obj_Text_A",
-																	"sid": 285193922711175,
-																	"parameters": {
-																		"text": "\"[icon=Pointer][icon=Spc] \"&lowercase(Action)"
-																	}
-																},
-																{
-																	"id": "set-instvar-value",
-																	"objectClass": "obj_Text_A",
-																	"sid": 476287284482628,
-																	"parameters": {
-																		"instance-variable": "field",
-																		"value": "\"HUD space\""
-																	}
+																	"callFunction": "showInteractionHint",
+																	"sid": 723750028154599,
+																	"parameters": [
+																		"Action"
+																	]
 																}
 															],
 															"sid": 345531170653059,
@@ -2341,12 +2011,6 @@
 															}
 														},
 														{
-															"id": "trigger-once-while-true",
-															"objectClass": "System",
-															"sid": 526020236672799,
-															"disabled": true
-														},
-														{
 															"id": "compare-instance-variable",
 															"objectClass": "obj_Text_A",
 															"sid": 402223720200127,
@@ -2367,6 +2031,11 @@
 															"id": "destroy",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 530126988119120
+														},
+														{
+															"id": "destroy",
+															"objectClass": "transArc",
+															"sid": 758284665832778
 														},
 														{
 															"id": "set-boolean-eventvar",
@@ -2391,235 +2060,15 @@
 																"variable": "InteractionHintOn"
 															},
 															"isInverted": true
-														},
-														{
-															"id": "trigger-once-while-true",
-															"objectClass": "System",
-															"sid": 925558732727508,
-															"disabled": true
 														}
 													],
 													"actions": [
 														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 403152934428050,
-															"parameters": {
-																"variable": "InteractionHintOn",
-																"value": "true"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 483670492865089,
-															"parameters": {
-																"object-to-create": "transArc",
-																"layer": "\"HUD_UI\"",
-																"x": "385",
-																"y": "35",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "rotate-clockwise",
-															"objectClass": "transArc",
-															"sid": 620113216697941,
-															"parameters": {
-																"degrees": "180"
-															}
-														},
-														{
-															"id": "set-size",
-															"objectClass": "transArc",
-															"sid": 292759391033162,
-															"parameters": {
-																"width": "70",
-																"height": "70"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 512697138089905,
-															"disabled": true,
-															"parameters": {
-																"object-to-create": "obj_TriggerFrame",
-																"layer": "\"HUD_UI\"",
-																"x": "-4",
-																"y": "39",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-scale",
-															"objectClass": "obj_TriggerFrame",
-															"sid": 747016003280541,
-															"disabled": true,
-															"parameters": {
-																"scale": ".7"
-															}
-														},
-														{
-															"id": "set-width",
-															"objectClass": "obj_TriggerFrame",
-															"sid": 595262799660834,
-															"disabled": true,
-															"parameters": {
-																"width": "93"
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 645235322054520,
-															"disabled": true,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "33",
-																"y": "38",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 230677770783274,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "358",
-																"y": "6",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 892454872198821,
-															"parameters": {
-																"text": "lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-font-color",
-															"objectClass": "obj_Text_A",
-															"sid": 992783867655477,
-															"parameters": {
-																"color": "rgbEx255(31, 107, 7)"
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 581461500219011,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 626566525674959,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 598736483692916,
-															"disabled": true,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "3",
-																"y": "39",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 658188358081313,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "358",
-																"y": "7",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 590312744773991,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 460741613819083,
-															"parameters": {
-																"text": "lowercase(Action)"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 300073742752728,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
-														},
-														{
-															"id": "create-object",
-															"objectClass": "System",
-															"sid": 191347350396930,
-															"parameters": {
-																"object-to-create": "obj_Text_A",
-																"layer": "\"HUD_UI\"",
-																"x": "364",
-																"y": "14",
-																"create-hierarchy": false,
-																"template-name": "\"\""
-															}
-														},
-														{
-															"id": "set-font-size",
-															"objectClass": "obj_Text_A",
-															"sid": 363548283846052,
-															"parameters": {
-																"size-pt": "10"
-															}
-														},
-														{
-															"id": "set-text",
-															"objectClass": "obj_Text_A",
-															"sid": 973606164334568,
-															"parameters": {
-																"text": "\"[icon=Pointer][icon=Spc] \""
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "obj_Text_A",
-															"sid": 253570923097946,
-															"parameters": {
-																"instance-variable": "field",
-																"value": "\"HUD space\""
-															}
+															"callFunction": "showInteractionHint",
+															"sid": 741047272910174,
+															"parameters": [
+																"Action"
+															]
 														}
 													],
 													"sid": 874604448357757
@@ -2715,6 +2164,189 @@
 											]
 										}
 									]
+								},
+								{
+									"functionName": "showInteractionHint",
+									"functionDescription": "",
+									"functionCategory": "HUD",
+									"functionReturnType": "none",
+									"functionCopyPicked": false,
+									"functionIsAsync": false,
+									"functionParameters": [
+										{
+											"name": "Action",
+											"type": "string",
+											"initialValue": "",
+											"comment": "",
+											"sid": 339551948688290
+										}
+									],
+									"eventType": "function-block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 213588702019822,
+											"parameters": {
+												"variable": "InteractionHintOn",
+												"value": "true"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 192733045962150,
+											"parameters": {
+												"object-to-create": "transArc",
+												"layer": "\"HUD_UI\"",
+												"x": "385",
+												"y": "15",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "rotate-clockwise",
+											"objectClass": "transArc",
+											"sid": 990753092738505,
+											"parameters": {
+												"degrees": "180"
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "transArc",
+											"sid": 247384757774829,
+											"parameters": {
+												"width": "70",
+												"height": "70"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 624335611303691,
+											"parameters": {
+												"object-to-create": "obj_Text_A",
+												"layer": "\"HUD_UI\"",
+												"x": "360",
+												"y": "4",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_Text_A",
+											"sid": 279591883201194,
+											"parameters": {
+												"text": "lowercase(Action)"
+											}
+										},
+										{
+											"id": "set-font-color",
+											"objectClass": "obj_Text_A",
+											"sid": 430675832915280,
+											"parameters": {
+												"color": "rgbEx255(31, 107, 7)"
+											}
+										},
+										{
+											"id": "set-font-size",
+											"objectClass": "obj_Text_A",
+											"sid": 438993076584901,
+											"parameters": {
+												"size-pt": "12"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_Text_A",
+											"sid": 878378103193695,
+											"parameters": {
+												"instance-variable": "field",
+												"value": "\"HUD space\""
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 228097987956958,
+											"parameters": {
+												"object-to-create": "obj_Text_A",
+												"layer": "\"HUD_UI\"",
+												"x": "360",
+												"y": "5",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-font-size",
+											"objectClass": "obj_Text_A",
+											"sid": 465537757620530,
+											"parameters": {
+												"size-pt": "12"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_Text_A",
+											"sid": 583187822405528,
+											"parameters": {
+												"text": "lowercase(Action)"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_Text_A",
+											"sid": 317047036024797,
+											"parameters": {
+												"instance-variable": "field",
+												"value": "\"HUD space\""
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 376202534516486,
+											"parameters": {
+												"object-to-create": "obj_Text_A",
+												"layer": "\"HUD_UI\"",
+												"x": "366",
+												"y": "22",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-font-size",
+											"objectClass": "obj_Text_A",
+											"sid": 274281879344740,
+											"parameters": {
+												"size-pt": "12"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "obj_Text_A",
+											"sid": 718062175026075,
+											"parameters": {
+												"text": "\"[icon=Pointer][icon=Spc] \""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "obj_Text_A",
+											"sid": 939070632952639,
+											"parameters": {
+												"instance-variable": "field",
+												"value": "\"HUD space\""
+											}
+										}
+									],
+									"sid": 747608495821784
 								}
 							],
 							"sid": 367258414424653
