@@ -4316,37 +4316,24 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 878393627319368,
+									"sid": 516007472581482,
 									"parameters": {
-										"object-to-create": "DPad_Arrow",
+										"object-to-create": "transArc",
 										"layer": "\"HUD_UI\"",
-										"x": "40",
-										"y": "196",
+										"x": "47",
+										"y": "193",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
 								},
 								{
 									"id": "set-size",
-									"objectClass": "DPad_Arrow",
-									"sid": 100638480830659,
+									"objectClass": "transArc",
+									"sid": 803490633215658,
 									"parameters": {
-										"width": "86",
-										"height": "86"
+										"width": "95",
+										"height": "95"
 									}
-								},
-								{
-									"id": "set-animation-frame",
-									"objectClass": "DPad_Arrow",
-									"sid": 352291054459843,
-									"parameters": {
-										"frame-number": "\"Empty\""
-									}
-								},
-								{
-									"id": "stop-animation",
-									"objectClass": "DPad_Arrow",
-									"sid": 300151455916952
 								},
 								{
 									"id": "create-object",
@@ -5606,6 +5593,7 @@
 					]
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5657,6 +5645,7 @@
 					"sid": 228975982211612
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -7745,6 +7734,15 @@
 										{
 											"eventType": "block",
 											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 227975447465357,
+													"parameters": {
+														"object": "transArc"
+													},
+													"isInverted": true
+												},
 												{
 													"id": "is-touching-object",
 													"objectClass": "Touch",

@@ -461,7 +461,9 @@
 							"obj_Text_I",
 							"obj_Text_A",
 							"obj_HeartsFrame",
-							"obj_TriggerFrame"
+							"obj_TriggerFrame",
+							"transCircle",
+							"transArc"
 						],
 						"subfolders": [],
 						"name": "Dialogue"

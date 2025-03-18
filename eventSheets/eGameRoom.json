@@ -1073,6 +1073,16 @@
 												"variable": "InDialogue"
 											},
 											"isInverted": true
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 960305607705833,
+											"disabled": true,
+											"parameters": {
+												"variable": "InteractionHintOn"
+											},
+											"isInverted": true
 										}
 									],
 									"actions": [
@@ -1091,6 +1101,15 @@
 										{
 											"eventType": "block",
 											"conditions": [
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 177690171219278,
+													"parameters": {
+														"variable": "InteractionHintOn"
+													},
+													"isInverted": true
+												},
 												{
 													"id": "pick-nearestfurthest",
 													"objectClass": "CharactersTriggers",
@@ -1196,6 +1215,15 @@
 																"instance-variable": "StartingDoor"
 															},
 															"isInverted": true
+														},
+														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 925826170095403,
+															"parameters": {
+																"variable": "InteractionHintOn"
+															},
+															"isInverted": true
 														}
 													],
 													"actions": [
@@ -1257,6 +1285,15 @@
 															"parameters": {
 																"object": "Trigger_Player"
 															}
+														},
+														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 601948924315984,
+															"parameters": {
+																"variable": "InteractionHintOn"
+															},
+															"isInverted": true
 														}
 													],
 													"actions": [
@@ -1318,6 +1355,15 @@
 															"parameters": {
 																"object": "Trigger_Player"
 															}
+														},
+														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 563333703900341,
+															"parameters": {
+																"variable": "InteractionHintOn"
+															},
+															"isInverted": true
 														}
 													],
 													"actions": [
@@ -1393,6 +1439,15 @@
 															"parameters": {
 																"object": "Trigger_Player"
 															}
+														},
+														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 412404312508731,
+															"parameters": {
+																"variable": "InteractionHintOn"
+															},
+															"isInverted": true
 														}
 													],
 													"actions": [
@@ -1484,42 +1539,50 @@
 													]
 												}
 											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 314838027367581,
-													"parameters": {
-														"variable": "CurrentAction",
-														"comparison": 0,
-														"value": "\"None\""
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "displayInteractionHint",
-													"sid": 820229636837902,
-													"parameters": [
-														"\"None\""
-													]
-												},
-												{
-													"id": "set-eventvar-value",
-													"objectClass": "System",
-													"sid": 909691446100239,
-													"parameters": {
-														"variable": "SelectedItemUID",
-														"value": "-1"
-													}
-												}
-											],
-											"sid": 431084972499300
 										}
 									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 762320935200029,
+											"parameters": {
+												"variable": "CurrentAction",
+												"comparison": 0,
+												"value": "\"None\""
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 324909291637845,
+											"parameters": {
+												"variable": "InteractionHintOn"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "displayInteractionHint",
+											"sid": 916866514423260,
+											"parameters": [
+												"\"None\""
+											]
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 898792573939196,
+											"parameters": {
+												"variable": "SelectedItemUID",
+												"value": "-1"
+											}
+										}
+									],
+									"sid": 367023758027714
 								},
 								{
 									"functionName": "makeItemGlimmer",
@@ -1783,7 +1846,38 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
+															"sid": 208108766724834,
+															"parameters": {
+																"object-to-create": "transArc",
+																"layer": "\"HUD_UI\"",
+																"x": "385",
+																"y": "35",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "rotate-clockwise",
+															"objectClass": "transArc",
+															"sid": 848125199301833,
+															"parameters": {
+																"degrees": "180"
+															}
+														},
+														{
+															"id": "set-size",
+															"objectClass": "transArc",
+															"sid": 815998780609172,
+															"parameters": {
+																"width": "70",
+																"height": "70"
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
 															"sid": 895504914965088,
+															"disabled": true,
 															"parameters": {
 																"object-to-create": "obj_TriggerFrame",
 																"layer": "\"HUD_UI\"",
@@ -1797,6 +1891,7 @@
 															"id": "set-scale",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 415772950711691,
+															"disabled": true,
 															"parameters": {
 																"scale": ".7"
 															}
@@ -1804,12 +1899,12 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
-															"sid": 234204172158270,
+															"sid": 491966275127844,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
-																"x": "34",
-																"y": "38",
+																"x": "390",
+																"y": "10",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -1850,12 +1945,12 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
-															"sid": 493520660945259,
+															"sid": 938307248629629,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
-																"x": "4",
-																"y": "39",
+																"x": "390",
+																"y": "11",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -2026,7 +2121,38 @@
 																{
 																	"id": "create-object",
 																	"objectClass": "System",
+																	"sid": 470496154154389,
+																	"parameters": {
+																		"object-to-create": "transArc",
+																		"layer": "\"HUD_UI\"",
+																		"x": "385",
+																		"y": "35",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "rotate-clockwise",
+																	"objectClass": "transArc",
+																	"sid": 720076657090173,
+																	"parameters": {
+																		"degrees": "180"
+																	}
+																},
+																{
+																	"id": "set-size",
+																	"objectClass": "transArc",
+																	"sid": 130159733593542,
+																	"parameters": {
+																		"width": "70",
+																		"height": "70"
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
 																	"sid": 530374956941878,
+																	"disabled": true,
 																	"parameters": {
 																		"object-to-create": "obj_TriggerFrame",
 																		"layer": "\"HUD_UI\"",
@@ -2040,6 +2166,7 @@
 																	"id": "set-scale",
 																	"objectClass": "obj_TriggerFrame",
 																	"sid": 993488307068276,
+																	"disabled": true,
 																	"parameters": {
 																		"scale": ".7"
 																	}
@@ -2048,11 +2175,25 @@
 																	"id": "create-object",
 																	"objectClass": "System",
 																	"sid": 134891209017646,
+																	"disabled": true,
 																	"parameters": {
 																		"object-to-create": "obj_Text_A",
 																		"layer": "\"HUD_UI\"",
 																		"x": "34",
 																		"y": "38",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
+																	"sid": 217940567141682,
+																	"parameters": {
+																		"object-to-create": "obj_Text_A",
+																		"layer": "\"HUD_UI\"",
+																		"x": "390",
+																		"y": "10",
 																		"create-hierarchy": false,
 																		"template-name": "\"\""
 																	}
@@ -2094,11 +2235,25 @@
 																	"id": "create-object",
 																	"objectClass": "System",
 																	"sid": 570656720174617,
+																	"disabled": true,
 																	"parameters": {
 																		"object-to-create": "obj_Text_A",
 																		"layer": "\"HUD_UI\"",
 																		"x": "4",
 																		"y": "39",
+																		"create-hierarchy": false,
+																		"template-name": "\"\""
+																	}
+																},
+																{
+																	"id": "create-object",
+																	"objectClass": "System",
+																	"sid": 949775810191234,
+																	"parameters": {
+																		"object-to-create": "obj_Text_A",
+																		"layer": "\"HUD_UI\"",
+																		"x": "390",
+																		"y": "11",
 																		"create-hierarchy": false,
 																		"template-name": "\"\""
 																	}
@@ -2186,6 +2341,12 @@
 															}
 														},
 														{
+															"id": "trigger-once-while-true",
+															"objectClass": "System",
+															"sid": 526020236672799,
+															"disabled": true
+														},
+														{
 															"id": "compare-instance-variable",
 															"objectClass": "obj_Text_A",
 															"sid": 402223720200127,
@@ -2230,6 +2391,12 @@
 																"variable": "InteractionHintOn"
 															},
 															"isInverted": true
+														},
+														{
+															"id": "trigger-once-while-true",
+															"objectClass": "System",
+															"sid": 925558732727508,
+															"disabled": true
 														}
 													],
 													"actions": [
@@ -2245,7 +2412,38 @@
 														{
 															"id": "create-object",
 															"objectClass": "System",
+															"sid": 483670492865089,
+															"parameters": {
+																"object-to-create": "transArc",
+																"layer": "\"HUD_UI\"",
+																"x": "385",
+																"y": "35",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "rotate-clockwise",
+															"objectClass": "transArc",
+															"sid": 620113216697941,
+															"parameters": {
+																"degrees": "180"
+															}
+														},
+														{
+															"id": "set-size",
+															"objectClass": "transArc",
+															"sid": 292759391033162,
+															"parameters": {
+																"width": "70",
+																"height": "70"
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
 															"sid": 512697138089905,
+															"disabled": true,
 															"parameters": {
 																"object-to-create": "obj_TriggerFrame",
 																"layer": "\"HUD_UI\"",
@@ -2259,6 +2457,7 @@
 															"id": "set-scale",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 747016003280541,
+															"disabled": true,
 															"parameters": {
 																"scale": ".7"
 															}
@@ -2267,6 +2466,7 @@
 															"id": "set-width",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 595262799660834,
+															"disabled": true,
 															"parameters": {
 																"width": "93"
 															}
@@ -2275,11 +2475,25 @@
 															"id": "create-object",
 															"objectClass": "System",
 															"sid": 645235322054520,
+															"disabled": true,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
 																"x": "33",
 																"y": "38",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 230677770783274,
+															"parameters": {
+																"object-to-create": "obj_Text_A",
+																"layer": "\"HUD_UI\"",
+																"x": "358",
+																"y": "6",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -2321,11 +2535,63 @@
 															"id": "create-object",
 															"objectClass": "System",
 															"sid": 598736483692916,
+															"disabled": true,
 															"parameters": {
 																"object-to-create": "obj_Text_A",
 																"layer": "\"HUD_UI\"",
 																"x": "3",
 																"y": "39",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 658188358081313,
+															"parameters": {
+																"object-to-create": "obj_Text_A",
+																"layer": "\"HUD_UI\"",
+																"x": "358",
+																"y": "7",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-font-size",
+															"objectClass": "obj_Text_A",
+															"sid": 590312744773991,
+															"parameters": {
+																"size-pt": "10"
+															}
+														},
+														{
+															"id": "set-text",
+															"objectClass": "obj_Text_A",
+															"sid": 460741613819083,
+															"parameters": {
+																"text": "lowercase(Action)"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "obj_Text_A",
+															"sid": 300073742752728,
+															"parameters": {
+																"instance-variable": "field",
+																"value": "\"HUD space\""
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 191347350396930,
+															"parameters": {
+																"object-to-create": "obj_Text_A",
+																"layer": "\"HUD_UI\"",
+																"x": "364",
+																"y": "14",
 																"create-hierarchy": false,
 																"template-name": "\"\""
 															}
@@ -2341,9 +2607,9 @@
 														{
 															"id": "set-text",
 															"objectClass": "obj_Text_A",
-															"sid": 594135892654681,
+															"sid": 973606164334568,
 															"parameters": {
-																"text": "\"[icon=Pointer][icon=Spc] \"&lowercase(Action)"
+																"text": "\"[icon=Pointer][icon=Spc] \""
 															}
 														},
 														{
@@ -2384,6 +2650,15 @@
 														"variable": "InteractionHintOn",
 														"value": "false"
 													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 974004102317868,
+													"parameters": {
+														"variable": "CurrentAction",
+														"value": "\"None\""
+													}
 												}
 											],
 											"sid": 491883885940597,
@@ -2400,6 +2675,15 @@
 																"comparison": 0,
 																"value": "\"HUD space\""
 															}
+														},
+														{
+															"id": "is-between-angles",
+															"objectClass": "transArc",
+															"sid": 142848430519304,
+															"parameters": {
+																"first-angle": "170",
+																"second-angle": "190"
+															}
 														}
 													],
 													"actions": [
@@ -2412,6 +2696,11 @@
 															"id": "destroy",
 															"objectClass": "obj_TriggerFrame",
 															"sid": 594329055062236
+														},
+														{
+															"id": "destroy",
+															"objectClass": "transArc",
+															"sid": 761370520645354
 														},
 														{
 															"callFunction": "removeItemGlimmer",
