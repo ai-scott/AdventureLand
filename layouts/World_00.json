@@ -1629,60 +1629,6 @@
 						"angle": 0,
 						"zElevation": 0
 					}
-				},
-				{
-					"type": "Particle",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Sparkle",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 136,
-					"sid": 359370298789216,
-					"tags": "SeaMonsterKey",
-					"instanceVariables": {
-						"ID": -1
-					},
-					"behaviors": {
-						"Bullet": {
-							"properties": {
-								"speed": 0,
-								"acceleration": 0,
-								"gravity": 0,
-								"bounce-off-solids": false,
-								"set-angle": false,
-								"step": false,
-								"enabled": false
-							}
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 359370298789216,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 702,
-						"y": 106,
-						"width": 9,
-						"height": 9,
-						"originX": 0.4444444444444444,
-						"originY": 0.4444444444444444,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0.7853981633974483,
-						"zElevation": 0
-					}
 				}
 			],
 			"sid": 704230949795104,
@@ -1856,6 +1802,58 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "Particle",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Sparkle",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 102,
+					"sid": 576652842679605,
+					"tags": "SeaMonsterKey",
+					"instanceVariables": {},
+					"behaviors": {
+						"Bullet": {
+							"properties": {
+								"speed": 0,
+								"acceleration": 0,
+								"gravity": 0,
+								"bounce-off-solids": false,
+								"set-angle": false,
+								"step": false,
+								"enabled": false
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 576652842679605,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 702,
+						"y": 105,
+						"width": 9,
+						"height": 9,
+						"originX": 0.4444444444444444,
+						"originY": 0.4444444444444444,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0.7853981633974483,
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 799977037552470,
@@ -1879,7 +1877,7 @@
 			"parallaxX": 1,
 			"parallaxY": 1,
 			"scaleRate": 1,
-			"forceOwnTexture": false,
+			"forceOwnTexture": true,
 			"renderingMode": "3d",
 			"drawOrder": "z-order",
 			"useRenderCells": false,

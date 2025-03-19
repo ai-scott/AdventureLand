@@ -38,7 +38,7 @@
 						"imageSpriteId": 5138512,
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "Off"
+						"tag": "off"
 					},
 					{
 						"width": 32,
@@ -52,7 +52,7 @@
 						"imageSpriteId": 6498758,
 						"useCollisionPoly": true,
 						"duration": 1,
-						"tag": "Highlight"
+						"tag": "on"
 					},
 					{
 						"width": 32,

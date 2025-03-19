@@ -1757,7 +1757,6 @@
 									"sid": 469151688730498
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -3112,7 +3111,6 @@
 					"sid": 997825667127366
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -3162,7 +3160,6 @@
 							"sid": 238539580128191
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -3210,6 +3207,48 @@
 									"eventType": "block",
 									"conditions": [
 										{
+											"id": "compare-instance-variable",
+											"objectClass": "Btn_Arrow",
+											"sid": 921402006798353,
+											"parameters": {
+												"instance-variable": "direction",
+												"comparison": 0,
+												"value": "\"prev\""
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Btn_Arrow",
+											"sid": 493399942775861,
+											"parameters": {
+												"instance-variable": "direction",
+												"comparison": 0,
+												"value": "\"next\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Btn_Arrow",
+											"sid": 528640266285748,
+											"parameters": {
+												"frame-number": "\"off\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Btn_Arrow",
+											"sid": 576171828387482
+										}
+									],
+									"sid": 109611715766033,
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
 											"id": "compare-eventvar",
 											"objectClass": "System",
 											"sid": 807009733856418,
@@ -3224,7 +3263,6 @@
 									"sid": 652669082512465,
 									"children": [
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -3421,6 +3459,108 @@
 												}
 											],
 											"sid": 555082171441172
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 172095262509197,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 639763409831679,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 595677855130689,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 453646984605245,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 319156991069354
+												}
+											],
+											"sid": 116748361769074
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 357113916567787,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "1"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 967656996804192,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 545437966893231,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"next\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 910482825527819,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 648777941965701
+												}
+											],
+											"sid": 971644687216127
 										}
 									]
 								},
@@ -3546,6 +3686,16 @@
 														"comparison": 0,
 														"second-value": "\"hair\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 822412783055054,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"next\""
+													}
 												}
 											],
 											"actions": [
@@ -3557,6 +3707,19 @@
 														"variable": "CurrentItemSlot",
 														"value": "1"
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 843333962213328,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 154092364757910
 												}
 											],
 											"sid": 107721939130865
@@ -3592,6 +3755,16 @@
 														"comparison": 0,
 														"second-value": "\"equip\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 157788351000377,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
 												}
 											],
 											"actions": [
@@ -3612,6 +3785,19 @@
 														"variable": "CurrentItemSlot",
 														"value": "0"
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 374988307179443,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 349520296047335
 												}
 											],
 											"sid": 425296433390244
@@ -3638,6 +3824,16 @@
 														"comparison": 0,
 														"second-value": "\"equip\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 759745167979119,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
 												}
 											],
 											"actions": [
@@ -3658,6 +3854,19 @@
 														"variable": "CurrentItemSlot",
 														"value": "0"
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 866963469088657,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 560404486777615
 												}
 											],
 											"sid": 400705854639126
@@ -3740,6 +3949,16 @@
 														"comparison": 0,
 														"second-value": "\"equip\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 211163232833068,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
 												}
 											],
 											"actions": [
@@ -3760,6 +3979,19 @@
 														"variable": "CurrentItemSlot",
 														"value": "0"
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 965338318591949,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 109746928104967
 												}
 											],
 											"sid": 107200234602703
@@ -3915,6 +4147,108 @@
 												}
 											],
 											"sid": 127656081165745
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 280219696593501,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 914575122449444,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 187079675267807,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 215691720234539,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 370694075692475
+												}
+											],
+											"sid": 223072285060486
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 177529320321637,
+													"parameters": {
+														"first-value": "CurrentItemSlot",
+														"comparison": 0,
+														"second-value": "1"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 725670986902066,
+													"parameters": {
+														"first-value": "CurrentInvWindow",
+														"comparison": 0,
+														"second-value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 503673808120687,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"next\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 861128638950165,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 888710140427815
+												}
+											],
+											"sid": 901953118294476
 										}
 									]
 								},
@@ -4019,6 +4353,7 @@
 											"sid": 168804205214593
 										},
 										{
+											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -4040,6 +4375,16 @@
 														"comparison": 0,
 														"second-value": "\"hair\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 201275197012108,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"prev\""
+													}
 												}
 											],
 											"actions": [
@@ -4051,6 +4396,19 @@
 														"variable": "CurrentItemSlot",
 														"value": "1"
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 704518606158091,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 714886800230773
 												}
 											],
 											"sid": 989688676465760
@@ -4075,6 +4433,16 @@
 														"comparison": 0,
 														"second-value": "\"main\""
 													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Btn_Arrow",
+													"sid": 437343115516945,
+													"parameters": {
+														"instance-variable": "direction",
+														"comparison": 0,
+														"value": "\"next\""
+													}
 												}
 											],
 											"actions": [
@@ -4095,6 +4463,19 @@
 														"variable": "CurrentInvWindow",
 														"value": "\"hair\""
 													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "Btn_Arrow",
+													"sid": 556589864140463,
+													"parameters": {
+														"frame-number": "\"on\""
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "Btn_Arrow",
+													"sid": 791248405280991
 												}
 											],
 											"sid": 812119238285214
@@ -4314,6 +4695,16 @@
 				{
 					"eventType": "block",
 					"conditions": [
+						{
+							"id": "compare-eventvar",
+							"objectClass": "System",
+							"sid": 789959056443309,
+							"parameters": {
+								"variable": "CurrentInvWindow",
+								"comparison": 1,
+								"value": "\"hair\""
+							}
+						},
 						{
 							"id": "cursor-is-over-object",
 							"objectClass": "Mouse",
@@ -6318,6 +6709,7 @@
 											"sid": 738398783677823
 										},
 										{
+											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -6684,6 +7076,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -7332,6 +7725,7 @@
 							"sid": 846457891862036,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [

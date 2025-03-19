@@ -239,6 +239,13 @@
 		},
 		{
 			"type": "effect",
+			"id": "lighten",
+			"name": "Lighten",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "effect",
 			"id": "overlay",
 			"name": "Overlay",
 			"author": "Scirra",
@@ -489,7 +496,8 @@
 					"Lava_Glow",
 					"Lava_Warp",
 					"Light",
-					"Particle"
+					"Particle",
+					"Glimmer"
 				],
 				"subfolders": [],
 				"name": "FX"

@@ -5593,7 +5593,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5645,7 +5644,6 @@
 					"sid": 228975982211612
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

@@ -64,7 +64,6 @@
 							"sid": 931816637326904
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -660,7 +659,6 @@
 							"sid": 964660401401353,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -1028,6 +1026,118 @@
 									"eventType": "block",
 									"conditions": [
 										{
+											"id": "for-each-ordered",
+											"objectClass": "System",
+											"sid": 882334506993740,
+											"parameters": {
+												"object": "Particle",
+												"expression": "Particle.y",
+												"order": "ascending"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "move-to-layer",
+											"objectClass": "Particle",
+											"sid": 871992312928473,
+											"parameters": {
+												"layer": "\"Items\""
+											}
+										}
+									],
+									"sid": 561173321146493,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-y",
+													"objectClass": "PlayerSystem",
+													"sid": 988438996971403,
+													"parameters": {
+														"comparison": 4,
+														"y-co-ordinate": "Particle.Y"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "move-to-object",
+													"objectClass": "Particle",
+													"sid": 332434842093648,
+													"parameters": {
+														"where": "behind",
+														"object": "PlayerSystem"
+													}
+												}
+											],
+											"sid": 623222666073354,
+											"isOrBlock": true
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each-ordered",
+											"objectClass": "System",
+											"sid": 959987755793122,
+											"parameters": {
+												"object": "ItemShowcase",
+												"expression": "ItemShowcase.y",
+												"order": "ascending"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "move-to-layer",
+											"objectClass": "ItemShowcase",
+											"sid": 131779837144387,
+											"parameters": {
+												"layer": "\"Items\""
+											}
+										}
+									],
+									"sid": 900111734755648,
+									"disabled": true,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-y",
+													"objectClass": "PlayerSystem",
+													"sid": 136137575805587,
+													"parameters": {
+														"comparison": 4,
+														"y-co-ordinate": "ItemShowcase.Y"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "move-to-object",
+													"objectClass": "ItemShowcase",
+													"sid": 971794714934279,
+													"parameters": {
+														"where": "behind",
+														"object": "PlayerSystem"
+													}
+												}
+											],
+											"sid": 187061155592141,
+											"disabled": true,
+											"isOrBlock": true
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
 											"id": "every-tick",
 											"objectClass": "System",
 											"sid": 281407684637166
@@ -1061,6 +1171,11 @@
 											"parameters": [
 												"\"\""
 											]
+										},
+										{
+											"id": "move-to-top",
+											"objectClass": "Glimmer",
+											"sid": 423830058622034
 										}
 									],
 									"sid": 765619192007108
@@ -1101,16 +1216,6 @@
 														"variable": "InDialogue"
 													},
 													"isInverted": true
-												},
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 398155561128514,
-													"disabled": true,
-													"parameters": {
-														"variable": "InteractionHintOn"
-													},
-													"isInverted": true
 												}
 											],
 											"actions": [
@@ -1126,61 +1231,6 @@
 											],
 											"sid": 241795993700792,
 											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 135437295143802,
-															"disabled": true,
-															"parameters": {
-																"variable": "InteractionHintOn"
-															},
-															"isInverted": true
-														},
-														{
-															"id": "pick-nearestfurthest",
-															"objectClass": "CharactersTriggers",
-															"sid": 442224132893902,
-															"parameters": {
-																"which": "nearest",
-																"x": "Player_Base.X",
-																"y": "Player_Base.Y"
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "CharactersTriggers",
-															"sid": 419820461534886,
-															"parameters": {
-																"instance-variable": "ID",
-																"comparison": 1,
-																"value": "-1"
-															}
-														},
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "CharactersTriggers",
-															"sid": 903821312066723,
-															"parameters": {
-																"object": "Trigger_Player"
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 302945803012230,
-															"parameters": {
-																"variable": "detectedAction",
-																"value": "\"Talk\""
-															}
-														}
-													],
-													"sid": 391344187416755
-												},
 												{
 													"eventType": "block",
 													"conditions": [
@@ -1217,16 +1267,6 @@
 																		"instance-variable": "StartingDoor"
 																	},
 																	"isInverted": true
-																},
-																{
-																	"id": "compare-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 995089080104308,
-																	"disabled": true,
-																	"parameters": {
-																		"variable": "InteractionHintOn"
-																	},
-																	"isInverted": true
 																}
 															],
 															"actions": [
@@ -1241,114 +1281,6 @@
 																}
 															],
 															"sid": 658173391834027
-														}
-													]
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "pick-nearestfurthest",
-															"objectClass": "Trigger_Scene",
-															"sid": 940240005714365,
-															"parameters": {
-																"which": "nearest",
-																"x": "Player_Base.X",
-																"y": "Player_Base.Y"
-															}
-														}
-													],
-													"actions": [],
-													"sid": 829407826818106,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-overlapping-another-object",
-																	"objectClass": "Trigger_Scene",
-																	"sid": 161663834134804,
-																	"parameters": {
-																		"object": "Trigger_Player"
-																	}
-																},
-																{
-																	"id": "compare-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 188381822664429,
-																	"disabled": true,
-																	"parameters": {
-																		"variable": "InteractionHintOn"
-																	},
-																	"isInverted": true
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-eventvar-value",
-																	"objectClass": "System",
-																	"sid": 979494088269174,
-																	"parameters": {
-																		"variable": "detectedAction",
-																		"value": "\"Look\""
-																	}
-																}
-															],
-															"sid": 181441943470152
-														}
-													]
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "pick-nearestfurthest",
-															"objectClass": "Trigger_Function",
-															"sid": 967183168301053,
-															"parameters": {
-																"which": "nearest",
-																"x": "Player_Base.X",
-																"y": "Player_Base.Y"
-															}
-														}
-													],
-													"actions": [],
-													"sid": 545706726509810,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-overlapping-another-object",
-																	"objectClass": "Trigger_Function",
-																	"sid": 789587977986316,
-																	"parameters": {
-																		"object": "Trigger_Player"
-																	}
-																},
-																{
-																	"id": "compare-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 288899716097000,
-																	"disabled": true,
-																	"parameters": {
-																		"variable": "InteractionHintOn"
-																	},
-																	"isInverted": true
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-eventvar-value",
-																	"objectClass": "System",
-																	"sid": 225072518899005,
-																	"parameters": {
-																		"variable": "detectedAction",
-																		"value": "\"Check\""
-																	}
-																}
-															],
-															"sid": 856954530506157
 														}
 													]
 												},
@@ -1393,16 +1325,6 @@
 																	"parameters": {
 																		"object": "Trigger_Player"
 																	}
-																},
-																{
-																	"id": "compare-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 654303786005901,
-																	"disabled": true,
-																	"parameters": {
-																		"variable": "InteractionHintOn"
-																	},
-																	"isInverted": true
 																}
 															],
 															"actions": [
@@ -1490,6 +1412,150 @@
 												},
 												{
 													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Scene",
+															"sid": 591464540432301,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														}
+													],
+													"actions": [],
+													"sid": 535670119306951,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "Trigger_Scene",
+																	"sid": 637134602681306,
+																	"parameters": {
+																		"object": "Trigger_Player"
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 792624439909351,
+																	"parameters": {
+																		"variable": "detectedAction",
+																		"value": "\"Look\""
+																	}
+																}
+															],
+															"sid": 666134203224726
+														}
+													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Function",
+															"sid": 129890746535876,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														}
+													],
+													"actions": [],
+													"sid": 332376103563409,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-overlapping-another-object",
+																	"objectClass": "Trigger_Function",
+																	"sid": 868454700560746,
+																	"parameters": {
+																		"object": "Trigger_Player"
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 537170576510250,
+																	"parameters": {
+																		"variable": "detectedAction",
+																		"value": "\"Check\""
+																	}
+																}
+															],
+															"sid": 885658548675882
+														}
+													]
+												},
+												{
+													"bookmark": true,
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "CharactersTriggers",
+															"sid": 329315837047118,
+															"parameters": {
+																"instance-variable": "ID",
+																"comparison": 1,
+																"value": "-1"
+															}
+														},
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "CharactersTriggers",
+															"sid": 122355271064482,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														},
+														{
+															"id": "is-overlapping-another-object",
+															"objectClass": "CharactersTriggers",
+															"sid": 491752798720105,
+															"parameters": {
+																"object": "Trigger_Player"
+															}
+														},
+														{
+															"id": "compare-value",
+															"objectClass": "Dict_SaveGameData",
+															"sid": 558883501984274,
+															"parameters": {
+																"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
+																"comparison": 1,
+																"value": "\"Complete\"\n"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 742148674825665,
+															"parameters": {
+																"variable": "detectedAction",
+																"value": "\"Talk\""
+															}
+														}
+													],
+													"sid": 164368929914289
+												},
+												{
+													"eventType": "block",
 													"conditions": [],
 													"actions": [
 														{
@@ -1531,10 +1597,11 @@
 										{
 											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
-											"sid": 324909291637845,
+											"sid": 300528180267953,
 											"parameters": {
 												"variable": "InteractionHintOn"
-											}
+											},
+											"isInverted": true
 										}
 									],
 									"actions": [
@@ -1589,20 +1656,29 @@
 											}
 										},
 										{
-											"id": "set-layer-blend-mode",
+											"id": "set-layer-force-own-texture",
 											"objectClass": "System",
-											"sid": 731694363570773,
+											"sid": 285583316067389,
 											"parameters": {
 												"layer": "\"Effect\"",
+												"mode": "on"
+											}
+										},
+										{
+											"id": "set-layer-blend-mode",
+											"objectClass": "System",
+											"sid": 333293698724382,
+											"parameters": {
+												"layer": "\"Items\"",
 												"blend-mode": "source-atop"
 											}
 										},
 										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 873148611935521,
+											"sid": 608640476714051,
 											"parameters": {
-												"object-to-create": "Particle",
+												"object-to-create": "Glimmer",
 												"layer": "\"Items\"",
 												"x": "InventoryItems.X",
 												"y": "InventoryItems.Y",
@@ -1612,7 +1688,7 @@
 										},
 										{
 											"id": "set-animation",
-											"objectClass": "Particle",
+											"objectClass": "Glimmer",
 											"sid": 383129481742960,
 											"parameters": {
 												"animation": "\"Glimmer\"",
@@ -1621,7 +1697,7 @@
 										},
 										{
 											"id": "set-size",
-											"objectClass": "Particle",
+											"objectClass": "Glimmer",
 											"sid": 741351354711082,
 											"parameters": {
 												"width": "InventoryItems.Width",
@@ -1629,20 +1705,21 @@
 											}
 										},
 										{
-											"id": "set-blend-mode",
-											"objectClass": "Particle",
-											"sid": 506652591962430,
+											"id": "set-effect-enabled",
+											"objectClass": "Glimmer",
+											"sid": 619939411401774,
 											"parameters": {
-												"blend-mode": "source-atop"
+												"mode": "enable",
+												"effect": "\"Lighten\""
 											}
 										},
 										{
-											"id": "set-layer-force-own-texture",
-											"objectClass": "System",
-											"sid": 614023871688472,
+											"id": "set-blend-mode",
+											"objectClass": "Glimmer",
+											"sid": 440515581109160,
+											"disabled": true,
 											"parameters": {
-												"layer": "\"Items\"",
-												"mode": "on"
+												"blend-mode": "source-atop"
 											}
 										}
 									],
@@ -1667,17 +1744,8 @@
 									"eventType": "function-block",
 									"conditions": [
 										{
-											"id": "pick-by-unique-id",
-											"objectClass": "InventoryItems",
-											"sid": 908343606577858,
-											"disabled": true,
-											"parameters": {
-												"unique-id": "itemUID"
-											}
-										},
-										{
 											"id": "is-animation-playing",
-											"objectClass": "Particle",
+											"objectClass": "Glimmer",
 											"sid": 709964380097042,
 											"parameters": {
 												"animation": "\"Glimmer\""
@@ -1687,7 +1755,7 @@
 									"actions": [
 										{
 											"id": "destroy",
-											"objectClass": "Particle",
+											"objectClass": "Glimmer",
 											"sid": 492015194925553
 										}
 									],
@@ -5308,7 +5376,6 @@
 							"sid": 343108707196427
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -5426,6 +5493,7 @@
 			"sid": 914632009346481
 		},
 		{
+			"bookmark": true,
 			"eventType": "group",
 			"disabled": false,
 			"title": "Audio",
@@ -12422,7 +12490,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

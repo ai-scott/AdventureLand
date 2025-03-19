@@ -581,7 +581,40 @@
 											}
 										}
 									],
-									"sid": 691410557784407
+									"sid": 691410557784407,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 565817727510293,
+													"parameters": {
+														"first-value": "find(CurrentCharacter,\":\")",
+														"comparison": 1,
+														"second-value": "-1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"script": "const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 709754738462606,
+													"parameters": {
+														"variable": "Quest",
+														"value": "Quest&\"Quest\""
+													}
+												}
+											],
+											"sid": 377457727015892
+										}
+									]
 								},
 								{
 									"eventType": "comment",
