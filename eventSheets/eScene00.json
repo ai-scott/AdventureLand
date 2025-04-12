@@ -16,15 +16,6 @@
 			],
 			"actions": [
 				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 394823902987383,
-					"parameters": {
-						"variable": "TextArrayZIndex",
-						"value": "0"
-					}
-				},
-				{
 					"id": "wait-for-signal",
 					"objectClass": "System",
 					"sid": 181921455461454,
@@ -433,7 +424,9 @@
 			"actions": [
 				{
 					"type": "script",
-					"script": "console.log(\"Adding Rosie\")"
+					"script": [
+						"console.log(\"Adding Rosie\")"
+					]
 				},
 				{
 					"id": "create-object",
@@ -617,7 +610,9 @@
 			"actions": [
 				{
 					"type": "script",
-					"script": "console.log(\"Penny enters house\")"
+					"script": [
+						"console.log(\"Penny enters house\")"
+					]
 				},
 				{
 					"id": "play-timeline",

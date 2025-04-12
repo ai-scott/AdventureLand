@@ -4,6 +4,40 @@
 		{
 			"eventType": "include",
 			"includeSheet": "eGameRoom"
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 309008960704023
+				}
+			],
+			"actions": [
+				{
+					"id": "wait-for-signal",
+					"objectClass": "System",
+					"sid": 148670202368508,
+					"parameters": {
+						"tag": "\"Inventory UI Drawn\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 530694830864541,
+					"parameters": {
+						"object-to-create": "En_Crab_Mask",
+						"layer": "\"Objects\"",
+						"x": "142",
+						"y": "215",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				}
+			],
+			"sid": 681477208118055
 		}
 	],
 	"sid": 807459101232190

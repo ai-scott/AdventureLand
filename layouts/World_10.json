@@ -676,36 +676,40 @@
 					}
 				},
 				{
-					"type": "Projectile_Demon_Bat",
+					"type": "En_Crab_Mask",
 					"properties": {
 						"initially-visible": true,
-						"initial-animation": "Animation 1",
+						"initial-animation": "Retreat_UpRight",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
 					},
 					"uid": 268,
-					"sid": 491063648525365,
+					"sid": 947707272856790,
 					"tags": "",
 					"instanceVariables": {
-						"Strength": 0,
-						"Direction": ""
+						"Hurt_FX": 0,
+						"Active": false,
+						"DontActivate": false,
+						"State": "",
+						"State_Timer": 0,
+						"StateLimit": 0
 					},
 					"behaviors": {
-						"Bullet": {
-							"properties": {
-								"speed": 400,
-								"acceleration": 0,
-								"gravity": 0,
-								"bounce-off-solids": false,
-								"set-angle": true,
-								"step": false,
-								"enabled": true
+						"Flash": {
+							"properties": {}
+						}
+					},
+					"effects": {
+						"Brightness": {
+							"isEnabled": true,
+							"parameters": {
+								"brightness": 1
 							}
 						}
 					},
 					"instanceFolderItem": {
-						"sid": 491063648525365,
+						"sid": 947707272856790,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -714,12 +718,12 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 144,
-						"y": 336,
-						"width": 32,
-						"height": 32,
+						"x": 142.38449424470684,
+						"y": 214.67941414071998,
+						"width": 48,
+						"height": 48,
 						"originX": 0.5,
-						"originY": 0.59375,
+						"originY": 0.5,
 						"color": [
 							1,
 							1,

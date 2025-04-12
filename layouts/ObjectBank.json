@@ -944,7 +944,7 @@
 					"sid": 105022658689246,
 					"tags": "",
 					"instanceVariables": {
-						"Health": 10,
+						"Health": 9,
 						"Strength": 4,
 						"Pair_ID": 0,
 						"Direction": "",
@@ -6027,6 +6027,130 @@
 						"height": 32,
 						"originX": 0.125,
 						"originY": 0.9375,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "En_Crab_Mask",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Retreat_UpRight",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 136,
+					"sid": 500947117531162,
+					"tags": "",
+					"instanceVariables": {
+						"Hurt_FX": 0,
+						"Active": false,
+						"DontActivate": false,
+						"State": "",
+						"State_Timer": 0,
+						"StateLimit": 0
+					},
+					"behaviors": {
+						"Flash": {
+							"properties": {}
+						}
+					},
+					"effects": {
+						"Brightness": {
+							"isEnabled": true,
+							"parameters": {
+								"brightness": 1
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 500947117531162,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 288.3655669823651,
+						"y": -60.12452308364668,
+						"width": 48,
+						"height": 48,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "En_Crab_Base",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 270,
+					"sid": 396030993708100,
+					"tags": "",
+					"instanceVariables": {
+						"Health": 10,
+						"Strength": 5,
+						"Pair_ID": 0,
+						"Direction": "",
+						"Player_AngleDiff": 0,
+						"Knockback_Timer": 0,
+						"Default_MaxSpeed": 150,
+						"Default_Acceleration": 3000,
+						"Default_Deceleration": 300,
+						"Hurt": false,
+						"CanBeKnockedBack": true
+					},
+					"behaviors": {
+						"8Direction": {
+							"properties": {
+								"max-speed": 200,
+								"acceleration": 600,
+								"deceleration": 500,
+								"directions": "dir-8",
+								"set-angle": "smooth",
+								"allow-sliding": false,
+								"default-controls": true,
+								"enabled": true
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 396030993708100,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 341.51721879859696,
+						"y": -55.78310427606439,
+						"width": 48,
+						"height": 48,
+						"originX": 0.5,
+						"originY": 0.791667,
 						"color": [
 							1,
 							1,
