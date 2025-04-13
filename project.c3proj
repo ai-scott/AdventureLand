@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 42402,
+	"savedWithRelease": 43203,
 	"name": "Adventure Land 3.18.25",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -536,7 +536,9 @@
 					"En_Demon_Trail",
 					"Projectile_Demon_Bat",
 					"Projectile_Demon_Sword",
-					"Projectile_Golem"
+					"Projectile_Golem",
+					"En_Crab_Base",
+					"En_Crab_Mask"
 				],
 				"subfolders": [],
 				"name": "Enemies"

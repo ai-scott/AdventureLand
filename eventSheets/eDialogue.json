@@ -244,6 +244,15 @@
 						"variable": "InDialogue",
 						"value": "false"
 					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 394823902987383,
+					"parameters": {
+						"variable": "TextArrayZIndex",
+						"value": "0"
+					}
 				}
 			],
 			"sid": 614505262987865
@@ -527,7 +536,11 @@
 									"actions": [
 										{
 											"type": "script",
-											"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+											"script": [
+												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
+												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
+												"runtime.globalVars.Quest = characterQuestArray[1];"
+											]
 										},
 										{
 											"id": "set-eventvar-value",
@@ -569,7 +582,12 @@
 										},
 										{
 											"type": "script",
-											"script": "if(runtime.globalVars.QuestStatus){\n\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");\n\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);\n}"
+											"script": [
+												"if(runtime.globalVars.QuestStatus){",
+												"\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");",
+												"\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);",
+												"}"
+											]
 										},
 										{
 											"id": "set-eventvar-value",
@@ -600,7 +618,11 @@
 											"actions": [
 												{
 													"type": "script",
-													"script": "const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+													"script": [
+														"const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");",
+														"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
+														"runtime.globalVars.Quest = characterQuestArray[1];"
+													]
 												},
 												{
 													"id": "set-eventvar-value",
@@ -824,7 +846,16 @@
 										},
 										{
 											"type": "script",
-											"script": "const optionsArray = runtime.globalVars.DialogueResult.split(\":\");\nif(runtime.globalVars.OptionSelection){\n\truntime.globalVars.CurrentDialogueLine = optionsArray[1];\n}\nelse{\n\truntime.globalVars.CurrentDialogueLine = optionsArray[0];\n}\n"
+											"script": [
+												"const optionsArray = runtime.globalVars.DialogueResult.split(\":\");",
+												"if(runtime.globalVars.OptionSelection){",
+												"\truntime.globalVars.CurrentDialogueLine = optionsArray[1];",
+												"}",
+												"else{",
+												"\truntime.globalVars.CurrentDialogueLine = optionsArray[0];",
+												"}",
+												""
+											]
 										},
 										{
 											"id": "set-eventvar-value",
@@ -911,7 +942,10 @@
 								},
 								{
 									"type": "script",
-									"script": "const inputArray = runtime.globalVars.DialogueResult.split(\":\");\nruntime.globalVars.InputVar = inputArray[1];"
+									"script": [
+										"const inputArray = runtime.globalVars.DialogueResult.split(\":\");",
+										"runtime.globalVars.InputVar = inputArray[1];"
+									]
 								},
 								{
 									"callFunction": "getUserText",
@@ -977,7 +1011,11 @@
 									"actions": [
 										{
 											"type": "script",
-											"script": "const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");\nruntime.globalVars.CurrentCharacter = characterQuestArray[0];\nruntime.globalVars.Quest = characterQuestArray[1];"
+											"script": [
+												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
+												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
+												"runtime.globalVars.Quest = characterQuestArray[1];"
+											]
 										},
 										{
 											"id": "set-eventvar-value",
@@ -1203,7 +1241,16 @@
 						},
 						{
 							"type": "script",
-							"script": "if(runtime.globalVars.CurrentDialogueText.includes(\"|\")){\n\tconst dynamicDialogueArray = runtime.globalVars.CurrentDialogueText.split(\"|\");\n\truntime.globalVars.CurrentDialogueText = dynamicDialogueArray[0];\n\truntime.globalVars.DynamicTextVar = dynamicDialogueArray[1];\n\truntime.globalVars.CurrentDialogueTextEnd = dynamicDialogueArray[2];\n}\n\n"
+							"script": [
+								"if(runtime.globalVars.CurrentDialogueText.includes(\"|\")){",
+								"\tconst dynamicDialogueArray = runtime.globalVars.CurrentDialogueText.split(\"|\");",
+								"\truntime.globalVars.CurrentDialogueText = dynamicDialogueArray[0];",
+								"\truntime.globalVars.DynamicTextVar = dynamicDialogueArray[1];",
+								"\truntime.globalVars.CurrentDialogueTextEnd = dynamicDialogueArray[2];",
+								"}",
+								"",
+								""
+							]
 						}
 					],
 					"sid": 569699011908156,
@@ -1396,7 +1443,14 @@
 									"actions": [
 										{
 											"type": "script",
-											"script": "const characterNameArray = runtime.globalVars.CurrentCharacter.split(\"_\");\n//runtime.globalVars.DynamicText = characterNameArray[1];\nconst tempVar = characterNameArray[1];\n//runtime.objects.obj_TextName.getFirstInstance().text = tempVar.toString();\nruntime.objects.obj_TextName.getFirstPickedInstance().text = tempVar;\n//runtime.objects.obj_TextName.getFirstInstance().text = \"Sally?\";"
+											"script": [
+												"const characterNameArray = runtime.globalVars.CurrentCharacter.split(\"_\");",
+												"//runtime.globalVars.DynamicText = characterNameArray[1];",
+												"const tempVar = characterNameArray[1];",
+												"//runtime.objects.obj_TextName.getFirstInstance().text = tempVar.toString();",
+												"runtime.objects.obj_TextName.getFirstPickedInstance().text = tempVar;",
+												"//runtime.objects.obj_TextName.getFirstInstance().text = \"Sally?\";"
+											]
 										},
 										{
 											"id": "set-text",
@@ -1641,11 +1695,16 @@
 								},
 								{
 									"type": "script",
-									"script": "console.log(\"goto DialogueResult\")"
+									"script": [
+										"console.log(\"goto DialogueResult\")"
+									]
 								},
 								{
 									"type": "script",
-									"script": "const gotoDialogueArray = runtime.globalVars.DialogueResult.split(\":\");\nruntime.globalVars.CurrentDialogueLine = gotoDialogueArray[1];"
+									"script": [
+										"const gotoDialogueArray = runtime.globalVars.DialogueResult.split(\":\");",
+										"runtime.globalVars.CurrentDialogueLine = gotoDialogueArray[1];"
+									]
 								}
 							],
 							"sid": 793810881822657
@@ -2437,7 +2496,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"script": "console.log(\"displaying options\")"
+									"script": [
+										"console.log(\"displaying options\")"
+									]
 								},
 								{
 									"callFunction": "destroyDialogueUI",

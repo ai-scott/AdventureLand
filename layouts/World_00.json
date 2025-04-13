@@ -872,53 +872,6 @@
 					}
 				},
 				{
-					"type": "Shirne",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 13,
-					"sid": 901501773203857,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {
-						"Solid": {
-							"properties": {
-								"enabled": true,
-								"tags": ""
-							}
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 901501773203857,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 702,
-						"y": 89,
-						"width": 36,
-						"height": 68,
-						"originX": 0.5277777777777778,
-						"originY": 0.6176470588235294,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
 					"type": "Trigger_Scene",
 					"properties": {
 						"initially-visible": false,
@@ -1488,49 +1441,6 @@
 					}
 				},
 				{
-					"type": "Trigger_Scene",
-					"properties": {
-						"initially-visible": false,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 103,
-					"sid": 446816453303446,
-					"tags": "",
-					"instanceVariables": {
-						"ID": 4,
-						"SceneName": "Shrine"
-					},
-					"behaviors": {},
-					"instanceFolderItem": {
-						"sid": 446816453303446,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 752,
-						"y": 166,
-						"width": 36,
-						"height": 36,
-						"originX": 1.953125,
-						"originY": 2.0350877192982457,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
 					"type": "Trigger_Door",
 					"properties": {
 						"initially-visible": false,
@@ -1800,58 +1710,6 @@
 							1
 						],
 						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
-					"type": "Particle",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Sparkle",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 102,
-					"sid": 576652842679605,
-					"tags": "SeaMonsterKey",
-					"instanceVariables": {},
-					"behaviors": {
-						"Bullet": {
-							"properties": {
-								"speed": 0,
-								"acceleration": 0,
-								"gravity": 0,
-								"bounce-off-solids": false,
-								"set-angle": false,
-								"step": false,
-								"enabled": false
-							}
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 576652842679605,
-						"expanded": true,
-						"folderName": "",
-						"indexInFolder": -1,
-						"folderNestingLevel": -1
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 702,
-						"y": 105,
-						"width": 9,
-						"height": 9,
-						"originX": 0.4444444444444444,
-						"originY": 0.4444444444444444,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0.7853981633974483,
 						"zElevation": 0
 					}
 				}
@@ -2452,13 +2310,6 @@
 				"folderNestingLevel": -1
 			},
 			{
-				"sid": 901501773203857,
-				"expanded": true,
-				"folderName": "",
-				"indexInFolder": -1,
-				"folderNestingLevel": -1
-			},
-			{
 				"sid": 517569966784390,
 				"expanded": true,
 				"folderName": "",
@@ -2530,13 +2381,6 @@
 			},
 			{
 				"sid": 928425014985440,
-				"expanded": true,
-				"folderName": "",
-				"indexInFolder": -1,
-				"folderNestingLevel": -1
-			},
-			{
-				"sid": 446816453303446,
 				"expanded": true,
 				"folderName": "",
 				"indexInFolder": -1,

@@ -637,8 +637,8 @@
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 139,
-					"sid": 472299337199399,
+					"uid": 268,
+					"sid": 235561152574890,
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {
@@ -650,7 +650,7 @@
 						}
 					},
 					"instanceFolderItem": {
-						"sid": 472299337199399,
+						"sid": 235561152574890,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -659,8 +659,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 19,
-						"y": 84,
+						"x": 128,
+						"y": 96,
 						"width": 36,
 						"height": 68,
 						"originX": 0.5277777777777778,
@@ -676,36 +676,24 @@
 					}
 				},
 				{
-					"type": "Projectile_Demon_Bat",
+					"type": "Trigger_Scene",
 					"properties": {
-						"initially-visible": true,
+						"initially-visible": false,
 						"initial-animation": "Animation 1",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 268,
-					"sid": 491063648525365,
+					"uid": 271,
+					"sid": 182534457235286,
 					"tags": "",
 					"instanceVariables": {
-						"Strength": 0,
-						"Direction": ""
+						"ID": 4,
+						"SceneName": "Shrine"
 					},
-					"behaviors": {
-						"Bullet": {
-							"properties": {
-								"speed": 400,
-								"acceleration": 0,
-								"gravity": 0,
-								"bounce-off-solids": false,
-								"set-angle": true,
-								"step": false,
-								"enabled": true
-							}
-						}
-					},
+					"behaviors": {},
 					"instanceFolderItem": {
-						"sid": 491063648525365,
+						"sid": 182534457235286,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -714,12 +702,12 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 144,
-						"y": 336,
-						"width": 32,
-						"height": 32,
-						"originX": 0.5,
-						"originY": 0.59375,
+						"x": 179,
+						"y": 164,
+						"width": 36,
+						"height": 36,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
 						"color": [
 							1,
 							1,
@@ -727,6 +715,58 @@
 							1
 						],
 						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Particle",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Sparkle",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 13,
+					"sid": 248757419897689,
+					"tags": "SeaMonsterKey",
+					"instanceVariables": {},
+					"behaviors": {
+						"Bullet": {
+							"properties": {
+								"speed": 0,
+								"acceleration": 0,
+								"gravity": 0,
+								"bounce-off-solids": false,
+								"set-angle": false,
+								"step": false,
+								"enabled": false
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 248757419897689,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 128,
+						"y": 112,
+						"width": 9,
+						"height": 9,
+						"originX": 0.4444444444444444,
+						"originY": 0.4444444444444444,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0.7853981633974483,
 						"zElevation": 0
 					}
 				}
