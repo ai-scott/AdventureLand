@@ -4,6 +4,18 @@
 		{
 			"eventType": "include",
 			"includeSheet": "eGameRoom"
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 215371134453501
+				}
+			],
+			"actions": [],
+			"sid": 112346424380294
 		}
 	],
 	"sid": 807459101232190
