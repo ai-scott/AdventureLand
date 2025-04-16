@@ -272,9 +272,7 @@
 		"subfolders": [
 			{
 				"items": [
-					"tm_fantasy_forest_environment",
 					"bg_grass_light",
-					"tm_fantasy_combo",
 					"tm_castle_interiors",
 					"Tilemap_Collision",
 					"tm_mana_interiors",
