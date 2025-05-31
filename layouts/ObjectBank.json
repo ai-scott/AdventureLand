@@ -6041,7 +6041,7 @@
 					"type": "En_Crab_Mask",
 					"properties": {
 						"initially-visible": true,
-						"initial-animation": "Retreat_UpRight",
+						"initial-animation": "Retreat_Up",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
@@ -6053,9 +6053,9 @@
 						"Hurt_FX": 0,
 						"Active": false,
 						"DontActivate": false,
-						"State": "",
+						"State": "Idle",
 						"State_Timer": 0,
-						"StateLimit": 0
+						"StateLimit": 1
 					},
 					"behaviors": {
 						"Flash": {
@@ -6099,7 +6099,7 @@
 				{
 					"type": "En_Crab_Base",
 					"properties": {
-						"initially-visible": true,
+						"initially-visible": false,
 						"initial-animation": "Default",
 						"initial-frame": 0,
 						"enable-collisions": true,
@@ -6115,18 +6115,18 @@
 						"Direction": "",
 						"Player_AngleDiff": 0,
 						"Knockback_Timer": 0,
-						"Default_MaxSpeed": 150,
-						"Default_Acceleration": 3000,
-						"Default_Deceleration": 300,
+						"Default_MaxSpeed": 40,
+						"Default_Acceleration": 20,
+						"Default_Deceleration": 100,
 						"Hurt": false,
 						"CanBeKnockedBack": true
 					},
 					"behaviors": {
 						"8Direction": {
 							"properties": {
-								"max-speed": 150,
-								"acceleration": 3000,
-								"deceleration": 300,
+								"max-speed": 60,
+								"acceleration": 100,
+								"deceleration": 100,
 								"directions": "dir-8",
 								"set-angle": "no",
 								"allow-sliding": false,

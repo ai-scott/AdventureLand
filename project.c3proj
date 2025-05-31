@@ -604,6 +604,12 @@
 				"En_Slime_Base2",
 				"En_Slime_Mask2"
 			]
+		},
+		{
+			"members": [
+				"En_Crab_Base",
+				"En_Crab_Mask"
+			]
 		}
 	],
 	"families": {

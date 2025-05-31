@@ -14,7 +14,47 @@
 					"sid": 215371134453501
 				}
 			],
-			"actions": [],
+			"actions": [
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 917661022165319,
+					"parameters": {
+						"object-to-create": "En_Crab_Mask",
+						"layer": "\"Objects\"",
+						"x": "130",
+						"y": "210",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 885907989576017,
+					"parameters": {
+						"object-to-create": "En_Crab_Mask",
+						"layer": "\"Objects\"",
+						"x": "420",
+						"y": "385",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 629986187899658,
+					"parameters": {
+						"object-to-create": "En_Crab_Mask",
+						"layer": "\"Objects\"",
+						"x": "700",
+						"y": "240",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				}
+			],
 			"sid": 112346424380294
 		}
 	],
