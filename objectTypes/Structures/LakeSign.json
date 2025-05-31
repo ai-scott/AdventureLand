@@ -1,17 +1,11 @@
 {
-	"name": "TreeSign",
+	"name": "LakeSign",
 	"plugin-id": "Sprite",
-	"sid": 209125259577223,
+	"sid": 844163423055129,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
-	"behaviorTypes": [
-		{
-			"behaviorId": "solid",
-			"name": "Solid",
-			"sid": 721289217703456
-		}
-	],
+	"behaviorTypes": [],
 	"effectTypes": [],
 	"animations": {
 		"items": [
@@ -24,13 +18,19 @@
 						"originY": 0.5,
 						"originalSource": "",
 						"exportFormat": "lossless",
-						"exportQuality": 1,
+						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 8379689,
+						"imageSpriteId": 999465,
 						"collisionPoly": {
 							"points": [
-								0.9946663488552497,
-								0.5093750014073319,
+								0.019230769230769232,
+								0,
+								0.9807692307692307,
+								0,
+								1,
+								0.044444444444444446,
+								1,
+								0.4444444444444444,
 								0.9615384615384616,
 								0.7333333333333333,
 								0.8653846153846154,
@@ -41,8 +41,10 @@
 								0.9777777777777777,
 								0.038461538461538464,
 								0.7333333333333333,
-								0.005314607001834632,
-								0.5148655720763499
+								0,
+								0.4222222222222222,
+								0,
+								0.044444444444444446
 							]
 						},
 						"useCollisionPoly": true,
@@ -50,7 +52,7 @@
 						"tag": ""
 					}
 				],
-				"sid": 779816543953083,
+				"sid": 835963594475284,
 				"name": "Animation 1",
 				"isLooping": false,
 				"isPingPong": false,

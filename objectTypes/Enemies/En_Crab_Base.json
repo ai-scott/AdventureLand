@@ -1,7 +1,7 @@
 {
 	"name": "En_Crab_Base",
 	"plugin-id": "Sprite",
-	"sid": 470504367495046,
+	"sid": 738935662330689,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -20,7 +20,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 4887796,
+						"imageSpriteId": 9897953,
 						"collisionPoly": {
 							"points": [
 								0.25,
@@ -38,7 +38,7 @@
 						"tag": ""
 					}
 				],
-				"sid": 688821355274272,
+				"sid": 627060773416780,
 				"name": "Default",
 				"isLooping": true,
 				"isPingPong": false,

@@ -637,8 +637,8 @@
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 139,
-					"sid": 472299337199399,
+					"uid": 268,
+					"sid": 235561152574890,
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {
@@ -650,7 +650,7 @@
 						}
 					},
 					"instanceFolderItem": {
-						"sid": 472299337199399,
+						"sid": 235561152574890,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -659,8 +659,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 19,
-						"y": 84,
+						"x": 128,
+						"y": 96,
 						"width": 36,
 						"height": 68,
 						"originX": 0.5277777777777778,
@@ -676,40 +676,24 @@
 					}
 				},
 				{
-					"type": "En_Crab_Mask",
+					"type": "Trigger_Scene",
 					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Retreat_UpRight",
+						"initially-visible": false,
+						"initial-animation": "Animation 1",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 268,
-					"sid": 947707272856790,
+					"uid": 271,
+					"sid": 182534457235286,
 					"tags": "",
 					"instanceVariables": {
-						"Hurt_FX": 0,
-						"Active": false,
-						"DontActivate": false,
-						"State": "",
-						"State_Timer": 0,
-						"StateLimit": 0
+						"ID": 4,
+						"SceneName": "Shrine"
 					},
-					"behaviors": {
-						"Flash": {
-							"properties": {}
-						}
-					},
-					"effects": {
-						"Brightness": {
-							"isEnabled": true,
-							"parameters": {
-								"brightness": 1
-							}
-						}
-					},
+					"behaviors": {},
 					"instanceFolderItem": {
-						"sid": 947707272856790,
+						"sid": 182534457235286,
 						"expanded": true,
 						"folderName": "",
 						"indexInFolder": -1,
@@ -718,12 +702,12 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 142.38449424470684,
-						"y": 214.67941414071998,
-						"width": 48,
-						"height": 48,
-						"originX": 0.5,
-						"originY": 0.5,
+						"x": 179,
+						"y": 164,
+						"width": 36,
+						"height": 36,
+						"originX": 1.953125,
+						"originY": 2.0350877192982457,
 						"color": [
 							1,
 							1,
@@ -731,6 +715,58 @@
 							1
 						],
 						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Particle",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Sparkle",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 13,
+					"sid": 248757419897689,
+					"tags": "SeaMonsterKey",
+					"instanceVariables": {},
+					"behaviors": {
+						"Bullet": {
+							"properties": {
+								"speed": 0,
+								"acceleration": 0,
+								"gravity": 0,
+								"bounce-off-solids": false,
+								"set-angle": false,
+								"step": false,
+								"enabled": false
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 248757419897689,
+						"expanded": true,
+						"folderName": "",
+						"indexInFolder": -1,
+						"folderNestingLevel": -1
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 128,
+						"y": 112,
+						"width": 9,
+						"height": 9,
+						"originX": 0.4444444444444444,
+						"originY": 0.4444444444444444,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0.7853981633974483,
 						"zElevation": 0
 					}
 				}
