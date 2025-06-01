@@ -53,9 +53,80 @@
 						"create-hierarchy": false,
 						"template-name": "\"\""
 					}
+				},
+				{
+					"id": "map-function",
+					"objectClass": "Functions",
+					"sid": 340423139788283,
+					"parameters": {
+						"name": "\"DialogueFunctions\"",
+						"string": "\"SeaMonsterKeyFound\"",
+						"function": "FindSeaMonsterKey"
+					}
 				}
 			],
 			"sid": 112346424380294
+		},
+		{
+			"functionName": "FindSeaMonsterKey",
+			"functionDescription": "",
+			"functionCategory": "",
+			"functionReturnType": "none",
+			"functionCopyPicked": false,
+			"functionIsAsync": false,
+			"functionParameters": [],
+			"eventType": "function-block",
+			"conditions": [
+				{
+					"id": "has-tags",
+					"objectClass": "Particle",
+					"sid": 124687282004809,
+					"parameters": {
+						"tags": "\"SeaMonsterKey\""
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "destroy",
+					"objectClass": "Particle",
+					"sid": 470345580572305
+				}
+			],
+			"sid": 869030139020021,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "Trigger_Scene",
+							"sid": 374643821542239,
+							"parameters": {
+								"instance-variable": "ID",
+								"comparison": 0,
+								"value": "1"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "destroy",
+							"objectClass": "Trigger_Scene",
+							"sid": 267246958146520
+						},
+						{
+							"callFunction": "UpdateNumbersOnPickup",
+							"sid": 426895763456333,
+							"parameters": [
+								"121",
+								"1"
+							]
+						}
+					],
+					"sid": 311941857968753
+				}
+			]
 		}
 	],
 	"sid": 807459101232190

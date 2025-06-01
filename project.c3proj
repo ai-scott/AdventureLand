@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 43203,
+	"savedWithRelease": 44002,
 	"name": "Adventure Land 4.12.25",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -585,6 +585,7 @@
 			}
 		]
 	},
+	"functionsName": "Functions",
 	"autosaveData": null,
 	"containers": [
 		{
@@ -1244,6 +1245,14 @@
 					"name": "ItemTriggers.json",
 					"type": "application/json",
 					"sid": 528642191883331,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "World10_text.json",
+					"type": "application/json",
+					"sid": 892023326963672,
 					"file-info": {
 						"purpose": "none"
 					}

@@ -244,12 +244,12 @@
 		{
 			"eventType": "variable",
 			"name": "CurrentWorld",
-			"type": "number",
-			"initialValue": "0",
+			"type": "string",
+			"initialValue": "00",
 			"comment": "What World (XX) is the player in?",
 			"isStatic": false,
 			"isConstant": false,
-			"sid": 448388021740943
+			"sid": 615151120513078
 		},
 		{
 			"eventType": "variable",
@@ -637,19 +637,14 @@
 										"comparison": 5,
 										"opacity": "100"
 									}
-								}
-							],
-							"actions": [
+								},
 								{
-									"id": "wait",
+									"id": "trigger-once-while-true",
 									"objectClass": "System",
-									"sid": 623387314397572,
-									"parameters": {
-										"seconds": "0.1",
-										"use-timescale": true
-									}
+									"sid": 932981492678656
 								}
 							],
+							"actions": [],
 							"sid": 614872835902693,
 							"children": [
 								{
@@ -658,19 +653,9 @@
 										{
 											"id": "compare-two-values",
 											"objectClass": "System",
-											"sid": 690687890517149,
+											"sid": 175805448683198,
 											"parameters": {
-												"first-value": "tokenat(LayoutName,2,\"_\")",
-												"comparison": 0,
-												"second-value": "\"\""
-											}
-										},
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 178140715409236,
-											"parameters": {
-												"first-value": "Dict_SaveGameData.Get(LayoutName&\"Loaded\")",
+												"first-value": "Dict_SaveGameData.Get(\"World_\"&CurrentWorld&\"Loaded\")",
 												"comparison": 1,
 												"second-value": "\"true\""
 											}
@@ -679,30 +664,7 @@
 									"actions": [
 										{
 											"callFunction": "displayWorldName",
-											"sid": 409783277728913
-										},
-										{
-											"id": "wait",
-											"objectClass": "System",
-											"sid": 361625956922166,
-											"parameters": {
-												"seconds": ".1",
-												"use-timescale": true
-											}
-										},
-										{
-											"id": "stop-all",
-											"objectClass": "Audio",
-											"sid": 762866115497985,
-											"disabled": true
-										},
-										{
-											"callFunction": "playMusic",
-											"sid": 212084017959957,
-											"disabled": true,
-											"parameters": [
-												"\"world\""
-											]
+											"sid": 427207511653135
 										}
 									],
 									"sid": 435140152942386
@@ -714,11 +676,6 @@
 											"id": "else",
 											"objectClass": "System",
 											"sid": 779077276730932
-										},
-										{
-											"id": "trigger-once-while-true",
-											"objectClass": "System",
-											"sid": 604190607301791
 										}
 									],
 									"actions": [
@@ -855,14 +812,22 @@
 						{
 							"id": "create-object",
 							"objectClass": "System",
-							"sid": 379481740069282,
+							"sid": 521011957373311,
 							"parameters": {
 								"object-to-create": "obj_TextBlock",
 								"layer": "\"Transitions\"",
-								"x": "120",
-								"y": "100",
+								"x": "LayoutWidth/2",
+								"y": "LayoutHeight/2",
 								"create-hierarchy": false,
 								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 653547264490067,
+							"parameters": {
+								"text": "Functions.GetWorldName(CurrentWorld)"
 							}
 						},
 						{
@@ -874,11 +839,37 @@
 							}
 						},
 						{
-							"id": "set-text",
+							"id": "set-width",
 							"objectClass": "obj_TextBlock",
-							"sid": 476093348600072,
+							"sid": 771467234010754,
 							"parameters": {
-								"text": "\"Leafwood Village\""
+								"width": "obj_TextBlock.TextWidth"
+							}
+						},
+						{
+							"id": "set-height",
+							"objectClass": "obj_TextBlock",
+							"sid": 165280903466709,
+							"parameters": {
+								"height": "obj_TextBlock.TextHeight"
+							}
+						},
+						{
+							"id": "set-position",
+							"objectClass": "obj_TextBlock",
+							"sid": 654448128140222,
+							"parameters": {
+								"x": "(ViewportLeft(0)/2)+(LayoutWidth/2)-(obj_TextBlock.Width/2)",
+								"y": "(LayoutHeight/2)-(obj_TextBlock.Height/2)"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 808195888130163,
+							"parameters": {
+								"variable": "TempVarY",
+								"value": "\"CurrentWorld_\"&CurrentWorld"
 							}
 						},
 						{
@@ -888,34 +879,95 @@
 							"parameters": {
 								"opacity": "0"
 							}
-						},
-						{
-							"id": "set-opacity",
-							"objectClass": "obj_TextBlock",
-							"sid": 897314914512989,
-							"parameters": {
-								"opacity": "Self.Opacity + 240 * dt"
-							}
-						},
-						{
-							"id": "wait",
-							"objectClass": "System",
-							"sid": 834474215909709,
-							"parameters": {
-								"seconds": "1.5",
-								"use-timescale": true
-							}
-						},
-						{
-							"id": "signal",
-							"objectClass": "System",
-							"sid": 290322005045019,
-							"parameters": {
-								"tag": "Transition.Tag"
-							}
 						}
 					],
 					"sid": 639882704167002
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-on-layer",
+							"objectClass": "obj_TextBlock",
+							"sid": 429688282715756,
+							"parameters": {
+								"layer": "\"Transitions\""
+							}
+						}
+					],
+					"actions": [],
+					"sid": 383672887332642,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-opacity",
+									"objectClass": "obj_TextBlock",
+									"sid": 662636515793784,
+									"parameters": {
+										"comparison": 3,
+										"opacity": "100"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-opacity",
+									"objectClass": "obj_TextBlock",
+									"sid": 873003669348815,
+									"parameters": {
+										"opacity": "Self.Opacity + 240 * dt"
+									}
+								}
+							],
+							"sid": 378425074642884
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-opacity",
+									"objectClass": "obj_TextBlock",
+									"sid": 147414879806611,
+									"parameters": {
+										"comparison": 5,
+										"opacity": "100"
+									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 347596012861828
+								}
+							],
+							"actions": [
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 372666625565548,
+									"parameters": {
+										"seconds": "1.5",
+										"use-timescale": true
+									}
+								},
+								{
+									"id": "signal",
+									"objectClass": "System",
+									"sid": 764076354856800,
+									"parameters": {
+										"tag": "Transition.Tag"
+									}
+								},
+								{
+									"id": "destroy",
+									"objectClass": "obj_TextBlock",
+									"sid": 525102852520867
+								}
+							],
+							"sid": 586116611359495
+						}
+					]
 				}
 			],
 			"sid": 462325072773049
@@ -8914,6 +8966,111 @@
 				}
 			],
 			"sid": 327192124059834
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "World Return Functions",
+			"description": "Functions to get game state data about each world",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "GetWorldName",
+					"functionDescription": "",
+					"functionCategory": "Return",
+					"functionReturnType": "string",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "WorldXXID",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 260150310514878
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 902657032522963,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 378442273951432,
+									"parameters": {
+										"value": "WorldXXID=\"00\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 376015599906863,
+									"parameters": {
+										"value": "\"Leafwood Village\""
+									}
+								}
+							],
+							"sid": 739866138500596
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 817094954358550,
+									"parameters": {
+										"value": "WorldXXID=\"10\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 395159663903685,
+									"parameters": {
+										"value": "\"The Bottomless Lake\""
+									}
+								}
+							],
+							"sid": 255586994087993
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "evaluate-expression",
+									"objectClass": "System",
+									"sid": 327416897074231,
+									"parameters": {
+										"value": "WorldXXID=\"01\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 570897023513399,
+									"parameters": {
+										"value": "\"Leafwood Forest\""
+									}
+								}
+							],
+							"sid": 102609086799795
+						}
+					]
+				}
+			],
+			"sid": 639078568370908
 		}
 	],
 	"sid": 517972507276812

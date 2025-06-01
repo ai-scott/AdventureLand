@@ -209,25 +209,6 @@
 					"sid": 338382869541574
 				},
 				{
-					"type": "comment",
-					"text": "Load current world text - will need to rewrite to be dynamic",
-					"background-color": [
-						0.984313725490196,
-						1,
-						0,
-						1
-					]
-				},
-				{
-					"id": "request-project-file",
-					"objectClass": "AJAX",
-					"sid": 118431860698335,
-					"parameters": {
-						"tag": "\"LoadGameText\"",
-						"file": "World00_text.json"
-					}
-				},
-				{
 					"id": "set-group-active",
 					"objectClass": "System",
 					"sid": 144187087482516,
@@ -255,7 +236,69 @@
 					}
 				}
 			],
-			"sid": 614505262987865
+			"sid": 614505262987865,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "evaluate-expression",
+							"objectClass": "System",
+							"sid": 379150914043883,
+							"parameters": {
+								"value": "LayoutName=\"World_00\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "comment",
+							"text": "Load current world text - will need to rewrite to be dynamic",
+							"background-color": [
+								0.984313725490196,
+								1,
+								0,
+								1
+							]
+						},
+						{
+							"id": "request-project-file",
+							"objectClass": "AJAX",
+							"sid": 961040417192014,
+							"parameters": {
+								"tag": "\"LoadGameText\"",
+								"file": "World00_text.json"
+							}
+						}
+					],
+					"sid": 796996644517533
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "evaluate-expression",
+							"objectClass": "System",
+							"sid": 230519689642199,
+							"parameters": {
+								"value": "LayoutName=\"World_10\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "request-project-file",
+							"objectClass": "AJAX",
+							"sid": 219762890203641,
+							"parameters": {
+								"tag": "\"LoadGameText\"",
+								"file": "World10_text.json"
+							}
+						}
+					],
+					"sid": 971432559631058
+				}
+			]
 		},
 		{
 			"eventType": "block",
@@ -536,6 +579,7 @@
 									"actions": [
 										{
 											"type": "script",
+											"language": "javascript",
 											"script": [
 												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
 												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -582,6 +626,7 @@
 										},
 										{
 											"type": "script",
+											"language": "javascript",
 											"script": [
 												"if(runtime.globalVars.QuestStatus){",
 												"\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");",
@@ -618,6 +663,7 @@
 											"actions": [
 												{
 													"type": "script",
+													"language": "javascript",
 													"script": [
 														"const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");",
 														"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -846,6 +892,7 @@
 										},
 										{
 											"type": "script",
+											"language": "javascript",
 											"script": [
 												"const optionsArray = runtime.globalVars.DialogueResult.split(\":\");",
 												"if(runtime.globalVars.OptionSelection){",
@@ -942,6 +989,7 @@
 								},
 								{
 									"type": "script",
+									"language": "javascript",
 									"script": [
 										"const inputArray = runtime.globalVars.DialogueResult.split(\":\");",
 										"runtime.globalVars.InputVar = inputArray[1];"
@@ -1011,6 +1059,7 @@
 									"actions": [
 										{
 											"type": "script",
+											"language": "javascript",
 											"script": [
 												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
 												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -1241,6 +1290,7 @@
 						},
 						{
 							"type": "script",
+							"language": "javascript",
 							"script": [
 								"if(runtime.globalVars.CurrentDialogueText.includes(\"|\")){",
 								"\tconst dynamicDialogueArray = runtime.globalVars.CurrentDialogueText.split(\"|\");",
@@ -1443,6 +1493,7 @@
 									"actions": [
 										{
 											"type": "script",
+											"language": "javascript",
 											"script": [
 												"const characterNameArray = runtime.globalVars.CurrentCharacter.split(\"_\");",
 												"//runtime.globalVars.DynamicText = characterNameArray[1];",
@@ -1695,12 +1746,14 @@
 								},
 								{
 									"type": "script",
+									"language": "javascript",
 									"script": [
 										"console.log(\"goto DialogueResult\")"
 									]
 								},
 								{
 									"type": "script",
+									"language": "javascript",
 									"script": [
 										"const gotoDialogueArray = runtime.globalVars.DialogueResult.split(\":\");",
 										"runtime.globalVars.CurrentDialogueLine = gotoDialogueArray[1];"
@@ -2496,6 +2549,7 @@
 							"actions": [
 								{
 									"type": "script",
+									"language": "javascript",
 									"script": [
 										"console.log(\"displaying options\")"
 									]

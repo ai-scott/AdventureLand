@@ -209,10 +209,10 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 829929893125111,
+							"sid": 636687613124652,
 							"parameters": {
 								"variable": "CurrentWorld",
-								"value": "int(tokenat(LayoutName,1,\"_\"))"
+								"value": "str(tokenat(LayoutName,1,\"_\"))"
 							}
 						}
 					],
@@ -287,16 +287,6 @@
 							"actions": [
 								{
 									"callFunction": "Create_Player",
-									"sid": 220280144622027,
-									"disabled": true,
-									"parameters": [
-										"Trigger_Door.X",
-										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
-										"\"Objects\""
-									]
-								},
-								{
-									"callFunction": "Create_Player",
 									"sid": 980440533811621,
 									"parameters": [
 										"Trigger_Door.X",
@@ -357,16 +347,6 @@
 								}
 							],
 							"actions": [
-								{
-									"callFunction": "Create_Player",
-									"sid": 186769871539808,
-									"disabled": true,
-									"parameters": [
-										"Trigger_Door.X",
-										"Trigger_Door.Direction = \"Down\" ? Trigger_Door.BBoxBottom+8: Trigger_Door.BBoxTop-8",
-										"\"Objects\""
-									]
-								},
 								{
 									"callFunction": "Create_Player",
 									"sid": 807840019778386,
@@ -1075,63 +1055,6 @@
 												}
 											],
 											"sid": 623222666073354,
-											"isOrBlock": true
-										}
-									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each-ordered",
-											"objectClass": "System",
-											"sid": 959987755793122,
-											"parameters": {
-												"object": "ItemShowcase",
-												"expression": "ItemShowcase.y",
-												"order": "ascending"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "move-to-layer",
-											"objectClass": "ItemShowcase",
-											"sid": 131779837144387,
-											"parameters": {
-												"layer": "\"Items\""
-											}
-										}
-									],
-									"sid": 900111734755648,
-									"disabled": true,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-y",
-													"objectClass": "PlayerSystem",
-													"sid": 136137575805587,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "ItemShowcase.Y"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "move-to-object",
-													"objectClass": "ItemShowcase",
-													"sid": 971794714934279,
-													"parameters": {
-														"where": "behind",
-														"object": "PlayerSystem"
-													}
-												}
-											],
-											"sid": 187061155592141,
-											"disabled": true,
 											"isOrBlock": true
 										}
 									]
@@ -5093,23 +5016,6 @@
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
 							}
-						},
-						{
-							"callFunction": "Transition",
-							"sid": 177912440576872,
-							"parameters": [
-								"\"Out\"",
-								"\"LayoutChange\"",
-								"\"\""
-							]
-						},
-						{
-							"id": "wait-for-signal",
-							"objectClass": "System",
-							"sid": 791388882812980,
-							"parameters": {
-								"tag": "\"LayoutChange\""
-							}
 						}
 					],
 					"sid": 834292969715961,
@@ -5156,11 +5062,12 @@
 									}
 								},
 								{
-									"id": "go-to-layout-by-name",
+									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 545342540981233,
+									"sid": 532657598716452,
 									"parameters": {
-										"layout": "\"World_\"&WorldX&WorldY"
+										"variable": "CurrentWorld",
+										"value": "str(WorldX)&str(WorldY)"
 									}
 								}
 							],
@@ -5208,11 +5115,12 @@
 									}
 								},
 								{
-									"id": "go-to-layout-by-name",
+									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 775309054945474,
+									"sid": 284421377625548,
 									"parameters": {
-										"layout": "\"World_\"&WorldX&WorldY"
+										"variable": "CurrentWorld",
+										"value": "str(WorldX)&str(WorldY)"
 									}
 								}
 							],
@@ -5260,11 +5168,12 @@
 									}
 								},
 								{
-									"id": "go-to-layout-by-name",
+									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 893767875253794,
+									"sid": 537782268084558,
 									"parameters": {
-										"layout": "\"World_\"&WorldX&WorldY"
+										"variable": "CurrentWorld",
+										"value": "str(WorldX)&str(WorldY)"
 									}
 								}
 							],
@@ -5312,15 +5221,48 @@
 									}
 								},
 								{
-									"id": "go-to-layout-by-name",
+									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 977792319766471,
+									"sid": 514296053848305,
 									"parameters": {
-										"layout": "\"World_\"&WorldX&WorldY"
+										"variable": "CurrentWorld",
+										"value": "str(WorldX)&str(WorldY)"
 									}
 								}
 							],
 							"sid": 920799824369611
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "Transition",
+									"sid": 348787123707979,
+									"parameters": [
+										"\"Out\"",
+										"\"LayoutChange\"",
+										"\"\""
+									]
+								},
+								{
+									"id": "wait-for-signal",
+									"objectClass": "System",
+									"sid": 351199408931097,
+									"parameters": {
+										"tag": "\"LayoutChange\""
+									}
+								},
+								{
+									"id": "go-to-layout-by-name",
+									"objectClass": "System",
+									"sid": 207407192714404,
+									"parameters": {
+										"layout": "\"World_\"&CurrentWorld"
+									}
+								}
+							],
+							"sid": 451083767067010
 						}
 					]
 				}
@@ -8442,7 +8384,6 @@
 					"sid": 426699202338661
 				},
 				{
-					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Crab",
@@ -10719,7 +10660,6 @@
 													"sid": 823258500812172
 												}
 											],
-											"bookmark": true,
 											"eventType": "function-block",
 											"conditions": [
 												{
@@ -10812,7 +10752,6 @@
 											"sid": 497096656245578
 										},
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{

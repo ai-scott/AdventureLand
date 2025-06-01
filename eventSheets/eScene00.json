@@ -438,6 +438,7 @@
 			"actions": [
 				{
 					"type": "script",
+					"language": "javascript",
 					"script": [
 						"console.log(\"Adding Rosie\")"
 					]
@@ -551,67 +552,6 @@
 			]
 		},
 		{
-			"functionName": "FindSeaMonsterKey",
-			"functionDescription": "",
-			"functionCategory": "",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [],
-			"eventType": "function-block",
-			"conditions": [
-				{
-					"id": "has-tags",
-					"objectClass": "Particle",
-					"sid": 342603891685927,
-					"parameters": {
-						"tags": "\"SeaMonsterKey\""
-					}
-				}
-			],
-			"actions": [
-				{
-					"id": "destroy",
-					"objectClass": "Particle",
-					"sid": 487099609718636
-				}
-			],
-			"sid": 689790005287846,
-			"children": [
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-instance-variable",
-							"objectClass": "Trigger_Scene",
-							"sid": 523081179720281,
-							"parameters": {
-								"instance-variable": "ID",
-								"comparison": 0,
-								"value": "4"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "destroy",
-							"objectClass": "Trigger_Scene",
-							"sid": 415720610883455
-						},
-						{
-							"callFunction": "UpdateNumbersOnPickup",
-							"sid": 273307974837779,
-							"parameters": [
-								"121",
-								"1"
-							]
-						}
-					],
-					"sid": 214485876160325
-				}
-			]
-		},
-		{
 			"functionName": "PennyOpensHome",
 			"functionDescription": "",
 			"functionCategory": "DialogueEvent",
@@ -624,6 +564,7 @@
 			"actions": [
 				{
 					"type": "script",
+					"language": "javascript",
 					"script": [
 						"console.log(\"Penny enters house\")"
 					]
