@@ -5645,7 +5645,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5697,7 +5696,6 @@
 					"sid": 228975982211612
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -7790,6 +7788,7 @@
 													"id": "is-touching-object",
 													"objectClass": "Touch",
 													"sid": 227975447465357,
+													"disabled": true,
 													"parameters": {
 														"object": "transArc"
 													},

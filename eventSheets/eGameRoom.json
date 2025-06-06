@@ -64,7 +64,6 @@
 							"sid": 931816637326904
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -640,7 +639,6 @@
 							"sid": 964660401401353,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -5320,7 +5318,6 @@
 							"sid": 343108707196427
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -8384,6 +8381,7 @@
 					"sid": 426699202338661
 				},
 				{
+					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Crab",
@@ -10810,7 +10808,8 @@
 													]
 												}
 											],
-											"sid": 298842557063783
+											"sid": 298842557063783,
+											"disabled": true
 										},
 										{
 											"eventType": "block",
@@ -14644,7 +14643,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
