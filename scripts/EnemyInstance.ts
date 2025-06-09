@@ -1,0 +1,1 @@
+export interface EnemyInstance extends ISpriteInstance {}

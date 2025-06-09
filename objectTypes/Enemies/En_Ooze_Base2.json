@@ -1,7 +1,7 @@
 {
-	"name": "En_Slime_Base",
+	"name": "En_Ooze_Base2",
 	"plugin-id": "Sprite",
-	"sid": 604279196161139,
+	"sid": 706123354895572,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -20,7 +20,7 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 4543603,
+						"imageSpriteId": 2523780,
 						"collisionPoly": {
 							"points": [
 								0.25,
@@ -38,7 +38,7 @@
 						"tag": ""
 					}
 				],
-				"sid": 347391203449823,
+				"sid": 718850465825546,
 				"name": "Default",
 				"isLooping": true,
 				"isPingPong": false,

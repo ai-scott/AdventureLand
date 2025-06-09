@@ -1,0 +1,2282 @@
+{
+	"name": "eEnemy_Crab",
+	"events": [
+		{
+			"bookmark": true,
+			"eventType": "group",
+			"disabled": false,
+			"title": "Crab",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "Passive"
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_aiResult",
+					"type": "string",
+					"initialValue": "\"none\"",
+					"comment": "AI update result string containing action type and parameters (format: action|maskUid|animation|vectorX|vectorY)",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 867345658144357
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_actionType",
+					"type": "string",
+					"initialValue": "\"none\"",
+					"comment": "Parsed action type (hop, idle, walk, attack)",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 118072558227500
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_maskUid",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "UID of the enemy mask for animations",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 690602635333583
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_animName",
+					"type": "string",
+					"initialValue": "",
+					"comment": "Animation name to play",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 134195400189801
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_vectorX",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "Movement vector X component",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 465231208444416
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_newDirection",
+					"type": "string",
+					"initialValue": "",
+					"comment": "New direction for crab (if direction changes)",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 175642754332540
+				},
+				{
+					"eventType": "variable",
+					"name": "crab_vectorY",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "Movement vector Y component",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 561501734088535
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-created",
+							"objectClass": "En_Crab_Base",
+							"sid": 269676266111990
+						}
+					],
+					"actions": [
+						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Crab_Base",
+							"sid": 665210713821128,
+							"parameters": {
+								"instance-variable": "Pair_ID",
+								"value": "En_Crab_Mask.UID"
+							}
+						}
+					],
+					"sid": 172898959403332
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "every-tick",
+							"objectClass": "System",
+							"sid": 496071533730122
+						}
+					],
+					"actions": [
+						{
+							"id": "set-position",
+							"objectClass": "En_Crab_Mask",
+							"sid": 603791286898096,
+							"parameters": {
+								"x": "En_Crab_Base.X",
+								"y": "En_Crab_Base.Y"
+							}
+						}
+					],
+					"sid": 926460783697889
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for-each",
+							"objectClass": "System",
+							"sid": 838758938633170,
+							"parameters": {
+								"object": "En_Crab_Base"
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "En_Crab_Mask",
+							"sid": 439427541883669,
+							"parameters": {
+								"instance-variable": "State",
+								"comparison": 0,
+								"value": "\"Attack\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "setCrabDirection",
+							"sid": 889667714927024
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// COMPLETE TYPESCRIPT CRAB AI - Template for your Crab enemy",
+								"// Use this in your Crab update TypeScript action:",
+								"",
+								"console.log(\"Crab update triggered\");",
+								"",
+								"const enemyData = (globalThis as any).enemyData;",
+								"if (!enemyData) return;",
+								"",
+								"const enemy = runtime.objects.En_Crab_Base.getPickedInstances()[0];",
+								"const player = runtime.objects.Player_Base.getFirstInstance();",
+								"if (!player) return;",
+								"",
+								"const data = enemyData.get(enemy.uid);",
+								"if (!data) return;",
+								"",
+								"console.log(`Crab ${enemy.uid}: state=${data.state}, timer=${data.stateTimer}`);",
+								"",
+								"// Decrement timer",
+								"data.stateTimer = Math.max(0, data.stateTimer - 1);",
+								"",
+								"// Calculate distance to player",
+								"const distance = Math.sqrt(Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2));",
+								"",
+								"// CRAB AI LOGIC WITH DIRECT ACTIONS",
+								"if (data.state === \"Idle\" && data.stateTimer <= 0) {",
+								"  console.log(\"Crab choosing next action, distance:\", distance);",
+								"  ",
+								"  if (distance < 32) {",
+								"    // ATTACK - Close to player",
+								"    console.log(\"Crab attacking\");",
+								"    data.state = \"Attack\";",
+								"    data.stateTimer = 60;",
+								"    ",
+								"    // DIRECT ANIMATION CALL",
+								"    try {",
+								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Attack_${data.direction}`);",
+								"      console.log(`Set attack animation: Attack_${data.direction}`);",
+								"    } catch (error) {",
+								"      console.log(\"Attack animation error:\", error);",
+								"    }",
+								"    ",
+								"  } else if (distance < 120) {",
+								"    // WALK TOWARD PLAYER - Medium distance",
+								"    console.log(\"Crab walking toward player\");",
+								"    data.state = \"Walk\";",
+								"    data.stateTimer = 30 + Math.floor(Math.random() * 30);",
+								"    ",
+								"    // Update direction toward player",
+								"    const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);",
+								"    const angleDeg = ((angle * 180 / Math.PI) + 360) % 360;",
+								"    ",
+								"    if (angleDeg >= 315 || angleDeg < 45) data.direction = \"Right\";",
+								"    else if (angleDeg >= 45 && angleDeg < 135) data.direction = \"Down\";",
+								"    else if (angleDeg >= 135 && angleDeg < 225) data.direction = \"Left\";",
+								"    else data.direction = \"Up\";",
+								"    ",
+								"    // DIRECT ANIMATION AND MOVEMENT",
+								"    try {",
+								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Walk_${data.direction}`);",
+								"      runtime.callFunction(\"setCrabDirection\", enemy.uid); // Your existing function",
+								"      ",
+								"      // Set movement vectors",
+								"      for (const inst of runtime.objects.En_Crab_Base.instances()) {",
+								"        if (inst.uid === enemy.uid) {",
+								"          inst.behaviors[\"8Direction\"].vectorX = Math.cos(angle) * 20;",
+								"          inst.behaviors[\"8Direction\"].vectorY = Math.sin(angle) * 20;",
+								"          console.log(`Crab moving toward player: ${Math.cos(angle) * 20}, ${Math.sin(angle) * 20}`);",
+								"          break;",
+								"        }",
+								"      }",
+								"    } catch (error) {",
+								"      console.log(\"Walk setup error:\", error);",
+								"    }",
+								"    ",
+								"  } else {",
+								"    // RANDOM WALK - Far from player",
+								"    console.log(\"Crab random walk\");",
+								"    data.state = \"Walk\";",
+								"    data.stateTimer = 30 + Math.floor(Math.random() * 30);",
+								"    ",
+								"    // Random direction",
+								"    const directions = [\"Up\", \"Down\", \"Left\", \"Right\"];",
+								"    data.direction = directions[Math.floor(Math.random() * directions.length)];",
+								"    ",
+								"    // DIRECT ANIMATION AND MOVEMENT",
+								"    try {",
+								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Walk_${data.direction}`);",
+								"      ",
+								"      // Set random movement",
+								"      let vx = 0, vy = 0;",
+								"      if (data.direction === \"Up\") { vx = 0; vy = -20; }",
+								"      else if (data.direction === \"Down\") { vx = 0; vy = 20; }",
+								"      else if (data.direction === \"Left\") { vx = -20; vy = 0; }",
+								"      else if (data.direction === \"Right\") { vx = 20; vy = 0; }",
+								"      ",
+								"      for (const inst of runtime.objects.En_Crab_Base.instances()) {",
+								"        if (inst.uid === enemy.uid) {",
+								"          inst.behaviors[\"8Direction\"].vectorX = vx;",
+								"          inst.behaviors[\"8Direction\"].vectorY = vy;",
+								"          console.log(`Crab random walk: ${vx}, ${vy}`);",
+								"          break;",
+								"        }",
+								"      }",
+								"    } catch (error) {",
+								"      console.log(\"Random walk error:\", error);",
+								"    }",
+								"  }",
+								"}",
+								"else if ((data.state === \"Walk\" || data.state === \"Attack\") && data.stateTimer <= 0) {",
+								"  // RETURN TO IDLE",
+								"  console.log(\"Crab returning to idle\");",
+								"  data.state = \"Idle\";",
+								"  data.stateTimer = 12 + Math.floor(Math.random() * 30);",
+								"  ",
+								"  // DIRECT IDLE ANIMATION AND STOP MOVEMENT",
+								"  try {",
+								"    runtime.callFunction(\"Set_Animation\", data.maskUid, `Idle_${data.direction}`);",
+								"    ",
+								"    // Stop movement",
+								"    for (const inst of runtime.objects.En_Crab_Base.instances()) {",
+								"      if (inst.uid === enemy.uid) {",
+								"        inst.behaviors[\"8Direction\"].vectorX = 0;",
+								"        inst.behaviors[\"8Direction\"].vectorY = 0;",
+								"        console.log(\"Crab stopped\");",
+								"        break;",
+								"      }",
+								"    }",
+								"  } catch (error) {",
+								"    console.log(\"Idle transition error:\", error);",
+								"  }",
+								"}",
+								"",
+								"// Debug status",
+								"localVars.crab_aiResult = `${data.state}_${data.stateTimer}_dist${Math.floor(distance)}`;",
+								"console.log(\"Crab status:\", localVars.crab_aiResult);"
+							]
+						}
+					],
+					"sid": 910165093342183
+				},
+				{
+					"eventType": "comment",
+					"text": "Behavior"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-boolean-instance-variable-set",
+							"objectClass": "En_Crab_Mask",
+							"sid": 895934459976196,
+							"parameters": {
+								"instance-variable": "Active"
+							}
+						}
+					],
+					"actions": [],
+					"sid": 244417734732403,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 331378559321470,
+									"parameters": {
+										"instance-variable": "State_Timer",
+										"comparison": 1,
+										"value": "-1"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 389755839034073,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "add-to-instvar",
+									"objectClass": "En_Crab_Mask",
+									"sid": 732838134143680,
+									"parameters": {
+										"instance-variable": "State_Timer",
+										"value": "dt"
+									}
+								}
+							],
+							"sid": 537241720963376
+						},
+						{
+							"eventType": "comment",
+							"text": " Idle"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 409258020388543,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Idle\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation",
+									"objectClass": "En_Crab_Mask",
+									"sid": 743826784268820,
+									"parameters": {
+										"animation": "\"Idle\"",
+										"from": "beginning"
+									}
+								},
+								{
+									"id": "stop",
+									"objectClass": "Audio",
+									"sid": 899766592834607,
+									"parameters": {
+										"tag": "\"crab\""
+									}
+								}
+							],
+							"sid": 740693752617838,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 397473317167179,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 5,
+												"value": "Self.StateLimit"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 868474839090827,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Walk\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 649952104416782,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 902563447027690,
+											"parameters": {
+												"instance-variable": "StateLimit",
+												"value": "0.5 + random(0.8)"
+											}
+										}
+									],
+									"sid": 629108925343030
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 641615319397634,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Idle\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [],
+							"sid": 445247172329386,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 592528387418565,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,En_Crab_Mask.X,En_Crab_Mask.Y)",
+												"comparison": 5,
+												"second-value": "120"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 398766632590806,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Walk\""
+											}
+										}
+									],
+									"sid": 706681022618408
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 842592518876867,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,En_Crab_Mask.X,En_Crab_Mask.Y)",
+												"comparison": 2,
+												"second-value": "120"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 386647799390006,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Cranky\""
+											}
+										}
+									],
+									"sid": 230284141656269
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 331625250770690,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,En_Crab_Mask.X,En_Crab_Mask.Y)",
+												"comparison": 2,
+												"second-value": "32"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 372760696069077,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Attack\""
+											}
+										}
+									],
+									"sid": 154334062850212
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Walk"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 722572348649214,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Walk\""
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 323613741877210,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Cranky\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 280514881954828,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-tag-playing",
+											"objectClass": "Audio",
+											"sid": 173562010954300,
+											"parameters": {
+												"tag": "\"crab\""
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "play",
+											"objectClass": "Audio",
+											"sid": 725677096855893,
+											"parameters": {
+												"audio-file": "Crab Walk",
+												"loop": "looping",
+												"volume": "30",
+												"stereo-pan": "0",
+												"tag-optional": "\"crab\""
+											}
+										}
+									],
+									"sid": 220284374344398
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 523762423890688,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 5,
+												"value": "Self.StateLimit"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Crab_State_Idle",
+											"sid": 926875037978357,
+											"parameters": [
+												"En_Crab_Mask.UID"
+											]
+										}
+									],
+									"sid": 408017271799608
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-animation-playing",
+											"objectClass": "En_Crab_Mask",
+											"sid": 588511830904299,
+											"parameters": {
+												"animation": "En_Crab_Mask.State&\"_\" & En_Crab_Base.Direction"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 231372701993517,
+											"parameters": {
+												"animation": "En_Crab_Mask.State&\"_\" & En_Crab_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 761183659472686
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 752359364054437,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Cranky\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "setCrabDirection",
+											"sid": 686293166019451
+										}
+									],
+									"sid": 136218967595180
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 239190080165515,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Walk\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 541902956370285,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 163905182348231,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Up\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 468386462144226,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												}
+											],
+											"sid": 981909771066114,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Mask",
+															"sid": 526278360181440,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "-4"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "En_Crab_Base",
+															"sid": 675756063079359,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "down"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Crab_Base",
+															"sid": 364992808842254,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Down\""
+															}
+														},
+														{
+															"id": "set-y",
+															"objectClass": "En_Crab_Base",
+															"sid": 276476050032841,
+															"parameters": {
+																"y": "Self.Y+5"
+															}
+														},
+														{
+															"callFunction": "resetEnemyTimer",
+															"sid": 580141336809258,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 782771070824936
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 730914564218347,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Down\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Crab_Mask",
+													"sid": 269513128474368,
+													"parameters": {
+														"animation": "\"Walk_Right\"",
+														"from": "beginning"
+													}
+												},
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 188333727246475,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												}
+											],
+											"sid": 223140417098877,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Mask",
+															"sid": 322830499476263,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "4"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "En_Crab_Base",
+															"sid": 253314797787412,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "up"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Crab_Base",
+															"sid": 697760099984130,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Up\""
+															}
+														},
+														{
+															"id": "set-y",
+															"objectClass": "En_Crab_Base",
+															"sid": 833596850233408,
+															"parameters": {
+																"y": "Self.Y-5"
+															}
+														},
+														{
+															"callFunction": "resetEnemyTimer",
+															"sid": 700347226249006,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 963776813859802
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 238229706571629,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Right\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 481494869948016,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												}
+											],
+											"sid": 988964602328216,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Mask",
+															"sid": 411899455781686,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "4",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "simulate-control",
+															"objectClass": "En_Crab_Base",
+															"sid": 896506687016305,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "left"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Crab_Base",
+															"sid": 571092588896823,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Left\""
+															}
+														},
+														{
+															"id": "set-x",
+															"objectClass": "En_Crab_Base",
+															"sid": 323696867411289,
+															"parameters": {
+																"x": "Self.X-5"
+															}
+														},
+														{
+															"callFunction": "resetEnemyTimer",
+															"sid": 988074077087965,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 522754145427108
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 117045918006625,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Left\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 939340830349763,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												}
+											],
+											"sid": 198097080636459,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Mask",
+															"sid": 148001939655366,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "-4",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-x",
+															"objectClass": "En_Crab_Base",
+															"sid": 311413158233219,
+															"parameters": {
+																"x": "Self.X+5"
+															}
+														},
+														{
+															"id": "simulate-control",
+															"objectClass": "En_Crab_Base",
+															"sid": 607443264271294,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"control": "right"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Crab_Base",
+															"sid": 867279617280254,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Right\""
+															}
+														},
+														{
+															"callFunction": "resetEnemyTimer",
+															"sid": 945751910692651,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 861101780288357
+												}
+											]
+										}
+									]
+								}
+							],
+							"isOrBlock": true
+						},
+						{
+							"eventType": "comment",
+							"text": "Attack - have claw launch toward player when they're close"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 877193876660955,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Attack\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "setCrabDirection",
+									"sid": 428454287886596
+								}
+							],
+							"sid": 352622110544001,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-animation-playing",
+											"objectClass": "En_Crab_Mask",
+											"sid": 366940058761461,
+											"parameters": {
+												"animation": "\"Attack_\" & En_Crab_Base.Direction"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 475040984975213,
+											"parameters": {
+												"animation": "\"Attack_\" & En_Crab_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"callFunction": "resetEnemyTimer",
+											"sid": 384146383693044,
+											"parameters": [
+												"En_Crab_Mask.UID"
+											]
+										}
+									],
+									"sid": 785749783753734,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-tag-playing",
+													"objectClass": "Audio",
+													"sid": 454295962257499,
+													"parameters": {
+														"tag": "\"crab\""
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "play",
+													"objectClass": "Audio",
+													"sid": 392554882895829,
+													"parameters": {
+														"audio-file": "CrabAttack",
+														"loop": "not-looping",
+														"volume": "30",
+														"stereo-pan": "0",
+														"tag-optional": "\"crab\""
+													}
+												}
+											],
+											"sid": 732146791376662
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 398753856171787,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 5,
+												"value": "Self.StateLimit"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Crab_State_Idle",
+											"sid": 882726326592679,
+											"parameters": [
+												"En_Crab_Mask.UID"
+											]
+										}
+									],
+									"sid": 398902422834600
+								}
+							]
+						},
+						{
+							"functionName": "Crab_State_Idle",
+							"functionDescription": "",
+							"functionCategory": "Battle",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "crabUid",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 437624072167363
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "En_Crab_Mask",
+									"sid": 962707482551210,
+									"parameters": {
+										"unique-id": "crabUid"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Crab_Mask",
+									"sid": 800999013052234,
+									"parameters": {
+										"instance-variable": "State",
+										"value": "\"Idle\""
+									}
+								},
+								{
+									"callFunction": "resetEnemyTimer",
+									"sid": 567795749826481,
+									"parameters": [
+										"En_Crab_Mask.UID"
+									]
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Crab_Base",
+									"sid": 216305317824847,
+									"parameters": {
+										"instance-variable": "Direction",
+										"value": "choose(\"Up\",\"Down\",\"Left\",\"Right\")"
+									}
+								},
+								{
+									"id": "stop",
+									"objectClass": "Audio",
+									"sid": 919771720766308,
+									"parameters": {
+										"tag": "\"crab\""
+									}
+								}
+							],
+							"sid": 565500740673641
+						},
+						{
+							"functionName": "setCrabDirection",
+							"functionDescription": "aim at the player",
+							"functionCategory": "Battle",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "set-vector-x",
+									"objectClass": "En_Crab_Base",
+									"sid": 151016751174440,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"vector-x": "cos(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 20"
+									}
+								},
+								{
+									"id": "set-vector-y",
+									"objectClass": "En_Crab_Base",
+									"sid": 128829906705975,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"vector-y": "sin(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 20"
+									}
+								}
+							],
+							"sid": 908571308395716,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 640056237229209,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "270"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 181710659089849,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Up\""
+											}
+										}
+									],
+									"sid": 544768498798556
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 625255422494164,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "180"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 440920152136231,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Left\""
+											}
+										}
+									],
+									"sid": 258211274266593
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 647588607298215,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "90"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 107725748278728,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										}
+									],
+									"sid": 303865241961351
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 109662620080855,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 673383153037334,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Right\""
+											}
+										}
+									],
+									"sid": 819588471818750
+								}
+							]
+						}
+					]
+				},
+				{
+					"eventType": "comment",
+					"text": ""
+				},
+				{
+					"functionName": "resetEnemyTimer",
+					"functionDescription": "",
+					"functionCategory": "Battle",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "enemyUid",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 691142970274102
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [
+						{
+							"id": "pick-by-unique-id",
+							"objectClass": "EnemyMasks",
+							"sid": 380187238461673,
+							"parameters": {
+								"unique-id": "enemyUid"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Crab_Mask",
+							"sid": 669468254959575,
+							"parameters": {
+								"instance-variable": "State_Timer",
+								"value": "0"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Crab_Mask",
+							"sid": 323086233793404,
+							"parameters": {
+								"instance-variable": "StateLimit",
+								"value": "0.2 + random(0.5)"
+							}
+						}
+					],
+					"sid": 472314829803329
+				},
+				{
+					"eventType": "group",
+					"disabled": true,
+					"title": "Crab movement",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Crab_Base",
+									"sid": 981283791935509
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Crab_Base",
+									"sid": 253196453137431,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Crab_Mask.UID"
+									}
+								}
+							],
+							"sid": 942406972270127,
+							"disabled": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 453195744868669
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Crab_Mask",
+									"sid": 905963004440209,
+									"parameters": {
+										"x": "En_Crab_Base.X",
+										"y": "En_Crab_Base.Y"
+									}
+								}
+							],
+							"sid": 878507476463989,
+							"disabled": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 991028432769159,
+									"parameters": {
+										"object": "En_Crab_Base"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Crab_Mask",
+									"sid": 757970494611821,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Idle\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Crab_Base",
+									"sid": 649248687412441,
+									"parameters": {
+										"instance-variable": "Player_AngleDiff",
+										"value": "((angle(Player_Base.X,Player_Base.Y,En_Crab_Base.X,En_Crab_Base.Y)+360)%360) - 180"
+									}
+								}
+							],
+							"sid": 774964412619242,
+							"disabled": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 403628790348681,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "270"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 571537611719287,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Up\""
+											}
+										}
+									],
+									"sid": 762863821965018,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 168485817156933,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "180"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 906436015232989,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Left\""
+											}
+										}
+									],
+									"sid": 468494220612750,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 823518678945423,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "90"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 196613115395238,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										}
+									],
+									"sid": 567425697304889,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 358523569237248,
+											"parameters": {
+												"angle-1": "En_Crab_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Base",
+											"sid": 151694655720835,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Right\""
+											}
+										}
+									],
+									"sid": 726079059602791,
+									"disabled": true
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Set Crab to scuttle side to side and stop randomly, then change direction - hitting a wall will cause a direction change too."
+						},
+						{
+							"eventType": "comment",
+							"text": "If Player gets close, it goes into cranky mode and will come toward you and randomly attack "
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Crab_Mask",
+									"sid": 466650346307442,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 966264477610658,
+							"disabled": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 766426157969566,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 1,
+												"value": "-1"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 428175812576499,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Crab_Mask",
+											"sid": 851598738000965,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 599049914419318,
+									"disabled": true
+								},
+								{
+									"eventType": "comment",
+									"text": " Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 399668280602774,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 947445481647034,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Crab_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 242781771006853,
+									"disabled": true,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Mask",
+													"sid": 993974980238213,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "Self.StateLimit"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 657821476977091,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "choose(\"Walk\", \"Walk\", \"Attack\")"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 398562539009893,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 418791984833653,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.8)"
+													}
+												}
+											],
+											"sid": 124990029051706,
+											"disabled": true
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Walk"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 352982607652469,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Walk\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 881692612664283,
+											"parameters": {
+												"animation": "\"Walk_\" & En_Crab_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 854315129328862,
+									"disabled": true,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 805992712909489,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Up\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 818286459079582,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												}
+											],
+											"sid": 251384033639278,
+											"disabled": true,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Base",
+															"sid": 807810712038705,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "-1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 903569817369858,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 427920776144249,
+													"disabled": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 506105416994926,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Down\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 703351207942832,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												}
+											],
+											"sid": 895317823681888,
+											"disabled": true,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Base",
+															"sid": 907593913435920,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 719242666773617,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 431740184946447,
+													"disabled": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 775937718577561,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Right\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 270155627299359,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												}
+											],
+											"sid": 552241046126381,
+											"disabled": true,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Base",
+															"sid": 218703875050247,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "1",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 744707452590014,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 349314162480948,
+													"disabled": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Base",
+													"sid": 484018631928524,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Left\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Crab_Base",
+													"sid": 964944714343837,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												}
+											],
+											"sid": 954719157843135,
+											"disabled": true,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Crab_Base",
+															"sid": 656173696840557,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "-1",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 604615845018979,
+															"parameters": [
+																"En_Crab_Mask.UID"
+															]
+														}
+													],
+													"sid": 315184417457473,
+													"disabled": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Mask",
+													"sid": 302468236194272,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "Self.StateLimit"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Skeleton_State_Idle",
+													"sid": 685276823871840,
+													"parameters": [
+														"En_Crab_Mask.UID"
+													]
+												}
+											],
+											"sid": 559099467354693,
+											"disabled": true
+										},
+										{
+											"functionName": "Skeleton_State_Idle2",
+											"functionDescription": "Automatically converted from 'Skeleton_State_Idle'",
+											"functionCategory": "",
+											"functionReturnType": "none",
+											"functionCopyPicked": false,
+											"functionIsAsync": false,
+											"functionParameters": [
+												{
+													"name": "skeletonUid",
+													"type": "number",
+													"initialValue": "0",
+													"comment": "",
+													"sid": 482355042526415
+												}
+											],
+											"eventType": "function-block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Crab_Mask",
+													"sid": 423697778382400,
+													"parameters": {
+														"unique-id": "skeletonUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 974177706834031,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 366661892923854,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 783462629961375,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.5)"
+													}
+												}
+											],
+											"sid": 524033481985563,
+											"disabled": true
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Attack"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Crab_Mask",
+											"sid": 585825365646447,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Attack\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 881868865727162,
+									"disabled": true,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-animation-playing",
+													"objectClass": "En_Crab_Mask",
+													"sid": 774155875258884,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Crab_Base.Direction"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Crab_Mask",
+													"sid": 796500716306701,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Crab_Base.Direction",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 348108598822950,
+											"disabled": true
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Crab_Mask",
+													"sid": 484904325110461
+												},
+												{
+													"id": "is-animation-playing",
+													"objectClass": "En_Crab_Mask",
+													"sid": 470329661574696,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Crab_Base.Direction"
+													}
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "En_Crab_Mask",
+													"sid": 501535206857800,
+													"parameters": {
+														"comparison": 0,
+														"number": "1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 215421496029086,
+													"parameters": {
+														"object-to-create": "Projectile_Skeleton",
+														"layer": "\"Objects\"",
+														"x": "En_Crab_Mask.X",
+														"y": "En_Crab_Mask.Y - 10",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "set-angle-of-motion",
+													"objectClass": "Projectile_Skeleton",
+													"sid": 768684958023918,
+													"behaviorType": "Bullet",
+													"parameters": {
+														"angle": "angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)"
+													}
+												},
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 356430356155039,
+													"parameters": [
+														"\"Skeleton_Throw\"",
+														"0",
+														"\"\""
+													]
+												}
+											],
+											"sid": 626302809284980
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Crab_Mask",
+													"sid": 359928931298105,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Crab_Base.Direction"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Crab_Mask",
+													"sid": 657400527046457,
+													"parameters": {
+														"instance-variable": "State",
+														"comparison": 0,
+														"value": "\"Attack\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 120717077066952,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 621134671292630,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Crab_Mask",
+													"sid": 301440363286390,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.5)"
+													}
+												}
+											],
+											"sid": 480012201185108,
+											"disabled": true
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						}
+					],
+					"sid": 157264293520573
+				}
+			],
+			"sid": 976074513127602
+		}
+	],
+	"sid": 718433487200026
+}

@@ -1,0 +1,6106 @@
+{
+	"name": "eEnemies",
+	"events": [
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Enemies",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Enemy Common",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Activate"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 120423380127030
+								},
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "EnemyMasks",
+									"sid": 782235502728384,
+									"parameters": {
+										"instance-variable": "Active"
+									},
+									"isInverted": true
+								},
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "EnemyMasks",
+									"sid": 320058191653193,
+									"parameters": {
+										"instance-variable": "DontActivate"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-boolean-instvar",
+									"objectClass": "EnemyMasks",
+									"sid": 110067958975389,
+									"parameters": {
+										"instance-variable": "Active",
+										"value": "true"
+									}
+								}
+							],
+							"sid": 682388741032235
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 597230965985528
+								}
+							],
+							"actions": [],
+							"sid": 631222267004867,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 551130440135376,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 3,
+												"second-value": "100"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyThreatMusic",
+											"sid": 760808654955447
+										}
+									],
+									"sid": 394085873726444
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 152570904250133
+								}
+							],
+							"actions": [],
+							"sid": 741627416616662,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 878921001872853,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 3,
+												"second-value": "250"
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 891313979695062,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 4,
+												"second-value": "100"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyNearMusic",
+											"sid": 572144107688525
+										}
+									],
+									"sid": 542893068735971
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "EnemyMasks",
+									"sid": 893123039723326
+								}
+							],
+							"actions": [],
+							"sid": 278542893353115,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 587997122445640,
+											"parameters": {
+												"first-value": "distance(Player_Base.X,Player_Base.Y,EnemyMasks.X,EnemyMasks.Y)",
+												"comparison": 4,
+												"second-value": "250"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "enemyGoneMusic",
+											"sid": 407011256197670
+										}
+									],
+									"sid": 500947998640347
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Attack enemy"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-collision-with-another-object",
+									"objectClass": "Player_Sword",
+									"sid": 461497010456662,
+									"parameters": {
+										"object": "EnemyMasks"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "Enemy_Hurt",
+									"sid": 483448440378601,
+									"parameters": [
+										"EnemyMasks.UID"
+									]
+								}
+							],
+							"sid": 609077742619404
+						},
+						{
+							"eventType": "comment",
+							"text": "flash white when hit"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "EnemyMasks",
+									"sid": 252869731426821,
+									"parameters": {
+										"instance-variable": "Hurt_FX",
+										"comparison": 4,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "subtract-from-instvar",
+									"objectClass": "EnemyMasks",
+									"sid": 435957070619463,
+									"parameters": {
+										"instance-variable": "Hurt_FX",
+										"value": "dt"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "EnemyMasks",
+									"sid": 137241214872269,
+									"parameters": {
+										"effect": "\"Brightness\"",
+										"parameter-index": "0",
+										"value": "200"
+									}
+								}
+							],
+							"sid": 515708777511894
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "EnemyMasks",
+									"sid": 827121694740111,
+									"parameters": {
+										"instance-variable": "Hurt_FX",
+										"comparison": 3,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "EnemyMasks",
+									"sid": 710530469883172,
+									"parameters": {
+										"effect": "\"Brightness\"",
+										"parameter-index": "0",
+										"value": "100"
+									}
+								}
+							],
+							"sid": 160184190643994
+						},
+						{
+							"eventType": "comment",
+							"text": "knock back"
+						},
+						{
+							"functionName": "Enemy_Hurt",
+							"functionDescription": "Automatically converted from 'Enemy_Hurt'",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "enemyUid",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 537883398919911
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "Audio_Play_Sound",
+									"sid": 717557390526406,
+									"parameters": [
+										"\"Enemy_Hurt\"",
+										"0",
+										"\"Enemy_Hurt\""
+									]
+								}
+							],
+							"sid": 964461449272080,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "EnemyMasks",
+											"sid": 196637892143362,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "EnemyMasks",
+											"sid": 756401423081852,
+											"parameters": {
+												"instance-variable": "Hurt_FX",
+												"value": "0.1"
+											}
+										}
+									],
+									"sid": 994069433450233,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "for-each",
+													"objectClass": "System",
+													"sid": 320458882914959,
+													"parameters": {
+														"object": "EnemyBases"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "EnemyBases",
+													"sid": 359346755492046,
+													"parameters": {
+														"instance-variable": "Pair_ID",
+														"comparison": 0,
+														"value": "EnemyMasks.UID"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "EnemyBases",
+													"sid": 587315269468898,
+													"parameters": {
+														"instance-variable": "Hurt",
+														"value": "true"
+													}
+												},
+												{
+													"id": "subtract-from-instvar",
+													"objectClass": "EnemyBases",
+													"sid": 668544685183383,
+													"parameters": {
+														"instance-variable": "Health",
+														"value": "Dict_SaveGameData.Get(\"Attack\")"
+													}
+												}
+											],
+											"sid": 600322125151408,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "EnemyBases",
+															"sid": 195137513120847,
+															"parameters": {
+																"instance-variable": "CanBeKnockedBack"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "EnemyBases",
+															"sid": 926202022160633,
+															"parameters": {
+																"instance-variable": "Knockback_Timer",
+																"value": "0.3"
+															}
+														},
+														{
+															"id": "set-max-speed",
+															"objectClass": "EnemyBases",
+															"sid": 367791907509362,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"max-speed": "200"
+															}
+														},
+														{
+															"id": "set-deceleration",
+															"objectClass": "EnemyBases",
+															"sid": 658441885129600,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"deceleration": "500"
+															}
+														},
+														{
+															"id": "set-vector-x",
+															"objectClass": "EnemyBases",
+															"sid": 638412094713136,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"vector-x": "cos(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)+180) * 200"
+															}
+														},
+														{
+															"id": "set-vector-y",
+															"objectClass": "EnemyBases",
+															"sid": 403894147078824,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"vector-y": "sin(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)+180) * 200"
+															}
+														}
+													],
+													"sid": 854309918751284
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "EnemyBases",
+															"sid": 264124747158786,
+															"parameters": {
+																"instance-variable": "CanBeKnockedBack"
+															},
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "Player_Mask",
+															"sid": 840306802937406,
+															"parameters": {
+																"instance-variable": "isKnockedBack",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Player_Mask",
+															"sid": 750228696788719,
+															"parameters": {
+																"instance-variable": "KnockBackTimer",
+																"value": "0.3"
+															}
+														},
+														{
+															"id": "set-ignoring-input",
+															"objectClass": "Player_Base",
+															"sid": 307086625923879,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"input": "start-ignoring"
+															}
+														},
+														{
+															"id": "set-max-speed",
+															"objectClass": "Player_Base",
+															"sid": 116413735415695,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"max-speed": "PlayerSpeed*2"
+															}
+														},
+														{
+															"id": "set-deceleration",
+															"objectClass": "Player_Base",
+															"sid": 234505382925023,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"deceleration": "PlayerSpeed*5"
+															}
+														},
+														{
+															"id": "set-vector-x",
+															"objectClass": "Player_Base",
+															"sid": 125245189423019,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"vector-x": "cos(angle(Self.X,Self.Y,EnemyBases.X,EnemyBases.Y)+180) * 200"
+															}
+														},
+														{
+															"id": "set-vector-y",
+															"objectClass": "Player_Base",
+															"sid": 857262769770611,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"vector-y": "sin(angle(Self.X,Self.Y,EnemyBases.X,EnemyBases.Y)+180) * 200"
+															}
+														}
+													],
+													"sid": 651358480099726
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "EnemyBases",
+															"sid": 289901289785254,
+															"parameters": {
+																"instance-variable": "Health",
+																"comparison": 3,
+																"value": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Enemy_Flash",
+															"sid": 573314268585841,
+															"parameters": [
+																"EnemyBases.Pair_ID"
+															]
+														}
+													],
+													"sid": 931608828682230
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Handling for specific kinds of enemies"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 618968472077731,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 233848537993690,
+											"parameters": {
+												"animation": "\"Hurt_\" & En_Ooze_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 678166269984925,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 232848590574651,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 906830400756548
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Crab_Mask",
+											"sid": 993887187632738,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 563365933035985,
+											"parameters": {
+												"animation": "\"Hurt\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "stop",
+											"objectClass": "Audio",
+											"sid": 801456937516225,
+											"parameters": {
+												"tag": "\"crab\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 486514398871346,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Crab_Mask",
+											"sid": 436362840104827,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 259777132436466
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 365234012358013,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 901225384297358,
+											"parameters": {
+												"animation": "\"Hurt_\" & En_Ooze_Base2.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 874098476463356,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 630655153446448,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 677011586512952
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 310237831892842,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 879786538694485,
+											"parameters": {
+												"animation": "\"Hurt_\" & En_Skeleton_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 984171811067434,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 395549886847157,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 844657727762743,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 619936203911489
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 509058812785919,
+											"parameters": {
+												"unique-id": "enemyUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 110498303373518,
+											"parameters": {
+												"animation": "\"Hurt\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 558920005881121,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 133144897190671,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 682315768610198
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "EnemyBases",
+									"sid": 467628937900474,
+									"parameters": {
+										"instance-variable": "Knockback_Timer",
+										"comparison": 4,
+										"value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "subtract-from-instvar",
+									"objectClass": "EnemyBases",
+									"sid": 761672185832623,
+									"parameters": {
+										"instance-variable": "Knockback_Timer",
+										"value": "dt"
+									}
+								}
+							],
+							"sid": 136178673097283
+						},
+						{
+							"eventType": "comment",
+							"text": "recover from hit"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "EnemyBases",
+									"sid": 660267770247089,
+									"parameters": {
+										"instance-variable": "Hurt"
+									}
+								},
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 699894898341593,
+									"parameters": {
+										"object": "EnemyBases"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 132905764245094,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "EnemyBases",
+											"sid": 545906975331114,
+											"parameters": {
+												"instance-variable": "Knockback_Timer",
+												"comparison": 3,
+												"value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-max-speed",
+											"objectClass": "EnemyBases",
+											"sid": 186625390926504,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"max-speed": "Self.Default_MaxSpeed"
+											}
+										},
+										{
+											"id": "set-acceleration",
+											"objectClass": "EnemyBases",
+											"sid": 798775958620026,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"acceleration": "Self.Default_Acceleration"
+											}
+										},
+										{
+											"id": "set-deceleration",
+											"objectClass": "EnemyBases",
+											"sid": 903707281263969,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"deceleration": "Self.Default_Deceleration"
+											}
+										},
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "EnemyBases",
+											"sid": 639534943232988,
+											"parameters": {
+												"instance-variable": "Hurt",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 160340490124746,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "EnemyBases",
+													"sid": 206151160955635,
+													"parameters": {
+														"instance-variable": "Health",
+														"comparison": 4,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Enemy_Recover",
+													"sid": 934237541652302,
+													"parameters": [
+														"EnemyBases.Pair_ID"
+													]
+												}
+											],
+											"sid": 434730083162725
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "EnemyBases",
+													"sid": 646241816865501,
+													"parameters": {
+														"instance-variable": "Health",
+														"comparison": 3,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Enemy_Death",
+													"sid": 910654898430770,
+													"parameters": [
+														"EnemyBases.Pair_ID"
+													]
+												}
+											],
+											"sid": 229875017681821
+										}
+									]
+								}
+							]
+						},
+						{
+							"functionName": "Enemy_Recover",
+							"functionDescription": "Automatically converted from 'Enemy_Recover'",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "pairUid",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 670451493429714
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [],
+							"sid": 619338742279858,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 527851621443745,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 150578487265230,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ooze_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 951462268876075,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Idle\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 421515647378419,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 307359855841720,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										}
+									],
+									"sid": 163330850116461
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 893643560762083,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 102912981136724,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ooze_Base2.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 305663850668757,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Idle\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 824470898960203,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 200156871783450,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										}
+									],
+									"sid": 575863101733998
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Crab_Mask",
+											"sid": 487350788030010,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Crab_Mask",
+											"sid": 540954747057912,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Crab_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 378052570844239,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Idle\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Crab_Mask",
+											"sid": 196506898141148,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Crab_Mask",
+											"sid": 149100665149699,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										}
+									],
+									"sid": 135518690781362
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 423726721952186,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 734951527221360,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "choose(\"Idle\", \"Attack\")"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 376431359960105,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										}
+									],
+									"sid": 319817246050099
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 750090606493674,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 942333284475691,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ghost_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 183303547728200,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Idle\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 514534428251528,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 206784224330267,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										}
+									],
+									"sid": 625029754006011
+								}
+							]
+						},
+						{
+							"functionName": "Enemy_Death",
+							"functionDescription": "Automatically converted from 'Enemy_Death'",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "pairUid",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 942771810562086
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "enemyGoneMusic",
+									"sid": 210618460497653
+								}
+							],
+							"sid": 130921791830216,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 694523680015364,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Audio_Play_Sound",
+											"sid": 501631490259927,
+											"parameters": [
+												"\"Enemy_Destroy\"",
+												"0",
+												"\"Enemy_Destroy\""
+											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "En_Ooze_Mask",
+											"sid": 555764465317884
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 274138303017104,
+											"parameters": {
+												"object-to-create": "Particle",
+												"layer": "\"Objects\"",
+												"x": "En_Ooze_Mask.X",
+												"y": "En_Ooze_Mask.Y - 8",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-animation",
+											"objectClass": "Particle",
+											"sid": 743470845874635,
+											"parameters": {
+												"animation": "\"Default\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"callFunction": "dropLoot",
+											"sid": 255997774407675,
+											"parameters": [
+												"En_Ooze_Mask.X",
+												"En_Ooze_Mask.Y - 8",
+												"int(2 + random(2))"
+											]
+										}
+									],
+									"sid": 972974441024976
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 113598665938375,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Audio_Play_Sound",
+											"sid": 550761995599363,
+											"parameters": [
+												"\"Enemy_Destroy\"",
+												"0",
+												"\"Enemy_Destroy\""
+											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 616699412480492
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 207972324888726,
+											"parameters": {
+												"object-to-create": "Particle",
+												"layer": "\"Objects\"",
+												"x": "En_Ooze_Mask2.X",
+												"y": "En_Ooze_Mask2.Y - 8",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"callFunction": "dropLoot",
+											"sid": 476062123609120,
+											"parameters": [
+												"En_Ooze_Mask2.X",
+												"En_Ooze_Mask2.Y - 8",
+												"int(3 + random(3))"
+											]
+										}
+									],
+									"sid": 482823459213967
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Crab_Mask",
+											"sid": 437798694988274,
+											"parameters": {
+												"unique-id": "pairUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Audio_Play_Sound",
+											"sid": 724649876674201,
+											"parameters": [
+												"\"Enemy_Destroy\"",
+												"0",
+												"\"Enemy_Destroy\""
+											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "En_Crab_Mask",
+											"sid": 972142046662817
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 344467646710986,
+											"parameters": {
+												"object-to-create": "Particle",
+												"layer": "\"Objects\"",
+												"x": "En_Crab_Mask.X",
+												"y": "En_Crab_Mask.Y - 8",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"callFunction": "dropLoot",
+											"sid": 268986632767170,
+											"parameters": [
+												"En_Crab_Mask.X",
+												"En_Crab_Mask.Y - 8",
+												"int(3 + random(3))"
+											]
+										},
+										{
+											"id": "stop",
+											"objectClass": "Audio",
+											"sid": 194522943490593,
+											"parameters": {
+												"tag": "\"crab\""
+											}
+										}
+									],
+									"sid": 102781622293885
+								},
+								{
+									"eventType": "group",
+									"disabled": false,
+									"title": "Deactivated enemies",
+									"description": "",
+									"isActiveOnStart": true,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 131544710578443,
+													"parameters": {
+														"unique-id": "pairUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 573420544649732,
+													"parameters": [
+														"\"Enemy_Destroy\"",
+														"0",
+														"\"Enemy_Destroy\""
+													]
+												},
+												{
+													"id": "destroy",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 153645538726459
+												},
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 657582067722416,
+													"parameters": {
+														"object-to-create": "Particle",
+														"layer": "\"Objects\"",
+														"x": "En_Skeleton_Mask.X",
+														"y": "En_Skeleton_Mask.Y - 8",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"callFunction": "dropLoot",
+													"sid": 787711660814675,
+													"parameters": [
+														"En_Skeleton_Mask.X",
+														"En_Skeleton_Mask.Y - 8",
+														"int(3 + random(6))"
+													]
+												}
+											],
+											"sid": 302685550615337
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 278883855979889,
+													"parameters": {
+														"unique-id": "pairUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 816891004000630,
+													"parameters": [
+														"\"Enemy_Destroy\"",
+														"0",
+														"\"Enemy_Destroy\""
+													]
+												},
+												{
+													"id": "destroy",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 414294686487620
+												},
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 447062688055842,
+													"parameters": {
+														"object-to-create": "Particle",
+														"layer": "\"Objects\"",
+														"x": "En_Ghost_Mask.X",
+														"y": "En_Ghost_Mask.Y - 8",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"callFunction": "dropLoot",
+													"sid": 629184600483037,
+													"parameters": [
+														"En_Ghost_Mask.X",
+														"En_Ghost_Mask.Y - 8",
+														"int(2 + random(2))"
+													]
+												}
+											],
+											"sid": 682036721862989
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Golem_Mask",
+													"sid": 359256988140543,
+													"parameters": {
+														"unique-id": "pairUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 482040282599301,
+													"parameters": [
+														"\"Enemy_Destroy\"",
+														"0",
+														"\"Enemy_Destroy\""
+													]
+												},
+												{
+													"id": "destroy",
+													"objectClass": "En_Golem_Mask",
+													"sid": 377200743222011
+												},
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 969288850398241,
+													"parameters": {
+														"object-to-create": "Particle",
+														"layer": "\"Objects\"",
+														"x": "En_Golem_Mask.X",
+														"y": "En_Golem_Mask.Y - 8",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												}
+											],
+											"sid": 863766935331223,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "Projectile_Golem",
+															"sid": 808814021079940,
+															"parameters": {
+																"instance-variable": "ID",
+																"comparison": 0,
+																"value": "En_Golem_Mask.UID"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "destroy",
+															"objectClass": "Projectile_Golem",
+															"sid": 464778029569735
+														}
+													],
+													"sid": 872506471853943
+												},
+												{
+													"eventType": "block",
+													"conditions": [],
+													"actions": [
+														{
+															"callFunction": "dropLoot",
+															"sid": 343770934769225,
+															"parameters": [
+																"En_Golem_Mask.X",
+																"En_Golem_Mask.Y - 8",
+																"int(2 + random(2))"
+															]
+														}
+													],
+													"sid": 380251986715488
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Demon_Mask",
+													"sid": 417928181085302,
+													"parameters": {
+														"unique-id": "pairUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "stop-all",
+													"objectClass": "Audio",
+													"sid": 574113226950758
+												},
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 441517449548319,
+													"parameters": [
+														"\"BossDeath\"",
+														"0",
+														"\"BossDeath\""
+													]
+												},
+												{
+													"callFunction": "Transition",
+													"sid": 399673931156449,
+													"parameters": [
+														"\"In\"",
+														"\"1\"",
+														"\"\""
+													]
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 922664269610533,
+													"parameters": {
+														"variable": "PauseLock",
+														"value": "1"
+													}
+												},
+												{
+													"id": "destroy",
+													"objectClass": "Projectile_Demon_Bat",
+													"sid": 890215646337767
+												},
+												{
+													"id": "destroy",
+													"objectClass": "Projectile_Demon_Sword",
+													"sid": 702032153386197
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "En_Demon_Mask",
+													"sid": 804245041159713,
+													"parameters": {
+														"instance-variable": "Active",
+														"value": "false"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "En_Demon_Mask",
+													"sid": 843343780877635,
+													"parameters": {
+														"instance-variable": "DontActivate",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 960781649529204,
+													"parameters": {
+														"animation": "\"Death\"",
+														"from": "beginning"
+													}
+												},
+												{
+													"id": "flash",
+													"objectClass": "En_Demon_Mask",
+													"sid": 248776604663952,
+													"behaviorType": "Flash",
+													"parameters": {
+														"on-time": "0.03",
+														"off-time": "0.03",
+														"duration": "3"
+													}
+												},
+												{
+													"id": "wait",
+													"objectClass": "System",
+													"sid": 253029952684680,
+													"parameters": {
+														"seconds": "3",
+														"use-timescale": true
+													}
+												},
+												{
+													"id": "destroy",
+													"objectClass": "En_Demon_Mask",
+													"sid": 372786504944991
+												}
+											],
+											"sid": 172634448917132,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "repeat",
+															"objectClass": "System",
+															"sid": 996549766838612,
+															"parameters": {
+																"count": "10"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 902671984922294,
+															"parameters": {
+																"object-to-create": "Particle",
+																"layer": "\"Objects\"",
+																"x": "En_Demon_Base.X",
+																"y": "En_Demon_Base.Y",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-speed",
+															"objectClass": "Particle",
+															"sid": 157363951191730,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"speed": "60"
+															}
+														},
+														{
+															"id": "set-angle-of-motion",
+															"objectClass": "Particle",
+															"sid": 563563878397133,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"angle": "loopindex * 36"
+															}
+														}
+													],
+													"sid": 759592140753797
+												}
+											]
+										}
+									],
+									"sid": 420070460883951
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 454131041348953,
+											"parameters": {
+												"first-value": "Door.Count",
+												"comparison": 4,
+												"second-value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 710834013389288,
+											"parameters": {
+												"seconds": "0.2",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "CheckRoomClear",
+											"sid": 830720498333652
+										}
+									],
+									"sid": 418807282780148
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "flash white when hit"
+						},
+						{
+							"functionName": "Enemy_Flash",
+							"functionDescription": "Automatically converted from 'Enemy_Flash'",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "enemyUid",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 877416254188129
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "EnemyMasks",
+									"sid": 591118314357631,
+									"parameters": {
+										"unique-id": "enemyUid"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "flash",
+									"objectClass": "EnemyMasks",
+									"sid": 647095093128538,
+									"behaviorType": "Flash",
+									"parameters": {
+										"on-time": "0.03",
+										"off-time": "0.03",
+										"duration": "Infinity"
+									}
+								}
+							],
+							"sid": 406403037026823
+						},
+						{
+							"functionName": "Set_Animation",
+							"functionDescription": "trigger an animation for a given sprite",
+							"functionCategory": "Animation",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "spriteUID",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "UID of the sprite you want to animate",
+									"sid": 735725811729157
+								},
+								{
+									"name": "animationName",
+									"type": "string",
+									"initialValue": "",
+									"comment": "The animation name to play",
+									"sid": 981266972437726
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [
+								{
+									"id": "pick-by-unique-id",
+									"objectClass": "EnemyMasks",
+									"sid": 954664329930206,
+									"parameters": {
+										"unique-id": "spriteUID"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation",
+									"objectClass": "EnemyMasks",
+									"sid": 550260148418496,
+									"parameters": {
+										"animation": "animationName",
+										"from": "beginning"
+									}
+								}
+							],
+							"sid": 594471580075680
+						}
+					],
+					"sid": 427909769420936
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Blue Slime",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Ooze_Base2",
+									"sid": 361115517139100
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Ooze_Base2",
+									"sid": 802415986077894,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Ooze_Mask2.UID"
+									}
+								}
+							],
+							"sid": 164799602153350
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 812709803070016
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Ooze_Mask2",
+									"sid": 606180415800395,
+									"parameters": {
+										"x": "En_Ooze_Base2.X",
+										"y": "En_Ooze_Base2.Y"
+									}
+								}
+							],
+							"sid": 455023216289448
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 315454866477565,
+									"parameters": {
+										"object": "En_Ooze_Base2"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Ooze_Mask2",
+									"sid": 743266107089488,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Idle\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Ooze_Base2",
+									"sid": 954923329083972,
+									"parameters": {
+										"instance-variable": "Player_AngleDiff",
+										"value": "((angle(Player_Base.X,Player_Base.Y,En_Ooze_Base2.X,En_Ooze_Base2.Y)+360)%360) - 180"
+									}
+								}
+							],
+							"sid": 435871889710934,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 405270639169608,
+											"parameters": {
+												"angle-1": "En_Ooze_Base2.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "270"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 550432692181459,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Up\""
+											}
+										}
+									],
+									"sid": 944376457373521
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 557728555620530,
+											"parameters": {
+												"angle-1": "En_Ooze_Base2.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "180"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 643890091717184,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Left\""
+											}
+										}
+									],
+									"sid": 486232975078443
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 508425876616670,
+											"parameters": {
+												"angle-1": "En_Ooze_Base2.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "90"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 740544027526239,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										}
+									],
+									"sid": 399349370583851
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 136248226911147,
+											"parameters": {
+												"angle-1": "En_Ooze_Base2.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 692891375881582,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Right\""
+											}
+										}
+									],
+									"sid": 464620333914432
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Ooze_Mask2",
+									"sid": 465161894657339,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 597774186770509,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 246626933687890,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 1,
+												"value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 612401908238019,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 311453426630172
+								},
+								{
+									"eventType": "comment",
+									"text": "# Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 767755856004328,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 552777342974176,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ooze_Base2.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 815513278085480,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Ooze_Mask2",
+													"sid": 856049807847173
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Ooze_Mask2",
+													"sid": 235590310395955,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "0.10 + random(0.75)"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Ooze_Mask2",
+													"sid": 916311462314348,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Hop\""
+													}
+												}
+											],
+											"sid": 827067615474452
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "# Hop"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 584816177444647,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Hop\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 154237175867664,
+											"parameters": {
+												"animation": "\"Hop_\" & En_Ooze_Base2.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 454279039733640
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-animation-frame-changed",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 713800657336582
+										},
+										{
+											"id": "is-animation-playing",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 285275674908588,
+											"parameters": {
+												"animation": "\"Hop_\" & En_Ooze_Base2.Direction"
+											}
+										},
+										{
+											"id": "compare-animation-frame",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 806570988204597,
+											"parameters": {
+												"comparison": 0,
+												"number": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-vector-x",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 907909641739048,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"vector-x": "cos(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 200"
+											}
+										},
+										{
+											"id": "set-vector-y",
+											"objectClass": "En_Ooze_Base2",
+											"sid": 529022229081286,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"vector-y": "sin(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 200"
+											}
+										},
+										{
+											"callFunction": "Audio_Play_Sound",
+											"sid": 533279455700526,
+											"parameters": [
+												"\"Slime_Jump\"",
+												"0",
+												"\"\""
+											]
+										}
+									],
+									"sid": 418852824093234
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-animation-finished",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 316254873301349,
+											"parameters": {
+												"animation": "\"Hop_\" & En_Ooze_Base2.Direction"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 908199955719712,
+											"parameters": {
+												"instance-variable": "State",
+												"value": "\"Idle\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ooze_Mask2",
+											"sid": 415517857855229,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "0"
+											}
+										}
+									],
+									"sid": 641385439281142
+								}
+							]
+						}
+					],
+					"sid": 311952618315753
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Skeleton",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Skeleton_Base",
+									"sid": 863812514900703
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Skeleton_Base",
+									"sid": 966529364501575,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Skeleton_Mask.UID"
+									}
+								}
+							],
+							"sid": 526188242420685
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 935193170152030
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Skeleton_Mask",
+									"sid": 945713918157206,
+									"parameters": {
+										"x": "En_Skeleton_Base.X",
+										"y": "En_Skeleton_Base.Y"
+									}
+								}
+							],
+							"sid": 338452540654686
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 441355474163973,
+									"parameters": {
+										"object": "En_Skeleton_Base"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Skeleton_Mask",
+									"sid": 692440424736221,
+									"parameters": {
+										"instance-variable": "State",
+										"comparison": 0,
+										"value": "\"Idle\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Skeleton_Base",
+									"sid": 576677806741603,
+									"parameters": {
+										"instance-variable": "Player_AngleDiff",
+										"value": "((angle(Player_Base.X,Player_Base.Y,En_Skeleton_Base.X,En_Skeleton_Base.Y)+360)%360) - 180"
+									}
+								}
+							],
+							"sid": 794500822750062,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 291553788292320,
+											"parameters": {
+												"angle-1": "En_Skeleton_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "270"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Base",
+											"sid": 446153297419598,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Up\""
+											}
+										}
+									],
+									"sid": 168270273632974
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 914909015257908,
+											"parameters": {
+												"angle-1": "En_Skeleton_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "180"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Base",
+											"sid": 772780817910291,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Left\""
+											}
+										}
+									],
+									"sid": 115364456643757
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 533806293681220,
+											"parameters": {
+												"angle-1": "En_Skeleton_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "90"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Base",
+											"sid": 521565305370584,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										}
+									],
+									"sid": 189931389962542
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 796835925613525,
+											"parameters": {
+												"angle-1": "En_Skeleton_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Skeleton_Base",
+											"sid": 798018323049943,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Right\""
+											}
+										}
+									],
+									"sid": 499358774482335
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Skeleton_Mask",
+									"sid": 620009825166648,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 694449941420887,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 936315854821158,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 1,
+												"value": "-1"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 105602919159358,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 1,
+												"value": "\"\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 610216128577545,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 157027715536501
+								},
+								{
+									"eventType": "comment",
+									"text": " Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 871566441701266,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 383317485716147,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Skeleton_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 948497381104068,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 924219894774395,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "Self.StateLimit"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 359033257520059,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "choose(\"Walk\", \"Walk\", \"Attack\")"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 793050013019659,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 186700986868066,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.8)"
+													}
+												}
+											],
+											"sid": 412469919843857
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Walk"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 899612602003162,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Walk\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 864022324771584,
+											"parameters": {
+												"animation": "\"Walk_\" & En_Skeleton_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 644749246369647,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 527325839219742,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Up\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 166805367240623,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												}
+											],
+											"sid": 386278653045026,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Skeleton_Base",
+															"sid": 911489233057872,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "-1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 235713569262558,
+															"parameters": [
+																"En_Skeleton_Mask.UID"
+															]
+														}
+													],
+													"sid": 939764819003992
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 441033368357701,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Down\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 286728901108485,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												}
+											],
+											"sid": 542303241378338,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Skeleton_Base",
+															"sid": 378423261985710,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "0",
+																"offset-y": "1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 783441169039611,
+															"parameters": [
+																"En_Skeleton_Mask.UID"
+															]
+														}
+													],
+													"sid": 487074149249262
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 262825190231501,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Right\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 238302439631957,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												}
+											],
+											"sid": 475215438549506,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Skeleton_Base",
+															"sid": 738050532229882,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "1",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 843541228015736,
+															"parameters": [
+																"En_Skeleton_Mask.UID"
+															]
+														}
+													],
+													"sid": 944245101811387
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 905069524770157,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"Left\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "En_Skeleton_Base",
+													"sid": 749818051700440,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												}
+											],
+											"sid": 277298307578207,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-overlapping-at-offset",
+															"objectClass": "En_Skeleton_Base",
+															"sid": 367997335499650,
+															"parameters": {
+																"object": "Tilemap_Collision",
+																"offset-x": "-1",
+																"offset-y": "0"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Skeleton_State_Idle",
+															"sid": 523402112390763,
+															"parameters": [
+																"En_Skeleton_Mask.UID"
+															]
+														}
+													],
+													"sid": 667058495182059
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 605327684656633,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "Self.StateLimit"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Skeleton_State_Idle",
+													"sid": 177620204020861,
+													"parameters": [
+														"En_Skeleton_Mask.UID"
+													]
+												}
+											],
+											"sid": 489185140963367
+										},
+										{
+											"functionName": "Skeleton_State_Idle",
+											"functionDescription": "Automatically converted from 'Skeleton_State_Idle'",
+											"functionCategory": "",
+											"functionReturnType": "none",
+											"functionCopyPicked": false,
+											"functionIsAsync": false,
+											"functionParameters": [
+												{
+													"name": "skeletonUid",
+													"type": "number",
+													"initialValue": "0",
+													"comment": "",
+													"sid": 773359903973397
+												}
+											],
+											"eventType": "function-block",
+											"conditions": [
+												{
+													"id": "pick-by-unique-id",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 587979826536413,
+													"parameters": {
+														"unique-id": "skeletonUid"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 757977270880442,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 700857243364600,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 244483174273460,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.5)"
+													}
+												}
+											],
+											"sid": 376995866641233
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Attack"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Skeleton_Mask",
+											"sid": 257035641992080,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Attack\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 976304046180385,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-animation-playing",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 170238774900606,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Skeleton_Base.Direction"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 673703551678861,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Skeleton_Base.Direction",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 420106138196349
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 399047179188420
+												},
+												{
+													"id": "is-animation-playing",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 712423806860839,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Skeleton_Base.Direction"
+													}
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 816035042164054,
+													"parameters": {
+														"comparison": 0,
+														"number": "1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 101202443322604,
+													"parameters": {
+														"object-to-create": "Projectile_Skeleton",
+														"layer": "\"Objects\"",
+														"x": "En_Skeleton_Mask.X",
+														"y": "En_Skeleton_Mask.Y - 10",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "set-angle-of-motion",
+													"objectClass": "Projectile_Skeleton",
+													"sid": 615690768003337,
+													"behaviorType": "Bullet",
+													"parameters": {
+														"angle": "angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)"
+													}
+												},
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 201365258083658,
+													"parameters": [
+														"\"Skeleton_Throw\"",
+														"0",
+														"\"\""
+													]
+												}
+											],
+											"sid": 253156442977016
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 296613503911382,
+													"parameters": {
+														"animation": "\"Attack_\" & En_Skeleton_Base.Direction"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 394992805078538,
+													"parameters": {
+														"instance-variable": "State",
+														"comparison": 0,
+														"value": "\"Attack\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 983387611166473,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 723456799957370,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Skeleton_Mask",
+													"sid": 841306860983476,
+													"parameters": {
+														"instance-variable": "StateLimit",
+														"value": "0.2 + random(0.5)"
+													}
+												}
+											],
+											"sid": 985149421769004
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "Projectile_Skeleton",
+									"sid": 348932304104378,
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Projectile_Skeleton",
+									"sid": 405606490734532
+								}
+							],
+							"sid": 836268113157772
+						}
+					],
+					"sid": 886009751582313
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Ghost",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Ghost_Base",
+									"sid": 823706609097778
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Ghost_Base",
+									"sid": 990133677039896,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Ghost_Mask.UID"
+									}
+								}
+							],
+							"sid": 224869614929458
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 885717116115241
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Ghost_Mask",
+									"sid": 113462770812092,
+									"parameters": {
+										"x": "En_Ghost_Base.X",
+										"y": "En_Ghost_Base.Y"
+									}
+								}
+							],
+							"sid": 804447046208772
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 366429775386426,
+									"parameters": {
+										"object": "En_Ghost_Base"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Ghost_Base",
+									"sid": 647982975569979,
+									"parameters": {
+										"instance-variable": "Player_AngleDiff",
+										"value": "((angle(Player_Base.X,Player_Base.Y,En_Ghost_Base.X,En_Ghost_Base.Y)+360)%360) - 180"
+									}
+								}
+							],
+							"sid": 650367862093228,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 251520396559505,
+											"parameters": {
+												"angle-1": "En_Ghost_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "270"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Base",
+											"sid": 766305663087656,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Up\""
+											}
+										}
+									],
+									"sid": 863909613389187
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 636232557056288,
+											"parameters": {
+												"angle-1": "En_Ghost_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "180"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Base",
+											"sid": 910673188300637,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Left\""
+											}
+										}
+									],
+									"sid": 742673681819543
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 567618632701123,
+											"parameters": {
+												"angle-1": "En_Ghost_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "90"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Base",
+											"sid": 948608820221142,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										}
+									],
+									"sid": 144775125788356
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-within-angle",
+											"objectClass": "System",
+											"sid": 736147205465563,
+											"parameters": {
+												"angle-1": "En_Ghost_Base.Player_AngleDiff",
+												"within": "45",
+												"angle-2": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "En_Ghost_Base",
+											"sid": 538709733687012,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Right\""
+											}
+										}
+									],
+									"sid": 897432677046819
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Ghost_Mask",
+									"sid": 286166395561774,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 718395666186552,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 768412359977949,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 1,
+												"value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 639865019900094,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 819370251808375
+								},
+								{
+									"eventType": "comment",
+									"text": "# Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 104156042480791,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 210254387347784,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ghost_Base.Direction",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-vector-x",
+											"objectClass": "En_Ghost_Base",
+											"sid": 514162846079248,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"vector-x": "cos(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 20"
+											}
+										},
+										{
+											"id": "set-vector-y",
+											"objectClass": "En_Ghost_Base",
+											"sid": 131453351798719,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"vector-y": "sin(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)) * 20"
+											}
+										}
+									],
+									"sid": 651069779645174,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 468464266407024
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 724559729876023,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "1 + random(1)"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 920246566166664,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Teleport\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 497442804273932,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "flash",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 832064128704339,
+													"behaviorType": "Flash",
+													"parameters": {
+														"on-time": "0.03",
+														"off-time": "0.03",
+														"duration": "Infinity"
+													}
+												},
+												{
+													"id": "set-collisions-enabled",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 437763998031884,
+													"parameters": {
+														"collisions": "disabled"
+													}
+												},
+												{
+													"id": "set-collisions-enabled",
+													"objectClass": "En_Ghost_Base",
+													"sid": 860223247433718,
+													"parameters": {
+														"collisions": "disabled"
+													}
+												}
+											],
+											"sid": 306531973911927
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 600506329106371,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Teleport\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Ghost_Mask",
+											"sid": 650589137788303,
+											"parameters": {
+												"animation": "\"Idle_\" & En_Ghost_Base.Direction",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 596034028105021,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 109317958014339,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "0.5"
+													}
+												},
+												{
+													"id": "is-boolean-instance-variable-set",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 891310722390964,
+													"parameters": {
+														"instance-variable": "HasTeleported"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "stop-flashing",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 649909426768473,
+													"behaviorType": "Flash"
+												},
+												{
+													"id": "set-opacity",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 958627975234864,
+													"parameters": {
+														"opacity": "0"
+													}
+												}
+											],
+											"sid": 218349879878423
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 520060530576033,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 4,
+														"value": "1"
+													}
+												},
+												{
+													"id": "is-boolean-instance-variable-set",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 861297742026836,
+													"parameters": {
+														"instance-variable": "HasTeleported"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "flash",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 726052124823363,
+													"behaviorType": "Flash",
+													"parameters": {
+														"on-time": "0.03",
+														"off-time": "0.03",
+														"duration": "Infinity"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 372126610448993,
+													"parameters": {
+														"instance-variable": "HasTeleported",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-opacity",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 799759061335675,
+													"parameters": {
+														"opacity": "100"
+													}
+												}
+											],
+											"sid": 137737601593112,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "GhostZone",
+															"sid": 682794661042609,
+															"parameters": {
+																"instance-variable": "ZoneID",
+																"comparison": 0,
+																"value": "En_Ghost_Mask.ZoneID"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-position",
+															"objectClass": "En_Ghost_Base",
+															"sid": 195312675431926,
+															"parameters": {
+																"x": "GhostZone.X + random(GhostZone.Width)",
+																"y": "GhostZone.Y + random(GhostZone.Height)"
+															}
+														}
+													],
+													"sid": 771904734179733
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 272557562413678,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 4,
+														"value": "1.5"
+													}
+												},
+												{
+													"id": "collisions-enabled",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 490318487749252,
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 309958937718310,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 252563352579046,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-collisions-enabled",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 747271755772954,
+													"parameters": {
+														"collisions": "enabled"
+													}
+												},
+												{
+													"id": "set-collisions-enabled",
+													"objectClass": "En_Ghost_Base",
+													"sid": 525479784994938,
+													"parameters": {
+														"collisions": "enabled"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 749597332152901,
+													"parameters": {
+														"instance-variable": "HasTeleported",
+														"value": "false"
+													}
+												},
+												{
+													"id": "stop-flashing",
+													"objectClass": "En_Ghost_Mask",
+													"sid": 284497523240879,
+													"behaviorType": "Flash"
+												}
+											],
+											"sid": 649699133297320
+										}
+									]
+								}
+							]
+						}
+					],
+					"sid": 691223587979566
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Spike Trap",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Timer",
+									"sid": 441203257035958,
+									"parameters": {
+										"instance-variable": "Timer",
+										"comparison": 2,
+										"value": "Self.Timer_Max"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "add-to-instvar",
+									"objectClass": "En_Timer",
+									"sid": 651421983963413,
+									"parameters": {
+										"instance-variable": "Timer",
+										"value": "dt"
+									}
+								}
+							],
+							"sid": 652376557689716
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Timer",
+									"sid": 136317879361198,
+									"parameters": {
+										"instance-variable": "Timer",
+										"comparison": 5,
+										"value": "Self.Timer_Max"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Timer",
+									"sid": 315342069704448,
+									"parameters": {
+										"instance-variable": "Timer",
+										"value": "0"
+									}
+								}
+							],
+							"sid": 170951431341731,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Spikes",
+											"sid": 759048421865404,
+											"parameters": {
+												"instance-variable": "Group",
+												"comparison": 0,
+												"value": "En_Timer.Group"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "En_Spikes",
+											"sid": 656112373636148,
+											"parameters": {
+												"instance-variable": "Action_Executed",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 768966120651505
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Spikes",
+									"sid": 920525283310482,
+									"parameters": {
+										"instance-variable": "Group",
+										"comparison": 0,
+										"value": "En_Timer.Group"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 563286532766136,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Spikes",
+											"sid": 722988028748981,
+											"parameters": {
+												"instance-variable": "Action_Timer",
+												"comparison": 3,
+												"value": "En_Timer.Timer"
+											}
+										},
+										{
+											"id": "is-boolean-instance-variable-set",
+											"objectClass": "En_Spikes",
+											"sid": 690019812940172,
+											"parameters": {
+												"instance-variable": "Action_Executed"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Spikes",
+											"sid": 669096249468163,
+											"parameters": {
+												"animation": "\"Action\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Spikes",
+											"sid": 863568662626689,
+											"parameters": {
+												"collisions": "enabled"
+											}
+										},
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "En_Spikes",
+											"sid": 352839667271710,
+											"parameters": {
+												"instance-variable": "Action_Executed",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 200948384258079
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-animation-finished",
+											"objectClass": "En_Spikes",
+											"sid": 563517681056157,
+											"parameters": {
+												"animation": "\"Action\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Spikes",
+											"sid": 226603059582563,
+											"parameters": {
+												"animation": "\"Default\"",
+												"from": "beginning"
+											}
+										},
+										{
+											"id": "set-collisions-enabled",
+											"objectClass": "En_Spikes",
+											"sid": 778869394470913,
+											"parameters": {
+												"collisions": "disabled"
+											}
+										}
+									],
+									"sid": 921895443574968
+								}
+							]
+						}
+					],
+					"sid": 220186593183780
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Golem",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Golem_Base",
+									"sid": 747430916977320
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Golem_Base",
+									"sid": 149038616037705,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Golem_Mask.UID"
+									}
+								}
+							],
+							"sid": 535330611652055
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 410747052284063
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Golem_Mask",
+									"sid": 258227092602634,
+									"parameters": {
+										"x": "En_Golem_Base.X",
+										"y": "En_Golem_Base.Y"
+									}
+								}
+							],
+							"sid": 367364162158158
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Golem_Mask",
+									"sid": 835027331569737,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 429897584596043,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Golem_Mask",
+											"sid": 463764602978543,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"comparison": 1,
+												"value": "-1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Golem_Mask",
+											"sid": 632222929875026,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 858659524423218
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-screen",
+											"objectClass": "En_Golem_Mask",
+											"sid": 462840569316398,
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "En_Golem_Mask",
+											"sid": 663250041387101,
+											"parameters": {
+												"instance-variable": "Active",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 378477607095157
+								},
+								{
+									"eventType": "comment",
+									"text": "# Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Golem_Mask",
+											"sid": 339732084100693,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation",
+											"objectClass": "En_Golem_Mask",
+											"sid": 727568055254797,
+											"parameters": {
+												"animation": "\"Idle\"",
+												"from": "beginning"
+											}
+										}
+									],
+									"sid": 789204501737735,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Golem_Mask",
+													"sid": 476820685982303,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "0.5"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 510350095526960,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"GrabBoulder\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 707641559670553,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-animation",
+													"objectClass": "En_Golem_Mask",
+													"sid": 245631340439690,
+													"parameters": {
+														"animation": "\"ReachUp\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 884509040832040
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "GrabBoulder"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Golem_Mask",
+											"sid": 978600721767774,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"GrabBoulder\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 594341089336004,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Golem_Mask",
+													"sid": 571072581834769
+												},
+												{
+													"id": "is-animation-playing",
+													"objectClass": "En_Golem_Mask",
+													"sid": 174028977197344,
+													"parameters": {
+														"animation": "\"ReachUp\""
+													}
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "En_Golem_Mask",
+													"sid": 485074068416793,
+													"parameters": {
+														"comparison": 0,
+														"number": "3"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 705276647793310,
+													"parameters": {
+														"object-to-create": "Projectile_Golem",
+														"layer": "\"Tilemap_Foreground\"",
+														"x": "En_Golem_Mask.X",
+														"y": "En_Golem_Mask.Y - 34",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "move-to-top",
+													"objectClass": "Projectile_Golem",
+													"sid": 498953332395307
+												},
+												{
+													"id": "pin-to-object",
+													"objectClass": "Projectile_Golem",
+													"sid": 688252234877119,
+													"behaviorType": "Pin",
+													"parameters": {
+														"pin-to": "En_Golem_Mask",
+														"mode": "position-only"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Projectile_Golem",
+													"sid": 629931925067616,
+													"parameters": {
+														"instance-variable": "ID",
+														"value": "En_Golem_Mask.UID"
+													}
+												}
+											],
+											"sid": 774790124599468
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Golem_Mask",
+													"sid": 416478845964623,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 768972374023215,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Throw\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 862232398194060,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-animation",
+													"objectClass": "En_Golem_Mask",
+													"sid": 931750861318985,
+													"parameters": {
+														"animation": "\"Throw\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 278110502374514,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "Projectile_Golem",
+															"sid": 796715262882853,
+															"parameters": {
+																"instance-variable": "ID",
+																"comparison": 0,
+																"value": "En_Golem_Mask.UID"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Audio_Play_Sound",
+															"sid": 407940956135302,
+															"parameters": [
+																"\"BoulderThrow\"",
+																"0",
+																"\"BoulderThrow\""
+															]
+														},
+														{
+															"id": "unpin",
+															"objectClass": "Projectile_Golem",
+															"sid": 277807570300973,
+															"behaviorType": "Pin"
+														},
+														{
+															"id": "set-speed",
+															"objectClass": "Projectile_Golem",
+															"sid": 640335724203869,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"speed": "240"
+															}
+														},
+														{
+															"id": "set-angle-of-motion",
+															"objectClass": "Projectile_Golem",
+															"sid": 837277938554629,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"angle": "clamp(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y), 45, 135)"
+															}
+														},
+														{
+															"id": "set-collisions-enabled",
+															"objectClass": "Projectile_Golem",
+															"sid": 297246315255473,
+															"parameters": {
+																"collisions": "enabled"
+															}
+														},
+														{
+															"id": "start-timer",
+															"objectClass": "Projectile_Golem",
+															"sid": 687498878039447,
+															"behaviorType": "Timer",
+															"parameters": {
+																"duration": "4",
+																"type": "once",
+																"tag": "\"\""
+															}
+														}
+													],
+													"sid": 954480501531779
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Golem_Mask",
+											"sid": 884208788685544,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Throw\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 768042259221716,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Golem_Mask",
+													"sid": 670232797912768,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "0.5"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 627659077429660,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Golem_Mask",
+													"sid": 170452417343603,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												},
+												{
+													"id": "set-animation",
+													"objectClass": "En_Golem_Mask",
+													"sid": 696722332641973,
+													"parameters": {
+														"animation": "\"Idle\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 521690767649256
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": "Misc"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-timer",
+									"objectClass": "Projectile_Golem",
+									"sid": 281282085992400,
+									"behaviorType": "Timer",
+									"parameters": {
+										"tag": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Projectile_Golem",
+									"sid": 730563875947914
+								}
+							],
+							"sid": 260637452241755
+						}
+					],
+					"sid": 738081985529521
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Statue",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "En_Statue",
+									"sid": 389910943058746
+								},
+								{
+									"id": "every-x-seconds",
+									"objectClass": "System",
+									"sid": 248729192548255,
+									"parameters": {
+										"interval-seconds": "1.5"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation",
+									"objectClass": "En_Statue",
+									"sid": 453928863902229,
+									"parameters": {
+										"animation": "\"Charge\"",
+										"from": "beginning"
+									}
+								}
+							],
+							"sid": 194620621931154
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-animation-finished",
+									"objectClass": "En_Statue",
+									"sid": 617675646628782,
+									"parameters": {
+										"animation": "\"Charge\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation",
+									"objectClass": "En_Statue",
+									"sid": 363107887833964,
+									"parameters": {
+										"animation": "\"Shoot\"",
+										"from": "beginning"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 764909558394547,
+									"parameters": {
+										"object-to-create": "Projectile_Statue",
+										"layer": "\"Objects\"",
+										"x": "En_Statue.ImagePointX(1)",
+										"y": "En_Statue.ImagePointY(1)",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-angle-of-motion",
+									"objectClass": "Projectile_Statue",
+									"sid": 782103997434654,
+									"behaviorType": "Bullet",
+									"parameters": {
+										"angle": "angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y)"
+									}
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 841360030106236,
+									"parameters": {
+										"object-to-create": "Particle",
+										"layer": "\"Objects\"",
+										"x": "En_Statue.ImagePointX(1)",
+										"y": "En_Statue.ImagePointY(1)",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation",
+									"objectClass": "Particle",
+									"sid": 471947704606697,
+									"parameters": {
+										"animation": "\"MagicSmoke\"",
+										"from": "beginning"
+									}
+								}
+							],
+							"sid": 636247396266341,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 160428713070618
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Audio_Play_Sound",
+											"sid": 950216014455255,
+											"parameters": [
+												"\"Statue_Shoot\"",
+												"0",
+												"\"Statue_Shoot\""
+											]
+										}
+									],
+									"sid": 406295358348621
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-animation-finished",
+									"objectClass": "En_Statue",
+									"sid": 669170190736708,
+									"parameters": {
+										"animation": "\"Shoot\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation",
+									"objectClass": "En_Statue",
+									"sid": 628956836875113,
+									"parameters": {
+										"animation": "\"Default\"",
+										"from": "beginning"
+									}
+								}
+							],
+							"sid": 723293561357474
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "Projectile_Statue",
+									"sid": 660576837529883
+								},
+								{
+									"id": "every-x-seconds",
+									"objectClass": "System",
+									"sid": 587536180358413,
+									"parameters": {
+										"interval-seconds": "0.1"
+									}
+								},
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 844260218716924,
+									"parameters": {
+										"object": "Projectile_Statue"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 637913724470981,
+									"parameters": {
+										"object-to-create": "Particle",
+										"layer": "\"Objects\"",
+										"x": "Projectile_Statue.X",
+										"y": "Projectile_Statue.Y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-animation",
+									"objectClass": "Particle",
+									"sid": 469639120908973,
+									"parameters": {
+										"animation": "\"BeamTrail\"",
+										"from": "beginning"
+									}
+								}
+							],
+							"sid": 814870241858126
+						}
+					],
+					"sid": 562279831710679
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
+					"title": "Demon",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "comment",
+							"text": "Passive"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-created",
+									"objectClass": "En_Demon_Base",
+									"sid": 589299025058831
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "En_Demon_Base",
+									"sid": 177346722668201,
+									"parameters": {
+										"instance-variable": "Pair_ID",
+										"value": "En_Demon_Mask.UID"
+									}
+								}
+							],
+							"sid": 184305552226473
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 354631060032886
+								}
+							],
+							"actions": [
+								{
+									"id": "set-position",
+									"objectClass": "En_Demon_Mask",
+									"sid": 281940726317698,
+									"parameters": {
+										"x": "En_Demon_Base.X",
+										"y": "En_Demon_Base.Y"
+									}
+								}
+							],
+							"sid": 441589120040076
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": ""
+						},
+						{
+							"eventType": "comment",
+							"text": "Behavior"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Demon_Mask",
+									"sid": 119504859110662,
+									"parameters": {
+										"instance-variable": "Active"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 385631762085536,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "# Idle"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 756930826038533,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"Idle\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "add-to-instvar",
+											"objectClass": "En_Demon_Mask",
+											"sid": 149525763577308,
+											"parameters": {
+												"instance-variable": "State_Timer",
+												"value": "dt"
+											}
+										}
+									],
+									"sid": 303302032049517,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 115103451577408
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 961539292522730,
+													"parameters": {
+														"animation": "\"Idle\"",
+														"from": "beginning"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 126523050619793,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"value": "0"
+													}
+												}
+											],
+											"sid": 983724920459162
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Demon_Mask",
+													"sid": 385429032130736,
+													"parameters": {
+														"instance-variable": "State_Timer",
+														"comparison": 5,
+														"value": "0.5"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 376265634500965,
+													"disabled": true,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"SummonBats\""
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 766431298532980,
+													"disabled": true,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"SwordSlash\""
+													}
+												}
+											],
+											"sid": 111675680693464,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-y",
+															"objectClass": "Player_Base",
+															"sid": 711524074885053,
+															"parameters": {
+																"comparison": 4,
+																"y-co-ordinate": "En_Demon_Base.Y + 12"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Demon_Mask",
+															"sid": 824410149170026,
+															"parameters": {
+																"instance-variable": "State",
+																"value": "choose(\"SlideToPoint\", \"SummonBats\", \"SwordSlash\", \"SwordThrust\")"
+															}
+														}
+													],
+													"sid": 266047163352351
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-y",
+															"objectClass": "Player_Base",
+															"sid": 388702122263842,
+															"parameters": {
+																"comparison": 3,
+																"y-co-ordinate": "En_Demon_Base.Y + 12"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Demon_Mask",
+															"sid": 136594085335893,
+															"parameters": {
+																"instance-variable": "State",
+																"value": "choose(\"SlideToPlayer\", \"SummonBats\")"
+															}
+														}
+													],
+													"sid": 989215145840612
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "# SwordSlash"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 255094327316797,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"SwordSlash\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 563474241045282,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 829810294380920
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 964921783725472,
+													"parameters": {
+														"animation": "\"SwordSlash\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 334093916953170
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Demon_Mask",
+													"sid": 290195794771463,
+													"parameters": {
+														"animation": "\"SwordSlash\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 388272498108200,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												}
+											],
+											"sid": 829484921261583
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Demon_Mask",
+													"sid": 237846540329995
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "En_Demon_Mask",
+													"sid": 782638802694774,
+													"parameters": {
+														"comparison": 0,
+														"number": "5"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 105418909900687,
+													"parameters": [
+														"\"Destructible_Destroy\"",
+														"0",
+														"\"Destructible_Destroy\""
+													]
+												},
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 859671099548175,
+													"parameters": {
+														"object-to-create": "Particle",
+														"layer": "\"Objects\"",
+														"x": "En_Demon_Mask.ImagePointX(1)",
+														"y": "En_Demon_Mask.ImagePointY(1)",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												}
+											],
+											"sid": 848308805246152,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "repeat",
+															"objectClass": "System",
+															"sid": 573591213656509,
+															"parameters": {
+																"count": "3"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 919097010993933,
+															"parameters": {
+																"object-to-create": "En_Demon_ShockwaveSpawner",
+																"layer": "\"Objects\"",
+																"x": "En_Demon_Mask.ImagePointX(1)",
+																"y": "En_Demon_Mask.ImagePointY(1)",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-angle-of-motion",
+															"objectClass": "En_Demon_ShockwaveSpawner",
+															"sid": 938035409966964,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"angle": "65 + (loopindex * 25)"
+															}
+														}
+													],
+													"sid": 193208044896845
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "# SwordThrust"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 735126939041768,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"SwordThrust\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 777759189499562,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 748268057925654
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 496634993880705,
+													"parameters": {
+														"animation": "\"SwordThrust\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 650751558871950
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-frame-changed",
+													"objectClass": "En_Demon_Mask",
+													"sid": 797952281334013
+												}
+											],
+											"actions": [],
+											"sid": 789055471813534,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-animation-frame",
+															"objectClass": "En_Demon_Mask",
+															"sid": 278587083589690,
+															"parameters": {
+																"comparison": 0,
+																"number": "4"
+															}
+														},
+														{
+															"id": "compare-animation-frame",
+															"objectClass": "En_Demon_Mask",
+															"sid": 372138158091986,
+															"parameters": {
+																"comparison": 0,
+																"number": "9"
+															}
+														},
+														{
+															"id": "compare-animation-frame",
+															"objectClass": "En_Demon_Mask",
+															"sid": 336503603786106,
+															"parameters": {
+																"comparison": 0,
+																"number": "14"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Audio_Play_Sound",
+															"sid": 644162478782659,
+															"parameters": [
+																"\"BoulderThrow\"",
+																"0",
+																"\"BoulderThrow\""
+															]
+														},
+														{
+															"callFunction": "Audio_Play_Sound",
+															"sid": 872921111452528,
+															"parameters": [
+																"\"LightTorches\"",
+																"0",
+																"\"LightTorches\""
+															]
+														},
+														{
+															"id": "set-vector-y",
+															"objectClass": "En_Demon_Base",
+															"sid": 116637779441196,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"vector-y": "sin(90) * 300"
+															}
+														},
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 192107384359522,
+															"parameters": {
+																"object-to-create": "En_Demon_Sword",
+																"layer": "\"Objects\"",
+																"x": "En_Demon_Mask.X",
+																"y": "En_Demon_Mask.Y",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "pin-to-object",
+															"objectClass": "En_Demon_Sword",
+															"sid": 891396601278257,
+															"behaviorType": "Pin",
+															"parameters": {
+																"pin-to": "En_Demon_Mask",
+																"mode": "position-only"
+															}
+														}
+													],
+													"sid": 962177192578576,
+													"isOrBlock": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Demon_Mask",
+													"sid": 672009797440147,
+													"parameters": {
+														"animation": "\"SwordThrust\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 560720855509265,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												}
+											],
+											"sid": 353006663256197
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "# SlideToPlayer"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 421635852015886,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"SlideToPlayer\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 162303609241142,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "every-x-seconds",
+													"objectClass": "System",
+													"sid": 952091640695964,
+													"parameters": {
+														"interval-seconds": "0.2"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 674093818574463,
+													"parameters": {
+														"object-to-create": "En_Demon_Trail",
+														"layer": "\"Objects\"",
+														"x": "En_Demon_Mask.X",
+														"y": "En_Demon_Mask.Y",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "move-to-object",
+													"objectClass": "En_Demon_Trail",
+													"sid": 391495157080183,
+													"parameters": {
+														"where": "behind",
+														"object": "En_Demon_Mask"
+													}
+												}
+											],
+											"sid": 351715115608846
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 147733414730812
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 550765128840187,
+													"parameters": {
+														"animation": "\"Slide\"",
+														"from": "beginning"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 457120825366365,
+													"parameters": {
+														"instance-variable": "SlidePoint_ID",
+														"value": "choose(0,1,2,3)"
+													}
+												}
+											],
+											"sid": 728717359731304
+										},
+										{
+											"eventType": "block",
+											"conditions": [],
+											"actions": [
+												{
+													"id": "set-vector-x",
+													"objectClass": "En_Demon_Base",
+													"sid": 765619013567495,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"vector-x": "cos(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y - 30)) * 120"
+													}
+												},
+												{
+													"id": "set-vector-y",
+													"objectClass": "En_Demon_Base",
+													"sid": 533317629986754,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"vector-y": "sin(angle(Self.X,Self.Y,Player_Base.X,Player_Base.Y - 30)) * 120"
+													}
+												}
+											],
+											"sid": 777786930249257,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 676467741592672,
+															"parameters": {
+																"first-value": "distance(En_Demon_Base.X,En_Demon_Base.Y,Player_Base.X,Player_Base.Y - 30)",
+																"comparison": 3,
+																"second-value": "12"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Demon_Mask",
+															"sid": 365515398056075,
+															"parameters": {
+																"instance-variable": "State",
+																"value": "\"Idle\""
+															}
+														}
+													],
+													"sid": 950793653285986
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "#SlideToPoint"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 725404146554734,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"SlideToPoint\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 282456477880468,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "every-x-seconds",
+													"objectClass": "System",
+													"sid": 714894073117465,
+													"parameters": {
+														"interval-seconds": "0.2"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 979276447052676,
+													"parameters": {
+														"object-to-create": "En_Demon_Trail",
+														"layer": "\"Objects\"",
+														"x": "En_Demon_Mask.X",
+														"y": "En_Demon_Mask.Y",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "move-to-object",
+													"objectClass": "En_Demon_Trail",
+													"sid": 580376318016479,
+													"parameters": {
+														"where": "behind",
+														"object": "En_Demon_Mask"
+													}
+												}
+											],
+											"sid": 651793928951998
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 174778590288489
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 473806077262104,
+													"parameters": {
+														"animation": "\"Slide\"",
+														"from": "beginning"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 111484337805879,
+													"parameters": {
+														"instance-variable": "SlidePoint_ID",
+														"value": "choose(0,1,2,3,4,5,6,7)"
+													}
+												}
+											],
+											"sid": 933718090722402
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "for-each",
+													"objectClass": "System",
+													"sid": 746183207881385,
+													"parameters": {
+														"object": "En_Demon_SlidePoint"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "En_Demon_Mask",
+													"sid": 260954080507450,
+													"parameters": {
+														"instance-variable": "SlidePoint_ID",
+														"comparison": 0,
+														"value": "En_Demon_SlidePoint.ID"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-vector-x",
+													"objectClass": "En_Demon_Base",
+													"sid": 606564930219146,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"vector-x": "cos(angle(Self.X,Self.Y,En_Demon_SlidePoint.X,En_Demon_SlidePoint.Y)) * 120"
+													}
+												},
+												{
+													"id": "set-vector-y",
+													"objectClass": "En_Demon_Base",
+													"sid": 919440725617964,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"vector-y": "sin(angle(Self.X,Self.Y,En_Demon_SlidePoint.X,En_Demon_SlidePoint.Y)) * 120"
+													}
+												}
+											],
+											"sid": 775188705101209,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 483154149875266,
+															"parameters": {
+																"first-value": "distance(En_Demon_Base.X,En_Demon_Base.Y,En_Demon_SlidePoint.X,En_Demon_SlidePoint.Y)",
+																"comparison": 3,
+																"second-value": "5"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "En_Demon_Mask",
+															"sid": 971296397872772,
+															"parameters": {
+																"instance-variable": "State",
+																"value": "\"Idle\""
+															}
+														}
+													],
+													"sid": 433892676800824
+												}
+											]
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "# SummonBats"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "En_Demon_Mask",
+											"sid": 791675907432525,
+											"parameters": {
+												"instance-variable": "State",
+												"comparison": 0,
+												"value": "\"SummonBats\""
+											}
+										}
+									],
+									"actions": [],
+									"sid": 213049901023607,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 828550970196335
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 466371724191100,
+													"parameters": {
+														"animation": "\"SummonBats\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 417999311792626
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Demon_Mask",
+													"sid": 916591840516521,
+													"parameters": {
+														"animation": "\"SummonBats\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation",
+													"objectClass": "En_Demon_Mask",
+													"sid": 518201260723261,
+													"parameters": {
+														"animation": "\"EndSummonBats\"",
+														"from": "beginning"
+													}
+												}
+											],
+											"sid": 982155988684585
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-animation-finished",
+													"objectClass": "En_Demon_Mask",
+													"sid": 710531180560261,
+													"parameters": {
+														"animation": "\"EndSummonBats\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "En_Demon_Mask",
+													"sid": 730361238560628,
+													"parameters": {
+														"instance-variable": "State",
+														"value": "\"Idle\""
+													}
+												}
+											],
+											"sid": 612883214417659
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "every-x-seconds",
+													"objectClass": "System",
+													"sid": 491827152428867,
+													"parameters": {
+														"interval-seconds": "0.2"
+													}
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "En_Demon_Mask",
+													"sid": 752890917387930,
+													"parameters": {
+														"comparison": 4,
+														"number": "5"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 211286654924111,
+													"parameters": [
+														"\"Slime_Jump\"",
+														"0",
+														"\"Slime_Jump\""
+													]
+												},
+												{
+													"id": "toggle-boolean-instvar",
+													"objectClass": "En_Demon_Mask",
+													"sid": 324780717394423,
+													"parameters": {
+														"instance-variable": "BatSpawnDirection"
+													}
+												},
+												{
+													"id": "create-object",
+													"objectClass": "System",
+													"sid": 313306168908765,
+													"parameters": {
+														"object-to-create": "Projectile_Demon_Bat",
+														"layer": "\"Tilemap_Foreground\"",
+														"x": "En_Demon_Mask.ImagePointX(1)",
+														"y": "En_Demon_Mask.ImagePointY(1)",
+														"create-hierarchy": false,
+														"template-name": "\"\""
+													}
+												},
+												{
+													"id": "set-angle-of-motion",
+													"objectClass": "Projectile_Demon_Bat",
+													"sid": 427059836008550,
+													"behaviorType": "Bullet",
+													"parameters": {
+														"angle": "90"
+													}
+												}
+											],
+											"sid": 537050184968173,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "En_Demon_Mask",
+															"sid": 304832163444392,
+															"parameters": {
+																"instance-variable": "BatSpawnDirection"
+															},
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Projectile_Demon_Bat",
+															"sid": 439746776723085,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Left\""
+															}
+														}
+													],
+													"sid": 902400522558019
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "En_Demon_Mask",
+															"sid": 895229774905034,
+															"parameters": {
+																"instance-variable": "BatSpawnDirection"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-instvar-value",
+															"objectClass": "Projectile_Demon_Bat",
+															"sid": 868671178400323,
+															"parameters": {
+																"instance-variable": "Direction",
+																"value": "\"Right\""
+															}
+														}
+													],
+													"sid": 979451898832917
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Demon_Base",
+									"sid": 675620712819027,
+									"parameters": {
+										"instance-variable": "Health",
+										"comparison": 3,
+										"value": "0"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "En_Demon_SlidePoint",
+									"sid": 975654874662019,
+									"parameters": {
+										"instance-variable": "ID",
+										"comparison": 0,
+										"value": "1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-vector-x",
+									"objectClass": "En_Demon_Base",
+									"sid": 670965656537930,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"vector-x": "cos(angle(Self.X,Self.Y,En_Demon_SlidePoint.X,En_Demon_SlidePoint.Y)) * 120"
+									}
+								},
+								{
+									"id": "set-vector-y",
+									"objectClass": "En_Demon_Base",
+									"sid": 491408573766863,
+									"behaviorType": "8Direction",
+									"parameters": {
+										"vector-y": "sin(angle(Self.X,Self.Y,En_Demon_SlidePoint.X,En_Demon_SlidePoint.Y)) * 120"
+									}
+								}
+							],
+							"sid": 757670459918642
+						},
+						{
+							"eventType": "comment",
+							"text": "Boss Misc"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 404293080730476,
+									"parameters": {
+										"instance-variable": "Direction",
+										"comparison": 0,
+										"value": "\"Left\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-angle-of-motion",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 728951435493642,
+									"behaviorType": "Bullet",
+									"parameters": {
+										"angle": "Self.Bullet.AngleOfMotion + 160* dt"
+									}
+								}
+							],
+							"sid": 509776064457910
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 615556174524110,
+									"parameters": {
+										"instance-variable": "Direction",
+										"comparison": 0,
+										"value": "\"Right\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-angle-of-motion",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 402067828880216,
+									"behaviorType": "Bullet",
+									"parameters": {
+										"angle": "Self.Bullet.AngleOfMotion - 200 * dt"
+									}
+								}
+							],
+							"sid": 493159961899722
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 356735783657597
+								}
+							],
+							"actions": [
+								{
+									"id": "set-speed",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 665919244915766,
+									"behaviorType": "Bullet",
+									"parameters": {
+										"speed": "Self.Bullet.Speed + 60 * dt"
+									}
+								}
+							],
+							"sid": 504777134899442
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-speed",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 680892453128255,
+									"behaviorType": "Bullet",
+									"parameters": {
+										"comparison": 5,
+										"speed": "200"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Projectile_Demon_Bat",
+									"sid": 161404476781031
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 801179135183033,
+									"parameters": {
+										"object-to-create": "Particle",
+										"layer": "\"Objects\"",
+										"x": "Projectile_Demon_Bat.X",
+										"y": "Projectile_Demon_Bat.Y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 110586816851305
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-collision-with-another-object",
+									"objectClass": "En_Demon_ShockwaveSpawner",
+									"sid": 869079606749350,
+									"parameters": {
+										"object": "Tilemap_Collision"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "En_Demon_ShockwaveSpawner",
+									"sid": 528236152467348
+								}
+							],
+							"sid": 796404805128344
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-any-animation-finished",
+									"objectClass": "Projectile_Demon_Sword",
+									"sid": 747488920705273
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "Projectile_Demon_Sword",
+									"sid": 335999438548784
+								}
+							],
+							"sid": 771258813016848
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-screen",
+									"objectClass": "En_Demon_ShockwaveSpawner",
+									"sid": 437541260590384
+								},
+								{
+									"id": "every-x-seconds",
+									"objectClass": "System",
+									"sid": 673406789812163,
+									"parameters": {
+										"interval-seconds": "0.15"
+									}
+								},
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 986383679318967,
+									"parameters": {
+										"object": "En_Demon_ShockwaveSpawner"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 504166150434943,
+									"parameters": {
+										"object-to-create": "Projectile_Demon_Sword",
+										"layer": "\"Objects\"",
+										"x": "En_Demon_ShockwaveSpawner.X",
+										"y": "En_Demon_ShockwaveSpawner.Y",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 220227173926382
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-any-animation-finished",
+									"objectClass": "En_Demon_Sword",
+									"sid": 536289174696521
+								}
+							],
+							"actions": [
+								{
+									"id": "destroy",
+									"objectClass": "En_Demon_Sword",
+									"sid": 490673769729447
+								}
+							],
+							"sid": 413922340553382
+						},
+						{
+							"eventType": "comment",
+							"text": "Fade demon to red as he loses health"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 727225287598330
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "En_Demon_Mask",
+									"sid": 239639163563820,
+									"parameters": {
+										"effect": "\"Tint\"",
+										"parameter-index": "0",
+										"value": "rgb(255, (En_Demon_Base.Health* 255) / 125, (En_Demon_Base.Health* 255) / 125)"
+									}
+								}
+							],
+							"sid": 670622469773229
+						}
+					],
+					"sid": 309279605643510
+				}
+			],
+			"sid": 168043961367226
+		},
+		{
+			"eventType": "include",
+			"includeSheet": "eEnemy_Crab"
+		},
+		{
+			"eventType": "include",
+			"includeSheet": "eEnemy_Ooze"
+		}
+	],
+	"sid": 512296049886527
+}

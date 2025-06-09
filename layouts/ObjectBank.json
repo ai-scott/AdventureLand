@@ -914,7 +914,7 @@
 					}
 				},
 				{
-					"type": "En_Slime_Base",
+					"type": "En_Ooze_Base",
 					"properties": {
 						"initially-visible": false,
 						"initial-animation": "Default",
@@ -936,7 +936,9 @@
 						"Default_Acceleration": 3000,
 						"Default_Deceleration": 300,
 						"Hurt": false,
-						"CanBeKnockedBack": true
+						"CanBeKnockedBack": true,
+						"State": "",
+						"State_Timer": 0
 					},
 					"behaviors": {
 						"8Direction": {
@@ -976,7 +978,7 @@
 					}
 				},
 				{
-					"type": "En_Slime_Mask",
+					"type": "En_Ooze_Mask",
 					"properties": {
 						"initially-visible": true,
 						"initial-animation": "Idle_Down",
@@ -1031,7 +1033,7 @@
 					}
 				},
 				{
-					"type": "En_Slime_Mask2",
+					"type": "En_Ooze_Mask2",
 					"properties": {
 						"initially-visible": true,
 						"initial-animation": "Idle_Down",
@@ -1157,7 +1159,7 @@
 					}
 				},
 				{
-					"type": "En_Slime_Base2",
+					"type": "En_Ooze_Base2",
 					"properties": {
 						"initially-visible": false,
 						"initial-animation": "Default",
@@ -1179,7 +1181,9 @@
 						"Default_Acceleration": 3000,
 						"Default_Deceleration": 500,
 						"Hurt": false,
-						"CanBeKnockedBack": true
+						"CanBeKnockedBack": true,
+						"State": "",
+						"State_Timer": 0
 					},
 					"behaviors": {
 						"8Direction": {
@@ -5837,7 +5841,9 @@
 						"Default_Acceleration": 20,
 						"Default_Deceleration": 100,
 						"Hurt": false,
-						"CanBeKnockedBack": true
+						"CanBeKnockedBack": true,
+						"State": "",
+						"State_Timer": 0
 					},
 					"behaviors": {
 						"8Direction": {

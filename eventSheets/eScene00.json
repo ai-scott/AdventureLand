@@ -28,7 +28,7 @@
 					"objectClass": "System",
 					"sid": 672073675308572,
 					"parameters": {
-						"object-to-create": "En_Slime_Mask",
+						"object-to-create": "En_Ooze_Mask",
 						"layer": "\"Objects\"",
 						"x": "480",
 						"y": "304",
@@ -438,7 +438,7 @@
 			"actions": [
 				{
 					"type": "script",
-					"language": "javascript",
+					"language": "typescript",
 					"script": [
 						"console.log(\"Adding Rosie\")"
 					]
@@ -446,10 +446,10 @@
 				{
 					"id": "create-object",
 					"objectClass": "System",
-					"sid": 601062306952114,
+					"sid": 761059984570959,
 					"parameters": {
 						"object-to-create": "Rosie",
-						"layer": "\"TM_Pass - Decorations 1 - OverP\"",
+						"layer": "\"Decor 3 - over P\"",
 						"x": "656",
 						"y": "416",
 						"create-hierarchy": false,
@@ -562,13 +562,6 @@
 			"eventType": "function-block",
 			"conditions": [],
 			"actions": [
-				{
-					"type": "script",
-					"language": "javascript",
-					"script": [
-						"console.log(\"Penny enters house\")"
-					]
-				},
 				{
 					"id": "play-timeline",
 					"objectClass": "TimelineController",

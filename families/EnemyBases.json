@@ -79,6 +79,20 @@
 			"desc": "",
 			"show": true,
 			"sid": 712534201022940
+		},
+		{
+			"name": "State",
+			"type": "string",
+			"desc": "Used to control AI state (e.g. \"idle\", \"bounce\", \"cranky\", \"attack\")",
+			"show": true,
+			"sid": 356873446100764
+		},
+		{
+			"name": "State_Timer",
+			"type": "number",
+			"desc": "Tracks how long the enemy stays in its current state",
+			"show": true,
+			"sid": 286847745336099
 		}
 	],
 	"behaviorTypes": [
@@ -90,8 +104,8 @@
 	],
 	"effectTypes": [],
 	"members": [
-		"En_Slime_Base",
-		"En_Slime_Base2",
+		"En_Ooze_Base",
+		"En_Ooze_Base2",
 		"En_Skeleton_Base",
 		"En_Ghost_Base",
 		"En_Golem_Base",

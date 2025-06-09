@@ -579,7 +579,7 @@
 									"actions": [
 										{
 											"type": "script",
-											"language": "javascript",
+											"language": "typescript",
 											"script": [
 												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
 												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -626,7 +626,7 @@
 										},
 										{
 											"type": "script",
-											"language": "javascript",
+											"language": "typescript",
 											"script": [
 												"if(runtime.globalVars.QuestStatus){",
 												"\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");",
@@ -663,7 +663,7 @@
 											"actions": [
 												{
 													"type": "script",
-													"language": "javascript",
+													"language": "typescript",
 													"script": [
 														"const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");",
 														"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -892,15 +892,16 @@
 										},
 										{
 											"type": "script",
-											"language": "javascript",
+											"language": "typescript",
 											"script": [
-												"const optionsArray = runtime.globalVars.DialogueResult.split(\":\");",
-												"if(runtime.globalVars.OptionSelection){",
-												"\truntime.globalVars.CurrentDialogueLine = optionsArray[1];",
-												"}",
-												"else{",
-												"\truntime.globalVars.CurrentDialogueLine = optionsArray[0];",
-												"}",
+												"const dialogueResult = String(runtime.globalVars.DialogueResult);",
+												"const optionsArray = dialogueResult.split(\":\");",
+												"",
+												"const selected = runtime.globalVars.OptionSelection",
+												"  ? parseInt(optionsArray[1] ?? \"0\", 10)",
+												"  : parseInt(optionsArray[0] ?? \"0\", 10);",
+												"",
+												"runtime.globalVars.CurrentDialogueLine = selected;",
 												""
 											]
 										},
@@ -989,7 +990,7 @@
 								},
 								{
 									"type": "script",
-									"language": "javascript",
+									"language": "typescript",
 									"script": [
 										"const inputArray = runtime.globalVars.DialogueResult.split(\":\");",
 										"runtime.globalVars.InputVar = inputArray[1];"
@@ -1059,7 +1060,7 @@
 									"actions": [
 										{
 											"type": "script",
-											"language": "javascript",
+											"language": "typescript",
 											"script": [
 												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
 												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
@@ -1290,7 +1291,7 @@
 						},
 						{
 							"type": "script",
-							"language": "javascript",
+							"language": "typescript",
 							"script": [
 								"if(runtime.globalVars.CurrentDialogueText.includes(\"|\")){",
 								"\tconst dynamicDialogueArray = runtime.globalVars.CurrentDialogueText.split(\"|\");",
@@ -1493,14 +1494,18 @@
 									"actions": [
 										{
 											"type": "script",
-											"language": "javascript",
+											"language": "typescript",
 											"script": [
-												"const characterNameArray = runtime.globalVars.CurrentCharacter.split(\"_\");",
-												"//runtime.globalVars.DynamicText = characterNameArray[1];",
-												"const tempVar = characterNameArray[1];",
-												"//runtime.objects.obj_TextName.getFirstInstance().text = tempVar.toString();",
-												"runtime.objects.obj_TextName.getFirstPickedInstance().text = tempVar;",
-												"//runtime.objects.obj_TextName.getFirstInstance().text = \"Sally?\";"
+												"const currentCharacter = String(runtime.globalVars.CurrentCharacter);",
+												"const characterNameArray = currentCharacter.split(\"_\");",
+												"const tempVar = characterNameArray[1] ?? \"\";",
+												"",
+												"// Safely access the instance",
+												"const textInstance = runtime.objects.obj_TextName.getFirstPickedInstance();",
+												"",
+												"if (textInstance) {",
+												"  textInstance.text = tempVar;",
+												"}"
 											]
 										},
 										{
@@ -1746,17 +1751,19 @@
 								},
 								{
 									"type": "script",
-									"language": "javascript",
+									"language": "typescript",
 									"script": [
 										"console.log(\"goto DialogueResult\")"
 									]
 								},
 								{
 									"type": "script",
-									"language": "javascript",
+									"language": "typescript",
 									"script": [
-										"const gotoDialogueArray = runtime.globalVars.DialogueResult.split(\":\");",
-										"runtime.globalVars.CurrentDialogueLine = gotoDialogueArray[1];"
+										"const gotoDialogueArray = String(runtime.globalVars.DialogueResult);",
+										"const parts = gotoDialogueArray.split(\":\");",
+										"",
+										"runtime.globalVars.CurrentDialogueLine = parseInt(parts[1] ?? \"0\", 10);"
 									]
 								}
 							],
@@ -2549,7 +2556,7 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "javascript",
+									"language": "typescript",
 									"script": [
 										"console.log(\"displaying options\")"
 									]

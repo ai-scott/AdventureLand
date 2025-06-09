@@ -7787,16 +7787,6 @@
 												{
 													"id": "is-touching-object",
 													"objectClass": "Touch",
-													"sid": 227975447465357,
-													"disabled": true,
-													"parameters": {
-														"object": "transArc"
-													},
-													"isInverted": true
-												},
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
 													"sid": 192912938425315,
 													"parameters": {
 														"object": "DPad_Arrow"
