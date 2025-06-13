@@ -695,38 +695,6 @@
 					}
 				},
 				{
-					"name": "OozeAI.ts",
-					"type": "application/typescript",
-					"sid": 786089298787590,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "CrabbyAI.ts",
-					"type": "application/typescript",
-					"sid": 740842374506627,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "EnemyAI.ts",
-					"type": "application/typescript",
-					"sid": 188631234182405,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "EnemyInstance.ts",
-					"type": "application/typescript",
-					"sid": 254837081812620,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
 					"name": "inline TS script_repo.ts",
 					"type": "application/typescript",
 					"sid": 947786766959474,
