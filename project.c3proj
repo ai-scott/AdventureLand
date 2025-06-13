@@ -630,22 +630,41 @@
 	},
 	"layouts": {
 		"items": [
-			"World_00",
-			"World_00_Blacksmith",
 			"ObjectBank",
-			"World_10",
-			"World_01",
 			"TitleScreen",
 			"GlobalLayers",
-			"World_00_Home",
-			"World_00_Windmill_F0",
-			"World_00_Windmill_F1",
-			"GameOver",
-			"World_00_General_Store",
-			"World_00_Pennys_House",
-			"World_00_Adventure_Shop"
+			"GameOver"
 		],
-		"subfolders": []
+		"subfolders": [
+			{
+				"items": [
+					"World_00",
+					"World_00_Home",
+					"World_00_Windmill_F0",
+					"World_00_Windmill_F1",
+					"World_00_General_Store",
+					"World_00_Pennys_House",
+					"World_00_Adventure_Shop",
+					"World_00_Blacksmith"
+				],
+				"subfolders": [],
+				"name": "Leafwood Village"
+			},
+			{
+				"items": [
+					"World_10"
+				],
+				"subfolders": [],
+				"name": "The Bottomless Lake"
+			},
+			{
+				"items": [
+					"World_01"
+				],
+				"subfolders": [],
+				"name": "Leafwood Forest"
+			}
+		]
 	},
 	"eventSheets": {
 		"items": [

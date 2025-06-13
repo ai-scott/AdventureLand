@@ -39,6 +39,19 @@
 				{
 					"id": "create-object",
 					"objectClass": "System",
+					"sid": 111068435100891,
+					"parameters": {
+						"object-to-create": "En_Crab_Base",
+						"layer": "\"Objects\"",
+						"x": "120",
+						"y": "250",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
 					"sid": 476131056926066,
 					"disabled": true,
 					"parameters": {
