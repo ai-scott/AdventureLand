@@ -950,6 +950,54 @@
 										{
 											"id": "for-each-ordered",
 											"objectClass": "System",
+											"sid": 435207515861107,
+											"parameters": {
+												"object": "EnemyMasks",
+												"expression": "CharactersTriggers.y",
+												"order": "ascending"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "move-to-top",
+											"objectClass": "EnemyMasks",
+											"sid": 963119387996343
+										}
+									],
+									"sid": 477550487702737,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-y",
+													"objectClass": "PlayerSystem",
+													"sid": 305582207528590,
+													"parameters": {
+														"comparison": 4,
+														"y-co-ordinate": "CharactersTriggers.Y"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "move-to-top",
+													"objectClass": "PlayerSystem",
+													"sid": 680619567421269
+												}
+											],
+											"sid": 832538981534639,
+											"isOrBlock": true
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each-ordered",
+											"objectClass": "System",
 											"sid": 784170224278905,
 											"parameters": {
 												"object": "Structures",
@@ -987,6 +1035,15 @@
 														"comparison": 4,
 														"y-co-ordinate": "Structures.Y"
 													}
+												},
+												{
+													"id": "compare-y",
+													"objectClass": "EnemyMasks",
+													"sid": 282646958999239,
+													"parameters": {
+														"comparison": 4,
+														"y-co-ordinate": "Structures.Y"
+													}
 												}
 											],
 											"actions": [
@@ -999,6 +1056,11 @@
 													"id": "move-to-top",
 													"objectClass": "PlayerSystem",
 													"sid": 144876447086091
+												},
+												{
+													"id": "move-to-top",
+													"objectClass": "EnemyMasks",
+													"sid": 371919996104740
 												}
 											],
 											"sid": 302257215247610,

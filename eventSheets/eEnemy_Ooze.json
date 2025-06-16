@@ -24,7 +24,7 @@
 				},
 				{
 					"eventType": "variable",
-					"name": "maskUid",
+					"name": "oozeMaskUid",
 					"type": "number",
 					"initialValue": "0",
 					"comment": "UID of the enemy mask for animations",
@@ -105,29 +105,9 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"// Add this line at the very beginning to see if it's being called",
-								"console.log(\"Ooze initialization triggered\");",
-								"",
-								"if (!(globalThis as any).enemyData) {",
-								"  (globalThis as any).enemyData = new Map();",
-								"}",
-								"",
-								"const enemy = runtime.objects.En_Ooze_Base.getPickedInstances()[0];",
-								"const mask = runtime.objects.En_Ooze_Mask.getPickedInstances()[0];",
-								"",
-								"if (enemy && mask) {",
-								"  (globalThis as any).enemyData.set(enemy.uid, {",
-								"    maskUid: mask.uid,",
-								"    type: \"Ooze\",",
-								"    state: \"Idle\", ",
-								"    stateTimer: Math.floor(Math.random() * 60),",
-								"    direction: enemy.instVars.Direction || \"Down\"",
-								"  });",
-								"  ",
-								"  console.log(`Initialized Ooze AI: enemy=${enemy.uid}, mask=${mask.uid}`);",
-								"} else {",
-								"  console.log(\"Failed to find enemy or mask instances\");",
-								"}"
+								"// Direct approach - no local variables needed:",
+								"(globalThis as any).initEnemy(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid, runtime.objects.En_Ooze_Mask.getFirstPickedInstance()!.uid, \"Ooze\");",
+								""
 							]
 						}
 					],
@@ -139,21 +119,21 @@
 						{
 							"id": "every-tick",
 							"objectClass": "System",
-							"sid": 649306619588397
+							"sid": 179791741980635
 						}
 					],
 					"actions": [
 						{
 							"id": "set-position",
 							"objectClass": "En_Ooze_Mask",
-							"sid": 558401990920895,
+							"sid": 661063858182951,
 							"parameters": {
 								"x": "En_Ooze_Base.X",
 								"y": "En_Ooze_Base.Y"
 							}
 						}
 					],
-					"sid": 488996314981429
+					"sid": 905852908114544
 				},
 				{
 					"eventType": "block",
@@ -161,7 +141,7 @@
 						{
 							"id": "for-each",
 							"objectClass": "System",
-							"sid": 344898266000500,
+							"sid": 256768011605875,
 							"parameters": {
 								"object": "En_Ooze_Base"
 							}
@@ -172,107 +152,20 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"console.log(\"Ooze update triggered\");",
-								"",
-								"const enemyData = (globalThis as any).enemyData;",
-								"if (!enemyData) return;",
-								"",
-								"const enemy = runtime.objects.En_Ooze_Base.getPickedInstances()[0];",
-								"const player = runtime.objects.Player_Base.getFirstInstance();",
-								"if (!enemy || !player) return;",
-								"",
-								"const data = enemyData.get(enemy.uid);",
-								"if (!data) return;",
-								"",
-								"console.log(`Ooze ${enemy.uid}: state=${data.state}, timer=${data.stateTimer}`);",
-								"",
-								"// Decrement timer",
-								"data.stateTimer = Math.max(0, data.stateTimer - 1);",
-								"",
-								"// Calculate angle to player (used in multiple places)",
-								"const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);",
-								"const angleDeg = ((angle * 180 / Math.PI) + 360) % 360;",
-								"",
-								"// Update direction",
-								"if (angleDeg >= 315 || angleDeg < 45) data.direction = \"Right\";",
-								"else if (angleDeg >= 45 && angleDeg < 135) data.direction = \"Down\";",
-								"else if (angleDeg >= 135 && angleDeg < 225) data.direction = \"Left\";",
-								"else data.direction = \"Up\";",
-								"",
-								"// STATE TRANSITIONS",
-								"  if (data.state === \"Idle\" && data.stateTimer <= 0) {",
-								"      console.log(\"Ooze starting hop\");",
-								"      data.state = \"Hop\";",
-								"      data.stateTimer = 60 + Math.floor(Math.random() * 60);",
-								"      ",
-								"      try {",
-								"          runtime.callFunction(\"Set_Animation\", data.maskUid, `Hop_${data.direction}`);",
-								"          console.log(`Set hop animation: Hop_${data.direction}`);",
-								"      } catch (error) {",
-								"          console.log(\"Hop animation error:\", error);",
-								"      }",
-								"  }",
-								"  else if (data.state === \"Hop\" && data.stateTimer <= 0) {",
-								"      console.log(\"Ooze returning to idle\");",
-								"      data.state = \"Idle\";",
-								"      data.stateTimer = 100 + Math.floor(Math.random() * 30);",
-								"      ",
-								"      try {",
-								"          runtime.callFunction(\"Set_Animation\", data.maskUid, `Idle_${data.direction}`);",
-								"      } catch (error) {",
-								"          console.log(\"Idle animation error:\", error);",
-								"      }",
-								"  }",
-								"  ",
-								"",
-								"",
-								"",
-								"// CONTINUOUS MOVEMENT BASED ON CURRENT STATE",
-								"try {",
-								"    for (const inst of runtime.objects.En_Ooze_Base.instances()) {",
-								"        if (inst.uid === enemy.uid) {",
-								"            if (data.state === \"Hop\") {",
-								"                // Only start fast movement after a brief wind-up (first 10 frames of hop)",
-								"                if (data.stateTimer < (90 + 60 - 10)) {",
-								"                    // FAST aggressive movement during hop",
-								"                    const hopSpeed = 80;",
-								"                    inst.behaviors[\"8Direction\"].vectorX = Math.cos(angle) * hopSpeed;",
-								"                    inst.behaviors[\"8Direction\"].vectorY = Math.sin(angle) * hopSpeed;",
-								"                    ",
-								"                    // Keep hop animation playing every frame during fast movement",
-								"                    try {",
-								"                        runtime.callFunction(\"Set_Animation\", data.maskUid, `Hop_${data.direction}`);",
-								"                    } catch (error) {",
-								"                        console.log(\"Hop animation maintenance error:\", error);",
-								"                    }",
-								"                    ",
-								"                    console.log(`Hopping aggressively at speed ${hopSpeed}`);",
-								"                } else {",
-								"                    // Brief pause at start of hop for animation wind-up",
-								"                    const creepSpeed = 15;",
-								"                    inst.behaviors[\"8Direction\"].vectorX = Math.cos(angle) * creepSpeed;",
-								"                    inst.behaviors[\"8Direction\"].vectorY = Math.sin(angle) * creepSpeed;",
-								"                }",
-								"            } else {",
-								"                // SLOW creeping movement during idle",
-								"                const creepSpeed = 15;",
-								"                inst.behaviors[\"8Direction\"].vectorX = Math.cos(angle) * creepSpeed;",
-								"                inst.behaviors[\"8Direction\"].vectorY = Math.sin(angle) * creepSpeed;",
-								"            }",
-								"            ",
-								"            break;",
-								"        }",
-								"    }",
-								"} catch (error) {",
-								"    console.log(\"Movement error:\", error);",
-								"}",
-								"",
-								"// Update local variable for debugging",
-								"localVars.aiResult = `${data.state}_${data.stateTimer}`;"
+								"// Add this BEFORE your updateEnemy call:",
+								"//console.log(\"🔄 Updating Ooze:\", runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);"
+							]
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).updateEnemy(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);",
+								""
 							]
 						}
 					],
-					"sid": 579447741897645,
+					"sid": 649373668073668,
 					"children": [
 						{
 							"eventType": "block",
@@ -280,7 +173,7 @@
 								{
 									"id": "compare-two-values",
 									"objectClass": "System",
-									"sid": 339195626692091,
+									"sid": 415666187124844,
 									"parameters": {
 										"first-value": "aiResult",
 										"comparison": 1,
@@ -292,7 +185,7 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 176963518535662,
+									"sid": 780462825482275,
 									"parameters": {
 										"variable": "actionType",
 										"value": "tokenat(aiResult, 0, \"|\")"
@@ -301,16 +194,16 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 479035020853428,
+									"sid": 184800104063790,
 									"parameters": {
-										"variable": "maskUid",
+										"variable": "oozeMaskUid",
 										"value": "int(tokenat(aiResult, 1, \"|\"))"
 									}
 								},
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 926495954297604,
+									"sid": 178335607538089,
 									"parameters": {
 										"variable": "oozeBaseUid",
 										"value": "int(tokenat(aiResult, 5, \"|\"))"
@@ -319,7 +212,7 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 380565829356399,
+									"sid": 727004729609704,
 									"parameters": {
 										"variable": "animName",
 										"value": "tokenat(aiResult, 2, \"|\")"
@@ -328,7 +221,7 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 372840257909830,
+									"sid": 146536314131415,
 									"parameters": {
 										"variable": "vectorX",
 										"value": "float(tokenat(aiResult, 3, \"|\"))"
@@ -337,7 +230,7 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 361143718255549,
+									"sid": 226811352725526,
 									"parameters": {
 										"variable": "vectorY",
 										"value": "float(tokenat(aiResult, 4, \"|\"))"
@@ -357,7 +250,8 @@
 									]
 								}
 							],
-							"sid": 494877073908695,
+							"sid": 303989499214130,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -365,7 +259,7 @@
 										{
 											"id": "compare-two-values",
 											"objectClass": "System",
-											"sid": 254410476537107,
+											"sid": 496049174537250,
 											"parameters": {
 												"first-value": "actionType",
 												"comparison": 0,
@@ -376,14 +270,15 @@
 									"actions": [
 										{
 											"callFunction": "Set_Animation",
-											"sid": 129980685152659,
+											"sid": 585368704113757,
 											"parameters": [
-												"maskUid",
+												"oozeMaskUid",
 												"animName"
 											]
 										}
 									],
-									"sid": 302042306655711,
+									"sid": 925735614953235,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -391,7 +286,7 @@
 												{
 													"id": "pick-by-comparison",
 													"objectClass": "System",
-													"sid": 648233966172319,
+													"sid": 297394311427476,
 													"parameters": {
 														"object": "En_Ooze_Base",
 														"expression": "En_Ooze_Base.UID",
@@ -404,7 +299,7 @@
 												{
 													"id": "set-vector-x",
 													"objectClass": "En_Ooze_Base",
-													"sid": 443152348924013,
+													"sid": 516373722750180,
 													"behaviorType": "8Direction",
 													"parameters": {
 														"vector-x": "0"
@@ -413,14 +308,15 @@
 												{
 													"id": "set-vector-y",
 													"objectClass": "En_Ooze_Base",
-													"sid": 663203446095424,
+													"sid": 958918633252434,
 													"behaviorType": "8Direction",
 													"parameters": {
 														"vector-y": "0"
 													}
 												}
 											],
-											"sid": 877079439126580
+											"sid": 494629658774330,
+											"disabled": true
 										}
 									]
 								},
@@ -430,7 +326,7 @@
 										{
 											"id": "compare-two-values",
 											"objectClass": "System",
-											"sid": 559503709303465,
+											"sid": 498285544553968,
 											"parameters": {
 												"first-value": "actionType",
 												"comparison": 0,
@@ -441,9 +337,9 @@
 									"actions": [
 										{
 											"callFunction": "Set_Animation",
-											"sid": 884029846897177,
+											"sid": 854175576020683,
 											"parameters": [
-												"maskUid",
+												"oozeMaskUid",
 												"animName"
 											]
 										},
@@ -456,7 +352,8 @@
 											]
 										}
 									],
-									"sid": 819450226702443,
+									"sid": 114324541359864,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -464,7 +361,7 @@
 												{
 													"id": "pick-by-comparison",
 													"objectClass": "System",
-													"sid": 701824700288902,
+													"sid": 617708384044232,
 													"parameters": {
 														"object": "En_Ooze_Base",
 														"expression": "En_Ooze_Base.UID",
@@ -477,7 +374,7 @@
 												{
 													"id": "set-vector-x",
 													"objectClass": "En_Ooze_Base",
-													"sid": 603660555452792,
+													"sid": 531074571726911,
 													"behaviorType": "8Direction",
 													"parameters": {
 														"vector-x": "vectorX"
@@ -486,14 +383,15 @@
 												{
 													"id": "set-vector-y",
 													"objectClass": "En_Ooze_Base",
-													"sid": 837475344839874,
+													"sid": 760049628420719,
 													"behaviorType": "8Direction",
 													"parameters": {
 														"vector-y": "vectorY"
 													}
 												}
 											],
-											"sid": 144158971152752
+											"sid": 626982480628176,
+											"disabled": true
 										}
 									]
 								}

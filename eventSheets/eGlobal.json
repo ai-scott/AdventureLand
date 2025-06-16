@@ -5627,6 +5627,13 @@
 										"string": "\"checkYourself\"",
 										"function": "OpenClose_Inventory"
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"Testing function access:\", typeof (window as any).debugPlayerSimple);"
+									]
 								}
 							],
 							"sid": 119729088397068
@@ -5643,6 +5650,52 @@
 						0,
 						1
 					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 624520369523339,
+							"parameters": {
+								"key": 68
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(window as any).debugPlayer((window as any).Player_Base.UID, (window as any).Player_Mask.UID, (window as any).PlayerSystem.UID);"
+							]
+						}
+					],
+					"sid": 605008597095231
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 903652099678937,
+							"parameters": {
+								"key": 84
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(window as any).debugPlayerSimple();"
+							]
+						}
+					],
+					"sid": 889817627042434
 				},
 				{
 					"eventType": "block",

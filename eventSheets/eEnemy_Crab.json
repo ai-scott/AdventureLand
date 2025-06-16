@@ -101,6 +101,17 @@
 								"instance-variable": "Pair_ID",
 								"value": "En_Crab_Mask.UID"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"const crabBase = runtime.objects.En_Crab_Base.getFirstPickedInstance()!;",
+								"const crabMask = runtime.objects.En_Crab_Mask.getFirstPickedInstance()!;",
+								"// Replace the setCrabDirection and commented updateEnemy with:",
+								"(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
+								""
+							]
 						}
 					],
 					"sid": 172898959403332
@@ -137,166 +148,50 @@
 							"parameters": {
 								"object": "En_Crab_Base"
 							}
-						},
-						{
-							"id": "compare-instance-variable",
-							"objectClass": "En_Crab_Mask",
-							"sid": 439427541883669,
-							"parameters": {
-								"instance-variable": "State",
-								"comparison": 0,
-								"value": "\"Attack\""
-							}
 						}
 					],
 					"actions": [
 						{
 							"callFunction": "setCrabDirection",
-							"sid": 889667714927024
+							"sid": 889667714927024,
+							"disabled": true
 						},
 						{
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"// COMPLETE TYPESCRIPT CRAB AI - Template for your Crab enemy",
-								"// Use this in your Crab update TypeScript action:",
-								"",
-								"console.log(\"Crab update triggered\");",
-								"",
-								"const enemyData = (globalThis as any).enemyData;",
-								"if (!enemyData) return;",
-								"",
-								"const enemy = runtime.objects.En_Crab_Base.getPickedInstances()[0];",
-								"const player = runtime.objects.Player_Base.getFirstInstance();",
-								"if (!player) return;",
-								"",
-								"const data = enemyData.get(enemy.uid);",
-								"if (!data) return;",
-								"",
-								"console.log(`Crab ${enemy.uid}: state=${data.state}, timer=${data.stateTimer}`);",
-								"",
-								"// Decrement timer",
-								"data.stateTimer = Math.max(0, data.stateTimer - 1);",
-								"",
-								"// Calculate distance to player",
-								"const distance = Math.sqrt(Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2));",
-								"",
-								"// CRAB AI LOGIC WITH DIRECT ACTIONS",
-								"if (data.state === \"Idle\" && data.stateTimer <= 0) {",
-								"  console.log(\"Crab choosing next action, distance:\", distance);",
-								"  ",
-								"  if (distance < 32) {",
-								"    // ATTACK - Close to player",
-								"    console.log(\"Crab attacking\");",
-								"    data.state = \"Attack\";",
-								"    data.stateTimer = 60;",
-								"    ",
-								"    // DIRECT ANIMATION CALL",
-								"    try {",
-								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Attack_${data.direction}`);",
-								"      console.log(`Set attack animation: Attack_${data.direction}`);",
-								"    } catch (error) {",
-								"      console.log(\"Attack animation error:\", error);",
-								"    }",
-								"    ",
-								"  } else if (distance < 120) {",
-								"    // WALK TOWARD PLAYER - Medium distance",
-								"    console.log(\"Crab walking toward player\");",
-								"    data.state = \"Walk\";",
-								"    data.stateTimer = 30 + Math.floor(Math.random() * 30);",
-								"    ",
-								"    // Update direction toward player",
-								"    const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);",
-								"    const angleDeg = ((angle * 180 / Math.PI) + 360) % 360;",
-								"    ",
-								"    if (angleDeg >= 315 || angleDeg < 45) data.direction = \"Right\";",
-								"    else if (angleDeg >= 45 && angleDeg < 135) data.direction = \"Down\";",
-								"    else if (angleDeg >= 135 && angleDeg < 225) data.direction = \"Left\";",
-								"    else data.direction = \"Up\";",
-								"    ",
-								"    // DIRECT ANIMATION AND MOVEMENT",
-								"    try {",
-								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Walk_${data.direction}`);",
-								"      runtime.callFunction(\"setCrabDirection\", enemy.uid); // Your existing function",
-								"      ",
-								"      // Set movement vectors",
-								"      for (const inst of runtime.objects.En_Crab_Base.instances()) {",
-								"        if (inst.uid === enemy.uid) {",
-								"          inst.behaviors[\"8Direction\"].vectorX = Math.cos(angle) * 20;",
-								"          inst.behaviors[\"8Direction\"].vectorY = Math.sin(angle) * 20;",
-								"          console.log(`Crab moving toward player: ${Math.cos(angle) * 20}, ${Math.sin(angle) * 20}`);",
-								"          break;",
-								"        }",
-								"      }",
-								"    } catch (error) {",
-								"      console.log(\"Walk setup error:\", error);",
-								"    }",
-								"    ",
-								"  } else {",
-								"    // RANDOM WALK - Far from player",
-								"    console.log(\"Crab random walk\");",
-								"    data.state = \"Walk\";",
-								"    data.stateTimer = 30 + Math.floor(Math.random() * 30);",
-								"    ",
-								"    // Random direction",
-								"    const directions = [\"Up\", \"Down\", \"Left\", \"Right\"];",
-								"    data.direction = directions[Math.floor(Math.random() * directions.length)];",
-								"    ",
-								"    // DIRECT ANIMATION AND MOVEMENT",
-								"    try {",
-								"      runtime.callFunction(\"Set_Animation\", data.maskUid, `Walk_${data.direction}`);",
-								"      ",
-								"      // Set random movement",
-								"      let vx = 0, vy = 0;",
-								"      if (data.direction === \"Up\") { vx = 0; vy = -20; }",
-								"      else if (data.direction === \"Down\") { vx = 0; vy = 20; }",
-								"      else if (data.direction === \"Left\") { vx = -20; vy = 0; }",
-								"      else if (data.direction === \"Right\") { vx = 20; vy = 0; }",
-								"      ",
-								"      for (const inst of runtime.objects.En_Crab_Base.instances()) {",
-								"        if (inst.uid === enemy.uid) {",
-								"          inst.behaviors[\"8Direction\"].vectorX = vx;",
-								"          inst.behaviors[\"8Direction\"].vectorY = vy;",
-								"          console.log(`Crab random walk: ${vx}, ${vy}`);",
-								"          break;",
-								"        }",
-								"      }",
-								"    } catch (error) {",
-								"      console.log(\"Random walk error:\", error);",
-								"    }",
-								"  }",
-								"}",
-								"else if ((data.state === \"Walk\" || data.state === \"Attack\") && data.stateTimer <= 0) {",
-								"  // RETURN TO IDLE",
-								"  console.log(\"Crab returning to idle\");",
-								"  data.state = \"Idle\";",
-								"  data.stateTimer = 12 + Math.floor(Math.random() * 30);",
-								"  ",
-								"  // DIRECT IDLE ANIMATION AND STOP MOVEMENT",
-								"  try {",
-								"    runtime.callFunction(\"Set_Animation\", data.maskUid, `Idle_${data.direction}`);",
-								"    ",
-								"    // Stop movement",
-								"    for (const inst of runtime.objects.En_Crab_Base.instances()) {",
-								"      if (inst.uid === enemy.uid) {",
-								"        inst.behaviors[\"8Direction\"].vectorX = 0;",
-								"        inst.behaviors[\"8Direction\"].vectorY = 0;",
-								"        console.log(\"Crab stopped\");",
-								"        break;",
-								"      }",
-								"    }",
-								"  } catch (error) {",
-								"    console.log(\"Idle transition error:\", error);",
-								"  }",
-								"}",
-								"",
-								"// Debug status",
-								"localVars.crab_aiResult = `${data.state}_${data.stateTimer}_dist${Math.floor(distance)}`;",
-								"console.log(\"Crab status:\", localVars.crab_aiResult);"
+								"//updateEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);",
+								"// Replace all the state machine logic with:",
+								"(globalThis as any).updateEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);"
 							]
 						}
 					],
-					"sid": 910165093342183
+					"sid": 910165093342183,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "En_Crab_Base",
+									"sid": 179807440526107,
+									"parameters": {
+										"instance-variable": "Hurt"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"(globalThis as any).hurtEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);"
+									]
+								}
+							],
+							"sid": 618959898599274
+						}
+					]
 				},
 				{
 					"eventType": "comment",
@@ -316,6 +211,7 @@
 					],
 					"actions": [],
 					"sid": 244417734732403,
+					"disabled": true,
 					"children": [
 						{
 							"eventType": "block",
@@ -352,7 +248,8 @@
 									}
 								}
 							],
-							"sid": 537241720963376
+							"sid": 537241720963376,
+							"disabled": true
 						},
 						{
 							"eventType": "comment",
@@ -392,6 +289,7 @@
 								}
 							],
 							"sid": 740693752617838,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -436,7 +334,8 @@
 											}
 										}
 									],
-									"sid": 629108925343030
+									"sid": 629108925343030,
+									"disabled": true
 								}
 							]
 						},
@@ -457,6 +356,7 @@
 							],
 							"actions": [],
 							"sid": 445247172329386,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -483,7 +383,8 @@
 											}
 										}
 									],
-									"sid": 706681022618408
+									"sid": 706681022618408,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -510,7 +411,8 @@
 											}
 										}
 									],
-									"sid": 230284141656269
+									"sid": 230284141656269,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -537,7 +439,8 @@
 											}
 										}
 									],
-									"sid": 154334062850212
+									"sid": 154334062850212,
+									"disabled": true
 								}
 							]
 						},
@@ -571,6 +474,7 @@
 							],
 							"actions": [],
 							"sid": 280514881954828,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -599,7 +503,8 @@
 											}
 										}
 									],
-									"sid": 220284374344398
+									"sid": 220284374344398,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -624,7 +529,8 @@
 											]
 										}
 									],
-									"sid": 408017271799608
+									"sid": 408017271799608,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -650,7 +556,8 @@
 											}
 										}
 									],
-									"sid": 761183659472686
+									"sid": 761183659472686,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -672,7 +579,8 @@
 											"sid": 686293166019451
 										}
 									],
-									"sid": 136218967595180
+									"sid": 136218967595180,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -690,6 +598,7 @@
 									],
 									"actions": [],
 									"sid": 541902956370285,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -717,6 +626,7 @@
 												}
 											],
 											"sid": 981909771066114,
+											"disabled": true,
 											"children": [
 												{
 													"eventType": "block",
@@ -767,7 +677,8 @@
 															]
 														}
 													],
-													"sid": 782771070824936
+													"sid": 782771070824936,
+													"disabled": true
 												}
 											]
 										},
@@ -806,6 +717,7 @@
 												}
 											],
 											"sid": 223140417098877,
+											"disabled": true,
 											"children": [
 												{
 													"eventType": "block",
@@ -856,7 +768,8 @@
 															]
 														}
 													],
-													"sid": 963776813859802
+													"sid": 963776813859802,
+													"disabled": true
 												}
 											]
 										},
@@ -886,6 +799,7 @@
 												}
 											],
 											"sid": 988964602328216,
+											"disabled": true,
 											"children": [
 												{
 													"eventType": "block",
@@ -936,7 +850,8 @@
 															]
 														}
 													],
-													"sid": 522754145427108
+													"sid": 522754145427108,
+													"disabled": true
 												}
 											]
 										},
@@ -966,6 +881,7 @@
 												}
 											],
 											"sid": 198097080636459,
+											"disabled": true,
 											"children": [
 												{
 													"eventType": "block",
@@ -1016,7 +932,8 @@
 															]
 														}
 													],
-													"sid": 861101780288357
+													"sid": 861101780288357,
+													"disabled": true
 												}
 											]
 										}
@@ -1050,6 +967,7 @@
 								}
 							],
 							"sid": 352622110544001,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -1083,6 +1001,7 @@
 										}
 									],
 									"sid": 785749783753734,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -1111,7 +1030,8 @@
 													}
 												}
 											],
-											"sid": 732146791376662
+											"sid": 732146791376662,
+											"disabled": true
 										}
 									]
 								},
@@ -1138,7 +1058,8 @@
 											]
 										}
 									],
-									"sid": 398902422834600
+									"sid": 398902422834600,
+									"disabled": true
 								}
 							]
 						},
@@ -1204,7 +1125,8 @@
 									}
 								}
 							],
-							"sid": 565500740673641
+							"sid": 565500740673641,
+							"disabled": true
 						},
 						{
 							"functionName": "setCrabDirection",
@@ -1237,6 +1159,7 @@
 								}
 							],
 							"sid": 908571308395716,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -1263,7 +1186,8 @@
 											}
 										}
 									],
-									"sid": 544768498798556
+									"sid": 544768498798556,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -1290,7 +1214,8 @@
 											}
 										}
 									],
-									"sid": 258211274266593
+									"sid": 258211274266593,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -1317,7 +1242,8 @@
 											}
 										}
 									],
-									"sid": 303865241961351
+									"sid": 303865241961351,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -1344,7 +1270,8 @@
 											}
 										}
 									],
-									"sid": 819588471818750
+									"sid": 819588471818750,
+									"disabled": true
 								}
 							]
 						}
@@ -1401,7 +1328,8 @@
 							}
 						}
 					],
-					"sid": 472314829803329
+					"sid": 472314829803329,
+					"disabled": true
 				},
 				{
 					"eventType": "group",

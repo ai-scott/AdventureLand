@@ -40,25 +40,12 @@
 					"id": "create-object",
 					"objectClass": "System",
 					"sid": 111068435100891,
+					"disabled": true,
 					"parameters": {
 						"object-to-create": "En_Crab_Base",
 						"layer": "\"Objects\"",
 						"x": "120",
 						"y": "250",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 476131056926066,
-					"disabled": true,
-					"parameters": {
-						"object-to-create": "En_Crab_Mask",
-						"layer": "\"Objects\"",
-						"x": "180",
-						"y": "280",
 						"create-hierarchy": false,
 						"template-name": "\"\""
 					}

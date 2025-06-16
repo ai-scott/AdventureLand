@@ -1,7 +1,7 @@
 {
 	"projectFormatVersion": 1,
 	"savedWithRelease": 44002,
-	"name": "Adventure Land 6.9.25",
+	"name": "Adventure Land 6.12.25",
 	"runtime": "c3",
 	"useWorker": "auto",
 	"bundleAddons": false,
@@ -689,15 +689,47 @@
 				{
 					"name": "main.ts",
 					"type": "application/typescript",
-					"sid": 581719748100848,
+					"sid": 412015890935830,
+					"script-info": {
+						"purpose": "main"
+					}
+				},
+				{
+					"name": "enemy-utils.ts",
+					"type": "application/typescript",
+					"sid": 275608238887480,
 					"script-info": {
 						"purpose": "none"
 					}
 				},
 				{
-					"name": "inline TS script_repo.ts",
+					"name": "enemy-configs.ts",
 					"type": "application/typescript",
-					"sid": 947786766959474,
+					"sid": 282795342179073,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "enemy-ai.ts",
+					"type": "application/typescript",
+					"sid": 472358617194469,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "player-debug.ts",
+					"type": "application/typescript",
+					"sid": 371543593842992,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "importsForEvents.ts",
+					"type": "application/typescript",
+					"sid": 956133137719509,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -1292,7 +1324,7 @@
 	},
 	"properties": {
 		"description": "",
-		"version": "1.0.0.6.7.25",
+		"version": "1.0.0.6.12.25",
 		"autoIncrementVersion": false,
 		"author": "Flylock",
 		"authorEmail": "scottaclay@mac.com",
