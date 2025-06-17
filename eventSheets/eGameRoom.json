@@ -1541,7 +1541,50 @@
 															}
 														}
 													],
-													"sid": 164368929914289
+													"sid": 164368929914289,
+													"children": [
+														{
+															"bookmark": true,
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "compare-two-values",
+																	"objectClass": "System",
+																	"sid": 958181786671881,
+																	"parameters": {
+																		"first-value": "CharactersTriggers.ObjectTypeName",
+																		"comparison": 0,
+																		"second-value": "\"Prospector_Pete\""
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-boolean-eventvar",
+																	"objectClass": "System",
+																	"sid": 442114133398867,
+																	"parameters": {
+																		"variable": "use_enhanced_dialogue",
+																		"value": "true"
+																	}
+																},
+																{
+																	"id": "set-eventvar-value",
+																	"objectClass": "System",
+																	"sid": 628583445922462,
+																	"parameters": {
+																		"variable": "enhanced_dialogue_result",
+																		"value": "\"(globalThis as any).getEnhancedDialogue('prospector_pete')\""
+																	}
+																},
+																{
+																	"callFunction": "parseEnhancedDialogue",
+																	"sid": 506259458217901
+																}
+															],
+															"sid": 172215678524114
+														}
+													]
 												},
 												{
 													"eventType": "block",
@@ -5049,6 +5092,7 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6157,6 +6201,7 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

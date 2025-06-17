@@ -302,8 +302,8 @@
 			},
 			{
 				"items": [
-					"Player_Boy",
-					"Player_Girl",
+					"King_Quinby",
+					"Queen_Quenby",
 					"Player_Base",
 					"Penny",
 					"Player_Sword",
@@ -313,7 +313,8 @@
 					"WaterfallCave_Bill",
 					"Shopkeeper_Sally",
 					"Shopkeeper_Sophie",
-					"Shopkeeper_Sarah"
+					"Shopkeeper_Sarah",
+					"Prospector_Pete"
 				],
 				"subfolders": [
 					{
@@ -730,6 +731,22 @@
 					"name": "importsForEvents.ts",
 					"type": "application/typescript",
 					"sid": 956133137719509,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "quest-dialogue-system.ts",
+					"type": "application/typescript",
+					"sid": 457974564930304,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "forest-world-config.ts",
+					"type": "application/typescript",
+					"sid": 289842133290920,
 					"script-info": {
 						"purpose": "none"
 					}

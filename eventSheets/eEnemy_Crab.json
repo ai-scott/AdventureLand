@@ -174,7 +174,7 @@
 								{
 									"id": "is-boolean-instance-variable-set",
 									"objectClass": "En_Crab_Base",
-									"sid": 179807440526107,
+									"sid": 145901947655385,
 									"parameters": {
 										"instance-variable": "Hurt"
 									}

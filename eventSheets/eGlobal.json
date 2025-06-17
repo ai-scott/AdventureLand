@@ -5652,6 +5652,7 @@
 					]
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5668,13 +5669,14 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"(window as any).debugPlayer((window as any).Player_Base.UID, (window as any).Player_Mask.UID, (window as any).PlayerSystem.UID);"
+								"(window as any).debugPlayer();"
 							]
 						}
 					],
 					"sid": 605008597095231
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

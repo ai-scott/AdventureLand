@@ -173,6 +173,46 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "enhanced_dialogue_speaker",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Stores the speaker name from enhanced dialogue",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 444957107270842
+		},
+		{
+			"eventType": "variable",
+			"name": "enhanced_dialogue_text",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Stores the actual dialogue text",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 329559095543112
+		},
+		{
+			"eventType": "variable",
+			"name": "use_enhanced_dialogue",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "Flag to determine which dialogue system to use",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 304664339121431
+		},
+		{
+			"eventType": "variable",
+			"name": "enhanced_dialogue_result",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Stores the JSON result from TypeScript dialogue system",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 568256910223397
+		},
+		{
+			"eventType": "variable",
 			"name": "TypewriterSpeed",
 			"type": "number",
 			"initialValue": "100",
@@ -815,15 +855,6 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 468771243892051,
-							"parameters": {
-								"variable": "CurrentDialogueText",
-								"value": "Arr_Dialogue.At(0, dialogueIndex,TextArrayZIndex)"
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
 							"sid": 855919865612093,
 							"parameters": {
 								"variable": "DialogueResult",
@@ -833,6 +864,79 @@
 					],
 					"sid": 554747244248817,
 					"children": [
+						{
+							"eventType": "comment",
+							"text": "Check for enhanced dialogue"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 492547999841755,
+									"parameters": {
+										"variable": "use_enhanced_dialogue"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "parseEnhancedDialogue",
+									"sid": 980325547123492
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 385625868717057,
+									"parameters": {
+										"variable": "CurrentDialogueText",
+										"value": "enhanced_dialogue_text"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 981132414987016,
+									"parameters": {
+										"variable": "CurrentCharacter",
+										"value": "enhanced_dialogue_speaker"
+									}
+								},
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 565827136585680,
+									"parameters": {
+										"variable": "use_enhanced_dialogue",
+										"value": "false"
+									}
+								}
+							],
+							"sid": 134050800397475
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "else",
+									"objectClass": "System",
+									"sid": 296053572393874
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 314566500379776,
+									"parameters": {
+										"variable": "CurrentDialogueText",
+										"value": "Arr_Dialogue.At(0, dialogueIndex,TextArrayZIndex)"
+									}
+								}
+							],
+							"sid": 573560635675985
+						},
 						{
 							"eventType": "comment",
 							"text": "Check to see if there are Options for the player to choose (Choice1 column != empty)"
@@ -2040,6 +2144,41 @@
 							"sid": 932892998279187
 						}
 					]
+				},
+				{
+					"functionName": "parseEnhancedDialogue",
+					"functionDescription": "",
+					"functionCategory": "DialogueEvent",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Parse the enhanced dialogue JSON result",
+								"if (runtime.globalVars.enhanced_dialogue_result && runtime.globalVars.enhanced_dialogue_result.length > 0) {",
+								"  try {",
+								"    const dialogueNode = JSON.parse(runtime.globalVars.enhanced_dialogue_result);",
+								"    runtime.globalVars.enhanced_dialogue_text = dialogueNode.text || \"\";",
+								"    runtime.globalVars.enhanced_dialogue_speaker = dialogueNode.speaker || \"Pete\";",
+								"    console.log(\"Enhanced dialogue parsed:\", dialogueNode.text);",
+								"  } catch (e) {",
+								"    console.log(\"Enhanced dialogue parsing failed:\", e);",
+								"    runtime.globalVars.use_enhanced_dialogue = false;",
+								"  }",
+								"} else {",
+								"  console.log(\"No enhanced dialogue result to parse\");",
+								"  runtime.globalVars.use_enhanced_dialogue = false;",
+								"}"
+							]
+						}
+					],
+					"sid": 297425081833540
 				}
 			],
 			"sid": 856375767517880

@@ -14,14 +14,15 @@
 	"behaviorTypes": [],
 	"effectTypes": [],
 	"members": [
-		"Player_Girl",
-		"Player_Boy",
+		"Queen_Quenby",
+		"King_Quinby",
 		"Penny",
 		"Nun",
 		"Windmill_Nick",
 		"WaterfallCave_Bill",
 		"Shopkeeper_Sally",
 		"Shopkeeper_Sophie",
-		"Shopkeeper_Sarah"
+		"Shopkeeper_Sarah",
+		"Prospector_Pete"
 	]
 }
