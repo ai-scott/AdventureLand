@@ -68,7 +68,7 @@ export const OOZE_CONFIG: EnemyConfig = {
       duration: [1.0, 2.0], 
       weight: 4,
       actions: [
-        { type: 'animate', params: { name: 'Idle_${direction}' } },
+        { type: 'animate', params: { name: 'Idle' } },
         { type: 'move', params: { pattern: 'toward_player', speed: 20 } }		
       ]
     },
@@ -106,7 +106,7 @@ export const CRAB_CONFIG: EnemyConfig = {
         { type: 'distance', operator: '>', value: 120 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Idle_${direction}' } }
+        { type: 'animate', params: { name: 'Idle' } }
       ]
     },
     {

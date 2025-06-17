@@ -2160,8 +2160,16 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
+								"console.log(\"Parsing enhanced dialogue...\");",
+								"if (runtime.globalVars.enhanced_dialogue_result) {",
+								"  console.log(\"Enhanced dialogue result:\", runtime.globalVars.enhanced_dialogue_result);",
+								"  // For now, just set simple text",
+								"  runtime.globalVars.enhanced_dialogue_text = \"Hello! I'm Pete and I'm feeling sick.\";",
+								"  runtime.globalVars.enhanced_dialogue_speaker = \"Pete\";",
+								"}",
+								"",
 								"// Parse the enhanced dialogue JSON result",
-								"if (runtime.globalVars.enhanced_dialogue_result && runtime.globalVars.enhanced_dialogue_result.length > 0) {",
+								"/*if (runtime.globalVars.enhanced_dialogue_result && runtime.globalVars.enhanced_dialogue_result.length > 0) {",
 								"  try {",
 								"    const dialogueNode = JSON.parse(runtime.globalVars.enhanced_dialogue_result);",
 								"    runtime.globalVars.enhanced_dialogue_text = dialogueNode.text || \"\";",
@@ -2174,7 +2182,7 @@
 								"} else {",
 								"  console.log(\"No enhanced dialogue result to parse\");",
 								"  runtime.globalVars.use_enhanced_dialogue = false;",
-								"}"
+								"}*/"
 							]
 						}
 					],
