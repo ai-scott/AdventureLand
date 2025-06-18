@@ -35,7 +35,7 @@ export function moveTowardPlayer(behavior8Dir: any, enemy: any, enemyData: Enemy
     behavior8Dir.simulateControl(newDirection);
     enemyData.direction = newDirection;
     
-    console.log(`🏃 Moving toward player: dx=${dx.toFixed(1)}, dy=${dy.toFixed(1)}, direction=${newDirection}, speed=${speed}`);
+    //console.log(`🏃 Moving toward player: dx=${dx.toFixed(1)}, dy=${dy.toFixed(1)}, direction=${newDirection}, speed=${speed}`);
   } else {
     behavior8Dir.maxSpeed = 0;
   }
@@ -161,7 +161,7 @@ export function moveCrabTowardPlayer(behavior8Dir: any, enemy: any, enemyData: E
     
     enemyData.direction = newDirection;
     
-    console.log(`🦀 Crab moving toward player: dx=${dx.toFixed(1)}, dy=${dy.toFixed(1)}, direction=${newDirection}, speed=${speed}`);
+    //console.log(`🦀 Crab moving toward player: dx=${dx.toFixed(1)}, dy=${dy.toFixed(1)}, direction=${newDirection}, speed=${speed}`);
   } else {
     behavior8Dir.maxSpeed = 0;
   }
@@ -233,13 +233,13 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
         } else {
           direction = "Right"; // Default fallback
         }
-        console.log(`🦀 Using Cranky_${direction} instead of missing Cranky_Down`);
+        //console.log(`🦀 Using Cranky_${direction} instead of missing Cranky_Down`);
       }
       
       if (animationName.includes('Retreat_') && direction === 'Down') {
         // No Retreat_Down animation, use Right as fallback
         direction = "Right";
-        console.log(`🦀 Using Retreat_${direction} instead of missing Retreat_Down`);
+        //console.log(`🦀 Using Retreat_${direction} instead of missing Retreat_Down`);
       }
       
       animationName = animationName.replace('${direction}', direction);
@@ -249,7 +249,7 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
     const maskObject = getMaskInstance(enemyData.maskUid, runtime);
     if (maskObject && maskObject.setAnimation && typeof maskObject.setAnimation === 'function') {
       maskObject.setAnimation(animationName);
-      console.log(`🎨 Playing animation: ${animationName} on Mask`);
+     // console.log(`🎨 Playing animation: ${animationName} on Mask`);
     } else {
       console.log(`⚠️ Mask object not found for animation: ${animationName}`);
     }

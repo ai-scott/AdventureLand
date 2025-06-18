@@ -882,38 +882,83 @@
 							],
 							"actions": [
 								{
-									"callFunction": "parseEnhancedDialogue",
-									"sid": 980325547123492
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 385625868717057,
-									"parameters": {
-										"variable": "CurrentDialogueText",
-										"value": "enhanced_dialogue_text"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 981132414987016,
-									"parameters": {
-										"variable": "CurrentCharacter",
-										"value": "enhanced_dialogue_speaker"
-									}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"🎭 Processing enhanced dialogue for Pete...\");",
+										"",
+										"// Call the enhanced dialogue function (remove typeof!)",
+										"(window as any).initializeEnhancedDialogue('prospector_pete');",
+										"",
+										"// The function sets enhanced_dialogue_speaker and enhanced_dialogue_text",
+										"// Now we need to transfer them to CurrentCharacter and CurrentDialogueText",
+										"if (runtime.globalVars.enhanced_dialogue_speaker) {",
+										"    runtime.globalVars.CurrentCharacter = runtime.globalVars.enhanced_dialogue_speaker;",
+										"    console.log(\"✅ CurrentCharacter set to:\", runtime.globalVars.CurrentCharacter);",
+										"}",
+										"",
+										"if (runtime.globalVars.enhanced_dialogue_text) {",
+										"    runtime.globalVars.CurrentDialogueText = runtime.globalVars.enhanced_dialogue_text;",
+										"    console.log(\"✅ CurrentDialogueText set to:\", runtime.globalVars.CurrentDialogueText);",
+										"}",
+										"",
+										"//console.log(\"🎭 Pete dialogue ready!\");"
+									]
 								},
 								{
 									"id": "set-boolean-eventvar",
 									"objectClass": "System",
-									"sid": 565827136585680,
+									"sid": 913279125619062,
 									"parameters": {
 										"variable": "use_enhanced_dialogue",
 										"value": "false"
 									}
 								}
 							],
-							"sid": 134050800397475
+							"sid": 134050800397475,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 869127469649551,
+											"parameters": {
+												"first-value": "CurrentWorld",
+												"comparison": 0,
+												"second-value": "\"01\""
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 531592855143614,
+											"parameters": {
+												"first-value": "CurrentAction",
+												"comparison": 0,
+												"second-value": "\"Talk\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"console.log(\"🔧 Detected Pete with missing name - fixing...\");",
+												"",
+												"// We're in Forest World (01), talking, and missing character name = Pete!",
+												"runtime.globalVars.CurrentCharacter = \"Pete\";",
+												"",
+												"console.log(\"✅ Fixed: CurrentCharacter set to Pete\");",
+												"console.log(\"Current dialogue:\", runtime.globalVars.CurrentDialogueText);"
+											]
+										}
+									],
+									"sid": 736166714782767
+								}
+							]
 						},
 						{
 							"eventType": "block",
@@ -933,6 +978,26 @@
 										"variable": "CurrentDialogueText",
 										"value": "Arr_Dialogue.At(0, dialogueIndex,TextArrayZIndex)"
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Fix missing character names (Pete and any other NPCs)",
+										"if (runtime.globalVars.CurrentCharacter === \"0\" && runtime.globalVars.CurrentAction === \"Talk\") {",
+										"    console.log(\"🔧 Missing character name detected\");",
+										"    ",
+										"    // Identify character by world location",
+										"    if (runtime.globalVars.CurrentWorld === \"01\") {",
+										"        runtime.globalVars.CurrentCharacter = \"Pete\";",
+										"        console.log(\"✅ Set CurrentCharacter to Pete (Forest World)\");",
+										"    } else if (runtime.globalVars.CurrentWorld === \"00\") {",
+										"        // Could add logic for Village NPCs if needed",
+										"        runtime.globalVars.CurrentCharacter = \"Unknown\";",
+										"        console.log(\"✅ Set CurrentCharacter to Unknown (Village)\");",
+										"    }",
+										"}"
+									]
 								}
 							],
 							"sid": 573560635675985

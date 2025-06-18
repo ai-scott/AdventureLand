@@ -5652,7 +5652,6 @@
 					]
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5676,7 +5675,6 @@
 					"sid": 605008597095231
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5693,7 +5691,20 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"(window as any).debugPlayerSimple();"
+								"console.log(\"=== PETE TESTING ===\");",
+								"console.log(\"CurrentWorld:\", runtime.globalVars.CurrentWorld);",
+								"console.log(\"CurrentAction:\", runtime.globalVars.CurrentAction);",
+								"console.log(\"CurrentCharacter:\", runtime.globalVars.CurrentCharacter);",
+								"console.log(\"CurrentDialogueText:\", runtime.globalVars.CurrentDialogueText);",
+								"console.log(\"use_enhanced_dialogue:\", runtime.globalVars.use_enhanced_dialogue);",
+								"",
+								"// Test if we can detect Pete's presence",
+								"if (runtime.globalVars.CurrentWorld === \"01\") {",
+								"    console.log(\"✅ We're in Forest World - Pete should be here\");",
+								"} else {",
+								"    console.log(\"❌ Not in Forest World - Pete won't be detected\");",
+								"}",
+								"console.log(\"=== END TEST ===\");"
 							]
 						}
 					],

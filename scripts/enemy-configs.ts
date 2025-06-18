@@ -68,7 +68,7 @@ export const OOZE_CONFIG: EnemyConfig = {
       duration: [1.0, 2.0], 
       weight: 4,
       actions: [
-        { type: 'animate', params: { name: 'Idle' } },
+        { type: 'animate', params: { name: 'Idle_${direction}' } },
         { type: 'move', params: { pattern: 'toward_player', speed: 20 } }		
       ]
     },

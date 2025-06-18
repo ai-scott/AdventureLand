@@ -468,6 +468,43 @@
 								}
 							],
 							"sid": 946286635259274
+						},
+						{
+							"eventType": "comment",
+							"text": "Testing for Pete dialogue system in Leafwood Forest"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 700275263146180,
+									"parameters": {
+										"variable": "CurrentWorld",
+										"comparison": 0,
+										"value": "\"01\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Find Pete and log his properties",
+										"const peteObjects = runtime.objects.Prospector_Pete.getAllInstances();",
+										"console.log(\"Pete objects found:\", peteObjects.length);",
+										"peteObjects.forEach(pete => {",
+										"    console.log(\"Pete UID:\", pete.uid);",
+										"    console.log(\"Pete ObjectTypeName:\", pete.objectType.name);",
+										"    console.log(\"Pete position:\", pete.x, pete.y);",
+										"    //console.log(\"Pete in CharacterTriggers family:\", pete.objectType.family?.name);",
+										"});"
+									]
+								}
+							],
+							"sid": 516338875538534
 						}
 					]
 				},
@@ -1567,19 +1604,6 @@
 																		"variable": "use_enhanced_dialogue",
 																		"value": "true"
 																	}
-																},
-																{
-																	"id": "set-eventvar-value",
-																	"objectClass": "System",
-																	"sid": 628583445922462,
-																	"parameters": {
-																		"variable": "enhanced_dialogue_result",
-																		"value": "\"(globalThis as any).getEnhancedDialogue('prospector_pete')\""
-																	}
-																},
-																{
-																	"callFunction": "parseEnhancedDialogue",
-																	"sid": 506259458217901
 																}
 															],
 															"sid": 172215678524114
@@ -5092,7 +5116,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6201,7 +6224,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
