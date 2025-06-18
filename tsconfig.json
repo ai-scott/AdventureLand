@@ -1,40 +1,37 @@
 {
-    "compilerOptions": {
-      "target": "ES2022",
-      "module": "ES2022", 
-      "moduleResolution": "node",
-      "lib": ["ES2022", "DOM"],
-      "outDir": "./scripts-compiled",
-      "rootDir": "./scripts",
-      "strict": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "declaration": false,
-      "sourceMap": true,
-      "removeComments": false,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "resolveJsonModule": true,
-      "allowJs": true,
-      "checkJs": false,
-      "noEmit": false,
-      "incremental": true,
-      "typeRoots": [
-        "./node_modules/@types",
-        "./ts-defs"
-      ]
-    },
-    "include": [
-      "scripts/**/*"
+  "compilerOptions": {
+    "target": "ES2022", // ✅ Modern target for good IntelliSense
+    "module": "ES2022", // ✅ Modern modules
+    "moduleResolution": "node", // ✅ Standard resolution
+    "lib": [
+      "ES2022",
+      "DOM"
+    ], // ✅ Include DOM types for browser APIs
+    "rootDir": "./scripts", // ✅ Your source directory
+    "strict": true, // ✅ Maximum type safety
+    "esModuleInterop": true, // ✅ Better import compatibility
+    "allowSyntheticDefaultImports": true, // ✅ Import flexibility
+    "skipLibCheck": true, // ✅ Faster compilation
+    "forceConsistentCasingInFileNames": true, // ✅ Cross-platform consistency
+    "noEmit": true, // 🔥 KEY: Let C3 handle compilation!
+    "sourceMap": false, // 🔥 Not needed since C3 handles it
+    "declaration": false, // 🔥 Not needed for C3 internal compilation
+    "resolveJsonModule": true, // ✅ Allow JSON imports
+    "allowJs": true, // ✅ Mixed JS/TS support
+    "checkJs": false, // ✅ Focus on TypeScript files
+    "typeRoots": [
+      "./node_modules/@types", // ✅ Standard @types packages
+      "./node_modules" // 🆕 For construct3 package
     ],
-    "exclude": [
-      "node_modules",
-      "scripts-compiled",
-      "**/*.spec.ts"
-    ],
-    "ts-node": {
-      "esm": true
-    }
-  }
+    "types": [
+      "construct3" // 🆕 Construct 3 type definitions
+    ]
+  },
+  "include": [
+    "scripts/**/*" // ✅ All your TypeScript files
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts" // ✅ Exclude test files
+  ]
+}

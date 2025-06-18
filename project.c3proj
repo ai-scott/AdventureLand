@@ -441,7 +441,8 @@
 					"JSON_ItemsLibrary",
 					"Dict_ItemNumbers",
 					"JSON_ItemTriggers",
-					"Ctrl_Btns"
+					"Ctrl_Btns",
+					"JSON_WorldDialogue"
 				],
 				"subfolders": [],
 				"name": "System"
@@ -747,6 +748,22 @@
 					"name": "forest-world-config.ts",
 					"type": "application/typescript",
 					"sid": 289842133290920,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "dialogue-types.ts",
+					"type": "application/typescript",
+					"sid": 562642547808915,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "dialogue-reader.ts",
+					"type": "application/typescript",
+					"sid": 559409903249290,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -1316,6 +1333,22 @@
 					"name": "World10_text.json",
 					"type": "application/json",
 					"sid": 892023326963672,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "World01_text.json",
+					"type": "application/json",
+					"sid": 954166778733638,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "WorldDialogue.json",
+					"type": "application/json",
+					"sid": 203553371488086,
 					"file-info": {
 						"purpose": "none"
 					}

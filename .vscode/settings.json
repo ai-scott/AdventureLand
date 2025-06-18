@@ -1,0 +1,49 @@
+{
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    // File associations for Construct 3
+    "files.associations": {
+        "*.c3proj": "json",
+        "*.caproj": "json"
+    },
+    // Auto-formatting and code actions
+    "editor.formatOnSave": true,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.fixAll": "explicit"
+    },
+    // Enhanced TypeScript IntelliSense
+    "typescript.inlayHints.parameterNames.enabled": "all",
+    "typescript.inlayHints.variableTypes.enabled": true,
+    "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+    // Error Lens configuration
+    "errorLens.enabledDiagnosticLevels": [
+        "error",
+        "warning",
+        "info"
+    ],
+    "errorLens.errorColor": "rgba(255,0,0,0.3)",
+    "errorLens.warningColor": "rgba(255,165,0,0.3)",
+    // Adventure Land specific settings
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/scripts-compiled": true,
+        "**/.git": true
+    },
+    // TypeScript project settings
+    "typescript.preferences.quoteStyle": "double",
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
+    // Editor enhancements for game development
+    "editor.minimap.enabled": true,
+    "editor.minimap.maxColumn": 80,
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 120
+}

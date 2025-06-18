@@ -337,6 +337,31 @@
 						}
 					],
 					"sid": 971432559631058
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "evaluate-expression",
+							"objectClass": "System",
+							"sid": 993456172505690,
+							"parameters": {
+								"value": "LayoutName=\"World_01\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "request-project-file",
+							"objectClass": "AJAX",
+							"sid": 956448213383121,
+							"parameters": {
+								"tag": "\"LoadGameText\"",
+								"file": "World01_text.json"
+							}
+						}
+					],
+					"sid": 363514371781624
 				}
 			]
 		},
@@ -360,6 +385,21 @@
 					"parameters": {
 						"json": "AJAX.LastData"
 					}
+				},
+				{
+					"id": "parse",
+					"objectClass": "JSON_WorldDialogue",
+					"sid": 408777209926365,
+					"parameters": {
+						"data": "AJAX.LastData"
+					}
+				},
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).processJSONObject(runtime.globalVars.CurrentWorld, runtime)"
+					]
 				}
 			],
 			"sid": 564500952482174

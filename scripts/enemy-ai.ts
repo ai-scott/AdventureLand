@@ -1,23 +1,24 @@
 // enemy-ai.ts - Core Enemy AI Factory System
 
-import { EnemyConfig, EnemyData, BehaviorConfig, BehaviorCondition, ActionConfig, getEnemyConfig } from "./enemy-configs.js";
-import { 
-  moveTowardPlayer, 
-  moveAwayFromPlayer, 
-  moveCrabTowardPlayer, 
-  moveSideways, 
-  moveRandomly,
-  executeAnimation,
+import { ActionConfig, BehaviorCondition, BehaviorConfig, EnemyConfig, EnemyData, getEnemyConfig } from "./enemy-configs.js";
+import {
   calculateDirection,
-  getRandomDuration,
   evaluateCondition,
-  getPlayerInstance,
+  executeAnimation,
   getEnemyInstance,
-  getMaskInstance
+  getPlayerInstance,
+  getRandomDuration,
+  moveAwayFromPlayer,
+  moveCrabTowardPlayer,
+  moveRandomly,
+  moveSideways,
+  moveTowardPlayer
 } from "./enemy-utils.js";
+
 
 // ===== ENEMY AI FACTORY =====
 export class EnemyAIFactory {
+
   private static instance: EnemyAIFactory;
   private enemyData: Map<number, EnemyData> = new Map();
   private runtime: any = null;
@@ -36,9 +37,9 @@ export class EnemyAIFactory {
 
   public initEnemy(baseUID: number, maskUID: number, enemyType: string, config: EnemyConfig): void {
     console.log(`🤖 Initializing ${enemyType} AI (Base: ${baseUID}, Mask: ${maskUID})`);
-    
+
     const initialBehavior = this.selectBehavior(config.behaviors, []);
-    
+
     const enemyData: EnemyData = {
       maskUid: maskUID,
       type: enemyType,
@@ -57,7 +58,7 @@ export class EnemyAIFactory {
 
     this.enemyData.set(baseUID, enemyData);
     this.initializeMovementBehavior(baseUID, config);
-    
+
     console.log(`✅ ${enemyType} AI initialized - starting with ${initialBehavior.name} behavior`);
   }
 
@@ -87,7 +88,7 @@ export class EnemyAIFactory {
 
     const dt = this.runtime.dt;
     enemyData.stateTimer -= dt;
-    
+
     // Update invulnerability timer
     if (enemyData.invulnerableTimer > 0) {
       enemyData.invulnerableTimer -= dt;
@@ -95,7 +96,7 @@ export class EnemyAIFactory {
         console.log(`🛡️ ${enemyData.type} is no longer invulnerable`);
       }
     }
-    
+
     // Update behavior cooldowns
     for (const [behavior, time] of enemyData.behaviorCooldowns) {
       if (time > 0) {
@@ -104,7 +105,7 @@ export class EnemyAIFactory {
     }
 
     const player = getPlayerInstance(this.runtime);
-    const playerDistance = player ? 
+    const playerDistance = player ?
       Math.sqrt(Math.pow(enemy.x - player.x, 2) + Math.pow(enemy.y - player.y, 2)) : 999;
     enemyData.lastPlayerDistance = playerDistance;
 
@@ -127,7 +128,7 @@ export class EnemyAIFactory {
     for (const action of enemyData.currentBehavior.actions) {
       this.executeAction(baseUID, enemyData, action);
     }
-    
+
     // Mark behavior as started after first execution
     enemyData.behaviorStarted = true;
   }
@@ -171,7 +172,7 @@ export class EnemyAIFactory {
 
       const speed = action.params.speed || enemyData.config.baseStats.speed;
       const pattern = action.params.pattern || 'stop';
-      
+
       switch (pattern) {
         case 'toward_player':
           moveTowardPlayer(behavior8Dir, enemy, enemyData, speed, this.runtime);
@@ -209,20 +210,20 @@ export class EnemyAIFactory {
 
   private switchBehavior(enemyData: EnemyData): void {
     console.log(`🎯 Switching behavior for ${enemyData.type}. Current: ${enemyData.state}, Distance: ${enemyData.lastPlayerDistance.toFixed(1)}`);
-    
+
     // Debug each behavior's conditions
     enemyData.config.behaviors.forEach((behavior, index) => {
       const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
       const conditionsMet = this.checkBehaviorConditions(enemyData, behavior.conditions || []);
       console.log(`   ${index + 1}. ${behavior.name}: cooldown=${cooldownTime.toFixed(2)}, conditions=${conditionsMet}, weight=${behavior.weight}`);
     });
-    
+
     const availableBehaviors = enemyData.config.behaviors.filter((behavior: BehaviorConfig) => {
       const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
       if (cooldownTime > 0) {
         return false;
       }
-      
+
       const conditionsMet = this.checkBehaviorConditions(enemyData, behavior.conditions || []);
       return conditionsMet;
     });
@@ -231,16 +232,16 @@ export class EnemyAIFactory {
 
     if (availableBehaviors.length > 0) {
       const newBehavior = this.selectBehavior(availableBehaviors, []);
-      
+
       if (enemyData.currentBehavior.cooldown) {
         enemyData.behaviorCooldowns.set(enemyData.currentBehavior.name, enemyData.currentBehavior.cooldown);
       }
-      
+
       enemyData.currentBehavior = newBehavior;
       enemyData.state = newBehavior.name;
       enemyData.stateTimer = getRandomDuration(newBehavior.duration);
       enemyData.behaviorStarted = false;
-      
+
       console.log(`🔄 ${enemyData.type} switched to: ${newBehavior.name} (${enemyData.stateTimer.toFixed(2)}s)`);
     } else {
       console.log(`⚠️ No available behaviors! Staying in ${enemyData.state}`);
@@ -271,7 +272,7 @@ export class EnemyAIFactory {
 
   private checkBehaviorConditions(enemyData: EnemyData, conditions: BehaviorCondition[]): boolean {
     if (conditions.length === 0) return true;
-    
+
     return conditions.every(condition => {
       let result = false;
       switch (condition.type) {
@@ -311,17 +312,17 @@ export class EnemyAIFactory {
   public hurtEnemy(baseUID: number): boolean {
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) return false;
-    
+
     // Don't hurt if invulnerable
     if (enemyData.invulnerableTimer > 0) {
       console.log(`🛡️ ${enemyData.type} is invulnerable, no damage taken`);
       return false;
     }
-    
+
     // Set hurt state and force behavior switch to hurt_flash
     enemyData.isHurt = true;
     console.log(`💔 ${enemyData.type} has been hurt!`);
-    
+
     // Force immediate behavior switch to hurt_flash first
     const hurtFlashBehavior = enemyData.config.behaviors.find(b => b.name === "hurt_flash");
     if (hurtFlashBehavior) {
@@ -331,7 +332,7 @@ export class EnemyAIFactory {
       enemyData.behaviorStarted = false;
       console.log(`🦀 Crab entering hurt flash (0.2s) → then shell mode`);
     }
-    
+
     // Reset hurt flag after the flash, so hurt_shell can trigger next
     setTimeout(() => {
       if (enemyData) {
@@ -339,7 +340,7 @@ export class EnemyAIFactory {
         console.log(`🦀 Hurt flag reset, crab will shell next`);
       }
     }, 250);
-    
+
     return true;
   }
 }
@@ -354,10 +355,10 @@ export function initializeSystem(runtime: any): void {
 
 export function initEnemy(baseUID: number, maskUID: number, enemyType: string): void {
   console.log(`🎯 Initializing ${enemyType} enemy: Base=${baseUID}, Mask=${maskUID}`);
-  
+
   const config = getEnemyConfig(enemyType);
   if (!config) return;
-  
+
   aiFactory.initEnemy(baseUID, maskUID, enemyType, config);
   console.log(`✅ ${enemyType} enemy initialized with Multi-file AI Factory`);
 }

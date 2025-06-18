@@ -1,0 +1,134 @@
+// Utility functions for validating Adventure Land configurations
+export function validateEnemyConfig(config: any): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    if (!config || typeof config !== 'object') {
+        errors.push('Config must be an object');
+        return { valid: false, errors };
+    }
+
+    if (typeof config.type !== 'string' || config.type.length === 0) {
+        errors.push('Type must be a non-empty string');
+    }
+
+    if (!config.baseStats || typeof config.baseStats !== 'object') {
+        errors.push('BaseStats must be an object');
+    } else {
+        if (typeof config.baseStats.health !== 'number' || config.baseStats.health <= 0) {
+            errors.push('Health must be a positive number');
+        }
+        if (typeof config.baseStats.speed !== 'number' || config.baseStats.speed <= 0) {
+            errors.push('Speed must be a positive number');
+        }
+        if (typeof config.baseStats.viewDistance !== 'number' || config.baseStats.viewDistance <= 0) {
+            errors.push('ViewDistance must be a positive number');
+        }
+    }
+
+    if (!Array.isArray(config.behaviors) || config.behaviors.length === 0) {
+        errors.push('Behaviors must be a non-empty array');
+    } else {
+        config.behaviors.forEach((behavior: any, index: number) => {
+            if (!behavior.name || typeof behavior.name !== 'string') {
+                errors.push(`Behavior ${index}: name must be a string`);
+            }
+            if (!Array.isArray(behavior.duration) || behavior.duration.length !== 2) {
+                errors.push(`Behavior ${index}: duration must be an array of 2 numbers`);
+            }
+            if (typeof behavior.weight !== 'number' || behavior.weight <= 0) {
+                errors.push(`Behavior ${index}: weight must be a positive number`);
+            }
+            if (!Array.isArray(behavior.actions)) {
+                errors.push(`Behavior ${index}: actions must be an array`);
+            }
+        });
+    }
+
+    return { valid: errors.length === 0, errors };
+}
+
+// Test the validation utilities
+describe('Adventure Land - Configuration Validation', () => {
+    describe('validateEnemyConfig', () => {
+        test('should validate correct enemy config', () => {
+            const validConfig = {
+                type: 'TestEnemy',
+                baseStats: {
+                    health: 10,
+                    speed: 20,
+                    viewDistance: 100,
+                    attackDistance: 30
+                },
+                behaviors: [
+                    {
+                        name: 'test_behavior',
+                        duration: [1, 2],
+                        weight: 5,
+                        actions: [{ type: 'move', direction: 'toward_player' }]
+                    }
+                ]
+            };
+
+            const result = validateEnemyConfig(validConfig);
+            expect(result.valid).toBe(true);
+            expect(result.errors).toEqual([]);
+        });
+
+        test('should detect missing required fields', () => {
+            const invalidConfig = {
+                // Missing type
+                baseStats: { health: 10, speed: 20, viewDistance: 100 },
+                behaviors: []
+            };
+
+            const result = validateEnemyConfig(invalidConfig);
+            expect(result.valid).toBe(false);
+            expect(result.errors).toContain('Type must be a non-empty string');
+            expect(result.errors).toContain('Behaviors must be a non-empty array');
+        });
+
+        test('should detect invalid stat values', () => {
+            const invalidConfig = {
+                type: 'TestEnemy',
+                baseStats: {
+                    health: 0,  // Invalid: should be > 0
+                    speed: -5,  // Invalid: should be > 0
+                    viewDistance: 100
+                },
+                behaviors: [
+                    { name: 'test', duration: [1, 2], weight: 5, actions: [] }
+                ]
+            };
+
+            const result = validateEnemyConfig(invalidConfig);
+            expect(result.valid).toBe(false);
+            expect(result.errors).toContain('Health must be a positive number');
+            expect(result.errors).toContain('Speed must be a positive number');
+        });
+
+        test('should detect malformed behaviors', () => {
+            const invalidConfig = {
+                type: 'TestEnemy',
+                baseStats: { health: 10, speed: 20, viewDistance: 100 },
+                behaviors: [
+                    {
+                        // Missing name
+                        duration: [1], // Wrong length
+                        weight: 0,     // Should be > 0
+                        actions: 'not_an_array' // Should be array
+                    }
+                ]
+            };
+
+            const result = validateEnemyConfig(invalidConfig);
+            expect(result.valid).toBe(false);
+            expect(result.errors.length).toBeGreaterThan(0);
+        });
+
+        test('should handle null and undefined gracefully', () => {
+            expect(validateEnemyConfig(null).valid).toBe(false);
+            expect(validateEnemyConfig(undefined).valid).toBe(false);
+            expect(validateEnemyConfig('not an object').valid).toBe(false);
+        });
+    });
+});

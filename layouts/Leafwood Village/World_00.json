@@ -2325,6 +2325,14 @@
 			"sid": 256678076606692,
 			"tags": "",
 			"instanceVariables": {}
+		},
+		{
+			"type": "JSON_WorldDialogue",
+			"properties": {},
+			"uid": 81,
+			"sid": 289121342440277,
+			"tags": "",
+			"instanceVariables": {}
 		}
 	],
 	"effectTypes": [],

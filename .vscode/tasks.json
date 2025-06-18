@@ -1,0 +1,79 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Adventure Land: Quick Type Check",
+      "type": "shell",
+      "command": "tsc",
+      "args": [
+        "--noEmit"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Adventure Land: Watch Mode",
+      "type": "shell",
+      "command": "tsc",
+      "args": [
+        "--noEmit",
+        "--watch"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$tsc-watch",
+      "isBackground": true
+    },
+    {
+      "label": "Adventure Land: Deep Type Check",
+      "type": "shell",
+      "command": "tsc",
+      "args": [
+        "--noEmit",
+        "--strict"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Adventure Land: Clean Check",
+      "type": "shell",
+      "command": "tsc",
+      "args": [
+        "--noEmit",
+        "--skipLibCheck"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    }
+  ]
+}

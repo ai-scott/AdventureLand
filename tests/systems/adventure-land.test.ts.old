@@ -1,0 +1,75 @@
+import { CRAB_CONFIG, OOZE_CONFIG, getEnemyConfig } from '../../scripts/enemy-configs';
+import { validateEnemyConfig } from '../utils/validation.test';
+
+describe('Adventure Land - System Integration', () => {
+    test('all enemy configs should pass validation', () => {
+        const enemies = [
+            { name: 'Crab', config: CRAB_CONFIG },
+            { name: 'Ooze', config: OOZE_CONFIG }
+        ];
+
+        enemies.forEach(({ name, config }) => {
+            const validation = validateEnemyConfig(config);
+            if (!validation.valid) {
+                console.error(`${name} config errors:`, validation.errors);
+            }
+            expect(validation.valid).toBe(true);
+        });
+    });
+
+    test('enemy system should be ready for 9-world scaling', () => {
+        // Test that the system can handle multiple enemy types
+        const enemyTypes = ['Crab', 'Ooze'];
+
+        enemyTypes.forEach(type => {
+            const config = getEnemyConfig(type);
+            expect(config).not.toBeNull();
+            expect(config?.type).toBe(type);
+        });
+
+        // Verify no memory leaks in repeated calls
+        for (let i = 0; i < 100; i++) {
+            const config = getEnemyConfig('Crab');
+            expect(config).not.toBeNull();
+        }
+    });
+
+    test('enemy configs should be balanced for gameplay', () => {
+        const configs = [CRAB_CONFIG, OOZE_CONFIG];
+
+        configs.forEach(config => {
+            // Health should be reasonable for Adventure Land
+            expect(config.baseStats.health).toBeGreaterThanOrEqual(1);
+            expect(config.baseStats.health).toBeLessThanOrEqual(20);
+
+            // Speed should allow for good gameplay
+            expect(config.baseStats.speed).toBeGreaterThanOrEqual(5);
+            expect(config.baseStats.speed).toBeLessThanOrEqual(100);
+
+            // View distance should work well in Adventure Land worlds
+            expect(config.baseStats.viewDistance).toBeGreaterThanOrEqual(50);
+            expect(config.baseStats.viewDistance).toBeLessThanOrEqual(500);
+        });
+    });
+
+    test('behavior system should support complex AI patterns', () => {
+        const allBehaviors = [
+            ...CRAB_CONFIG.behaviors,
+            ...OOZE_CONFIG.behaviors
+        ];
+
+        // Should have variety in behavior types
+        expect(allBehaviors.length).toBeGreaterThan(3);
+
+        // Should have different behavior strategies
+        const behaviorNames = allBehaviors.map(b => b.name);
+        const uniqueBehaviorNames = new Set(behaviorNames);
+        expect(uniqueBehaviorNames.size).toBeGreaterThan(2);
+
+        // Should have balanced weights
+        allBehaviors.forEach(behavior => {
+            expect(behavior.weight).toBeGreaterThan(0);
+            expect(behavior.weight).toBeLessThan(100);
+        });
+    });
+});

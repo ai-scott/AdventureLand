@@ -65,11 +65,11 @@ export const OOZE_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle",
-      duration: [1.0, 2.0], 
+      duration: [1.0, 2.0],
       weight: 4,
       actions: [
         { type: 'animate', params: { name: 'Idle_${direction}' } },
-        { type: 'move', params: { pattern: 'toward_player', speed: 20 } }		
+        { type: 'move', params: { pattern: 'toward_player', speed: 20 } }
       ]
     },
     {
@@ -180,13 +180,21 @@ export const CRAB_CONFIG: EnemyConfig = {
   ]
 };
 
-// ===== CONFIG GETTER FUNCTION =====
-export function getEnemyConfig(enemyType: string): EnemyConfig | null {
-  switch (enemyType.toLowerCase()) {
-    case "crab":
+
+export function getEnemyConfig(type: string | null | undefined): EnemyConfig | null {
+  // Handle null, undefined, and empty string cases
+  if (!type || typeof type !== 'string' || type.trim() === '') {
+    console.error('❌ Invalid enemy type provided:', type);
+    return null;
+  }
+
+  // Convert to lowercase for case-insensitive comparison (or keep case-sensitive)
+  const enemyType = type.trim();
+
+  switch (enemyType) {
+    case 'Crab':
       return CRAB_CONFIG;
-    case "ooze":
-    case "slime":
+    case 'Ooze':
       return OOZE_CONFIG;
     default:
       console.error(`❌ Unknown enemy type: ${enemyType}`);

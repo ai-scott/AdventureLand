@@ -1,0 +1,142 @@
+import { CRAB_CONFIG, OOZE_CONFIG, getEnemyConfig } from '../../scripts/enemy-configs';
+
+describe('Adventure Land - Enemy Configurations', () => {
+    describe('CRAB_CONFIG', () => {
+        test('should have valid basic properties', () => {
+            expect(CRAB_CONFIG.type).toBe('Crab');
+            expect(CRAB_CONFIG.baseStats.health).toBeGreaterThan(0);
+            expect(CRAB_CONFIG.baseStats.speed).toBeGreaterThan(0);
+            expect(CRAB_CONFIG.baseStats.viewDistance).toBeGreaterThan(0);
+            expect(CRAB_CONFIG.baseStats.attackDistance).toBeGreaterThan(0);
+        });
+
+        test('should have valid behaviors array', () => {
+            expect(CRAB_CONFIG.behaviors).toBeDefined();
+            expect(Array.isArray(CRAB_CONFIG.behaviors)).toBe(true);
+            expect(CRAB_CONFIG.behaviors.length).toBeGreaterThan(0);
+        });
+
+        test('should have properly structured behaviors', () => {
+            CRAB_CONFIG.behaviors.forEach((behavior, index) => {
+                expect(behavior.name).toBeDefined();
+                expect(typeof behavior.name).toBe('string');
+                expect(behavior.duration).toBeDefined();
+                expect(Array.isArray(behavior.duration)).toBe(true);
+                expect(behavior.duration.length).toBe(2);
+                expect(behavior.duration[0]).toBeGreaterThan(0);
+                expect(behavior.duration[1]).toBeGreaterThanOrEqual(behavior.duration[0]);
+                expect(behavior.weight).toBeGreaterThan(0);
+                expect(behavior.actions).toBeDefined();
+                expect(Array.isArray(behavior.actions)).toBe(true);
+            });
+        });
+
+        test('should have reasonable stat values for gameplay', () => {
+            // Health should be reasonable for a crab enemy
+            expect(CRAB_CONFIG.baseStats.health).toBeGreaterThanOrEqual(1);
+            expect(CRAB_CONFIG.baseStats.health).toBeLessThanOrEqual(20);
+
+            // Speed should be reasonable
+            expect(CRAB_CONFIG.baseStats.speed).toBeGreaterThanOrEqual(5);
+            expect(CRAB_CONFIG.baseStats.speed).toBeLessThanOrEqual(100);
+
+            // View distance should be reasonable
+            expect(CRAB_CONFIG.baseStats.viewDistance).toBeGreaterThanOrEqual(50);
+            expect(CRAB_CONFIG.baseStats.viewDistance).toBeLessThanOrEqual(500);
+        });
+
+        test('should have crab-specific behaviors', () => {
+            const behaviorNames = CRAB_CONFIG.behaviors.map(b => b.name.toLowerCase());
+
+            // Crab should have some movement or attack behaviors
+            const hasMovementOrAttack = behaviorNames.some(name =>
+                name.includes('move') ||
+                name.includes('chase') ||
+                name.includes('attack') ||
+                name.includes('cranky')
+            );
+            expect(hasMovementOrAttack).toBe(true);
+        });
+
+        test('should have balanced behavior weights', () => {
+            const totalWeight = CRAB_CONFIG.behaviors.reduce((sum, b) => sum + b.weight, 0);
+            expect(totalWeight).toBeGreaterThan(0);
+
+            // Each behavior should have positive weight
+            CRAB_CONFIG.behaviors.forEach(behavior => {
+                expect(behavior.weight).toBeGreaterThan(0);
+                expect(behavior.weight).toBeLessThan(50); // No single behavior should dominate
+            });
+        });
+    });
+
+    describe('OOZE_CONFIG', () => {
+        test('should have different characteristics than Crab', () => {
+            expect(OOZE_CONFIG.type).toBe('Ooze');
+            expect(OOZE_CONFIG.baseStats.health).not.toBe(CRAB_CONFIG.baseStats.health);
+            expect(OOZE_CONFIG.baseStats.speed).not.toBe(CRAB_CONFIG.baseStats.speed);
+        });
+
+        test('should have valid ooze-specific properties', () => {
+            expect(OOZE_CONFIG.baseStats.health).toBeGreaterThan(0);
+            expect(OOZE_CONFIG.baseStats.speed).toBeGreaterThan(0);
+            expect(OOZE_CONFIG.behaviors.length).toBeGreaterThan(0);
+        });
+
+        test('should have ooze-appropriate behaviors', () => {
+            const behaviorNames = OOZE_CONFIG.behaviors.map(b => b.name.toLowerCase());
+
+            // Ooze should have movement behaviors (hop, move, etc.)
+            const hasMovementBehavior = behaviorNames.some(name =>
+                name.includes('move') ||
+                name.includes('hop') ||
+                name.includes('toward')
+            );
+            expect(hasMovementBehavior).toBe(true);
+        });
+
+        test('should have different behavior strategy than Crab', () => {
+            const oozeBehaviorNames = OOZE_CONFIG.behaviors.map(b => b.name);
+            const crabBehaviorNames = CRAB_CONFIG.behaviors.map(b => b.name);
+
+            // Should have some different behaviors
+            const hasUniqueBehaviors = oozeBehaviorNames.some(name =>
+                !crabBehaviorNames.includes(name)
+            );
+            expect(hasUniqueBehaviors).toBe(true);
+        });
+    });
+
+    describe('getEnemyConfig function', () => {
+        test('should return correct configs for valid enemy types', () => {
+            expect(getEnemyConfig('Crab')).toEqual(CRAB_CONFIG);
+            expect(getEnemyConfig('Ooze')).toEqual(OOZE_CONFIG);
+        });
+
+        test('should return null for invalid enemy types', () => {
+            expect(getEnemyConfig('InvalidEnemy')).toBeNull();
+            expect(getEnemyConfig('')).toBeNull();
+            expect(getEnemyConfig('crab')).toBeNull(); // Case sensitive
+            expect(getEnemyConfig('CRAB')).toBeNull(); // Case sensitive
+        });
+
+        test('should handle edge cases gracefully', () => {
+            expect(getEnemyConfig(null as any)).toBeNull();
+            expect(getEnemyConfig(undefined as any)).toBeNull();
+            expect(getEnemyConfig(123 as any)).toBeNull();
+            expect(getEnemyConfig({} as any)).toBeNull();
+        });
+
+        test('should be ready for future enemy types', () => {
+            // This test documents what enemies are currently available
+            const availableEnemies = ['Crab', 'Ooze'];
+
+            availableEnemies.forEach(enemyType => {
+                expect(getEnemyConfig(enemyType)).not.toBeNull();
+            });
+
+            // When you add Skeleton, Sea Monster, etc., update this test
+            console.log('Current enemy types:', availableEnemies);
+        });
+    });
+});

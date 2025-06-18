@@ -5680,6 +5680,75 @@
 						{
 							"id": "on-key-pressed",
 							"objectClass": "Keyboard",
+							"sid": 280271384703481,
+							"parameters": {
+								"key": 82
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLandDebug.testDialogueReader()"
+							]
+						}
+					],
+					"sid": 106477380742072
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 783430427227209,
+							"parameters": {
+								"key": 80
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLandDebug.testPennyDialogue()"
+							]
+						}
+					],
+					"sid": 119070354345818
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 826016800655263,
+							"parameters": {
+								"key": 86
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLandDebug.debugVillageDialogue()"
+							]
+						}
+					],
+					"sid": 196662075782166
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
 							"sid": 903652099678937,
 							"parameters": {
 								"key": 84

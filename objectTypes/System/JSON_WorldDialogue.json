@@ -1,0 +1,8 @@
+{
+	"name": "JSON_WorldDialogue",
+	"plugin-id": "Json",
+	"sid": 171166010842561,
+	"isGlobal": true,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": []
+}
