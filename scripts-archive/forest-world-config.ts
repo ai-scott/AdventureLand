@@ -4,7 +4,7 @@
 // This replaces hard-coded row IDs with flexible, multi-quest aware dialogue
 // ===================================================================
 
-import { NPCDialogue, DialogueNode, QuestDefinition } from './quest-dialogue-system.js';
+import { NPCDialogue, QuestDefinition } from '../scripts/quest-dialogue-system.js';
 
 // ===================================================================
 // QUEST DEFINITIONS
@@ -51,7 +51,7 @@ export const PLATYPUS_BOARD_QUEST: QuestDefinition = {
   mutuallyExclusive: [],
   resourceRequirements: [
     {
-      type: 'npc_exclusive', 
+      type: 'npc_exclusive',
       resourceId: 'silly_platypus',
       description: 'Platypus is needed for this quest'
     }
@@ -88,7 +88,7 @@ export const PROSPECTOR_PETE_DIALOGUE: NPCDialogue = {
   npcId: 'prospector_pete',
   name: 'Prospector Pete',
   defaultNode: 'pete_default',
-  
+
   nodes: [
     // ===================================================================
     // INITIAL MEETING - Pete is sick and introduces the problem
@@ -118,7 +118,7 @@ export const PROSPECTOR_PETE_DIALOGUE: NPCDialogue = {
 
     {
       id: 'pete_explains_situation',
-      speaker: 'Pete', 
+      speaker: 'Pete',
       text: "I've got healing herbs in my cabin that I picked from the icy mountains to the south. They're the only thing that can cure this mountain fever. But with the bridge out, I can't get to them! *wheeze*",
       priority: 90,
       conditions: [
@@ -320,7 +320,7 @@ export const PROSPECTOR_PETE_DIALOGUE: NPCDialogue = {
         },
         {
           text: "Good luck!",
-          leads_to: 'pete_default'  
+          leads_to: 'pete_default'
         }
       ]
     },
@@ -408,7 +408,7 @@ export const PROSPECTOR_PETE_DIALOGUE: NPCDialogue = {
 export const FOREST_WORLD_CONFIG = {
   quests: [
     PETE_HEALING_QUEST,
-    PLATYPUS_BOARD_QUEST, 
+    PLATYPUS_BOARD_QUEST,
     BRIDGE_REPAIR_QUEST
   ],
   npcs: [

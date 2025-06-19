@@ -729,41 +729,9 @@
 					}
 				},
 				{
-					"name": "importsForEvents.ts",
-					"type": "application/typescript",
-					"sid": 956133137719509,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "quest-dialogue-system.ts",
-					"type": "application/typescript",
-					"sid": 457974564930304,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "forest-world-config.ts",
-					"type": "application/typescript",
-					"sid": 289842133290920,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "dialogue-types.ts",
-					"type": "application/typescript",
-					"sid": 562642547808915,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "dialogue-reader.ts",
-					"type": "application/typescript",
-					"sid": 559409903249290,
+					"name": "construct-3-types.js",
+					"type": "application/javascript",
+					"sid": 597272178974299,
 					"script-info": {
 						"purpose": "none"
 					}

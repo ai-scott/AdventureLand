@@ -11,7 +11,9 @@
     "test:configs": "jest tests/configs",
     "test:utils": "jest tests/utils",
     "test:systems": "jest tests/systems",
-    "check-all": "npm run type-check && npm run test"
+    "check-all": "npm run type-check && npm run test",
+    "compile-check": "tsc --noEmit && echo '✅ TypeScript compilation successful!'",
+    "perf-test": "npm run compile-check && echo '🧪 Ready for performance testing in Lake World!'"
   },
   "repository": {
     "type": "git",

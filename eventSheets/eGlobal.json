@@ -5668,11 +5668,34 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"(window as any).debugPlayer();"
+								"(globalThis as any).AdventureLandDebug.testDisableEnemyAI();"
 							]
 						}
 					],
 					"sid": 605008597095231
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 642326096827439,
+							"parameters": {
+								"key": 69
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLandDebug.testEnableEnemyAI();"
+							]
+						}
+					],
+					"sid": 438863817002561
 				},
 				{
 					"eventType": "block",

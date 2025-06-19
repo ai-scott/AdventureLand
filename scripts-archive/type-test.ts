@@ -5,11 +5,11 @@ import { IRuntime, runOnStartup } from "construct3";
 function testEnhancedTypes() {
     runOnStartup((runtime: IRuntime) => {
         console.log("✅ Enhanced type definitions loaded!");
-        
+
         // These should now show full autocomplete/IntelliSense:
         console.log("Layout name:", runtime.layout?.name);
         console.log("Objects available:", Object.keys(runtime.objects));
-        
+
         // Test object access (safer approach)
         const playerObjects = runtime.objects.Player;
         if (playerObjects) {
@@ -21,12 +21,12 @@ function testEnhancedTypes() {
                 console.log("Player UID:", firstPlayer.uid);
             }
         }
-        
+
         // Test runtime methods that should have IntelliSense
         console.log("Runtime methods available:");
         console.log("- callFunction exists:", typeof runtime.callFunction);
         console.log("- addEventListener exists:", typeof runtime.addEventListener);
-        
+
         console.log("✅ Type test completed successfully!");
     });
 }

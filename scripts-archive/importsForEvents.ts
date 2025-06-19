@@ -1,8 +1,8 @@
 // importsForEvents.ts - Construct 3 bridge file
 // This file makes functions available to both event sheets AND console
 
-import * as EnemyAI from "./enemy-ai.js";
-import * as PlayerDebug from "./player-debug.js";
+import * as EnemyAI from "../scripts/enemy-ai.js";
+import * as PlayerDebug from "../scripts/player-debug.js";
 import { AdventureLandIntegration, DialogueResult } from "./quest-dialogue-system.js";
 
 // Store runtime reference
@@ -62,13 +62,13 @@ export function parseEnhancedDialogue() {
     console.warn("Runtime not available for parseEnhancedDialogue");
     return;
   }
-  
+
   console.log("Parsing enhanced dialogue...");
-  
+
   // Check if we have enhanced dialogue result
   if (runtime.globalVars.enhanced_dialogue_result) {
     console.log("Enhanced dialogue result:", runtime.globalVars.enhanced_dialogue_result);
-    
+
     // The result should already be set by initializeEnhancedDialogue
     // This function is mainly for compatibility with existing event sheet logic
     if (runtime.globalVars.enhanced_dialogue_result.text) {
@@ -76,7 +76,7 @@ export function parseEnhancedDialogue() {
       runtime.globalVars.enhanced_dialogue_speaker = runtime.globalVars.enhanced_dialogue_result.speaker;
       runtime.globalVars.CurrentCharacter = runtime.globalVars.enhanced_dialogue_result.speaker;
       runtime.globalVars.CurrentDialogueText = runtime.globalVars.enhanced_dialogue_result.text;
-      
+
       console.log(`Parsed dialogue - Text: "${runtime.globalVars.enhanced_dialogue_text}", Speaker: "${runtime.globalVars.enhanced_dialogue_speaker}"`);
     }
   } else {

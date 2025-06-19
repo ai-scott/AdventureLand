@@ -211,12 +211,12 @@ export class EnemyAIFactory {
   private switchBehavior(enemyData: EnemyData): void {
     console.log(`🎯 Switching behavior for ${enemyData.type}. Current: ${enemyData.state}, Distance: ${enemyData.lastPlayerDistance.toFixed(1)}`);
 
-    // Debug each behavior's conditions
-    enemyData.config.behaviors.forEach((behavior, index) => {
-      const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
-      const conditionsMet = this.checkBehaviorConditions(enemyData, behavior.conditions || []);
-      console.log(`   ${index + 1}. ${behavior.name}: cooldown=${cooldownTime.toFixed(2)}, conditions=${conditionsMet}, weight=${behavior.weight}`);
-    });
+    // Debug each behavior's conditions - COMMENTED OUT FOR PERFORMANCE
+    // enemyData.config.behaviors.forEach((behavior, index) => {
+    //   const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
+    //   const conditionsMet = this.checkBehaviorConditions(enemyData, behavior.conditions || []);
+    //   console.log(`   ${index + 1}. ${behavior.name}: cooldown=${cooldownTime.toFixed(2)}, conditions=${conditionsMet}, weight=${behavior.weight}`);
+    // });
 
     const availableBehaviors = enemyData.config.behaviors.filter((behavior: BehaviorConfig) => {
       const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
@@ -255,13 +255,16 @@ export class EnemyAIFactory {
     const totalWeight = availableBehaviors.reduce((sum, behavior: BehaviorConfig) => sum + behavior.weight, 0);
     let randomValue = Math.random() * totalWeight;
 
-    console.log(`🎲 Selecting behavior from ${availableBehaviors.length} options (total weight: ${totalWeight}, roll: ${randomValue.toFixed(2)})`);
+    // COMMENTED OUT FOR PERFORMANCE - These run every behavior switch
+    // console.log(`🎲 Selecting behavior from ${availableBehaviors.length} options (total weight: ${totalWeight}, roll: ${randomValue.toFixed(2)})`);
 
     for (const behavior of availableBehaviors) {
       randomValue -= behavior.weight;
-      console.log(`   Checking ${behavior.name} (weight: ${behavior.weight}, remaining roll: ${randomValue.toFixed(2)})`);
+      // COMMENTED OUT FOR PERFORMANCE - This runs for each behavior check
+      // console.log(`   Checking ${behavior.name} (weight: ${behavior.weight}, remaining roll: ${randomValue.toFixed(2)})`);
       if (randomValue <= 0) {
-        console.log(`   ✅ Selected: ${behavior.name}`);
+        // COMMENTED OUT FOR PERFORMANCE - This runs every selection
+        // console.log(`   ✅ Selected: ${behavior.name}`);
         return behavior;
       }
     }
