@@ -478,6 +478,14 @@
 					"conditions": [],
 					"actions": [
 						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"🧹 Starting transition cleanup...\");",
+								"(globalThis as any).cleanupEnemies();"
+							]
+						},
+						{
 							"id": "destroy",
 							"objectClass": "Transition",
 							"sid": 277156618891676
@@ -525,7 +533,6 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 370586864779919,
-							"disabled": true,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "deactivated"
@@ -5783,20 +5790,20 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"console.log(\"=== PETE TESTING ===\");",
-								"console.log(\"CurrentWorld:\", runtime.globalVars.CurrentWorld);",
-								"console.log(\"CurrentAction:\", runtime.globalVars.CurrentAction);",
-								"console.log(\"CurrentCharacter:\", runtime.globalVars.CurrentCharacter);",
-								"console.log(\"CurrentDialogueText:\", runtime.globalVars.CurrentDialogueText);",
-								"console.log(\"use_enhanced_dialogue:\", runtime.globalVars.use_enhanced_dialogue);",
-								"",
-								"// Test if we can detect Pete's presence",
-								"if (runtime.globalVars.CurrentWorld === \"01\") {",
-								"    console.log(\"✅ We're in Forest World - Pete should be here\");",
-								"} else {",
-								"    console.log(\"❌ Not in Forest World - Pete won't be detected\");",
-								"}",
-								"console.log(\"=== END TEST ===\");"
+								"console.log(\"=== TESTING TRANSITION CLEANUP ===\");",
+								"               ",
+								"               // Show current enemies",
+								"               (globalThis as any).listActiveEnemies();",
+								"               ",
+								"               // Trigger a test transition",
+								"               console.log(\"Triggering test transition...\");",
+								"               runtime.callFunction('Transition', 'Out', 'TEST', '');",
+								"               ",
+								"               // Check enemies after transition",
+								"               setTimeout(() => {",
+								"                 console.log(\"After transition:\");",
+								"                 (globalThis as any).listActiveEnemies();",
+								"               }, 1000);"
 							]
 						}
 					],

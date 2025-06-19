@@ -9,27 +9,46 @@ interface EnemyInstance {
 }
 
 class WorldTransitionManager {
-    private static activeEnemies: Map<string, EnemyInstance> = new Map();
+    private static activeEnemies: Map<string, EnemyInstance> | null = null;
     private static currentWorldId: string = "";
     private static isTransitioning: boolean = false;
+
+    /**
+     * Ensure static properties are initialized
+     */
+    private static ensureInitialized(): void {
+        if (!WorldTransitionManager.activeEnemies) {
+            WorldTransitionManager.activeEnemies = new Map();
+            console.log("🔧 WorldTransitionManager initialized");
+        }
+    }
 
     /**
      * Register an enemy for cleanup tracking
      */
     static registerEnemy(enemyInstance: any, enemyType: string, cleanupCallback?: () => void): void {
-        if (!enemyInstance || !enemyInstance.uid) {
-            console.warn("⚠️ Cannot register enemy - invalid instance or missing UID");
+        WorldTransitionManager.ensureInitialized();
+
+        if (!enemyInstance) {
+            console.warn("⚠️ Cannot register enemy - invalid instance");
             return;
         }
 
-        const uid = enemyInstance.uid.toString();
+        // Handle both uid and UID properties, convert to string
+        const rawUid = enemyInstance.uid ?? enemyInstance.UID;
+        if (rawUid === undefined || rawUid === null) {
+            console.warn("⚠️ Cannot register enemy - missing uid property");
+            return;
+        }
+
+        const uid = rawUid.toString();
         const enemyData: EnemyInstance = {
             uid,
             instance: enemyInstance,
             cleanupCallback
         };
 
-        this.activeEnemies.set(uid, enemyData);
+        WorldTransitionManager.activeEnemies!.set(uid, enemyData);
         console.log(`✅ Registered ${enemyType} enemy (UID: ${uid})`);
     }
 
@@ -37,8 +56,9 @@ class WorldTransitionManager {
      * Remove enemy from tracking (called when enemy is destroyed normally)
      */
     static unregisterEnemy(uid: string): void {
-        if (this.activeEnemies.has(uid)) {
-            this.activeEnemies.delete(uid);
+        WorldTransitionManager.ensureInitialized();
+        if (WorldTransitionManager.activeEnemies!.has(uid)) {
+            WorldTransitionManager.activeEnemies!.delete(uid);
             console.log(`📝 Unregistered enemy (UID: ${uid})`);
         }
     }
@@ -47,36 +67,38 @@ class WorldTransitionManager {
      * CRITICAL: Complete cleanup of all enemies before world transition
      */
     static cleanupCurrentWorld(): void {
-        if (this.isTransitioning) {
+        WorldTransitionManager.ensureInitialized();
+
+        if (WorldTransitionManager.isTransitioning) {
             console.log("🔄 Already transitioning - skipping duplicate cleanup");
             return;
         }
 
-        this.isTransitioning = true;
-        console.log(`🧹 Starting world cleanup - ${this.activeEnemies.size} enemies to clean...`);
+        WorldTransitionManager.isTransitioning = true;
+        console.log(`🧹 Starting world cleanup - ${WorldTransitionManager.activeEnemies!.size} enemies to clean...`);
 
         // Step 1: Execute custom cleanup callbacks
-        this.executeCleanupCallbacks();
+        WorldTransitionManager.executeCleanupCallbacks();
 
         // Step 2: Destroy enemy instances
-        this.destroyEnemyInstances();
+        WorldTransitionManager.destroyEnemyInstances();
 
         // Step 3: Clear AI references
-        this.clearEnemyAIReferences();
+        WorldTransitionManager.clearEnemyAIReferences();
 
         // Step 4: Clear our tracking
-        this.activeEnemies.clear();
+        WorldTransitionManager.activeEnemies!.clear();
 
         console.log('✅ World cleanup complete - all enemies removed');
 
         // Reset transition flag after brief delay
         setTimeout(() => {
-            this.isTransitioning = false;
+            WorldTransitionManager.isTransitioning = false;
         }, 100);
     }
 
     private static executeCleanupCallbacks(): void {
-        this.activeEnemies.forEach((enemyData, uid) => {
+        WorldTransitionManager.activeEnemies!.forEach((enemyData, uid) => {
             if (enemyData.cleanupCallback) {
                 try {
                     enemyData.cleanupCallback();
@@ -89,7 +111,7 @@ class WorldTransitionManager {
     }
 
     private static destroyEnemyInstances(): void {
-        this.activeEnemies.forEach((enemyData, uid) => {
+        WorldTransitionManager.activeEnemies!.forEach((enemyData, uid) => {
             try {
                 if (enemyData.instance && enemyData.instance.destroy) {
                     enemyData.instance.destroy();
@@ -132,13 +154,13 @@ class WorldTransitionManager {
      * Safe world transition with guaranteed cleanup
      */
     static transitionToWorld(worldId: string, transitionType: string = "LayoutChange"): void {
-        console.log(`🌍 Starting transition from ${this.currentWorldId} to ${worldId}`);
+        console.log(`🌍 Starting transition from ${WorldTransitionManager.currentWorldId} to ${worldId}`);
 
         // Always cleanup before transition
-        this.cleanupCurrentWorld();
+        WorldTransitionManager.cleanupCurrentWorld();
 
         // Update current world tracking
-        this.currentWorldId = worldId;
+        WorldTransitionManager.currentWorldId = worldId;
 
         // Small delay to ensure cleanup completes before C3 transition
         setTimeout(() => {
@@ -156,10 +178,11 @@ class WorldTransitionManager {
      * Get current cleanup statistics
      */
     static getCleanupStats(): { totalEnemies: number; isTransitioning: boolean; currentWorld: string } {
+        WorldTransitionManager.ensureInitialized();
         return {
-            totalEnemies: this.activeEnemies.size,
-            isTransitioning: this.isTransitioning,
-            currentWorld: this.currentWorldId
+            totalEnemies: WorldTransitionManager.activeEnemies!.size,
+            isTransitioning: WorldTransitionManager.isTransitioning,
+            currentWorld: WorldTransitionManager.currentWorldId
         };
     }
 
@@ -168,16 +191,17 @@ class WorldTransitionManager {
      */
     static forceCleanup(): void {
         console.log('🚨 EMERGENCY CLEANUP - Forcing enemy cleanup');
-        this.isTransitioning = false; // Reset flag
-        this.cleanupCurrentWorld();
+        WorldTransitionManager.isTransitioning = false; // Reset flag
+        WorldTransitionManager.cleanupCurrentWorld();
     }
 
     /**
      * Debug: List all currently tracked enemies
      */
     static listActiveEnemies(): void {
-        console.log(`📊 Active Enemies (${this.activeEnemies.size}):`);
-        this.activeEnemies.forEach((enemyData, uid) => {
+        WorldTransitionManager.ensureInitialized();
+        console.log(`📊 Active Enemies (${WorldTransitionManager.activeEnemies!.size}):`);
+        WorldTransitionManager.activeEnemies!.forEach((enemyData, uid) => {
             console.log(`  - UID: ${uid}, Type: ${enemyData.instance?.constructor?.name || 'Unknown'}`);
         });
     }

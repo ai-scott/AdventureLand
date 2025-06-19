@@ -109,7 +109,11 @@
 								"const crabBase = runtime.objects.En_Crab_Base.getFirstPickedInstance()!;",
 								"const crabMask = runtime.objects.En_Crab_Mask.getFirstPickedInstance()!;",
 								"// Replace the setCrabDirection and commented updateEnemy with:",
+								"//(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
+								"",
+								"// Enhanced enemy creation with cleanup",
 								"(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
+								"(globalThis as any).registerEnemy(crabBase, \"Crab\");",
 								""
 							]
 						}

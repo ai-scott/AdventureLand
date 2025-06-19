@@ -106,7 +106,12 @@
 							"language": "typescript",
 							"script": [
 								"// Direct approach - no local variables needed:",
-								"(globalThis as any).initEnemy(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid, runtime.objects.En_Ooze_Mask.getFirstPickedInstance()!.uid, \"Ooze\");",
+								"//(globalThis as any).initEnemy(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid, runtime.objects.En_Ooze_Mask.getFirstPickedInstance()!.uid, \"Ooze\");",
+								"",
+								"const oozeBase = runtime.objects.En_Ooze_Base.getFirstPickedInstance()!;",
+								"const oozeMask = runtime.objects.En_Ooze_Mask.getFirstPickedInstance()!;",
+								"(globalThis as any).initEnemy(oozeBase.uid, oozeMask.uid, \"Ooze\");",
+								"(globalThis as any).registerEnemy(oozeBase, \"Ooze\");",
 								""
 							]
 						}

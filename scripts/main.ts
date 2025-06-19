@@ -1,5 +1,18 @@
 // main.ts - Minimal version for working enemies
 import * as EnemyAI from "./enemy-ai.js";
+import "./world-transition-manager.js";
+
+
+// In your runOnStartup callback, add:
+runOnStartup(async runtime => {
+  // Your existing initialization code...
+
+  // Initialize world transition system
+  console.log("✅ World Transition Manager initialized");
+
+  // Store runtime reference for cleanup system
+  (globalThis as any).runtime = runtime;
+});
 
 console.log("🎮 Adventure Land - Enemy AI Loading...");
 

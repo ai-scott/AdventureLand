@@ -735,6 +735,14 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "world-transition-manager.ts",
+					"type": "application/typescript",
+					"sid": 963149734438356,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [],

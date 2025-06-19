@@ -1,8 +1,11 @@
 {
     "typescript.preferences.importModuleSpecifier": "relative",
-    "typescript.suggest.autoImports": true,
+    "typescript.suggest.autoImports": false,
     "typescript.updateImportsOnFileMove.enabled": "always",
-    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": false
+    },
+    "typescript.preferences.includePackageJsonAutoImports": "off",
     // File associations for Construct 3
     "files.associations": {
         "*.c3proj": "json",
@@ -12,10 +15,6 @@
     "editor.formatOnSave": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": "active",
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
-        "source.fixAll": "explicit"
-    },
     // Enhanced TypeScript IntelliSense
     "typescript.inlayHints.parameterNames.enabled": "all",
     "typescript.inlayHints.variableTypes.enabled": true,
