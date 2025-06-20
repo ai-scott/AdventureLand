@@ -1,6 +1,9 @@
 // main.ts - Minimal version for working enemies
 import * as EnemyAI from "./enemy-ai.js";
 import "./world-transition-manager.js";
+import "./transition-helpers.js";
+import "./tile-animation-manager.js";
+import "./debug-helpers.js";
 
 
 // In your runOnStartup callback, add:
