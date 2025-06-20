@@ -2,76 +2,6 @@
 	"name": "eAnimateTiles",
 	"events": [
 		{
-			"eventType": "variable",
-			"name": "StartingIndex",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 369471325393265
-		},
-		{
-			"eventType": "variable",
-			"name": "TilemapWidth",
-			"type": "number",
-			"initialValue": "16",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 793214549373555
-		},
-		{
-			"eventType": "variable",
-			"name": "TilemapDisplayWidth",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 886813106836863
-		},
-		{
-			"eventType": "variable",
-			"name": "TilemapPositionX",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 580954476211750
-		},
-		{
-			"eventType": "variable",
-			"name": "TilemapPositionY",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 111397316738155
-		},
-		{
-			"eventType": "variable",
-			"name": "Row",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 419823226715174
-		},
-		{
-			"eventType": "variable",
-			"name": "TileIndex",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 610373724541607
-		},
-		{
 			"eventType": "block",
 			"conditions": [
 				{
@@ -82,34 +12,62 @@
 			],
 			"actions": [
 				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 535474561412852,
-					"parameters": {
-						"variable": "TilemapDisplayWidth",
-						"value": "tm_water.MapDisplayWidth"
-					}
-				},
-				{
-					"callFunction": "Function1",
-					"sid": 851698121196692,
-					"disabled": true,
-					"parameters": [
-						"tm_water.TileAt(0,0)",
-						"0",
-						"0",
-						"0"
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"",
+						"// 1. Initialize the system",
+						"(globalThis as any).AdventureLand.TileAnimations.initialize();",
+						"",
+						"// 2. Get comprehensive tile data first",
+						"console.log(\"🔍 Analyzing all waterfall tiles...\");",
+						"",
+						"// 3. Configure the complete waterfall with ALL tiles from debug output",
+						"(globalThis as any).AdventureLand.TileAnimations.addWaterAnimation(",
+						"    \"lake_waterfall_complete\", ",
+						"    \"tm_water\",",
+						"    [",
+						"        // ORIGINAL 9 CENTER TILES (currently working)",
+						"        { x: 1, y: 2, targetIndex: 48 },  // Top row center",
+						"        { x: 2, y: 2, targetIndex: 48 },",
+						"        { x: 3, y: 2, targetIndex: 48 },",
+						"        { x: 1, y: 3, targetIndex: 64 },  // Middle row center  ",
+						"        { x: 2, y: 3, targetIndex: 64 },",
+						"        { x: 3, y: 3, targetIndex: 64 },",
+						"        { x: 1, y: 4, targetIndex: 80 },  // Bottom row center",
+						"        { x: 2, y: 4, targetIndex: 80 },",
+						"        { x: 3, y: 4, targetIndex: 80 },",
+						"",
+						"        // ADDITIONAL EDGE TILES (from your original debug)",
+						"        // Based on your logWaterfallTiles() showing different indices:",
+						"        ",
+						"        // Top edge tiles (if they exist with different indices)",
+						"        { x: 0, y: 2, targetIndex: 50 },  // Left edge top",
+						"        { x: 4, y: 2, targetIndex: 50 },  // Right edge top",
+						"        ",
+						"        // Middle edge tiles",
+						"        { x: 0, y: 3, targetIndex: 66 },  // Left edge middle",
+						"        { x: 4, y: 3, targetIndex: 66 },  // Right edge middle",
+						"        ",
+						"        // Bottom edge tiles  ",
+						"        { x: 0, y: 4, targetIndex: 80 },  // Left edge bottom",
+						"        { x: 4, y: 4, targetIndex: 80 },  // Right edge bottom",
+						"",
+						"        // Corner tiles (if they exist)",
+						"        { x: 1, y: 1, targetIndex: 46 },  // Top-left of waterfall",
+						"        { x: 2, y: 1, targetIndex: 46 },  // Top-center ",
+						"        { x: 3, y: 1, targetIndex: 46 },  // Top-right",
+						"        { x: 1, y: 5, targetIndex: 82 },  // Bottom-left of waterfall",
+						"        { x: 2, y: 5, targetIndex: 82 },  // Bottom-center",
+						"        { x: 3, y: 5, targetIndex: 82 }   // Bottom-right",
+						"    ]",
+						");",
+						"",
+						"// 4. Debug what we actually configured",
+						"console.log(\"✅ Complete waterfall configuration applied\");",
+						"(globalThis as any).AdventureLand.TileAnimations.debugStatus();",
+						""
 					]
-				},
-				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 121048313239633,
-					"disabled": true,
-					"parameters": {
-						"variable": "StartingIndex",
-						"value": "tm_water.TileAt(0,0)"
-					}
 				}
 			],
 			"sid": 365217793553725,
@@ -145,59 +103,7 @@
 									}
 								}
 							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 357300052119885,
-									"disabled": true,
-									"parameters": {
-										"variable": "TilemapPositionX",
-										"value": "loopindex(\"x\")"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 541059380334658,
-									"disabled": true,
-									"parameters": {
-										"variable": "TilemapPositionY",
-										"value": "loopindex(\"y\")"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 991871553817135,
-									"disabled": true,
-									"parameters": {
-										"variable": "StartingIndex",
-										"value": "tm_water.TileAt(2,2)"
-									}
-								},
-								{
-									"callFunction": "Function1",
-									"sid": 153537219933082,
-									"parameters": [
-										"tm_water.TileAt(loopindex(\"x\"),loopindex(\"y\"))",
-										"loopindex(\"x\")",
-										"loopindex(\"y\")",
-										"0"
-									]
-								},
-								{
-									"callFunction": "Function1",
-									"sid": 688588989035851,
-									"disabled": true,
-									"parameters": [
-										"tm_water.TileAt(loopindex(0),loopindex(0))",
-										"loopindex(0)",
-										"loopindex(0)",
-										"0"
-									]
-								}
-							],
+							"actions": [],
 							"sid": 491951738347021
 						}
 					]
@@ -209,239 +115,259 @@
 			"text": "Cat"
 		},
 		{
-			"functionName": "Function1",
-			"functionDescription": "",
-			"functionCategory": "",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [
+			"eventType": "block",
+			"conditions": [
 				{
-					"name": "initialIndex",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 583531713455483
-				},
-				{
-					"name": "tilemapX",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 350578820594493
-				},
-				{
-					"name": "tilemapY",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 770015021020055
-				},
-				{
-					"name": "currentIndex",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 496198960930045
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 910923916814455,
+					"parameters": {
+						"key": 70
+					}
 				}
 			],
-			"eventType": "function-block",
-			"conditions": [],
 			"actions": [
 				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 965506706856684,
-					"parameters": {
-						"variable": "currentIndex",
-						"value": "initialIndex"
-					}
-				},
-				{
-					"id": "wait",
-					"objectClass": "System",
-					"sid": 494057762886605,
-					"parameters": {
-						"seconds": "0",
-						"use-timescale": true
-					}
-				},
-				{
-					"callFunction": "Function2",
-					"sid": 911900564831446,
-					"parameters": [
-						"tilemapX",
-						"tilemapY",
-						"initialIndex",
-						"currentIndex"
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).AdventureLand.TileAnimations.debugStatus();"
 					]
 				}
 			],
-			"sid": 906858824070831
+			"sid": 362873849801060
 		},
 		{
-			"functionName": "Function2",
-			"functionDescription": "set the tile",
-			"functionCategory": "",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [
-				{
-					"name": "tilemapX",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 711259719963405
-				},
-				{
-					"name": "tilemapY",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 342366725822766
-				},
-				{
-					"name": "initialIndex",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 162972919691972
-				},
-				{
-					"name": "currentIndex",
-					"type": "number",
-					"initialValue": "0",
-					"comment": "",
-					"sid": 660103552722422
-				}
-			],
-			"eventType": "function-block",
+			"eventType": "block",
 			"conditions": [
 				{
-					"id": "repeat",
-					"objectClass": "System",
-					"sid": 374889265845208,
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 813668116715114,
 					"parameters": {
-						"count": "10000"
+						"key": 87
 					}
 				}
 			],
 			"actions": [
 				{
-					"id": "add-to-eventvar",
-					"objectClass": "System",
-					"sid": 599827373600597,
-					"parameters": {
-						"variable": "currentIndex",
-						"value": "2"
-					}
-				},
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).AdventureLand.Debug.logWaterfallTiles();"
+					]
+				}
+			],
+			"sid": 297308547013491
+		},
+		{
+			"eventType": "block",
+			"conditions": [
 				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 349843626709980,
-					"disabled": true,
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 469784360574674,
 					"parameters": {
-						"variable": "Row",
-						"value": "initialIndex"
-					}
-				},
-				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 392382324382683,
-					"disabled": true,
-					"parameters": {
-						"variable": "TilemapPositionX",
-						"value": "tilemapX"
-					}
-				},
-				{
-					"id": "set-eventvar-value",
-					"objectClass": "System",
-					"sid": 187645486910418,
-					"disabled": true,
-					"parameters": {
-						"variable": "TilemapPositionY",
-						"value": "tilemapY"
+						"key": 90
 					}
 				}
 			],
-			"sid": 466431702164202,
-			"children": [
+			"actions": [
 				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-eventvar",
-							"objectClass": "System",
-							"sid": 450880132505314,
-							"parameters": {
-								"variable": "currentIndex",
-								"comparison": 0,
-								"value": "TilemapWidth+initialIndex"
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "wait",
-							"objectClass": "System",
-							"sid": 527535354921523,
-							"parameters": {
-								"seconds": "loopindex*0.1",
-								"use-timescale": true
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 623101133895656,
-							"disabled": true,
-							"parameters": {
-								"variable": "TileIndex",
-								"value": "currentIndex"
-							}
-						},
-						{
-							"id": "set-tile",
-							"objectClass": "tm_water",
-							"sid": 490898974556946,
-							"parameters": {
-								"tile-x": "tilemapX",
-								"tile-y": "tilemapY",
-								"tile": "currentIndex",
-								"state": "normal"
-							}
-						}
-					],
-					"sid": 636132506404197
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "else",
-							"objectClass": "System",
-							"sid": 673886505278005
-						}
-					],
-					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 555241941146762,
-							"parameters": {
-								"variable": "currentIndex",
-								"value": "initialIndex"
-							}
-						}
-					],
-					"sid": 998965350035864
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"// EVENT: Keyboard → On Z pressed",
+						"console.log(\"AdventureLand object:\", (globalThis as any).AdventureLand);",
+						"console.log(\"TileAnimations:\", (globalThis as any).AdventureLand?.TileAnimations);"
+					]
 				}
-			]
+			],
+			"sid": 848370369156074,
+			"disabled": true
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 353412838075094,
+					"parameters": {
+						"key": 114
+					}
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"console.log(\"🔍 === DETAILED TILE ANALYSIS ===\");",
+						"",
+						"const F3runtime = (globalThis as any).runtime;",
+						"if (F3runtime) {",
+						"    const tilemapObject = runtime.objects.tm_water;",
+						"    if (tilemapObject) {",
+						"        const tilemap = tilemapObject.getFirstInstance();",
+						"        if (tilemap) {",
+						"            console.log(\"📊 Current tile indices in waterfall area:\");",
+						"            ",
+						"            // Check a wider area around the waterfall",
+						"            for (let y = 1; y <= 5; y++) {",
+						"                for (let x = 0; x <= 4; x++) {",
+						"                    try {",
+						"                        const tileIndex = tilemap.getTileAt(x, y);",
+						"                        if (tileIndex > 0) {  // Only log non-empty tiles",
+						"                            console.log(\"   Tile at (\" + x + \", \" + y + \"): index \" + tileIndex);",
+						"                        }",
+						"                    } catch (error) {",
+						"                        console.log(`   Tile at (${x}, ${y}): ERROR - ${error.message}`);",
+						"                    }",
+						"                }",
+						"            }",
+						"        }",
+						"    }",
+						"}",
+						"",
+						"console.log(\"🔍 === END DETAILED ANALYSIS ===\");",
+						""
+					]
+				}
+			],
+			"sid": 284015392458679
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 224828842969873,
+					"parameters": {
+						"key": 115
+					}
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"console.log(\"🧠 === INTELLIGENT WATERFALL DETECTION ===\");",
+						"",
+						"function detectAndAnimateWaterfall() {",
+						"    const F4runtime = (globalThis as any).runtime;",
+						"    if (!F4runtime) return;",
+						"    ",
+						"    const tilemapObject = F4runtime.objects.tm_water;",
+						"    if (!tilemapObject) return;",
+						"    ",
+						"    const tilemap = tilemapObject.getFirstInstance();  ",
+						"    if (!tilemap) return;",
+						"    ",
+						"    const animatedTiles = [];",
+						"    ",
+						"    // Scan the waterfall area and detect all animated tiles",
+						"    for (let y = 1; y <= 5; y++) {",
+						"        for (let x = 0; x <= 4; x++) {",
+						"            try {",
+						"                const tileIndex = tilemap.getTileAt(x, y);",
+						"                ",
+						"                // Check if this tile index suggests it's part of waterfall animation",
+						"                // Common waterfall tile ranges: 46-50, 62-66, 78-82",
+						"                if ((tileIndex >= 46 && tileIndex <= 50) ||",
+						"                    (tileIndex >= 62 && tileIndex <= 66) ||",
+						"                    (tileIndex >= 78 && tileIndex <= 82)) {",
+						"                    ",
+						"                    // Determine base index for animation",
+						"                    let baseIndex;",
+						"                    if (tileIndex >= 46 && tileIndex <= 50) baseIndex = 46;",
+						"                    else if (tileIndex >= 62 && tileIndex <= 66) baseIndex = 62;  ",
+						"                    else if (tileIndex >= 78 && tileIndex <= 82) baseIndex = 78;",
+						"                    ",
+						"                    animatedTiles.push({",
+						"                        x: x,",
+						"                        y: y, ",
+						"                        targetIndex: baseIndex",
+						"                    });",
+						"                    ",
+						"                    console.log(`🌊 Detected waterfall tile at (${x}, ${y}) with base index ${baseIndex}`);",
+						"                }",
+						"            } catch (error) {",
+						"                // Skip tiles that can't be read",
+						"            }",
+						"        }",
+						"    }",
+						"    ",
+						"    if (animatedTiles.length > 0) {",
+						"        console.log(`✅ Found ${animatedTiles.length} waterfall tiles to animate`);",
+						"        ",
+						"        // Remove old animation and add new complete one",
+						"        (globalThis as any).AdventureLand.TileAnimations.cleanup();",
+						"        (globalThis as any).AdventureLand.TileAnimations.initialize();",
+						"        (globalThis as any).AdventureLand.TileAnimations.addWaterAnimation(",
+						"            \"intelligent_waterfall\",",
+						"            \"tm_water\", ",
+						"            animatedTiles",
+						"        );",
+						"        ",
+						"        console.log(\"🎬 Intelligent waterfall animation started!\");",
+						"    } else {",
+						"        console.log(\"❌ No waterfall tiles detected\");",
+						"    }",
+						"}",
+						"",
+						"detectAndAnimateWaterfall();",
+						"console.log(\"🧠 === END INTELLIGENT DETECTION ===\");"
+					]
+				}
+			],
+			"sid": 844101563537588
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "every-x-seconds",
+					"objectClass": "System",
+					"sid": 115449041945347,
+					"parameters": {
+						"interval-seconds": ".1"
+					}
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).AdventureLand.TileAnimations.optimizeByPlayer();"
+					]
+				}
+			],
+			"sid": 535469575216677,
+			"disabled": true
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-end-of-layout",
+					"objectClass": "System",
+					"sid": 497370842162087
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).AdventureLand.TileAnimations.cleanup();"
+					]
+				}
+			],
+			"sid": 450875914375633
 		}
 	],
 	"sid": 387743419661068

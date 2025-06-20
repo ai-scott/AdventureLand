@@ -743,6 +743,30 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "debug-helpers.ts",
+					"type": "application/typescript",
+					"sid": 685152971644206,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "transition-helpers.ts",
+					"type": "application/typescript",
+					"sid": 969207241431819,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "tile-animation-manager.ts",
+					"type": "application/typescript",
+					"sid": 545645107480235,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [],

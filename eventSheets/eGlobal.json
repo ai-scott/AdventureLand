@@ -478,14 +478,6 @@
 					"conditions": [],
 					"actions": [
 						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"console.log(\"🧹 Starting transition cleanup...\");",
-								"(globalThis as any).cleanupEnemies();"
-							]
-						},
-						{
 							"id": "destroy",
 							"objectClass": "Transition",
 							"sid": 277156618891676
@@ -651,7 +643,15 @@
 									"sid": 932981492678656
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"(globalThis as any).AdventureLand.Transitions.cleanupAndTransition();"
+									]
+								}
+							],
 							"sid": 614872835902693,
 							"children": [
 								{
@@ -5710,6 +5710,52 @@
 						{
 							"id": "on-key-pressed",
 							"objectClass": "Keyboard",
+							"sid": 929328303511032,
+							"parameters": {
+								"key": 71
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLand.Debug.logSystemStatus();"
+							]
+						}
+					],
+					"sid": 377624114875677
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 577304441071631,
+							"parameters": {
+								"key": 72
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLand.Debug.testAllSystems();"
+							]
+						}
+					],
+					"sid": 295430206908178
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
 							"sid": 280271384703481,
 							"parameters": {
 								"key": 82
@@ -5790,20 +5836,18 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"console.log(\"=== TESTING TRANSITION CLEANUP ===\");",
-								"               ",
-								"               // Show current enemies",
+								"// Show current enemies",
 								"               (globalThis as any).listActiveEnemies();",
 								"               ",
-								"               // Trigger a test transition",
-								"               console.log(\"Triggering test transition...\");",
-								"               runtime.callFunction('Transition', 'Out', 'TEST', '');",
+								"               // Test cleanup without transition",
+								"               console.log(\"Testing cleanup...\");",
+								"               (globalThis as any).cleanupEnemies();",
 								"               ",
-								"               // Check enemies after transition",
-								"               setTimeout(() => {",
-								"                 console.log(\"After transition:\");",
-								"                 (globalThis as any).listActiveEnemies();",
-								"               }, 1000);"
+								"               // Check result",
+								"               console.log(\"After cleanup:\");",
+								"               (globalThis as any).listActiveEnemies();",
+								"               ",
+								"               console.log(\"✅ Cleanup test complete - no transition triggered\");"
 							]
 						}
 					],
