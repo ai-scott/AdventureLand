@@ -61,14 +61,19 @@ export class ItemManager {
                 console.error("[ItemManager] Invalid items data format");
                 return false;
             }
-            items.forEach((item: Item, index: number) => {
-                if (!item.name) {
-                    console.warn(`Item at index ${index} has no name:`, item);
-                }
-            });
+
+            // Count empty slots instead of logging each one
+            let emptySlots = 0;
+            let validItems = 0;
 
             // Build indexes
-            items.forEach((item: Item) => {
+            items.forEach((item: Item, index: number) => {
+                if (!item.name) {
+                    emptySlots++;
+                    return;
+                }
+
+                validItems++;
                 this.itemsById.set(item.id, item);
 
                 // Category index - this is the key improvement
@@ -84,7 +89,7 @@ export class ItemManager {
             });
 
             this.initialized = true;
-            console.log(`[ItemManager] Initialized with ${items.length} items`);
+            console.log(`[ItemManager] Initialized with ${validItems} items (${emptySlots} empty slots)`);
             console.log(`[ItemManager] Categories: ${Array.from(this.itemsByCategory.keys()).join(', ')}`);
 
             return true;

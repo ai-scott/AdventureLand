@@ -2526,16 +2526,20 @@
 							"parameters": {
 								"layer": "\"Inventory\""
 							}
+						},
+						{
+							"id": "trigger-once-while-true",
+							"objectClass": "System",
+							"sid": 509931016007302
 						}
 					],
 					"actions": [
 						{
-							"callFunction": "populateItemSlots",
-							"sid": 922601336206656
+							"callFunction": "RefreshInventory",
+							"sid": 191190809964603
 						}
 					],
-					"sid": 203495177913114,
-					"isOrBlock": true
+					"sid": 203495177913114
 				},
 				{
 					"functionName": "populateItemSlots",
@@ -2618,15 +2622,6 @@
 									"sid": 385039701836761,
 									"parameters": {
 										"frame-number": "Self.ItemID"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "ItemSlot",
-									"sid": 646596387361727,
-									"parameters": {
-										"instance-variable": "ItemCat",
-										"value": "Functions.GetItemCategory(Self.ItemID)"
 									}
 								},
 								{
@@ -2840,6 +2835,15 @@
 											}
 										},
 										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 122924880416427,
+											"parameters": {
+												"instance-variable": "ItemCat",
+												"value": "Functions.GetItemCategory(Self.ItemID)"
+											}
+										},
+										{
 											"id": "set-animation-frame",
 											"objectClass": "ItemSlot",
 											"sid": 492480857424775,
@@ -3045,7 +3049,7 @@
 										"    }",
 										"    ",
 										"    // Check first few inventory slots",
-										"    console.log(\"Checking inventory slots:\");",
+										"    console.log(\"\\n📦 Checking inventory array contents:\");",
 										"    let foundItems = 0;",
 										"    for (let i = 0; i < Math.min(25, invArray.width); i++) {",
 										"        const itemId = Number(invArray.getAt(i));",
@@ -3060,36 +3064,70 @@
 										"    ",
 										"    // Check ItemSlot objects",
 										"    const itemSlots = runtime.objects.ItemSlot.getAllInstances();",
-										"    console.log(`\\nTotal ItemSlots created: ${itemSlots.length}`);",
+										"    console.log(`\\n🎰 Total ItemSlots created: ${itemSlots.length}`);",
 										"    ",
-										"    // Check main inventory slots",
+										"    // Check main inventory slots with more detail",
 										"    const mainSlots = itemSlots.filter(slot => ",
 										"        slot.instVars.InventoryState === \"main\"",
 										"    ).slice(0, 5);",
-										"    console.log(\"\\nFirst 5 main inventory slots:\");",
+										"    console.log(\"\\n📋 First 5 main inventory slots (detailed):\");",
 										"    mainSlots.forEach((slot, idx) => {",
-										"        console.log(`  Slot ${idx}: ItemID=${slot.instVars.ItemID}, AnimFrame=${slot.animationFrame}`);",
+										"        const slotId = slot.instVars.SlotID;",
+										"        const itemId = slot.instVars.ItemID;",
+										"        const itemName = slot.instVars.ItemName;",
+										"        const itemCat = slot.instVars.ItemCat;",
+										"        console.log(`  Slot ${slotId}:`);",
+										"        console.log(`    ItemID: ${itemId} (AnimFrame: ${slot.animationFrame})`);",
+										"        console.log(`    ItemName: \"${itemName}\"`);",
+										"        console.log(`    ItemCat: \"${itemCat}\"`);",
+										"        ",
+										"        // Check if the ItemID matches what's in the array",
+										"        if (invArray && slotId < invArray.width) {",
+										"            const arrayItemId = Number(invArray.getAt(slotId));",
+										"            if (arrayItemId !== itemId) {",
+										"                console.log(`    ⚠️ MISMATCH: Array has ID ${arrayItemId}`);",
+										"            }",
+										"        }",
 										"    });",
 										"    ",
-										"    // Check equipment slots",
+										"    // Check equipment slots with full details",
 										"    const equipSlots = itemSlots.filter(slot => ",
-										"        slot.instVars.InventoryState !== \"main\"",
+										"        slot.instVars.InventoryState !== \"main\" && ",
+										"        slot.instVars.InventoryState !== \"\"",
 										"    );",
-										"    console.log(\"\\nEquipment slots:\");",
+										"    console.log(\"\\n⚔️ Equipment slots (detailed):\");",
 										"    equipSlots.forEach(slot => {",
-										"        console.log(`  ${slot.instVars.InventoryState}: ItemName=\"${slot.instVars.ItemName}\", ItemID=${slot.instVars.ItemID}`);",
+										"        const state = slot.instVars.InventoryState;",
+										"        const itemName = slot.instVars.ItemName;",
+										"        const itemId = slot.instVars.ItemID;",
+										"        const itemCat = slot.instVars.ItemCat;",
+										"        console.log(`  ${state}:`);",
+										"        console.log(`    ItemName: \"${itemName}\"`);",
+										"        console.log(`    ItemID: ${itemId} (AnimFrame: ${slot.animationFrame})`);",
+										"        console.log(`    ItemCat: \"${itemCat}\"`);",
+										"        ",
+										"        // Try to resolve the item ID from name if ID is 0",
+										"        if (itemId === 0 && itemName && itemName !== \"\") {",
+										"            const resolvedId = itemManager.getItemId(itemName);",
+										"            console.log(`    ✅ Resolved ID from name: ${resolvedId}`);",
+										"            const resolvedCat = itemManager.getItemCategory(resolvedId);",
+										"            console.log(`    ✅ Resolved Category: \"${resolvedCat}\"`);",
+										"        }",
 										"    });",
 										"    ",
-										"    // Check SaveGameData for equipped items - FIXED casting",
+										"    // Check SaveGameData for equipped items",
 										"    const saveData = runtime.objects.Dict_SaveGameData.getFirstInstance() as any;",
 										"    if (saveData) {",
-										"        console.log(\"\\nEquipped items from SaveGameData:\");",
+										"        console.log(\"\\n💾 Equipped items from SaveGameData:\");",
 										"        const categories = [\"Weapon\", \"Head\", \"Hand\", \"Neck\", \"Body\", \"Legs\", \"Boot\"];",
 										"        categories.forEach(cat => {",
 										"            try {",
 										"                const equipped = saveData.get(cat);",
-										"                if (equipped) {",
+										"                if (equipped && equipped !== \"\") {",
 										"                    console.log(`  ${cat}: \"${equipped}\"`);",
+										"                    // Try to resolve the item ID",
+										"                    const itemId = itemManager.getItemId(equipped);",
+										"                    console.log(`    → ID: ${itemId}`);",
 										"                }",
 										"            } catch (e) {",
 										"                console.log(`  ${cat}: [Error reading]`);",
@@ -3097,10 +3135,43 @@
 										"        });",
 										"    }",
 										"    ",
-										"    console.log(\"=== END DEBUG ===\");",
+										"    // Check Dict_ItemNumbers for quantities",
+										"    const itemNumbers = runtime.objects.Dict_ItemNumbers.getFirstInstance() as any;",
+										"    if (itemNumbers) {",
+										"        console.log(\"\\n📊 Item quantities (first 5 non-zero):\");",
+										"        let count = 0;",
+										"        // This is a bit tricky without knowing all keys, but we can check some known items",
+										"        const testItems = [\"Golden Tee-Shirt\", \"Brown Shorts\", \"Blue Slippers\", \"Axe\", \"Sword\"];",
+										"        testItems.forEach(itemName => {",
+										"            try {",
+										"                const qty = itemNumbers.get(itemName);",
+										"                if (qty && qty > 0) {",
+										"                    console.log(`  \"${itemName}\": ${qty}`);",
+										"                    count++;",
+										"                }",
+										"            } catch (e) {",
+										"                // Silent fail",
+										"            }",
+										"        });",
+										"        if (count === 0) {",
+										"            console.log(\"  (No quantities found for test items)\");",
+										"        }",
+										"    }",
+										"    ",
+										"    // Test the TypeScript integration",
+										"    console.log(\"\\n🔧 TypeScript Integration Test:\");",
+										"    const testItems = [\"Golden Tee-Shirt\", \"Brown Shorts\", \"Blue Slippers\"];",
+										"    testItems.forEach(itemName => {",
+										"        const id = itemManager.getItemId(itemName);",
+										"        const category = itemManager.getItemCategory(id);",
+										"        const strength = itemManager.getItemStrength(id);",
+										"        console.log(`  \"${itemName}\": ID=${id}, Cat=\"${category}\", Str=${strength}`);",
+										"    });",
+										"    ",
+										"    console.log(\"\\n=== END DEBUG ===\");",
 										"};",
 										"",
-										"// Call this in populateItemSlots",
+										"// Call this in populateItemSlots after the order fix",
 										"debugInventoryState();"
 									]
 								}
@@ -4669,6 +4740,24 @@
 							"sid": 384023478179564
 						}
 					]
+				},
+				{
+					"functionName": "RefreshInventory",
+					"functionDescription": "refresh the inventory view on a change",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"callFunction": "populateItemSlots",
+							"sid": 258051803697988
+						}
+					],
+					"sid": 870035494427186
 				}
 			],
 			"sid": 797456979065367
@@ -5977,17 +6066,7 @@
 							}
 						}
 					],
-					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 410382317930707,
-							"parameters": {
-								"variable": "TempVarX",
-								"value": "\"collecting itemUID \"&itemUID& \" itemID = \"&itemID"
-							}
-						}
-					],
+					"actions": [],
 					"sid": 935007394317735,
 					"children": [
 						{
@@ -6320,15 +6399,6 @@
 										"InventoryItems.ItemID",
 										"InventoryItems.NumberOfItems"
 									]
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 828886949991728,
-									"parameters": {
-										"variable": "TempVarY",
-										"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")&\" = JSON_ItemTriggers.Get(.itemTriggerID)\""
-									}
 								}
 							],
 							"sid": 876929990503483,

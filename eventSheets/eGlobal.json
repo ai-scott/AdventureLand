@@ -1158,6 +1158,13 @@
 							"parameters": {
 								"key": "\"SaveGameData\""
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"Getting item SaveGameData\");"
+							]
 						}
 					],
 					"sid": 395682133315497
@@ -1206,6 +1213,13 @@
 							"parameters": {
 								"key": "\"ItemNumbers\""
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"Getting item ItemNumbers\");"
+							]
 						}
 					],
 					"sid": 289928017182172
@@ -1247,6 +1261,13 @@
 							"parameters": {
 								"tag": "\"DataLoaded\""
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"DataLoaded trigger\");"
+							]
 						}
 					],
 					"sid": 780659093902356
@@ -1282,6 +1303,13 @@
 								"tag": "\"Load_SaveGameData\"",
 								"file": "SaveGameData.json"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"Requesting SaveGameData\");"
+							]
 						}
 					],
 					"sid": 812897646419033
@@ -1315,6 +1343,13 @@
 								"tag": "\"Load_InvCollection\"",
 								"file": "InvCollection.json"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"Requesting InvCollection.json\");"
+							]
 						}
 					],
 					"sid": 528776511683587
@@ -1348,6 +1383,15 @@
 								"tag": "\"Load_ItemTriggersCollected\"",
 								"file": "ItemTriggersCollected.json"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"[Save/Load Debug] Load_InvCollection triggered\");",
+								"console.log(\"  File being loaded:\", /* check what file/key is being requested */);",
+								""
+							]
 						}
 					],
 					"sid": 611043963755605
@@ -2639,39 +2683,13 @@
 								{
 									"callFunction": "SaveGameData",
 									"sid": 919903100881920
+								},
+								{
+									"callFunction": "RefreshInventory",
+									"sid": 192547734731792
 								}
 							],
-							"sid": 880502904862737,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Inventories",
-											"sid": 414234312938190,
-											"parameters": {
-												"instance-variable": "CategoryName",
-												"comparison": 0,
-												"value": "\"main\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-instvar-value",
-											"objectClass": "Inventories",
-											"sid": 194915321357970,
-											"parameters": {
-												"instance-variable": "InvPages",
-												"value": "ceil(Self.Height/25)"
-											}
-										}
-									],
-									"sid": 368919679239412,
-									"disabled": true
-								}
-							]
+							"sid": 880502904862737
 						},
 						{
 							"eventType": "comment",
@@ -2926,26 +2944,7 @@
 							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 295347100476514,
-									"parameters": {
-										"variable": "TempVarY",
-										"value": "\"GainItemID \"&GainItemID&\" NumberGained =\"&NumberGained"
-									}
-								},
-								{
-									"id": "add-to-eventvar",
-									"objectClass": "System",
-									"sid": 164894267898824,
-									"parameters": {
-										"variable": "TempInt",
-										"value": "1"
-									}
-								}
-							],
+							"actions": [],
 							"sid": 288686251962069,
 							"children": [
 								{
@@ -3108,6 +3107,10 @@
 												{
 													"callFunction": "SaveGameData",
 													"sid": 649078742436796
+												},
+												{
+													"callFunction": "RefreshInventory",
+													"sid": 410515952720079
 												}
 											],
 											"sid": 316454020417933
