@@ -1,276 +1,411 @@
-// 🔧 TILE ANIMATION MANAGER - BUG FIX VERSION
-// Replace your existing tile-animation-manager.ts with this corrected version
-
-interface AnimatedTile {
-    x: number;
-    y: number;
-    targetIndex: number;
-    currentFrame?: number;
-    frameCount?: number;
-}
-
-interface TileRegion {
+// tile-animation-manager.ts
+export interface AnimationConfig {
     name: string;
-    tilemapName: string;
-    tiles: AnimatedTile[];
-    animationType: 'water' | 'fire' | 'wind';
-    speed: number;
-    frameSequence: number[];
+    tilemap: string;
+    frameCount: number;
+    frameDelay: number;
+    increment: number;
+    tileWidth: number;  // Width of tilemap in tiles
 }
 
-class TileAnimationManager {
-    private static regions: Map<string, TileRegion> = new Map();
-    private static animationInterval: number | null = null;
-    private static isInitialized: boolean = false;
-    private static frameCounter: number = 0;
+export class TileAnimationManager {
+    private static animations: Map<string, AnimationConfig> = new Map();
+    private static animationStates: Map<string, {
+        currentFrame: number;
+        lastUpdate: number;
+    }> = new Map();
+    private static runtime: any;
+    private static isRunning: boolean = false;
+    private static animationFrame: number | null = null;
 
-    static initialize(): void {
-        if (this.isInitialized) {
-            console.log("🔄 TileAnimationManager already initialized");
+    static initialize(runtime: any): void {
+        this.runtime = runtime;
+        console.log('🌊 TileAnimationManager initialized');
+    }
+
+    /**
+     * Animate an entire tilemap with consistent frame cycling
+     */
+    static addTilemapAnimation(
+        name: string,
+        tilemap: string,
+        frameCount: number,
+        frameDelay: number = 100,
+        increment: number = 1
+    ): void {
+        const tilemapObj = this.runtime?.objects[tilemap];
+        if (!tilemapObj) {
+            console.error(`Tilemap ${tilemap} not found`);
             return;
         }
 
-        try {
-            // Clear any existing animations
-            this.cleanup();
+        const instance = tilemapObj.getFirstInstance();
+        if (!instance) return;
 
-            // Start the animation loop
-            this.startAnimationLoop();
+        const config: AnimationConfig = {
+            name,
+            tilemap,
+            frameCount,
+            frameDelay,
+            increment,
+            tileWidth: instance.mapWidth // Get actual tilemap width
+        };
 
-            this.isInitialized = true;
-            console.log("✅ TileAnimationManager initialized successfully");
-        } catch (error) {
-            console.error("❌ Failed to initialize TileAnimationManager:", error);
-        }
-    }
-
-    static addWaterAnimation(name: string, tilemapName: string, tiles: AnimatedTile[]): void {
-        console.log(`🌊 Adding water animation: ${name}`);
-        console.log(`📊 Tiles to animate:`, tiles);
-
-        // Validate tiles before adding
-        const validTiles = tiles.filter(tile => {
-            const isValid = this.validateTile(tile);
-            if (!isValid) {
-                console.warn(`⚠️ Invalid tile data:`, tile);
-            }
-            return isValid;
+        this.animations.set(name, config);
+        this.animationStates.set(name, {
+            currentFrame: 0,
+            lastUpdate: Date.now()
         });
 
-        if (validTiles.length === 0) {
-            console.error(`❌ No valid tiles for animation: ${name}`);
+        console.log(`💧 Added tilemap animation: ${name} (${frameCount} frames, ${frameDelay}ms delay)`);
+    }
+
+    /**
+     * Helper methods for common animation types
+     */
+    static addWaterAnimation(name: string, tilemap: string): void {
+        // Water animation with 16 frames (full row), slower speed
+        // 150ms per frame = ~6.7 FPS, 200ms = 5 FPS
+        this.addTilemapAnimation(name, tilemap, 16, 150, 1);
+    }
+
+    static addFireAnimation(name: string, tilemap: string): void {
+        // Fire animates faster with more frames
+        this.addTilemapAnimation(name, tilemap, 6, 50, 1);
+    }
+
+    static addLavaAnimation(name: string, tilemap: string): void {
+        // Lava is slower and more viscous
+        this.addTilemapAnimation(name, tilemap, 3, 200, 1);
+    }
+
+    static addMagicAnimation(name: string, tilemap: string): void {
+        // Magic sparkles with irregular timing
+        this.addTilemapAnimation(name, tilemap, 8, 75, 1);
+    }
+
+    static start(): void {
+        if (this.isRunning) return;
+
+        this.isRunning = true;
+        this.update();
+        console.log('🌊 Tile animations started');
+    }
+
+    static stop(): void {
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
+        }
+        this.isRunning = false;
+        console.log('🛑 Tile animations stopped');
+    }
+
+    private static update(): void {
+        if (!this.isRunning) return;
+
+        const now = Date.now();
+
+        // Process each animation
+        this.animations.forEach((config, name) => {
+            const state = this.animationStates.get(name);
+            if (!state) return;
+
+            // Check if it's time to update this animation
+            if (now - state.lastUpdate >= config.frameDelay) {
+                this.updateTilemapAnimation(config, state);
+                state.lastUpdate = now;
+            }
+        });
+
+        // Continue animation loop
+        this.animationFrame = requestAnimationFrame(() => this.update());
+    }
+
+    // Add this new method to TileAnimationManager
+    static addWaterfallAnimation(name: string, tilemap: string, frameDelay: number = 150): void {
+        const tilemapObj = this.runtime?.objects[tilemap];
+        if (!tilemapObj) {
+            console.error(`Tilemap ${tilemap} not found`);
             return;
         }
 
-        // Water animation: cycles through 3 frames
-        const region: TileRegion = {
+        const instance = tilemapObj.getFirstInstance();
+        if (!instance) return;
+
+        // Special config for waterfall with mixed frame counts
+        const config: any = {
             name,
-            tilemapName,
-            tiles: validTiles.map(tile => ({
-                ...tile,
-                currentFrame: 0,
-                frameCount: 3
-            })),
-            animationType: 'water',
-            speed: 8, // frames per animation cycle
-            frameSequence: [0, 1, 2, 1] // smooth back-and-forth animation
+            tilemap,
+            frameDelay,
+            isWaterfall: true,
+            pairedRows: 7, // Rows 0-6 use paired tiles
+            pairedFrameCount: 8, // 8 unique positions for paired tiles
+            singleFrameCount: 16 // 16 frames for single tiles
         };
 
-        this.regions.set(name, region);
-        console.log(`✅ Water animation '${name}' added with ${validTiles.length} tiles`);
+        this.animations.set(name, config);
+        this.animationStates.set(name, {
+            currentFrame: 0,
+            lastUpdate: Date.now()
+        });
+
+        console.log(`💧 Added waterfall animation: ${name}`);
     }
 
-    static addFireAnimation(name: string, tilemapName: string, tiles: AnimatedTile[]): void {
-        console.log(`🔥 Adding fire animation: ${name}`);
-
-        const validTiles = tiles.filter(tile => this.validateTile(tile));
-
-        if (validTiles.length === 0) {
-            console.error(`❌ No valid tiles for fire animation: ${name}`);
-            return;
-        }
-
-        const region: TileRegion = {
-            name,
-            tilemapName,
-            tiles: validTiles.map(tile => ({
-                ...tile,
-                currentFrame: 0,
-                frameCount: 4
-            })),
-            animationType: 'fire',
-            speed: 6,
-            frameSequence: [0, 1, 2, 3, 2, 1] // flickering effect
-        };
-
-        this.regions.set(name, region);
-        console.log(`✅ Fire animation '${name}' added with ${validTiles.length} tiles`);
-    }
-
-    private static validateTile(tile: AnimatedTile): boolean {
-        if (!tile || typeof tile !== 'object') {
-            console.error("❌ Tile is not an object:", tile);
-            return false;
-        }
-
-        if (!Number.isInteger(tile.x) || tile.x < 0) {
-            console.error("❌ Invalid tile x coordinate:", tile.x);
-            return false;
-        }
-
-        if (!Number.isInteger(tile.y) || tile.y < 0) {
-            console.error("❌ Invalid tile y coordinate:", tile.y);
-            return false;
-        }
-
-        if (!Number.isInteger(tile.targetIndex) || tile.targetIndex < 0) {
-            console.error("❌ Invalid tile targetIndex:", tile.targetIndex);
-            return false;
-        }
-
-        return true;
-    }
-
-    private static startAnimationLoop(): void {
-        if (this.animationInterval) {
-            clearInterval(this.animationInterval);
-        }
-
-        // 60 FPS animation loop
-        this.animationInterval = setInterval(() => {
-            this.frameCounter++;
-            this.updateAllAnimations();
-        }, 16) as any; // 16ms = ~60 FPS
-
-        console.log("🎬 Animation loop started");
-    }
-
-    private static updateAllAnimations(): void {
-        if (this.regions.size === 0) return;
+    // Update the updateTilemapAnimation method to handle waterfall
+    private static updateTilemapAnimation(config: any, state: any): void {
+        if (!this.runtime) return;
 
         try {
-            this.regions.forEach((region) => {
-                this.updateRegionAnimation(region);
-            });
-        } catch (error) {
-            console.error("❌ Error in animation update:", error);
-        }
-    }
+            const tilemapObj = this.runtime.objects[config.tilemap];
+            if (!tilemapObj) return;
 
-    private static updateRegionAnimation(region: TileRegion): void {
-        try {
-            // Get the tilemap object
-            const runtime = (globalThis as any).runtime;
-            if (!runtime) {
-                console.error("❌ Runtime not available");
-                return;
-            }
+            const tilemap = tilemapObj.getFirstInstance();
+            if (!tilemap) return;
 
-            const tilemapObject = runtime.objects[region.tilemapName];
-            if (!tilemapObject) {
-                console.error(`❌ Tilemap object '${region.tilemapName}' not found`);
-                return;
-            }
+            const mapWidth = tilemap.mapWidth;
+            const mapHeight = tilemap.mapHeight;
 
-            const tilemap = tilemapObject.getFirstInstance();
-            if (!tilemap) {
-                console.error(`❌ Tilemap instance '${region.tilemapName}' not found`);
-                return;
-            }
+            for (let y = 0; y < mapHeight; y++) {
+                for (let x = 0; x < mapWidth; x++) {
+                    const currentTile = tilemap.getTileAt(x, y);
+                    if (currentTile === -1) continue;
 
-            // Update each tile in the region
-            region.tiles.forEach(tile => {
-                try {
-                    this.updateSingleTile(tilemap, tile, region);
-                } catch (error) {
-                    console.error(`❌ Failed to update tile at (${tile.x}, ${tile.y}):`, error);
+                    let newTile = currentTile;
+
+                    if (config.isWaterfall) {
+                        // Determine which row this tile belongs to
+                        const tileRow = Math.floor(currentTile / 16);
+                        const baseTile = tileRow * 16;
+
+                        if (tileRow < config.pairedRows) {
+                            // Paired tile animation (rows 0-6)
+                            // Each "frame" moves by 2 tiles
+                            const pairedFrame = state.currentFrame % config.pairedFrameCount;
+                            newTile = baseTile + (pairedFrame * 2);
+
+                            // If original tile was odd, keep it odd
+                            if (currentTile % 2 === 1) {
+                                newTile += 1;
+                            }
+                        } else {
+                            // Single tile animation (rows 7+)
+                            // Normal 16-frame animation
+                            const singleFrame = state.currentFrame % config.singleFrameCount;
+                            newTile = baseTile + singleFrame;
+                        }
+                    } else {
+                        // Original logic for non-waterfall animations
+                        const frameCount = config.frameCount || 16;
+                        const baseTile = Math.floor(currentTile / frameCount) * frameCount;
+                        newTile = baseTile + (state.currentFrame % frameCount);
+                    }
+
+                    tilemap.setTileAt(x, y, newTile);
                 }
-            });
+            }
+
+            state.currentFrame++;
 
         } catch (error) {
-            console.error(`❌ Error updating region '${region.name}':`, error);
+            console.error('Error updating tilemap animation:', error);
         }
     }
 
-    private static updateSingleTile(tilemap: any, tile: AnimatedTile, region: TileRegion): void {
-        // Calculate which frame to show based on speed and frame counter
-        const animationSpeed = region.speed;
-        const frameSequence = region.frameSequence;
+    /**
+     * Debug helper to analyze tilemap
+     */
+    static analyzeTilemap(tilemapName: string): void {
+        if (!this.runtime) return;
 
-        // Determine current frame in sequence
-        const sequenceIndex = Math.floor(this.frameCounter / animationSpeed) % frameSequence.length;
-        const currentFrame = frameSequence[sequenceIndex];
-
-        // Calculate the actual tile index to display
-        const displayIndex = tile.targetIndex + currentFrame;
-
-        // Validate the final tile index
-        if (!Number.isInteger(displayIndex) || displayIndex < 0) {
-            console.error(`❌ Invalid display index: ${displayIndex} (target: ${tile.targetIndex}, frame: ${currentFrame})`);
+        const tilemapObj = this.runtime.objects[tilemapName];
+        if (!tilemapObj) {
+            console.log(`❌ Tilemap ${tilemapName} not found`);
             return;
         }
 
-        // Set the tile
-        try {
-            tilemap.setTileAt(tile.x, tile.y, displayIndex);
-        } catch (error) {
-            console.error(`❌ setTileAt failed for tile (${tile.x}, ${tile.y}) with index ${displayIndex}:`, error);
+        const tilemap = tilemapObj.getFirstInstance();
+        if (!tilemap) return;
+
+        console.log(`📊 Tilemap Analysis: ${tilemapName}`);
+        console.log(`Dimensions: ${tilemap.mapWidth}x${tilemap.mapHeight}`);
+
+        // Find unique tile indices
+        const uniqueTiles = new Set<number>();
+        for (let y = 0; y < tilemap.mapHeight; y++) {
+            for (let x = 0; x < tilemap.mapWidth; x++) {
+                const tile = tilemap.getTileAt(x, y);
+                if (tile !== -1) uniqueTiles.add(tile);
+            }
         }
+
+        console.log(`Unique tiles used: ${Array.from(uniqueTiles).sort((a, b) => a - b).join(', ')}`);
+        console.log(`Total animated tiles: ${uniqueTiles.size}`);
     }
 
     static cleanup(): void {
-        try {
-            if (this.animationInterval) {
-                clearInterval(this.animationInterval);
-                this.animationInterval = null;
-            }
+        this.stop();
+        this.animations.clear();
+        this.animationStates.clear();
+        console.log('🧹 TileAnimationManager cleaned up');
+    }
 
-            this.regions.clear();
-            this.frameCounter = 0;
-            this.isInitialized = false;
+    /**
+     * Get current animation state for debugging
+     */
+    static getAnimationState(name: string): any {
+        return {
+            config: this.animations.get(name),
+            state: this.animationStates.get(name)
+        };
+    }
 
-            console.log("🧹 TileAnimationManager cleaned up");
-        } catch (error) {
-            console.error("❌ Error during cleanup:", error);
+    static debugTilesetFrames(tilemapName: string, tileX: number, tileY: number): void {
+        if (!this.runtime) {
+            console.error('Runtime not initialized');
+            return;
         }
-    }
 
-    static debugStatus(): void {
-        console.log("🔍 === TILE ANIMATION DEBUG STATUS ===");
-        console.log(`Initialized: ${this.isInitialized}`);
-        console.log(`Active regions: ${this.regions.size}`);
-        console.log(`Frame counter: ${this.frameCounter}`);
-        console.log(`Animation interval: ${this.animationInterval ? 'Running' : 'Stopped'}`);
+        const tilemapObj = this.runtime.objects[tilemapName];
+        if (!tilemapObj) {
+            console.error(`Tilemap ${tilemapName} not found`);
+            return;
+        }
 
-        this.regions.forEach((region, name) => {
-            console.log(`📊 Region '${name}': ${region.tiles.length} tiles, type: ${region.animationType}`);
-            region.tiles.forEach((tile, index) => {
-                console.log(`   Tile ${index}: (${tile.x}, ${tile.y}) → index ${tile.targetIndex}`);
-            });
-        });
+        const tilemap = tilemapObj.getFirstInstance();
+        if (!tilemap) {
+            console.error(`No instance of ${tilemapName} found`);
+            return;
+        }
 
-        console.log("🔍 === END DEBUG STATUS ===");
-    }
+        const baseTile = tilemap.getTileAt(tileX, tileY);
+        console.log(`🔍 Tile at (${tileX}, ${tileY}) in ${tilemapName}:`);
+        console.log(`  Current index: ${baseTile}`);
 
-    // Optional: Optimize by player distance (if needed)
-    static optimizeByPlayer(): void {
-        // Only implement if you need distance-based culling
-        // For now, this can be empty or just log
-        console.log("🎯 Player optimization called (not implemented)");
+        if (baseTile === -1) {
+            console.log(`  This is an empty tile`);
+        } else {
+            const frameCount = 16; // Full row animation
+            const baseIndex = Math.floor(baseTile / frameCount) * frameCount;
+            console.log(`  Base tile index: ${baseIndex}`);
+            console.log(`  Row number: ${Math.floor(baseTile / 16)}`);
+            console.log(`  Animation sequence: ${baseIndex} through ${baseIndex + 15}`);
+            console.log(`  Current frame: ${baseTile - baseIndex}`);
+        }
     }
 }
 
-// Initialize the AdventureLand namespace and expose functions
+// Export to window for access
+(window as any).TileAnimationManager = TileAnimationManager;
+
+// ==========================================
+// ADVENTURE LAND NAMESPACE INTEGRATION
+// ==========================================
+// Using the proven AdventureLand pattern that works in eGlobal
+
+// Ensure AdventureLand namespace exists
 (globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
+
+// Create TileAnimations namespace with all functions
 (globalThis as any).AdventureLand.TileAnimations = {
-    initialize: () => TileAnimationManager.initialize(),
-    addWaterAnimation: (name: string, tilemapName: string, tiles: AnimatedTile[]) =>
-        TileAnimationManager.addWaterAnimation(name, tilemapName, tiles),
-    addFireAnimation: (name: string, tilemapName: string, tiles: AnimatedTile[]) =>
-        TileAnimationManager.addFireAnimation(name, tilemapName, tiles),
-    cleanup: () => TileAnimationManager.cleanup(),
-    debugStatus: () => TileAnimationManager.debugStatus(),
-    optimizeByPlayer: () => TileAnimationManager.optimizeByPlayer()
+    setup: function (runtime: any, animationType: string, animationName: string, tilemapName: string) {
+        try {
+            // Initialize if needed
+            TileAnimationManager.initialize(runtime);
+
+            // Add the appropriate animation type
+            switch (animationType) {
+                case "water":
+                    TileAnimationManager.addWaterAnimation(animationName, tilemapName);
+                    break;
+                case "fire":
+                    TileAnimationManager.addFireAnimation(animationName, tilemapName);
+                    break;
+                case "lava":
+                    TileAnimationManager.addLavaAnimation(animationName, tilemapName);
+                    break;
+                case "magic":
+                    TileAnimationManager.addMagicAnimation(animationName, tilemapName);
+                    break;
+                default:
+                    console.warn(`Unknown animation type: ${animationType}`);
+                    return;
+            }
+
+            // Start animations
+            TileAnimationManager.start();
+
+            console.log(`✅ Tile animations setup complete: ${animationName} on ${tilemapName}`);
+
+        } catch (error) {
+            console.error("Error setting up tile animations:", error);
+        }
+    },
+
+    // NEW WATERFALL SETUP FUNCTION
+    setupWaterfall: function (runtime: any, animationName: string, tilemapName: string, frameDelay: number = 150) {
+        try {
+            TileAnimationManager.initialize(runtime);
+            TileAnimationManager.addWaterfallAnimation(animationName, tilemapName, frameDelay);
+            TileAnimationManager.start();
+            console.log(`✅ Waterfall animation setup complete: ${animationName} on ${tilemapName}`);
+        } catch (error) {
+            console.error("Error setting up waterfall animation:", error);
+        }
+    },
+
+    cleanup: function () {
+        try {
+            TileAnimationManager.cleanup();
+        } catch (error) {
+            console.error("Error cleaning up tile animations:", error);
+        }
+    },
+
+    // Debug functions
+    debug: function (tilemapName: string) {
+        try {
+            TileAnimationManager.analyzeTilemap(tilemapName);
+        } catch (error) {
+            console.error("Error debugging tilemap:", error);
+        }
+    },
+
+    debugTile: function (tilemapName: string, x: number, y: number) {
+        try {
+            TileAnimationManager.debugTilesetFrames(tilemapName, x, y);
+        } catch (error) {
+            console.error("Error debugging tile:", error);
+        }
+    },
+
+    // Control functions
+    start: function () {
+        TileAnimationManager.start();
+    },
+
+    stop: function () {
+        TileAnimationManager.stop();
+    },
+
+    // Initialize explicitly
+    initialize: function (runtime: any) {
+        TileAnimationManager.initialize(runtime);
+    },
+
+    // Additional convenience methods - MOVED HERE AFTER OBJECT CREATION
+    quickSetup: function (runtime: any) {
+        // Quick setup for Lake World
+        this.setup(runtime, "water", "lake_water", "tm_water");
+    },
+
+    setupMultiple: function (runtime: any, animations: Array<{ type: string, name: string, tilemap: string }>) {
+        // Setup multiple animations at once
+        animations.forEach(anim => {
+            this.setup(runtime, anim.type, anim.name, anim.tilemap);
+        });
+    }
 };
 
-console.log("🔧 TileAnimationManager loaded with enhanced error handling");
+console.log("✅ AdventureLand.TileAnimations namespace created");

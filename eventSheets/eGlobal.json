@@ -1083,6 +1083,23 @@
 							"parameters": {
 								"data": "AJAX.LastData"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Access the parsed JSON data that's already in JSON_ItemsLibrary",
+								"const itemsData = runtime.objects.JSON_ItemsLibrary.getFirstInstance()!.getJsonDataCopy();",
+								"",
+								"// Initialize the item manager",
+								"const success = (globalThis as any).AdventureLand.Items.initialize(itemsData);",
+								"",
+								"if (!success) {",
+								"    console.error(\"Failed to initialize item cache!\");",
+								"} else {",
+								"    console.log(\"✅ Item cache initialized successfully\");",
+								"}"
+							]
 						}
 					],
 					"sid": 782343475575483
@@ -1405,6 +1422,84 @@
 							"parameters": {
 								"tag": "\"DataLoaded\""
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Add this enhanced debug to Event 28 (Load_InvCollection completed)",
+								"// This will show us what's happening during inventory loading",
+								"",
+								"console.log(\"=== INVENTORY LOADING DEBUG ===\");",
+								"",
+								"// Check if the array exists",
+								"const invArray = runtime.objects.Arr_InvCollection.getFirstInstance();",
+								"if (!invArray) {",
+								"    console.error(\"❌ Arr_InvCollection not found!\");",
+								"    return;",
+								"}",
+								"",
+								"console.log(\"Arr_InvCollection dimensions:\", {",
+								"    width: invArray.width,",
+								"    height: invArray.height,",
+								"    depth: invArray.depth",
+								"});",
+								"",
+								"// Check the actual array contents",
+								"console.log(\"First 10 array values:\");",
+								"for (let i = 0; i < Math.min(10, invArray.width); i++) {",
+								"    const value = invArray.getAt(i);",
+								"    console.log(`  [${i}] = ${value} (type: ${typeof value})`);",
+								"}",
+								"",
+								"// Check if Dict_ItemNumbers loaded",
+								"const itemNumbersDict = runtime.objects.Dict_ItemNumbers.getFirstInstance() as any;",
+								"if (!itemNumbersDict) {",
+								"    console.error(\"❌ Dict_ItemNumbers not found!\");",
+								"} else {",
+								"    console.log(\"✅ Dict_ItemNumbers found\");",
+								"    // Try to check a few values",
+								"    try {",
+								"        console.log(\"Trying to read Dict_ItemNumbers...\");",
+								"        // Test different access methods",
+								"        const testKey = \"1\"; // Try to get quantity for item ID 1",
+								"        const val = itemNumbersDict.get(testKey);",
+								"        console.log(`  Dict test - get(\"${testKey}\") = ${val}`);",
+								"    } catch (e) {",
+								"        console.error(\"  Error accessing Dict_ItemNumbers:\", e);",
+								"    }",
+								"}",
+								"",
+								"// Build inventory data as before",
+								"const inventoryData = [];",
+								"for (let i = 0; i < invArray.width; i++) {",
+								"    const itemId = Number(invArray.getAt(i));",
+								"    if (itemId > 0) {",
+								"        const quantity = Number(itemNumbersDict?.get?.(itemId.toString()) || 1);",
+								"        inventoryData.push({",
+								"            itemId: itemId,",
+								"            quantity: quantity",
+								"        });",
+								"        console.log(`  Found item: ID=${itemId}, Quantity=${quantity}`);",
+								"    }",
+								"}",
+								"",
+								"console.log(`Total items to load into ItemManager: ${inventoryData.length}`);",
+								"console.log(\"inventoryData:\", inventoryData);",
+								"",
+								"// Initialize inventory in ItemManager",
+								"(globalThis as any).AdventureLand.Items.initializeInventory(inventoryData);",
+								"",
+								"console.log(\"=== END INVENTORY LOADING DEBUG ===\");",
+								"",
+								"// Also add this to check if items are loading correctly",
+								"const itemManager = (globalThis as any).AdventureLand.Items;",
+								"if (itemManager) {",
+								"    console.log(\"Testing ItemManager lookups after init:\");",
+								"    console.log(\"  Pike ID:\", itemManager.getItemId(\"Pike\"));",
+								"    console.log(\"  Golden Tee-Shirt ID:\", itemManager.getItemId(\"Golden Tee-Shirt\"));",
+								"}"
+							]
 						}
 					],
 					"sid": 477728293557967
@@ -3511,9 +3606,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 520919365281370,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".strength\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const strength = (globalThis as any).AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
+														"return strength || 0;"
+													]
 												}
 											],
 											"sid": 583483126153756
@@ -3577,9 +3681,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 462964614083157,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".category\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const itemCategory = (globalThis as any).AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
+														"return itemCategory || \"\";"
+													]
 												}
 											],
 											"sid": 453211263278011
@@ -3643,9 +3756,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 342387838618067,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".description\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const description = (globalThis as any).AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
+														"return description || \"\";"
+													]
 												}
 											],
 											"sid": 841709874913142
@@ -3709,9 +3831,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 221365763344786,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".name\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const itemName = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);",
+														"return itemName || \"\";"
+													]
 												}
 											],
 											"sid": 343829639093367
@@ -3775,9 +3906,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 480238250812420,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".costume\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const costume = (globalThis as any).AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
+														"return costume || \"\";"
+													]
 												}
 											],
 											"sid": 414300452827860
@@ -3841,9 +3981,22 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 306508779037160,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".costume\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"if (!localVars.ItemName || localVars.ItemName === \"\") {",
+														"    // Empty equipment slots are normal - don't log warnings",
+														"    return \"\";",
+														"}",
+														"const costume = (globalThis as any).AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
+														"return costume || \"\";"
+													]
 												}
 											],
 											"sid": 574827086643285
@@ -3907,9 +4060,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 266439023894709,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".id\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const itemId = (globalThis as any).AdventureLand.Items.getItemId(localVars.ItemName);",
+														"return itemId || 0;"
+													]
 												}
 											],
 											"sid": 947995465641746
@@ -3973,9 +4135,18 @@
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
 													"sid": 529774595566847,
+													"disabled": true,
 													"parameters": {
 														"value": "JSON_ItemsLibrary.Get(\".cost\")"
 													}
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"const cost = (globalThis as any).AdventureLand.Items.getItemCost(localVars.ItemIndex);",
+														"return cost || 0;"
+													]
 												}
 											],
 											"sid": 252943871041062
@@ -5719,9 +5890,11 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLand.Debug.logSystemStatus();"
+								"if ((globalThis).AdventureLand && (globalThis).AdventureLand.Debug) {",
+								"    (globalThis).AdventureLand.Debug.logSystemStatus();",
+								"}"
 							]
 						}
 					],

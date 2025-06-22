@@ -472,39 +472,6 @@
 						{
 							"eventType": "comment",
 							"text": "Testing for Pete dialogue system in Leafwood Forest"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 700275263146180,
-									"parameters": {
-										"variable": "CurrentWorld",
-										"comparison": 0,
-										"value": "\"01\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"// Find Pete and log his properties",
-										"const peteObjects = runtime.objects.Prospector_Pete.getAllInstances();",
-										"console.log(\"Pete objects found:\", peteObjects.length);",
-										"peteObjects.forEach(pete => {",
-										"    console.log(\"Pete UID:\", pete.uid);",
-										"    console.log(\"Pete ObjectTypeName:\", pete.objectType.name);",
-										"    console.log(\"Pete position:\", pete.x, pete.y);",
-										"    //console.log(\"Pete in CharacterTriggers family:\", pete.objectType.family?.name);",
-										"});"
-									]
-								}
-							],
-							"sid": 516338875538534
 						}
 					]
 				},
@@ -1767,15 +1734,6 @@
 											"parameters": {
 												"mode": "enable",
 												"effect": "\"Lighten\""
-											}
-										},
-										{
-											"id": "set-blend-mode",
-											"objectClass": "Glimmer",
-											"sid": 440515581109160,
-											"disabled": true,
-											"parameters": {
-												"blend-mode": "source-atop"
 											}
 										}
 									],

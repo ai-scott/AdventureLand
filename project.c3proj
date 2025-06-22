@@ -767,6 +767,30 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "original-tile-animation-manager.ts",
+					"type": "application/typescript",
+					"sid": 264828454270852,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "inventory-ui-pool.ts",
+					"type": "application/typescript",
+					"sid": 828474216140897,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "item-manager.ts",
+					"type": "application/typescript",
+					"sid": 345398130933211,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [],

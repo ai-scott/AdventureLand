@@ -13,60 +13,11 @@
 			"actions": [
 				{
 					"type": "script",
-					"language": "typescript",
+					"language": "javascript",
 					"script": [
-						"",
-						"// 1. Initialize the system",
-						"(globalThis as any).AdventureLand.TileAnimations.initialize();",
-						"",
-						"// 2. Get comprehensive tile data first",
-						"console.log(\"🔍 Analyzing all waterfall tiles...\");",
-						"",
-						"// 3. Configure the complete waterfall with ALL tiles from debug output",
-						"(globalThis as any).AdventureLand.TileAnimations.addWaterAnimation(",
-						"    \"lake_waterfall_complete\", ",
-						"    \"tm_water\",",
-						"    [",
-						"        // ORIGINAL 9 CENTER TILES (currently working)",
-						"        { x: 1, y: 2, targetIndex: 48 },  // Top row center",
-						"        { x: 2, y: 2, targetIndex: 48 },",
-						"        { x: 3, y: 2, targetIndex: 48 },",
-						"        { x: 1, y: 3, targetIndex: 64 },  // Middle row center  ",
-						"        { x: 2, y: 3, targetIndex: 64 },",
-						"        { x: 3, y: 3, targetIndex: 64 },",
-						"        { x: 1, y: 4, targetIndex: 80 },  // Bottom row center",
-						"        { x: 2, y: 4, targetIndex: 80 },",
-						"        { x: 3, y: 4, targetIndex: 80 },",
-						"",
-						"        // ADDITIONAL EDGE TILES (from your original debug)",
-						"        // Based on your logWaterfallTiles() showing different indices:",
-						"        ",
-						"        // Top edge tiles (if they exist with different indices)",
-						"        { x: 0, y: 2, targetIndex: 50 },  // Left edge top",
-						"        { x: 4, y: 2, targetIndex: 50 },  // Right edge top",
-						"        ",
-						"        // Middle edge tiles",
-						"        { x: 0, y: 3, targetIndex: 66 },  // Left edge middle",
-						"        { x: 4, y: 3, targetIndex: 66 },  // Right edge middle",
-						"        ",
-						"        // Bottom edge tiles  ",
-						"        { x: 0, y: 4, targetIndex: 80 },  // Left edge bottom",
-						"        { x: 4, y: 4, targetIndex: 80 },  // Right edge bottom",
-						"",
-						"        // Corner tiles (if they exist)",
-						"        { x: 1, y: 1, targetIndex: 46 },  // Top-left of waterfall",
-						"        { x: 2, y: 1, targetIndex: 46 },  // Top-center ",
-						"        { x: 3, y: 1, targetIndex: 46 },  // Top-right",
-						"        { x: 1, y: 5, targetIndex: 82 },  // Bottom-left of waterfall",
-						"        { x: 2, y: 5, targetIndex: 82 },  // Bottom-center",
-						"        { x: 3, y: 5, targetIndex: 82 }   // Bottom-right",
-						"    ]",
-						");",
-						"",
-						"// 4. Debug what we actually configured",
-						"console.log(\"✅ Complete waterfall configuration applied\");",
-						"(globalThis as any).AdventureLand.TileAnimations.debugStatus();",
-						""
+						"if ((globalThis).AdventureLand && (globalThis).AdventureLand.TileAnimations) {",
+						"    (globalThis).AdventureLand.TileAnimations.setupWaterfall(runtime, 'lake_waterfall', 'tm_water', 150);",
+						"}"
 					]
 				}
 			],
@@ -129,9 +80,11 @@
 			"actions": [
 				{
 					"type": "script",
-					"language": "typescript",
+					"language": "javascript",
 					"script": [
-						"(globalThis as any).AdventureLand.TileAnimations.debugStatus();"
+						"if ((globalThis).AdventureLand && (globalThis).AdventureLand.TileAnimations) {",
+						"    (globalThis).AdventureLand.TileAnimations.debug('tm_water');",
+						"}"
 					]
 				}
 			],
@@ -143,211 +96,30 @@
 				{
 					"id": "on-key-pressed",
 					"objectClass": "Keyboard",
-					"sid": 813668116715114,
+					"sid": 501235755669493,
 					"parameters": {
-						"key": 87
+						"key": 84
 					}
 				}
 			],
 			"actions": [
 				{
 					"type": "script",
-					"language": "typescript",
+					"language": "javascript",
 					"script": [
-						"(globalThis as any).AdventureLand.Debug.logWaterfallTiles();"
+						"if ((globalThis).AdventureLand && (globalThis).AdventureLand.TileAnimations) {",
+						"    // Check middle tiles",
+						"    (globalThis).AdventureLand.TileAnimations.debugTile('tm_water', 1, 1);",
+						"    (globalThis).AdventureLand.TileAnimations.debugTile('tm_water', 2, 1);",
+						"    (globalThis).AdventureLand.TileAnimations.debugTile('tm_water', 3, 1);",
+						"    // Check side tiles",
+						"    (globalThis).AdventureLand.TileAnimations.debugTile('tm_water', 0, 1);",
+						"    (globalThis).AdventureLand.TileAnimations.debugTile('tm_water', 4, 1);",
+						"}"
 					]
 				}
 			],
-			"sid": 297308547013491
-		},
-		{
-			"eventType": "block",
-			"conditions": [
-				{
-					"id": "on-key-pressed",
-					"objectClass": "Keyboard",
-					"sid": 469784360574674,
-					"parameters": {
-						"key": 90
-					}
-				}
-			],
-			"actions": [
-				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"// EVENT: Keyboard → On Z pressed",
-						"console.log(\"AdventureLand object:\", (globalThis as any).AdventureLand);",
-						"console.log(\"TileAnimations:\", (globalThis as any).AdventureLand?.TileAnimations);"
-					]
-				}
-			],
-			"sid": 848370369156074,
-			"disabled": true
-		},
-		{
-			"eventType": "block",
-			"conditions": [
-				{
-					"id": "on-key-pressed",
-					"objectClass": "Keyboard",
-					"sid": 353412838075094,
-					"parameters": {
-						"key": 114
-					}
-				}
-			],
-			"actions": [
-				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"console.log(\"🔍 === DETAILED TILE ANALYSIS ===\");",
-						"",
-						"const F3runtime = (globalThis as any).runtime;",
-						"if (F3runtime) {",
-						"    const tilemapObject = runtime.objects.tm_water;",
-						"    if (tilemapObject) {",
-						"        const tilemap = tilemapObject.getFirstInstance();",
-						"        if (tilemap) {",
-						"            console.log(\"📊 Current tile indices in waterfall area:\");",
-						"            ",
-						"            // Check a wider area around the waterfall",
-						"            for (let y = 1; y <= 5; y++) {",
-						"                for (let x = 0; x <= 4; x++) {",
-						"                    try {",
-						"                        const tileIndex = tilemap.getTileAt(x, y);",
-						"                        if (tileIndex > 0) {  // Only log non-empty tiles",
-						"                            console.log(\"   Tile at (\" + x + \", \" + y + \"): index \" + tileIndex);",
-						"                        }",
-						"                    } catch (error) {",
-						"                        console.log(`   Tile at (${x}, ${y}): ERROR - ${error.message}`);",
-						"                    }",
-						"                }",
-						"            }",
-						"        }",
-						"    }",
-						"}",
-						"",
-						"console.log(\"🔍 === END DETAILED ANALYSIS ===\");",
-						""
-					]
-				}
-			],
-			"sid": 284015392458679
-		},
-		{
-			"eventType": "block",
-			"conditions": [
-				{
-					"id": "on-key-pressed",
-					"objectClass": "Keyboard",
-					"sid": 224828842969873,
-					"parameters": {
-						"key": 115
-					}
-				}
-			],
-			"actions": [
-				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"console.log(\"🧠 === INTELLIGENT WATERFALL DETECTION ===\");",
-						"",
-						"function detectAndAnimateWaterfall() {",
-						"    const F4runtime = (globalThis as any).runtime;",
-						"    if (!F4runtime) return;",
-						"    ",
-						"    const tilemapObject = F4runtime.objects.tm_water;",
-						"    if (!tilemapObject) return;",
-						"    ",
-						"    const tilemap = tilemapObject.getFirstInstance();  ",
-						"    if (!tilemap) return;",
-						"    ",
-						"    const animatedTiles = [];",
-						"    ",
-						"    // Scan the waterfall area and detect all animated tiles",
-						"    for (let y = 1; y <= 5; y++) {",
-						"        for (let x = 0; x <= 4; x++) {",
-						"            try {",
-						"                const tileIndex = tilemap.getTileAt(x, y);",
-						"                ",
-						"                // Check if this tile index suggests it's part of waterfall animation",
-						"                // Common waterfall tile ranges: 46-50, 62-66, 78-82",
-						"                if ((tileIndex >= 46 && tileIndex <= 50) ||",
-						"                    (tileIndex >= 62 && tileIndex <= 66) ||",
-						"                    (tileIndex >= 78 && tileIndex <= 82)) {",
-						"                    ",
-						"                    // Determine base index for animation",
-						"                    let baseIndex;",
-						"                    if (tileIndex >= 46 && tileIndex <= 50) baseIndex = 46;",
-						"                    else if (tileIndex >= 62 && tileIndex <= 66) baseIndex = 62;  ",
-						"                    else if (tileIndex >= 78 && tileIndex <= 82) baseIndex = 78;",
-						"                    ",
-						"                    animatedTiles.push({",
-						"                        x: x,",
-						"                        y: y, ",
-						"                        targetIndex: baseIndex",
-						"                    });",
-						"                    ",
-						"                    console.log(`🌊 Detected waterfall tile at (${x}, ${y}) with base index ${baseIndex}`);",
-						"                }",
-						"            } catch (error) {",
-						"                // Skip tiles that can't be read",
-						"            }",
-						"        }",
-						"    }",
-						"    ",
-						"    if (animatedTiles.length > 0) {",
-						"        console.log(`✅ Found ${animatedTiles.length} waterfall tiles to animate`);",
-						"        ",
-						"        // Remove old animation and add new complete one",
-						"        (globalThis as any).AdventureLand.TileAnimations.cleanup();",
-						"        (globalThis as any).AdventureLand.TileAnimations.initialize();",
-						"        (globalThis as any).AdventureLand.TileAnimations.addWaterAnimation(",
-						"            \"intelligent_waterfall\",",
-						"            \"tm_water\", ",
-						"            animatedTiles",
-						"        );",
-						"        ",
-						"        console.log(\"🎬 Intelligent waterfall animation started!\");",
-						"    } else {",
-						"        console.log(\"❌ No waterfall tiles detected\");",
-						"    }",
-						"}",
-						"",
-						"detectAndAnimateWaterfall();",
-						"console.log(\"🧠 === END INTELLIGENT DETECTION ===\");"
-					]
-				}
-			],
-			"sid": 844101563537588
-		},
-		{
-			"eventType": "block",
-			"conditions": [
-				{
-					"id": "every-x-seconds",
-					"objectClass": "System",
-					"sid": 115449041945347,
-					"parameters": {
-						"interval-seconds": ".1"
-					}
-				}
-			],
-			"actions": [
-				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"(globalThis as any).AdventureLand.TileAnimations.optimizeByPlayer();"
-					]
-				}
-			],
-			"sid": 535469575216677,
-			"disabled": true
+			"sid": 531298248414611
 		},
 		{
 			"eventType": "block",
@@ -355,19 +127,71 @@
 				{
 					"id": "on-end-of-layout",
 					"objectClass": "System",
-					"sid": 497370842162087
+					"sid": 950610577225148
 				}
 			],
 			"actions": [
 				{
 					"type": "script",
-					"language": "typescript",
+					"language": "javascript",
 					"script": [
-						"(globalThis as any).AdventureLand.TileAnimations.cleanup();"
+						"if ((globalThis).AdventureLand && (globalThis).AdventureLand.TileAnimations) {",
+						"    (globalThis).AdventureLand.TileAnimations.cleanup();",
+						"}"
 					]
 				}
 			],
-			"sid": 450875914375633
+			"sid": 250882739021520
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-key-pressed",
+					"objectClass": "Keyboard",
+					"sid": 180306497908025,
+					"parameters": {
+						"key": 89
+					}
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"// On Y pressed - Get complete tile map",
+						"if ((globalThis).AdventureLand && (globalThis).AdventureLand.TileAnimations) {",
+						"    const runtime = (globalThis).runtime;",
+						"    const tilemapObj = runtime.objects.tm_water;",
+						"    if (tilemapObj) {",
+						"        const tilemap = tilemapObj.getFirstInstance();",
+						"        if (tilemap) {",
+						"            console.log(\"🗺️ Complete tm_water tile map:\");",
+						"            // Group tiles by position",
+						"            const tileMap = {};",
+						"            for (let y = 0; y < tilemap.mapHeight; y++) {",
+						"                for (let x = 0; x < tilemap.mapWidth; x++) {",
+						"                    const tile = tilemap.getTileAt(x, y);",
+						"                    if (tile !== -1) {",
+						"                        if (!tileMap[y]) tileMap[y] = {};",
+						"                        tileMap[y][x] = tile;",
+						"                    }",
+						"                }",
+						"            }",
+						"            // Display as grid",
+						"            Object.keys(tileMap).sort((a,b) => parseInt(a) - parseInt(b)).forEach(y => {",
+						"                const row = tileMap[y];",
+						"                const positions = Object.keys(row).sort((a,b) => parseInt(a) - parseInt(b));",
+						"                console.log(`Row ${y}: ${positions.map(x => `[${x}]=${row[x]}`).join(', ')}`);",
+						"            });",
+						"        }",
+						"    }",
+						"}"
+					]
+				}
+			],
+			"sid": 785282715042977
 		}
 	],
 	"sid": 387743419661068
