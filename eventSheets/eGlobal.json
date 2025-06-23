@@ -2734,7 +2734,7 @@
 													"objectClass": "Dict_ItemNumbers",
 													"sid": 105680134559132,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID, \"\")",
+														"key": "Functions.GetItemName(DropItemID)",
 														"comparison": 0,
 														"value": "1"
 													}
@@ -2746,7 +2746,7 @@
 													"objectClass": "Dict_ItemNumbers",
 													"sid": 144171946599397,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID, \"\")",
+														"key": "Functions.GetItemName(DropItemID)",
 														"value": "0"
 													}
 												}
@@ -2888,7 +2888,7 @@
 													"objectClass": "Dict_ItemNumbers",
 													"sid": 533017967874535,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID, \"\")",
+														"key": "Functions.GetItemName(DropItemID)",
 														"comparison": 4,
 														"value": "1"
 													}
@@ -2900,8 +2900,8 @@
 													"objectClass": "Dict_ItemNumbers",
 													"sid": 758772415304742,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID, \"\")",
-														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(DropItemID, \"\")) - 1"
+														"key": "Functions.GetItemName(DropItemID)",
+														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(DropItemID)) - 1"
 													}
 												}
 											],
@@ -2983,8 +2983,8 @@
 													"objectClass": "Dict_ItemNumbers",
 													"sid": 439030655042453,
 													"parameters": {
-														"key": "Functions.GetItemName(GainItemID, \"\")",
-														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID, \"\")) + NumberGained"
+														"key": "Functions.GetItemName(GainItemID)",
+														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 													}
 												},
 												{
@@ -2993,7 +2993,7 @@
 													"sid": 519628712917558,
 													"parameters": {
 														"variable": "TempVarX",
-														"value": "Functions.GetItemName(GainItemID, \"\")"
+														"value": "Functions.GetItemName(GainItemID)"
 													}
 												},
 												{
@@ -3064,8 +3064,8 @@
 															"objectClass": "Dict_ItemNumbers",
 															"sid": 594209200955512,
 															"parameters": {
-																"key": "Functions.GetItemName(GainItemID, \"\")",
-																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID, \"\")) + NumberGained"
+																"key": "Functions.GetItemName(GainItemID)",
+																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 															}
 														},
 														{
@@ -3106,8 +3106,8 @@
 															"objectClass": "Dict_ItemNumbers",
 															"sid": 592960849013829,
 															"parameters": {
-																"key": "Functions.GetItemName(GainItemID, \"\")",
-																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID, \"\")) + NumberGained"
+																"key": "Functions.GetItemName(GainItemID)",
+																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 															}
 														},
 														{
@@ -3571,6 +3571,26 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"eventType": "variable",
+							"name": "TempReturnNumber",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 294799271954694
+						},
+						{
+							"eventType": "variable",
+							"name": "TempReturnString",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 264232028081184
+						},
+						{
 							"functionName": "GetItemStrength",
 							"functionDescription": "",
 							"functionCategory": "Return",
@@ -3584,13 +3604,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 813728156449043
-								},
-								{
-									"name": "itemStrength",
-									"type": "number",
-									"initialValue": "0",
-									"comment": "",
-									"sid": 394771958038720
 								}
 							],
 							"eventType": "function-block",
@@ -3642,15 +3655,15 @@
 													"language": "typescript",
 													"script": [
 														"const strength = (globalThis as any).AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
-														"localVars.itemStrength = strength || 0;"
+														"localVars.TempReturnNumber = strength || 0;"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 412375279869747,
+													"sid": 752771312030540,
 													"parameters": {
-														"value": "itemStrength"
+														"value": "TempReturnNumber"
 													}
 												}
 											],
@@ -3674,13 +3687,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 923377100274997
-								},
-								{
-									"name": "itemCategory",
-									"type": "string",
-									"initialValue": "",
-									"comment": "",
-									"sid": 540999578918113
 								}
 							],
 							"eventType": "function-block",
@@ -3732,15 +3738,15 @@
 													"language": "typescript",
 													"script": [
 														"const itemCategory = (globalThis as any).AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
-														"localVars.itemCategory = itemCategory || \"\";"
+														"localVars.TempReturnString = itemCategory || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 728192045820781,
+													"sid": 786212899446045,
 													"parameters": {
-														"value": "itemCategory"
+														"value": "TempReturnString"
 													}
 												}
 											],
@@ -3764,13 +3770,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 564314718299652
-								},
-								{
-									"name": "itemDescription",
-									"type": "string",
-									"initialValue": "",
-									"comment": "",
-									"sid": 237979057172303
 								}
 							],
 							"eventType": "function-block",
@@ -3822,15 +3821,15 @@
 													"language": "typescript",
 													"script": [
 														"const description = (globalThis as any).AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
-														"localVars.itemDescription = description || \"\";"
+														"localVars.TempReturnString = description || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 207789251698920,
+													"sid": 858005619851402,
 													"parameters": {
-														"value": "itemDescription"
+														"value": "TempReturnString"
 													}
 												}
 											],
@@ -3854,13 +3853,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 609567045594595
-								},
-								{
-									"name": "itemName",
-									"type": "string",
-									"initialValue": "",
-									"comment": "",
-									"sid": 940856242901023
 								}
 							],
 							"eventType": "function-block",
@@ -3913,15 +3905,15 @@
 													"script": [
 														"const itemName = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);",
 														"console.log('GetItemName for id:',localVars.ItemIndex,' = output:', itemName);",
-														"localVars.itemName = itemName || \"\";"
+														"localVars.TempReturnString = itemName || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 330140080427467,
+													"sid": 219046237553865,
 													"parameters": {
-														"value": "itemName"
+														"value": "TempReturnString"
 													}
 												}
 											],
@@ -3945,13 +3937,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 939925778451380
-								},
-								{
-									"name": "itemCostume",
-									"type": "string",
-									"initialValue": "",
-									"comment": "",
-									"sid": 665479746547232
 								}
 							],
 							"eventType": "function-block",
@@ -4003,15 +3988,15 @@
 													"language": "typescript",
 													"script": [
 														"const costume = (globalThis as any).AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
-														"localVars.itemCostume = costume || \"\";"
+														"localVars.TempReturnString = costume || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 887802343293337,
+													"sid": 355500364586912,
 													"parameters": {
-														"value": "itemCostume"
+														"value": "TempReturnString"
 													}
 												}
 											],
@@ -4035,13 +4020,6 @@
 									"initialValue": "",
 									"comment": "",
 									"sid": 911837391536856
-								},
-								{
-									"name": "itemCostume",
-									"type": "string",
-									"initialValue": "",
-									"comment": "",
-									"sid": 819480427737406
 								}
 							],
 							"eventType": "function-block",
@@ -4097,15 +4075,15 @@
 														"    return \"\";",
 														"}",
 														"const costume = (globalThis as any).AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
-														"localVars.itemCostume = costume || \"\";"
+														"localVars.TempReturnString = costume || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 205203489051765,
+													"sid": 698107131315445,
 													"parameters": {
-														"value": "itemCostume"
+														"value": "TempReturnString"
 													}
 												}
 											],
@@ -4129,13 +4107,6 @@
 									"initialValue": "",
 									"comment": "",
 									"sid": 582693617677145
-								},
-								{
-									"name": "itemID",
-									"type": "number",
-									"initialValue": "0",
-									"comment": "",
-									"sid": 294602924416778
 								}
 							],
 							"eventType": "function-block",
@@ -4189,15 +4160,15 @@
 														"const itemId = (globalThis as any).AdventureLand.Items.getItemId(localVars.ItemName);",
 														"runtime.setReturnValue(itemId);",
 														"console.log(`setting itemId to ${itemId}`);",
-														"localVars.itemID = itemId || \"\";"
+														"localVars.TempReturnNumber = itemId || \"\";"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 224479363402467,
+													"sid": 985697785577468,
 													"parameters": {
-														"value": "itemID"
+														"value": "TempReturnNumber"
 													}
 												}
 											],
@@ -4221,13 +4192,6 @@
 									"initialValue": "0",
 									"comment": "",
 									"sid": 440668239564612
-								},
-								{
-									"name": "itemCost",
-									"type": "number",
-									"initialValue": "0",
-									"comment": "",
-									"sid": 791754671072908
 								}
 							],
 							"eventType": "function-block",
@@ -4279,15 +4243,15 @@
 													"language": "typescript",
 													"script": [
 														"const cost = (globalThis as any).AdventureLand.Items.getItemCost(localVars.ItemIndex);",
-														"localVars.itemCost = cost || 0;"
+														"localVars.TempReturnNumber = cost || 0;"
 													]
 												},
 												{
 													"id": "set-function-return-value",
 													"objectClass": "Functions",
-													"sid": 770202880673034,
+													"sid": 227381850946599,
 													"parameters": {
-														"value": "itemCost"
+														"value": "TempReturnNumber"
 													}
 												}
 											],

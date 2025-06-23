@@ -1415,7 +1415,7 @@
 									"sid": 259375447605022,
 									"parameters": {
 										"variable": "KeyItem",
-										"value": "Functions.GetItemID(Arr_Dialogue.At(7, CurrentDialogueLine, TextArrayZIndex), 0)"
+										"value": "Functions.GetItemID(Arr_Dialogue.At(7, CurrentDialogueLine, TextArrayZIndex))"
 									}
 								}
 							],
