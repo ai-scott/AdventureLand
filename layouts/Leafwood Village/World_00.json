@@ -1511,7 +1511,7 @@
 					"tags": "",
 					"instanceVariables": {
 						"itemTriggerID": 1,
-						"itemName": "",
+						"itemName": "Axe",
 						"unique": false,
 						"collected": false,
 						"numberOfItems": 1

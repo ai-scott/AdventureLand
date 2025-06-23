@@ -2623,46 +2623,91 @@
 									"parameters": {
 										"frame-number": "Self.ItemID"
 									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "ItemSlot",
-									"sid": 744741835619229,
-									"parameters": {
-										"instance-variable": "ItemCat",
-										"value": "Functions.GetItemCategory(Self.ItemID)"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "ItemSlot",
-									"sid": 412929427448315,
-									"parameters": {
-										"instance-variable": "ItemName",
-										"value": "Functions.GetItemName(Self.ItemID)"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "ItemSlot",
-									"sid": 527504177249038,
-									"parameters": {
-										"instance-variable": "NumberOfItems",
-										"value": "Dict_ItemNumbers.Get(Self.ItemName)"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "ItemSlot",
-									"sid": 132542214164466,
-									"parameters": {
-										"instance-variable": "InventoryWindow",
-										"value": "\"main\""
-									}
 								}
 							],
 							"sid": 263100994215459,
 							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 866318188979015,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"comparison": 4,
+												"value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 337904233522798,
+											"parameters": {
+												"instance-variable": "ItemCat",
+												"value": "Functions.GetItemCategory(Self.ItemID, \"\")"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 957985967419326,
+											"parameters": {
+												"instance-variable": "ItemName",
+												"value": "Functions.GetItemName(Self.ItemID, \"\")"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 347158737356521,
+											"parameters": {
+												"instance-variable": "NumberOfItems",
+												"value": "Dict_ItemNumbers.Get(Self.ItemName)"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 668721193865698,
+											"parameters": {
+												"instance-variable": "InventoryWindow",
+												"value": "\"main\""
+											}
+										}
+									],
+									"sid": 683611036214242,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-children",
+													"objectClass": "ItemSlot",
+													"sid": 306906943136416,
+													"parameters": {
+														"child": "UI_Font_Stack",
+														"which": "own"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-visible",
+													"objectClass": "UI_Font_Stack",
+													"sid": 513681012548831,
+													"parameters": {
+														"visibility": "invisible"
+													}
+												}
+											],
+											"sid": 267658323997390
+										}
+									]
+								},
 								{
 									"eventType": "block",
 									"conditions": [
@@ -2681,10 +2726,37 @@
 										{
 											"id": "set-instvar-value",
 											"objectClass": "ItemSlot",
+											"sid": 936463451199043,
+											"parameters": {
+												"instance-variable": "ItemCat",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 362515684088058,
+											"parameters": {
+												"instance-variable": "ItemName",
+												"value": "\"\""
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
 											"sid": 892214862712709,
 											"parameters": {
 												"instance-variable": "NumberOfItems",
 												"value": "0"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 768704418657076,
+											"parameters": {
+												"instance-variable": "InventoryWindow",
+												"value": "\"main\""
 											}
 										}
 									],
@@ -2731,6 +2803,16 @@
 											}
 										},
 										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 771824215230980,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"comparison": 4,
+												"value": "0"
+											}
+										},
+										{
 											"id": "pick-children",
 											"objectClass": "ItemSlot",
 											"sid": 519402508532139,
@@ -2771,6 +2853,16 @@
 												"instance-variable": "NumberOfItems",
 												"comparison": 2,
 												"value": "2"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 766532062355503,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"comparison": 4,
+												"value": "0"
 											}
 										},
 										{
@@ -2858,7 +2950,7 @@
 									"sid": 447861396856483,
 									"parameters": {
 										"instance-variable": "ItemCat",
-										"value": "Functions.GetItemCategory(Self.ItemID)"
+										"value": "Functions.GetItemCategory(Self.ItemID, \"\")"
 									}
 								},
 								{
@@ -2894,7 +2986,7 @@
 											"sid": 760018881347921,
 											"parameters": {
 												"instance-variable": "ItemID",
-												"value": "Functions.GetItemID(Self.ItemName)"
+												"value": "Functions.GetItemID(Self.ItemName, 0)"
 											}
 										},
 										{
@@ -2903,7 +2995,7 @@
 											"sid": 122924880416427,
 											"parameters": {
 												"instance-variable": "ItemCat",
-												"value": "Functions.GetItemCategory(Self.ItemID)"
+												"value": "Functions.GetItemCategory(Self.ItemID, \"\")"
 											}
 										},
 										{
@@ -5232,7 +5324,7 @@
 											"sid": 986732945324619,
 											"parameters": [
 												"InventoryItems.ItemID",
-												"Functions.GetItemCostbyID(InventoryItems.ItemID)/2"
+												"Functions.GetItemCostbyID(InventoryItems.ItemID, 0) / 2"
 											]
 										}
 									],
@@ -5428,7 +5520,7 @@
 											"sid": 857945562518641,
 											"parameters": [
 												"InventoryItems.ItemID",
-												"Functions.GetItemCostbyID(InventoryItems.ItemID)",
+												"Functions.GetItemCostbyID(InventoryItems.ItemID, 0)",
 												"ItemShowcase.NumberOfItems"
 											]
 										},
@@ -5693,7 +5785,7 @@
 											"callFunction": "adjustHealth",
 											"sid": 374737570311963,
 											"parameters": [
-												"Functions.GetItemStrength(CurrentItemID)",
+												"Functions.GetItemStrength(CurrentItemID, 0)",
 												false
 											]
 										},
@@ -5864,7 +5956,7 @@
 											"callFunction": "UpdateNumbersOnPickup",
 											"sid": 808864458783002,
 											"parameters": [
-												"Functions.GetItemID(Dict_SaveGameData.Get(ItemSlot.ItemCat))",
+												"Functions.GetItemID(Dict_SaveGameData.Get(ItemSlot.ItemCat), 0)",
 												"1"
 											]
 										}
@@ -6154,7 +6246,7 @@
 									"objectClass": "System",
 									"sid": 877496358679227,
 									"parameters": {
-										"first-value": "Functions.GetItemCategory(itemID)",
+										"first-value": "Functions.GetItemCategory(itemID, \"\")",
 										"comparison": 0,
 										"second-value": "\"Weapon\""
 									}
@@ -6174,7 +6266,7 @@
 									"callFunction": "showMessage",
 									"sid": 321117663378328,
 									"parameters": [
-										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"(\"You got a \" & Functions.GetItemName(itemID, \"\")) & \"!\"",
 										"\"Open [icon=Bag] with 'i' and equip it, then tap [icon=Sword] or 'a' to attack\""
 									]
 								},
@@ -6243,7 +6335,7 @@
 									"callFunction": "showMessage",
 									"sid": 754834325902015,
 									"parameters": [
-										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"(\"You got a \" & Functions.GetItemName(itemID, \"\")) & \"!\"",
 										"\"Open inventory with 'i' or [icon=Bag] and wear it to power up your skills!\""
 									]
 								},
@@ -6282,7 +6374,7 @@
 									"objectClass": "System",
 									"sid": 311822475159946,
 									"parameters": {
-										"first-value": "Functions.GetItemCategory(itemID)",
+										"first-value": "Functions.GetItemCategory(itemID, \"\")",
 										"comparison": 0,
 										"second-value": "\"Food\""
 									}
@@ -6302,7 +6394,7 @@
 									"callFunction": "showMessage",
 									"sid": 702792779676721,
 									"parameters": [
-										"\"You got a \"&Functions.GetItemName(itemID)&\"!\"",
+										"(\"You got a \" & Functions.GetItemName(itemID, \"\")) & \"!\"",
 										"\"Open [icon=Bag] with 'i' to eat it when you need  [icon=Heart]\""
 									]
 								},
@@ -6420,7 +6512,7 @@
 									"callFunction": "Adjust_Gems",
 									"sid": 448236466275463,
 									"parameters": [
-										"Functions.GetItemCostbyID(InventoryItems.ItemID)"
+										"Functions.GetItemCostbyID(InventoryItems.ItemID, 0)"
 									]
 								}
 							],
@@ -6532,7 +6624,7 @@
 							"sid": 653290047020355,
 							"parameters": {
 								"variable": "currentHairstyleID",
-								"value": "Functions.GetItemID(Dict_SaveGameData.Get(\"Hair\"))"
+								"value": "Functions.GetItemID(Dict_SaveGameData.Get(\"Hair\"), 0)"
 							}
 						},
 						{
@@ -6705,7 +6797,7 @@
 									"sid": 821812802664271,
 									"parameters": {
 										"key": "\"Hair\"",
-										"value": "Functions.GetItemName(currentHairstyleID)"
+										"value": "Functions.GetItemName(currentHairstyleID, \"\")"
 									}
 								},
 								{
@@ -6726,7 +6818,7 @@
 										"object": "PlayerSystem",
 										"expression": "PlayerSystem.ObjectTypeName",
 										"comparison": 0,
-										"value": "Functions.GetItemCostume(currentHairstyleID)"
+										"value": "Functions.GetItemCostume(currentHairstyleID, \"\")"
 									}
 								}
 							],
@@ -6915,7 +7007,7 @@
 													"sid": 442317557281783,
 													"parameters": {
 														"variable": "Attack",
-														"value": "Functions.GetItemStrength(ItemSlot.ItemID) "
+														"value": "Functions.GetItemStrength(ItemSlot.ItemID, 0)"
 													}
 												},
 												{
@@ -6995,7 +7087,7 @@
 													"sid": 685493909836868,
 													"parameters": {
 														"variable": "Defense",
-														"value": "Defense+Functions.GetItemStrength(ItemSlot.ItemID)"
+														"value": "Defense + Functions.GetItemStrength(ItemSlot.ItemID, 0)"
 													}
 												}
 											],
@@ -7033,7 +7125,7 @@
 													"sid": 461556346997642,
 													"parameters": {
 														"variable": "Speed",
-														"value": "Functions.GetItemStrength(ItemSlot.ItemID) "
+														"value": "Functions.GetItemStrength(ItemSlot.ItemID, 0)"
 													}
 												},
 												{
@@ -7486,7 +7578,7 @@
 							"objectClass": "UI_Font_DescrNUM",
 							"sid": 281012019865983,
 							"parameters": {
-								"text": "Functions.GetItemStrength(CurrentItemID)"
+								"text": "Functions.GetItemStrength(CurrentItemID, 0)"
 							}
 						},
 						{
@@ -7927,7 +8019,7 @@
 									"objectClass": "System",
 									"sid": 884151154046551,
 									"parameters": {
-										"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
+										"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID, 0)",
 										"comparison": 3,
 										"second-value": "Dict_SaveGameData.Get(\"Gems\")"
 									}
@@ -7972,7 +8064,7 @@
 											"objectClass": "obj_TitleText",
 											"sid": 386286061902972,
 											"parameters": {
-												"text": "\"[icon=Gem]\" & Functions.GetItemCostbyID(InventoryItems.ItemID)"
+												"text": "\"[icon=Gem]\" & Functions.GetItemCostbyID(InventoryItems.ItemID, 0)"
 											}
 										},
 										{
@@ -8054,7 +8146,7 @@
 									"objectClass": "System",
 									"sid": 588931481168121,
 									"parameters": {
-										"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID)",
+										"first-value": "Functions.GetItemCostbyID(InventoryItems.ItemID, 0)",
 										"comparison": 4,
 										"second-value": "Dict_SaveGameData.Get(\"Gems\")"
 									}
@@ -8084,7 +8176,7 @@
 									"objectClass": "obj_TitleText",
 									"sid": 678778674261459,
 									"parameters": {
-										"text": "\"You Need \"& Functions.GetItemCostbyID(InventoryItems.ItemID)&\"[icon=Gem]\""
+										"text": "(\"You Need \" & Functions.GetItemCostbyID(InventoryItems.ItemID, 0)) & \"[icon=Gem]\""
 									}
 								},
 								{
@@ -8304,7 +8396,7 @@
 											"objectClass": "obj_TitleText",
 											"sid": 230379472295630,
 											"parameters": {
-												"text": "\"Sell [icon=Gem] \"&ceil(Functions.GetItemCostbyID(InventoryItems.ItemID)/2)"
+												"text": "\"Sell [icon=Gem] \" & ceil(Functions.GetItemCostbyID(InventoryItems.ItemID, 0) / 2)"
 											}
 										},
 										{
@@ -8466,7 +8558,7 @@
 									"objectClass": "UI_Font_DESCR",
 									"sid": 474286776618218,
 									"parameters": {
-										"text": "Functions.GetItemName(CurrentItemID)&newline&Functions.GetItemDescription(CurrentItemID)"
+										"text": "(Functions.GetItemName(CurrentItemID, \"\") & newline) & Functions.GetItemDescription(CurrentItemID, \"\")"
 									}
 								},
 								{
@@ -8986,7 +9078,7 @@
 											"objectClass": "System",
 											"sid": 433331377799317,
 											"parameters": {
-												"value": "Functions.GetItemStrength(CurrentItemID)>0"
+												"value": "Functions.GetItemStrength(CurrentItemID, 0) > 0"
 											}
 										}
 									],
@@ -9022,7 +9114,7 @@
 											"objectClass": "UI_StateSprite",
 											"sid": 844345782525519,
 											"parameters": {
-												"frame-number": "Functions.GetItemCategory(CurrentItemID)=\"Weapon\" ?0:2"
+												"frame-number": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Weapon\" ? 0 : 2"
 											}
 										},
 										{
@@ -9071,7 +9163,7 @@
 											"objectClass": "System",
 											"sid": 989551435202915,
 											"parameters": {
-												"value": "Functions.GetItemCategory(CurrentItemID)=\"Food\""
+												"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Food\""
 											}
 										}
 									],
@@ -9095,7 +9187,7 @@
 											"objectClass": "System",
 											"sid": 573096071764157,
 											"parameters": {
-												"value": "Functions.GetItemCategory(CurrentItemID)=\"Boot\""
+												"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Boot\""
 											}
 										}
 									],
@@ -9119,7 +9211,7 @@
 											"objectClass": "System",
 											"sid": 663321321058400,
 											"parameters": {
-												"value": "Functions.GetItemCategory(CurrentItemID)=\"Money\""
+												"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Money\""
 											}
 										}
 									],
@@ -9146,7 +9238,7 @@
 											"objectClass": "UI_Font_DescrNUM",
 											"sid": 414148457014539,
 											"parameters": {
-												"text": "Functions.GetItemCostbyID(CurrentItemID)"
+												"text": "Functions.GetItemCostbyID(CurrentItemID, 0)"
 											}
 										},
 										{
@@ -9212,7 +9304,7 @@
 											"objectClass": "System",
 											"sid": 583781487758731,
 											"parameters": {
-												"value": "Functions.GetItemCategory(CurrentItemID)=\"Boot\""
+												"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Boot\""
 											}
 										}
 									],
@@ -9240,7 +9332,7 @@
 											"objectClass": "System",
 											"sid": 627010513142033,
 											"parameters": {
-												"value": "Functions.GetItemStrength(CurrentItemID)>0"
+												"value": "Functions.GetItemStrength(CurrentItemID, 0) > 0"
 											}
 										}
 									],
@@ -9250,7 +9342,7 @@
 											"objectClass": "UI_HintArrow",
 											"sid": 436962937159987,
 											"parameters": {
-												"animation": "Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat)))<Functions.GetItemStrength(InventoryItems.ItemID)?\"up\" :Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat)))>Functions.GetItemStrength(InventoryItems.ItemID) ?\"down\" :\"default\"",
+												"animation": "Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat), 0), 0) < Functions.GetItemStrength(InventoryItems.ItemID, 0) ? \"up\" : (Functions.GetItemStrength(Functions.GetItemID(Dict_SaveGameData.Get(InventoryItems.ItemCat), 0), 0) > Functions.GetItemStrength(InventoryItems.ItemID, 0) ? \"down\" : \"default\")",
 												"from": "beginning"
 											}
 										}
@@ -9362,7 +9454,7 @@
 									"objectClass": "System",
 									"sid": 871840351884593,
 									"parameters": {
-										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+										"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Key\""
 									}
 								}
 							],
@@ -9445,7 +9537,7 @@
 									"objectClass": "System",
 									"sid": 626442504682702,
 									"parameters": {
-										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+										"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Key\""
 									}
 								}
 							],
@@ -9520,7 +9612,7 @@
 									"objectClass": "System",
 									"sid": 774287106040077,
 									"parameters": {
-										"value": "Functions.GetItemCategory(CurrentItemID)=\"Key\""
+										"value": "Functions.GetItemCategory(CurrentItemID, \"\") = \"Key\""
 									}
 								}
 							],

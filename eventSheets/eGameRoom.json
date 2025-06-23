@@ -546,7 +546,7 @@
 								"\"Body\"",
 								"Dict_SaveGameData.Get(\"Body\")",
 								"\"\"",
-								"Functions.GetItemCostumeByName(Dict_SaveGameData.Get(\"Body\"))",
+								"Functions.GetItemCostumeByName(Dict_SaveGameData.Get(\"Body\"), \"\")",
 								"\"\""
 							]
 						},
@@ -722,7 +722,7 @@
 													"sid": 616556191329386,
 													"parameters": {
 														"instance-variable": "ItemID",
-														"value": "Functions.GetItemID(Self.ItemName)"
+														"value": "Functions.GetItemID(Self.ItemName, 0)"
 													}
 												},
 												{
@@ -5418,7 +5418,7 @@
 							"sid": 286614903251511,
 							"parameters": {
 								"variable": "costumeRemoving",
-								"value": "Functions.GetItemCostumeByName(itemRemoving)"
+								"value": "Functions.GetItemCostumeByName(itemRemoving, \"\")"
 							}
 						},
 						{
@@ -5427,7 +5427,7 @@
 							"sid": 647393424453975,
 							"parameters": {
 								"variable": "costumeWearing",
-								"value": "Functions.GetItemCostumeByName(itemWearing)"
+								"value": "Functions.GetItemCostumeByName(itemWearing, \"\")"
 							}
 						}
 					],
