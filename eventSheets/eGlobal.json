@@ -1261,13 +1261,6 @@
 							"parameters": {
 								"tag": "\"DataLoaded\""
 							}
-						},
-						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"console.log(\"DataLoaded trigger\");"
-							]
 						}
 					],
 					"sid": 780659093902356
@@ -1604,6 +1597,10 @@
 								"key": "\"ItemNumbers\"",
 								"value": "Dict_ItemNumbers.AsJSON"
 							}
+						},
+						{
+							"callFunction": "RefreshInventory",
+							"sid": 388035508276481
 						}
 					],
 					"sid": 848117865563820
@@ -2683,10 +2680,6 @@
 								{
 									"callFunction": "SaveGameData",
 									"sid": 919903100881920
-								},
-								{
-									"callFunction": "RefreshInventory",
-									"sid": 192547734731792
 								}
 							],
 							"sid": 880502904862737
@@ -2961,7 +2954,15 @@
 											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"console.log(`UpdateNumbersOnPickup called: ItemID=${localVars.GainItemID}, Qty=${localVars.NumberGained}`);"
+											]
+										}
+									],
 									"sid": 311134712803394,
 									"children": [
 										{
@@ -3107,10 +3108,6 @@
 												{
 													"callFunction": "SaveGameData",
 													"sid": 649078742436796
-												},
-												{
-													"callFunction": "RefreshInventory",
-													"sid": 410515952720079
 												}
 											],
 											"sid": 316454020417933
@@ -4073,7 +4070,8 @@
 													"language": "typescript",
 													"script": [
 														"const itemId = (globalThis as any).AdventureLand.Items.getItemId(localVars.ItemName);",
-														"return itemId || 0;"
+														"runtime.setReturnValue(itemId);",
+														"console.log(`setting itemId to ${itemId}`);"
 													]
 												}
 											],

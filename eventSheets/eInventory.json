@@ -2496,8 +2496,8 @@
 					],
 					"actions": [
 						{
-							"callFunction": "populateDictionaryItems",
-							"sid": 909650222339697
+							"callFunction": "RefreshInventory",
+							"sid": 748035123977323
 						}
 					],
 					"sid": 443191555829982
@@ -2627,6 +2627,15 @@
 								{
 									"id": "set-instvar-value",
 									"objectClass": "ItemSlot",
+									"sid": 744741835619229,
+									"parameters": {
+										"instance-variable": "ItemCat",
+										"value": "Functions.GetItemCategory(Self.ItemID)"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "ItemSlot",
 									"sid": 412929427448315,
 									"parameters": {
 										"instance-variable": "ItemName",
@@ -2654,6 +2663,60 @@
 							],
 							"sid": 263100994215459,
 							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "ItemSlot",
+											"sid": 931699686800140,
+											"parameters": {
+												"instance-variable": "ItemID",
+												"comparison": 0,
+												"value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-instvar-value",
+											"objectClass": "ItemSlot",
+											"sid": 892214862712709,
+											"parameters": {
+												"instance-variable": "NumberOfItems",
+												"value": "0"
+											}
+										}
+									],
+									"sid": 829227991649091,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "pick-children",
+													"objectClass": "ItemSlot",
+													"sid": 150118366495859,
+													"parameters": {
+														"child": "UI_Font_Stack",
+														"which": "own"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-visible",
+													"objectClass": "UI_Font_Stack",
+													"sid": 952924874145108,
+													"parameters": {
+														"visibility": "invisible"
+													}
+												}
+											],
+											"sid": 381396673923668
+										}
+									]
+								},
 								{
 									"eventType": "block",
 									"conditions": [
