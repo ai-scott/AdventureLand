@@ -5880,52 +5880,19 @@
 									}
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"callFunction": "EquipItem",
+									"sid": 385205164653722,
+									"parameters": [
+										"ItemSlot.ItemID",
+										"ItemSlot.SlotID",
+										"ItemSlot.ItemCat"
+									]
+								}
+							],
 							"sid": 199710565454029,
 							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each-element",
-											"objectClass": "Arr_InvCollection",
-											"sid": 399789297642300,
-											"parameters": {
-												"axes": "xy"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 833390379530228,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-at-xy",
-													"objectClass": "Arr_InvCollection",
-													"sid": 331824171363080,
-													"parameters": {
-														"x": "0",
-														"y": "Arr_InvCollection.CurY",
-														"comparison": 0,
-														"value": "ItemSlot.ItemID"
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "UpdateNumbersOnDrop",
-													"sid": 517660374151184,
-													"parameters": [
-														"ItemSlot.ItemID"
-													]
-												}
-											],
-											"sid": 493287677555258
-										}
-									]
-								},
 								{
 									"eventType": "block",
 									"conditions": [
@@ -5951,33 +5918,9 @@
 												"\"\"",
 												"\"\""
 											]
-										},
-										{
-											"callFunction": "UpdateNumbersOnPickup",
-											"sid": 808864458783002,
-											"parameters": [
-												"Functions.GetItemID(Dict_SaveGameData.Get(ItemSlot.ItemCat))",
-												"1"
-											]
 										}
 									],
 									"sid": 845529368557063
-								},
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
-										{
-											"id": "set-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 766668107753054,
-											"parameters": {
-												"key": "ItemSlot.ItemCat",
-												"value": "ItemSlot.ItemName"
-											}
-										}
-									],
-									"sid": 844108726314906
 								}
 							]
 						},
@@ -5997,52 +5940,15 @@
 							],
 							"actions": [
 								{
-									"id": "set-key",
-									"objectClass": "Dict_SaveGameData",
-									"sid": 629291780528810,
-									"parameters": {
-										"key": "ItemSlot.ItemCat",
-										"value": "\"\""
-									}
-								},
-								{
-									"callFunction": "UpdateNumbersOnPickup",
-									"sid": 299016636704747,
+									"callFunction": "UnequipItem",
+									"sid": 522764342471912,
 									"parameters": [
 										"ItemSlot.ItemID",
-										"1"
+										"ItemSlot.InventoryState"
 									]
 								}
 							],
-							"sid": 478266805670598,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "EquipSlot",
-											"sid": 927895294160443,
-											"parameters": {
-												"instance-variable": "CategoryName",
-												"comparison": 0,
-												"value": "ItemSlot.ItemCat"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-opacity",
-											"objectClass": "EquipSlot",
-											"sid": 542634241516775,
-											"parameters": {
-												"opacity": "60"
-											}
-										}
-									],
-									"sid": 414556221616525
-								}
-							]
+							"sid": 478266805670598
 						},
 						{
 							"eventType": "block",
@@ -6558,6 +6464,329 @@
 							],
 							"sid": 876929990503483,
 							"isOrBlock": true
+						}
+					]
+				},
+				{
+					"eventType": "variable",
+					"name": "oldEquippedID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 387612539277606
+				},
+				{
+					"eventType": "variable",
+					"name": "oldEquippedName",
+					"type": "string",
+					"initialValue": "",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 218940268266898
+				},
+				{
+					"functionName": "EquipItem",
+					"functionDescription": "",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "itemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "The item being equipped",
+							"sid": 665957795064350
+						},
+						{
+							"name": "itemSlot",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "The inventory slot it's coming from",
+							"sid": 167284205221108
+						},
+						{
+							"name": "equipCategory",
+							"type": "string",
+							"initialValue": "",
+							"comment": "The equipment category (Weapon, Head, etc.)",
+							"sid": 273861627681597
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 195647367990785,
+							"parameters": {
+								"variable": "oldEquippedName",
+								"value": "Dict_SaveGameData.Get(equipCategory)"
+							}
+						}
+					],
+					"sid": 997782653826133,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 536901945484168,
+									"parameters": {
+										"first-value": "oldEquippedName",
+										"comparison": 1,
+										"second-value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 535278430708378,
+									"parameters": {
+										"variable": "oldEquippedName",
+										"value": "Functions.GetItemID(oldEquippedName)"
+									}
+								}
+							],
+							"sid": 118294850840668
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each-element",
+									"objectClass": "Arr_InvCollection",
+									"sid": 431768218925043,
+									"parameters": {
+										"axes": "xy"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 740357780222565,
+									"parameters": {
+										"variable": "oldEquippedName",
+										"value": "Functions.GetItemID(oldEquippedName)"
+									}
+								}
+							],
+							"sid": 569728077327948,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 496664221128403,
+											"parameters": {
+												"first-value": "Arr_InvCollection.At(0, Arr_InvCollection.CurY)",
+												"comparison": 0,
+												"second-value": "itemID"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "delete",
+											"objectClass": "Arr_InvCollection",
+											"sid": 492450573385854,
+											"parameters": {
+												"index": "Arr_InvCollection.CurY",
+												"axis": "y"
+											}
+										},
+										{
+											"id": "stop-loop",
+											"objectClass": "System",
+											"sid": 199150198649006
+										}
+									],
+									"sid": 335140649598593
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 991425549668702,
+									"parameters": {
+										"first-value": "oldEquippedID",
+										"comparison": 4,
+										"second-value": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "push",
+									"objectClass": "Arr_InvCollection",
+									"sid": 771460892218661,
+									"parameters": {
+										"where": "back",
+										"value": "oldEquippedID",
+										"axis": "y"
+									}
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_ItemNumbers",
+									"sid": 698962902109307,
+									"parameters": {
+										"key": "Functions.GetItemName(oldEquippedID)",
+										"value": "1"
+									}
+								}
+							],
+							"sid": 386951505274181
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"id": "set-key",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 501818448795717,
+									"parameters": {
+										"key": "equipCategory",
+										"value": "Functions.GetItemName(itemID)"
+									}
+								},
+								{
+									"id": "set-key",
+									"objectClass": "Dict_ItemNumbers",
+									"sid": 623247465136747,
+									"parameters": {
+										"key": "Functions.GetItemName(itemID)",
+										"value": "0"
+									}
+								},
+								{
+									"callFunction": "UpdateInvArray",
+									"sid": 276350271960746
+								}
+							],
+							"sid": 561180304158408
+						}
+					]
+				},
+				{
+					"functionName": "UnequipItem",
+					"functionDescription": "",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "itemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "The item being unequipped",
+							"sid": 648152405607974
+						},
+						{
+							"name": "equipCategory",
+							"type": "string",
+							"initialValue": "",
+							"comment": "The equipment category",
+							"sid": 500507817733137
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "push",
+							"objectClass": "Arr_InvCollection",
+							"sid": 298255636630728,
+							"parameters": {
+								"where": "back",
+								"value": "itemID",
+								"axis": "y"
+							}
+						},
+						{
+							"id": "set-key",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 860515926332531,
+							"parameters": {
+								"key": "equipCategory",
+								"value": "\"\""
+							}
+						},
+						{
+							"id": "set-key",
+							"objectClass": "Dict_ItemNumbers",
+							"sid": 906184260754847,
+							"parameters": {
+								"key": "Functions.GetItemName(itemID)",
+								"value": "1"
+							}
+						}
+					],
+					"sid": 222622943494911,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 774147181535393,
+									"parameters": {
+										"object": "EquipSlot"
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 807255189826065,
+									"parameters": {
+										"first-value": "EquipSlot.CategoryName",
+										"comparison": 0,
+										"second-value": "equipCategory"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-opacity",
+									"objectClass": "EquipSlot",
+									"sid": 777071067652519,
+									"parameters": {
+										"opacity": "60"
+									}
+								}
+							],
+							"sid": 776852223509404
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "UpdateInvArray",
+									"sid": 455284977741893
+								}
+							],
+							"sid": 251467610659351
 						}
 					]
 				}

@@ -2710,6 +2710,26 @@
 							"sid": 152934803521712,
 							"children": [
 								{
+									"eventType": "variable",
+									"name": "currentCount",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 742311642453352
+								},
+								{
+									"eventType": "variable",
+									"name": "itemName",
+									"type": "string",
+									"initialValue": "Functions.GetItemName(DropItemID)",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 610198720371269
+								},
+								{
 									"eventType": "block",
 									"conditions": [
 										{
@@ -2723,49 +2743,64 @@
 											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 254782949673152,
+											"parameters": {
+												"variable": "currentCount",
+												"value": "Dict_ItemNumbers.Get(itemName)"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 456238208383920,
+											"parameters": {
+												"variable": "itemName",
+												"value": "Functions.GetItemName(DropItemID)"
+											}
+										}
+									],
 									"sid": 674337466697552,
 									"children": [
 										{
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "compare-value",
-													"objectClass": "Dict_ItemNumbers",
-													"sid": 105680134559132,
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 659743446546478,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID)",
-														"comparison": 0,
-														"value": "1"
+														"variable": "currentCount",
+														"comparison": 4,
+														"value": "0"
 													}
 												}
 											],
 											"actions": [
 												{
-													"id": "add-key",
+													"id": "set-key",
 													"objectClass": "Dict_ItemNumbers",
-													"sid": 144171946599397,
+													"sid": 120544014044077,
 													"parameters": {
-														"key": "Functions.GetItemName(DropItemID)",
-														"value": "0"
+														"key": "itemName",
+														"value": "max(0, currentCount - 1)"
 													}
 												}
 											],
-											"sid": 367345789824600,
+											"sid": 477689383852584,
 											"children": [
-												{
-													"eventType": "comment",
-													"text": "If there is only a single item left in the category, the cell is simply reset to zero"
-												},
 												{
 													"eventType": "block",
 													"conditions": [
 														{
-															"id": "compare-size",
-															"objectClass": "Arr_InvCollection",
-															"sid": 215426293953409,
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 979889240625952,
 															"parameters": {
-																"axis": "y",
+																"variable": "currentCount",
 																"comparison": 0,
 																"value": "1"
 															}
@@ -2773,139 +2808,169 @@
 													],
 													"actions": [
 														{
-															"id": "set-at-xy",
-															"objectClass": "Inventories",
-															"sid": 738815278664708,
-															"parameters": {
-																"x": "0",
-																"y": "0",
-																"value": "0"
-															}
+															"type": "comment",
+															"text": "// Last item - set to 0"
 														},
 														{
-															"callFunction": "UpdateInvArray",
-															"sid": 121784607104260
-														}
-													],
-													"sid": 931694020761478
-												},
-												{
-													"eventType": "comment",
-													"text": "If the array has multiple items, the cell corresponding to the current item slot is simply removed. "
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-size",
-															"objectClass": "Arr_InvCollection",
-															"sid": 425419334898558,
+															"id": "set-key",
+															"objectClass": "Dict_ItemNumbers",
+															"sid": 857069216646561,
 															"parameters": {
-																"axis": "y",
-																"comparison": 4,
-																"value": "1"
+																"key": "itemName",
+																"value": "0"
 															}
 														}
 													],
-													"actions": [],
-													"sid": 278950287133888,
+													"sid": 351149519425872,
 													"children": [
 														{
 															"eventType": "block",
 															"conditions": [
 																{
-																	"id": "compare-eventvar",
-																	"objectClass": "System",
-																	"sid": 260631329184772,
+																	"id": "compare-size",
+																	"objectClass": "Arr_InvCollection",
+																	"sid": 543931402729592,
 																	"parameters": {
-																		"variable": "CurrentInvPage",
+																		"axis": "y",
 																		"comparison": 0,
-																		"value": "0"
+																		"value": "1"
 																	}
 																}
 															],
 															"actions": [
 																{
-																	"id": "delete",
-																	"objectClass": "Inventories",
-																	"sid": 202226556350578,
+																	"id": "set-at-xy",
+																	"objectClass": "Arr_InvCollection",
+																	"sid": 312428475213311,
 																	"parameters": {
-																		"index": "CurrentItemSlot",
-																		"axis": "y"
+																		"x": "0",
+																		"y": "0",
+																		"value": "0"
 																	}
-																},
-																{
-																	"callFunction": "UpdateInvArray",
-																	"sid": 897777653469409
 																}
 															],
-															"sid": 478216597364672
+															"sid": 888249912534294
 														},
 														{
 															"eventType": "block",
 															"conditions": [
 																{
-																	"id": "compare-eventvar",
-																	"objectClass": "System",
-																	"sid": 883284311483887,
+																	"id": "compare-size",
+																	"objectClass": "Arr_InvCollection",
+																	"sid": 306778051327199,
 																	"parameters": {
-																		"variable": "CurrentInvPage",
+																		"axis": "y",
 																		"comparison": 4,
-																		"value": "0"
+																		"value": "1"
 																	}
 																}
 															],
 															"actions": [
 																{
-																	"id": "delete",
-																	"objectClass": "Inventories",
-																	"sid": 795503030810869,
+																	"id": "set-at-xy",
+																	"objectClass": "Arr_InvCollection",
+																	"sid": 520786409583924,
 																	"parameters": {
-																		"index": "CurrentItemSlot + (20*CurrentInvPage)",
-																		"axis": "y"
+																		"x": "0",
+																		"y": "0",
+																		"value": "0"
 																	}
-																},
-																{
-																	"callFunction": "UpdateInvArray",
-																	"sid": 935201478164883
 																}
 															],
-															"sid": 961442210044209
+															"sid": 179097137972776,
+															"children": [
+																{
+																	"eventType": "block",
+																	"conditions": [
+																		{
+																			"id": "compare-eventvar",
+																			"objectClass": "System",
+																			"sid": 781756734107424,
+																			"parameters": {
+																				"variable": "CurrentInvPage",
+																				"comparison": 0,
+																				"value": "0"
+																			}
+																		}
+																	],
+																	"actions": [
+																		{
+																			"id": "delete",
+																			"objectClass": "Arr_InvCollection",
+																			"sid": 759403971891913,
+																			"parameters": {
+																				"index": "CurrentItemSlot",
+																				"axis": "y"
+																			}
+																		}
+																	],
+																	"sid": 697517568147535
+																},
+																{
+																	"eventType": "block",
+																	"conditions": [
+																		{
+																			"id": "compare-eventvar",
+																			"objectClass": "System",
+																			"sid": 245341977688883,
+																			"parameters": {
+																				"variable": "CurrentInvPage",
+																				"comparison": 4,
+																				"value": "0"
+																			}
+																		}
+																	],
+																	"actions": [
+																		{
+																			"id": "delete",
+																			"objectClass": "Arr_InvCollection",
+																			"sid": 179718116933363,
+																			"parameters": {
+																				"index": "CurrentItemSlot + (20*CurrentInvPage)",
+																				"axis": "y"
+																			}
+																		}
+																	],
+																	"sid": 404929724537569
+																}
+															]
 														}
 													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [],
+													"actions": [
+														{
+															"callFunction": "populateItemSlots",
+															"sid": 202471857927154
+														},
+														{
+															"callFunction": "SaveGameData",
+															"sid": 398765867965979
+														},
+														{
+															"type": "script",
+															"language": "javascript",
+															"script": [
+																"// In UpdateNumbersOnDrop, add a \"Run JavaScript\" action:",
+																"const dropID = localVars.DropItemID;",
+																"const itemName = runtime.callFunction(\"GetItemName\", dropID);",
+																"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance();",
+																"const currentCount = dict.get(itemName);",
+																"",
+																"console.log(\"=== DROP ITEM ===\");",
+																"console.log(`Item: ${itemName} (ID: ${dropID})`);",
+																"console.log(`Count: ${currentCount}`);",
+																"",
+																"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
+																"console.log(`Array height: ${arr.height}`);"
+															]
+														}
+													],
+													"sid": 214310799777603
 												}
 											]
-										},
-										{
-											"eventType": "comment",
-											"text": "If there are multiple of one item, then they're discarded one at a time every time the Z key is pressed."
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "Dict_ItemNumbers",
-													"sid": 533017967874535,
-													"parameters": {
-														"key": "Functions.GetItemName(DropItemID)",
-														"comparison": 4,
-														"value": "1"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "add-key",
-													"objectClass": "Dict_ItemNumbers",
-													"sid": 758772415304742,
-													"parameters": {
-														"key": "Functions.GetItemName(DropItemID)",
-														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(DropItemID)) - 1"
-													}
-												}
-											],
-											"sid": 462240526200879
 										}
 									]
 								}
