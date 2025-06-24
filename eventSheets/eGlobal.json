@@ -2723,7 +2723,7 @@
 									"eventType": "variable",
 									"name": "itemName",
 									"type": "string",
-									"initialValue": "Functions.GetItemName(DropItemID)",
+									"initialValue": "\"\"",
 									"comment": "",
 									"isStatic": false,
 									"isConstant": false,
@@ -2736,24 +2736,6 @@
 										{
 											"id": "set-eventvar-value",
 											"objectClass": "System",
-											"sid": 254782949673152,
-											"parameters": {
-												"variable": "currentCount",
-												"value": "Dict_ItemNumbers.Get(itemName)"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 282146883327457,
-											"parameters": {
-												"variable": "currentCount",
-												"value": "1"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
 											"sid": 456238208383920,
 											"parameters": {
 												"variable": "itemName",
@@ -2761,25 +2743,33 @@
 											}
 										},
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 231436791569517,
+											"parameters": {
+												"variable": "currentCount",
+												"value": "Dict_ItemNumbers.Get(itemName)"
+											}
+										},
+										{
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"console.log(\"=== DICTIONARY DEBUG ===\");",
 												"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
-												"console.log(\"Dict object exists:\", dict !== null);",
-												"",
-												"// Try to manually check for the item",
-												"const itemName = \"Sword\";",
-												"console.log(`Checking for \"${itemName}\" in dictionary`);",
-												"",
-												"// Log the actual dictionary data if possible",
 												"try {",
-												"    // Try different ways to access",
-												"    console.log(\"Dict keys:\", Object.keys(dict));",
-												" //   console.log(\"Dict instVars:\", dict.instVars);",
-												"    console.log(\"Dict data:\", dict);",
+												"    const dataMap = dict.getDataMap();",
+												"    console.log(\"Dictionary contains:\");",
+												"    dataMap.forEach((value, key) => {",
+												"        console.log(`  \"${key}\": ${value}`);",
+												"    });",
 												"} catch (e) {",
-												"    console.log(\"Error accessing dict:\", e);",
+												"    console.log(\"Error:\", e);",
+												"}",
+												"// Check if we have a valid slot selected",
+												"console.log(\"Attempting to drop from slot:\", runtime.globalVars.CurrentItemSlot);",
+												"if (runtime.globalVars.CurrentItemSlot < 0) {",
+												"    console.log(\"No valid slot selected!\");",
+												"    return;",
 												"}"
 											]
 										}
@@ -6964,6 +6954,31 @@
 										}
 									],
 									"sid": 256631231844419
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "cursor-is-over-object",
+											"objectClass": "Mouse",
+											"sid": 161738827250037,
+											"parameters": {
+												"object": "ItemSlot"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 255742584711852,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "ItemSlot.SlotID"
+											}
+										}
+									],
+									"sid": 813150107309673
 								},
 								{
 									"eventType": "block",

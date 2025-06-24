@@ -153,7 +153,7 @@
 			"eventType": "variable",
 			"name": "CurrentItemSlot",
 			"type": "number",
-			"initialValue": "0",
+			"initialValue": "-1",
 			"comment": "Which item slot is the player currently looking at?",
 			"isStatic": false,
 			"isConstant": false,
