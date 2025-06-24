@@ -6678,8 +6678,12 @@
 									}
 								},
 								{
-									"callFunction": "UpdateInvArray",
-									"sid": 276350271960746
+									"callFunction": "populateItemSlots",
+									"sid": 646132387117921
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 982389408236312
 								}
 							],
 							"sid": 561180304158408
@@ -6782,8 +6786,27 @@
 							"conditions": [],
 							"actions": [
 								{
-									"callFunction": "UpdateInvArray",
-									"sid": 455284977741893
+									"callFunction": "populateItemSlots",
+									"sid": 783336764518300
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 390832975113310
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"=== UNEQUIP ITEM ===\");",
+										"console.log(\"ItemID:\", localVars.itemID);",
+										"console.log(\"Category:\", localVars.equipCategory);",
+										"",
+										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
+										"console.log(\"Array height before push:\", arr.height);",
+										"",
+										"// After pushing to array",
+										"console.log(\"Array height after push:\", arr.height);"
+									]
 								}
 							],
 							"sid": 251467610659351

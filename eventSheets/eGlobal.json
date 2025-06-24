@@ -2731,18 +2731,7 @@
 								},
 								{
 									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Arr_InvCollection",
-											"sid": 642626017159921,
-											"parameters": {
-												"instance-variable": "CategoryName",
-												"comparison": 0,
-												"value": "\"main\""
-											}
-										}
-									],
+									"conditions": [],
 									"actions": [
 										{
 											"id": "set-eventvar-value",
@@ -2756,11 +2745,43 @@
 										{
 											"id": "set-eventvar-value",
 											"objectClass": "System",
+											"sid": 282146883327457,
+											"parameters": {
+												"variable": "currentCount",
+												"value": "1"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
 											"sid": 456238208383920,
 											"parameters": {
 												"variable": "itemName",
 												"value": "Functions.GetItemName(DropItemID)"
 											}
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"console.log(\"=== DICTIONARY DEBUG ===\");",
+												"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+												"console.log(\"Dict object exists:\", dict !== null);",
+												"",
+												"// Try to manually check for the item",
+												"const itemName = \"Sword\";",
+												"console.log(`Checking for \"${itemName}\" in dictionary`);",
+												"",
+												"// Log the actual dictionary data if possible",
+												"try {",
+												"    // Try different ways to access",
+												"    console.log(\"Dict keys:\", Object.keys(dict));",
+												" //   console.log(\"Dict instVars:\", dict.instVars);",
+												"    console.log(\"Dict data:\", dict);",
+												"} catch (e) {",
+												"    console.log(\"Error accessing dict:\", e);",
+												"}"
+											]
 										}
 									],
 									"sid": 674337466697552,
@@ -2779,17 +2800,7 @@
 													}
 												}
 											],
-											"actions": [
-												{
-													"id": "set-key",
-													"objectClass": "Dict_ItemNumbers",
-													"sid": 120544014044077,
-													"parameters": {
-														"key": "itemName",
-														"value": "max(0, currentCount - 1)"
-													}
-												}
-											],
+											"actions": [],
 											"sid": 477689383852584,
 											"children": [
 												{
@@ -2924,9 +2935,9 @@
 																		{
 																			"id": "delete",
 																			"objectClass": "Arr_InvCollection",
-																			"sid": 179718116933363,
+																			"sid": 959554489386831,
 																			"parameters": {
-																				"index": "CurrentItemSlot + (20*CurrentInvPage)",
+																				"index": "CurrentItemSlot + (25*CurrentInvPage)",
 																				"axis": "y"
 																			}
 																		}
@@ -2936,6 +2947,33 @@
 															]
 														}
 													]
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 883132896783419,
+															"parameters": {
+																"variable": "currentCount",
+																"comparison": 4,
+																"value": "1"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-key",
+															"objectClass": "Dict_ItemNumbers",
+															"sid": 724726001487007,
+															"parameters": {
+																"key": "itemName",
+																"value": "currentCount - 1"
+															}
+														}
+													],
+													"sid": 615394575843751
 												},
 												{
 													"eventType": "block",
@@ -2954,17 +2992,10 @@
 															"language": "javascript",
 															"script": [
 																"// In UpdateNumbersOnDrop, add a \"Run JavaScript\" action:",
-																"const dropID = localVars.DropItemID;",
-																"const itemName = runtime.callFunction(\"GetItemName\", dropID);",
-																"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance();",
-																"const currentCount = dict.get(itemName);",
-																"",
-																"console.log(\"=== DROP ITEM ===\");",
-																"console.log(`Item: ${itemName} (ID: ${dropID})`);",
-																"console.log(`Count: ${currentCount}`);",
-																"",
-																"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
-																"console.log(`Array height: ${arr.height}`);"
+																"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
+																"        console.log(`Array height after: ${arr2.height}`);",
+																"        const newCount = runtime.objects.Dict_ItemNumbers.getFirstInstance().get(localVars.itemName);",
+																"        console.log(`New count: ${newCount}`);"
 															]
 														}
 													],
@@ -3189,6 +3220,10 @@
 											"eventType": "block",
 											"conditions": [],
 											"actions": [
+												{
+													"callFunction": "populateItemSlots",
+													"sid": 851301076229613
+												},
 												{
 													"callFunction": "SaveGameData",
 													"sid": 649078742436796
