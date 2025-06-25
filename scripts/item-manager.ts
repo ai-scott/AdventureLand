@@ -506,6 +506,24 @@ export class ItemManager {
         this.currentPage = 0;
         console.log("🗑️ [ItemManager] Inventory cleared");
     }
+    /**
+     * Add named item to inventory
+     */
+
+    static addItemByName(name: string, quantity: number = 1): boolean {
+        if (!name || name.trim() === "") {
+            return false;
+        }
+
+        const itemId = this.getItemID(name);
+        if (itemId === 0) {
+            console.warn(`[ItemManager] Item not found by name: ${name}`);
+            return false;
+        }
+
+        return this.addToInventory(itemId, quantity);
+    }
+
 
     /**
      * Remove quest items after quest completion
