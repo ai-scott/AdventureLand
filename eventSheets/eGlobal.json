@@ -1191,9 +1191,18 @@
 							}
 						},
 						{
+							"id": "get-item",
+							"objectClass": "LocalStorage",
+							"sid": 403687230281376,
+							"parameters": {
+								"key": "\"InvCollection\""
+							}
+						},
+						{
 							"id": "load",
 							"objectClass": "Arr_InvCollection",
 							"sid": 644529292942678,
+							"disabled": true,
 							"parameters": {
 								"json": "Dict_SaveGameData.Get(\"InvCollection\")"
 							}
@@ -1202,6 +1211,7 @@
 							"id": "load",
 							"objectClass": "Arr_ItemTriggersCollected",
 							"sid": 730557339587517,
+							"disabled": true,
 							"parameters": {
 								"json": "Dict_SaveGameData.Get(\"ItemTriggersCollected\")"
 							}
@@ -1210,6 +1220,7 @@
 							"id": "get-item",
 							"objectClass": "LocalStorage",
 							"sid": 190821901078216,
+							"disabled": true,
 							"parameters": {
 								"key": "\"ItemNumbers\""
 							}
@@ -1218,11 +1229,131 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"console.log(\"Getting item ItemNumbers\");"
+								"console.log(\"Getting item InvCollection\");"
 							]
 						}
 					],
 					"sid": 289928017182172
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-item-get",
+							"objectClass": "LocalStorage",
+							"sid": 176688976532024,
+							"parameters": {
+								"key": "\"InvCollection\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "load",
+							"objectClass": "Arr_InvCollection",
+							"sid": 217367117284539,
+							"parameters": {
+								"json": "LocalStorage.ItemValue"
+							}
+						},
+						{
+							"id": "get-item",
+							"objectClass": "LocalStorage",
+							"sid": 241139095813907,
+							"parameters": {
+								"key": "\"ItemTriggersCollected\""
+							}
+						},
+						{
+							"id": "load",
+							"objectClass": "Dict_ItemNumbers",
+							"sid": 348276083429787,
+							"disabled": true,
+							"parameters": {
+								"json": "LocalStorage.ItemValue"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 905986235992877,
+							"disabled": true,
+							"parameters": {
+								"variable": "DataLoaded",
+								"value": "true"
+							}
+						},
+						{
+							"id": "signal",
+							"objectClass": "System",
+							"sid": 405202849393555,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"DataLoaded\""
+							}
+						}
+					],
+					"sid": 568863474959448
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-item-get",
+							"objectClass": "LocalStorage",
+							"sid": 574130144474189,
+							"parameters": {
+								"key": "\"ItemTriggersCollected\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "load",
+							"objectClass": "Arr_ItemTriggersCollected",
+							"sid": 354678491062379,
+							"parameters": {
+								"json": "LocalStorage.ItemValue"
+							}
+						},
+						{
+							"id": "get-item",
+							"objectClass": "LocalStorage",
+							"sid": 758324363143871,
+							"parameters": {
+								"key": "\"ItemNumbers\""
+							}
+						},
+						{
+							"id": "load",
+							"objectClass": "Dict_ItemNumbers",
+							"sid": 561284118451058,
+							"disabled": true,
+							"parameters": {
+								"json": "LocalStorage.ItemValue"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 465804152377764,
+							"disabled": true,
+							"parameters": {
+								"variable": "DataLoaded",
+								"value": "true"
+							}
+						},
+						{
+							"id": "signal",
+							"objectClass": "System",
+							"sid": 639772056394432,
+							"disabled": true,
+							"parameters": {
+								"tag": "\"DataLoaded\""
+							}
+						}
+					],
+					"sid": 578786455147692
 				},
 				{
 					"eventType": "block",
@@ -1566,6 +1697,7 @@
 							"id": "add-key",
 							"objectClass": "Dict_SaveGameData",
 							"sid": 348659996818151,
+							"disabled": true,
 							"parameters": {
 								"key": "\"InvCollection\"",
 								"value": "Arr_InvCollection.AsJSON"
@@ -1575,6 +1707,25 @@
 							"id": "add-key",
 							"objectClass": "Dict_SaveGameData",
 							"sid": 329152447273624,
+							"disabled": true,
+							"parameters": {
+								"key": "\"ItemTriggersCollected\"",
+								"value": "Arr_ItemTriggersCollected.AsJSON"
+							}
+						},
+						{
+							"id": "set-item",
+							"objectClass": "LocalStorage",
+							"sid": 515402469751977,
+							"parameters": {
+								"key": "\"InvCollection\"",
+								"value": "Arr_InvCollection.AsJSON"
+							}
+						},
+						{
+							"id": "set-item",
+							"objectClass": "LocalStorage",
+							"sid": 671717535336438,
 							"parameters": {
 								"key": "\"ItemTriggersCollected\"",
 								"value": "Arr_ItemTriggersCollected.AsJSON"
