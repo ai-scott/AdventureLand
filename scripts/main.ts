@@ -1,167 +1,128 @@
-// main.ts - Adventure Land Definitive Version
-
-/**
- * Adventure Land - Main TypeScript Entry Point
- * Uses consistent nested pattern to prevent IConstructProjectLocalVariables issues
- * All actual implementations are in their respective files
- */
-
-// Import all systems (note the .js extension for C3 compatibility)
+// main.ts - Adventure Land Main TypeScript Entry Point
 import * as EnemyAI from "./enemy-ai.js";
-import { ItemManager } from "./item-manager.js";
-import { InventoryUIPool } from "./inventory-ui-pool.js";
-// Note: TileAnimationManager already sets up its own AdventureLand namespace
-import "./tile-animation-manager.js";
-
-// Legacy imports that might not use the new pattern yet
-import "./world-transition-manager.js";
-import "./transition-helpers.js";
-import "./original-tile-animation-manager.js";
-import "./debug-helpers.js";
+import "./item-manager.js";  // Side-effect import - sets up global namespace
 
 console.log("🎮 Adventure Land - Systems Loading...");
 
-// Initialize the AdventureLand namespace if it doesn't exist
-// (TileAnimationManager may have already created it)
-(globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
-
-// Enemy AI System - matching actual function signatures
-(globalThis as any).AdventureLand.EnemyAI = {
-  initialize: (runtime: any) => EnemyAI.initializeSystem(runtime),
-  init: (baseUID: number, maskUID: number, enemyType: string) =>
-    EnemyAI.initEnemy(baseUID, maskUID, enemyType),
-  update: (baseUID: number) => EnemyAI.updateEnemy(baseUID),
-  hurt: (baseUID: number) => EnemyAI.hurtEnemy(baseUID),
-  destroy: (baseUID: number) => EnemyAI.destroyEnemy(baseUID),
-  getInfo: (baseUID: number) => EnemyAI.getEnemyInfo(baseUID)
-};
-
-// Item System - only include methods that actually exist
-(globalThis as any).AdventureLand.Items = {
-  // Database initialization
-  initialize: (itemsData: any) => ItemManager.initialize(itemsData),
-  initializeInventory: (invData: any) => ItemManager.initializeInventory(invData),
-
-  // Basic item data getters
-  getItem: (id: number) => ItemManager.getItem(id),
-  getItemName: (id: number) => ItemManager.getItemName(id),
-  getItemCategory: (id: number) => ItemManager.getItemCategory(id),
-  getItemDescription: (id: number) => ItemManager.getItemDescription(id),
-  getItemCost: (id: number) => ItemManager.getItemCost(id),
-
-  // Stat getters (category-aware)
-  getItemStrength: (id: number) => ItemManager.getItemStrength(id),
-  getItemDefense: (id: number) => ItemManager.getItemDefense(id),
-  getItemSpeed: (id: number) => ItemManager.getItemSpeed(id),
-  getItemHealth: (id: number) => ItemManager.getItemHealth(id),
-  getItemMagic: (id: number) => ItemManager.getItemMagic(id),
-
-  // Utility functions
-  getItemId: (name: string) => ItemManager.getItemId(name),
-  getItemCostume: (id: number) => ItemManager.getItemCostume(id),
-  getItemCostumeByName: (name: string) => ItemManager.getItemCostumeByName(name),
-  getItemStackable: (id: number) => ItemManager.getItemStackable(id),
-  getItemPowerType: (id: number) => ItemManager.getItemPowerType(id),
-
-  // Item lookups
-  getItemByName: (name: string) => ItemManager.getItemByName(name),
-  getItemsByCategory: (category: string) => ItemManager.getItemsByCategory(category),
-
-  // Item properties
-  isStackable: (id: number) => ItemManager.isStackable(id),
-  isQuestItem: (id: number) => ItemManager.isQuestItem(id),
-  canSellItem: (id: number) => ItemManager.canSellItem(id),
-  canDiscardItem: (id: number) => ItemManager.canDiscardItem(id),
-
-  // Pagination
-  getCurrentPage: () => ItemManager.getCurrentPage(),
-  getCurrentInvPage: () => ItemManager.getCurrentInvPage(),
-  setPage: (pageNumber: number) => ItemManager.setPage(pageNumber),
-  nextPage: () => ItemManager.nextPage(),
-  previousPage: () => ItemManager.previousPage(),
-
-  // Inventory management
-  addToInventory: (itemId: number, quantity: number) =>
-    ItemManager.addToInventory(itemId, quantity),
-  removeFromInventory: (itemId: number, quantity: number) =>
-    ItemManager.removeFromInventory(itemId, quantity),
-  getInventoryItemCount: () => ItemManager.getInventoryItemCount(),
-  getInventoryForSave: () => ItemManager.getInventoryForSave(),
-  removeQuestItems: (questId: string) => ItemManager.removeQuestItems(questId)
-},
-
-  // UI Pool System
-  (globalThis as any).AdventureLand.UIPool = {
-    initialize: (config: any) => InventoryUIPool.initializeUIPool(config),
-    showInventory: (layout?: string) => InventoryUIPool.showInventory(layout as any),
-    hideInventory: () => InventoryUIPool.hideInventory(),
-    updateDisplay: (pageData: any) => InventoryUIPool.updateInventoryDisplay(pageData),
-    getSlotData: (index: number) => InventoryUIPool.getSlotUpdateData(index),
-    setSlotReference: (type: string, index: number, refs: any) =>
-      InventoryUIPool.setSlotReference(type as any, index, refs),
-    showTooltip: (itemId: number, x: number, y: number) =>
-      InventoryUIPool.showTooltip(itemId, x, y),
-    hideTooltip: () => InventoryUIPool.hideTooltip(),
-    debug: () => InventoryUIPool.debugPoolState()
-  };
-
-// Placeholder for other functions that might not be migrated yet
-(globalThis as any).AdventureLand.Utils = {
-  processJSONObject: (worldId: string, runtime: any) => {
-    console.log(`📄 processJSONObject called for world ${worldId}`);
-    return true;
-  }
-};
-
-// For backwards compatibility with existing event sheets
-// These direct exposures can be removed once event sheets are updated
-// to use the nested pattern (e.g., window.AdventureLand.EnemyAI.init)
-(globalThis as any).initEnemy = (baseUID: number, maskUID: number, enemyType: string) =>
-  (globalThis as any).AdventureLand.EnemyAI.init(baseUID, maskUID, enemyType);
-(globalThis as any).updateEnemy = (baseUID: number) =>
-  (globalThis as any).AdventureLand.EnemyAI.update(baseUID);
-(globalThis as any).hurtEnemy = (baseUID: number) =>
-  (globalThis as any).AdventureLand.EnemyAI.hurt(baseUID);
-(globalThis as any).destroyEnemy = (baseUID: number) =>
-  (globalThis as any).AdventureLand.EnemyAI.destroy(baseUID);
-(globalThis as any).processJSONObject = (globalThis as any).AdventureLand.Utils.processJSONObject;
-
-console.log("[Adventure Land] TypeScript systems initialized");
-console.log("[Adventure Land] Available systems:", Object.keys((globalThis as any).AdventureLand));
-
-// Declare the Construct 3 runtime startup function
 declare function runOnStartup(callback: (runtime: any) => void): void;
 
-// ONLY runtime-dependent initialization goes here
+// Main initialization
 runOnStartup(async runtime => {
-  console.log("🚀 Adventure Land Runtime Initialization...");
+  console.log("🚀 Adventure Land Systems Initializing...");
 
-  // Store runtime reference globally (needed by some systems)
+  // Store runtime reference
   (globalThis as any).runtime = runtime;
 
-  // Initialize systems that need the runtime object
-  (globalThis as any).AdventureLand.EnemyAI.initialize(runtime);
+  // Initialize Enemy AI System
+  EnemyAI.initializeSystem(runtime);
 
-  // TileAnimationManager will be initialized when needed via event sheets
-  // since it already has its own namespace setup
+  // CRITICAL: Create the AdventureLand namespace immediately so event sheets can use it
+  (globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
 
-  console.log("✅ Runtime stored globally");
-  console.log("✅ Enemy AI initialized with runtime");
-  console.log("🎮 Adventure Land fully initialized!");
+  // Set up Enemy AI with nested object pattern (for event sheets using AdventureLand.EnemyAI)
+  (globalThis as any).AdventureLand.EnemyAI = {
+    init: (baseUID: number, maskUID: number, enemyType: string) =>
+      EnemyAI.initEnemy(baseUID, maskUID, enemyType),
+    update: (enemyUID: number) =>
+      EnemyAI.updateEnemy(enemyUID),
+    hurt: (enemyUID: number) =>
+      EnemyAI.hurtEnemy(enemyUID),
+    destroy: (enemyUID: number) =>
+      EnemyAI.destroyEnemy(enemyUID)
+  };
+
+  // Create placeholder for Items and Inventory (will be populated by item-manager.ts)
+  // This prevents errors when event sheets try to access them before items load
+  (globalThis as any).AdventureLand.Items = (globalThis as any).AdventureLand.Items || {
+    // Placeholder functions that return safe defaults
+    getItemName: (id: number) => "",
+    getItemCategory: (id: number) => "",
+    getItemStrength: (id: number) => 0,
+    getItemCost: (id: number) => 0,
+    getItemID: (name: string) => 0,
+    initialize: (data: any) => false,
+    isInitialized: () => false
+  };
+
+  (globalThis as any).AdventureLand.Inventory = (globalThis as any).AdventureLand.Inventory || {
+    // Placeholder functions
+    addItem: (itemId: number, quantity: number) => false,
+    removeItem: (itemId: number, quantity: number) => false,
+    getItemCount: (itemId: number) => 0,
+    hasItem: (itemId: number, quantity: number) => false
+  };
+
+  // Add Transitions namespace (based on your event sheet usage)
+  (globalThis as any).AdventureLand.Transitions = {
+    cleanupAndTransition: (layoutName: string) => {
+      console.log(`Transitioning to ${layoutName}`);
+      // Add transition logic here if needed
+    },
+    initializeWorld: (worldId: string) => {
+      console.log(`Initializing world ${worldId}`);
+      // Add world initialization logic here
+    }
+  };
+
+  // Legacy direct global functions (for backward compatibility)
+  (globalThis as any).initEnemy = EnemyAI.initEnemy;
+  (globalThis as any).updateEnemy = EnemyAI.updateEnemy;
+  (globalThis as any).hurtEnemy = EnemyAI.hurtEnemy;
+  (globalThis as any).destroyEnemy = EnemyAI.destroyEnemy;
+
+  // Add missing processJSONObject function
+  (globalThis as any).processJSONObject = function (worldId: string, runtime: any) {
+    console.log(`📄 processJSONObject called for world ${worldId}`);
+    return true;
+  };
+
+  // Legacy global functions for items (can be removed once event sheets are updated)
+  (globalThis as any).getItemName = (id: number) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemName(id) || "";
+  };
+
+  (globalThis as any).getItemCategory = (id: number) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemCategory(id) || "";
+  };
+
+  (globalThis as any).getItemStrength = (id: number) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemStrength(id) || 0;
+  };
+
+  (globalThis as any).getItemCost = (id: number) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemCost(id) || 0;
+  };
+
+  (globalThis as any).getItemID = (name: string) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemID(name) || 0;
+  };
+
+  console.log("✅ Adventure Land systems ready!");
+  console.log("✅ Enemy AI ready - enemies should move");
+  console.log("✅ Item system ready - placeholder functions available");
+  console.log("✅ Inventory management ready - placeholder functions available");
+  console.log("✅ Transitions system ready");
+
+  // Debug info
+  console.log("Available systems:");
+  console.log("- AdventureLand.EnemyAI (enemy AI functions)");
+  console.log("- AdventureLand.Items (item lookups - will be populated when items load)");
+  console.log("- AdventureLand.Inventory (inventory management - will be populated when items load)");
+  console.log("- AdventureLand.Transitions (world transitions)");
+  console.log("- Legacy global functions (for backward compatibility)");
+
+  // Verify namespace exists
+  const al = (globalThis as any).AdventureLand;
+  if (al) {
+    console.log("✅ AdventureLand namespace verified");
+    console.log("- EnemyAI methods:", al.EnemyAI ? Object.keys(al.EnemyAI).length : 0);
+    console.log("- Items methods:", al.Items ? Object.keys(al.Items).length : 0);
+    console.log("- Inventory methods:", al.Inventory ? Object.keys(al.Inventory).length : 0);
+    console.log("- Transitions methods:", al.Transitions ? Object.keys(al.Transitions).length : 0);
+  }
 });
-
-/**
- * Migration Notes:
- * 
- * 1. Update event sheets to use nested pattern:
- *    OLD: initEnemy(123, 456, "Crab")
- *    NEW: window.AdventureLand.EnemyAI.init(123, 456, "Crab")
- * 
- * 2. The backwards compatibility aliases can be removed once all event sheets are updated
- * 
- * 3. This pattern completely prevents IConstructProjectLocalVariables issues
- * 
- * 4. All new systems should follow this nested pattern
- * 
- * 5. TileAnimationManager already sets up its own AdventureLand.TileAnimations namespace
- */

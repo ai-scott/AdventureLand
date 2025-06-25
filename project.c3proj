@@ -791,6 +791,14 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "item-lookups.ts",
+					"type": "application/typescript",
+					"sid": 239176486979568,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [],
