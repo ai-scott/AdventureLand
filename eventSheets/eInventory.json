@@ -5654,8 +5654,8 @@
 									],
 									"actions": [
 										{
-											"callFunction": "changeEquippedItem",
-											"sid": 534313468425514,
+											"callFunction": "ChangeEquipmentAndSave",
+											"sid": 388094778622645,
 											"parameters": [
 												"\"equipment\""
 											]
@@ -5720,8 +5720,8 @@
 											}
 										},
 										{
-											"callFunction": "changeEquippedItem",
-											"sid": 222374889966441,
+											"callFunction": "ChangeEquipmentAndSave",
+											"sid": 666180018545570,
 											"parameters": [
 												"\"collection\""
 											]
@@ -5794,11 +5794,11 @@
 											}
 										},
 										{
-											"callFunction": "adjustHealth",
-											"sid": 374737570311963,
+											"callFunction": "AdjustHealthAndSave",
+											"sid": 857792733229031,
 											"parameters": [
 												"Functions.GetItemStrength(CurrentItemID)",
-												false
+												"\"\""
 											]
 										},
 										{
@@ -5839,6 +5839,54 @@
 				{
 					"eventType": "comment",
 					"text": "Equipment Change Function ..."
+				},
+				{
+					"functionName": "ChangeEquipmentAndSave",
+					"functionDescription": "",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "destination",
+							"type": "string",
+							"initialValue": "",
+							"comment": "Is this going to Equipment or Collection?",
+							"sid": 259610687175940
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"callFunction": "changeEquippedItem",
+							"sid": 107457204741066,
+							"parameters": [
+								"destination"
+							]
+						},
+						{
+							"callFunction": "updateOutfit",
+							"sid": 323918497594177
+						},
+						{
+							"callFunction": "Calc_Hero_Stats",
+							"sid": 409125793018949,
+							"parameters": [
+								"\"equip\""
+							]
+						},
+						{
+							"callFunction": "RefreshInventory",
+							"sid": 810874015595925
+						},
+						{
+							"callFunction": "SaveGameData",
+							"sid": 224879892840010
+						}
+					],
+					"sid": 431227509299517
 				},
 				{
 					"functionName": "changeEquippedItem",
@@ -6058,10 +6106,11 @@
 							],
 							"actions": [
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 772221503374492,
+									"callFunction": "AdjustHealthAndSave",
+									"sid": 496929955874897,
 									"parameters": [
-										"-purchasePrice"
+										"-purchasePrice",
+										"\"\""
 									]
 								}
 							],
@@ -6096,8 +6145,8 @@
 					"conditions": [],
 					"actions": [
 						{
-							"callFunction": "Adjust_Gems",
-							"sid": 660452735372688,
+							"callFunction": "AdjustGemsAndSave",
+							"sid": 906973053083693,
 							"parameters": [
 								"ceil(sellPrice)"
 							]
@@ -6427,8 +6476,8 @@
 							],
 							"actions": [
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 448236466275463,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 683687324642793,
 									"parameters": [
 										"Functions.GetItemCostbyID(InventoryItems.ItemID)"
 									]
@@ -7604,10 +7653,6 @@
 												"key": "\"Speed\"",
 												"value": "Speed"
 											}
-										},
-										{
-											"callFunction": "SaveGameData",
-											"sid": 477345494517390
 										}
 									],
 									"sid": 707683838293457

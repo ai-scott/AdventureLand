@@ -489,8 +489,11 @@
 					],
 					"actions": [
 						{
-							"callFunction": "updateOutfit",
-							"sid": 714662265761236
+							"callFunction": "ChangeEquipmentAndSave",
+							"sid": 347050926548620,
+							"parameters": [
+								"\"\""
+							]
 						}
 					],
 					"sid": 568659072698040
@@ -849,7 +852,8 @@
 								},
 								{
 									"callFunction": "updateOutfit",
-									"sid": 746450374367206
+									"sid": 746450374367206,
+									"disabled": true
 								},
 								{
 									"callFunction": "displayInteractionHint",
@@ -4244,11 +4248,11 @@
 									],
 									"actions": [
 										{
-											"callFunction": "adjustHealth",
-											"sid": 377618792884143,
+											"callFunction": "AdjustHealthAndSave",
+											"sid": 701906120465718,
 											"parameters": [
 												"- clamp(EnemyBases.Strength - Dict_SaveGameData.Get(\"Defense\"), 0, 9)",
-												false
+												"\"\""
 											]
 										},
 										{
@@ -4290,12 +4294,11 @@
 									],
 									"actions": [
 										{
-											"callFunction": "adjustHealth",
-											"sid": 649342589266674,
-											"disabled": true,
+											"callFunction": "AdjustHealthAndSave",
+											"sid": 592627766952868,
 											"parameters": [
 												"- clamp(Hazards.Strength - Dict_SaveGameData.Get(\"Defense\"), 0, 9)",
-												false
+												"\"\""
 											]
 										},
 										{
@@ -6276,8 +6279,8 @@
 									]
 								},
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 657044066162731,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 818376805999648,
 									"parameters": [
 										"10"
 									]
@@ -6308,8 +6311,8 @@
 									]
 								},
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 871123797906765,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 577357356906417,
 									"parameters": [
 										"5"
 									]
@@ -6340,8 +6343,8 @@
 									]
 								},
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 303428341418295,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 644382260945618,
 									"parameters": [
 										"1"
 									]
@@ -6372,11 +6375,11 @@
 									]
 								},
 								{
-									"callFunction": "adjustHealth",
-									"sid": 879394568661504,
+									"callFunction": "AdjustHealthAndSave",
+									"sid": 261328588330995,
 									"parameters": [
 										"1",
-										false
+										"\"\""
 									]
 								}
 							],

@@ -3,17 +3,13 @@
     "data": {
         "PlayerName": "???",
         "PennyQuest": "Not_Started:000",
-        "RosieQuest": "Not_Started:000",
         "WelcomeQuest": "Not_Started:000",
-        "TreeSignQuest": "Not_Started:000",
-        "LakeSignQuest": "Not_Started:000",
         "ShrineQuest": "Not_Started:000",
         "Shopkeeper_SallyQuest": "Not_Started:000",
         "Shopkeeper_SarahQuest": "Not_Started:000",
         "Shopkeeper_SophieQuest": "Not_Started:000",
         "Windmill_NickQuest": "Not_Started:000",
         "Waterfall_BillQuest": "Not_Started:000",
-        "Prospector_PeteQuest": "Not_Started:000",
         "MaxHealth": 10,
         "Health": 10,
         "Stamina": 100,
@@ -34,7 +30,9 @@
         "WeaponFound": "",
         "ClothingFound": "",
         "FoodFound": "",
-        "InvCollection": "",
-        "ItemTriggersCollected": ""
+        "RosieQuest": "Not_Started:000",
+        "TreeSignQuest": "Not_Started:000",
+        "LakeSignQuest": "Not_Started:000",
+        "Prospector_PeteQuest": "Not_Started:000"
     }
 }

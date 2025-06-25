@@ -1655,10 +1655,6 @@
 								"key": "\"ItemNumbers\"",
 								"value": "Dict_ItemNumbers.AsJSON"
 							}
-						},
-						{
-							"callFunction": "RefreshInventory",
-							"sid": 388035508276481
 						}
 					],
 					"sid": 848117865563820
@@ -1818,6 +1814,51 @@
 							]
 						},
 						{
+							"functionName": "AdjustHealthAndSave",
+							"functionDescription": "call separate functions for operations",
+							"functionCategory": "Player",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "health_change",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 504993264248951
+								},
+								{
+									"name": "maxOutHealth",
+									"type": "string",
+									"initialValue": "",
+									"comment": "should we max out the player health",
+									"sid": 554693529486644
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "adjustHealth",
+									"sid": 546858448711728,
+									"parameters": [
+										"health_change",
+										"maxOutHealth"
+									]
+								},
+								{
+									"callFunction": "RefreshInventory",
+									"sid": 912396061905983
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 934665447766494
+								}
+							],
+							"sid": 603947693490246
+						},
+						{
 							"functionName": "adjustHealth",
 							"functionDescription": "modify player health and draw hearts",
 							"functionCategory": "Stats",
@@ -1834,10 +1875,10 @@
 								},
 								{
 									"name": "maxOutHealth",
-									"type": "boolean",
-									"initialValue": "false",
+									"type": "string",
+									"initialValue": "",
 									"comment": "should we max out the player health",
-									"sid": 308289876281719
+									"sid": 717032326814180
 								}
 							],
 							"eventType": "function-block",
@@ -1869,11 +1910,13 @@
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "compare-boolean-eventvar",
+											"id": "compare-eventvar",
 											"objectClass": "System",
-											"sid": 571999643511612,
+											"sid": 776366918241119,
 											"parameters": {
-												"variable": "maxOutHealth"
+												"variable": "maxOutHealth",
+												"comparison": 0,
+												"value": "\"TRUE\""
 											}
 										}
 									],
@@ -1894,11 +1937,13 @@
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "compare-boolean-eventvar",
+											"id": "compare-eventvar",
 											"objectClass": "System",
-											"sid": 195650798417601,
+											"sid": 966220622415252,
 											"parameters": {
-												"variable": "maxOutHealth"
+												"variable": "maxOutHealth",
+												"comparison": 0,
+												"value": "\"TRUE\""
 											},
 											"isInverted": true
 										}
@@ -1928,10 +1973,6 @@
 												"variable": "Health",
 												"value": "Dict_SaveGameData.Get(\"Health\")"
 											}
-										},
-										{
-											"callFunction": "SaveGameData",
-											"sid": 946171354145038
 										}
 									],
 									"sid": 693226539406853
@@ -2175,6 +2216,43 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"functionName": "AdjustGemsAndSave",
+							"functionDescription": "",
+							"functionCategory": "Inventory",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
+								{
+									"name": "gems",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 317202510986109
+								}
+							],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "Adjust_Gems",
+									"sid": 594770776244289,
+									"parameters": [
+										"gems"
+									]
+								},
+								{
+									"callFunction": "RefreshInventory",
+									"sid": 509640477004506
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 217541136255116
+								}
+							],
+							"sid": 406905968796537
+						},
+						{
 							"functionName": "Adjust_Gems",
 							"functionDescription": "Automatically converted from 'Adjust_Gems'",
 							"functionCategory": "",
@@ -2302,19 +2380,11 @@
 							"conditions": [],
 							"actions": [
 								{
-									"callFunction": "Adjust_Gems",
-									"sid": 995674605554485,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 364899469634108,
 									"parameters": [
 										"0"
 									]
-								},
-								{
-									"type": "comment",
-									"text": "Separate out UpdateInvArray to be in Inventory screen only (and not in world)"
-								},
-								{
-									"callFunction": "SaveGameData",
-									"sid": 776011633408259
 								},
 								{
 									"id": "set-boolean-eventvar",
@@ -2545,11 +2615,11 @@
 											],
 											"actions": [
 												{
-													"callFunction": "adjustHealth",
-													"sid": 623887885347151,
+													"callFunction": "AdjustHealthAndSave",
+													"sid": 155752184920896,
 													"parameters": [
 														"0",
-														true
+														"\"\""
 													]
 												},
 												{
@@ -2575,11 +2645,11 @@
 											],
 											"actions": [
 												{
-													"callFunction": "adjustHealth",
-													"sid": 115149446178992,
+													"callFunction": "AdjustHealthAndSave",
+													"sid": 684979964835690,
 													"parameters": [
 														"0",
-														false
+														"\"\""
 													]
 												}
 											],
@@ -2720,28 +2790,6 @@
 					"description": "",
 					"isActiveOnStart": true,
 					"children": [
-						{
-							"eventType": "comment",
-							"text": "This function is called when each of the inventories is first loaded and whenever the player picks up an item - it ensures that the array stores the correct number of pages in the InvPages variable and the savegamedata is updated"
-						},
-						{
-							"functionName": "UpdateInvArray",
-							"functionDescription": "",
-							"functionCategory": "Inventory",
-							"functionReturnType": "none",
-							"functionCopyPicked": false,
-							"functionIsAsync": false,
-							"functionParameters": [],
-							"eventType": "function-block",
-							"conditions": [],
-							"actions": [
-								{
-									"callFunction": "SaveGameData",
-									"sid": 919903100881920
-								}
-							],
-							"sid": 880502904862737
-						},
 						{
 							"eventType": "comment",
 							"text": "These actions update the quantities of the items that are dropped or picked up"
@@ -3221,11 +3269,6 @@
 																"key": "Functions.GetItemName(GainItemID)",
 																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 															}
-														},
-														{
-															"callFunction": "UpdateInvArray",
-															"sid": 472823843415431,
-															"disabled": true
 														}
 													],
 													"sid": 342629802110256,
@@ -3263,11 +3306,6 @@
 																"key": "Functions.GetItemName(GainItemID)",
 																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 															}
-														},
-														{
-															"callFunction": "UpdateInvArray",
-															"sid": 880166970725787,
-															"disabled": true
 														}
 													],
 													"sid": 488848983470721
