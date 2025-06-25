@@ -40,6 +40,7 @@ runOnStartup(async runtime => {
     getItemStrength: (id: number) => 0,
     getItemCost: (id: number) => 0,
     getItemID: (name: string) => 0,
+    getItemId: (name: string) => 0,  // Alias for backward compatibility
     initialize: (data: any) => false,
     isInitialized: () => false
   };
@@ -100,6 +101,11 @@ runOnStartup(async runtime => {
   (globalThis as any).getItemID = (name: string) => {
     const al = (globalThis as any).AdventureLand;
     return al?.Items?.getItemID(name) || 0;
+  };
+
+  (globalThis as any).getItemId = (name: string) => {
+    const al = (globalThis as any).AdventureLand;
+    return al?.Items?.getItemID(name) || 0;  // Alias for backward compatibility
   };
 
   console.log("✅ Adventure Land systems ready!");

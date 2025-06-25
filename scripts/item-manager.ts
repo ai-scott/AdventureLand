@@ -558,6 +558,7 @@ export class ItemManager {
     getItemCostume: (id: number) => ItemManager.getItemCostume(id),
     getItemCostumeByName: (name: string) => ItemManager.getItemCostumeByName(name),
     getItemID: (name: string) => ItemManager.getItemID(name),
+    getItemId: (name: string) => ItemManager.getItemID(name), // Alias for backward compatibility
     getItemDefense: (id: number) => ItemManager.getItemDefense(id),
     getItemSpeed: (id: number) => ItemManager.getItemSpeed(id),
     getItemMagic: (id: number) => ItemManager.getItemMagic(id),
@@ -578,6 +579,7 @@ export class ItemManager {
 
     // Inventory management
     addItem: (itemId: number, quantity: number = 1) => ItemManager.addToInventory(itemId, quantity),
+    addItemByName: (name: string, quantity: number = 1) => ItemManager.addItemByName(name, quantity),
     removeItem: (itemId: number, quantity: number = 1) => ItemManager.removeFromInventory(itemId, quantity),
     getItemCount: (itemId: number) => ItemManager.getInventoryItemCount(itemId),  // This is for inventory counts
     hasItem: (itemId: number, quantity: number = 1) => ItemManager.hasItem(itemId, quantity),
@@ -608,6 +610,7 @@ export class ItemManager {
 
     // Item operations
     addItem: (itemId: number, quantity: number = 1) => ItemManager.addToInventory(itemId, quantity),
+    addItemByName: (name: string, quantity: number = 1) => ItemManager.addItemByName(name, quantity),
     removeItem: (itemId: number, quantity: number = 1) => ItemManager.removeFromInventory(itemId, quantity),
     getItemCount: (itemId: number) => ItemManager.getInventoryItemCount(itemId),
     hasItem: (itemId: number, quantity: number = 1) => ItemManager.hasItem(itemId, quantity),
