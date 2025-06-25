@@ -63,6 +63,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "Gems_Total",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 239346529391165
+		},
+		{
+			"eventType": "variable",
 			"name": "WorldX",
 			"type": "number",
 			"initialValue": "0",
@@ -2283,15 +2293,11 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 777785129484177,
+									"sid": 987608784463297,
 									"parameters": {
-										"variable": "gems",
+										"variable": "Gems_Total",
 										"value": "Dict_SaveGameData.Get(\"Gems\")"
 									}
-								},
-								{
-									"callFunction": "SaveGameData",
-									"sid": 835256677568017
 								}
 							],
 							"sid": 903592720547356,
@@ -2314,9 +2320,9 @@
 										{
 											"id": "set-text",
 											"objectClass": "UI_Font",
-											"sid": 271875526629384,
+											"sid": 860306728948243,
 											"parameters": {
-												"text": "gems"
+												"text": "Gems_Total"
 											}
 										}
 									],
@@ -2340,9 +2346,9 @@
 										{
 											"id": "set-text",
 											"objectClass": "obj_Text_A",
-											"sid": 158636002532775,
+											"sid": 631519327226390,
 											"parameters": {
-												"text": "gems"
+												"text": "Gems_Total"
 											}
 										}
 									],
@@ -2379,13 +2385,6 @@
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [
-								{
-									"callFunction": "AdjustGemsAndSave",
-									"sid": 364899469634108,
-									"parameters": [
-										"0"
-									]
-								},
 								{
 									"id": "set-boolean-eventvar",
 									"objectClass": "System",
@@ -2560,10 +2559,6 @@
 									],
 									"actions": [
 										{
-											"callFunction": "populateItemSlots",
-											"sid": 240126192393705
-										},
-										{
 											"id": "set-eventvar-value",
 											"objectClass": "System",
 											"sid": 703914448011535,
@@ -2580,13 +2575,6 @@
 												"seconds": ".1",
 												"use-timescale": true
 											}
-										},
-										{
-											"callFunction": "Calc_Hero_Stats",
-											"sid": 303918285864025,
-											"parameters": [
-												"\"equip\""
-											]
 										},
 										{
 											"id": "map-function",
@@ -2615,14 +2603,6 @@
 											],
 											"actions": [
 												{
-													"callFunction": "AdjustHealthAndSave",
-													"sid": 155752184920896,
-													"parameters": [
-														"0",
-														"\"\""
-													]
-												},
-												{
 													"id": "set-boolean-eventvar",
 													"objectClass": "System",
 													"sid": 440259566685274,
@@ -2633,27 +2613,6 @@
 												}
 											],
 											"sid": 682964647807821
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "else",
-													"objectClass": "System",
-													"sid": 674167318348804
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "AdjustHealthAndSave",
-													"sid": 684979964835690,
-													"parameters": [
-														"0",
-														"\"\""
-													]
-												}
-											],
-											"sid": 249207166021620
 										}
 									]
 								}
