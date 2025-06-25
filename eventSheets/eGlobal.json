@@ -2255,8 +2255,8 @@
 									"text": "Separate out UpdateInvArray to be in Inventory screen only (and not in world)"
 								},
 								{
-									"callFunction": "UpdateInvArray",
-									"sid": 288736656211142
+									"callFunction": "SaveGameData",
+									"sid": 776011633408259
 								},
 								{
 									"id": "set-boolean-eventvar",
@@ -2969,6 +2969,16 @@
 													"eventType": "block",
 													"conditions": [],
 													"actions": [
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 193005851358487,
+															"disabled": true,
+															"parameters": {
+																"variable": "CurrentItemSlot",
+																"value": "-1"
+															}
+														},
 														{
 															"callFunction": "populateItemSlots",
 															"sid": 202471857927154
@@ -6959,11 +6969,13 @@
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "cursor-is-over-object",
+											"id": "on-object-clicked",
 											"objectClass": "Mouse",
-											"sid": 161738827250037,
+											"sid": 758509548548574,
 											"parameters": {
-												"object": "ItemSlot"
+												"mouse-button": "left",
+												"click-type": "clicked",
+												"object-clicked": "ItemSlot"
 											}
 										}
 									],

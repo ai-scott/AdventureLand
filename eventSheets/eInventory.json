@@ -3402,6 +3402,14 @@
 							"sid": 399820885029823
 						},
 						{
+							"id": "set-visible",
+							"objectClass": "SquareActive",
+							"sid": 454548877108247,
+							"parameters": {
+								"visibility": "visible"
+							}
+						},
+						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 149378608701884,
@@ -4907,6 +4915,10 @@
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
+						{
+							"callFunction": "populateDictionaryItems",
+							"sid": 148664781990747
+						},
 						{
 							"callFunction": "populateItemSlots",
 							"sid": 258051803697988
@@ -9994,6 +10006,7 @@
 							"id": "set-visible",
 							"objectClass": "SquareActive",
 							"sid": 349196404871951,
+							"disabled": true,
 							"parameters": {
 								"visibility": "invisible"
 							}
