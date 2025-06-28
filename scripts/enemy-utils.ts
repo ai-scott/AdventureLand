@@ -264,12 +264,16 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
 
     // Add direction suffix if the animation supports it
     if (animationName.includes("{direction}")) {
-      fullAnimationName = animationName.replace("{direction}", enemyData.direction);
+      // Capitalize first letter of direction
+      const capitalizedDirection = enemyData.direction.charAt(0).toUpperCase() + enemyData.direction.slice(1);
+      fullAnimationName = animationName.replace("{direction}", capitalizedDirection);
     }
 
     // Special case for sideways animations
     if (animationName.includes("{sideways}") && enemyData.sidewaysDirection) {
-      fullAnimationName = animationName.replace("{sideways}", enemyData.sidewaysDirection);
+      // Capitalize first letter of sideways direction
+      const capitalizedSideways = enemyData.sidewaysDirection.charAt(0).toUpperCase() + enemyData.sidewaysDirection.slice(1);
+      fullAnimationName = fullAnimationName.replace("{sideways}", capitalizedSideways);
     }
 
     // Set the animation

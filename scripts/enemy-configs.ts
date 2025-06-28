@@ -1,4 +1,5 @@
-// enemy-configs.ts - Enemy Configuration Data with Extended Types
+// scripts/enemy-configs.ts - Enemy Configuration Data with Extended Types
+// This is the main enemy configuration file for Adventure Land
 
 // ===== TYPE DEFINITIONS =====
 export interface BehaviorCondition {
