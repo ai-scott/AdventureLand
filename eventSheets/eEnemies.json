@@ -304,6 +304,15 @@
 										"0",
 										"\"Enemy_Hurt\""
 									]
+								},
+								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 217492561316152,
+									"parameters": {
+										"type": "log",
+										"message": "\"ENEMY HURT!\""
+									}
 								}
 							],
 							"sid": 964461449272080,
@@ -390,6 +399,15 @@
 														}
 													],
 													"actions": [
+														{
+															"id": "log",
+															"objectClass": "Browser",
+															"sid": 327343155463602,
+															"parameters": {
+																"type": "log",
+																"message": "\"ENEMY KNOCKED BACK!\""
+															}
+														},
 														{
 															"id": "set-instvar-value",
 															"objectClass": "EnemyBases",

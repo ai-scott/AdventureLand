@@ -1098,10 +1098,8 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"// Access the parsed JSON data that's already in JSON_ItemsLibrary",
+								"// In your Script action after JSON parse:",
 								"const itemsData = runtime.objects.JSON_ItemsLibrary.getFirstInstance()!.getJsonDataCopy();",
-								"",
-								"// Initialize the item manager",
 								"const success = (globalThis as any).AdventureLand.Items.initialize(itemsData);",
 								"",
 								"if (!success) {",
@@ -1912,6 +1910,24 @@
 									"parameters": {
 										"text": "Dict_SaveGameData.Get(\"MaxHealth\")"
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Track health change for TypeScript",
+										"// Using Dictionary pattern to avoid IConstructProjectLocalVariables error",
+										"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+										"if (dict) {",
+										"    const dataMap = dict.getDataMap();",
+										"    const oldHealth = dataMap.get(\"Health\") || 0;",
+										"",
+										"    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
+										"    if (healthSystem) {",
+										"        healthSystem.syncBeforeChange(oldHealth);",
+										"    }",
+										"}"
+									]
 								}
 							],
 							"sid": 179579311758576,
@@ -2212,6 +2228,31 @@
 											"sid": 689311661916270
 										}
 									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"// Sync TypeScript after health change",
+												"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+												"if (dict) {",
+												"    const dataMap = dict.getDataMap();",
+												"    const newHealth = dataMap.get(\"Health\") || 0;",
+												"",
+												"    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
+												"    if (healthSystem) {",
+												"        // Function parameters are accessed via localVars",
+												"        healthSystem.syncAfterChange(newHealth, localVars.maxOutHealth);",
+												"    }",
+												"}"
+											]
+										}
+									],
+									"sid": 329559415031571
 								}
 							]
 						}
@@ -2585,6 +2626,14 @@
 												"string": "\"grantFreeItem\"",
 												"function": "grantFreeItem"
 											}
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"// This code runs in a different context where runtime might work",
+												"(globalThis as any).AdventureLandInitHealth = true;"
+											]
 										}
 									],
 									"sid": 645907929529474,
@@ -2815,28 +2864,6 @@
 												"variable": "currentCount",
 												"value": "Dict_ItemNumbers.Get(itemName)"
 											}
-										},
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
-												"try {",
-												"    const dataMap = dict.getDataMap();",
-												"    console.log(\"Dictionary contains:\");",
-												"    dataMap.forEach((value, key) => {",
-												"        console.log(`  \"${key}\": ${value}`);",
-												"    });",
-												"} catch (e) {",
-												"    console.log(\"Error:\", e);",
-												"}",
-												"// Check if we have a valid slot selected",
-												"console.log(\"Attempting to drop from slot:\", runtime.globalVars.CurrentItemSlot);",
-												"if (runtime.globalVars.CurrentItemSlot < 0) {",
-												"    console.log(\"No valid slot selected!\");",
-												"    return;",
-												"}"
-											]
 										}
 									],
 									"sid": 674337466697552,
@@ -4783,6 +4810,36 @@
 								}
 							],
 							"sid": 932203439264816
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-between-angles",
+									"objectClass": "System",
+									"sid": 115774628225134,
+									"parameters": {
+										"angle": "0",
+										"first-angle": "0",
+										"second-angle": "45"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Initialize Health System",
+										"    const runtime = (globalThis as any).runtime;",
+										"    if (runtime && (globalThis as any).AdventureLand?.HealthSystem) {",
+										"        (globalThis as any).AdventureLand.HealthSystem.initialize(runtime);",
+										"        console.log(\"✅ Health System initialized\");",
+										"    }"
+									]
+								}
+							],
+							"sid": 997761357972236
 						}
 					]
 				},

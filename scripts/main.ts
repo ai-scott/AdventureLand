@@ -1,6 +1,7 @@
 // main.ts - Adventure Land Main TypeScript Entry Point
 import * as EnemyAI from "./enemy-ai.js";
 import "./item-manager.js";  // Side-effect import - sets up global namespace
+import './health-system.js';
 
 console.log("🎮 Adventure Land - Systems Loading...");
 
