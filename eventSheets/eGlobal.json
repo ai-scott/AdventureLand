@@ -2631,8 +2631,12 @@
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"// This code runs in a different context where runtime might work",
-												"(globalThis as any).AdventureLandInitHealth = true;"
+												"// Initialize TypeScript Health System",
+												"const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
+												"if (healthSystem && runtime) {",
+												"    healthSystem.initialize(runtime);",
+												"    console.log(\"✅ Health System initialized\");",
+												"}"
 											]
 										}
 									],
@@ -4831,7 +4835,7 @@
 									"language": "typescript",
 									"script": [
 										"// Initialize Health System",
-										"    const runtime = (globalThis as any).runtime;",
+										"    //const runtime = (globalThis as any).runtime;",
 										"    if (runtime && (globalThis as any).AdventureLand?.HealthSystem) {",
 										"        (globalThis as any).AdventureLand.HealthSystem.initialize(runtime);",
 										"        console.log(\"✅ Health System initialized\");",

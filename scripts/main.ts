@@ -1,7 +1,7 @@
-// main.ts - Adventure Land Main TypeScript Entry Point
+// main.ts - Adventure Land Main TypeScript Entry Point with Runtime Facade
+import { initializeRuntimeFacade, getRuntimeFacade } from "./c3-runtime-facade.js";
 import * as EnemyAI from "./enemy-ai.js";
 import "./item-manager.js";  // Side-effect import - sets up global namespace
-import './health-system.js';
 
 console.log("🎮 Adventure Land - Systems Loading...");
 
@@ -11,11 +11,12 @@ declare function runOnStartup(callback: (runtime: any) => void): void;
 runOnStartup(async runtime => {
   console.log("🚀 Adventure Land Systems Initializing...");
 
-  // Store runtime reference
-  (globalThis as any).runtime = runtime;
+  // Initialize the runtime facade to resolve duplicate identifier errors
+  const facade = initializeRuntimeFacade(runtime);
+  console.log("✅ Runtime facade initialized");
 
-  // Initialize Enemy AI System
-  EnemyAI.initializeSystem(runtime);
+  // Initialize Enemy AI System with facade
+  EnemyAI.initializeSystem(facade);
 
   // CRITICAL: Create the AdventureLand namespace immediately so event sheets can use it
   (globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
@@ -133,3 +134,19 @@ runOnStartup(async runtime => {
     console.log("- Transitions methods:", al.Transitions ? Object.keys(al.Transitions).length : 0);
   }
 });
+
+/**
+ * Event Sheet Integration:
+ * 
+ * The runtime is already initialized in runOnStartup, so no additional
+ * initialization is needed in event sheets. All AdventureLand functions
+ * are ready to use immediately.
+ * 
+ * For Enemy AI:
+ *    - Call: AdventureLand.EnemyAI.init(En_Crab_Base.UID, En_Crab_Mask.UID, "Crab")
+ *    - Call: AdventureLand.EnemyAI.update(En_Crab_Base.UID)
+ * 
+ * For Items:
+ *    - Call: AdventureLand.Items.getItemName(itemId)
+ *    - etc.
+ */

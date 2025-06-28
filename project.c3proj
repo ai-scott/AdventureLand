@@ -799,6 +799,14 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "c3-runtime-facade.ts",
+					"type": "application/typescript",
+					"sid": 781780416452863,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [],

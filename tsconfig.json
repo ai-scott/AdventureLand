@@ -29,14 +29,15 @@
     ]
   },
   "include": [
-    "scripts/**/*.ts"
+    "scripts/**/*",
+    "*.d.ts"
   ],
   "exclude": [
     "node_modules",
     "build",
-    "scripts-archive/**/*",
-    "scripts-archive",
-    "**/scripts-archive/**",
-    "tests/**/*"
+    "tests",
+    "scripts/**/*-backup.ts",
+    "scripts/**/*.bak",
+    "scripts/**/*.backup.*"
   ]
 }

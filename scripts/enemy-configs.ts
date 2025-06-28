@@ -1,4 +1,4 @@
-// enemy-configs.ts - Enemy Configuration Data
+// enemy-configs.ts - Enemy Configuration Data with Extended Types
 
 // ===== TYPE DEFINITIONS =====
 export interface BehaviorCondition {
@@ -7,13 +7,28 @@ export interface BehaviorCondition {
   value: number;
 }
 
+// Extended ActionConfig to support all action types from enemy-ai.ts
 export interface ActionConfig {
-  type: "move" | "animate" | "sound" | "invulnerable";
+  type: "move" | "animate" | "sound" | "invulnerable" | "set_effect";
   params: {
+    // Movement params
     pattern?: "toward_player" | "away_from_player" | "random" | "stop" | "sideways_left" | "sideways_right" | "crab_toward_player";
     speed?: number;
+
+    // Animation params
     name?: string;
+
+    // Invulnerability params
     duration?: number;
+
+    // Sound params
+    sound?: string;
+
+    // Effect params
+    effect?: string;
+    parameter?: string;
+    value?: number;
+    enabled?: boolean;
   };
 }
 
@@ -53,6 +68,15 @@ export interface EnemyData {
   sidewaysDirection: string;
 }
 
+// Helper function to get enemy config
+export function getEnemyConfig(type: string): EnemyConfig | null {
+  const configs: { [key: string]: EnemyConfig } = {
+    "Ooze": OOZE_CONFIG,
+    "Crab": CRAB_CONFIG
+  };
+  return configs[type] || null;
+}
+
 // ===== ENEMY CONFIGURATIONS =====
 export const OOZE_CONFIG: EnemyConfig = {
   type: "Ooze",
@@ -68,7 +92,7 @@ export const OOZE_CONFIG: EnemyConfig = {
       duration: [1.0, 2.0],
       weight: 4,
       actions: [
-        { type: 'animate', params: { name: 'Idle_${direction}' } },
+        { type: 'animate', params: { name: 'Idle_{direction}' } },
         { type: 'move', params: { pattern: 'toward_player', speed: 20 } }
       ]
     },
@@ -81,9 +105,22 @@ export const OOZE_CONFIG: EnemyConfig = {
         { type: 'distance', operator: '<', value: 250 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Hop_${direction}' } },
+        { type: 'animate', params: { name: 'Hop_{direction}' } },
         { type: 'move', params: { pattern: 'toward_player', speed: 50 } },
-        { type: 'sound', params: { name: 'Slime_Jump' } }
+        { type: 'sound', params: { sound: 'Slime_Jump' } }
+      ]
+    },
+    {
+      name: "hurt",
+      duration: [0.5, 0.5],
+      weight: 0,
+      conditions: [
+        { type: 'hurt', operator: '==', value: 1 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'invulnerable', params: { duration: 1.0 } }
       ]
     }
   ]
@@ -100,13 +137,11 @@ export const CRAB_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle",
-      duration: [0.5, 1.5],
-      weight: 2,
-      conditions: [
-        { type: 'distance', operator: '>', value: 120 }
-      ],
+      duration: [2.0, 4.0],
+      weight: 3,
       actions: [
-        { type: 'animate', params: { name: 'Idle' } }
+        { type: 'animate', params: { name: 'Idle_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } }
       ]
     },
     {
@@ -114,90 +149,55 @@ export const CRAB_CONFIG: EnemyConfig = {
       duration: [1.5, 3.0],
       weight: 6,
       conditions: [
-        { type: 'distance', operator: '<', value: 120 },
-        { type: 'distance', operator: '>=', value: 32 }
+        { type: 'distance', operator: '<', value: 150 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Cranky_${direction}' } },
-        { type: 'move', params: { pattern: 'crab_toward_player', speed: 30 } },
-        { type: 'sound', params: { name: 'Crab Walk' } }
-      ]
-    },
-    {
-      name: "shell_retreat",
-      duration: [1.0, 1.5],
-      weight: 2,
-      cooldown: 3.0,
-      conditions: [
-        { type: 'random', operator: '<', value: 30 }
-      ],
-      actions: [
-        { type: 'animate', params: { name: 'Retreat_Right' } },
-        { type: 'move', params: { pattern: 'stop', speed: 0 } }
+        { type: 'animate', params: { name: 'Walk_{sideways}' } },
+        { type: 'move', params: { pattern: 'crab_toward_player', speed: 35 } }
       ]
     },
     {
       name: "hurt_flash",
       duration: [0.2, 0.2],
-      weight: 15,
-      cooldown: 0.1,
+      weight: 0,
       conditions: [
         { type: 'hurt', operator: '==', value: 1 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Hurt' } },
-        { type: 'move', params: { pattern: 'stop', speed: 0 } }
+        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'set_effect', params: { effect: 'SetColor', parameter: 'brightness', value: 2.0 } }
       ]
     },
     {
       name: "hurt_shell",
-      duration: [1.0, 1.0],
+      duration: [1.0, 2.0],
       weight: 15,
       cooldown: 5.0,
       conditions: [
-        { type: 'distance', operator: '<', value: 999 }
+        { type: 'hurt', operator: '==', value: 0 },
+        { type: 'distance', operator: '<', value: 100 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Retreat_${direction}' } },
-        { type: 'move', params: { pattern: 'stop', speed: 0 } },
-        { type: 'invulnerable', params: { duration: 1.0 } }
+        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'move', params: { pattern: 'away_from_player', speed: 10 } },
+        { type: 'invulnerable', params: { duration: 2.0 } },
+        { type: 'set_effect', params: { effect: 'SetColor', enabled: false } }
       ]
     },
     {
-      name: "attack",
+      name: "sideways_dodge",
       duration: [0.8, 1.2],
-      weight: 10,
-      cooldown: 1.5,
+      weight: 4,
+      cooldown: 2.0,
       conditions: [
-        { type: 'distance', operator: '<', value: 32 }
+        { type: 'distance', operator: '<', value: 80 },
+        { type: 'random', operator: '<', value: 30 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Attack_${direction}' } },
-        { type: 'move', params: { pattern: 'toward_player', speed: 40 } },
-        { type: 'sound', params: { name: 'CrabAttack' } }
+        { type: 'animate', params: { name: 'Walk_{sideways}' } },
+        { type: 'move', params: { pattern: 'sideways_left', speed: 50 } }
       ]
     }
   ]
 };
-
-
-export function getEnemyConfig(type: string | null | undefined): EnemyConfig | null {
-  // Handle null, undefined, and empty string cases
-  if (!type || typeof type !== 'string' || type.trim() === '') {
-    console.error('❌ Invalid enemy type provided:', type);
-    return null;
-  }
-
-  // Convert to lowercase for case-insensitive comparison (or keep case-sensitive)
-  const enemyType = type.trim();
-
-  switch (enemyType) {
-    case 'Crab':
-      return CRAB_CONFIG;
-    case 'Ooze':
-      return OOZE_CONFIG;
-    default:
-      console.error(`❌ Unknown enemy type: ${enemyType}`);
-      return null;
-  }
-}

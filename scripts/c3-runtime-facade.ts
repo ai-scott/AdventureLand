@@ -9,6 +9,7 @@
 interface IC3RuntimeFacade {
     objects: any;
     globalVars: any;
+    dt: number;  // Delta time
     callFunction: (name: string, ...params: any[]) => any;
 
     // Add other runtime methods you need
@@ -24,6 +25,11 @@ interface IC3RuntimeFacade {
 
     // Storage
     storage: any;
+
+    // Helper methods
+    getObjectByName: (objectName: string) => any;
+    getFirstInstance: (objectName: string) => any;
+    getAllInstances: (objectName: string) => any[];
 }
 
 // Create a facade class that wraps the actual runtime
@@ -40,6 +46,10 @@ class C3RuntimeFacade implements IC3RuntimeFacade {
 
     get globalVars() {
         return this._runtime.globalVars;
+    }
+
+    get dt() {
+        return this._runtime.dt;
     }
 
     get audio() {
@@ -111,12 +121,11 @@ export type { IC3RuntimeFacade };
  * 
  * 1. In your main initialization (usually called from event sheets):
  *    import { initializeRuntimeFacade } from "./c3-runtime-facade.js";
- *    (globalThis as any).AdventureLand.initRuntime = (runtime: any) => {
- *        initializeRuntimeFacade(runtime);
- *    };
+ *    const facade = initializeRuntimeFacade(runtime);
  * 
  * 2. In other TypeScript files:
- *    import { getRuntimeFacade } from "./c3-runtime-facade.js";
- *    const runtime = getRuntimeFacade();
- *    const player = runtime.getFirstInstance("Player");
+ *    import { IC3RuntimeFacade } from "./c3-runtime-facade.js";
+ *    function doSomething(runtime: IC3RuntimeFacade) {
+ *        const dt = runtime.dt;  // Access delta time
+ *    }
  */

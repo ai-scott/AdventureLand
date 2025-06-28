@@ -1,34 +1,72 @@
-// enemy-utils-enhanced.ts - Enhanced utility functions with smooth movement
+// enemy-utils.ts - Enhanced utility functions with Runtime Facade
 
+import { IC3RuntimeFacade } from "./c3-runtime-facade.js";
 import { BehaviorCondition, EnemyData } from "./enemy-configs.js";
 
 // ===== INSTANCE GETTERS =====
-export function getEnemyInstance(uid: number, runtime: any): any {
+export function getEnemyInstance(uid: number, runtime: IC3RuntimeFacade | null): any {
   if (!runtime) return null;
 
   try {
-    const allEnemies = runtime.objects.EnemyBases?.getAllInstances() || [];
-    return allEnemies.find((enemy: any) => enemy.uid === uid);
-  } catch (error) {
+    // Try to find in EnemyBases family first
+    const allEnemies = runtime.getAllInstances("EnemyBases");
+    const enemy = allEnemies.find((enemy: any) => enemy.uid === uid);
+    if (enemy) return enemy;
+
+    // If not found, try specific enemy types
+    const enemyTypes = ["En_Crab_Base", "En_Ooze_Base", "En_Ooze_Base2"];
+    for (const type of enemyTypes) {
+      const instances = runtime.getAllInstances(type);
+      const found = instances.find((inst: any) => inst.uid === uid);
+      if (found) return found;
+    }
+
     console.log(`❌ Could not find enemy with UID ${uid}`);
+    return null;
+  } catch (error) {
+    console.log(`❌ Error finding enemy with UID ${uid}:`, error);
     return null;
   }
 }
 
-export function getPlayerInstance(runtime: any): any {
+export function getPlayerInstance(runtime: IC3RuntimeFacade | null): any {
   if (!runtime) return null;
 
   try {
-    return runtime.objects.Player_Base?.getFirstInstance();
+    return runtime.getFirstInstance("Player_Base");
   } catch (error) {
-    console.log("❌ Could not find player instance");
+    console.log("❌ Could not find player instance:", error);
+    return null;
+  }
+}
+
+export function getMaskInstance(maskUID: number, runtime: IC3RuntimeFacade | null): any {
+  if (!runtime) return null;
+
+  try {
+    // Try EnemyMasks family first
+    const allMasks = runtime.getAllInstances("EnemyMasks");
+    const mask = allMasks.find((mask: any) => mask.uid === maskUID);
+    if (mask) return mask;
+
+    // If not found, try specific mask types
+    const maskTypes = ["En_Crab_Mask", "En_Ooze_Mask", "En_Ooze_Mask2"];
+    for (const type of maskTypes) {
+      const instances = runtime.getAllInstances(type);
+      const found = instances.find((inst: any) => inst.uid === maskUID);
+      if (found) return found;
+    }
+
+    return null;
+  } catch (error) {
+    console.log(`❌ Error finding mask with UID ${maskUID}:`, error);
     return null;
   }
 }
 
 // ===== ENHANCED MOVEMENT FUNCTIONS (Using Vectors) =====
 
-export function moveTowardPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: any): void {
+export function moveTowardPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: IC3RuntimeFacade | null): void {
   const player = getPlayerInstance(runtime);
   if (!player) {
     behavior8Dir.vectorX = 0;
@@ -56,7 +94,7 @@ export function moveTowardPlayer(behavior8Dir: any, enemy: any, enemyData: Enemy
   }
 }
 
-export function moveAwayFromPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: any): void {
+export function moveAwayFromPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: IC3RuntimeFacade | null): void {
   const player = getPlayerInstance(runtime);
   if (!player) {
     behavior8Dir.vectorX = 0;
@@ -77,14 +115,12 @@ export function moveAwayFromPlayer(behavior8Dir: any, enemy: any, enemyData: Ene
 
     updateDirectionFromVector(enemyData, normalizedX, normalizedY);
   } else {
-    // If exactly on player, move in a random direction
-    const randomAngle = Math.random() * Math.PI * 2;
-    behavior8Dir.vectorX = Math.cos(randomAngle) * speed;
-    behavior8Dir.vectorY = Math.sin(randomAngle) * speed;
+    behavior8Dir.vectorX = 0;
+    behavior8Dir.vectorY = 0;
   }
 }
 
-export function moveCrabTowardPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: any): void {
+export function moveCrabTowardPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: IC3RuntimeFacade | null): void {
   const player = getPlayerInstance(runtime);
   if (!player) {
     behavior8Dir.vectorX = 0;
@@ -92,74 +128,71 @@ export function moveCrabTowardPlayer(behavior8Dir: any, enemy: any, enemyData: E
     return;
   }
 
-  const dx = player.x - enemy.x;
-  const dy = player.y - enemy.y;
-  const absX = Math.abs(dx);
-  const absY = Math.abs(dy);
-
-  // Crab moves primarily sideways
-  if (absX > absY) {
-    // Move horizontally toward player
-    behavior8Dir.vectorX = (dx > 0 ? 1 : -1) * speed;
-    behavior8Dir.vectorY = dy * 0.2; // Slight vertical adjustment
-    enemyData.direction = dx > 0 ? "right" : "left";
-  } else {
-    // When more vertical distance, still move sideways but change facing
-    if (dy > 0) {
-      // Player is below, face sideways toward player
-      behavior8Dir.vectorX = (dx > 0 ? 1 : -1) * speed * 0.7;
-      behavior8Dir.vectorY = speed * 0.3;
-      enemyData.direction = dx > 0 ? "right" : "left";
-    } else {
-      // Player is above
-      behavior8Dir.vectorX = (dx > 0 ? 1 : -1) * speed * 0.7;
-      behavior8Dir.vectorY = -speed * 0.3;
-      enemyData.direction = "up";
-    }
-  }
-}
-
-export function moveSideways(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, direction: string, runtime: any): void {
-  const player = getPlayerInstance(runtime);
-  if (!player) {
-    behavior8Dir.vectorX = 0;
-    behavior8Dir.vectorY = 0;
-    return;
-  }
-
-  // Calculate perpendicular movement to player
   const dx = player.x - enemy.x;
   const dy = player.y - enemy.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
   if (distance > 0) {
-    // Get perpendicular vector
-    const perpX = -dy / distance; // Perpendicular is (-dy, dx)
+    const normalizedX = dx / distance;
+    const normalizedY = dy / distance;
+
+    // Crab movement: stronger horizontal movement
+    behavior8Dir.vectorX = normalizedX * speed * 1.5;
+    behavior8Dir.vectorY = normalizedY * speed * 0.7;
+
+    updateDirectionFromVector(enemyData, normalizedX, normalizedY);
+  } else {
+    behavior8Dir.vectorX = 0;
+    behavior8Dir.vectorY = 0;
+  }
+}
+
+export function moveSideways(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, direction: "left" | "right", runtime: IC3RuntimeFacade | null): void {
+  const player = getPlayerInstance(runtime);
+  if (!player) {
+    behavior8Dir.vectorX = 0;
+    behavior8Dir.vectorY = 0;
+    return;
+  }
+
+  // Calculate perpendicular vector to player
+  const dx = player.x - enemy.x;
+  const dy = player.y - enemy.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > 0) {
+    // Perpendicular vector
+    const perpX = -dy / distance;
     const perpY = dx / distance;
 
-    // Choose left or right perpendicular
-    const multiplier = direction === "left" ? -1 : 1;
+    // Choose direction
+    const dirMultiplier = direction === "right" ? 1 : -1;
 
-    behavior8Dir.vectorX = perpX * speed * multiplier;
-    behavior8Dir.vectorY = perpY * speed * multiplier;
+    behavior8Dir.vectorX = perpX * speed * dirMultiplier;
+    behavior8Dir.vectorY = perpY * speed * dirMultiplier;
 
-    updateDirectionFromVector(enemyData, perpX * multiplier, perpY * multiplier);
+    // Update sideways direction for animation
+    enemyData.sidewaysDirection = direction;
+  } else {
+    behavior8Dir.vectorX = 0;
+    behavior8Dir.vectorY = 0;
   }
 }
 
 export function moveRandomly(behavior8Dir: any, enemyData: EnemyData, speed: number): void {
-  // Only change direction occasionally
-  if (Math.random() < 0.02) { // 2% chance per frame
-    const randomAngle = Math.random() * Math.PI * 2;
-    behavior8Dir.vectorX = Math.cos(randomAngle) * speed;
-    behavior8Dir.vectorY = Math.sin(randomAngle) * speed;
+  // Generate random direction every few frames
+  if (Math.random() < 0.02) { // 2% chance to change direction
+    const angle = Math.random() * Math.PI * 2;
+    behavior8Dir.vectorX = Math.cos(angle) * speed;
+    behavior8Dir.vectorY = Math.sin(angle) * speed;
 
-    updateDirectionFromVector(enemyData, Math.cos(randomAngle), Math.sin(randomAngle));
+    // Update direction based on movement
+    updateDirectionFromVector(enemyData, Math.cos(angle), Math.sin(angle));
   }
-  // Otherwise maintain current velocity (smooth movement)
 }
 
-// Helper function to update direction based on movement vector
+// ===== HELPER FUNCTIONS =====
+
 function updateDirectionFromVector(enemyData: EnemyData, normalizedX: number, normalizedY: number): void {
   const absX = Math.abs(normalizedX);
   const absY = Math.abs(normalizedY);
@@ -171,135 +204,79 @@ function updateDirectionFromVector(enemyData: EnemyData, normalizedX: number, no
   }
 }
 
-// ===== CONDITION EVALUATION =====
-export function evaluateCondition(condition: BehaviorCondition, enemyData: EnemyData): boolean {
-  let value: number;
+export function calculateDirection(from: any, to: any): string {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
 
-  switch (condition.type) {
-    case 'distance':
-      value = enemyData.lastPlayerDistance;
-      break;
-    case 'health':
-      value = enemyData.config.baseStats.health;
-      break;
-    case 'timer':
-      value = enemyData.stateTimer;
-      break;
-    case 'random':
-      value = Math.random() * 100;
-      break;
-    case 'hurt':
-      value = enemyData.isHurt ? 1 : 0;
-      break;
-    default:
-      return true;
-  }
-
-  switch (condition.operator) {
-    case '<': return value < condition.value;
-    case '>': return value > condition.value;
-    case '<=': return value <= condition.value;
-    case '>=': return value >= condition.value;
-    case '==': return value === condition.value;
-    default: return true;
-  }
-}
-
-// ===== ANIMATION FUNCTIONS =====
-export function executeAnimation(enemy: any, enemyData: EnemyData, animationName: string, runtime: any): void {
-  try {
-    if (!animationName) return;
-
-    // Replace ${direction} placeholder with actual direction
-    if (animationName.includes('${direction}')) {
-      let direction = enemyData.direction.charAt(0).toUpperCase() + enemyData.direction.slice(1);
-
-      // Handle missing animations for crab
-      if (animationName.includes('Cranky_') && direction === 'Down') {
-        // No Cranky_Down animation, use left/right based on player position
-        const player = getPlayerInstance(runtime);
-        if (player && enemy) {
-          const dx = player.x - enemy.x;
-          direction = dx > 0 ? 'Right' : 'Left';
-        } else {
-          direction = 'Left';
-        }
-      }
-
-      animationName = animationName.replace('${direction}', direction);
-    }
-
-    // Get the mask instance and set animation
-    const maskUID = enemyData.maskUid;
-    if (maskUID && runtime) {
-      const allMasks = runtime.objects.EnemyMasks?.getAllInstances() || [];
-      const mask = allMasks.find((m: any) => m.uid === maskUID);
-
-      if (mask && mask.setAnimation) {
-        mask.setAnimation(animationName);
-        console.log(`🎬 Set animation: ${animationName} for ${enemyData.type}`);
-      }
-    }
-  } catch (error) {
-    console.log(`❌ Animation error:`, error);
-  }
-}
-
-// ===== DIRECTION CALCULATION =====
-export function calculateDirection(enemy: any, player: any): string {
-  const dx = player.x - enemy.x;
-  const dy = player.y - enemy.y;
-  const absX = Math.abs(dx);
-  const absY = Math.abs(dy);
-
-  if (absX > absY) {
+  if (Math.abs(dx) > Math.abs(dy)) {
     return dx > 0 ? "right" : "left";
   } else {
     return dy > 0 ? "down" : "up";
   }
 }
 
-// ===== UTILITY FUNCTIONS =====
-export function getRandomDuration(range: [number, number]): number {
-  return range[0] + Math.random() * (range[1] - range[0]);
+export function getRandomDuration(duration: [number, number]): number {
+  return duration[0] + Math.random() * (duration[1] - duration[0]);
 }
 
-// ===== ENHANCED VISUAL EFFECTS =====
-export function applyKnockbackEffect(enemy: any, fromX: number, fromY: number, force: number = 200): void {
-  try {
-    const behavior8Dir = enemy.behaviors?._8Direction || enemy.behaviors?.['8Direction'];
-    if (!behavior8Dir) return;
+export function evaluateCondition(
+  type: string,
+  hurtValue: number,
+  distance: number,
+  invulnerableValue: number,
+  operator: string,
+  value: number
+): boolean {
+  let currentValue: number;
 
-    // Calculate knockback direction (away from source)
-    const angle = Math.atan2(enemy.y - fromY, enemy.x - fromX);
+  switch (type) {
+    case 'hurt':
+      currentValue = hurtValue;
+      break;
+    case 'distance':
+      currentValue = distance;
+      break;
+    case 'invulnerable':
+      currentValue = invulnerableValue;
+      break;
+    case 'random':
+      return Math.random() < (value / 100);
+    default:
+      return true;
+  }
 
-    // Apply knockback velocity
-    behavior8Dir.vectorX = Math.cos(angle) * force;
-    behavior8Dir.vectorY = Math.sin(angle) * force;
-
-    console.log(`💥 Knockback applied: angle=${angle.toFixed(2)}, force=${force}`);
-  } catch (error) {
-    console.log(`❌ Knockback error:`, error);
+  switch (operator) {
+    case '<': return currentValue < value;
+    case '>': return currentValue > value;
+    case '<=': return currentValue <= value;
+    case '>=': return currentValue >= value;
+    case '==': return Math.abs(currentValue - value) < 0.1;
+    default: return true;
   }
 }
 
-export function applyBrightnessEffect(mask: any, brightness: number = 1.0): void {
-  try {
-    if (mask?.effects?.SetColor) {
-      mask.effects.SetColor.isActive = true;
-      mask.effects.SetColor.brightness = brightness;
-    }
-  } catch (error) {
-    console.log(`❌ Brightness effect error:`, error);
-  }
-}
+export function executeAnimation(enemy: any, enemyData: EnemyData, animationName: string, runtime: IC3RuntimeFacade | null): void {
+  if (!enemy || !animationName) return;
 
-export function startFlashEffect(mask: any, onTime: number = 0.03, offTime: number = 0.03, duration: number = 1000): void {
   try {
-    if (mask?.behaviors?.Flash) {
-      mask.behaviors.Flash.flash(onTime, offTime, duration);
+    // Build animation name with direction
+    let fullAnimationName = animationName;
+
+    // Add direction suffix if the animation supports it
+    if (animationName.includes("{direction}")) {
+      fullAnimationName = animationName.replace("{direction}", enemyData.direction);
+    }
+
+    // Special case for sideways animations
+    if (animationName.includes("{sideways}") && enemyData.sidewaysDirection) {
+      fullAnimationName = animationName.replace("{sideways}", enemyData.sidewaysDirection);
+    }
+
+    // Set the animation
+    if (enemy.setAnimation) {
+      enemy.setAnimation(fullAnimationName);
     }
   } catch (error) {
-    console.log(`❌ Flash effect error:`, error);
+    console.log(`❌ Animation error for ${animationName}:`, error);
   }
 }
