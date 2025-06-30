@@ -636,11 +636,16 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"// Force cleanup all enemies",
-								"    if ((globalThis as any).forceCleanupEnemies) {",
-								"        (globalThis as any).forceCleanupEnemies();",
-								"    }",
-								"    (globalThis as any).AdventureLand.EnemyPause.pause(\"transition\");"
+								"// In eGlobal Transition function, State = \"Out\"",
+								"const r = (globalThis as any).runtime;",
+								"if (r && (globalThis as any).Interior) {",
+								"    console.log(\"🏠 Interior flag set - cleaning up all enemies\");",
+								"    ",
+								"    // Clean up using families",
+								"    r.objects.EnemyBases?.getAllInstances()?.forEach((e: any) => e.destroy());",
+								"    r.objects.EnemyMasks?.getAllInstances()?.forEach((e: any) => e.destroy());",
+								"    ",
+								"}"
 							]
 						}
 					],
@@ -664,15 +669,7 @@
 									"sid": 932981492678656
 								}
 							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"(globalThis as any).AdventureLand.Transitions.cleanupAndTransition();"
-									]
-								}
-							],
+							"actions": [],
 							"sid": 614872835902693,
 							"children": [
 								{
@@ -4981,7 +4978,6 @@
 					"sid": 593623740786653
 				},
 				{
-					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Hints & Gems",
@@ -5528,7 +5524,6 @@
 					"sid": 201288502150000
 				},
 				{
-					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Option Menus",

@@ -5062,6 +5062,34 @@
 							"parameters": {
 								"layout": "Trigger_Door.Room"
 							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 734828594613120,
+							"parameters": {
+								"variable": "Interior",
+								"value": "true"
+							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Set flag AND immediately destroy enemies",
+								"(globalThis as any).Interior = true;",
+								"console.log(\"🚪 Entering interior - destroying all enemies NOW\");",
+								"",
+								"const r = (globalThis as any).runtime;",
+								"if (r) {",
+								"    const bases = r.objects.EnemyBases?.getAllInstances() || [];",
+								"    const masks = r.objects.EnemyMasks?.getAllInstances() || [];",
+								"    ",
+								"    console.log(`Destroying ${bases.length} bases and ${masks.length} masks`);",
+								"    bases.forEach((e: any) => e.destroy());",
+								"    masks.forEach((e: any) => e.destroy());",
+								"}"
+							]
 						}
 					],
 					"sid": 264425981496226
@@ -5077,7 +5105,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -6158,7 +6185,6 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{

@@ -113,8 +113,7 @@
 								"",
 								"// Enhanced enemy creation with cleanup",
 								"(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
-								"(globalThis as any).registerEnemy(crabBase, \"Crab\");",
-								""
+								"(globalThis as any).registerEnemy(crabBase, \"Crab\");"
 							]
 						}
 					],

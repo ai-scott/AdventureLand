@@ -1757,7 +1757,6 @@
 									"sid": 469151688730498
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -3435,7 +3434,6 @@
 					"sid": 997825667127366
 				},
 				{
-					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -3485,7 +3483,6 @@
 							"sid": 238539580128191
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -7351,6 +7348,7 @@
 											"sid": 738398783677823
 										},
 										{
+											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -7713,6 +7711,7 @@
 							"sid": 984843580296484
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -8368,6 +8367,7 @@
 							"sid": 846457891862036,
 							"children": [
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [

@@ -24,19 +24,6 @@
 					}
 				},
 				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 672073675308572,
-					"parameters": {
-						"object-to-create": "En_Ooze_Mask",
-						"layer": "\"Objects\"",
-						"x": "480",
-						"y": "304",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
 					"id": "map-function",
 					"objectClass": "Functions",
 					"sid": 198695848498209,
@@ -87,11 +74,13 @@
 					}
 				},
 				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"(globalThis as any).AdventureLand.EnemyPause.resume(\"transition\");"
-					]
+					"id": "set-boolean-eventvar",
+					"objectClass": "System",
+					"sid": 429671082464100,
+					"parameters": {
+						"variable": "Interior",
+						"value": "false"
+					}
 				}
 			],
 			"sid": 803443797666277,
@@ -132,11 +121,6 @@
 								"variable": "Interior",
 								"value": "true"
 							}
-						},
-						{
-							"type": "script",
-							"language": "typescript",
-							"script": []
 						}
 					],
 					"sid": 121021514483204,
@@ -188,6 +172,36 @@
 							"sid": 550874319269387
 						}
 					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 356419521741037,
+							"parameters": {
+								"variable": "Interior"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 980853110510793,
+							"parameters": {
+								"object-to-create": "En_Ooze_Mask",
+								"layer": "\"Objects\"",
+								"x": "480",
+								"y": "304",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						}
+					],
+					"sid": 899255459969248
 				},
 				{
 					"eventType": "block",
