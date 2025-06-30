@@ -32,8 +32,13 @@ export class InventoryUIPool {
     private static activeTooltip: any = null;
 
     // UI state
-    private static isInventoryVisible: boolean = false;
+    private static _isInventoryVisible: boolean = false;
     private static currentLayout: 'main' | 'equipment' | 'hair' = 'main';
+
+    // Public getter for inventory visibility
+    static get isInventoryVisible(): boolean {
+        return this._isInventoryVisible;
+    }
 
     /**
      * Initialize all UI elements at game startup
@@ -78,7 +83,7 @@ export class InventoryUIPool {
      * This replaces the expensive recreation logic
      */
     static showInventory(layout: 'main' | 'equipment' | 'hair' = 'main'): void {
-        this.isInventoryVisible = true;
+        this._isInventoryVisible = true;
         this.currentLayout = layout;
 
         // The event sheet would handle the actual visibility changes
@@ -89,7 +94,7 @@ export class InventoryUIPool {
      * Hide inventory (just hides elements, doesn't destroy)
      */
     static hideInventory(): void {
-        this.isInventoryVisible = false;
+        this._isInventoryVisible = false;
 
         // Hide tooltip if active
         if (this.activeTooltip) {
@@ -195,10 +200,13 @@ export class InventoryUIPool {
      */
     static debugPoolState(): void {
         console.log("[InventoryUIPool] Pool State:");
-        console.log(`- Inventory Visible: ${this.isInventoryVisible}`);
+        console.log(`- Inventory Visible: ${this._isInventoryVisible}`);
         console.log(`- Current Layout: ${this.currentLayout}`);
         console.log(`- Inventory Slots: ${this.inventorySlots.length}`);
         console.log(`- Equipment Slots: ${this.equipmentSlots.length}`);
         console.log(`- Active Items: ${this.inventorySlots.filter(s => s.currentItemId !== null).length}`);
     }
 }
+
+// Global integration
+(globalThis as any).InventoryUIPool = InventoryUIPool;

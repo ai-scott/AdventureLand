@@ -729,14 +729,6 @@
 					}
 				},
 				{
-					"name": "construct-3-types.js",
-					"type": "application/javascript",
-					"sid": 597272178974299,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
 					"name": "world-transition-manager.ts",
 					"type": "application/typescript",
 					"sid": 963149734438356,
@@ -804,6 +796,30 @@
 					"name": "c3-runtime-facade.ts",
 					"type": "application/typescript",
 					"sid": 781780416452863,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "inventory-performance-test.ts",
+					"type": "application/typescript",
+					"sid": 486635552213207,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "inventory-ui-optimization.ts",
+					"type": "application/typescript",
+					"sid": 978765156925682,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "item-manager-integration.ts",
+					"type": "application/typescript",
+					"sid": 528252193233426,
 					"script-info": {
 						"purpose": "none"
 					}

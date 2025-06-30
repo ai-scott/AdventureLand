@@ -3,6 +3,12 @@ import { initializeRuntimeFacade, getRuntimeFacade } from "./c3-runtime-facade.j
 import * as EnemyAI from "./enemy-ai.js";
 import "./item-manager.js";  // Side-effect import - sets up global namespace
 
+// NEW IMPORTS FOR INVENTORY OPTIMIZATION
+import { initializeItemSystem } from "./item-manager-integration.js";
+import { InventoryUIOptimizer } from "./inventory-ui-optimization.js";
+import { InventoryUIPool } from "./inventory-ui-pool.js";
+// Optional: import { InventoryPerformanceTest } from "./inventory-performance-test.js";
+
 console.log("🎮 Adventure Land - Systems Loading...");
 
 declare function runOnStartup(callback: (runtime: any) => void): void;
@@ -47,12 +53,64 @@ runOnStartup(async runtime => {
     isInitialized: () => false
   };
 
-  (globalThis as any).AdventureLand.Inventory = (globalThis as any).AdventureLand.Inventory || {
-    // Placeholder functions
+  // ENHANCED: Inventory namespace with both optimization systems
+  (globalThis as any).AdventureLand.Inventory = {
+    // Original placeholder functions (will be replaced by item-manager.ts)
     addItem: (itemId: number, quantity: number) => false,
     removeItem: (itemId: number, quantity: number) => false,
     getItemCount: (itemId: number) => 0,
-    hasItem: (itemId: number, quantity: number) => false
+    hasItem: (itemId: number, quantity: number) => false,
+
+    // NEW: Optimization functions using both systems
+    initialize: (runtime: any) => {
+      console.log("🔧 Initializing inventory optimizations...");
+
+      // Initialize UI pool for object pooling
+      InventoryUIPool.initializeUIPool({
+        inventorySlots: 25,
+        equipmentSlots: 6,
+        tooltipPool: 3
+      });
+
+      // Cache UI references for smart updates
+      InventoryUIOptimizer.cacheUIReferences(runtime);
+      InventoryUIOptimizer.resetStats();
+
+      console.log("✅ Inventory optimizations ready!");
+      return true;
+    },
+
+    // Open inventory with pooled UI
+    open: (runtime: any, layout: string = 'main') => {
+      InventoryUIPool.showInventory(layout as any);
+      InventoryUIOptimizer.resetStats();
+    },
+
+    // Close inventory efficiently
+    close: () => {
+      InventoryUIPool.hideInventory();
+      InventoryUIOptimizer.getPerformanceStats();
+    },
+
+    // Smart update check
+    checkUpdates: (runtime: any) => InventoryUIOptimizer.checkInventoryUpdate(runtime),
+
+    // Update specific slot
+    updateSlot: (slotIndex: number, itemId: number, quantity: number) =>
+      InventoryUIOptimizer.updateSlot(slotIndex, itemId, quantity),
+
+    // Get performance stats
+    getStats: () => InventoryUIOptimizer.getPerformanceStats()
+  };
+
+  // NEW: Add UIOptimizer namespace for direct access if needed
+  (globalThis as any).AdventureLand.UIOptimizer = {
+    shouldUpdateInventory: (runtime: any) => InventoryUIOptimizer.checkInventoryUpdate(runtime),
+    updateSlot: (slotIndex: number, itemId: number, quantity: number) =>
+      InventoryUIOptimizer.updateSlot(slotIndex, itemId, quantity),
+    cacheUIReferences: (runtime: any) => InventoryUIOptimizer.cacheUIReferences(runtime),
+    getStats: () => InventoryUIOptimizer.getPerformanceStats(),
+    resetStats: () => InventoryUIOptimizer.resetStats()
   };
 
   // Add Transitions namespace (based on your event sheet usage)
@@ -110,17 +168,45 @@ runOnStartup(async runtime => {
     return al?.Items?.getItemID(name) || 0;  // Alias for backward compatibility
   };
 
+  // NEW: Initialize item system after project starts (when JSON is loaded)
+  runtime.addEventListener("afterprojectstart", async () => {
+    console.log("📦 Initializing item system with O(1) lookups...");
+
+    // Wait one tick for JSON to be fully loaded
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Initialize the ItemManager with JSON data
+    try {
+      initializeItemSystem(runtime);
+
+      // Verify it's working
+      const al = (globalThis as any).AdventureLand;
+      if (al?.Items?.isInitialized()) {
+        console.log("✅ Item system initialized successfully!");
+        console.log(`📊 ${al.Items.getTotalDatabaseItems()} items loaded`);
+
+        // Initialize the inventory optimization system
+        al.Inventory.initialize(runtime);
+        console.log("✅ Inventory optimization systems ready!");
+      }
+    } catch (error) {
+      console.error("❌ Failed to initialize item/inventory systems:", error);
+    }
+  });
+
   console.log("✅ Adventure Land systems ready!");
   console.log("✅ Enemy AI ready - enemies should move");
   console.log("✅ Item system ready - placeholder functions available");
   console.log("✅ Inventory management ready - placeholder functions available");
   console.log("✅ Transitions system ready");
+  console.log("✅ Performance optimizations ready - O(1) lookups + smart UI updates");
 
   // Debug info
   console.log("Available systems:");
   console.log("- AdventureLand.EnemyAI (enemy AI functions)");
   console.log("- AdventureLand.Items (item lookups - will be populated when items load)");
-  console.log("- AdventureLand.Inventory (inventory management - will be populated when items load)");
+  console.log("- AdventureLand.Inventory (inventory management - now with optimizations!)");
+  console.log("- AdventureLand.UIOptimizer (smart UI update system)");
   console.log("- AdventureLand.Transitions (world transitions)");
   console.log("- Legacy global functions (for backward compatibility)");
 
@@ -131,6 +217,7 @@ runOnStartup(async runtime => {
     console.log("- EnemyAI methods:", al.EnemyAI ? Object.keys(al.EnemyAI).length : 0);
     console.log("- Items methods:", al.Items ? Object.keys(al.Items).length : 0);
     console.log("- Inventory methods:", al.Inventory ? Object.keys(al.Inventory).length : 0);
+    console.log("- UIOptimizer methods:", al.UIOptimizer ? Object.keys(al.UIOptimizer).length : 0);
     console.log("- Transitions methods:", al.Transitions ? Object.keys(al.Transitions).length : 0);
   }
 });
@@ -149,4 +236,9 @@ runOnStartup(async runtime => {
  * For Items:
  *    - Call: AdventureLand.Items.getItemName(itemId)
  *    - etc.
+ * 
+ * For Inventory Optimization:
+ *    - Call: AdventureLand.Inventory.checkUpdates(runtime) instead of populateItemSlots every tick
+ *    - Call: AdventureLand.Inventory.open(runtime) when opening inventory
+ *    - Call: AdventureLand.Inventory.close() when closing inventory
  */

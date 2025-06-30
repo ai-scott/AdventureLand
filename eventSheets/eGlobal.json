@@ -3151,7 +3151,27 @@
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"console.log(`UpdateNumbersOnPickup called: ItemID=${localVars.GainItemID}, Qty=${localVars.NumberGained}`);"
+												"// Add this debug code to your C3 UpdateNumbersOnPickup function",
+												"// Place it at the START of the function (before Event 81)",
+												"",
+												"console.log(\"=== C3 UpdateNumbersOnPickup START ===\");",
+												"console.log(\"GainItemID:\", localVars.GainItemID);",
+												"console.log(\"NumberGained:\", localVars.NumberGained);",
+												"",
+												"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
+												"console.log(\"Array at start:\", arr ? [arr.getAt(0), arr.getAt(1), arr.getAt(2)] : \"null\");",
+												"",
+												"// Add this at the END of the function (after Event 85)",
+												"",
+												"console.log(\"=== C3 UpdateNumbersOnPickup END ===\");",
+												"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
+												"console.log(\"Array at end:\", arr2 ? [arr2.getAt(0), arr2.getAt(1), arr2.getAt(2)] : \"null\");",
+												"",
+												"// Also add debug to Event 82 action:",
+												"console.log(\"Event 82: Setting slot 0 to\", localVars.GainItemID);",
+												"",
+												"// And Event 84 action:",
+												"console.log(\"Event 84: Pushing\", localVars.GainItemID, \"to back\");"
 											]
 										}
 									],
@@ -3225,25 +3245,43 @@
 													"eventType": "block",
 													"conditions": [
 														{
-															"id": "compare-at-xy",
-															"objectClass": "Inventories",
-															"sid": 335790406698257,
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 641550738251935,
 															"parameters": {
-																"x": "0",
-																"y": "0",
+																"first-value": "Arr_InvCollection.At(0)",
 																"comparison": 0,
-																"value": "0"
+																"second-value": "0"
+															}
+														},
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 627747333617316,
+															"parameters": {
+																"first-value": "Arr_InvCollection.At(0)",
+																"comparison": 0,
+																"second-value": "\"\""
+															}
+														},
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 574246337292443,
+															"parameters": {
+																"first-value": "Arr_InvCollection.Width",
+																"comparison": 0,
+																"second-value": "0"
 															}
 														}
 													],
 													"actions": [
 														{
-															"id": "set-at-xy",
+															"id": "set-at-x",
 															"objectClass": "Inventories",
-															"sid": 211126881709166,
+															"sid": 790698110692244,
 															"parameters": {
 																"x": "0",
-																"y": "0",
 																"value": "GainItemID"
 															}
 														},
@@ -3265,23 +3303,19 @@
 													"isOrBlock": true
 												},
 												{
-													"eventType": "comment",
-													"text": "If the inventory already has items in it, we add the item as a new slot in the array and then update the dictionary"
-												},
-												{
 													"eventType": "block",
 													"conditions": [
 														{
 															"id": "else",
 															"objectClass": "System",
-															"sid": 467854721216098
+															"sid": 266299379695082
 														}
 													],
 													"actions": [
 														{
 															"id": "push",
 															"objectClass": "Inventories",
-															"sid": 280334294390233,
+															"sid": 588188304352170,
 															"parameters": {
 																"where": "back",
 																"value": "GainItemID",
@@ -3291,14 +3325,18 @@
 														{
 															"id": "add-key",
 															"objectClass": "Dict_ItemNumbers",
-															"sid": 592960849013829,
+															"sid": 581383980241227,
 															"parameters": {
 																"key": "Functions.GetItemName(GainItemID)",
 																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
 															}
 														}
 													],
-													"sid": 488848983470721
+													"sid": 250010488828252
+												},
+												{
+													"eventType": "comment",
+													"text": "If the inventory already has items in it, we add the item as a new slot in the array and then update the dictionary"
 												}
 											]
 										},
@@ -3313,6 +3351,21 @@
 												{
 													"callFunction": "SaveGameData",
 													"sid": 649078742436796
+												},
+												{
+													"type": "script",
+													"language": "typescript",
+													"script": [
+														"console.log(\"=== C3 UpdateNumbersOnPickup END ===\");",
+														"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
+														"console.log(\"Array at end:\", arr2 ? [arr2.getAt(0), arr2.getAt(1), arr2.getAt(2)] : \"null\");",
+														"",
+														"// Also add debug to Event 82 action:",
+														"console.log(\"Event 82: Setting slot 0 to\", localVars.GainItemID);",
+														"",
+														"// And Event 84 action:",
+														"console.log(\"Event 84: Pushing\", localVars.GainItemID, \"to back\");"
+													]
 												}
 											],
 											"sid": 316454020417933
@@ -3794,70 +3847,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 797930521004712,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 461415133863112,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 424850913795937,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 611873768130496,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 520919365281370,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".strength\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const strength = (globalThis as any).AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
-														"localVars.TempReturnNumber = strength || 0;"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 752771312030540,
-													"parameters": {
-														"value": "TempReturnNumber"
-													}
-												}
-											],
-											"sid": 583483126153756
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const strength = (globalThis as any).AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
+										"    localVars.TempReturnNumber = strength || 0;"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 611136932752329,
+									"parameters": {
+										"value": "TempReturnNumber"
+									}
 								}
-							]
+							],
+							"sid": 797930521004712
 						},
 						{
 							"functionName": "GetItemCategory",
@@ -3877,70 +3885,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 448598049280153,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 844431694696791,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 268479587893337,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 885617592641680,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 462964614083157,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".category\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const itemCategory = (globalThis as any).AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
-														"localVars.TempReturnString = itemCategory || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 786212899446045,
-													"parameters": {
-														"value": "TempReturnString"
-													}
-												}
-											],
-											"sid": 453211263278011
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const category = (globalThis as any).AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
+										"    localVars.TempReturnString = category || \"\";"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 180148304541296,
+									"parameters": {
+										"value": "TempReturnString"
+									}
 								}
-							]
+							],
+							"sid": 448598049280153
 						},
 						{
 							"functionName": "GetItemDescription",
@@ -3960,70 +3923,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 413447473794320,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 139675587265767,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 117901832612639,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 862958263038421,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 342387838618067,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".description\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const description = (globalThis as any).AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
-														"localVars.TempReturnString = description || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 858005619851402,
-													"parameters": {
-														"value": "TempReturnString"
-													}
-												}
-											],
-											"sid": 841709874913142
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const description = (globalThis as any).AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
+										"localVars.TempReturnString = description || \"\";"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 196175360675956,
+									"parameters": {
+										"value": "TempReturnString"
+									}
 								}
-							]
+							],
+							"sid": 413447473794320
 						},
 						{
 							"functionName": "GetItemName",
@@ -4043,71 +3961,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 541054465758777,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 666118736332333,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 991234866797450,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 871558870322027,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 221365763344786,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".name\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const itemName = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);",
-														"console.log('GetItemName for id:',localVars.ItemIndex,' = output:', itemName);",
-														"localVars.TempReturnString = itemName || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 219046237553865,
-													"parameters": {
-														"value": "TempReturnString"
-													}
-												}
-											],
-											"sid": 343829639093367
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const name = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);",
+										"localVars.TempReturnString = name || \"\";"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 456815113667688,
+									"parameters": {
+										"value": "TempReturnString"
+									}
 								}
-							]
+							],
+							"sid": 541054465758777
 						},
 						{
 							"functionName": "GetItemCostume",
@@ -4127,70 +3999,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 517850161107580,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 579172227823017,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 291036925540316,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 407894000272985,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 480238250812420,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".costume\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const costume = (globalThis as any).AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
-														"localVars.TempReturnString = costume || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 355500364586912,
-													"parameters": {
-														"value": "TempReturnString"
-													}
-												}
-											],
-											"sid": 414300452827860
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const costume = (globalThis as any).AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
+										"localVars.TempReturnString = costume || \"\";"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 958406834314365,
+									"parameters": {
+										"value": "TempReturnString"
+									}
 								}
-							]
+							],
+							"sid": 517850161107580
 						},
 						{
 							"functionName": "GetItemCostumeByName",
@@ -4210,74 +4037,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 200752810454617,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 126076431840732,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 600566912131786,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 230868756181639,
-													"parameters": {
-														"path": "\".name\"",
-														"cmp": 0,
-														"value": "ItemName"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 306508779037160,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".costume\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"if (!localVars.ItemName || localVars.ItemName === \"\") {",
-														"    // Empty equipment slots are normal - don't log warnings",
-														"    return \"\";",
-														"}",
-														"const costume = (globalThis as any).AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
-														"localVars.TempReturnString = costume || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 698107131315445,
-													"parameters": {
-														"value": "TempReturnString"
-													}
-												}
-											],
-											"sid": 574827086643285
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const costume = (globalThis as any).AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
+										"localVars.TempReturnString = costume || \"\";"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 659918680622194,
+									"parameters": {
+										"value": "TempReturnString"
+									}
 								}
-							]
+							],
+							"sid": 200752810454617
 						},
 						{
 							"functionName": "GetItemID",
@@ -4297,72 +4075,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 304306383015257,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 343717052397171,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 676279011752695,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 376734795249482,
-													"parameters": {
-														"path": "\".name\"",
-														"cmp": 0,
-														"value": "ItemName"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 266439023894709,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".id\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const itemId = (globalThis as any).AdventureLand.Items.getItemId(localVars.ItemName);",
-														"runtime.setReturnValue(itemId);",
-														"console.log(`setting itemId to ${itemId}`);",
-														"localVars.TempReturnNumber = itemId || \"\";"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 985697785577468,
-													"parameters": {
-														"value": "TempReturnNumber"
-													}
-												}
-											],
-											"sid": 947995465641746
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const itemId = (globalThis as any).AdventureLand.Items.getItemID(localVars.ItemName);",
+										"localVars.TempReturnNumber = itemId || 0;"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 789962152733653,
+									"parameters": {
+										"value": "TempReturnNumber"
+									}
 								}
-							]
+							],
+							"sid": 304306383015257
 						},
 						{
 							"functionName": "GetItemCostbyID",
@@ -4382,70 +4113,25 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
-							"sid": 123834023606702,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "JSON_ItemsLibrary",
-											"sid": 634556535399412,
-											"parameters": {
-												"path": "\"items\""
-											}
-										}
-									],
-									"actions": [],
-									"sid": 322040725658830,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemsLibrary",
-													"sid": 162961630745446,
-													"parameters": {
-														"path": "\".id\"",
-														"cmp": 0,
-														"value": "ItemIndex"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 529774595566847,
-													"disabled": true,
-													"parameters": {
-														"value": "JSON_ItemsLibrary.Get(\".cost\")"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const cost = (globalThis as any).AdventureLand.Items.getItemCost(localVars.ItemIndex);",
-														"localVars.TempReturnNumber = cost || 0;"
-													]
-												},
-												{
-													"id": "set-function-return-value",
-													"objectClass": "Functions",
-													"sid": 227381850946599,
-													"parameters": {
-														"value": "TempReturnNumber"
-													}
-												}
-											],
-											"sid": 252943871041062
-										}
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const cost = (globalThis as any).AdventureLand.Items.getItemCost(localVars.ItemIndex);",
+										"localVars.TempReturnNumber = cost || 0;"
 									]
+								},
+								{
+									"id": "set-function-return-value",
+									"objectClass": "Functions",
+									"sid": 703187429510111,
+									"parameters": {
+										"value": "TempReturnNumber"
+									}
 								}
-							]
+							],
+							"sid": 123834023606702
 						}
 					],
 					"sid": 280539952447916
@@ -5270,6 +4956,7 @@
 					"sid": 593623740786653
 				},
 				{
+					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Hints & Gems",
@@ -5816,6 +5503,7 @@
 					"sid": 201288502150000
 				},
 				{
+					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Option Menus",
@@ -6104,6 +5792,180 @@
 				{
 					"eventType": "group",
 					"disabled": false,
+					"title": "Debugging",
+					"description": "",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "variable",
+							"name": "testResult",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 120082498014097
+						},
+						{
+							"eventType": "variable",
+							"name": "itemIdToTest",
+							"type": "number",
+							"initialValue": "22",
+							"comment": "red apple id",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 364457512495463
+						},
+						{
+							"eventType": "variable",
+							"name": "iterations",
+							"type": "number",
+							"initialValue": "1000",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 334861659315864
+						},
+						{
+							"functionName": "TestItemSystem",
+							"functionDescription": "",
+							"functionCategory": "Debugging",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Check if ItemManager is initialized",
+										"        const al = (globalThis as any).AdventureLand;",
+										"        const isInit = al.Items.isInitialized();",
+										"        const itemCount = isInit ? al.Items.getTotalDatabaseItems() : 0;",
+										"        ",
+										"        console.log(\"=== ITEM SYSTEM TEST ===\");",
+										"        console.log(\"Initialized:\", isInit);",
+										"        console.log(\"Total items:\", itemCount);",
+										"        ",
+										"        if (isInit) {",
+										"            // Test a few lookups",
+										"            console.log(\"Test lookups:\");",
+										"            console.log(\"- Item 1 name:\", al.Items.getItemName(1));",
+										"            console.log(\"- Item 1 cost:\", al.Items.getItemCost(1));",
+										"            console.log(\"- Item 1 category:\", al.Items.getItemCategory(1));",
+										"            ",
+										"            localVars.testResult = \"✅ Item system working! \" + itemCount + \" items loaded\";",
+										"        } else {",
+										"            localVars.testResult = \"❌ Item system not initialized\";",
+										"        }"
+									]
+								},
+								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 699632505814215,
+									"parameters": {
+										"type": "log",
+										"message": "testResult"
+									}
+								}
+							],
+							"sid": 710246241623281
+						},
+						{
+							"functionName": "TestItemLookupSpeed",
+							"functionDescription": "",
+							"functionCategory": "Debugging",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"=== PERFORMANCE COMPARISON ===\");",
+										"        const al = (globalThis as any).AdventureLand;",
+										"        const testId = localVars.itemIdToTest;",
+										"        const iterations = localVars.iterations;",
+										"        ",
+										"        // Test O(1) TypeScript lookup",
+										"        const start1 = performance.now();",
+										"        for (let i = 0; i < iterations; i++) {",
+										"            al.Items.getItemName(testId);",
+										"        }",
+										"        const end1 = performance.now();",
+										"        const time1 = end1 - start1;",
+										"        ",
+										"        console.log(`✅ O(1) Lookup: ${iterations} calls in ${time1.toFixed(2)}ms`);",
+										"        console.log(`   Average: ${(time1/iterations).toFixed(4)}ms per lookup`);",
+										"        ",
+										"        // For comparison, show what O(n) would be",
+										"        const itemCount = al.Items.getTotalDatabaseItems();",
+										"        const estimatedO_n = time1 * (itemCount / 2); // Average case for O(n)",
+										"        console.log(`❌ O(n) Estimated: ${estimatedO_n.toFixed(2)}ms (${(estimatedO_n/time1).toFixed(0)}x slower)`);"
+									]
+								}
+							],
+							"sid": 652079964706997
+						},
+						{
+							"functionName": "TestInventoryUI",
+							"functionDescription": "",
+							"functionCategory": "Debugging",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"=== INVENTORY UI TEST ===\");",
+										"        ",
+										"        // Use the global namespace we set up",
+										"        const al = (globalThis as any).AdventureLand;",
+										"        ",
+										"        // Check if inventory namespace exists",
+										"        if (al && al.Inventory) {",
+										"            console.log(\"✅ Inventory namespace found\");",
+										"            ",
+										"            // Test if functions exist",
+										"            console.log(\"- initialize:\", typeof al.Inventory.initialize);",
+										"            console.log(\"- checkUpdates:\", typeof al.Inventory.checkUpdates);",
+										"            console.log(\"- open:\", typeof al.Inventory.open);",
+										"            console.log(\"- close:\", typeof al.Inventory.close);",
+										"        } else {",
+										"            console.log(\"❌ AdventureLand.Inventory not found\");",
+										"        }",
+										"        ",
+										"        // Check UI Optimizer through namespace",
+										"        if (al && al.UIOptimizer && al.UIOptimizer.getStats) {",
+										"            console.log(\"\\n📊 UI Optimizer Stats:\");",
+										"            al.UIOptimizer.getStats();",
+										"        } else {",
+										"            console.log(\"❌ AdventureLand.UIOptimizer not found\");",
+										"        }"
+									]
+								}
+							],
+							"sid": 449058350748940
+						}
+					],
+					"sid": 317652366214232
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
 					"title": "Trigger Functions",
 					"description": "Functions triggered by interacting with objects in the game",
 					"isActiveOnStart": true,
@@ -6140,6 +6002,16 @@
 						}
 					],
 					"sid": 638190920999623
+				},
+				{
+					"eventType": "comment",
+					"text": "Change to DEV settings",
+					"background-color": [
+						0.7843137254901961,
+						1,
+						0,
+						1
+					]
 				},
 				{
 					"eventType": "comment",
@@ -6305,15 +6177,37 @@
 					],
 					"actions": [
 						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"(globalThis as any).AdventureLandDebug.debugVillageDialogue()"
-							]
+							"callFunction": "TestItemSystem",
+							"sid": 757015487144770
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 457367253109766,
+							"parameters": {
+								"seconds": "0.1",
+								"use-timescale": true
+							}
+						},
+						{
+							"callFunction": "TestItemLookupSpeed",
+							"sid": 675569391871721
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 471079630904489,
+							"parameters": {
+								"seconds": "0.1",
+								"use-timescale": true
+							}
+						},
+						{
+							"callFunction": "TestInventoryUI",
+							"sid": 193060564742728
 						}
 					],
-					"sid": 196662075782166,
-					"disabled": true
+					"sid": 196662075782166
 				},
 				{
 					"eventType": "block",

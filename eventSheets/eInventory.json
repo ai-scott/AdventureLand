@@ -1757,6 +1757,7 @@
 									"sid": 469151688730498
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -3328,7 +3329,8 @@
 										"",
 										"// Call this in populateItemSlots after the order fix",
 										"debugInventoryState();"
-									]
+									],
+									"disabled": true
 								}
 							],
 							"sid": 862752138389394
@@ -3433,6 +3435,7 @@
 					"sid": 997825667127366
 				},
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -3482,6 +3485,7 @@
 							"sid": 238539580128191
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -6584,11 +6588,22 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 195647367990785,
+							"sid": 925986435326761,
 							"parameters": {
 								"variable": "oldEquippedName",
-								"value": "Dict_SaveGameData.Get(equipCategory)"
+								"value": "Functions.GetItemName(Dict_SaveGameData.Get(equipCategory))"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"console.log(\"=== EQUIP ITEM START ===\");",
+								"console.log(\"New ItemID:\", localVars.itemID);",
+								"console.log(\"EquipCategory:\", localVars.equipCategory);",
+								"console.log(\"oldEquippedName initial:\", localVars.oldEquippedName);",
+								"console.log(\"oldEquippedID initial:\", localVars.oldEquippedID);"
+							]
 						}
 					],
 					"sid": 997782653826133,
@@ -6600,6 +6615,7 @@
 									"id": "compare-two-values",
 									"objectClass": "System",
 									"sid": 536901945484168,
+									"disabled": true,
 									"parameters": {
 										"first-value": "oldEquippedName",
 										"comparison": 1,
@@ -6611,11 +6627,37 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 535278430708378,
+									"sid": 138519961199521,
 									"parameters": {
 										"variable": "oldEquippedName",
-										"value": "Functions.GetItemID(oldEquippedName)"
+										"value": "Dict_SaveGameData.Get(equipCategory)"
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Add this debug code to Event 128 to see if it runs:",
+										"",
+										"console.log(\"=== EVENT 128 EXECUTING ===\");",
+										"console.log(\"equipCategory:\", localVars.equipCategory);",
+										"",
+										"// Check what's in SaveGameData for this category",
+										"const saveData = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+										"if (saveData && saveData.getDataMap) {",
+										"    const dataMap = saveData.getDataMap();",
+										"    const weaponValue = dataMap.get(\"Weapon\");",
+										"    const categoryValue = dataMap.get(localVars.equipCategory);",
+										"    console.log(\"SaveGameData.get('Weapon'):\", weaponValue);",
+										"    console.log(\"SaveGameData.get(equipCategory):\", categoryValue);",
+										"} else {",
+										"    console.log(\"❌ SaveGameData not accessible in Event 128\");",
+										"}",
+										"",
+										"console.log(\"oldEquippedName before C3 action:\", localVars.oldEquippedName);",
+										"// The C3 action should run here",
+										"console.log(\"oldEquippedName after C3 action:\", localVars.oldEquippedName);"
+									]
 								}
 							],
 							"sid": 118294850840668
@@ -6636,11 +6678,34 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 740357780222565,
+									"sid": 937582595768806,
 									"parameters": {
-										"variable": "oldEquippedName",
+										"variable": "oldEquippedID",
 										"value": "Functions.GetItemID(oldEquippedName)"
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"",
+										"// In Event 129 (after setting oldEquippedID):",
+										"console.log(\"Event 129: Converting name to ID\");",
+										"console.log(\"  oldEquippedName:\", localVars.oldEquippedName);",
+										"console.log(\"  oldEquippedID set to:\", localVars.oldEquippedID);",
+										"const saveData = runtime.objects.Dict_SaveGameData.getFirstInstance()!;",
+										"",
+										"// Check all SaveGameData contents:",
+										"if (saveData && saveData.getDataMap) {",
+										"    const dataMap = saveData.getDataMap();",
+										"    console.log(\"SaveGameData contents:\");",
+										"    for (const [key, value] of dataMap) {",
+										"        console.log(`  ${key}: ${value}`);",
+										"    }",
+										"} else {",
+										"    console.log(\"❌ SaveGameData not accessible\");",
+										"}"
+									]
 								}
 							],
 							"sid": 569728077327948,
@@ -6698,6 +6763,7 @@
 									"id": "push",
 									"objectClass": "Arr_InvCollection",
 									"sid": 771460892218661,
+									"disabled": true,
 									"parameters": {
 										"where": "back",
 										"value": "oldEquippedID",
@@ -6705,13 +6771,40 @@
 									}
 								},
 								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"console.log(\"PUSHING old equipped item back to array:\", localVars.oldEquippedID);",
+										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
+										"console.log(\"Array height before push:\", arr ? arr.height : \"null\");"
+									]
+								},
+								{
 									"id": "set-key",
 									"objectClass": "Dict_ItemNumbers",
 									"sid": 698962902109307,
+									"disabled": true,
 									"parameters": {
 										"key": "Functions.GetItemName(oldEquippedID)",
 										"value": "1"
 									}
+								},
+								{
+									"callFunction": "UpdateNumbersOnPickup",
+									"sid": 419858498682021,
+									"parameters": [
+										"oldEquippedID",
+										"1"
+									]
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
+										"console.log(\"Array height after push:\", arr ? arr.height : \"null\");",
+										"console.log(\"Array contents:\", arr ? [arr.getAt(0), arr.getAt(1), arr.getAt(2)] : \"null\");"
+									]
 								}
 							],
 							"sid": 386951505274181
@@ -7335,7 +7428,6 @@
 											"sid": 738398783677823
 										},
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -7698,7 +7790,6 @@
 							"sid": 984843580296484
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -8347,7 +8438,6 @@
 							"sid": 846457891862036,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
