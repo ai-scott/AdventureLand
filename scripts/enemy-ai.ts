@@ -26,6 +26,8 @@ export interface EnhancedEnemyData extends EnemyData {
   targetSpeed: number;
   acceleration: number;
   deceleration: number;
+  lastSoundPlayed?: string; // Track last sound to prevent spam
+  behaviorStartTime?: number; // Track when current behavior started
 }
 
 // ===== ENHANCED ENEMY AI FACTORY =====
@@ -125,7 +127,7 @@ export class EnhancedEnemyAIFactory {
 
     // Debug log every 60 frames
     if (Math.random() < 0.016) {
-      console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
+      //console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
     }
     enemyData.stateTimer -= dt;
 
@@ -162,7 +164,7 @@ export class EnhancedEnemyAIFactory {
     }
 
     if (enemyData.stateTimer <= 0) {
-      console.log(`💤 TIMER EXPIRED! Selecting new behavior`);
+      //console.log(`💤 TIMER EXPIRED! Selecting new behavior`);
       this.selectNewBehavior(enemyData);
     }
 
@@ -180,6 +182,10 @@ export class EnhancedEnemyAIFactory {
     enemyData.stateTimer = getRandomDuration(enemyData.currentBehavior.duration);
     enemyData.behaviorStarted = false;
 
+    // ADD THESE TWO LINES:
+    enemyData.behaviorStartTime = Date.now();
+    enemyData.lastSoundPlayed = undefined;
+
     // Add behavior to cooldown
     if (enemyData.currentBehavior.cooldown) {
       enemyData.behaviorCooldowns.set(
@@ -188,7 +194,7 @@ export class EnhancedEnemyAIFactory {
       );
     }
 
-    console.log(`🎭 ${enemyData.type} behavior changed to: ${enemyData.currentBehavior.name}`);
+    //console.log(`🎭 ${enemyData.type} behavior changed to: ${enemyData.currentBehavior.name}`);
   }
 
   private filterBehaviors(behaviors: BehaviorConfig[], enemyData: EnhancedEnemyData): BehaviorConfig[] {
@@ -239,7 +245,7 @@ export class EnhancedEnemyAIFactory {
 
   private executeBehavior(enemyData: EnhancedEnemyData, enemy: any): void {
     if (!enemyData.behaviorStarted) {
-      console.log(`🎬 Starting ${enemyData.currentBehavior.name} behavior`);
+      //console.log(`🎬 Starting ${enemyData.currentBehavior.name} behavior`);
       enemyData.behaviorStarted = true;
     }
 
@@ -294,13 +300,28 @@ export class EnhancedEnemyAIFactory {
   }
 
   private executeSoundAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {
-    if (action.params.sound && this.runtime) {
-      try {
-        // Use facade's audio property
-        this.runtime.audio.playSound(action.params.sound);
-      } catch (error) {
-        console.log(`❌ Sound error:`, error);
+    try {
+      const params = action.params as any;
+
+      if (params.sound) {
+        // Create a unique key for this sound + behavior combo
+        const soundKey = `${params.sound}_${enemyData.currentBehavior}_${enemyData.behaviorStartTime}`;
+
+        // Only play if we haven't played this exact sound for this behavior instance
+        if (enemyData.lastSoundPlayed !== soundKey) {
+          const uniqueTag = `${enemyData.type}_${enemy.uid}`;
+
+          if (this.runtime?.callFunction) {
+            this.runtime.callFunction("Audio_Play_Sound", params.sound, params.volume || 1.0, uniqueTag);
+            console.log(`🎵 Playing sound: ${params.sound} (behavior start)`);
+
+            // Mark this sound as played for this behavior instance
+            enemyData.lastSoundPlayed = soundKey;
+          }
+        }
       }
+    } catch (error) {
+      console.log(`❌ Sound error:`, error);
     }
   }
 
@@ -345,6 +366,7 @@ export class EnhancedEnemyAIFactory {
       executeAnimation(enemy, enemyData, action.params.name, this.runtime);
     }
   }
+
 
   private updateSmoothMovement(enemyData: EnhancedEnemyData, enemy: any, dt: number): void {
     // Smooth acceleration/deceleration

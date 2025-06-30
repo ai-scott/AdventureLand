@@ -2,6 +2,7 @@
 
 import { IC3RuntimeFacade } from "./c3-runtime-facade.js";
 import { BehaviorCondition, EnemyData } from "./enemy-configs.js";
+import type { EnhancedEnemyData } from './enemy-ai.js';
 
 // ===== INSTANCE GETTERS =====
 export function getEnemyInstance(uid: number, runtime: IC3RuntimeFacade | null): any {
@@ -254,7 +255,7 @@ export function evaluateCondition(
     default: return true;
   }
 }
-
+/*
 export function executeAnimation(enemy: any, enemyData: EnemyData, animationName: string, runtime: IC3RuntimeFacade | null): void {
   if (!enemy || !animationName) return;
 
@@ -282,5 +283,61 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
     }
   } catch (error) {
     console.log(`❌ Animation error for ${animationName}:`, error);
+  }
+}
+  */
+export function executeAnimation(enemy: any, enemyData: any, animationName: string, runtime: any): void {
+  //console.log(`🔍 Trying to play animation '${animationName}' on ${enemyData.type} with maskUID ${enemyData.maskUid}`);
+
+  try {
+    // Handle direction substitution - fix the pattern matching
+    let finalAnimationName = animationName;
+    if (animationName.includes('{direction}')) {
+      // Get direction from enemy data first, then calculate if needed
+      let direction = enemyData.direction || enemy.instVars?.Direction;
+
+      if (!direction) {
+        // Calculate direction based on enemy's movement or facing
+        const player = runtime.objects.Player_Base?.getFirstInstance();
+        if (player && enemy) {
+          const dx = player.x - enemy.x;
+          const dy = player.y - enemy.y;
+
+          if (Math.abs(dx) > Math.abs(dy)) {
+            direction = dx > 0 ? 'Right' : 'Left';
+          } else {
+            direction = dy > 0 ? 'Down' : 'Up';
+          }
+        } else {
+          direction = 'Right'; // Final fallback
+        }
+      }
+
+      // Capitalize first letter for animation names
+      direction = direction.charAt(0).toUpperCase() + direction.slice(1).toLowerCase();
+
+      finalAnimationName = animationName.replace('{direction}', direction);
+      //console.log(`🧭 Direction calculated: '${direction}' → '${finalAnimationName}'`);
+    }
+
+    const allMasks = runtime.objects.EnemyMasks?.getAllInstances() || [];
+    //console.log(`Found ${allMasks.length} total masks`);
+
+    const mask = allMasks.find((m: any) => m.uid === enemyData.maskUid);
+
+    if (mask) {
+      //console.log(`Found mask! Type: ${mask.objectType.name}`);
+
+      if (mask.setAnimation) {
+        mask.setAnimation(finalAnimationName);
+        //console.log(`✅ Set animation '${finalAnimationName}'`);
+      } else {
+        console.log(`❌ No setAnimation method found on mask`);
+      }
+    } else {
+      console.log(`❌ No mask found with UID ${enemyData.maskUid}`);
+    }
+  } catch (error) {
+    console.log(`❌ Animation error:`, error);
   }
 }
