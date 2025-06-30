@@ -159,9 +159,7 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"//updateEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);",
-								"// Replace all the state machine logic with:",
-								"(globalThis as any).updateEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);"
+								"(globalThis as any).AdventureLand.EnemyAI.updateWithPause(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);"
 							]
 						}
 					],

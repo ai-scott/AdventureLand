@@ -631,6 +631,17 @@
 							"parameters": {
 								"opacity": "Self.Opacity + 100 * dt"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Force cleanup all enemies",
+								"    if ((globalThis as any).forceCleanupEnemies) {",
+								"        (globalThis as any).forceCleanupEnemies();",
+								"    }",
+								"    (globalThis as any).AdventureLand.EnemyPause.pause(\"transition\");"
+							]
 						}
 					],
 					"sid": 585670616017818,
@@ -3499,6 +3510,13 @@
 											}
 										},
 										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"(globalThis as any).AdventureLand.EnemyPause.pause(\"inventory\");"
+											]
+										},
+										{
 											"id": "move-to-layer",
 											"objectClass": "Player_Base",
 											"sid": 157245985085604,
@@ -3692,6 +3710,13 @@
 												"x": "Player_WorldX",
 												"y": "Player_WorldY"
 											}
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"(globalThis as any).AdventureLand.EnemyPause.resume(\"inventory\");"
+											]
 										},
 										{
 											"id": "set-layer-visible",

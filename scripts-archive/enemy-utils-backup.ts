@@ -1,7 +1,7 @@
 // enemy-utils.ts - Enemy Movement & Utility Functions
 
 
-import { EnemyData } from "./enemy-configs.js";
+import { EnemyData } from "../scripts/enemy-configs.js";
 
 // ===== MOVEMENT FUNCTIONS =====
 export function moveTowardPlayer(behavior8Dir: any, enemy: any, enemyData: EnemyData, speed: number, runtime: any): void {

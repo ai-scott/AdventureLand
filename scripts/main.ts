@@ -33,6 +33,13 @@ runOnStartup(async runtime => {
       EnemyAI.initEnemy(baseUID, maskUID, enemyType),
     update: (enemyUID: number) =>
       EnemyAI.updateEnemy(enemyUID),
+    updateWithPause: (enemyUID: number) => {
+      // Check pause state before updating
+      if ((globalThis as any).AdventureLand.EnemyPause?.isPaused()) {
+        return;
+      }
+      EnemyAI.updateEnemy(enemyUID);
+    },
     hurt: (enemyUID: number) =>
       EnemyAI.hurtEnemy(enemyUID),
     destroy: (enemyUID: number) =>
@@ -203,11 +210,12 @@ runOnStartup(async runtime => {
 
   // Debug info
   console.log("Available systems:");
-  console.log("- AdventureLand.EnemyAI (enemy AI functions)");
+  console.log("- AdventureLand.EnemyAI (enemy AI functions with pause support)");
   console.log("- AdventureLand.Items (item lookups - will be populated when items load)");
   console.log("- AdventureLand.Inventory (inventory management - now with optimizations!)");
   console.log("- AdventureLand.UIOptimizer (smart UI update system)");
   console.log("- AdventureLand.Transitions (world transitions)");
+  console.log("- AdventureLand.EnemyPause (pause system integrated in enemy-ai.ts)");
   console.log("- Legacy global functions (for backward compatibility)");
 
   // Verify namespace exists

@@ -37,20 +37,6 @@
 					}
 				},
 				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 111068435100891,
-					"disabled": true,
-					"parameters": {
-						"object-to-create": "En_Crab_Base",
-						"layer": "\"Objects\"",
-						"x": "120",
-						"y": "250",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
 					"id": "map-function",
 					"objectClass": "Functions",
 					"sid": 198695848498209,
@@ -99,6 +85,13 @@
 						"string": "\"SeaMonsterKeyFound\"",
 						"function": "FindSeaMonsterKey"
 					}
+				},
+				{
+					"type": "script",
+					"language": "typescript",
+					"script": [
+						"(globalThis as any).AdventureLand.EnemyPause.resume(\"transition\");"
+					]
 				}
 			],
 			"sid": 803443797666277,
@@ -139,6 +132,11 @@
 								"variable": "Interior",
 								"value": "true"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": []
 						}
 					],
 					"sid": 121021514483204,

@@ -1,4 +1,4 @@
-// enemy-ai.ts - Enhanced Enemy AI with Runtime Facade Integration
+// enemy-ai.ts - Enhanced Enemy AI with Runtime Facade Integration and Pause System
 
 import { IC3RuntimeFacade } from "./c3-runtime-facade.js";
 import { ActionConfig, BehaviorCondition, BehaviorConfig, EnemyConfig, EnemyData, getEnemyConfig } from "./enemy-configs.js";
@@ -28,6 +28,43 @@ export interface EnhancedEnemyData extends EnemyData {
   deceleration: number;
   lastSoundPlayed?: string; // Track last sound to prevent spam
   behaviorStartTime?: number; // Track when current behavior started
+}
+
+// ============= PAUSE SYSTEM =============
+class EnemyPauseManager {
+  private static isPaused: boolean = false;
+  private static pauseReasons: Set<string> = new Set();
+
+  static pause(reason: string = "default"): void {
+    this.pauseReasons.add(reason);
+    this.isPaused = true;
+    console.log(`⏸️ Enemy AI paused (reason: ${reason})`);
+  }
+
+  static resume(reason: string = "default"): void {
+    this.pauseReasons.delete(reason);
+
+    if (this.pauseReasons.size === 0) {
+      this.isPaused = false;
+      console.log("▶️ Enemy AI resumed");
+    } else {
+      console.log(`⏸️ Enemy AI still paused (${this.pauseReasons.size} reasons remain)`);
+    }
+  }
+
+  static shouldPause(): boolean {
+    return this.isPaused;
+  }
+
+  static forceResume(): void {
+    this.pauseReasons.clear();
+    this.isPaused = false;
+    console.log("▶️ Enemy AI force resumed");
+  }
+
+  static getPauseReasons(): string[] {
+    return Array.from(this.pauseReasons);
+  }
 }
 
 // ===== ENHANCED ENEMY AI FACTORY =====
@@ -105,6 +142,11 @@ export class EnhancedEnemyAIFactory {
   }
 
   public updateEnemy(baseUID: number): void {
+    // CHECK PAUSE STATE FIRST - This is the key addition!
+    if (EnemyPauseManager.shouldPause()) {
+      return; // Skip all AI updates when paused
+    }
+
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) {
       console.warn(`[EnemyAI] No data found for enemy ${baseUID}`);
@@ -127,7 +169,7 @@ export class EnhancedEnemyAIFactory {
 
     // Debug log every 60 frames
     if (Math.random() < 0.016) {
-      //console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
+      console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
     }
     enemyData.stateTimer -= dt;
 
@@ -487,3 +529,14 @@ if (typeof window !== 'undefined') {
     });
   };
 }
+
+// ============= GLOBAL EXPORTS FOR PAUSE SYSTEM =============
+// Make pause system available globally
+(globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
+(globalThis as any).AdventureLand.EnemyPause = {
+  pause: (reason: string) => EnemyPauseManager.pause(reason),
+  resume: (reason: string) => EnemyPauseManager.resume(reason),
+  forceResume: () => EnemyPauseManager.forceResume(),
+  isPaused: () => EnemyPauseManager.shouldPause(),
+  getReasons: () => EnemyPauseManager.getPauseReasons()
+};

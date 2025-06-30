@@ -153,9 +153,7 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"const AL = (globalThis as any).AdventureLand;",
-								"// Get the current instance in the loop",
-								"AL.EnemyAI.update(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);"
+								"(globalThis as any).AdventureLand.EnemyAI.updateWithPause(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);"
 							]
 						}
 					],

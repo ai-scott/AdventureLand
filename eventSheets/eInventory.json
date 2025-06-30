@@ -8090,6 +8090,13 @@
 								"instance-variable": "MaxLinks",
 								"value": "0"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLand.EnemyPause.pause(\"itemHint\");"
+							]
 						}
 					],
 					"sid": 557280665239637,
@@ -10139,6 +10146,13 @@
 								"variable": "ItemShowing",
 								"value": "false"
 							}
+						},
+						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"(globalThis as any).AdventureLand.EnemyPause.resume(\"itemHint\");"
+							]
 						}
 					],
 					"sid": 618391788572328,
