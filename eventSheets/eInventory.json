@@ -5298,6 +5298,15 @@
 									}
 								},
 								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 252241969827651,
+									"parameters": {
+										"variable": "CurrentItemSlot",
+										"value": "ItemSlot.SlotID"
+									}
+								},
+								{
 									"callFunction": "UpdateNumbersOnDrop",
 									"sid": 222198734143688,
 									"parameters": [
@@ -6860,27 +6869,28 @@
 							"conditions": [],
 							"actions": [
 								{
-									"callFunction": "populateItemSlots",
-									"sid": 783336764518300
-								},
-								{
-									"callFunction": "SaveGameData",
-									"sid": 390832975113310
-								},
-								{
 									"type": "script",
 									"language": "typescript",
 									"script": [
 										"console.log(\"=== UNEQUIP ITEM ===\");",
 										"console.log(\"ItemID:\", localVars.itemID);",
 										"console.log(\"Category:\", localVars.equipCategory);",
-										"",
+										"// After the array push (after your console.log statements)",
 										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
-										"console.log(\"Array height before push:\", arr.height);",
-										"",
-										"// After pushing to array",
-										"console.log(\"Array height after push:\", arr.height);"
+										"// Since you're using push, the item goes to the end",
+										"// Array height - 1 gives us the index of the last item",
+										"const placedAtIndex = arr.height - 1;",
+										"// Set CurrentItemSlot to where we just placed the item",
+										"runtime.globalVars.CurrentItemSlot = placedAtIndex;"
 									]
+								},
+								{
+									"callFunction": "populateItemSlots",
+									"sid": 186091511119000
+								},
+								{
+									"callFunction": "SaveGameData",
+									"sid": 315995491077307
 								}
 							],
 							"sid": 251467610659351
@@ -9124,7 +9134,16 @@
 									"isInverted": true
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "SquareActive",
+									"sid": 730354496537990,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
 							"sid": 702160264108215,
 							"children": [
 								{

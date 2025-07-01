@@ -169,7 +169,7 @@ export class EnhancedEnemyAIFactory {
 
     // Debug log every 60 frames
     if (Math.random() < 0.016) {
-      console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
+      //console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
     }
     enemyData.stateTimer -= dt;
 

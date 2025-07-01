@@ -2876,238 +2876,157 @@
 												"variable": "currentCount",
 												"value": "Dict_ItemNumbers.Get(itemName)"
 											}
-										}
-									],
-									"sid": 674337466697552,
-									"children": [
+										},
 										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 659743446546478,
-													"parameters": {
-														"variable": "currentCount",
-														"comparison": 4,
-														"value": "0"
-													}
-												}
-											],
-											"actions": [],
-											"sid": 477689383852584,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 979889240625952,
-															"parameters": {
-																"variable": "currentCount",
-																"comparison": 0,
-																"value": "1"
-															}
-														}
-													],
-													"actions": [
-														{
-															"type": "comment",
-															"text": "// Last item - set to 0"
-														},
-														{
-															"id": "set-key",
-															"objectClass": "Dict_ItemNumbers",
-															"sid": 857069216646561,
-															"parameters": {
-																"key": "itemName",
-																"value": "0"
-															}
-														}
-													],
-													"sid": 351149519425872,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "compare-size",
-																	"objectClass": "Arr_InvCollection",
-																	"sid": 543931402729592,
-																	"parameters": {
-																		"axis": "y",
-																		"comparison": 0,
-																		"value": "1"
-																	}
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-at-xy",
-																	"objectClass": "Arr_InvCollection",
-																	"sid": 312428475213311,
-																	"parameters": {
-																		"x": "0",
-																		"y": "0",
-																		"value": "0"
-																	}
-																}
-															],
-															"sid": 888249912534294
-														},
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "compare-size",
-																	"objectClass": "Arr_InvCollection",
-																	"sid": 306778051327199,
-																	"parameters": {
-																		"axis": "y",
-																		"comparison": 4,
-																		"value": "1"
-																	}
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-at-xy",
-																	"objectClass": "Arr_InvCollection",
-																	"sid": 520786409583924,
-																	"parameters": {
-																		"x": "0",
-																		"y": "0",
-																		"value": "0"
-																	}
-																}
-															],
-															"sid": 179097137972776,
-															"children": [
-																{
-																	"eventType": "block",
-																	"conditions": [
-																		{
-																			"id": "compare-eventvar",
-																			"objectClass": "System",
-																			"sid": 781756734107424,
-																			"parameters": {
-																				"variable": "CurrentInvPage",
-																				"comparison": 0,
-																				"value": "0"
-																			}
-																		}
-																	],
-																	"actions": [
-																		{
-																			"id": "delete",
-																			"objectClass": "Arr_InvCollection",
-																			"sid": 759403971891913,
-																			"parameters": {
-																				"index": "CurrentItemSlot",
-																				"axis": "y"
-																			}
-																		}
-																	],
-																	"sid": 697517568147535
-																},
-																{
-																	"eventType": "block",
-																	"conditions": [
-																		{
-																			"id": "compare-eventvar",
-																			"objectClass": "System",
-																			"sid": 245341977688883,
-																			"parameters": {
-																				"variable": "CurrentInvPage",
-																				"comparison": 4,
-																				"value": "0"
-																			}
-																		}
-																	],
-																	"actions": [
-																		{
-																			"id": "delete",
-																			"objectClass": "Arr_InvCollection",
-																			"sid": 959554489386831,
-																			"parameters": {
-																				"index": "CurrentItemSlot + (25*CurrentInvPage)",
-																				"axis": "y"
-																			}
-																		}
-																	],
-																	"sid": 404929724537569
-																}
-															]
-														}
-													]
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 883132896783419,
-															"parameters": {
-																"variable": "currentCount",
-																"comparison": 4,
-																"value": "1"
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "set-key",
-															"objectClass": "Dict_ItemNumbers",
-															"sid": 724726001487007,
-															"parameters": {
-																"key": "itemName",
-																"value": "currentCount - 1"
-															}
-														}
-													],
-													"sid": 615394575843751
-												},
-												{
-													"eventType": "block",
-													"conditions": [],
-													"actions": [
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 193005851358487,
-															"disabled": true,
-															"parameters": {
-																"variable": "CurrentItemSlot",
-																"value": "-1"
-															}
-														},
-														{
-															"callFunction": "populateItemSlots",
-															"sid": 202471857927154
-														},
-														{
-															"callFunction": "SaveGameData",
-															"sid": 398765867965979
-														},
-														{
-															"type": "script",
-															"language": "javascript",
-															"script": [
-																"// In UpdateNumbersOnDrop, add a \"Run JavaScript\" action:",
-																"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
-																"        console.log(`Array height after: ${arr2.height}`);",
-																"        const newCount = runtime.objects.Dict_ItemNumbers.getFirstInstance().get(localVars.itemName);",
-																"        console.log(`New count: ${newCount}`);"
-															]
-														}
-													],
-													"sid": 214310799777603
-												}
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"// UpdateNumbersOnDrop Function - Fixed TypeScript Implementation",
+												"// Place this in the TypeScript script block within the UpdateNumbersOnDrop function",
+												"",
+												"// Get references to runtime objects",
+												"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+												"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
+												"",
+												"// Get function parameters and local variables",
+												"const dropItemID = localVars.DropItemID;",
+												"const itemName = localVars.itemName;",
+												"let currentCount = localVars.currentCount;",
+												"",
+												"// Debug logging",
+												"console.log(\"=== UpdateNumbersOnDrop Debug ===\");",
+												"console.log(\"Dropping ItemID:\", dropItemID);",
+												"console.log(\"Item Name:\", itemName);",
+												"console.log(\"Current Slot:\", runtime.globalVars.CurrentItemSlot);",
+												"console.log(\"Current Page:\", runtime.globalVars.CurrentInvPage);",
+												"",
+												"// Validate the slot index",
+												"const currentSlot = runtime.globalVars.CurrentItemSlot;",
+												"if (currentSlot < 0) {",
+												"    console.error(\"Invalid slot index:\", currentSlot);",
+												"    return;",
+												"}",
+												"",
+												"// Calculate the actual array index based on the current page",
+												"const itemsPerPage = 25;",
+												"const actualIndex = (runtime.globalVars.CurrentInvPage * itemsPerPage) + currentSlot;",
+												"",
+												"console.log(\"Actual array index to remove:\", actualIndex);",
+												"",
+												"// Get the current count from dictionary",
+												"const dataMap = dict.getDataMap();",
+												"const dictValue = dataMap.get(itemName);",
+												"currentCount = dictValue ? Number(dictValue) : 0;",
+												"",
+												"console.log(\"Current count from dictionary:\", currentCount);",
+												"",
+												"// Update local variable for event sheet access",
+												"localVars.currentCount = currentCount;",
+												"",
+												"// Function to remove item at specific index and compact array",
+												"function removeItemAtIndex(array: IArrayInstance, index: number): void {",
+												"    const height = array.height;",
+												"    console.log(`Removing item at index ${index} from array of height ${height}`);",
+												"    ",
+												"    // Validate index",
+												"    if (index < 0 || index >= height) {",
+												"        console.error(\"Index out of bounds:\", index);",
+												"        return;",
+												"    }",
+												"    ",
+												"    // Get the item being removed for verification",
+												"    const removedItem = array.getAt(0, index);",
+												"    console.log(\"Removing item:\", removedItem);",
+												"    ",
+												"    // Shift all items after the removed index up by one",
+												"    for (let i = index; i < height - 1; i++) {",
+												"        const nextItem = array.getAt(0, i + 1);",
+												"        array.setAt(nextItem, 0, i);",
+												"    }",
+												"    ",
+												"    // Remove the last element (now duplicate)",
+												"    if (height > 1) {",
+												"        array.setSize(1, height - 1, 1);",
+												"    } else {",
+												"        // If only one item, set to 0",
+												"        array.setAt(0, 0, 0);",
+												"    }",
+												"    ",
+												"    console.log(\"Array height after removal:\", array.height);",
+												"}",
+												"",
+												"// Handle the array removal",
+												"if (currentCount > 0) {",
+												"    if (currentCount === 1) {",
+												"        // Last item of this type - remove from array",
+												"        console.log(\"Last item of this type, removing from array\");",
+												"        ",
+												"        // Find and remove the item from the array",
+												"        let itemFound = false;",
+												"        for (let i = 0; i < arr.height; i++) {",
+												"            if (arr.getAt(0, i) === dropItemID) {",
+												"                console.log(`Found item at array index ${i}`);",
+												"                removeItemAtIndex(arr, i);",
+												"                itemFound = true;",
+												"                break;",
+												"            }",
+												"        }",
+												"        ",
+												"        if (!itemFound) {",
+												"            console.error(\"Item not found in array!\");",
+												"        }",
+												"        ",
+												"        // Update dictionary to 0",
+												"        dict.getDataMap().set(itemName, \"0\");",
+												"        ",
+												"        // Reset CurrentItemSlot if we removed the last item",
+												"        if (arr.height === 1 && arr.getAt(0, 0) === 0) {",
+												"            runtime.globalVars.CurrentItemSlot = 0;",
+												"        } else {",
+												"            // Adjust CurrentItemSlot if needed",
+												"            const newMaxSlot = Math.min(14, arr.height - 1);",
+												"            if (runtime.globalVars.CurrentItemSlot > newMaxSlot) {",
+												"                runtime.globalVars.CurrentItemSlot = newMaxSlot;",
+												"            }",
+												"        }",
+												"    } else {",
+												"        // Multiple items of this type - just decrement count",
+												"        console.log(\"Multiple items, decrementing count\");",
+												"        const newCount = currentCount - 1;",
+												"        dict.getDataMap().set(itemName, newCount.toString());",
+												"    }",
+												"} else {",
+												"    console.warn(\"Attempting to drop item with count 0!\");",
+												"}",
+												"",
+												"// Debug final state",
+												"console.log(\"Final array height:\", arr.height);",
+												"console.log(\"Final dictionary count:\", dict.getDataMap().get(itemName));",
+												"console.log(\"Final CurrentItemSlot:\", runtime.globalVars.CurrentItemSlot);",
+												"console.log(\"=== End UpdateNumbersOnDrop ===\");"
+											]
+										},
+										{
+											"callFunction": "populateItemSlots",
+											"sid": 860097232593957
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 281768477799332
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"// In UpdateNumbersOnDrop, add a \"Run JavaScript\" action:",
+												"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
+												"        console.log(`Array height after: ${arr2.height}`);",
+												"        const newCount = runtime.objects.Dict_ItemNumbers.getFirstInstance()!.getDataMap().get(localVars.itemName);",
+												"        console.log(`New count: ${newCount}`)"
 											]
 										}
-									]
+									],
+									"sid": 674337466697552
 								}
 							]
 						},
@@ -3145,7 +3064,7 @@
 									"conditions": [
 										{
 											"id": "compare-instance-variable",
-											"objectClass": "Inventories",
+											"objectClass": "Arr_InvCollection",
 											"sid": 643444055537876,
 											"parameters": {
 												"instance-variable": "CategoryName",
@@ -3190,7 +3109,7 @@
 											"conditions": [
 												{
 													"id": "contains-value",
-													"objectClass": "Inventories",
+													"objectClass": "Arr_InvCollection",
 													"sid": 407029693368242,
 													"parameters": {
 														"value": "GainItemID"
@@ -3234,7 +3153,7 @@
 											"conditions": [
 												{
 													"id": "contains-value",
-													"objectClass": "Inventories",
+													"objectClass": "Arr_InvCollection",
 													"sid": 376017171991719,
 													"parameters": {
 														"value": "GainItemID"
@@ -3286,7 +3205,7 @@
 													"actions": [
 														{
 															"id": "set-at-x",
-															"objectClass": "Inventories",
+															"objectClass": "Arr_InvCollection",
 															"sid": 790698110692244,
 															"parameters": {
 																"x": "0",
@@ -3322,7 +3241,7 @@
 													"actions": [
 														{
 															"id": "push",
-															"objectClass": "Inventories",
+															"objectClass": "Arr_InvCollection",
 															"sid": 588188304352170,
 															"parameters": {
 																"where": "back",
@@ -3439,6 +3358,31 @@
 										"variable": "CurrentInvWindow",
 										"value": "\"main\""
 									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Add this single debug script to OpenClose_Inventory",
+										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
+										"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+										"",
+										"console.log(\"=== INVENTORY CHECK ===\");",
+										"",
+										"// Show array contents",
+										"console.log(\"Array height:\", arr.height);",
+										"for (let i = 0; i < arr.height; i++) {",
+										"    const itemId = arr.getAt(0, i);",
+										"    console.log(`  Slot ${i}: ${itemId}`);",
+										"}",
+										"",
+										"// Show dictionary contents",
+										"const dataMap = dict.getDataMap();",
+										"console.log(\"Dictionary contents:\");",
+										"for (const [key, value] of dataMap) {",
+										"    console.log(`  ${key}: ${value}`);",
+										"}"
+									]
 								}
 							],
 							"sid": 192841212808491,
@@ -3504,6 +3448,24 @@
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "deactivated"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 758755782630891,
+											"parameters": {
+												"variable": "CurrentItemSlot",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 684285976692288,
+											"parameters": {
+												"variable": "SelectedItemUID",
+												"value": "-1"
 											}
 										},
 										{
@@ -3627,16 +3589,6 @@
 												},
 												{
 													"id": "set-position",
-													"objectClass": "Player_Mask",
-													"sid": 350516080287985,
-													"disabled": true,
-													"parameters": {
-														"x": "430",
-														"y": "240"
-													}
-												},
-												{
-													"id": "set-position",
 													"objectClass": "PlayerSystem",
 													"sid": 692159191999721,
 													"parameters": {
@@ -3655,6 +3607,10 @@
 															"objectClass": "PlayerSystem"
 														}
 													}
+												},
+												{
+													"callFunction": "populateItemSlots",
+													"sid": 166372542631983
 												}
 											],
 											"sid": 866728746194799
@@ -3731,6 +3687,15 @@
 											"parameters": {
 												"variable": "CurrentItemSlot",
 												"value": "0"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 161682341311004,
+											"parameters": {
+												"variable": "SelectedItemUID",
+												"value": "-1"
 											}
 										},
 										{
