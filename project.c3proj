@@ -825,7 +825,29 @@
 					}
 				}
 			],
-			"subfolders": [],
+			"subfolders": [
+				{
+					"items": [],
+					"subfolders": [
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "enemy-ai"
+						},
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "inventory-system"
+						},
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "item-manager"
+						}
+					],
+					"name": "external"
+				}
+			],
 			"autoReloadOnPreview": true
 		},
 		"sound": {

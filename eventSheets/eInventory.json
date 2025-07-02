@@ -2663,10 +2663,10 @@
 										{
 											"id": "set-instvar-value",
 											"objectClass": "ItemSlot",
-											"sid": 347158737356521,
+											"sid": 881967319470948,
 											"parameters": {
 												"instance-variable": "NumberOfItems",
-												"value": "Dict_ItemNumbers.Get(Self.ItemName)"
+												"value": "Dict_ItemNumbers.Get(Functions.GetItemName(Self.ItemID))"
 											}
 										},
 										{
@@ -6592,9 +6592,39 @@
 					"conditions": [],
 					"actions": [
 						{
+							"type": "script",
+							"language": "typescript",
+							"script": [
+								"// Add this at the VERY START of EquipItem function",
+								"console.log(\"=== EQUIP ITEM START ===\");",
+								"console.log(`Parameters: itemID=${localVars.itemID}, itemSlot=${localVars.itemSlot}, category=${localVars.equipCategory}`);",
+								"",
+								"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+								"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
+								"",
+								"// Log initial state",
+								"console.log(\"Dictionary before ANY changes:\");",
+								"const dataMap = dict.getDataMap();",
+								"for (const [key, value] of dataMap) {",
+								"    if (value !== \"0\") {",
+								"        console.log(`  ${key}: ${value}`);",
+								"    }",
+								"}",
+								"",
+								"console.log(\"Array before ANY changes:\");",
+								"for (let i = 0; i < arr.height; i++) {",
+								"    const id = Number(arr.getAt(0, i));",
+								"    if (id > 0) {",
+								"        const name = runtime.callFunction(\"GetItemName\", id);",
+								"        console.log(`  Slot ${i}: ${name} (ID: ${id})`);",
+								"    }",
+								"}"
+							]
+						},
+						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 541356176099035,
+							"sid": 352870536170258,
 							"parameters": {
 								"variable": "oldEquippedName",
 								"value": "Dict_SaveGameData.Get(equipCategory)"
@@ -6603,7 +6633,7 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 366365936004579,
+							"sid": 531290512845545,
 							"parameters": {
 								"variable": "oldEquippedID",
 								"value": "int(Dict_SaveGameData.Get(equipCategory))"
@@ -6611,7 +6641,7 @@
 						},
 						{
 							"callFunction": "UpdateNumbersOnDrop",
-							"sid": 503591108896032,
+							"sid": 736636235624340,
 							"parameters": [
 								"itemID"
 							]
@@ -6763,6 +6793,34 @@
 							"conditions": [],
 							"actions": [
 								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 215139169608056,
+									"parameters": {
+										"variable": "CurrentItemSlot",
+										"value": "-1"
+									}
+								},
+								{
+									"callFunction": "populateItemSlots",
+									"sid": 665842201211319
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Add this AFTER the dictionary is set to 0 but BEFORE populateItemSlots",
+										"console.log(\"\\nDictionary AFTER setting equipped item to 0:\");",
+										"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+										"const dataMap = dict.getDataMap();",
+										"for (const [key, value] of dataMap) {",
+										"    if (value !== \"0\") {",
+										"        console.log(`  ${key}: ${value}`);",
+										"    }",
+										"}"
+									]
+								},
+								{
 									"id": "set-key",
 									"objectClass": "Dict_SaveGameData",
 									"sid": 501818448795717,
@@ -6772,12 +6830,21 @@
 									}
 								},
 								{
-									"callFunction": "populateItemSlots",
-									"sid": 646132387117921
-								},
-								{
 									"callFunction": "SaveGameData",
 									"sid": 982389408236312
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Add this AFTER populateItemSlots is called",
+										"console.log(\"\\nDictionary AFTER populateItemSlots:\");",
+										"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+										"const dataMap = dict.getDataMap();",
+										"for (const [key, value] of dataMap) {",
+										"    console.log(`  ${key}: ${value}`);",
+										"}"
+									]
 								}
 							],
 							"sid": 561180304158408

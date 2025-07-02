@@ -9,6 +9,9 @@ import { InventoryUIOptimizer } from "./inventory-ui-optimization.js";
 import { InventoryUIPool } from "./inventory-ui-pool.js";
 // Optional: import { InventoryPerformanceTest } from "./inventory-performance-test.js";
 
+// POTION SYSTEM IMPORT
+import PotionSystem from "./potion-system.js";
+
 console.log("🎮 Adventure Land - Systems Loading...");
 
 declare function runOnStartup(callback: (runtime: any) => void): void;
@@ -130,6 +133,49 @@ runOnStartup(async runtime => {
       console.log(`Initializing world ${worldId}`);
       // Add world initialization logic here
     }
+  };
+
+  // POTION SYSTEM namespace
+  (globalThis as any).AdventureLand.Potions = {
+    // Initialize the potion system
+    initialize: () => PotionSystem.initialize(),
+    
+    // Use a potion
+    usePotion: (playerUID: number, itemId: number) => 
+      PotionSystem.usePotion(playerUID, itemId),
+    
+    // Update effects (call each tick with deltaTime)
+    update: (playerUID: number, deltaTime: number) => 
+      PotionSystem.update(playerUID, deltaTime),
+    
+    // Get active effects
+    getActiveEffects: (playerUID: number) => 
+      PotionSystem.getActiveEffects(playerUID),
+    
+    // Check for specific effect
+    hasEffect: (playerUID: number, effectType: string) => 
+      PotionSystem.hasEffect(playerUID, effectType as any),
+    
+    // Get effect value (for calculations)
+    getEffectValue: (playerUID: number, effectType: string) => 
+      PotionSystem.getEffectValue(playerUID, effectType as any),
+    
+    // Clear all effects (on death, etc.)
+    clearEffects: (playerUID: number) => 
+      PotionSystem.clearEffects(playerUID),
+    
+    // Remove specific effect
+    removeEffect: (playerUID: number, effectType: string) => 
+      PotionSystem.removeEffect(playerUID, effectType as any),
+    
+    // Save/Load support
+    getSaveData: (playerUID: number) => 
+      PotionSystem.getSaveData(playerUID),
+    loadSaveData: (playerUID: number, data: any) => 
+      PotionSystem.loadSaveData(playerUID, data),
+    
+    // Debug
+    debug: (playerUID?: number) => PotionSystem.debug(playerUID)
   };
 
   // Legacy direct global functions (for backward compatibility)

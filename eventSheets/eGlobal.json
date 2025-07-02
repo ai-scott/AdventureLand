@@ -3060,36 +3060,197 @@
 							"sid": 288686251962069,
 							"children": [
 								{
+									"eventType": "variable",
+									"name": "currentQty",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 623328316840165
+								},
+								{
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "compare-instance-variable",
-											"objectClass": "Arr_InvCollection",
-											"sid": 643444055537876,
+											"id": "has-key",
+											"objectClass": "Dict_ItemNumbers",
+											"sid": 409188013176213,
 											"parameters": {
-												"instance-variable": "CategoryName",
-												"comparison": 0,
-												"value": "\"main\""
+												"key": "Functions.GetItemName(GainItemID)"
 											}
 										}
 									],
 									"actions": [
 										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 850880465324198,
+											"parameters": {
+												"variable": "currentQty",
+												"value": "int(Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)))"
+											}
+										},
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 877178782113363,
+											"parameters": {
+												"variable": "currentQty",
+												"value": "NumberGained"
+											}
+										},
+										{
+											"id": "set-key",
+											"objectClass": "Dict_ItemNumbers",
+											"sid": 101235087140532,
+											"parameters": {
+												"key": "Functions.GetItemName(GainItemID)",
+												"value": "currentQty"
+											}
+										}
+									],
+									"sid": 615477542141041
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 224847052386509
+										}
+									],
+									"actions": [
+										{
+											"id": "add-key",
+											"objectClass": "Dict_ItemNumbers",
+											"sid": 540209107611816,
+											"parameters": {
+												"key": "Functions.GetItemName(GainItemID)",
+												"value": "NumberGained"
+											}
+										}
+									],
+									"sid": 822921577658496
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "contains-value",
+											"objectClass": "Arr_InvCollection",
+											"sid": 312657584091406,
+											"parameters": {
+												"value": "GainItemID"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [],
+									"sid": 901471152754735,
+									"children": [
+										{
+											"eventType": "comment",
+											"text": "If the inventory is empty, we add the item to the first slot in the array and then update the dictionary. "
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 386285479077736,
+													"parameters": {
+														"first-value": "Arr_InvCollection.At(0)",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 431342253069597,
+													"parameters": {
+														"first-value": "Arr_InvCollection.At(0)",
+														"comparison": 0,
+														"second-value": "\"\""
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 190917027961803,
+													"parameters": {
+														"first-value": "Arr_InvCollection.Width",
+														"comparison": 0,
+														"second-value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-at-x",
+													"objectClass": "Arr_InvCollection",
+													"sid": 646438297498247,
+													"parameters": {
+														"x": "0",
+														"value": "GainItemID"
+													}
+												},
+												{
+													"type": "comment",
+													"text": "Edit these actions to use the return function to get ItemName"
+												}
+											],
+											"sid": 338399781465419,
+											"isOrBlock": true
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "else",
+													"objectClass": "System",
+													"sid": 839582792819544
+												}
+											],
+											"actions": [
+												{
+													"id": "push",
+													"objectClass": "Arr_InvCollection",
+													"sid": 241494636539371,
+													"parameters": {
+														"where": "back",
+														"value": "GainItemID",
+														"axis": "y"
+													}
+												}
+											],
+											"sid": 316760896976365
+										},
+										{
+											"eventType": "comment",
+											"text": "If the inventory already has items in it, we add the item as a new slot in the array and then update the dictionary"
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"callFunction": "populateItemSlots",
+											"sid": 528267824796999
+										},
+										{
+											"callFunction": "SaveGameData",
+											"sid": 367206079596982
+										},
+										{
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"// Add this debug code to your C3 UpdateNumbersOnPickup function",
-												"// Place it at the START of the function (before Event 81)",
-												"",
-												"console.log(\"=== C3 UpdateNumbersOnPickup START ===\");",
-												"console.log(\"GainItemID:\", localVars.GainItemID);",
-												"console.log(\"NumberGained:\", localVars.NumberGained);",
-												"",
-												"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
-												"console.log(\"Array at start:\", arr ? [arr.getAt(0), arr.getAt(1), arr.getAt(2)] : \"null\");",
-												"",
-												"// Add this at the END of the function (after Event 85)",
-												"",
 												"console.log(\"=== C3 UpdateNumbersOnPickup END ===\");",
 												"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
 												"console.log(\"Array at end:\", arr2 ? [arr2.getAt(0), arr2.getAt(1), arr2.getAt(2)] : \"null\");",
@@ -3102,202 +3263,7 @@
 											]
 										}
 									],
-									"sid": 311134712803394,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "contains-value",
-													"objectClass": "Arr_InvCollection",
-													"sid": 407029693368242,
-													"parameters": {
-														"value": "GainItemID"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "add-key",
-													"objectClass": "Dict_ItemNumbers",
-													"sid": 439030655042453,
-													"parameters": {
-														"key": "Functions.GetItemName(GainItemID)",
-														"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
-													}
-												},
-												{
-													"id": "set-eventvar-value",
-													"objectClass": "System",
-													"sid": 519628712917558,
-													"parameters": {
-														"variable": "TempVarX",
-														"value": "Functions.GetItemName(GainItemID)"
-													}
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const itemName = runtime.callFunction(\"GetItemName\", localVars.GainItemID);",
-														"console.log('Setting Dict_ItemNumbers key:', runtime.globalVars, 'value:', localVars.NumberGained);",
-														"//runtime.objects.Dict_ItemNumbers.getFirstInstance()!.setKey(itemName, localVars.NumberGained);",
-														""
-													]
-												}
-											],
-											"sid": 314281050670712
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "contains-value",
-													"objectClass": "Arr_InvCollection",
-													"sid": 376017171991719,
-													"parameters": {
-														"value": "GainItemID"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [],
-											"sid": 477601537389018,
-											"children": [
-												{
-													"eventType": "comment",
-													"text": "If the inventory is empty, we add the item to the first slot in the array and then update the dictionary. "
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 641550738251935,
-															"parameters": {
-																"first-value": "Arr_InvCollection.At(0)",
-																"comparison": 0,
-																"second-value": "0"
-															}
-														},
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 627747333617316,
-															"parameters": {
-																"first-value": "Arr_InvCollection.At(0)",
-																"comparison": 0,
-																"second-value": "\"\""
-															}
-														},
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 574246337292443,
-															"parameters": {
-																"first-value": "Arr_InvCollection.Width",
-																"comparison": 0,
-																"second-value": "0"
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "set-at-x",
-															"objectClass": "Arr_InvCollection",
-															"sid": 790698110692244,
-															"parameters": {
-																"x": "0",
-																"value": "GainItemID"
-															}
-														},
-														{
-															"type": "comment",
-															"text": "Edit these actions to use the return function to get ItemName"
-														},
-														{
-															"id": "add-key",
-															"objectClass": "Dict_ItemNumbers",
-															"sid": 594209200955512,
-															"parameters": {
-																"key": "Functions.GetItemName(GainItemID)",
-																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
-															}
-														}
-													],
-													"sid": 342629802110256,
-													"isOrBlock": true
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "else",
-															"objectClass": "System",
-															"sid": 266299379695082
-														}
-													],
-													"actions": [
-														{
-															"id": "push",
-															"objectClass": "Arr_InvCollection",
-															"sid": 588188304352170,
-															"parameters": {
-																"where": "back",
-																"value": "GainItemID",
-																"axis": "y"
-															}
-														},
-														{
-															"id": "add-key",
-															"objectClass": "Dict_ItemNumbers",
-															"sid": 581383980241227,
-															"parameters": {
-																"key": "Functions.GetItemName(GainItemID)",
-																"value": "Dict_ItemNumbers.Get(Functions.GetItemName(GainItemID)) + NumberGained"
-															}
-														}
-													],
-													"sid": 250010488828252
-												},
-												{
-													"eventType": "comment",
-													"text": "If the inventory already has items in it, we add the item as a new slot in the array and then update the dictionary"
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [],
-											"actions": [
-												{
-													"callFunction": "populateItemSlots",
-													"sid": 851301076229613
-												},
-												{
-													"callFunction": "SaveGameData",
-													"sid": 649078742436796
-												},
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"console.log(\"=== C3 UpdateNumbersOnPickup END ===\");",
-														"const arr2 = runtime.objects.Arr_InvCollection.getFirstInstance();",
-														"console.log(\"Array at end:\", arr2 ? [arr2.getAt(0), arr2.getAt(1), arr2.getAt(2)] : \"null\");",
-														"",
-														"// Also add debug to Event 82 action:",
-														"console.log(\"Event 82: Setting slot 0 to\", localVars.GainItemID);",
-														"",
-														"// And Event 84 action:",
-														"console.log(\"Event 84: Pushing\", localVars.GainItemID, \"to back\");"
-													]
-												}
-											],
-											"sid": 316454020417933
-										}
-									]
+									"sid": 237828732049529
 								}
 							]
 						},
