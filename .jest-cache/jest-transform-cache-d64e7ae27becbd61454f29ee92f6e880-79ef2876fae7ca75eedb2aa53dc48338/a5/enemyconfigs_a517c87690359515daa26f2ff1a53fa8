@@ -1,0 +1,138 @@
+2b106b46bd8794fb7d66a4131f736fe9
+"use strict";
+// scripts/enemy-configs.ts - Enemy Configuration Data with Extended Types
+// This is the main enemy configuration file for Adventure Land
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CRAB_CONFIG = exports.OOZE_CONFIG = void 0;
+exports.getEnemyConfig = getEnemyConfig;
+// Helper function to get enemy config
+function getEnemyConfig(type) {
+    const configs = {
+        "Ooze": exports.OOZE_CONFIG,
+        "Crab": exports.CRAB_CONFIG
+    };
+    return configs[type] || null;
+}
+// ===== ENEMY CONFIGURATIONS =====
+exports.OOZE_CONFIG = {
+    type: "Ooze",
+    baseStats: {
+        health: 2,
+        speed: 15,
+        viewDistance: 120,
+        attackDistance: 0
+    },
+    behaviors: [
+        {
+            name: "idle",
+            duration: [1.0, 2.0],
+            weight: 4,
+            actions: [
+                { type: 'animate', params: { name: 'Idle_{direction}' } },
+                { type: 'move', params: { pattern: 'toward_player', speed: 20 } }
+            ]
+        },
+        {
+            name: "hop",
+            duration: [0.8, 1.2],
+            weight: 2,
+            cooldown: 2.0,
+            conditions: [
+                { type: 'distance', operator: '<', value: 250 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Hop_{direction}' } },
+                { type: 'move', params: { pattern: 'toward_player', speed: 50 } },
+                { type: 'sound', params: { sound: 'Slime_Jump' } }
+            ]
+        },
+        {
+            name: "hurt",
+            duration: [0.5, 0.5],
+            weight: 0,
+            conditions: [
+                { type: 'hurt', operator: '==', value: 1 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Hurt_{direction}' } },
+                { type: 'move', params: { pattern: 'stop' } },
+                { type: 'invulnerable', params: { duration: 1.0 } }
+            ]
+        }
+    ]
+};
+exports.CRAB_CONFIG = {
+    type: "Crab",
+    baseStats: {
+        health: 3,
+        speed: 20,
+        viewDistance: 150,
+        attackDistance: 32
+    },
+    behaviors: [
+        {
+            name: "idle",
+            duration: [2.0, 4.0],
+            weight: 3,
+            actions: [
+                { type: 'animate', params: { name: 'Idle_{direction}' } },
+                { type: 'move', params: { pattern: 'stop' } }
+            ]
+        },
+        {
+            name: "cranky_chase",
+            duration: [1.5, 3.0],
+            weight: 6,
+            conditions: [
+                { type: 'distance', operator: '<', value: 150 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Walk_{sideways}' } },
+                { type: 'move', params: { pattern: 'crab_toward_player', speed: 35 } }
+            ]
+        },
+        {
+            name: "hurt_flash",
+            duration: [0.2, 0.2],
+            weight: 0,
+            conditions: [
+                { type: 'hurt', operator: '==', value: 1 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Hurt_{direction}' } },
+                { type: 'move', params: { pattern: 'stop' } },
+                { type: 'set_effect', params: { effect: 'SetColor', parameter: 'brightness', value: 2.0 } }
+            ]
+        },
+        {
+            name: "hurt_shell",
+            duration: [1.0, 2.0],
+            weight: 15,
+            cooldown: 5.0,
+            conditions: [
+                { type: 'hurt', operator: '==', value: 0 },
+                { type: 'distance', operator: '<', value: 100 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Hurt_{direction}' } },
+                { type: 'move', params: { pattern: 'away_from_player', speed: 10 } },
+                { type: 'invulnerable', params: { duration: 2.0 } },
+                { type: 'set_effect', params: { effect: 'SetColor', enabled: false } }
+            ]
+        },
+        {
+            name: "sideways_dodge",
+            duration: [0.8, 1.2],
+            weight: 4,
+            cooldown: 2.0,
+            conditions: [
+                { type: 'distance', operator: '<', value: 80 },
+                { type: 'random', operator: '<', value: 30 }
+            ],
+            actions: [
+                { type: 'animate', params: { name: 'Walk_{sideways}' } },
+                { type: 'move', params: { pattern: 'sideways_left', speed: 50 } }
+            ]
+        }
+    ]
+};

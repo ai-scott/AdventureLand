@@ -241,6 +241,10 @@ runOnStartup(async runtime => {
         // Initialize the inventory optimization system
         al.Inventory.initialize(runtime);
         console.log("✅ Inventory optimization systems ready!");
+        
+        // Initialize the potion system
+        al.Potions.initialize();
+        console.log("✅ Potion system initialized!");
       }
     } catch (error) {
       console.error("❌ Failed to initialize item/inventory systems:", error);
@@ -252,6 +256,7 @@ runOnStartup(async runtime => {
   console.log("✅ Item system ready - placeholder functions available");
   console.log("✅ Inventory management ready - placeholder functions available");
   console.log("✅ Transitions system ready");
+  console.log("✅ Potion system ready - effects and cooldowns managed");
   console.log("✅ Performance optimizations ready - O(1) lookups + smart UI updates");
 
   // Debug info
@@ -261,6 +266,7 @@ runOnStartup(async runtime => {
   console.log("- AdventureLand.Inventory (inventory management - now with optimizations!)");
   console.log("- AdventureLand.UIOptimizer (smart UI update system)");
   console.log("- AdventureLand.Transitions (world transitions)");
+  console.log("- AdventureLand.Potions (potion effects and consumables)");
   console.log("- AdventureLand.EnemyPause (pause system integrated in enemy-ai.ts)");
   console.log("- Legacy global functions (for backward compatibility)");
 
@@ -273,6 +279,7 @@ runOnStartup(async runtime => {
     console.log("- Inventory methods:", al.Inventory ? Object.keys(al.Inventory).length : 0);
     console.log("- UIOptimizer methods:", al.UIOptimizer ? Object.keys(al.UIOptimizer).length : 0);
     console.log("- Transitions methods:", al.Transitions ? Object.keys(al.Transitions).length : 0);
+    console.log("- Potions methods:", al.Potions ? Object.keys(al.Potions).length : 0);
   }
 });
 
@@ -295,4 +302,10 @@ runOnStartup(async runtime => {
  *    - Call: AdventureLand.Inventory.checkUpdates(runtime) instead of populateItemSlots every tick
  *    - Call: AdventureLand.Inventory.open(runtime) when opening inventory
  *    - Call: AdventureLand.Inventory.close() when closing inventory
+ * 
+ * For Potion System:
+ *    - Call: AdventureLand.Potions.usePotion(Player.UID, itemId) when using a potion
+ *    - Call: AdventureLand.Potions.update(Player.UID, dt) every tick for effect updates
+ *    - Call: AdventureLand.Potions.getEffectValue(Player.UID, "speed") for calculations
+ *    - Call: AdventureLand.Potions.clearEffects(Player.UID) on player death
  */

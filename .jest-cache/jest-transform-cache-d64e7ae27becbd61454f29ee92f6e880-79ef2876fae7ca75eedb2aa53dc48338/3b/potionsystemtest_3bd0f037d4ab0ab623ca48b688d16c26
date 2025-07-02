@@ -1,0 +1,238 @@
+fcf4d99b434e24f3719e8c54c6a30d87
+"use strict";
+// potion-system.test.ts
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+// Mock ItemManager
+jest.mock("../../scripts/item-manager", () => ({
+    ItemManager: {
+        hasItem: jest.fn(),
+        removeFromInventory: jest.fn()
+    }
+}));
+const potion_system_1 = __importDefault(require("../../scripts/potion-system"));
+const item_manager_1 = require("../../scripts/item-manager");
+describe("PotionSystem", () => {
+    const mockPlayerUID = 1001;
+    const mockHealthPotionId = 201;
+    const mockSpeedPotionId = 204;
+    const mockStrengthPotionId = 205;
+    beforeEach(() => {
+        // Clear all mocks
+        jest.clearAllMocks();
+        // Reset potion system state - clear all players
+        potion_system_1.default.clearEffects(mockPlayerUID);
+        potion_system_1.default.clearEffects(1002); // Clear second test player too
+        // Initialize the system
+        potion_system_1.default.initialize();
+        // Default mock - player has potions
+        item_manager_1.ItemManager.hasItem.mockReturnValue(true);
+        item_manager_1.ItemManager.removeFromInventory.mockReturnValue(true);
+    });
+    describe("Initialization", () => {
+        test("should initialize with default potion configurations", () => {
+            // System is already initialized in beforeEach
+            expect(potion_system_1.default.debug).toBeDefined();
+        });
+    });
+    describe("Using Potions", () => {
+        test("should successfully use a health potion", () => {
+            const result = potion_system_1.default.usePotion(mockPlayerUID, mockHealthPotionId);
+            expect(result.success).toBe(true);
+            expect(result.message).toContain("recover 25 health");
+            expect(item_manager_1.ItemManager.hasItem).toHaveBeenCalledWith(mockHealthPotionId, 1);
+            expect(item_manager_1.ItemManager.removeFromInventory).toHaveBeenCalledWith(mockHealthPotionId, 1);
+        });
+        test("should fail if player doesn't have the potion", () => {
+            item_manager_1.ItemManager.hasItem.mockReturnValue(false);
+            const result = potion_system_1.default.usePotion(mockPlayerUID, mockHealthPotionId);
+            expect(result.success).toBe(false);
+            expect(result.message).toBe("You don't have this potion");
+            expect(item_manager_1.ItemManager.removeFromInventory).not.toHaveBeenCalled();
+        });
+        test("should fail if item is not a potion", () => {
+            const nonPotionId = 999;
+            const result = potion_system_1.default.usePotion(mockPlayerUID, nonPotionId);
+            expect(result.success).toBe(false);
+            expect(result.message).toBe("Item is not a potion");
+        });
+        test("should apply duration effects", () => {
+            const result = potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            expect(result.success).toBe(true);
+            expect(result.effects).toBeDefined();
+            expect(result.effects.length).toBe(1);
+            expect(result.effects[0].type).toBe("speed");
+            expect(result.effects[0].value).toBe(50);
+            expect(result.effects[0].remainingDuration).toBe(30);
+        });
+    });
+    describe("Effect Management", () => {
+        test("should track active effects", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            const effects = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effects.length).toBe(1);
+            expect(effects[0].type).toBe("speed");
+        });
+        test("should check if player has specific effect", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            expect(potion_system_1.default.hasEffect(mockPlayerUID, "speed")).toBe(true);
+            expect(potion_system_1.default.hasEffect(mockPlayerUID, "strength")).toBe(false);
+        });
+        test("should get effect value", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            expect(potion_system_1.default.getEffectValue(mockPlayerUID, "speed")).toBe(50);
+            expect(potion_system_1.default.getEffectValue(mockPlayerUID, "strength")).toBe(0);
+        });
+        test("should stack effects when allowed", () => {
+            // Strength potions can stack
+            potion_system_1.default.usePotion(mockPlayerUID, mockStrengthPotionId);
+            potion_system_1.default.usePotion(mockPlayerUID, mockStrengthPotionId);
+            const effects = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effects.length).toBe(1);
+            expect(effects[0].stacks).toBe(2);
+            expect(potion_system_1.default.getEffectValue(mockPlayerUID, "strength")).toBe(50); // 25 * 2
+        });
+        test("should not stack non-stackable effects", () => {
+            // Speed potions don't stack
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            // Simulate time passing
+            potion_system_1.default.update(mockPlayerUID, 5);
+            // Verify duration decreased
+            const effectsAfterUpdate = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effectsAfterUpdate[0].remainingDuration).toBe(25); // 30 - 5
+            // Use another speed potion
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            const effects = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effects.length).toBe(1);
+            expect(effects[0].stacks).toBe(1);
+            expect(effects[0].remainingDuration).toBe(30); // Duration refreshed
+        });
+    });
+    describe("Cooldowns", () => {
+        test("should enforce global cooldown", () => {
+            // Use health potion (has 1s global cooldown)
+            potion_system_1.default.usePotion(mockPlayerUID, mockHealthPotionId);
+            // Try to use another immediately
+            const result = potion_system_1.default.usePotion(mockPlayerUID, mockHealthPotionId);
+            expect(result.success).toBe(false);
+            expect(result.message).toContain("Cooldown active");
+        });
+        test("should enforce item-specific cooldown", () => {
+            // Use speed potion (has 60s cooldown)
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            // Simulate global cooldown passing
+            jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 2000);
+            // Try to use same potion again
+            const result = potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            expect(result.success).toBe(false);
+            expect(result.message).toContain("Cooldown active");
+        });
+    });
+    describe("Effect Updates", () => {
+        test("should update effect durations", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            const update = potion_system_1.default.update(mockPlayerUID, 5);
+            const effects = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effects[0].remainingDuration).toBe(25); // 30 - 5
+            expect(update.expiredEffects.length).toBe(0);
+        });
+        test("should expire effects when duration ends", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            // Fast forward past duration
+            const update = potion_system_1.default.update(mockPlayerUID, 31);
+            expect(update.expiredEffects.length).toBe(1);
+            expect(potion_system_1.default.getActiveEffects(mockPlayerUID).length).toBe(0);
+        });
+        test("should handle tick effects", () => {
+            // Use regeneration potion (ID 207)
+            const regenPotionId = 207;
+            potion_system_1.default.usePotion(mockPlayerUID, regenPotionId);
+            // Simulate 2 seconds passing (tick interval)
+            jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 2000);
+            const update = potion_system_1.default.update(mockPlayerUID, 2);
+            expect(update.tickEffects.length).toBe(1);
+            expect(update.tickEffects[0].type).toBe("regeneration");
+            expect(update.tickEffects[0].value).toBe(5);
+        });
+    });
+    describe("Effect Removal", () => {
+        test("should clear all effects", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            potion_system_1.default.usePotion(mockPlayerUID, mockStrengthPotionId);
+            potion_system_1.default.clearEffects(mockPlayerUID);
+            expect(potion_system_1.default.getActiveEffects(mockPlayerUID).length).toBe(0);
+        });
+        test("should remove specific effect type", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            potion_system_1.default.usePotion(mockPlayerUID, mockStrengthPotionId);
+            const removed = potion_system_1.default.removeEffect(mockPlayerUID, "speed");
+            expect(removed).toBe(true);
+            expect(potion_system_1.default.hasEffect(mockPlayerUID, "speed")).toBe(false);
+            expect(potion_system_1.default.hasEffect(mockPlayerUID, "strength")).toBe(true);
+        });
+    });
+    describe("Save/Load", () => {
+        test("should save effect data", () => {
+            potion_system_1.default.usePotion(mockPlayerUID, mockSpeedPotionId);
+            potion_system_1.default.usePotion(mockPlayerUID, mockStrengthPotionId);
+            const saveData = potion_system_1.default.getSaveData(mockPlayerUID);
+            expect(saveData.effects).toBeDefined();
+            expect(saveData.effects.length).toBe(2);
+            expect(saveData.effects[0].type).toBe("speed");
+            expect(saveData.effects[1].type).toBe("strength");
+        });
+        test("should load saved effect data", () => {
+            const saveData = {
+                effects: [
+                    {
+                        itemId: mockSpeedPotionId,
+                        type: "speed",
+                        value: 50,
+                        remainingDuration: 15,
+                        stacks: 1
+                    }
+                ]
+            };
+            potion_system_1.default.loadSaveData(mockPlayerUID, saveData);
+            const effects = potion_system_1.default.getActiveEffects(mockPlayerUID);
+            expect(effects.length).toBe(1);
+            expect(effects[0].type).toBe("speed");
+            expect(effects[0].remainingDuration).toBe(15);
+        });
+    });
+    describe("Special Potions", () => {
+        test("should handle combo potions with multiple effects", () => {
+            const comboPotionId = 212; // Rejuvenation potion
+            const result = potion_system_1.default.usePotion(mockPlayerUID, comboPotionId);
+            expect(result.success).toBe(true);
+            expect(result.effects).toBeDefined();
+            expect(result.effects.length).toBe(2); // Health and mana effects
+        });
+        test("should handle antidote removing poison effects", () => {
+            const antidoteId = 209;
+            // Note: This would need poison effect implementation to fully test
+            const result = potion_system_1.default.usePotion(mockPlayerUID, antidoteId);
+            expect(result.success).toBe(true);
+            expect(result.message).toContain("poison has been cured");
+        });
+    });
+    describe("Edge Cases", () => {
+        test("should handle multiple players independently", () => {
+            const player1 = 1001;
+            const player2 = 1002;
+            potion_system_1.default.usePotion(player1, mockSpeedPotionId);
+            potion_system_1.default.usePotion(player2, mockStrengthPotionId);
+            expect(potion_system_1.default.hasEffect(player1, "speed")).toBe(true);
+            expect(potion_system_1.default.hasEffect(player1, "strength")).toBe(false);
+            expect(potion_system_1.default.hasEffect(player2, "speed")).toBe(false);
+            expect(potion_system_1.default.hasEffect(player2, "strength")).toBe(true);
+        });
+        test("should handle update with no active effects", () => {
+            const update = potion_system_1.default.update(mockPlayerUID, 1);
+            expect(update.expiredEffects.length).toBe(0);
+            expect(update.tickEffects.length).toBe(0);
+        });
+    });
+});
