@@ -71,6 +71,7 @@ This pattern is **required** - direct function exports cause runtime errors in C
 1. **TypeScript works with UIDs, not instances** - C3 object instances cannot be directly manipulated from TypeScript
 2. **Event sheets call TypeScript** - TypeScript returns data that C3 uses to update objects
 3. **JSON data access** - Use runtime objects to access AJAX/Dictionary data
+4. **Namespace Access in Event Sheets** - Always use `(globalThis as any).AdventureLand.SystemName` in C3 event sheets, NOT just `AdventureLand.SystemName`
 
 ## Production Systems
 
@@ -164,6 +165,21 @@ When passing data from Construct 3 event sheets to TypeScript:
   → Set enemyUID to Enemy.UID
   → Execute JavaScript:
     (globalThis as any).AdventureLand.EnemyAI.update(localVars.enemyUID)
+```
+
+### Event Sheet Namespace Access Pattern
+```javascript
+// ❌ WRONG - Will cause errors in event sheets
+AdventureLand.HealthSystem.takeDamage(...)
+
+// ✅ CORRECT - Required pattern for event sheets
+const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
+if (healthSystem) {
+    healthSystem.takeDamage(...);
+}
+
+// ✅ OK - Console testing only (browser console)
+AdventureLand.HealthSystem.debug()
 ```
 
 ### Import Pattern Example

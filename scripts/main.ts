@@ -12,6 +12,9 @@ import { InventoryUIPool } from "./inventory-ui-pool.js";
 // POTION SYSTEM IMPORT
 import PotionSystem from "./potion-system.js";
 
+// HEALTH SYSTEM IMPORT
+import HealthSystem from "./health-system-v2.js";
+
 console.log("🎮 Adventure Land - Systems Loading...");
 
 declare function runOnStartup(callback: (runtime: any) => void): void;
@@ -245,6 +248,52 @@ runOnStartup(async runtime => {
         // Initialize the potion system
         al.Potions.initialize();
         console.log("✅ Potion system initialized!");
+        
+        // Initialize Health System
+        HealthSystem.initialize({
+            maxHealth: 6,
+            startingHealth: 6,
+            hurtDuration: 0.5,
+            knockbackDuration: 0.3,
+            invincibilityDuration: 1.0
+        });
+
+        // Set up health system namespace
+        (globalThis as any).AdventureLand.HealthSystem = {
+            // Core functions
+            takeDamage: (damage: any) => HealthSystem.takeDamage(damage),
+            heal: (heal: any) => HealthSystem.heal(heal),
+            
+            // State management
+            getState: () => HealthSystem.getState(),
+            getHealthPercentage: () => HealthSystem.getHealthPercentage(),
+            canTakeDamage: () => HealthSystem.canTakeDamage(),
+            
+            // Advanced features
+            addShield: (amount: number) => HealthSystem.addTemporaryHealth(amount),
+            setResistance: (type: string, value: number) =>
+                HealthSystem.setResistance(type as any, value),
+            
+            // Lifecycle
+            revive: (health?: number) => HealthSystem.revive(health),
+            update: (dt: number) => HealthSystem.update(dt),
+            
+            // Debug
+            debug: () => HealthSystem.debug()
+        };
+
+        // Register event callbacks
+        HealthSystem.on('onDamage', (damage, newHealth) => {
+            console.log(`[Health] Took ${damage.amount} damage from ${damage.source.type}`);
+        });
+
+        HealthSystem.on('onDeath', (source) => {
+            console.log(`[Health] Player died from ${source.type}`);
+            // Trigger C3 death sequence
+            runtime.callFunction('PlayerDeath', source.uid);
+        });
+
+        console.log("✅ Health System v2 initialized!");
       }
     } catch (error) {
       console.error("❌ Failed to initialize item/inventory systems:", error);
@@ -257,6 +306,7 @@ runOnStartup(async runtime => {
   console.log("✅ Inventory management ready - placeholder functions available");
   console.log("✅ Transitions system ready");
   console.log("✅ Potion system ready - effects and cooldowns managed");
+  console.log("✅ Health system ready - damage types, resistances, and events");
   console.log("✅ Performance optimizations ready - O(1) lookups + smart UI updates");
 
   // Debug info
@@ -267,6 +317,7 @@ runOnStartup(async runtime => {
   console.log("- AdventureLand.UIOptimizer (smart UI update system)");
   console.log("- AdventureLand.Transitions (world transitions)");
   console.log("- AdventureLand.Potions (potion effects and consumables)");
+  console.log("- AdventureLand.HealthSystem (advanced health management)");
   console.log("- AdventureLand.EnemyPause (pause system integrated in enemy-ai.ts)");
   console.log("- Legacy global functions (for backward compatibility)");
 
@@ -280,6 +331,7 @@ runOnStartup(async runtime => {
     console.log("- UIOptimizer methods:", al.UIOptimizer ? Object.keys(al.UIOptimizer).length : 0);
     console.log("- Transitions methods:", al.Transitions ? Object.keys(al.Transitions).length : 0);
     console.log("- Potions methods:", al.Potions ? Object.keys(al.Potions).length : 0);
+    console.log("- HealthSystem methods:", al.HealthSystem ? Object.keys(al.HealthSystem).length : 0);
   }
 });
 
