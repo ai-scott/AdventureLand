@@ -106,11 +106,30 @@ This pattern is **required** - direct function exports cause runtime errors in C
 ## Development Patterns
 
 ### Adding New Systems
-1. Create module in `scripts/external/`
-2. Export functions with clear TypeScript interfaces
-3. Add to main.ts nested object pattern
-4. Create corresponding tests
-5. Use .js extensions in imports (required for C3)
+1. Create module in `scripts/` (TypeScript files)
+2. Create documentation in `scripts/external/system-name/` (markdown files)
+3. Export functions with clear TypeScript interfaces
+4. Add to main.ts nested object pattern
+5. Create corresponding tests
+6. Use .js extensions in imports (required for C3)
+
+### System Initialization Pattern
+```typescript
+// In main.ts - initialize after item system loads
+al.Potions.initialize();
+console.log("✅ Potion system initialized!");
+
+// Systems that need runtime access
+SystemName.initialize({
+    // config options
+});
+
+// Set up namespace for event sheet access
+(globalThis as any).AdventureLand.SystemName = {
+    method1: (param: any) => SystemName.method1(param),
+    method2: () => SystemName.method2()
+};
+```
 
 ### Performance Guidelines
 - Migrate heavy calculations to TypeScript
@@ -142,12 +161,36 @@ export const ENEMY_CONFIG: EnemyConfig = {
 - **Cause**: Every-tick operations in TypeScript
 - **Solution**: Use timers, batch operations, or move to event sheets
 
+### RuntimeFacade type errors
+- **Cause**: Trying to use methods not exposed by the facade
+- **Solution**: Either extend the facade interface or access runtime directly via `(globalThis as any).runtime`
+
+### Dictionary access in TypeScript
+- **Pattern**: Use `dict.getDataMap().get('key')` not `dict.get('key')`
+- **Example**: 
+```typescript
+const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();
+const health = dict?.getDataMap().get('Health');
+```
+
 ## File Extensions and Imports
 - Always use `.js` extensions in imports, even when importing `.ts` files
 - This is required for Construct 3's module system compatibility
 
 ## Integration Philosophy
 TypeScript enhances Construct 3 but doesn't replace it. Use TypeScript for logic/data processing and Construct 3 for visuals/UI.
+
+## Documentation Standards
+
+### Code Blocks in Markdown
+- Use `jsx` instead of `javascript` for better Notion compatibility
+- Use `tsx` instead of `typescript` for better Notion compatibility
+- This ensures proper line breaks when importing to Notion
+
+### Implementation Guides
+- Always clarify WHERE code goes (Event Sheet vs TypeScript file)
+- Specify "In a Script action" for Event Sheet code
+- Use full namespace pattern in examples: `(globalThis as any).AdventureLand.SystemName`
 
 ## Adventure Land Specific Gotchas
 
