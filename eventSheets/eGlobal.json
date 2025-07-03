@@ -1925,15 +1925,9 @@
 									"script": [
 										"// Track health change for TypeScript",
 										"// Using Dictionary pattern to avoid IConstructProjectLocalVariables error",
-										"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
-										"if (dict) {",
-										"    const dataMap = dict.getDataMap();",
-										"    const oldHealth = dataMap.get(\"Health\") || 0;",
-										"",
-										"    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
-										"    if (healthSystem) {",
-										"        healthSystem.syncBeforeChange(oldHealth);",
-										"    }",
+										"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();if (dict) {",
+										"    const dataMap = dict.getDataMap();    const oldHealth = dataMap.get(\"Health\") || 0;    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;    if (healthSystem) {",
+										"        healthSystem.syncBeforeChange(oldHealth);    }",
 										"}"
 									]
 								}

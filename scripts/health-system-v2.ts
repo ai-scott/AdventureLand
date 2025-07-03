@@ -3,8 +3,6 @@
  * Enhanced health management with proper patterns and integrations
  */
 
-import { getRuntimeFacade } from './c3-runtime-facade.js';
-import type { RuntimeFacade } from './c3-runtime-facade.js';
 import PotionSystem from './potion-system.js';
 
 // Health system configuration
@@ -86,7 +84,7 @@ export interface HealthEventCallbacks {
  * Enhanced Health System with proper patterns
  */
 export class HealthSystem {
-    private static facade: RuntimeFacade | null = null;
+    private static runtime: any = null;
     private static config: HealthConfig = {
         maxHealth: 6,
         startingHealth: 6,
@@ -133,7 +131,7 @@ export class HealthSystem {
         }
 
         try {
-            this.facade = getRuntimeFacade();
+            this.runtime = (globalThis as any).runtime;
             
             // Apply custom config
             if (config) {
@@ -158,13 +156,14 @@ export class HealthSystem {
      * Load health data from save system
      */
     private static loadFromSaveData(): void {
-        if (!this.facade) return;
+        if (!this.runtime) return;
         
         try {
-            const saveData = this.facade.getSaveData();
+            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            const saveData = dict?.getDataMap();
             if (saveData) {
-                this.state.current = saveData.Health || this.config.startingHealth;
-                this.state.max = saveData.MaxHealth || this.config.maxHealth;
+                this.state.current = saveData.get('Health') || this.config.startingHealth;
+                this.state.max = saveData.get('MaxHealth') || this.config.maxHealth;
             }
         } catch (error) {
             console.warn('[HealthSystem] Could not load save data:', error);
@@ -249,9 +248,9 @@ export class HealthSystem {
      * Apply active potion effects to health
      */
     private static applyPotionEffects(): void {
-        if (!this.facade) return;
+        if (!this.runtime) return;
         
-        const playerUID = this.facade.getPlayerUID();
+        const playerUID = 0; // Player is always UID 0 in single player
         if (playerUID === null) return;
         
         // Check for defense potions
@@ -340,8 +339,8 @@ export class HealthSystem {
         }
         
         // Apply defense potion effect
-        if (this.facade) {
-            const playerUID = this.facade.getPlayerUID();
+        if (this.runtime) {
+            const playerUID = 0; // Player is always UID 0 in single player
             if (playerUID !== null) {
                 const defenseBonus = PotionSystem.getEffectValue(playerUID, 'defense');
                 if (defenseBonus > 0 && damageInfo.type !== 'true') {
@@ -466,19 +465,19 @@ export class HealthSystem {
      * Sync health state to Construct 3
      */
     private static syncHealthToC3(): void {
-        if (!this.facade) return;
+        if (!this.runtime) return;
         
         try {
-            // Use the facade to update save data
-            this.facade.updateSaveData({
-                Health: this.state.current,
-                MaxHealth: this.state.max
-            });
+            // Update save data through Dictionary
+            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            if (dict) {
+                dict.getDataMap().set('Health', this.state.current);
+                dict.getDataMap().set('MaxHealth', this.state.max);
+            }
             
             // Call the C3 adjustHealth function if needed
-            const runtime = this.facade.getRuntime();
-            if (runtime?.callFunction) {
-                runtime.callFunction('adjustHealth', 0, false);
+            if (this.runtime?.callFunction) {
+                this.runtime.callFunction('adjustHealth', 0, false);
             }
         } catch (error) {
             console.warn('[HealthSystem] Could not sync to C3:', error);
@@ -489,13 +488,14 @@ export class HealthSystem {
      * Sync with save data (for external changes)
      */
     private static syncWithSaveData(): void {
-        if (!this.facade) return;
+        if (!this.runtime) return;
         
         try {
-            const saveData = this.facade.getSaveData();
+            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            const saveData = dict?.getDataMap();
             if (saveData) {
-                const dictHealth = saveData.Health || 0;
-                const dictMaxHealth = saveData.MaxHealth || this.config.maxHealth;
+                const dictHealth = saveData.get('Health') || 0;
+                const dictMaxHealth = saveData.get('MaxHealth') || this.config.maxHealth;
                 
                 // Update if changed externally
                 if (dictHealth !== this.state.current) {
