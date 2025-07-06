@@ -142,44 +142,46 @@ runOnStartup(async runtime => {
   (globalThis as any).AdventureLand.Potions = {
     // Initialize the potion system
     initialize: () => PotionSystem.initialize(),
-    
+
     // Use a potion
-    usePotion: (playerUID: number, itemId: number) => 
+    usePotion: (playerUID: number, itemId: number) =>
       PotionSystem.usePotion(playerUID, itemId),
-    
+
     // Update effects (call each tick with deltaTime)
-    update: (playerUID: number, deltaTime: number) => 
+    update: (playerUID: number, deltaTime: number) =>
       PotionSystem.update(playerUID, deltaTime),
-    
+
     // Get active effects
-    getActiveEffects: (playerUID: number) => 
+    getActiveEffects: (playerUID: number) =>
       PotionSystem.getActiveEffects(playerUID),
-    
+
     // Check for specific effect
-    hasEffect: (playerUID: number, effectType: string) => 
+    hasEffect: (playerUID: number, effectType: string) =>
       PotionSystem.hasEffect(playerUID, effectType as any),
-    
+
     // Get effect value (for calculations)
-    getEffectValue: (playerUID: number, effectType: string) => 
+    getEffectValue: (playerUID: number, effectType: string) =>
       PotionSystem.getEffectValue(playerUID, effectType as any),
-    
+
     // Clear all effects (on death, etc.)
-    clearEffects: (playerUID: number) => 
+    clearEffects: (playerUID: number) =>
       PotionSystem.clearEffects(playerUID),
-    
+
     // Remove specific effect
-    removeEffect: (playerUID: number, effectType: string) => 
+    removeEffect: (playerUID: number, effectType: string) =>
       PotionSystem.removeEffect(playerUID, effectType as any),
-    
+
     // Save/Load support
-    getSaveData: (playerUID: number) => 
+    getSaveData: (playerUID: number) =>
       PotionSystem.getSaveData(playerUID),
-    loadSaveData: (playerUID: number, data: any) => 
+    loadSaveData: (playerUID: number, data: any) =>
       PotionSystem.loadSaveData(playerUID, data),
-    
+
     // Debug
     debug: (playerUID?: number) => PotionSystem.debug(playerUID)
   };
+
+  // Health System will be initialized in afterprojectstart event when runtime is ready
 
   // Legacy direct global functions (for backward compatibility)
   (globalThis as any).initEnemy = EnemyAI.initEnemy;
@@ -244,59 +246,63 @@ runOnStartup(async runtime => {
         // Initialize the inventory optimization system
         al.Inventory.initialize(runtime);
         console.log("✅ Inventory optimization systems ready!");
-        
+
         // Initialize the potion system
         al.Potions.initialize();
         console.log("✅ Potion system initialized!");
-        
-        // Initialize Health System
-        HealthSystem.initialize({
-            maxHealth: 6,
-            startingHealth: 6,
-            hurtDuration: 0.5,
-            knockbackDuration: 0.3,
-            invincibilityDuration: 1.0
-        });
-
-        // Set up health system namespace
-        (globalThis as any).AdventureLand.HealthSystem = {
-            // Core functions
-            takeDamage: (damage: any) => HealthSystem.takeDamage(damage),
-            heal: (heal: any) => HealthSystem.heal(heal),
-            
-            // State management
-            getState: () => HealthSystem.getState(),
-            getHealthPercentage: () => HealthSystem.getHealthPercentage(),
-            canTakeDamage: () => HealthSystem.canTakeDamage(),
-            
-            // Advanced features
-            addShield: (amount: number) => HealthSystem.addTemporaryHealth(amount),
-            setResistance: (type: string, value: number) =>
-                HealthSystem.setResistance(type as any, value),
-            
-            // Lifecycle
-            revive: (health?: number) => HealthSystem.revive(health),
-            update: (dt: number) => HealthSystem.update(dt),
-            
-            // Debug
-            debug: () => HealthSystem.debug()
-        };
-
-        // Register event callbacks
-        HealthSystem.on('onDamage', (damage, newHealth) => {
-            console.log(`[Health] Took ${damage.amount} damage from ${damage.source.type}`);
-        });
-
-        HealthSystem.on('onDeath', (source) => {
-            console.log(`[Health] Player died from ${source.type}`);
-            // Trigger C3 death sequence
-            runtime.callFunction('PlayerDeath', source.uid);
-        });
-
-        console.log("✅ Health System v2 initialized!");
       }
     } catch (error) {
       console.error("❌ Failed to initialize item/inventory systems:", error);
+    }
+
+    // Initialize Health System (independent of item system)
+    try {
+      HealthSystem.initialize({
+        maxHealth: 6,
+        startingHealth: 6,
+        hurtDuration: 0.5,
+        knockbackDuration: 0.3,
+        invincibilityDuration: 1.0
+      });
+
+      // Set up health system namespace
+      (globalThis as any).AdventureLand.HealthSystem = {
+        // Core functions
+        takeDamage: (damage: any) => HealthSystem.takeDamage(damage),
+        heal: (heal: any) => HealthSystem.heal(heal),
+
+        // State management
+        getState: () => HealthSystem.getState(),
+        getHealthPercentage: () => HealthSystem.getHealthPercentage(),
+        canTakeDamage: () => HealthSystem.canTakeDamage(),
+
+        // Advanced features
+        addShield: (amount: number) => HealthSystem.addTemporaryHealth(amount),
+        setResistance: (type: string, value: number) =>
+          HealthSystem.setResistance(type as any, value),
+
+        // Lifecycle
+        revive: (health?: number) => HealthSystem.revive(health),
+        update: (dt: number) => HealthSystem.update(dt),
+
+        // Debug
+        debug: () => HealthSystem.debug()
+      };
+
+      // Register event callbacks
+      HealthSystem.on('onDamage', (damage, _newHealth) => {
+        console.log(`[Health] Took ${damage.amount} damage from ${damage.source.type}`);
+      });
+
+      HealthSystem.on('onDeath', (source) => {
+        console.log(`[Health] Player died from ${source.type} (UID: ${source.uid})`);
+        // Trigger C3 death sequence - no longer needed as C3 checks every tick
+        // runtime.callFunction('PlayerDeath', source.uid);
+      });
+
+      console.log("✅ Health System v2 initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize health system:", error);
     }
   });
 

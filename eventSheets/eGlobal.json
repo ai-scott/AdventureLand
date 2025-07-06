@@ -1924,11 +1924,29 @@
 									"language": "typescript",
 									"script": [
 										"// Track health change for TypeScript",
-										"// Using Dictionary pattern to avoid IConstructProjectLocalVariables error",
-										"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();if (dict) {",
-										"    const dataMap = dict.getDataMap();    const oldHealth = dataMap.get(\"Health\") || 0;    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;    if (healthSystem) {",
-										"        healthSystem.syncBeforeChange(oldHealth);    }",
-										"}"
+										"console.log(\"adjusting Health\");",
+										"// Integrate with TypeScript health system",
+										"const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
+										"",
+										"if (healthSystem && localVars.health_change !== 0) {",
+										"    if (localVars.health_change > 0) {",
+										"        // Healing",
+										"        healthSystem.heal({",
+										"            amount: localVars.health_change,",
+										"            source: 'other',",
+										"            overheal: localVars.maxOutHealth",
+										"        });",
+										"    } else {",
+										"        // Damage (from non-combat sources like falling)",
+										"        healthSystem.takeDamage({",
+										"            amount: Math.abs(localVars.health_change),",
+										"            source: { uid: -1, type: 'other' },",
+										"            type: 'true', // True damage bypasses resistances",
+										"            ignoreInvincibility: true",
+										"        });",
+										"    }",
+										"}",
+										""
 									]
 								}
 							],
@@ -2239,17 +2257,12 @@
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"// Sync TypeScript after health change",
 												"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
 												"if (dict) {",
-												"    const dataMap = dict.getDataMap();",
-												"    const newHealth = dataMap.get(\"Health\") || 0;",
-												"",
-												"    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
+												"    const dataMap = dict.getDataMap();    const newHealth = dataMap.get(\"Health\") || 0;    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;    ",
 												"    if (healthSystem) {",
-												"        // Function parameters are accessed via localVars",
-												"        healthSystem.syncAfterChange(newHealth, localVars.maxOutHealth);",
-												"    }",
+												"        // Function parameters are accessed via localVars        ",
+												"        healthSystem.syncAfterChange(newHealth, localVars.maxOutHealth);    }",
 												"}"
 											]
 										}
@@ -2257,6 +2270,76 @@
 									"sid": 329559415031571
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-start-of-layout",
+									"objectClass": "System",
+									"sid": 986799989075599
+								}
+							],
+							"actions": [
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 486020727040782,
+									"parameters": {
+										"seconds": "0.1",
+										"use-timescale": true
+									}
+								}
+							],
+							"sid": 397217038669504,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"// Sync health system with save data",
+												"        const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
+												"",
+												"        if (healthSystem) {",
+												"            // Force a sync to ensure health matches save data",
+												"            healthSystem.update(0);",
+												"            console.log(\"Health system synced with save data\");",
+												"        }"
+											]
+										}
+									],
+									"sid": 589156565125165
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 795248306442678
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Update health system",
+										"    const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
+										"",
+										"    if (healthSystem) {",
+										"        healthSystem.update(runtime.dt);",
+										"    }"
+									]
+								}
+							],
+							"sid": 915967658440414
 						}
 					],
 					"sid": 439826490774258
@@ -2467,7 +2550,7 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "TODO: Set Gems, Hearts and Equip to inheirit from Dict_SaveGameData "
+									"text": "Hearts inheirit from Dict_SaveGameData "
 								},
 								{
 									"eventType": "block",
@@ -2628,18 +2711,6 @@
 												"string": "\"grantFreeItem\"",
 												"function": "grantFreeItem"
 											}
-										},
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"// Initialize TypeScript Health System",
-												"const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;",
-												"if (healthSystem && runtime) {",
-												"    healthSystem.initialize(runtime);",
-												"    console.log(\"✅ Health System initialized\");",
-												"}"
-											]
 										}
 									],
 									"sid": 645907929529474,
@@ -3047,7 +3118,6 @@
 									"sid": 318452935104219
 								}
 							],
-							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [],
@@ -4476,7 +4546,8 @@
 									]
 								}
 							],
-							"sid": 997761357972236
+							"sid": 997761357972236,
+							"disabled": true
 						}
 					]
 				},

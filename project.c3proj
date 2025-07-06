@@ -823,6 +823,22 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "health-system-v2.ts",
+					"type": "application/typescript",
+					"sid": 488637581378264,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "potion-system.ts",
+					"type": "application/typescript",
+					"sid": 493236743295400,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": [
@@ -843,6 +859,16 @@
 							"items": [],
 							"subfolders": [],
 							"name": "item-manager"
+						},
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "potion-system"
+						},
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "health-system"
 						}
 					],
 					"name": "external"

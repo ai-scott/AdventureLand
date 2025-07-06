@@ -4096,6 +4096,11 @@
 											"parameters": {
 												"object": "EnemyBases"
 											}
+										},
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 496664253004904
 										}
 									],
 									"actions": [
@@ -4119,6 +4124,11 @@
 											"parameters": {
 												"object": "Hazards"
 											}
+										},
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 806636535418392
 										}
 									],
 									"actions": [
@@ -4193,10 +4203,41 @@
 									"sid": 405352785087559
 								},
 								{
+									"eventType": "variable",
+									"name": "knockbackX",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 224759986043157
+								},
+								{
+									"eventType": "variable",
+									"name": "knockbackY",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 644633911696390
+								},
+								{
+									"eventType": "variable",
+									"name": "damageDealt",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 128182540612323
+								},
+								{
 									"eventType": "comment",
 									"text": "Knock back"
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [
@@ -4226,6 +4267,86 @@
 											"parameters": {
 												"deceleration": "PlayerSpeed*5"
 											}
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"console.log(\"Player_Hurt script called, current health:\", runtime.globalVars.Health);",
+												"// Use TypeScript health system for damage",
+												"const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
+												"  if (healthSystem) {",
+												"      const enemy = runtime.objects.EnemyBases.getFirstPickedInstance();",
+												"      const hazard = runtime.objects.Hazards.getFirstPickedInstance();",
+												"      const source = enemy || hazard;",
+												"",
+												"      if (source) {",
+												"          const player = runtime.objects.Player_Base.getFirstInstance();",
+												"          const playerMask = runtime.objects.Player_Mask.getFirstInstance();",
+												"          if (player) {",
+												"              // Calculate knockback direction (from source to player)",
+												"              const dx = player.x - source.x;",
+												"              const dy = player.y - source.y;",
+												"              const angleRad = Math.atan2(dy, dx);",
+												"",
+												"              // Set knockback force in direction away from source",
+												"              localVars.knockbackX = Math.cos(angleRad) * 500;",
+												"              localVars.knockbackY = Math.sin(angleRad) * 500;",
+												"",
+												"              // Determine damage type",
+												"              let damageType = 'physical';",
+												"              if (source.objectType.name.includes('Fire')) {",
+												"                  damageType = 'fire';",
+												"              } else if (source.objectType.name.includes('Ice')) {",
+												"                  damageType = 'ice';",
+												"              } else if (source.objectType.name.includes('Poison')) {",
+												"                  damageType = 'poison';",
+												"              }",
+												"",
+												"              // Apply defense",
+												"              let damageAmount = (source.instVars.Strength || 1) - runtime.globalVars.Defense;",
+												"              damageAmount = Math.max(1, damageAmount);",
+												"",
+												"              const damage = healthSystem.takeDamage({",
+												"                  amount: damageAmount,",
+												"                  source: {",
+												"                      uid: source.uid,",
+												"                      type: enemy ? 'enemy' : 'hazard',",
+												"                      name: source.objectType.name",
+												"                  },",
+												"                  type: damageType,",
+												"                  position: { x: source.x, y: source.y },",
+												"                  knockback: {",
+												"                      x: localVars.knockbackX,",
+												"                      y: localVars.knockbackY",
+												"                  }",
+												"              });",
+												"",
+												"              localVars.damageDealt = damage;",
+												"",
+												"              // Sync health back to globals",
+												"              const currentHealth = healthSystem.getState().current;",
+												"              runtime.globalVars.Health = currentHealth;",
+												"",
+												"              // Also update save data",
+												"              const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+												"              if (dict) {",
+												"                  dict.getDataMap().set('Health', currentHealth);",
+												"              }",
+												"",
+												"            console.log(\"Health synced:\", currentHealth);",
+												"            console.log(\"=== Player_Hurt Debug ===\");",
+												"            console.log(\"Current health:\", runtime.globalVars.Health);",
+												"            console.log(\"Player hurt state:\", playerMask?.instVars.Hurt);",
+												"            console.log(\"Can take damage:\", healthSystem?.canTakeDamage());",
+												"            console.log(\"Source strength:\", source?.instVars.Strength);",
+												"            console.log(\"Defense:\", runtime.globalVars.Defense);",
+												"            console.log(\"Calculated damage:\", damageAmount);",
+												"            console.log(\"========================\");",
+												"          }",
+												"      }",
+												"  }"
+											]
 										}
 									],
 									"sid": 236965880776328
@@ -4244,37 +4365,61 @@
 											"parameters": {
 												"unique-id": "enemyOrHazardUid"
 											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 521464767701987,
+											"parameters": {
+												"first-value": "damageDealt",
+												"comparison": 4,
+												"second-value": "0"
+											}
 										}
 									],
 									"actions": [
 										{
-											"callFunction": "AdjustHealthAndSave",
-											"sid": 701906120465718,
-											"parameters": [
-												"- clamp(EnemyBases.Strength - Dict_SaveGameData.Get(\"Defense\"), 0, 9)",
-												"\"\""
-											]
-										},
-										{
 											"id": "set-vector-x",
 											"objectClass": "Player_Base",
-											"sid": 385568156783671,
+											"sid": 507649225263981,
 											"behaviorType": "8Direction",
 											"parameters": {
-												"vector-x": "cos(angle(Self.X,Self.Y,EnemyBases.X,EnemyBases.Y)+180) * 200"
+												"vector-x": "knockbackX"
 											}
 										},
 										{
 											"id": "set-vector-y",
 											"objectClass": "Player_Base",
-											"sid": 424994234215771,
+											"sid": 701611555620116,
 											"behaviorType": "8Direction",
 											"parameters": {
-												"vector-y": "sin(angle(Self.X,Self.Y,EnemyBases.X,EnemyBases.Y)+180) * 200"
+												"vector-y": "knockbackY"
 											}
+										},
+										{
+											"type": "script",
+											"language": "typescript",
+											"script": [
+												"  console.log(\"Knockback applied! X:\", localVars.knockbackX, \"Y:\", localVars.knockbackY);"
+											]
 										}
 									],
-									"sid": 123024583343332
+									"sid": 123024583343332,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-enabled",
+													"objectClass": "Player_Base",
+													"sid": 274302021594579,
+													"behaviorType": "8Direction"
+												}
+											],
+											"actions": [],
+											"sid": 533242751051620
+										}
+									]
 								},
 								{
 									"eventType": "comment",
@@ -4290,33 +4435,35 @@
 											"parameters": {
 												"unique-id": "enemyOrHazardUid"
 											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 166355262060196,
+											"parameters": {
+												"first-value": "damageDealt",
+												"comparison": 4,
+												"second-value": "0"
+											}
 										}
 									],
 									"actions": [
 										{
-											"callFunction": "AdjustHealthAndSave",
-											"sid": 592627766952868,
-											"parameters": [
-												"- clamp(Hazards.Strength - Dict_SaveGameData.Get(\"Defense\"), 0, 9)",
-												"\"\""
-											]
-										},
-										{
 											"id": "set-vector-x",
 											"objectClass": "Player_Base",
-											"sid": 458187312444594,
+											"sid": 487229700848740,
 											"behaviorType": "8Direction",
 											"parameters": {
-												"vector-x": "cos(angle(Self.X,Self.Y,Hazards.X,Hazards.Y)+180) * 200"
+												"vector-x": "knockbackX"
 											}
 										},
 										{
 											"id": "set-vector-y",
 											"objectClass": "Player_Base",
-											"sid": 762841578367468,
+											"sid": 825258180100517,
 											"behaviorType": "8Direction",
 											"parameters": {
-												"vector-y": "sin(angle(Self.X,Self.Y,Hazards.X,Hazards.Y)+180) * 200"
+												"vector-y": "knockbackY"
 											}
 										}
 									],
@@ -4457,7 +4604,17 @@
 									}
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 505441956126080,
+									"parameters": {
+										"type": "log",
+										"message": "\"PLAYER KNOCKED BACK\""
+									}
+								}
+							],
 							"sid": 643313575556637,
 							"children": [
 								{
@@ -4923,6 +5080,15 @@
 											"parameters": {
 												"instance-variable": "Hurt",
 												"value": "false"
+											}
+										},
+										{
+											"id": "set-enabled",
+											"objectClass": "Player_Base",
+											"sid": 315857641819922,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"state": "enabled"
 											}
 										}
 									],
