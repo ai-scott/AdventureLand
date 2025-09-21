@@ -1,7 +1,7 @@
 // tests/configs/enemy-configs.test.ts - Working version for Jest
 
 // Import without .js extension - Jest will resolve with moduleNameMapper
-import { CRAB_CONFIG, OOZE_CONFIG, getEnemyConfig } from '../../scripts/enemy-configs';
+import { CRAB_CONFIG, OOZE_CONFIG, getEnemyConfig } from '../../scripts/systems/enemy/enemy-configs';
 
 describe('Adventure Land Enemy Configurations', () => {
     describe('CRAB_CONFIG', () => {
@@ -43,7 +43,7 @@ describe('Adventure Land Enemy Configurations', () => {
                 expect(behavior.duration).toBeDefined();
                 expect(Array.isArray(behavior.duration)).toBe(true);
                 expect(behavior.duration.length).toBe(2);
-                expect(behavior.weight).toBeGreaterThan(0);
+                expect(behavior.weight).toBeGreaterThanOrEqual(0); // Allow 0 for conditional behaviors
                 expect(Array.isArray(behavior.actions)).toBe(true);
 
                 console.log(`Behavior ${index}: ${behavior.name} (weight: ${behavior.weight})`);
@@ -130,17 +130,24 @@ describe('Adventure Land Enemy Configurations', () => {
 
             configs.forEach(config => {
                 let totalWeight = 0;
+                let activeWeightedBehaviors = 0;
 
                 config.behaviors.forEach(behavior => {
-                    expect(behavior.weight).toBeGreaterThan(0);
+                    expect(behavior.weight).toBeGreaterThanOrEqual(0); // Allow 0 for conditional behaviors
                     expect(behavior.weight).toBeLessThan(100);
-                    totalWeight += behavior.weight;
+
+                    if (behavior.weight > 0) {
+                        activeWeightedBehaviors++;
+                        totalWeight += behavior.weight;
+                    }
                 });
 
+                // Should have at least one behavior with weight > 0
+                expect(activeWeightedBehaviors).toBeGreaterThan(0);
                 expect(totalWeight).toBeGreaterThan(0);
                 expect(totalWeight).toBeLessThan(1000);
 
-                console.log(`${config.type} total weight: ${totalWeight}`);
+                console.log(`${config.type} total weight: ${totalWeight} (${activeWeightedBehaviors} active behaviors)`);
             });
         });
     });

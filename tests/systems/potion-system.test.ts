@@ -1,10 +1,10 @@
 // potion-system.test.ts
 
-import PotionSystem from "../../scripts/potion-system";
-import { ItemManager } from "../../scripts/item-manager";
+import PotionSystem from "../../scripts/systems/potions/potion-system";
+import { ItemManager } from "../../scripts/systems/items/item-manager";
 
 // Mock ItemManager
-jest.mock("../../scripts/item-manager", () => ({
+jest.mock("../../scripts/systems/items/item-manager", () => ({
     ItemManager: {
         hasItem: jest.fn(),
         removeFromInventory: jest.fn()

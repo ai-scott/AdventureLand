@@ -30,8 +30,7 @@
   },
   "include": [
     "scripts/**/*",
-    "*.d.ts",
-    "scripts-archive/enemy-utils-backup.ts"
+    "*.d.ts"
   ],
   "exclude": [
     "node_modules",
@@ -39,6 +38,7 @@
     "tests",
     "scripts/**/*-backup.ts",
     "scripts/**/*.bak",
-    "scripts/**/*.backup.*"
+    "scripts/**/*.backup.*",
+    "scripts-archive/**/*"
   ]
 }
