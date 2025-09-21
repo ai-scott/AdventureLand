@@ -1,19 +1,22 @@
 // main.ts - Adventure Land Main TypeScript Entry Point with Runtime Facade
-import { initializeRuntimeFacade, getRuntimeFacade } from "./c3-runtime-facade.js";
-import * as EnemyAI from "./enemy-ai.js";
-import "./item-manager.js";  // Side-effect import - sets up global namespace
+import { initializeRuntimeFacade } from "./types/c3-runtime-facade.js";
+import * as EnemyAI from "./systems/enemy/enemy-ai.js";
+import "./systems/items/item-manager.js";  // Side-effect import - sets up global namespace
+
+// NEW: Import the imports-for-events module
+import { registerWithRuntime } from "./imports-for-events.js";
 
 // NEW IMPORTS FOR INVENTORY OPTIMIZATION
-import { initializeItemSystem } from "./item-manager-integration.js";
-import { InventoryUIOptimizer } from "./inventory-ui-optimization.js";
-import { InventoryUIPool } from "./inventory-ui-pool.js";
-// Optional: import { InventoryPerformanceTest } from "./inventory-performance-test.js";
+import { initializeItemSystem } from "./systems/items/item-manager-integration.js";
+import { InventoryUIOptimizer } from "./systems/inventory/inventory-ui-optimization.js";
+import { InventoryUIPool } from "./systems/inventory/inventory-ui-pool.js";
+// Optional: import { InventoryPerformanceTest } from "./systems/inventory/inventory-performance-test.js";
 
 // POTION SYSTEM IMPORT
-import PotionSystem from "./potion-system.js";
+import PotionSystem from "./systems/potions/potion-system.js";
 
 // HEALTH SYSTEM IMPORT
-import HealthSystem from "./health-system-v2.js";
+import HealthSystem from "./systems/health/health-system.js";
 
 console.log("🎮 Adventure Land - Systems Loading...");
 
@@ -26,6 +29,9 @@ runOnStartup(async runtime => {
   // Initialize the runtime facade to resolve duplicate identifier errors
   const facade = initializeRuntimeFacade(runtime);
   console.log("✅ Runtime facade initialized");
+
+  // NEW: Register imports-for-events with runtime (non-breaking addition)
+  registerWithRuntime(runtime);
 
   // Initialize Enemy AI System with facade
   EnemyAI.initializeSystem(facade);
@@ -49,30 +55,49 @@ runOnStartup(async runtime => {
     hurt: (enemyUID: number) =>
       EnemyAI.hurtEnemy(enemyUID),
     destroy: (enemyUID: number) =>
-      EnemyAI.destroyEnemy(enemyUID)
+      EnemyAI.destroyEnemy(enemyUID),
+    // Battle system enhancement callbacks
+    notifyHurt: (baseUID: number, knockbackVectorX: number, knockbackVectorY: number) =>
+      EnemyAI.notifyHurt(baseUID, knockbackVectorX, knockbackVectorY),
+    notifyRecovery: (baseUID: number) =>
+      EnemyAI.notifyRecovery(baseUID),
+    notifyDeath: (baseUID: number) =>
+      EnemyAI.notifyDeath(baseUID),
+    // Visual effect synchronization
+    getVisualState: (baseUID: number) =>
+      EnemyAI.getEnemyVisualState(baseUID),
+    isInKnockback: (baseUID: number) =>
+      EnemyAI.isEnemyInKnockback(baseUID),
+    isHurt: (baseUID: number) =>
+      EnemyAI.isEnemyHurt(baseUID),
+    getKnockbackVector: (baseUID: number) =>
+      EnemyAI.getEnemyKnockbackVector(baseUID),
+    // Visual effect control
+    shouldStopEffects: (baseUID: number) =>
+      EnemyAI.shouldStopEnemyVisualEffects(baseUID)
   };
 
   // Create placeholder for Items and Inventory (will be populated by item-manager.ts)
   // This prevents errors when event sheets try to access them before items load
   (globalThis as any).AdventureLand.Items = (globalThis as any).AdventureLand.Items || {
     // Placeholder functions that return safe defaults
-    getItemName: (id: number) => "",
-    getItemCategory: (id: number) => "",
-    getItemStrength: (id: number) => 0,
-    getItemCost: (id: number) => 0,
-    getItemID: (name: string) => 0,
-    getItemId: (name: string) => 0,  // Alias for backward compatibility
-    initialize: (data: any) => false,
+    getItemName: (_id: number) => "",
+    getItemCategory: (_id: number) => "",
+    getItemStrength: (_id: number) => 0,
+    getItemCost: (_id: number) => 0,
+    getItemID: (_name: string) => 0,
+    getItemId: (_name: string) => 0,  // Alias for backward compatibility
+    initialize: (_data: any) => false,
     isInitialized: () => false
   };
 
   // ENHANCED: Inventory namespace with both optimization systems
   (globalThis as any).AdventureLand.Inventory = {
     // Original placeholder functions (will be replaced by item-manager.ts)
-    addItem: (itemId: number, quantity: number) => false,
-    removeItem: (itemId: number, quantity: number) => false,
-    getItemCount: (itemId: number) => 0,
-    hasItem: (itemId: number, quantity: number) => false,
+    addItem: (_itemId: number, _quantity: number) => false,
+    removeItem: (_itemId: number, _quantity: number) => false,
+    getItemCount: (_itemId: number) => 0,
+    hasItem: (_itemId: number, _quantity: number) => false,
 
     // NEW: Optimization functions using both systems
     initialize: (runtime: any) => {
@@ -348,6 +373,7 @@ runOnStartup(async runtime => {
  * initialization is needed in event sheets. All AdventureLand functions
  * are ready to use immediately.
  * 
+ * EXISTING PATTERN (still works):
  * For Enemy AI:
  *    - Call: AdventureLand.EnemyAI.init(En_Crab_Base.UID, En_Crab_Mask.UID, "Crab")
  *    - Call: AdventureLand.EnemyAI.update(En_Crab_Base.UID)
@@ -366,4 +392,13 @@ runOnStartup(async runtime => {
  *    - Call: AdventureLand.Potions.update(Player.UID, dt) every tick for effect updates
  *    - Call: AdventureLand.Potions.getEffectValue(Player.UID, "speed") for calculations
  *    - Call: AdventureLand.Potions.clearEffects(Player.UID) on player death
+ * 
+ * NEW PATTERN (imports-for-events - cleaner access):
+ * Access TypeScript systems via runtime.imports.AdventureLand:
+ *    - runtime.imports.AdventureLand.EnemyAI.update(enemyUID)
+ *    - runtime.imports.AdventureLand.Health.takeDamage(damage)
+ *    - runtime.imports.AdventureLand.Items.getItem(itemId)
+ *    - etc.
+ * 
+ * Both patterns work simultaneously during migration!
  */
