@@ -190,7 +190,7 @@ export interface BehaviorConfig {
 3. **Create tests:**
    ```typescript
    // tests/my-system.test.ts
-   import * as MySystem from "../scripts/external/my-system";
+   import * as MySystem from "../scripts/external/my-system.js";
    
    describe("MySystem", () => {
        test("should handle basic operations", () => {

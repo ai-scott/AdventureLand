@@ -257,3 +257,186 @@ npm run test:inventory:watch
 # Full inventory test suite
 npm run test:inventory
 ```
+
+## TypeScript Implementation Status (2025)
+
+### Overview
+AdventureLand successfully implements TypeScript with Construct 3 using a practical hybrid approach that delivers excellent developer experience without complexity.
+
+### ✅ COMPLETED: TypeScript Foundation
+
+#### TypeScript Type System Working
+- **Auto-generated types**: Complete type definitions in `ts-defs/` folder
+- **Full IntelliSense**: All Construct 3 objects, behaviors, and instance variables typed
+- **Live compilation**: TypeScript compiles automatically with proper error checking
+- **Import patterns**: All imports use `.js` extensions as required
+
+#### Event Sheet Integration
+The `scripts/imports-for-events.ts` file bridges TypeScript modules to Construct 3 event sheets:
+
+```typescript
+// Import all systems
+import * as EnemyAI from "./systems/enemy/enemy-ai.js";
+import { TileAnimationManager } from "./systems/tiles/tile-animation-manager.js";
+import HealthSystemDefault from "./systems/health/health-system.js";
+
+// Re-export for event sheet access
+export const Systems = {
+    EnemyAI: {
+        init: EnemyAI.initEnemy,
+        update: EnemyAI.updateEnemy,
+        // ... other methods
+    },
+    TileAnimations: {
+        initialize: (runtime: any) => TileAnimationManager.initialize(runtime),
+        // ... other methods
+    }
+};
+
+// Register with runtime
+export function registerWithRuntime(runtime: any): void {
+    runtime.imports = runtime.imports || {};
+    runtime.imports.AdventureLand = Systems;
+}
+```
+
+#### Event Sheet Usage (Both Patterns Supported)
+```javascript
+// NEW PATTERN - Clean access via runtime.imports
+runtime.imports.AdventureLand.EnemyAI.update(enemyUID)
+runtime.imports.AdventureLand.Health.takeDamage(damage)
+
+// LEGACY PATTERN - Still works during migration
+(globalThis as any).AdventureLand.EnemyAI.update(enemyUID)
+```
+
+### ✅ COMPLETED: Battle System Enhancements
+
+#### Enhanced Enemy AI Integration
+The enemy AI system now includes proper battle system callbacks for event sheet integration:
+
+#### Battle System Callbacks
+```typescript
+// Available in event sheets via globalThis.AdventureLand.EnemyAI
+notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number)
+notifyRecovery(baseUID: number)
+notifyDeath(baseUID: number)
+```
+
+#### Event Sheet Usage
+```javascript
+// Damage enemy with knockback
+(globalThis as any).AdventureLand.EnemyAI.notifyHurt(
+    enemyUID, knockbackX, knockbackY
+);
+
+// Enemy recovered from damage
+(globalThis as any).AdventureLand.EnemyAI.notifyRecovery(enemyUID);
+
+// Enemy death notification
+(globalThis as any).AdventureLand.EnemyAI.notifyDeath(enemyUID);
+```
+
+### 🔮 FUTURE CONSIDERATIONS: Instance Subclassing
+
+#### Current Approach: UID-Based (Working Well)
+The project uses a proven UID-based approach that works excellently with the hybrid Event Sheet + TypeScript architecture:
+
+- **Event Sheets** handle movement, animations, and visual behaviors efficiently
+- **TypeScript** manages complex logic, state, and data processing
+- **Battle System** uses callback pattern for clean integration
+
+#### When to Consider Instance Subclassing
+Instance subclassing may be beneficial for:
+- **Player character** - Complex inventory and progression systems
+- **NPCs** - Dialogue trees and interaction systems
+- **NOT for enemies** - Targeting complexities and Event Sheet movement integration
+
+### Phase 3: Import Maps & Bare Specifiers (PLANNED)
+
+#### Goal
+Simplify import paths using import maps configuration.
+
+#### Current Imports
+```typescript
+import { EnemyAI } from "../../scripts/systems/enemy/enemy-ai.js";
+import { HealthSystem } from "../../scripts/systems/health/health-system.js";
+```
+
+#### Target Imports
+```typescript
+import { EnemyAI } from "@adventure/enemy";
+import { HealthSystem } from "@adventure/health";
+import { ItemManager } from "@adventure/items";
+```
+
+#### Implementation
+1. **Create Import Map** (`scripts/import-map.json`)
+   ```json
+   {
+     "imports": {
+       "@adventure/core": "./systems/core/index.js",
+       "@adventure/enemy": "./systems/enemy/enemy-ai.js",
+       "@adventure/health": "./systems/health/health-system.js",
+       "@adventure/items": "./systems/items/item-manager.js"
+     }
+   }
+   ```
+
+2. **Configure Construct 3** to use the import map
+
+3. **Refactor All Imports** to use bare specifiers
+
+### Benefits of Modernization
+
+#### Developer Experience
+- **Better IDE Support**: Full IntelliSense with typed instances
+- **Cleaner Event Sheets**: `runtime.imports.AdventureLand.System.method()`
+- **Simplified Imports**: `@adventure/system` instead of relative paths
+- **Type Safety**: Compile-time checks for instance properties
+
+#### Performance
+- **Direct Instance Access**: No UID lookups required
+- **Better Tree Shaking**: Only used code included in builds
+- **Runtime Efficiency**: Less indirect function calls
+
+#### Maintainability
+- **Clear Dependencies**: Import maps show system relationships
+- **Easier Refactoring**: IDE can track all references
+- **Better Testing**: Mock typed instances easily
+
+### Migration Strategy
+
+#### Phase 1: ✅ Foundation Complete
+- [x] Imports for events pattern implemented
+- [x] Both legacy and modern patterns work simultaneously
+- [x] All tests passing
+
+#### Phase 2: 🔄 In Progress - Typed Instances
+- [ ] Create base instance classes
+- [ ] Register with `setInstanceClass()`
+- [ ] Update one system (Enemy AI) as proof of concept
+- [ ] Validate performance vs current pattern
+- [ ] Migrate remaining systems
+
+#### Phase 3: 📋 Planned - Import Maps
+- [ ] Design namespace structure
+- [ ] Configure import maps
+- [ ] Refactor all imports
+- [ ] Update documentation
+
+### Testing Strategy
+```bash
+# Validate each phase
+npm run test:modernization     # New test suite for modern patterns
+npm run test:performance       # Benchmark typed vs UID patterns
+npm run test:integration       # Ensure C3 integration works
+```
+
+### Rollback Plan
+- Legacy patterns remain functional during migration
+- Feature flags for new vs old patterns
+- Git tags at each phase completion
+- Documented rollback procedures for each phase
+
+This modernization transforms AdventureLand into a cutting-edge TypeScript + Construct 3 hybrid with industry-standard patterns and exceptional developer experience.

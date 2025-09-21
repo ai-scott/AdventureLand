@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 44002,
+	"savedWithRelease": 44902,
 	"name": "Adventure Land 6.16.25",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -697,145 +697,9 @@
 					}
 				},
 				{
-					"name": "enemy-utils.ts",
+					"name": "imports-for-events.ts",
 					"type": "application/typescript",
-					"sid": 275608238887480,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "enemy-configs.ts",
-					"type": "application/typescript",
-					"sid": 282795342179073,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "enemy-ai.ts",
-					"type": "application/typescript",
-					"sid": 472358617194469,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "player-debug.ts",
-					"type": "application/typescript",
-					"sid": 371543593842992,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "world-transition-manager.ts",
-					"type": "application/typescript",
-					"sid": 963149734438356,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "debug-helpers.ts",
-					"type": "application/typescript",
-					"sid": 685152971644206,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "transition-helpers.ts",
-					"type": "application/typescript",
-					"sid": 969207241431819,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "tile-animation-manager.ts",
-					"type": "application/typescript",
-					"sid": 545645107480235,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "original-tile-animation-manager.ts",
-					"type": "application/typescript",
-					"sid": 264828454270852,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "inventory-ui-pool.ts",
-					"type": "application/typescript",
-					"sid": 828474216140897,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "item-manager.ts",
-					"type": "application/typescript",
-					"sid": 345398130933211,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "health-system.ts",
-					"type": "application/typescript",
-					"sid": 489739049621435,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "c3-runtime-facade.ts",
-					"type": "application/typescript",
-					"sid": 781780416452863,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "inventory-performance-test.ts",
-					"type": "application/typescript",
-					"sid": 486635552213207,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "inventory-ui-optimization.ts",
-					"type": "application/typescript",
-					"sid": 978765156925682,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "item-manager-integration.ts",
-					"type": "application/typescript",
-					"sid": 528252193233426,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "health-system-v2.ts",
-					"type": "application/typescript",
-					"sid": 488637581378264,
-					"script-info": {
-						"purpose": "none"
-					}
-				},
-				{
-					"name": "potion-system.ts",
-					"type": "application/typescript",
-					"sid": 493236743295400,
+					"sid": 136829367005779,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -843,35 +707,191 @@
 			],
 			"subfolders": [
 				{
+					"items": [
+						{
+							"name": "c3-runtime-facade.ts",
+							"type": "application/typescript",
+							"sid": 141452691582751,
+							"script-info": {
+								"purpose": "none"
+							}
+						}
+					],
+					"subfolders": [],
+					"name": "types"
+				},
+				{
+					"items": [
+						{
+							"name": "debug-helpers.ts",
+							"type": "application/typescript",
+							"sid": 353571086406111,
+							"script-info": {
+								"purpose": "none"
+							}
+						},
+						{
+							"name": "player-debug.ts",
+							"type": "application/typescript",
+							"sid": 133457570108449,
+							"script-info": {
+								"purpose": "none"
+							}
+						},
+						{
+							"name": "transition-helpers.ts",
+							"type": "application/typescript",
+							"sid": 448816278228229,
+							"script-info": {
+								"purpose": "none"
+							}
+						},
+						{
+							"name": "world-transition-manager.ts",
+							"type": "application/typescript",
+							"sid": 141426863644601,
+							"script-info": {
+								"purpose": "none"
+							}
+						}
+					],
+					"subfolders": [],
+					"name": "utils"
+				},
+				{
 					"items": [],
 					"subfolders": [
 						{
-							"items": [],
+							"items": [
+								{
+									"name": "health-system.ts",
+									"type": "application/typescript",
+									"sid": 632576300390460,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
 							"subfolders": [],
-							"name": "enemy-ai"
+							"name": "health"
 						},
 						{
-							"items": [],
+							"items": [
+								{
+									"name": "enemy-ai.ts",
+									"type": "application/typescript",
+									"sid": 154689023465676,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "enemy-configs.ts",
+									"type": "application/typescript",
+									"sid": 824523876324192,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "enemy-utils.ts",
+									"type": "application/typescript",
+									"sid": 895130737829845,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
 							"subfolders": [],
-							"name": "inventory-system"
+							"name": "enemy"
 						},
 						{
-							"items": [],
+							"items": [
+								{
+									"name": "potion-system.ts",
+									"type": "application/typescript",
+									"sid": 471942477088207,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
 							"subfolders": [],
-							"name": "item-manager"
+							"name": "potions"
 						},
 						{
-							"items": [],
+							"items": [
+								{
+									"name": "tile-animation-manager.ts",
+									"type": "application/typescript",
+									"sid": 625479148128503,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
 							"subfolders": [],
-							"name": "potion-system"
+							"name": "tiles"
 						},
 						{
-							"items": [],
+							"items": [
+								{
+									"name": "inventory-performance-test.ts",
+									"type": "application/typescript",
+									"sid": 832319610916040,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "inventory-ui-optimization.ts",
+									"type": "application/typescript",
+									"sid": 270730693575099,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "inventory-ui-pool.ts",
+									"type": "application/typescript",
+									"sid": 497726749839317,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
 							"subfolders": [],
-							"name": "health-system"
+							"name": "inventory"
+						},
+						{
+							"items": [
+								{
+									"name": "item-manager-integration.ts",
+									"type": "application/typescript",
+									"sid": 879057954523372,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "item-manager.ts",
+									"type": "application/typescript",
+									"sid": 956727409646797,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "items"
 						}
 					],
-					"name": "external"
+					"name": "systems"
+				},
+				{
+					"items": [],
+					"subfolders": [],
+					"name": "archive"
 				}
 			],
 			"autoReloadOnPreview": true
