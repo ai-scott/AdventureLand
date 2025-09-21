@@ -4,3 +4,20 @@ ts-defs
 # macOS system files
 .DS_Store
 **/.DS_Store
+
+# Jest and test artifacts
+.jest-cache/
+coverage/
+*.log
+
+# Node modules and build artifacts
+node_modules/
+dist/
+build/
+
+# IDE and editor files
+.vscode/settings.json
+.idea/
+
+# Claude artifacts
+.claude/
