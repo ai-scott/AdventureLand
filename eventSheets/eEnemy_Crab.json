@@ -106,14 +106,11 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
+								"const AL = (globalThis as any).AdventureLand;",
 								"const crabBase = runtime.objects.En_Crab_Base.getFirstPickedInstance()!;",
 								"const crabMask = runtime.objects.En_Crab_Mask.getFirstPickedInstance()!;",
-								"// Replace the setCrabDirection and commented updateEnemy with:",
-								"//(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
-								"",
-								"// Enhanced enemy creation with cleanup",
-								"(globalThis as any).initEnemy(crabBase.uid, crabMask.uid, \"Crab\");",
-								"(globalThis as any).registerEnemy(crabBase, \"Crab\");"
+								"console.log(`🦀 Initializing Crab: Base UID ${crabBase.uid}, Mask UID ${crabMask.uid}`);",
+								"AL.EnemyAI.init(crabBase.uid, crabMask.uid, \"Crab\");"
 							]
 						}
 					],
@@ -158,36 +155,11 @@
 							"type": "script",
 							"language": "typescript",
 							"script": [
-								"(globalThis as any).AdventureLand.EnemyAI.updateWithPause(runtime.objects.En_Ooze_Base.getFirstPickedInstance()!.uid);"
+								"(globalThis as any).AdventureLand.EnemyAI.updateWithPause(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);"
 							]
 						}
 					],
-					"sid": 910165093342183,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-boolean-instance-variable-set",
-									"objectClass": "En_Crab_Base",
-									"sid": 145901947655385,
-									"parameters": {
-										"instance-variable": "Hurt"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"(globalThis as any).hurtEnemy(runtime.objects.En_Crab_Base.getFirstPickedInstance()!.uid);"
-									]
-								}
-							],
-							"sid": 618959898599274
-						}
-					]
+					"sid": 910165093342183
 				},
 				{
 					"eventType": "comment",

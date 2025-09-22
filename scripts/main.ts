@@ -18,6 +18,9 @@ import PotionSystem from "./systems/potions/potion-system.js";
 // HEALTH SYSTEM IMPORT
 import HealthSystem from "./systems/health/health-system.js";
 
+// BATTLE DEBUG UTILITIES
+//import "./utils/battle-debug.js";
+
 console.log("🎮 Adventure Land - Systems Loading...");
 
 declare function runOnStartup(callback: (runtime: any) => void): void;
@@ -70,6 +73,8 @@ runOnStartup(async runtime => {
       EnemyAI.isEnemyInKnockback(baseUID),
     isHurt: (baseUID: number) =>
       EnemyAI.isEnemyHurt(baseUID),
+    isInvulnerable: (baseUID: number) =>
+      EnemyAI.isInvulnerable(baseUID),
     getKnockbackVector: (baseUID: number) =>
       EnemyAI.getEnemyKnockbackVector(baseUID),
     // Visual effect control

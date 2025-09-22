@@ -812,7 +812,6 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 847418418162699,
-									"disabled": true,
 									"parameters": {
 										"group-name": "\"Enemies\"",
 										"state": "activated"

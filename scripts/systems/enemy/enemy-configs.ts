@@ -3,7 +3,7 @@
 
 // ===== TYPE DEFINITIONS =====
 export interface BehaviorCondition {
-  type: "distance" | "health" | "timer" | "random" | "hurt";
+  type: "distance" | "health" | "timer" | "random" | "hurt" | "invulnerable";
   operator: "<" | ">" | "<=" | ">=" | "==";
   value: number;
 }
@@ -67,6 +67,7 @@ export interface EnemyData {
   isHurt: boolean;
   invulnerableTimer: number;
   sidewaysDirection: string;
+  currentAnimation?: string; // Track current animation to prevent spam
 }
 
 // Helper function to get enemy config
@@ -137,12 +138,15 @@ export const CRAB_CONFIG: EnemyConfig = {
   },
   behaviors: [
     {
-      name: "idle",
+      name: "patrol",
       duration: [2.0, 4.0],
       weight: 3,
+      conditions: [
+        { type: 'distance', operator: '>', value: 150 }  // Beyond viewDistance
+      ],
       actions: [
-        { type: 'animate', params: { name: 'Idle_{direction}' } },
-        { type: 'move', params: { pattern: 'stop' } }
+        { type: 'animate', params: { name: 'Walk_{direction}' } },
+        { type: 'move', params: { pattern: 'random', speed: 15 } }
       ]
     },
     {
@@ -150,54 +154,52 @@ export const CRAB_CONFIG: EnemyConfig = {
       duration: [1.5, 3.0],
       weight: 6,
       conditions: [
-        { type: 'distance', operator: '<', value: 150 }
+        { type: 'distance', operator: '<', value: 150 },  // Within viewDistance
+        { type: 'distance', operator: '>', value: 32 }    // But beyond attackDistance
       ],
       actions: [
-        { type: 'animate', params: { name: 'Walk_{sideways}' } },
+        { type: 'animate', params: { name: 'Cranky_{direction}' } },
         { type: 'move', params: { pattern: 'crab_toward_player', speed: 35 } }
       ]
     },
     {
+      name: "attack",
+      duration: [0.5, 1.0],
+      weight: 10,
+      conditions: [
+        { type: 'distance', operator: '<', value: 32 }  // Within attackDistance
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Attack_{direction}' } },
+        { type: 'move', params: { pattern: 'toward_player', speed: 50 } }
+      ]
+    },
+    {
       name: "hurt_flash",
-      duration: [0.2, 0.2],
+      duration: [0.2, 0.2],  // Exactly 0.2 seconds
       weight: 0,
       conditions: [
         { type: 'hurt', operator: '==', value: 1 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'animate', params: { name: 'Hurt' } },
         { type: 'move', params: { pattern: 'stop' } },
-        { type: 'set_effect', params: { effect: 'SetColor', parameter: 'brightness', value: 2.0 } }
+        { type: 'invulnerable', params: { duration: 0.7 } }  // Total 0.7s (0.2 + 0.5) (removed SetColor effect since it doesn't exist)
       ]
     },
     {
-      name: "hurt_shell",
-      duration: [1.0, 2.0],
-      weight: 15,
-      cooldown: 5.0,
+      name: "retreat",
+      duration: [2.0, 2.0],  // Even longer duration for guaranteed visibility
+      weight: 99,   // High priority when conditions met, but not overwhelming during init
+      cooldown: 1.0,  // Reduced from 2.0s for better responsiveness
       conditions: [
-        { type: 'hurt', operator: '==', value: 0 },
-        { type: 'distance', operator: '<', value: 100 }
+        { type: 'hurt', operator: '==', value: 0 },     // Not currently in hurt state
+        { type: 'invulnerable', operator: '==', value: 1 }  // But still invulnerable (just after hurt)
       ],
       actions: [
-        { type: 'animate', params: { name: 'Hurt_{direction}' } },
-        { type: 'move', params: { pattern: 'away_from_player', speed: 10 } },
-        { type: 'invulnerable', params: { duration: 2.0 } },
-        { type: 'set_effect', params: { effect: 'SetColor', enabled: false } }
-      ]
-    },
-    {
-      name: "sideways_dodge",
-      duration: [0.8, 1.2],
-      weight: 4,
-      cooldown: 2.0,
-      conditions: [
-        { type: 'distance', operator: '<', value: 80 },
-        { type: 'random', operator: '<', value: 30 }
-      ],
-      actions: [
-        { type: 'animate', params: { name: 'Walk_{sideways}' } },
-        { type: 'move', params: { pattern: 'sideways_left', speed: 50 } }
+        { type: 'animate', params: { name: 'Retreat_{direction}' } },
+        { type: 'move', params: { pattern: 'away_from_player', speed: 100 } },  // MUCH faster for dramatic visibility
+        { type: 'sound', params: { sound: 'Crab_Retreat' } }  // Audio feedback for retreat (removed SetColor effect since it doesn't exist)
       ]
     }
   ]

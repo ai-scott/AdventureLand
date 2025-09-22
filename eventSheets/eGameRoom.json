@@ -2524,6 +2524,15 @@
 													}
 												},
 												{
+													"id": "log",
+													"objectClass": "Browser",
+													"sid": 125146550223840,
+													"parameters": {
+														"type": "log",
+														"message": "\"⚔️ Player_Sword created at \" & Player_Sword.X & \",\" \n  & Player_Sword.Y"
+													}
+												},
+												{
 													"id": "set-animation",
 													"objectClass": "Player_Sword",
 													"sid": 773734198982692,
@@ -2536,6 +2545,7 @@
 													"id": "set-visible",
 													"objectClass": "Player_Sword",
 													"sid": 311491719324730,
+													"disabled": true,
 													"parameters": {
 														"visibility": "invisible"
 													}

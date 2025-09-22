@@ -16,21 +16,17 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"eventType": "comment",
-							"text": "Activate"
-						},
-						{
 							"eventType": "block",
 							"conditions": [
 								{
 									"id": "is-on-screen",
 									"objectClass": "EnemyMasks",
-									"sid": 120423380127030
+									"sid": 486774607548605
 								},
 								{
 									"id": "is-boolean-instance-variable-set",
 									"objectClass": "EnemyMasks",
-									"sid": 782235502728384,
+									"sid": 937570842368832,
 									"parameters": {
 										"instance-variable": "Active"
 									},
@@ -39,7 +35,7 @@
 								{
 									"id": "is-boolean-instance-variable-set",
 									"objectClass": "EnemyMasks",
-									"sid": 320058191653193,
+									"sid": 473493201305549,
 									"parameters": {
 										"instance-variable": "DontActivate"
 									},
@@ -48,16 +44,29 @@
 							],
 							"actions": [
 								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 455636421978283,
+									"parameters": {
+										"type": "log",
+										"message": "\"Enemy Common Active\""
+									}
+								},
+								{
 									"id": "set-boolean-instvar",
 									"objectClass": "EnemyMasks",
-									"sid": 110067958975389,
+									"sid": 218054391399009,
 									"parameters": {
 										"instance-variable": "Active",
 										"value": "true"
 									}
 								}
 							],
-							"sid": 682388741032235
+							"sid": 378052520724435
+						},
+						{
+							"eventType": "comment",
+							"text": "Activate"
 						},
 						{
 							"eventType": "block",
@@ -185,6 +194,53 @@
 							"eventType": "block",
 							"conditions": [
 								{
+									"id": "compare-child-count",
+									"objectClass": "Player_Sword",
+									"sid": 220290872919071,
+									"parameters": {
+										"which": "own",
+										"comparison": 4,
+										"count": "0"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 967009524132923,
+									"parameters": {
+										"type": "log",
+										"message": "\"🎯 Sword exists, enemy active. Distance: \" & \n  distance(Player_Sword.X, Player_Sword.Y, EnemyMasks.X, EnemyMasks.Y)"
+									}
+								}
+							],
+							"sid": 776863809719000
+						},
+						{
+							"eventType": "variable",
+							"name": "enemyBaseUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 529344553601956
+						},
+						{
+							"eventType": "variable",
+							"name": "canDamage",
+							"type": "number",
+							"initialValue": "1",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 699534376064379
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
 									"id": "on-collision-with-another-object",
 									"objectClass": "Player_Sword",
 									"sid": 461497010456662,
@@ -195,14 +251,70 @@
 							],
 							"actions": [
 								{
-									"callFunction": "Enemy_Hurt",
-									"sid": 483448440378601,
-									"parameters": [
-										"EnemyMasks.UID"
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 106509958446495,
+									"parameters": {
+										"type": "log",
+										"message": "\"🔍 COLLISION DETECTED! Player_Sword hit EnemyMask\""
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 953873137037657,
+									"parameters": {
+										"variable": "enemyBaseUID",
+										"value": "EnemyBases.UID"
+									}
+								},
+								{
+									"type": "script",
+									"language": "typescript",
+									"script": [
+										"// Check if enemy is invulnerable",
+										"  const enemyAI = (globalThis as any).AdventureLand?.EnemyAI;",
+										"  if (enemyAI && enemyAI.isInvulnerable) {",
+										"      const isInvulnerable =",
+										"  enemyAI.isInvulnerable(localVars.enemyBaseUID);",
+										"      localVars.canDamage = isInvulnerable ? 0 : 1;",
+										"",
+										"      if (isInvulnerable) {",
+										"          console.log(`🛡️ Enemy ${localVars.enemyBaseUID} is ",
+										"  invulnerable - blocking damage`);",
+										"      }",
+										"  }"
 									]
 								}
 							],
-							"sid": 609077742619404
+							"sid": 609077742619404,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 181808834871196,
+											"parameters": {
+												"first-value": "canDamage",
+												"comparison": 0,
+												"second-value": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Enemy_Hurt",
+											"sid": 999921667120793,
+											"parameters": [
+												"EnemyMasks.UID"
+											]
+										}
+									],
+									"sid": 884060990061701
+								}
+							]
 						},
 						{
 							"eventType": "comment",
@@ -375,13 +487,27 @@
 													}
 												},
 												{
-													"id": "subtract-from-instvar",
-													"objectClass": "EnemyBases",
-													"sid": 668544685183383,
-													"parameters": {
-														"instance-variable": "Health",
-														"value": "Dict_SaveGameData.Get(\"Attack\")"
-													}
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"// JavaScript version - proper runtime API access",
+														"    const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+														"    if (enemyAI) {",
+														"        // Get instances through runtime API",
+														"        const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
+														"        const playerBase = runtime.objects.Player_Base.getFirstInstance();",
+														"        ",
+														"        if (enemyBase && playerBase) {",
+														"            // Calculate knockback",
+														"            const knockbackX = enemyBase.x - playerBase.x;",
+														"            const knockbackY = enemyBase.y - playerBase.y;",
+														"            ",
+														"            enemyAI.notifyHurt(enemyBase.uid, knockbackX, knockbackY);",
+														"            console.log(`🗡️ Enemy ${enemyBase.uid} hit! NEW TS integration ",
+														"    working`);",
+														"        }",
+														"    }"
+													]
 												}
 											],
 											"sid": 600322125151408,
@@ -767,6 +893,22 @@
 												"instance-variable": "Hurt",
 												"value": "false"
 											}
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"// Notify enemy recovery",
+												"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+												"if (enemyAI) {",
+												"    const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
+												"",
+												"    if (enemyBase) {",
+												"        enemyAI.notifyRecovery(enemyBase.uid);",
+												"        console.log(`✅ Enemy ${enemyBase.uid} recovered from damage`);",
+												"    }",
+												"}"
+											]
 										}
 									],
 									"sid": 160340490124746,
@@ -816,6 +958,22 @@
 													"sid": 910654898430770,
 													"parameters": [
 														"EnemyBases.Pair_ID"
+													]
+												},
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"// Handle enemy death",
+														"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+														"if (enemyAI) {",
+														"    const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
+														"",
+														"    if (enemyBase) {",
+														"        enemyAI.notifyDeath(enemyBase.uid);",
+														"        console.log(`☠️ Enemy ${enemyBase.uid} defeated!`);",
+														"    }",
+														"}"
 													]
 												}
 											],

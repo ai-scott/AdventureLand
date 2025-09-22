@@ -30,6 +30,13 @@ export interface EnhancedEnemyData extends EnemyData {
   knockbackVectorY: number; // For knockback physics
   lastSoundPlayed?: string; // Track last sound to prevent spam
   behaviorStartTime?: number; // Track when current behavior started
+  currentAnimation?: string; // Track current animation to prevent spam
+  executedActions?: Set<string>; // Track which one-time actions have been executed for current behavior
+
+  // Health management
+  currentHealth: number; // Current HP
+  maxHealth: number; // Maximum HP
+  isDead: boolean; // Death state tracking
 }
 
 // ============= PAUSE SYSTEM =============
@@ -91,7 +98,41 @@ export class EnhancedEnemyAIFactory {
   public initEnemy(baseUID: number, maskUID: number, enemyType: string, config: EnemyConfig): void {
     console.log(`🤖 Initializing Enhanced ${enemyType} AI (Base: ${baseUID}, Mask: ${maskUID})`);
 
-    const initialBehavior = this.selectBehavior(config.behaviors, new Map<string, number>());
+    // Create a temporary enemyData for filtering behaviors during initialization
+    const tempEnemyData: EnhancedEnemyData = {
+      maskUid: maskUID,
+      type: enemyType,
+      state: "initializing",
+      stateTimer: 0,
+      direction: "down",
+      config: config,
+      currentBehavior: config.behaviors[0], // temporary
+      lastPlayerDistance: 999,
+      behaviorCooldowns: new Map(),
+      behaviorStarted: false, // CRITICAL: false during init to block retreat
+      isHurt: false,
+      invulnerableTimer: 0,
+      sidewaysDirection: "left",
+      knockbackTimer: 0,
+      hurtEffectTimer: 0,
+      deathTriggered: false,
+      recoveryTriggered: false,
+      currentSpeed: 0,
+      targetSpeed: config.baseStats.speed,
+      acceleration: config.baseStats.speed * 3,
+      deceleration: config.baseStats.speed * 5,
+      knockbackVectorX: 0,
+      knockbackVectorY: 0,
+      currentAnimation: undefined,
+      currentHealth: config.baseStats.health,
+      maxHealth: config.baseStats.health,
+      isDead: false
+    };
+
+    // Use proper filtering to prevent retreat during initialization
+    const filteredBehaviors = this.filterBehaviors(config.behaviors, tempEnemyData);
+    const initialBehavior = this.selectBehavior(filteredBehaviors, new Map<string, number>());
+    console.log(`🎯 INIT: ${enemyType} mask ${maskUID} gets initial behavior: ${initialBehavior.name} (filtered from ${config.behaviors.length} to ${filteredBehaviors.length} behaviors)`);
 
     const enemyData: EnhancedEnemyData = {
       // Original properties
@@ -119,11 +160,22 @@ export class EnhancedEnemyAIFactory {
       acceleration: config.baseStats.speed * 3,
       deceleration: config.baseStats.speed * 5,
       knockbackVectorX: 0,
-      knockbackVectorY: 0
+      knockbackVectorY: 0,
+      currentAnimation: undefined, // No animation set initially
+      executedActions: new Set<string>(), // Track one-time actions for current behavior
+
+      // Health management - will be set from C3 instance
+      currentHealth: config.baseStats.health, // temporary, will be overridden
+      maxHealth: config.baseStats.health,     // temporary, will be overridden
+      isDead: false
     };
+
+    // CRITICAL DEBUG: Log exact initialization state
+    console.log(`🔍 INIT STATE: ${enemyType} mask ${maskUID} - hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer}, behavior:${enemyData.currentBehavior.name}, started:${enemyData.behaviorStarted}`);
 
     this.enemyData.set(baseUID, enemyData);
     this.initializeMovementBehavior(baseUID, config);
+    this.initializeHealthFromC3(baseUID);
 
     console.log(`✅ Enhanced ${enemyType} AI initialized - starting with ${initialBehavior.name} behavior`);
   }
@@ -187,9 +239,19 @@ export class EnhancedEnemyAIFactory {
 
     // Update invulnerability timer
     if (enemyData.invulnerableTimer > 0) {
+      const oldTimer = enemyData.invulnerableTimer;
       enemyData.invulnerableTimer -= dt;
+
+      // Debug: Log timer changes during retreat
+      if (enemyData.currentBehavior?.name === "retreat") {
+        console.log(`⏱️ RETREAT TIMER: ${oldTimer.toFixed(3)}s → ${enemyData.invulnerableTimer.toFixed(3)}s (dt: ${dt.toFixed(3)}s)`);
+      }
+
       if (enemyData.invulnerableTimer <= 0) {
         console.log(`🛡️ ${enemyData.type} is no longer invulnerable`);
+        // Clear any remaining protection timers when invulnerability expires
+        enemyData.knockbackTimer = 0;
+        enemyData.hurtEffectTimer = 0;
       }
     }
 
@@ -210,8 +272,19 @@ export class EnhancedEnemyAIFactory {
     }
 
     if (enemyData.stateTimer <= 0) {
-      //console.log(`💤 TIMER EXPIRED! Selecting new behavior`);
-      this.selectNewBehavior(enemyData);
+      // Auto-reset hurt state when hurt behaviors end
+      if (enemyData.currentBehavior.name.includes('hurt')) {
+        enemyData.isHurt = false;
+        console.log(`🩹 ${enemyData.type} recovered from ${enemyData.currentBehavior.name}`);
+      }
+
+      // Special protection: If currently retreating and still invulnerable, extend retreat
+      if (enemyData.currentBehavior.name === "retreat" && enemyData.invulnerableTimer > 0) {
+        console.log(`🛡️ ${enemyData.type} extending retreat duration - still invulnerable (${enemyData.invulnerableTimer.toFixed(3)}s remaining)`);
+        enemyData.stateTimer = 0.1; // Extend by 100ms to stay in retreat
+      } else {
+        this.selectNewBehavior(enemyData);
+      }
     }
 
     // Execute current behavior
@@ -223,10 +296,31 @@ export class EnhancedEnemyAIFactory {
 
   private selectNewBehavior(enemyData: EnhancedEnemyData): void {
     const availableBehaviors = this.filterBehaviors(enemyData.config.behaviors, enemyData);
-    enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
+    const oldBehavior = enemyData.currentBehavior?.name || "none";
+
+    // CRITICAL FIX: Force retreat when invulnerable to ensure proper visual transition
+    if (enemyData.invulnerableTimer > 0) {
+      const retreatBehavior = availableBehaviors.find(b => b.name === "retreat");
+      if (retreatBehavior) {
+        console.log(`🎯 FORCING RETREAT: ${enemyData.type} is invulnerable (${enemyData.invulnerableTimer.toFixed(3)}s) - overriding weighted selection`);
+        enemyData.currentBehavior = retreatBehavior;
+      } else {
+        console.log(`⚠️ NO RETREAT AVAILABLE: ${enemyData.type} is invulnerable but retreat not in available behaviors`);
+        enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
+      }
+    } else {
+      enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
+    }
     enemyData.state = enemyData.currentBehavior.name;
     enemyData.stateTimer = getRandomDuration(enemyData.currentBehavior.duration);
     enemyData.behaviorStarted = false;
+
+    // Reset animation state when changing behaviors to prevent visual glitches
+    if (oldBehavior !== enemyData.currentBehavior.name) {
+      enemyData.currentAnimation = undefined;
+      enemyData.executedActions?.clear(); // Reset one-time actions for new behavior
+      console.log(`🎬 ANIM RESET: ${enemyData.type} mask ${enemyData.maskUid} changing from ${oldBehavior} to ${enemyData.currentBehavior.name} - animation state cleared`);
+    }
 
     // ADD THESE TWO LINES:
     enemyData.behaviorStartTime = Date.now();
@@ -240,31 +334,80 @@ export class EnhancedEnemyAIFactory {
       );
     }
 
-    //console.log(`🎭 ${enemyData.type} behavior changed to: ${enemyData.currentBehavior.name}`);
+    // Log behavior change with complete enemy identification
+    console.log(`🎭 [${enemyData.type} mask:${enemyData.maskUid}] ${oldBehavior} → ${enemyData.currentBehavior.name} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, invul:${enemyData.invulnerableTimer.toFixed(3)}s)`);
+
+    // Special logging for retreat state
+    if (enemyData.currentBehavior.name === "retreat") {
+      console.log(`🏃‍♂️ [RETREAT ACTIVE] ${enemyData.type} mask:${enemyData.maskUid} retreating! Timer: ${enemyData.invulnerableTimer.toFixed(3)}s`);
+      console.log(`🎨 [RETREAT ANIM] Should be: Retreat_${enemyData.direction.charAt(0).toUpperCase() + enemyData.direction.slice(1)}`);
+    }
+
+    // Log when leaving retreat behavior
+    if (oldBehavior === "retreat" && enemyData.currentBehavior.name !== "retreat") {
+      console.log(`❌ [RETREAT END] ${enemyData.type} mask:${enemyData.maskUid} left retreat behavior (invul: ${enemyData.invulnerableTimer.toFixed(3)}s)`);
+    }
   }
 
   private filterBehaviors(behaviors: BehaviorConfig[], enemyData: EnhancedEnemyData): BehaviorConfig[] {
     const player = getPlayerInstance(this.runtime);
 
+    // CRITICAL DEBUG: Log initial state when filtering
+    console.log(`🔍 FILTER DEBUG: ${enemyData.type} mask ${enemyData.maskUid} - isHurt:${enemyData.isHurt}, invulTimer:${enemyData.invulnerableTimer.toFixed(2)}, distance:${enemyData.lastPlayerDistance.toFixed(1)}`);
+
     return behaviors.filter(behavior => {
+      // ABSOLUTE BLOCK: Never allow retreat unless enemy was actually hurt first
+      if (behavior.name === 'retreat') {
+        // Check if enemy was actually damaged (not just initialized)
+        const wasActuallyHurt = enemyData.isHurt || enemyData.invulnerableTimer > 0;
+
+        // CRITICAL: Also check if this is very early in initialization
+        if (!enemyData.behaviorStarted) {
+          console.log(`🚫 RETREAT BLOCKED: ${enemyData.type} hasn't started any behavior yet - definitely can't retreat`);
+          return false;
+        }
+
+        if (!wasActuallyHurt) {
+          console.log(`🚫 RETREAT BLOCKED: ${enemyData.type} was never hurt (hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer.toFixed(2)})`);
+          return false;
+        }
+
+        console.log(`✅ RETREAT ALLOWED: ${enemyData.type} was hurt/invulnerable (hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer.toFixed(2)})`);
+      }
+
       // Check cooldown
       const cooldownTime = enemyData.behaviorCooldowns.get(behavior.name) || 0;
-      if (cooldownTime > 0) return false;
+      if (cooldownTime > 0) {
+        console.log(`⏳ COOLDOWN BLOCK: ${behavior.name} has ${cooldownTime.toFixed(2)}s cooldown remaining`);
+        return false;
+      }
 
       // Check conditions
       if (behavior.conditions) {
-        return behavior.conditions.every(condition =>
-          evaluateCondition(
+        const conditionsResult = behavior.conditions.every(condition => {
+          const result = evaluateCondition(
             condition.type,
             enemyData.isHurt ? 1 : 0,
             enemyData.lastPlayerDistance,
             enemyData.invulnerableTimer > 0 ? 1 : 0,
             condition.operator,
             condition.value
-          )
-        );
+          );
+
+          // Enhanced logging for all behaviors and conditions
+          console.log(`📋 CONDITION: ${behavior.name} - ${condition.type} ${condition.operator} ${condition.value} = ${result} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer.toFixed(2)})`);
+
+          return result;
+        });
+
+        if (!conditionsResult) {
+          console.log(`❌ CONDITIONS FAILED: ${behavior.name} conditions not met`);
+        }
+
+        return conditionsResult;
       }
 
+      console.log(`✅ BEHAVIOR AVAILABLE: ${behavior.name} (no conditions)`);
       return true;
     });
   }
@@ -302,6 +445,15 @@ export class EnhancedEnemyAIFactory {
   }
 
   private executeAction(action: ActionConfig, enemy: any, enemyData: EnhancedEnemyData): void {
+    // Check if this is a one-time action that's already been executed
+    const isOneTimeAction = ['animate', 'sound', 'set_effect', 'invulnerable'].includes(action.type);
+    const actionKey = `${action.type}_${JSON.stringify(action.params)}`;
+
+    if (isOneTimeAction && enemyData.executedActions?.has(actionKey)) {
+      // Skip one-time actions that have already been executed this behavior
+      return;
+    }
+
     switch (action.type) {
       case 'animate':
         this.executeAnimationAction(enemy, enemyData, action);
@@ -320,11 +472,19 @@ export class EnhancedEnemyAIFactory {
         break;
 
       case 'invulnerable':
-        if (action.params.duration) {
+        if (action.params.duration && enemyData.invulnerableTimer <= 0) {
+          // Only set if not already invulnerable to prevent timer reset every frame
           enemyData.invulnerableTimer = action.params.duration;
-          console.log(`🛡️ ${enemyData.type} is now invulnerable for ${action.params.duration}s`);
+          console.log(`🛡️ ${enemyData.type} mask ${enemyData.maskUid} is now invulnerable for ${action.params.duration}s (behavior: ${enemyData.currentBehavior.name}, hurt: ${enemyData.isHurt})`);
+        } else if (action.params.duration) {
+          console.log(`⏳ ${enemyData.type} mask ${enemyData.maskUid} invulnerable action skipped - already invulnerable (${enemyData.invulnerableTimer.toFixed(2)}s remaining)`);
         }
         break;
+    }
+
+    // Mark one-time action as executed
+    if (isOneTimeAction) {
+      enemyData.executedActions?.add(actionKey);
     }
   }
 
@@ -334,11 +494,24 @@ export class EnhancedEnemyAIFactory {
         const effect = enemy.effects[action.params.effect];
         if (effect) {
           if (action.params.parameter && action.params.value !== undefined) {
+            const oldValue = effect[action.params.parameter];
             effect[action.params.parameter] = action.params.value;
+
+            // Enhanced logging for retreat effects
+            if (enemyData.currentBehavior.name === 'retreat') {
+              console.log(`🎨 RETREAT EFFECT: ${enemyData.type} mask ${enemyData.maskUid} - ${action.params.effect}.${action.params.parameter}: ${oldValue} → ${action.params.value}`);
+            } else {
+              console.log(`🎨 Effect: ${action.params.effect}.${action.params.parameter} = ${action.params.value}`);
+            }
           } else if (action.params.enabled !== undefined) {
             effect.isActive = action.params.enabled;
+            console.log(`🎨 Effect: ${action.params.effect}.isActive = ${action.params.enabled}`);
           }
+        } else {
+          console.log(`❌ Effect '${action.params.effect}' not found on enemy ${enemyData.type}`);
         }
+      } else if (action.params.effect) {
+        console.log(`❌ No effects object found on enemy ${enemyData.type} for effect '${action.params.effect}'`);
       }
     } catch (error) {
       console.log(`❌ Effect error:`, error);
@@ -377,25 +550,33 @@ export class EnhancedEnemyAIFactory {
       if (!behavior8Dir) return;
 
       const pattern = action.params.pattern || 'stop';
+      const speed = action.params.speed || enemyData.config.baseStats.speed;
+
+      // Set target speed first
+      if (pattern === 'stop') {
+        enemyData.targetSpeed = 0;
+      } else {
+        enemyData.targetSpeed = speed;
+      }
 
       switch (pattern) {
         case 'toward_player':
-          moveTowardPlayer(behavior8Dir, enemy, enemyData, enemyData.currentSpeed, this.runtime);
+          moveTowardPlayer(behavior8Dir, enemy, enemyData, speed, this.runtime);
           break;
         case 'away_from_player':
-          moveAwayFromPlayer(behavior8Dir, enemy, enemyData, enemyData.currentSpeed, this.runtime);
+          moveAwayFromPlayer(behavior8Dir, enemy, enemyData, speed, this.runtime);
           break;
         case 'crab_toward_player':
-          moveCrabTowardPlayer(behavior8Dir, enemy, enemyData, enemyData.currentSpeed, this.runtime);
+          moveCrabTowardPlayer(behavior8Dir, enemy, enemyData, speed, this.runtime);
           break;
         case 'sideways_left':
-          moveSideways(behavior8Dir, enemy, enemyData, enemyData.currentSpeed, "left", this.runtime);
+          moveSideways(behavior8Dir, enemy, enemyData, speed, "left", this.runtime);
           break;
         case 'sideways_right':
-          moveSideways(behavior8Dir, enemy, enemyData, enemyData.currentSpeed, "right", this.runtime);
+          moveSideways(behavior8Dir, enemy, enemyData, speed, "right", this.runtime);
           break;
         case 'random':
-          moveRandomly(behavior8Dir, enemyData, enemyData.currentSpeed);
+          moveRandomly(behavior8Dir, enemyData, speed);
           break;
         case 'stop':
         default:
@@ -409,7 +590,14 @@ export class EnhancedEnemyAIFactory {
 
   private executeAnimationAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {
     if (action.params.name) {
-      executeAnimation(enemy, enemyData, action.params.name, this.runtime);
+      // Extra debug for retreat animations with full enemy identification
+      if (action.params.name.includes('Retreat')) {
+        console.log(`🎭 [RETREAT ANIM EXEC] ${enemyData.type} base:${enemy.uid} mask:${enemyData.maskUid} executing: ${action.params.name}`);
+      }
+
+      // CRITICAL: Force retreat and hurt animations to ensure visual transitions
+      const forceAnimation = action.params.name.includes('Retreat') || action.params.name.includes('Hurt');
+      executeAnimation(enemy, enemyData, action.params.name, this.runtime, forceAnimation);
     }
   }
 
@@ -481,26 +669,77 @@ export class EnhancedEnemyAIFactory {
     } : null;
   }
 
+  public isInvulnerable(baseUID: number): boolean {
+    const data = this.enemyData.get(baseUID);
+    if (!data) {
+      return false; // If enemy doesn't exist, it's not invulnerable
+    }
+    return data.invulnerableTimer > 0 || data.knockbackTimer > 0;
+  }
+
   // ============= EVENT SHEET CALLBACK METHODS =============
   // These methods are called from event sheets to bridge visual effects with TypeScript state
 
-  public notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number): void {
+  public notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number, damage: number = 1): void {
+    //console.log(`🗡️ NOTIFY HURT CALLED! Enemy ${baseUID}, damage: ${damage}, knockback: (${knockbackVectorX}, ${knockbackVectorY})`);
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) {
       console.warn(`⚠️ notifyHurt: Enemy ${baseUID} not found`);
       return;
     }
 
-    // Don't process if already in knockback or invulnerable
-    if (enemyData.knockbackTimer > 0 || enemyData.invulnerableTimer > 0) {
-      console.log(`🛡️ Enemy ${baseUID} immune to knockback`);
+    // Don't process if already dead
+    if (enemyData.isDead) {
+      console.log(`💀 Enemy ${baseUID} is already dead - ignoring damage`);
       return;
     }
 
-    // Set knockback state
-    enemyData.knockbackTimer = 0.5;  // Duration
-    enemyData.hurtEffectTimer = 0.3; // Visual effect duration
+    // Don't process if already in knockback or invulnerable
+    if (enemyData.knockbackTimer > 0 || enemyData.invulnerableTimer > 0) {
+      const immuneReason = enemyData.invulnerableTimer > 0 ?
+        `invulnerable (${enemyData.invulnerableTimer.toFixed(3)}s remaining)` :
+        `in knockback (${enemyData.knockbackTimer.toFixed(3)}s remaining)`;
+      console.log(`🛡️ Enemy ${baseUID} immune to damage - ${immuneReason}`);
+      return;
+    }
+
+    // Special protection: Don't interrupt retreat behavior
+    if (enemyData.currentBehavior?.name === "retreat") {
+      console.log(`🏃‍♂️ Enemy ${baseUID} is retreating - ignoring additional damage to preserve retreat behavior`);
+      return;
+    }
+
+    // Calculate actual damage if default value was passed
+    let actualDamage = damage;
+    if (damage === 1) {
+      actualDamage = this.calculateDamageFromC3Context();
+    }
+
+    // Apply damage to health
+    enemyData.currentHealth = Math.max(0, enemyData.currentHealth - actualDamage);
+    console.log(`💔 Enemy ${baseUID} took ${actualDamage} damage (${enemyData.currentHealth}/${enemyData.maxHealth} HP)`);
+
+    // Sync health to C3 runtime
+    this.syncEnemyHealthToC3(baseUID, enemyData.currentHealth);
+
+    // Check for death
+    if (enemyData.currentHealth <= 0 && !enemyData.isDead) {
+      enemyData.isDead = true;
+      console.log(`☠️ Enemy ${baseUID} died from damage`);
+
+      // Automatically trigger death notification
+      this.notifyDeath(baseUID);
+      return;
+    }
+
+    // Set knockback state aligned with hurt_flash duration
+    enemyData.knockbackTimer = 0.2;  // Match hurt_flash duration exactly
+    enemyData.hurtEffectTimer = 0.2; // Match hurt_flash duration exactly
     enemyData.isHurt = true;
+
+    // CRITICAL: Set invulnerability timer immediately so retreat condition can see it
+    enemyData.invulnerableTimer = 0.7; // Same duration as hurt_flash behavior
+    console.log(`🛡️ Enemy ${baseUID} immediately set invulnerable for 0.7s in notifyHurt`);
 
     // Store knockback physics for smooth interpolation
     enemyData.knockbackVectorX = knockbackVectorX;
@@ -515,6 +754,11 @@ export class EnhancedEnemyAIFactory {
       enemyData.state = hurtBehavior.name;
       enemyData.stateTimer = getRandomDuration(hurtBehavior.duration);
       enemyData.behaviorStarted = false;
+
+      // CRITICAL: Reset animation state to allow hurt animation to play fresh
+      enemyData.currentAnimation = undefined;
+      enemyData.executedActions?.clear(); // Reset one-time actions for forced behavior
+      console.log(`🎬 HURT ANIM RESET: ${enemyData.type} mask ${enemyData.maskUid} animation state cleared for hurt behavior`);
     }
 
     console.log(`💥 Enemy ${baseUID} knockback started (${knockbackVectorX}, ${knockbackVectorY})`);
@@ -528,10 +772,21 @@ export class EnhancedEnemyAIFactory {
     }
 
     enemyData.recoveryTriggered = true;
-    enemyData.knockbackTimer = 0;
     enemyData.isHurt = false;
 
-    // Reset to idle behavior
+    // CRITICAL FIX: Don't clear knockback protection if still invulnerable
+    if (enemyData.invulnerableTimer > 0) {
+      console.log(`🛡️ Enemy ${baseUID} recovered from hurt but still invulnerable (${enemyData.invulnerableTimer.toFixed(3)}s) - preserving immunity`);
+      // Don't clear knockbackTimer yet - keep immunity until invulnerability expires
+      // Force immediate behavior selection to trigger retreat
+      enemyData.stateTimer = 0;
+      return;
+    }
+
+    // Only clear knockback protection if no longer invulnerable
+    enemyData.knockbackTimer = 0;
+
+    // Only reset to idle if no longer invulnerable
     const idleBehavior = enemyData.config.behaviors.find(b =>
         b.name === "idle" || b.name === "patrol"
     );
@@ -561,6 +816,68 @@ export class EnhancedEnemyAIFactory {
     }, 1000);
   }
 
+  // ============= C3 SYNCHRONIZATION METHODS =============
+  // These methods sync TypeScript state back to Construct 3
+
+  private initializeHealthFromC3(baseUID: number): void {
+    if (!this.runtime) return;
+
+    try {
+      // Use the same pattern as getEnemyInstance
+      const enemyBase = getEnemyInstance(baseUID, this.runtime);
+      if (enemyBase && enemyBase.instVars) {
+        const c3Health = enemyBase.instVars.Health || 1;
+        const enemyData = this.enemyData.get(baseUID);
+        if (enemyData) {
+          enemyData.currentHealth = c3Health;
+          enemyData.maxHealth = c3Health;
+          console.log(`🏥 Initialized enemy ${baseUID} health from C3: ${c3Health}`);
+        }
+      } else {
+        console.warn(`⚠️ Could not find enemy ${baseUID} for health initialization`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ Could not read enemy ${baseUID} health from C3:`, error);
+    }
+  }
+
+  private syncEnemyHealthToC3(baseUID: number, health: number): void {
+    if (!this.runtime) return;
+
+    try {
+      // Use the same pattern as getEnemyInstance
+      const enemyBase = getEnemyInstance(baseUID, this.runtime);
+      if (enemyBase && enemyBase.instVars) {
+        enemyBase.instVars.Health = health;
+        console.log(`🔄 Synced enemy ${baseUID} health to C3: ${health}`);
+      } else {
+        console.warn(`⚠️ Could not find enemy ${baseUID} for health sync`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ Could not sync enemy ${baseUID} health to C3:`, error);
+    }
+  }
+
+  public calculateDamageFromC3Context(): number {
+    if (!this.runtime) return 1;
+
+    try {
+      // Get Attack value from global variable
+      const globalAttack = this.runtime.globalVars?.Attack;
+      if (globalAttack && globalAttack > 0) {
+        console.log(`⚔️ Calculated damage from global Attack: ${globalAttack}`);
+        return globalAttack;
+      }
+
+      console.warn('⚠️ Global Attack variable not found or is 0, using default damage');
+      return 1;
+
+    } catch (error) {
+      console.warn('⚠️ Could not calculate damage from C3 context, using default:', error);
+      return 1;
+    }
+  }
+
   // ============= VISUAL EFFECT SYNCHRONIZATION METHODS =============
   // These methods help event sheets sync visual effects with TypeScript state
 
@@ -581,6 +898,11 @@ export class EnhancedEnemyAIFactory {
       currentSpeed: enemyData.currentSpeed,
       state: enemyData.state
     };
+  }
+
+  public isEnemyDead(baseUID: number): boolean {
+    const enemyData = this.enemyData.get(baseUID);
+    return enemyData ? enemyData.isDead : false;
   }
 
   public isEnemyInKnockback(baseUID: number): boolean {
@@ -646,11 +968,23 @@ export function getEnemyInfo(baseUID: number): any {
   return factory.getEnemyInfo(baseUID);
 }
 
+export function isInvulnerable(baseUID: number): boolean {
+  return factory.isInvulnerable(baseUID);
+}
+
 // ============= EVENT SHEET CALLBACK EXPORTS =============
 // These are called from event sheets to handle combat and visual effects
 
-export function notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number): void {
-  factory.notifyHurt(baseUID, knockbackVectorX, knockbackVectorY);
+export function notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number, damage: number = 1): void {
+  factory.notifyHurt(baseUID, knockbackVectorX, knockbackVectorY, damage);
+}
+
+// Alternative function that calculates damage from C3 context
+export function notifyHurtWithCalculatedDamage(baseUID: number, knockbackVectorX: number, knockbackVectorY: number): void {
+  // For now, we'll get damage from the runtime calculation
+  // This can be enhanced to read from weapon stats, player strength, etc.
+  const calculatedDamage = factory.calculateDamageFromC3Context();
+  factory.notifyHurt(baseUID, knockbackVectorX, knockbackVectorY, calculatedDamage);
 }
 
 export function notifyRecovery(baseUID: number): void {
@@ -666,6 +1000,10 @@ export function notifyDeath(baseUID: number): void {
 
 export function getEnemyVisualState(baseUID: number): any {
   return factory.getEnemyVisualState(baseUID);
+}
+
+export function isEnemyDead(baseUID: number): boolean {
+  return factory.isEnemyDead(baseUID);
 }
 
 export function isEnemyInKnockback(baseUID: number): boolean {
@@ -706,7 +1044,7 @@ if (typeof window !== 'undefined') {
         uid,
         type: data.type,
         state: data.state,
-        health: data.config.baseStats.health,
+        health: `${data.currentHealth}/${data.maxHealth}`,
         isMoving: data.currentSpeed > 0
       };
     });

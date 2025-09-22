@@ -11,15 +11,19 @@ export function getEnemyInstance(uid: number, runtime: IC3RuntimeFacade | null):
   try {
     // Try to find in EnemyBases family first
     const allEnemies = runtime.getAllInstances("EnemyBases");
-    const enemy = allEnemies.find((enemy: any) => enemy.uid === uid);
-    if (enemy) return enemy;
+    if (allEnemies && Array.isArray(allEnemies)) {
+      const enemy = allEnemies.find((enemy: any) => enemy.uid === uid);
+      if (enemy) return enemy;
+    }
 
     // If not found, try specific enemy types
     const enemyTypes = ["En_Crab_Base", "En_Ooze_Base", "En_Ooze_Base2"];
     for (const type of enemyTypes) {
       const instances = runtime.getAllInstances(type);
-      const found = instances.find((inst: any) => inst.uid === uid);
-      if (found) return found;
+      if (instances && Array.isArray(instances)) {
+        const found = instances.find((inst: any) => inst.uid === uid);
+        if (found) return found;
+      }
     }
 
     console.log(`❌ Could not find enemy with UID ${uid}`);
@@ -47,15 +51,19 @@ export function getMaskInstance(maskUID: number, runtime: IC3RuntimeFacade | nul
   try {
     // Try EnemyMasks family first
     const allMasks = runtime.getAllInstances("EnemyMasks");
-    const mask = allMasks.find((mask: any) => mask.uid === maskUID);
-    if (mask) return mask;
+    if (allMasks && Array.isArray(allMasks)) {
+      const mask = allMasks.find((mask: any) => mask.uid === maskUID);
+      if (mask) return mask;
+    }
 
     // If not found, try specific mask types
     const maskTypes = ["En_Crab_Mask", "En_Ooze_Mask", "En_Ooze_Mask2"];
     for (const type of maskTypes) {
       const instances = runtime.getAllInstances(type);
-      const found = instances.find((inst: any) => inst.uid === maskUID);
-      if (found) return found;
+      if (instances && Array.isArray(instances)) {
+        const found = instances.find((inst: any) => inst.uid === maskUID);
+        if (found) return found;
+      }
     }
 
     return null;
@@ -286,8 +294,17 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
   }
 }
   */
-export function executeAnimation(enemy: any, enemyData: any, animationName: string, runtime: any): void {
-  //console.log(`🔍 Trying to play animation '${animationName}' on ${enemyData.type} with maskUID ${enemyData.maskUid}`);
+export function executeAnimation(enemy: any, enemyData: any, animationName: string, runtime: any, forceAnimation: boolean = false): void {
+  // CRITICAL: Only execute animations for the specific enemy being updated
+  if (!enemy || !enemyData || !enemyData.maskUid) {
+    console.log(`❌ ANIMATION BLOCKED: Invalid enemy or enemyData for animation ${animationName}`);
+    return;
+  }
+
+  // Extra debug for retreat animations
+  if (animationName.includes('Retreat')) {
+    console.log(`🎬 RETREAT ANIMATION: ${enemyData.type} (base:${enemy.uid}, mask:${enemyData.maskUid}) playing '${animationName}'`);
+  }
 
   try {
     // Handle direction substitution - fix the pattern matching
@@ -298,7 +315,7 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
 
       if (!direction) {
         // Calculate direction based on enemy's movement or facing
-        const player = runtime.objects.Player_Base?.getFirstInstance();
+        const player = runtime?.objects?.Player_Base?.getFirstInstance();
         if (player && enemy) {
           const dx = player.x - enemy.x;
           const dy = player.y - enemy.y;
@@ -316,26 +333,77 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
       // Capitalize first letter for animation names
       direction = direction.charAt(0).toUpperCase() + direction.slice(1).toLowerCase();
 
+      // Handle missing animation directions
+      if (animationName.includes('Walk_') && direction === 'Down') {
+        direction = 'Right'; // Walk_Down doesn't exist, use Walk_Right
+      } else if (animationName.includes('Cranky_') && direction === 'Down') {
+        direction = 'Right'; // Cranky_Down doesn't exist, use Cranky_Right
+      } else if (animationName.includes('Retreat_')) {
+        // CRITICAL: Only Retreat_Right and Retreat_Up exist!
+        if (direction === 'Down' || direction === 'Left') {
+          const originalDirection = direction;
+          direction = 'Right'; // Fallback to Right for Down/Left
+          console.log(`🎭 RETREAT FALLBACK: ${originalDirection} → Right (animation doesn't exist)`);
+        }
+      }
+
       finalAnimationName = animationName.replace('{direction}', direction);
-      //console.log(`🧭 Direction calculated: '${direction}' → '${finalAnimationName}'`);
+      //console.log(`🧭 Direction '${direction}' → '${finalAnimationName}'`);
     }
 
-    const allMasks = runtime.objects.EnemyMasks?.getAllInstances() || [];
-    //console.log(`Found ${allMasks.length} total masks`);
+    // Handle sideways substitution for crab animations
+    if (animationName.includes('{sideways}')) {
+      // Use stored sideways direction or default to Left/Right
+      let sidewaysDir = enemyData.sidewaysDirection || 'Left';
+
+      // Capitalize first letter for animation names
+      sidewaysDir = sidewaysDir.charAt(0).toUpperCase() + sidewaysDir.slice(1).toLowerCase();
+
+      finalAnimationName = finalAnimationName.replace('{sideways}', sidewaysDir);
+      //console.log(`🦀 Sideways direction: '${sidewaysDir}' → '${finalAnimationName}'`);
+    }
+
+    const allMasks = runtime?.objects?.EnemyMasks?.getAllInstances() || [];
+
+    // Debug for retreat animations
+    if (animationName.includes('Retreat')) {
+      console.log(`🔍 MASK SEARCH: Looking for maskUID ${enemyData.maskUid} among ${allMasks.length} masks`);
+      console.log(`🔍 Available mask UIDs: ${allMasks.map((m: any) => m.uid).join(', ')}`);
+    }
 
     const mask = allMasks.find((m: any) => m.uid === enemyData.maskUid);
 
     if (mask) {
-      //console.log(`Found mask! Type: ${mask.objectType.name}`);
+      // CRITICAL: Double-check we have the RIGHT mask before setting animation
+      if (mask.uid !== enemyData.maskUid) {
+        console.log(`❌ MASK MISMATCH: Expected ${enemyData.maskUid}, got ${mask.uid}`);
+        return;
+      }
 
       if (mask.setAnimation) {
-        mask.setAnimation(finalAnimationName);
-        //console.log(`✅ Set animation '${finalAnimationName}'`);
+        // CRITICAL: Only set animation if it's different from current OR we're forcing it
+        if (enemyData.currentAnimation !== finalAnimationName || forceAnimation) {
+          mask.setAnimation(finalAnimationName);
+          enemyData.currentAnimation = finalAnimationName; // Track the change
+
+          const forceMsg = forceAnimation ? " (FORCED)" : "";
+          console.log(`✅ ANIM CHANGE: '${finalAnimationName}' on ${enemyData.type} mask ${enemyData.maskUid}${forceMsg}`);
+
+          // Special logging for retreat
+          if (finalAnimationName.includes('Retreat')) {
+            console.log(`🎬 RETREAT ANIMATION NOW PLAYING: ${finalAnimationName} on mask ${enemyData.maskUid}${forceMsg}`);
+          }
+        } else {
+          // Animation already playing - don't spam it
+          if (finalAnimationName.includes('Retreat')) {
+            console.log(`⏩ Retreat animation '${finalAnimationName}' already playing - not interrupting`);
+          }
+        }
       } else {
-        console.log(`❌ No setAnimation method found on mask`);
+        console.log(`❌ No setAnimation method found on mask ${enemyData.maskUid}`);
       }
     } else {
-      console.log(`❌ No mask found with UID ${enemyData.maskUid}`);
+      console.log(`❌ CRITICAL: No mask found with UID ${enemyData.maskUid} among [${allMasks.map((m: any) => m.uid).join(', ')}]`);
     }
   } catch (error) {
     console.log(`❌ Animation error:`, error);

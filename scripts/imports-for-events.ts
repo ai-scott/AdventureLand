@@ -28,7 +28,8 @@ export const Systems = {
         update: EnemyAI.updateEnemy,
         hurt: EnemyAI.hurtEnemy,
         destroy: EnemyAI.destroyEnemy,
-        getInfo: EnemyAI.getEnemyInfo
+        getInfo: EnemyAI.getEnemyInfo,
+        isInvulnerable: EnemyAI.isInvulnerable
     },
 
     // Tile Animation System - using static methods
