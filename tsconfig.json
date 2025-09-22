@@ -39,6 +39,7 @@
     "scripts/**/*-backup.ts",
     "scripts/**/*.bak",
     "scripts/**/*.backup.*",
-    "scripts-archive/**/*"
+    "scripts-archive/**/*",
+    "scripts/archive/**/*"
   ]
 }
