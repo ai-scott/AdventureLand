@@ -717,7 +717,13 @@
 							}
 						}
 					],
-					"subfolders": [],
+					"subfolders": [
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "instances"
+						}
+					],
 					"name": "types"
 				},
 				{
@@ -884,6 +890,11 @@
 							],
 							"subfolders": [],
 							"name": "items"
+						},
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "player"
 						}
 					],
 					"name": "systems"
