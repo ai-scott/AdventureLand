@@ -16,7 +16,7 @@ Data-driven enemy behavior system that reduces enemy creation time by 90% (from 
   → Set baseUID to En_Crab_Base.UID
   → Set maskUID to En_Crab_Mask.UID
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.init(
+    globalThis.AdventureLand?.EnemyAI.init(
         localVars.baseUID, localVars.maskUID, "Crab"
     );
 
@@ -24,7 +24,7 @@ Data-driven enemy behavior system that reduces enemy creation time by 90% (from 
 → Every 0.1 seconds
   → For each En_Crab_Mask
     → Execute JavaScript:
-      const result = (globalThis as any).AdventureLand.EnemyAI.update(
+      const result = globalThis.AdventureLand?.EnemyAI.update(
           En_Crab_Mask.UID, Player_Base.X, Player_Base.Y
       );
     → Apply result.animation, result.moveAngle, result.moveSpeed
@@ -101,7 +101,7 @@ export const ENEMY_CONFIGS: Record<string, EnemyConfig> = {
 ### Event Sheet Pattern
 ```javascript
 // Required pattern for C3 event sheets
-const enemyAI = (globalThis as any).AdventureLand.EnemyAI;
+const enemyAI = globalThis.AdventureLand?.EnemyAI;
 if (enemyAI) {
     enemyAI.init(localVars.baseUID, localVars.maskUID, "EnemyType");
 }
@@ -177,7 +177,7 @@ export const BOSS_CONFIG: EnemyConfig = {
   → Set enemyType to choose("Slime", "Crab", "Platypus")
   → Create enemy objects
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.init(
+    globalThis.AdventureLand?.EnemyAI.init(
         baseUID, maskUID, localVars.enemyType
     );
 ```
@@ -191,19 +191,19 @@ export const BOSS_CONFIG: EnemyConfig = {
   → Local number knockbackY = Enemy.Y - Player.Y
 
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.notifyHurt(
+    globalThis.AdventureLand?.EnemyAI.notifyHurt(
         localVars.enemyUID, localVars.knockbackX, localVars.knockbackY
     );
 
 // Enemy recovers from knockback
 → On Enemy animation "hurt" finished
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.notifyRecovery(Enemy.UID);
+    globalThis.AdventureLand?.EnemyAI.notifyRecovery(Enemy.UID);
 
 // Enemy death
 → On Enemy health <= 0
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.notifyDeath(Enemy.UID);
+    globalThis.AdventureLand?.EnemyAI.notifyDeath(Enemy.UID);
 ```
 
 ## 🛡️ Invulnerability System (PRODUCTION FEATURE)
@@ -240,7 +240,7 @@ enemyData.invulnerableTimer = 1.0; // Total immunity duration
   → Local number knockbackY = Enemy.Y - Player.Y
 
   → Execute JavaScript:
-    const enemyAI = (globalThis as any).AdventureLand.EnemyAI;
+    const enemyAI = globalThis.AdventureLand?.EnemyAI;
     if (enemyAI) {
         const enemy = runtime.objects.EnemyBases.getFirstPickedInstance();
         const player = runtime.objects.Player_Base.getFirstInstance();
@@ -279,10 +279,10 @@ enemyData.invulnerableTimer = 1.0; // Total immunity duration
 ### Debug Function
 ```javascript
 // Enable detailed behavior logging
-(globalThis as any).AdventureLand.EnemyAI.setDebugMode(true);
+globalThis.AdventureLand?.EnemyAI.setDebugMode(true);
 
 // View all active enemies
-(globalThis as any).AdventureLand.EnemyAI.getAllEnemies();
+globalThis.AdventureLand?.EnemyAI.getAllEnemies();
 ```
 
 ### Validation

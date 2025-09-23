@@ -7,9 +7,7 @@ Since AJAX has no script interface in Construct 3, you must use JSON objects and
 ## The Pattern
 
 ```typescript
-// ✅ CORRECT - Access JSON objects through runtime
-const runtime = (globalThis as any).runtime;
-
+// ✅ CORRECT - Access JSON objects through existing global runtime
 // Get JSON object data
 const itemsData = runtime.objects.JSON_ItemsLibrary
     .getFirstInstance()
@@ -25,6 +23,9 @@ const saveDict = runtime.objects.Dict_SaveGame
     .getFirstInstance();
 const playerName = saveDict.get("PlayerName");
 
+// ❌ WRONG - Causes "duplicate runtime errors"
+const runtime = (globalThis as any).runtime;
+
 // ❌ WRONG - Trying to use AJAX
 // AJAX has no script interface!
 const data = runtime.objects.AJAX.lastData;  // Doesn't exist
@@ -36,20 +37,18 @@ const data = runtime.objects.AJAX.lastData;  // Doesn't exist
 Most flexible for complex data structures:
 
 ```typescript
-// Access JSON data
+// Access JSON data (use existing global runtime)
 export function loadItemsLibrary(): ItemData[] {
-    const runtime = (globalThis as any).runtime;
-    
     // Get the JSON object instance
     const jsonInstance = runtime.objects.JSON_ItemsLibrary.getFirstInstance();
     if (!jsonInstance) {
         console.error("JSON_ItemsLibrary not found!");
         return [];
     }
-    
+
     // Get the data copy
     const data = jsonInstance.getJsonDataCopy();
-    
+
     // TypeScript now has full typed access
     return data.items as ItemData[];
 }
@@ -264,26 +263,26 @@ Always check for object existence:
 ```typescript
 export function safeGetJsonData(objectName: string): any {
     try {
-        const runtime = (globalThis as any).runtime;
+        // Use existing global runtime
         if (!runtime) {
             console.error("Runtime not available");
             return null;
         }
-        
+
         const objectClass = runtime.objects[objectName];
         if (!objectClass) {
             console.error(`Object class ${objectName} not found`);
             return null;
         }
-        
+
         const instance = objectClass.getFirstInstance();
         if (!instance) {
             console.error(`No instance of ${objectName} found`);
             return null;
         }
-        
+
         return instance.getJsonDataCopy?.() || instance.getAsJson?.() || null;
-        
+
     } catch (error) {
         console.error(`Error accessing ${objectName}:`, error);
         return null;
@@ -405,12 +404,13 @@ export function buildItemLookups(): void {
 ### ❌ Accessing Before Load
 ```typescript
 // Wrong - data might not be loaded yet
+const runtime = (globalThis as any).runtime; // Also wrong - causes duplicate runtime errors
 const items = runtime.objects.JSON_ItemsLibrary.getFirstInstance().getJsonDataCopy();
 ```
 
 ### ✅ Safe Access Pattern
 ```typescript
-// Right - check and handle gracefully
+// Right - check and handle gracefully (use existing global runtime)
 export function getItemsSafely(): ItemData[] {
     const instance = runtime.objects.JSON_ItemsLibrary.getFirstInstance();
     if (!instance) {

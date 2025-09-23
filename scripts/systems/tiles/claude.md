@@ -10,17 +10,19 @@ High-performance tile animation system for animated tilemap effects like water, 
 // Initialize tile animations on layout start
 → On start of layout
   → Execute JavaScript:
-    const tileManager = (globalThis as any).AdventureLand.TileAnimations;
-    tileManager.initialize(runtime);
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        tileManager.initialize(runtime);
 
-    // Add water animation
-    tileManager.addTilemapAnimation("water", "Water_Tilemap", 4, 200);
+        // Add water animation
+        tileManager.addTilemapAnimation("water", "Water_Tilemap", 4, 200);
 
-    // Add fire animation
-    tileManager.addTilemapAnimation("fire", "Fire_Tilemap", 6, 150);
+        // Add fire animation
+        tileManager.addTilemapAnimation("fire", "Fire_Tilemap", 6, 150);
 
-    // Start all animations
-    tileManager.startAll();
+        // Start all animations
+        tileManager.startAll();
+    }
 ```
 
 ### Core Functions
@@ -48,16 +50,17 @@ High-performance tile animation system for animated tilemap effects like water, 
 ```javascript
 // SAFE FOR PENNY - Add in event sheet "On start of layout"
 → Execute JavaScript:
-  const tileManager = (globalThis as any).AdventureLand.TileAnimations;
+  const tileManager = globalThis.AdventureLand?.TileAnimations;
+  if (tileManager) {
+      // Lava animation (6 frames, 180ms delay)
+      tileManager.addTilemapAnimation("lava", "Lava_Tilemap", 6, 180);
 
-  // Lava animation (6 frames, 180ms delay)
-  tileManager.addTilemapAnimation("lava", "Lava_Tilemap", 6, 180);
+      // Ice animation (3 frames, 300ms delay for slow effect)
+      tileManager.addTilemapAnimation("ice", "Ice_Tilemap", 3, 300);
 
-  // Ice animation (3 frames, 300ms delay for slow effect)
-  tileManager.addTilemapAnimation("ice", "Ice_Tilemap", 3, 300);
-
-  // Fast sparkle effect (8 frames, 80ms delay)
-  tileManager.addTilemapAnimation("sparkle", "Sparkle_Tilemap", 8, 80);
+      // Fast sparkle effect (8 frames, 80ms delay)
+      tileManager.addTilemapAnimation("sparkle", "Sparkle_Tilemap", 8, 80);
+  }
 ```
 
 ### Animation Timing Guidelines
@@ -77,7 +80,7 @@ const ANIMATION_SPEEDS = {
 ### Event Sheet Pattern
 ```javascript
 // Required pattern for C3 event sheets
-const tileAnimations = (globalThis as any).AdventureLand.TileAnimations;
+const tileAnimations = globalThis.AdventureLand?.TileAnimations;
 if (tileAnimations) {
     tileAnimations.addTilemapAnimation("water", "Water_Tilemap", 4, 200);
 }
@@ -116,18 +119,19 @@ import { TileAnimationManager, AnimationConfig } from "./tile-animation-manager.
 // SAFE FOR PENNY - Multiple water types
 → On start of layout
   → Execute JavaScript:
-    const tileManager = (globalThis as any).AdventureLand.TileAnimations;
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        // Still pond (slow)
+        tileManager.addTilemapAnimation("pond", "Pond_Tilemap", 4, 400);
 
-    // Still pond (slow)
-    tileManager.addTilemapAnimation("pond", "Pond_Tilemap", 4, 400);
+        // River (medium)
+        tileManager.addTilemapAnimation("river", "River_Tilemap", 6, 200);
 
-    // River (medium)
-    tileManager.addTilemapAnimation("river", "River_Tilemap", 6, 200);
+        // Waterfall (fast)
+        tileManager.addTilemapAnimation("waterfall", "Waterfall_Tilemap", 8, 100);
 
-    // Waterfall (fast)
-    tileManager.addTilemapAnimation("waterfall", "Waterfall_Tilemap", 8, 100);
-
-    tileManager.startAll();
+        tileManager.startAll();
+    }
 ```
 
 ### Dynamic Animation Control
@@ -135,12 +139,18 @@ import { TileAnimationManager, AnimationConfig } from "./tile-animation-manager.
 // Pause animations during cutscenes
 → On cutscene started
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.TileAnimations.stopAll();
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        tileManager.stopAll();
+    }
 
 // Resume animations after cutscene
 → On cutscene ended
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.TileAnimations.startAll();
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        tileManager.startAll();
+    }
 ```
 
 ### Environmental Animations
@@ -148,18 +158,19 @@ import { TileAnimationManager, AnimationConfig } from "./tile-animation-manager.
 // SAFE FOR PENNY - Environment setup
 → On start of layout
   → Execute JavaScript:
-    const tileManager = (globalThis as any).AdventureLand.TileAnimations;
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        // Fire pits (fast, danger feeling)
+        tileManager.addTilemapAnimation("fire", "Fire_Tilemap", 6, 120);
 
-    // Fire pits (fast, danger feeling)
-    tileManager.addTilemapAnimation("fire", "Fire_Tilemap", 6, 120);
+        // Magic crystals (medium, mystical)
+        tileManager.addTilemapAnimation("crystal", "Crystal_Tilemap", 5, 250);
 
-    // Magic crystals (medium, mystical)
-    tileManager.addTilemapAnimation("crystal", "Crystal_Tilemap", 5, 250);
+        // Poison pools (slow, ominous)
+        tileManager.addTilemapAnimation("poison", "Poison_Tilemap", 4, 350);
 
-    // Poison pools (slow, ominous)
-    tileManager.addTilemapAnimation("poison", "Poison_Tilemap", 4, 350);
-
-    tileManager.startAll();
+        tileManager.startAll();
+    }
 ```
 
 ## 🔍 Debugging
@@ -167,10 +178,13 @@ import { TileAnimationManager, AnimationConfig } from "./tile-animation-manager.
 ### Debug Functions
 ```javascript
 // View all active animations
-(globalThis as any).AdventureLand.TileAnimations.debugAnimations();
+const tileManager = globalThis.AdventureLand?.TileAnimations;
+if (tileManager) {
+    tileManager.debugAnimations();
 
-// Check specific animation state
-(globalThis as any).AdventureLand.TileAnimations.getAnimationState("water");
+    // Check specific animation state
+    tileManager.getAnimationState("water");
+}
 ```
 
 ### Performance Monitoring
@@ -178,8 +192,10 @@ import { TileAnimationManager, AnimationConfig } from "./tile-animation-manager.
 // Monitor frame timing
 → Every 5 seconds
   → Execute JavaScript:
-    const tileManager = (globalThis as any).AdventureLand.TileAnimations;
-    console.log("Tile animations performance:", tileManager.getPerformanceStats());
+    const tileManager = globalThis.AdventureLand?.TileAnimations;
+    if (tileManager) {
+        console.log("Tile animations performance:", tileManager.getPerformanceStats());
+    }
 ```
 
 ---

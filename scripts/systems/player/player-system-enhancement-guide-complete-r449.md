@@ -532,7 +532,7 @@ Local boolean isMaxHealth = False
 → Execute JavaScript:
 ```javascript
 // Properly integrate with TypeScript health system
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
 
 if (healthSystem) {
     const change = localVars.healthChange;
@@ -596,8 +596,8 @@ Local boolean hasKnockback = False
 // Process damage through TypeScript (single source of truth!)
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
+const playerState = globalThis.AdventureLand?.PlayerState;
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
 
 if (playerState && healthSystem) {
     // Check if player can take damage
@@ -656,7 +656,7 @@ Local number recoveryUID = 0
 → Execute JavaScript:
 ```javascript
 // Notify TypeScript that knockback ended
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 if (playerState) {
     const state = playerState.getCombatState();
     if (!state.isKnockedBack) {
@@ -689,8 +689,8 @@ Local boolean isDead = False
 
 → Execute JavaScript:
 ```javascript
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
+const playerState = globalThis.AdventureLand?.PlayerState;
 
 if (healthSystem && playerState) {
     const healthState = healthSystem.getState();
@@ -725,8 +725,7 @@ if (healthSystem && playerState) {
 // Add at start of layout
 → Execute JavaScript:
 ```javascript
-const runtime = (globalThis as any).runtime;
-const AL = (globalThis as any).AdventureLand;
+const AL = globalThis.AdventureLand;
 
 // Initialize all systems
 AL.HealthSystem.initialize({
@@ -751,7 +750,7 @@ console.log("✅ Player systems initialized");
 // Add to your every tick event
 → Execute JavaScript:
 ```javascript
-const AL = (globalThis as any).AdventureLand;
+const AL = globalThis.AdventureLand;
 if (AL.HealthSystem && AL.PlayerState) {
     AL.HealthSystem.update(runtime.dt);
     AL.PlayerState.update(runtime.dt);
@@ -769,7 +768,7 @@ Local boolean canAttack = False
 
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 localVars.canAttack = playerState ? playerState.tryAttack() : false;
 ```
 
@@ -805,12 +804,14 @@ Every tick
 // GOOD: Use state change callbacks
 → Execute JavaScript:
 ```javascript
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
-healthSystem.on('onDamage', (damage, newHealth) => {
-    if (newHealth < 3) {
-        runtime.callFunction('LowHealthWarning');
-    }
-});
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
+if (healthSystem) {
+    healthSystem.on('onDamage', (damage, newHealth) => {
+        if (newHealth < 3) {
+            runtime.callFunction('LowHealthWarning');
+        }
+    });
+}
 ```
 ```
 
@@ -1100,7 +1101,7 @@ Local boolean shouldMirror = False
 
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 
 if (playerState) {
     localVars.canAttack = playerState.tryAttack();
@@ -1164,7 +1165,7 @@ Local number walkFrame = 0
 
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 
 if (playerState) {
     const state = playerState.getCombatState();
@@ -1248,7 +1249,7 @@ localVars.playerExists = instances.length > 0;
 // Initialize TypeScript state
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 if (playerState) {
     playerState.resetPlayer();
     console.log("Player created and state reset");
@@ -1279,7 +1280,7 @@ Local string savedBody = ""
 // Update TypeScript state
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 
 if (playerState) {
     playerState.updateOutfit('hair', localVars.savedHair);
@@ -1346,7 +1347,7 @@ Local number inputY = 0
 
 → Execute JavaScript:
 ```javascript
-const playerState = (globalThis as any).AdventureLand.PlayerState;
+const playerState = globalThis.AdventureLand?.PlayerState;
 
 if (playerState && playerState.canMove()) {
     // Update direction based on input

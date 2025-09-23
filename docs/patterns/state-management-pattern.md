@@ -107,8 +107,10 @@ Event sheet integration:
 // Check quest status
 → Local string questStatus = ""
 → Execute JavaScript:
-  localVars.questStatus = (globalThis as any).AdventureLand.Quests
-      .getQuestStatus("penny_birthday");
+  const quests = globalThis.AdventureLand?.Quests;
+  if (quests) {
+    localVars.questStatus = quests.getQuestStatus("penny_birthday");
+  }
 
 → questStatus = "active"
   → Set QuestMarker visible
@@ -117,9 +119,11 @@ Event sheet integration:
 → Player collected item "cake_ingredient"
   → Local string updateResult = ""
   → Execute JavaScript:
-    const result = (globalThis as any).AdventureLand.Quests
-        .updateQuest("penny_birthday", "collect_ingredient");
-    localVars.updateResult = JSON.stringify(result);
+    const quests = globalThis.AdventureLand?.Quests;
+    if (quests) {
+      const result = quests.updateQuest("penny_birthday", "collect_ingredient");
+      localVars.updateResult = JSON.stringify(result);
+    }
     
   → JSON: Parse updateResult
   → JSON.Get("changed") = 1
@@ -193,23 +197,28 @@ Synchronization in event sheets:
 ```javascript
 // On start of layout - sync TypeScript with C3
 → Execute JavaScript:
-  (globalThis as any).AdventureLand.PlayerStats.syncFromC3({
-      health: runtime.globalVars.PlayerHealth,
-      maxHealth: runtime.globalVars.PlayerMaxHealth,
-      attack: runtime.globalVars.PlayerAttack,
-      defense: runtime.globalVars.PlayerDefense,
-      speed: runtime.globalVars.PlayerSpeed
-  });
+  const playerStats = globalThis.AdventureLand?.PlayerStats;
+  if (playerStats) {
+    playerStats.syncFromC3({
+        health: runtime.globalVars.PlayerHealth,
+        maxHealth: runtime.globalVars.PlayerMaxHealth,
+        attack: runtime.globalVars.PlayerAttack,
+        defense: runtime.globalVars.PlayerDefense,
+        speed: runtime.globalVars.PlayerSpeed
+    });
+  }
 
 // When player takes damage
 → Local number actualDamage = 0
 → Local number newHealth = 0
 
 → Execute JavaScript:
-  const result = (globalThis as any).AdventureLand.PlayerStats
-      .damage(localVars.incomingDamage);
-  localVars.actualDamage = result.actualDamage;
-  localVars.newHealth = result.newHealth;
+  const playerStats = globalThis.AdventureLand?.PlayerStats;
+  if (playerStats) {
+    const result = playerStats.damage(localVars.incomingDamage);
+    localVars.actualDamage = result.actualDamage;
+    localVars.newHealth = result.newHealth;
+  }
 
 // Apply to C3 state
 → Set PlayerHealth to newHealth

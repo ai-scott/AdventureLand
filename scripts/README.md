@@ -43,11 +43,15 @@ function processEnemy(enemyUID: number): { newX: number, newY: number } {
 ```javascript
 // In Construct 3 event sheet:
 → Execute JavaScript:
-  const result = (globalThis as any).AdventureLand.EnemyAI.update(
-      localVars.enemyUID,
-      localVars.playerX,
-      localVars.playerY
-  );
+  const enemyAI = globalThis.AdventureLand?.EnemyAI;
+  if (enemyAI) {
+    const result = enemyAI.update(
+        localVars.enemyUID,
+        localVars.playerX,
+        localVars.playerY
+    );
+    // Use result data...
+  }
   
 // Then use the returned data to update C3 objects
 → Enemy: Set X to result.newX
@@ -57,7 +61,7 @@ function processEnemy(enemyUID: number): { newX: number, newY: number } {
 ### 3. JSON Data Access Pattern
 ```typescript
 // AJAX plugin has no script interface, use JSON objects:
-const runtime = (globalThis as any).runtime;
+// Use existing global runtime (don't redeclare it)
 const itemsData = runtime.objects.JSON_ItemsLibrary
     .getFirstInstance()
     .getJsonDataCopy();
@@ -203,7 +207,10 @@ export interface BehaviorConfig {
 4. **Call from event sheets:**
    ```javascript
    → Execute JavaScript:
-     (globalThis as any).AdventureLand.MySystem.initialize(runtime);
+     const mySystem = globalThis.AdventureLand?.MySystem;
+     if (mySystem) {
+       mySystem.initialize(runtime);
+     }
    ```
 
 ## 📊 Performance Guidelines

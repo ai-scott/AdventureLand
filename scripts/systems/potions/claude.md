@@ -10,8 +10,10 @@ Manages potion effects, durations, stackability, and cooldowns. Integrates with 
 // Initialize potion system
 → On start of layout
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-    potions.initialize();
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        potions.initialize();
+    }
 
 // Use a potion item
 → On P key pressed (or inventory use)
@@ -19,12 +21,14 @@ Manages potion effects, durations, stackability, and cooldowns. Integrates with 
   → Local number potionItemID = 101  // Health Potion item ID
 
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-    const result = potions.usePotion(localVars.playerUID, localVars.potionItemID);
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        const result = potions.usePotion(localVars.playerUID, localVars.potionItemID);
 
-    if (result.success) {
-        // Show effect message
-        // Remove item from inventory
+        if (result.success) {
+            // Show effect message
+            // Remove item from inventory
+        }
     }
 ```
 
@@ -133,7 +137,7 @@ const EFFECT_TYPES = {
 ### Event Sheet Pattern
 ```javascript
 // Required pattern for C3 event sheets
-const potions = (globalThis as any).AdventureLand.Potions;
+const potions = globalThis.AdventureLand?.Potions;
 if (potions) {
     const result = potions.usePotion(Player.UID, 101);
     if (result.success) {
@@ -180,17 +184,21 @@ import { ItemManager } from '../items/item-manager.js';
   → Local number itemID = Item.ID
 
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-    const result = potions.usePotion(localVars.playerUID, localVars.itemID);
+    const potions = globalThis.AdventureLand?.Potions;
+    const itemManager = globalThis.AdventureLand?.ItemManager;
 
-    if (result.success) {
-        // Remove item from inventory
-        (globalThis as any).AdventureLand.ItemManager.removeItem(localVars.itemID, 1);
+    if (potions && itemManager) {
+        const result = potions.usePotion(localVars.playerUID, localVars.itemID);
 
-        // Show effect message
-        UI_ShowMessage.text = result.message || "Potion used!";
-    } else {
-        UI_ShowMessage.text = result.error || "Cannot use potion right now";
+        if (result.success) {
+            // Remove item from inventory
+            itemManager.removeItem(localVars.itemID, 1);
+
+            // Show effect message
+            UI_ShowMessage.text = result.message || "Potion used!";
+        } else {
+            UI_ShowMessage.text = result.error || "Cannot use potion right now";
+        }
     }
 ```
 
@@ -199,13 +207,14 @@ import { ItemManager } from '../items/item-manager.js';
 // SAFE FOR PENNY - Battle potions
 → On boss encounter started
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        // Auto-use strength potion for boss fight
+        potions.usePotion(Player.UID, 104); // Strength Potion
 
-    // Auto-use strength potion for boss fight
-    potions.usePotion(Player.UID, 104); // Strength Potion
-
-    // Show buff icon
-    UI_StrengthBuff.visible = true;
+        // Show buff icon
+        UI_StrengthBuff.visible = true;
+    }
 
 → On effect expired
   → Effect type = "strength"
@@ -217,16 +226,17 @@ import { ItemManager } from '../items/item-manager.js';
 // SAFE FOR PENNY - Area effects
 → Player enters magical fountain area
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-
-    // Apply temporary regeneration
-    potions.addCustomEffect(Player.UID, {
-        type: 'regeneration',
-        value: 1,
-        duration: 60,
-        tickInterval: 2,
-        stackable: false
-    });
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        // Apply temporary regeneration
+        potions.addCustomEffect(Player.UID, {
+            type: 'regeneration',
+            value: 1,
+            duration: 60,
+            tickInterval: 2,
+            stackable: false
+        });
+    }
 ```
 
 ### Status Display
@@ -234,17 +244,19 @@ import { ItemManager } from '../items/item-manager.js';
 // SAFE FOR PENNY - UI status updates
 → Every 1.0 seconds
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-    const effects = potions.getActiveEffects(Player.UID);
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        const effects = potions.getActiveEffects(Player.UID);
 
-    // Update UI with active effects
-    let statusText = "";
-    effects.forEach(effect => {
-        const timeLeft = Math.ceil(effect.remainingDuration);
-        statusText += `${effect.type}: ${timeLeft}s\n`;
-    });
+        // Update UI with active effects
+        let statusText = "";
+        effects.forEach(effect => {
+            const timeLeft = Math.ceil(effect.remainingDuration);
+            statusText += `${effect.type}: ${timeLeft}s\n`;
+        });
 
-    UI_StatusEffects.text = statusText;
+        UI_StatusEffects.text = statusText;
+    }
 ```
 
 ## 🔍 Debugging
@@ -252,13 +264,16 @@ import { ItemManager } from '../items/item-manager.js';
 ### Debug Functions
 ```javascript
 // View all active effects for player
-(globalThis as any).AdventureLand.Potions.getActiveEffects(Player.UID);
+const potions = globalThis.AdventureLand?.Potions;
+if (potions) {
+    potions.getActiveEffects(Player.UID);
 
-// Check potion configuration
-(globalThis as any).AdventureLand.Potions.getPotionConfig(101);
+    // Check potion configuration
+    potions.getPotionConfig(101);
 
-// Clear all effects (for testing)
-(globalThis as any).AdventureLand.Potions.clearAllEffects(Player.UID);
+    // Clear all effects (for testing)
+    potions.clearAllEffects(Player.UID);
+}
 ```
 
 ### Effect Monitoring
@@ -266,12 +281,14 @@ import { ItemManager } from '../items/item-manager.js';
 // Monitor effect application
 → Every 5 seconds
   → Execute JavaScript:
-    const potions = (globalThis as any).AdventureLand.Potions;
-    const effects = potions.getActiveEffects(Player.UID);
-    console.log(`Active effects: ${effects.length}`);
-    effects.forEach(effect => {
-        console.log(`- ${effect.type}: ${effect.remainingDuration}s left`);
-    });
+    const potions = globalThis.AdventureLand?.Potions;
+    if (potions) {
+        const effects = potions.getActiveEffects(Player.UID);
+        console.log(`Active effects: ${effects.length}`);
+        effects.forEach(effect => {
+            console.log(`- ${effect.type}: ${effect.remainingDuration}s left`);
+        });
+    }
 ```
 
 ---

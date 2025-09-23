@@ -35,7 +35,8 @@ AdventureLand uses a revolutionary hybrid architecture that combines:
 
 ```typescript
 // The critical nested object pattern that bridges TypeScript and Construct 3
-(globalThis as any).AdventureLand = {
+// Note: This assignment is done ONCE in main.ts using TypeScript casting
+globalThis.AdventureLand = {
     EnemyAI: { /* methods */ },
     ItemManager: { /* methods */ },
     TileAnimations: { /* methods */ }
@@ -248,8 +249,9 @@ We're modernizing our TypeScript integration based on the latest Construct 3 bes
 
 #### 1. The Nested Object Pattern (Required)
 ```typescript
-// ✅ CORRECT - Works in Construct 3
-(globalThis as any).AdventureLand = {
+// ✅ CORRECT - Works in Construct 3 (used ONCE in main.ts)
+// Note: This pattern uses TypeScript casting in main.ts only
+globalThis.AdventureLand = {
     SystemName: {
         method1: (param) => SystemModule.method1(param)
     }
@@ -262,7 +264,7 @@ export function myFunction() { } // Direct exports fail
 #### 2. Event Sheet Access Pattern
 ```javascript
 // In Construct 3 Event Sheets - MUST use this pattern
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
 if (healthSystem) {
     healthSystem.takeDamage(localVars.enemyUID, 10);
 }
@@ -352,7 +354,7 @@ npm install
 AdventureLand.SystemName.debug();
 
 // In event sheets
-const al = (globalThis as any).AdventureLand;
+const al = globalThis.AdventureLand;
 console.log(al.SystemName.getState());
 ```
 

@@ -172,7 +172,7 @@ The enemy battle system is complete and production-ready:
 
 ```javascript
 // Test if integration is working
-const enemyAI = (globalThis as any).AdventureLand.EnemyAI;
+const enemyAI = globalThis.AdventureLand?.EnemyAI;
 
 // Get all enemies
 console.log('Active enemies:', enemyAI.getAllEnemies());
@@ -217,7 +217,7 @@ const playerBase = (Player_Base as any);
 const knockbackX = enemyBase.X - playerBase.X;
 const knockbackY = enemyBase.Y - playerBase.Y;
 
-const enemyAI = (globalThis as any).AdventureLand.EnemyAI;
+const enemyAI = globalThis.AdventureLand?.EnemyAI;
 if (enemyAI) {
     enemyAI.notifyHurt(enemyBase.UID, knockbackX, knockbackY);
     console.log(`🗡️ Enemy ${enemyBase.UID} hit! TS state updated`);
@@ -272,7 +272,7 @@ When passing data from Construct 3 event sheets to TypeScript:
   → Local number enemyUID = 0
   → Set enemyUID to Enemy.UID
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.update(localVars.enemyUID)
+    globalThis.AdventureLand?.EnemyAI.update(localVars.enemyUID)
 ```
 
 ## ✅ Success Checklist
@@ -293,7 +293,7 @@ After implementing the fix:
 
 ### If nothing happens:
 1. Check browser console for error messages
-2. Verify `(globalThis as any).AdventureLand.EnemyAI` exists
+2. Verify `globalThis.AdventureLand?.EnemyAI` exists
 3. Make sure you're using `EnemyBases.UID` not `EnemyMasks.UID`
 
 ### If knockback is wrong direction:

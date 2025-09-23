@@ -42,12 +42,16 @@ Use event sheet local variables to capture picked instance data:
   
   // Pass local variables to TypeScript
   → Execute JavaScript:
-    const result = (globalThis as any).AdventureLand.EnemyAI.update(
-        localVars.enemyUID,
-        localVars.enemyX,
-        localVars.enemyY,
-        localVars.enemyHealth
-    );
+    const enemyAI = globalThis.AdventureLand?.EnemyAI;
+    if (enemyAI) {
+      const result = enemyAI.update(
+          localVars.enemyUID,
+          localVars.enemyX,
+          localVars.enemyY,
+          localVars.enemyHealth
+      );
+      // Use result data...
+    }
     
   // Use returned data to update instance
   → Enemy: Set X to result.newX
@@ -67,10 +71,13 @@ Use event sheet local variables to capture picked instance data:
   → Set playerHealth to Player.IV_Health
   
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.Player.updateStats(
-        localVars.playerUID,
-        localVars.playerHealth
-    );
+    const player = globalThis.AdventureLand?.Player;
+    if (player) {
+      player.updateStats(
+          localVars.playerUID,
+          localVars.playerHealth
+      );
+    }
 ```
 
 ### Filtered Collection Pattern
@@ -86,10 +93,13 @@ Use event sheet local variables to capture picked instance data:
     → Set bossHealth to Enemy.IV_Health
     
     → Execute JavaScript:
-      (globalThis as any).AdventureLand.BossAI.updateBoss(
-          localVars.bossUID,
-          localVars.bossHealth
-      );
+      const bossAI = globalThis.AdventureLand?.BossAI;
+      if (bossAI) {
+        bossAI.updateBoss(
+            localVars.bossUID,
+            localVars.bossHealth
+        );
+      }
 ```
 
 ### Batch Processing Pattern
@@ -105,7 +115,10 @@ Use event sheet local variables to capture picked instance data:
       const [uid, x, y] = data.split(',').map(Number);
       return { uid, x, y };
   });
-  (globalThis as any).AdventureLand.EnemyAI.batchUpdate(enemies);
+  const enemyAI = globalThis.AdventureLand?.EnemyAI;
+  if (enemyAI) {
+    enemyAI.batchUpdate(enemies);
+  }
 ```
 
 ## Working with Return Values
@@ -116,10 +129,11 @@ Use event sheet local variables to capture picked instance data:
 → Local number itemStrength = 0
 
 → Execute JavaScript:
-  const item = (globalThis as any).AdventureLand.ItemManager.getItemById(
-      localVars.itemID
-  );
-  localVars.itemStrength = item ? item.strength : 0;
+  const itemManager = globalThis.AdventureLand?.ItemManager;
+  if (itemManager) {
+    const item = itemManager.getItemById(localVars.itemID);
+    localVars.itemStrength = item ? item.strength : 0;
+  }
 
 // Use the returned value
 → Set text to "Item strength: " & itemStrength
@@ -131,11 +145,12 @@ Use event sheet local variables to capture picked instance data:
 → Local string actionResult = ""
 
 → Execute JavaScript:
-  const result = (globalThis as any).AdventureLand.EnemyAI.decideBehavior(
-      localVars.enemyUID
-  );
-  // Convert complex object to JSON string
-  localVars.actionResult = JSON.stringify(result);
+  const enemyAI = globalThis.AdventureLand?.EnemyAI;
+  if (enemyAI) {
+    const result = enemyAI.decideBehavior(localVars.enemyUID);
+    // Convert complex object to JSON string
+    localVars.actionResult = JSON.stringify(result);
+  }
 
 // Parse in event sheet using JSON object
 → JSON: Parse string actionResult
@@ -163,10 +178,11 @@ Use event sheet local variables to capture picked instance data:
       .getAllInstances()
       .find(a => a.objectClass.name === "EnemyParams")
       .getAsJson();
-      
-  (globalThis as any).AdventureLand.EnemyAI.complexUpdate(
-      uid, x, y, health, speed, targetUID
-  );
+
+  const enemyAI = globalThis.AdventureLand?.EnemyAI;
+  if (enemyAI) {
+    enemyAI.complexUpdate(uid, x, y, health, speed, targetUID);
+  }
 ```
 
 ### Performance Optimization
@@ -187,7 +203,10 @@ Use event sheet local variables to capture picked instance data:
 // Single TypeScript call
 → Execute JavaScript:
   const data = localVars.batchData.slice(0, -1); // Remove trailing comma
-  (globalThis as any).AdventureLand.EnemyAI.batchProcess(data);
+  const enemyAI = globalThis.AdventureLand?.EnemyAI;
+  if (enemyAI) {
+    enemyAI.batchProcess(data);
+  }
 ```
 
 ## Common Mistakes to Avoid
@@ -272,9 +291,11 @@ export function processEnemy(uid: number, x: number, y: number): any {
   → Browser: Log "Testing bridge with UID: " & testUID
   
   → Execute JavaScript:
-    const result = (globalThis as any).AdventureLand.Debug.testBridge(
-        localVars.testUID,
-        localVars.testValue
+    const debug = globalThis.AdventureLand?.Debug;
+    if (debug) {
+      const result = debug.testBridge(
+          localVars.testUID,
+          localVars.testValue
     );
     console.log("Bridge test result:", result);
 ```

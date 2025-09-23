@@ -10,8 +10,10 @@ Utility functions and helper systems for debugging, world transitions, and devel
 // Debug system status
 → On F9 pressed (debug key)
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
-    debug.logSystemStatus();
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    if (debug) {
+        debug.logSystemStatus();
+    }
 
 // World transition
 → On player touches exit trigger
@@ -20,8 +22,10 @@ Utility functions and helper systems for debugging, world transitions, and devel
   → Local number spawnY = 200
 
   → Execute JavaScript:
-    const transitions = (globalThis as any).AdventureLand.WorldTransitions;
-    transitions.goToLayout(localVars.targetLayout, localVars.spawnX, localVars.spawnY);
+    const transitions = globalThis.AdventureLand?.WorldTransitions;
+    if (transitions) {
+        transitions.goToLayout(localVars.targetLayout, localVars.spawnX, localVars.spawnY);
+    }
 ```
 
 ### Core Functions
@@ -53,26 +57,34 @@ Utility functions and helper systems for debugging, world transitions, and devel
 // SAFE FOR PENNY - Debug key configuration
 → On F9 pressed
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
-    debug.logSystemStatus();
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    if (debug) {
+        debug.logSystemStatus();
+    }
 
 → On F10 pressed
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
-    debug.logWaterfallTiles();
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    if (debug) {
+        debug.logWaterfallTiles();
+    }
 
 → On F11 pressed
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.PlayerDebug;
-    debug.logPosition();
+    const debug = globalThis.AdventureLand?.PlayerDebug;
+    if (debug) {
+        debug.logPosition();
+    }
 
 → On F12 pressed
   → Execute JavaScript:
     // Toggle debug mode for all systems
-    const systems = (globalThis as any).AdventureLand;
-    systems.EnemyAI?.setDebugMode(true);
-    systems.TileAnimations?.debugAnimations();
-    systems.HealthSystem?.setDebugMode(true);
+    const systems = globalThis.AdventureLand;
+    if (systems) {
+        systems.EnemyAI?.setDebugMode(true);
+        systems.TileAnimations?.debugAnimations();
+        systems.HealthSystem?.setDebugMode(true);
+    }
 ```
 
 ### World Transition Configuration
@@ -99,8 +111,8 @@ const TRANSITION_CONFIG = {
 ### Event Sheet Pattern
 ```javascript
 // Required pattern for C3 event sheets
-const utils = (globalThis as any).AdventureLand;
-if (utils.DebugHelpers) {
+const utils = globalThis.AdventureLand;
+if (utils?.DebugHelpers) {
     utils.DebugHelpers.logSystemStatus();
 }
 ```
@@ -143,16 +155,17 @@ import { WorldTransitionManager } from "./world-transition-manager.js";
   → Local number spawnY = ExitTrigger.SpawnY
 
   → Execute JavaScript:
-    const transitions = (globalThis as any).AdventureLand.WorldTransitions;
-
-    // Fade out, switch layout, fade in
-    transitions.fadeOut(() => {
-        transitions.goToLayout(
-            localVars.targetLevel,
-            localVars.spawnX,
-            localVars.spawnY
-        );
-    });
+    const transitions = globalThis.AdventureLand?.WorldTransitions;
+    if (transitions) {
+        // Fade out, switch layout, fade in
+        transitions.fadeOut(() => {
+            transitions.goToLayout(
+                localVars.targetLevel,
+                localVars.spawnX,
+                localVars.spawnY
+            );
+        });
+    }
 ```
 
 ### Development Debug Panel
@@ -160,13 +173,15 @@ import { WorldTransitionManager } from "./world-transition-manager.js";
 // SAFE FOR PENNY - In-game debug panel
 → On debug panel opened
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
-    const playerDebug = (globalThis as any).AdventureLand.PlayerDebug;
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    const playerDebug = globalThis.AdventureLand?.PlayerDebug;
 
-    // Update debug text displays
-    UI_DebugSystemStatus.text = debug.getSystemStatusText();
-    UI_DebugPlayerPos.text = playerDebug.getPositionText();
-    UI_DebugPerformance.text = debug.getPerformanceText();
+    if (debug && playerDebug) {
+        // Update debug text displays
+        UI_DebugSystemStatus.text = debug.getSystemStatusText();
+        UI_DebugPlayerPos.text = playerDebug.getPositionText();
+        UI_DebugPerformance.text = debug.getPerformanceText();
+    }
 ```
 
 ### Automated Testing Helpers
@@ -174,19 +189,20 @@ import { WorldTransitionManager } from "./world-transition-manager.js";
 // SAFE FOR PENNY - Automated testing support
 → On test sequence started
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    if (debug) {
+        // Log initial state
+        debug.logSystemStatus();
 
-    // Log initial state
-    debug.logSystemStatus();
+        // Test each system
+        debug.testEnemyAI();
+        debug.testTileAnimations();
+        debug.testHealthSystem();
+        debug.testItemManager();
 
-    // Test each system
-    debug.testEnemyAI();
-    debug.testTileAnimations();
-    debug.testHealthSystem();
-    debug.testItemManager();
-
-    // Log final results
-    debug.logTestResults();
+        // Log final results
+        debug.logTestResults();
+    }
 ```
 
 ### Performance Monitoring
@@ -194,15 +210,16 @@ import { WorldTransitionManager } from "./world-transition-manager.js";
 // SAFE FOR PENNY - Performance tracking
 → Every 10 seconds
   → Execute JavaScript:
-    const debug = (globalThis as any).AdventureLand.DebugHelpers;
+    const debug = globalThis.AdventureLand?.DebugHelpers;
+    if (debug) {
+        // Log performance metrics
+        const metrics = debug.getPerformanceMetrics();
+        console.log(`FPS: ${metrics.fps}, CPU: ${metrics.cpu}%, Memory: ${metrics.memory}MB`);
 
-    // Log performance metrics
-    const metrics = debug.getPerformanceMetrics();
-    console.log(`FPS: ${metrics.fps}, CPU: ${metrics.cpu}%, Memory: ${metrics.memory}MB`);
-
-    // Alert if performance drops
-    if (metrics.fps < 50) {
-        console.warn("⚠️ Low FPS detected:", metrics.fps);
+        // Alert if performance drops
+        if (metrics.fps < 50) {
+            console.warn("⚠️ Low FPS detected:", metrics.fps);
+        }
     }
 ```
 
@@ -211,31 +228,40 @@ import { WorldTransitionManager } from "./world-transition-manager.js";
 ### System Status Check
 ```javascript
 // Check all AdventureLand systems
-(globalThis as any).AdventureLand.DebugHelpers.logSystemStatus();
+const debug = globalThis.AdventureLand?.DebugHelpers;
+if (debug) {
+    debug.logSystemStatus();
 
-// Check specific system
-(globalThis as any).AdventureLand.DebugHelpers.checkSystem("EnemyAI");
+    // Check specific system
+    debug.checkSystem("EnemyAI");
+}
 ```
 
 ### Performance Debugging
 ```javascript
 // Monitor system performance
-(globalThis as any).AdventureLand.DebugHelpers.startPerformanceMonitoring();
+const debug = globalThis.AdventureLand?.DebugHelpers;
+if (debug) {
+    debug.startPerformanceMonitoring();
 
-// Get current performance snapshot
-(globalThis as any).AdventureLand.DebugHelpers.getPerformanceSnapshot();
+    // Get current performance snapshot
+    debug.getPerformanceSnapshot();
+}
 ```
 
 ### Player State Debugging
 ```javascript
 // Log player position and state
-(globalThis as any).AdventureLand.PlayerDebug.logPosition();
+const playerDebug = globalThis.AdventureLand?.PlayerDebug;
+if (playerDebug) {
+    playerDebug.logPosition();
 
-// Log player inventory state
-(globalThis as any).AdventureLand.PlayerDebug.logInventory();
+    // Log player inventory state
+    playerDebug.logInventory();
 
-// Log player health and effects
-(globalThis as any).AdventureLand.PlayerDebug.logHealthState();
+    // Log player health and effects
+    playerDebug.logHealthState();
+}
 ```
 
 ---

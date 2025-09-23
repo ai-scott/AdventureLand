@@ -126,7 +126,8 @@ function createEnemyAINamespace() {
 // Initialize system on layout start
 → On start of layout
   → Execute JavaScript:
-    if (!(globalThis as any).AdventureLand.initialized) {
+    const al = globalThis.AdventureLand;
+    if (!al?.initialized) {
         console.error("Adventure Land systems not initialized!");
     }
 
@@ -139,16 +140,22 @@ function createEnemyAINamespace() {
   → Set maskUID to En_Crab_Base.Pair_ID
   
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.init(
-        localVars.baseUID,
-        localVars.maskUID,
-        "Crab"
-    );
+    const enemyAI = globalThis.AdventureLand?.EnemyAI;
+    if (enemyAI) {
+      enemyAI.init(
+          localVars.baseUID,
+          localVars.maskUID,
+          "Crab"
+      );
+    }
 
 // Get return values
 → Execute JavaScript:
-  const item = (globalThis as any).AdventureLand.ItemManager.getItemByName("Sword");
-  runtime.globalVars.ItemStrength = item ? item.strength : 0;
+  const itemManager = globalThis.AdventureLand?.ItemManager;
+  if (itemManager) {
+    const item = itemManager.getItemByName("Sword");
+    runtime.globalVars.ItemStrength = item ? item.strength : 0;
+  }
 ```
 
 ## Advanced Patterns

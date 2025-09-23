@@ -49,7 +49,7 @@ npm run test:systems    # System integration tests
 The codebase uses a "nested object pattern" to expose TypeScript functionality to Construct 3:
 
 ```typescript
-// In main.ts
+// In main.ts - This is the ONLY place where TypeScript casting is used
 (globalThis as any).AdventureLand = {
     EnemyAI: { /* methods */ },
     ItemManager: { /* methods */ },
@@ -71,7 +71,27 @@ This pattern is **required** - direct function exports cause runtime errors in C
 1. **TypeScript works with UIDs, not instances** - C3 object instances cannot be directly manipulated from TypeScript
 2. **Event sheets call TypeScript** - TypeScript returns data that C3 uses to update objects
 3. **JSON data access** - Use runtime objects to access AJAX/Dictionary data
-4. **Namespace Access in Event Sheets** - Always use `(globalThis as any).AdventureLand.SystemName` in C3 event sheets, NOT just `AdventureLand.SystemName`
+4. **Namespace Access in Event Sheets** - Always use `globalThis.AdventureLand?.SystemName` in C3 event sheets, NOT TypeScript casting (causes runtime bugs)
+
+## ⚠️ CRITICAL: TypeScript Event Sheet Bug
+
+**DO NOT use `(globalThis as any)` in event sheets** - Using TypeScript casting multiple times causes runtime errors and breaks system access.
+
+**✅ CORRECT Pattern** (JavaScript with optional chaining):
+```javascript
+const enemyAI = globalThis.AdventureLand?.EnemyAI;
+if (enemyAI) {
+    enemyAI.methodName(parameters);
+}
+```
+
+**❌ WRONG Pattern** (TypeScript casting - causes bugs):
+```javascript
+// This pattern BREAKS when used multiple times - use safe pattern instead
+globalThis.AdventureLand?.EnemyAI.methodName(); // Safe JavaScript pattern
+```
+
+This bug has been reported multiple times - TypeScript casting can only be used ONCE in the entire codebase before it breaks runtime access.
 
 ## Production Systems
 
@@ -128,7 +148,8 @@ SystemName.initialize({
     // config options
 });
 
-// Set up namespace for event sheet access
+// Set up namespace for event sheet access (TypeScript setup only)
+// This casting pattern is only used ONCE in main.ts, never in event sheets
 (globalThis as any).AdventureLand.SystemName = {
     method1: (param: any) => SystemName.method1(param),
     method2: () => SystemName.method2()
@@ -167,7 +188,7 @@ export const ENEMY_CONFIG: EnemyConfig = {
 
 ### RuntimeFacade type errors
 - **Cause**: Trying to use methods not exposed by the facade
-- **Solution**: Either extend the facade interface or access runtime directly via `(globalThis as any).runtime`
+- **Solution**: Either extend the facade interface or use the existing runtime access patterns (avoid multiple TypeScript casts)
 
 ### Dictionary access in TypeScript
 - **Pattern**: Use `dict.getDataMap().get('key')` not `dict.get('key')`
@@ -194,7 +215,7 @@ TypeScript enhances Construct 3 but doesn't replace it. Use TypeScript for logic
 ### Implementation Guides
 - Always clarify WHERE code goes (Event Sheet vs TypeScript file)
 - Specify "In a Script action" for Event Sheet code
-- Use full namespace pattern in examples: `(globalThis as any).AdventureLand.SystemName`
+- Use safe JavaScript pattern in event sheet examples: `globalThis.AdventureLand?.SystemName`
 
 ## Adventure Land Specific Gotchas
 
@@ -211,7 +232,8 @@ When passing data from Construct 3 event sheets to TypeScript:
   → Local number enemyUID = 0
   → Set enemyUID to Enemy.UID
   → Execute JavaScript:
-    (globalThis as any).AdventureLand.EnemyAI.update(localVars.enemyUID)
+    const enemyAI = globalThis.AdventureLand?.EnemyAI;
+    if (enemyAI) enemyAI.update(localVars.enemyUID);
 ```
 
 ### Event Sheet Namespace Access Pattern
@@ -220,7 +242,7 @@ When passing data from Construct 3 event sheets to TypeScript:
 AdventureLand.HealthSystem.takeDamage(...)
 
 // ✅ CORRECT - Required pattern for event sheets
-const healthSystem = (globalThis as any).AdventureLand.HealthSystem;
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
 if (healthSystem) {
     healthSystem.takeDamage(...);
 }
