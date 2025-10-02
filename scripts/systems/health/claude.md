@@ -39,12 +39,35 @@ Enhanced health management system with proper damage tracking, knockback effects
 ```
 
 ### Core Functions
-- `initialize(config)` - Setup health system with configuration
+- `initialize(config)` - Setup health system with configuration (also used for respawn on load game)
 - `takeDamage(damageInfo)` - Apply damage with knockback and effects
 - `heal(healInfo)` - Restore health from various sources
 - `addShield(amount)` - Add temporary HP protection
 - `setMaxHealth(newMax)` - Change maximum health capacity
-- `revive()` - Restore from death state
+- `revive(health?)` - Restore from death state with optional health amount
+
+### Respawn Pattern (Load Game After Death)
+```javascript
+// Re-initialize HealthSystem after loading save data
+→ LocalStorage: On item get "SaveGameData"
+  → Dict_SaveGameData → Load from JSON
+  → Execute JavaScript:
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
+        // Re-initialize to detect respawn and restore health
+        healthSystem.initialize();
+        console.log("🔄 HealthSystem re-initialized after load game");
+    }
+```
+
+**How Respawn Works:**
+1. Player dies → `isDead = true`, health becomes 0
+2. Click "Load Game" → C3 restores save data → health restored to saved value
+3. `initialize()` called → checks if `wasDeadBeforeLoad = true`
+4. If player was dead, respawns with `startingHealth` (ignoring loaded value)
+5. Syncs to both Dictionary and global variables immediately
+
+This ensures players always respawn with full health after death, regardless of what was in the save file.
 
 ## 📁 Key Files
 
@@ -89,7 +112,7 @@ Enhanced health management system with proper damage tracking, knockback effects
 const DAMAGE_CONFIGS = {
     // Enemy damage - use Enemy.Strength from event sheet
     CRAB_ATTACK: {
-        amount: 2, // Example: Crab strength
+        amount: 2, // Raw damage (Defense applied in TypeScript)
         source: { uid: -1, type: 'enemy', name: 'Crab' },
         type: 'physical'
     },
@@ -110,6 +133,28 @@ const DAMAGE_CONFIGS = {
     }
 };
 ```
+
+### Defense and Damage Calculation
+**Defense is now handled in TypeScript**, not in event sheets:
+
+```javascript
+// ✅ CORRECT - Pass raw damage amount
+const damageInfo = {
+    amount: enemyStrength, // Raw damage from Enemy.Strength
+    source: { uid: Enemy.UID, type: 'enemy' },
+    type: 'physical'
+};
+healthSystem.takeDamage(damageInfo);
+
+// ❌ WRONG - Don't calculate Defense in event sheet
+const damage = enemyStrength - runtime.globalVars.Defense; // NO!
+```
+
+**Damage Calculation Order (in TypeScript):**
+1. Apply Defense stat: `damage = amount - Defense` (minimum 1 damage)
+2. Apply resistances: `damage *= (1 - resistance)`
+3. Apply potion effects: `damage *= (1 - defenseBonusPercent)`
+4. Apply to shields first, then health
 
 ## 🏗️ Construct 3 Integration
 
