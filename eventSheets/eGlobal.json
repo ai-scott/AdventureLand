@@ -1215,9 +1215,17 @@
 						},
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"console.log(\"Getting item InvCollection\");"
+								"console.log(\"Getting item InvCollection\");",
+								"",
+								"// Re-initialize HealthSystem after loading save data",
+								"const healthSystem = globalThis.AdventureLand?.HealthSystem;",
+								"if (healthSystem) {",
+								"    // Force re-initialization to load from the freshly loaded save data",
+								"    healthSystem.initialize();",
+								"    console.log(\"🔄 HealthSystem re-initialized after load game\");",
+								"}"
 							]
 						}
 					],
@@ -1392,6 +1400,13 @@
 							}
 						},
 						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"console.log(\"Requesting InvCollection.json\");"
+							]
+						},
+						{
 							"id": "request-project-file",
 							"objectClass": "AJAX",
 							"sid": 540535801057421,
@@ -1399,13 +1414,6 @@
 								"tag": "\"Load_InvCollection\"",
 								"file": "InvCollection.json"
 							}
-						},
-						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"console.log(\"Requesting InvCollection.json\");"
-							]
 						}
 					],
 					"sid": 528776511683587
@@ -2266,7 +2274,8 @@
 											]
 										}
 									],
-									"sid": 329559415031571
+									"sid": 329559415031571,
+									"disabled": true
 								}
 							]
 						},
@@ -2311,7 +2320,8 @@
 											]
 										}
 									],
-									"sid": 589156565125165
+									"sid": 589156565125165,
+									"disabled": true
 								}
 							]
 						},
@@ -3410,7 +3420,10 @@
 										"console.log(\"Dictionary contents:\");",
 										"for (const [key, value] of dataMap) {",
 										"    console.log(`  ${key}: ${value}`);",
-										"}"
+										"}",
+										"",
+										"// Refresh heart display when inventory opens",
+										"runtime.callFunction('adjustHealth', 0, '');"
 									]
 								}
 							],

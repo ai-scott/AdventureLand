@@ -270,10 +270,10 @@
 								},
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
 										"// Check if enemy is invulnerable",
-										"  const enemyAI = (globalThis as any).AdventureLand?.EnemyAI;",
+										"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
 										"  if (enemyAI && enemyAI.isInvulnerable) {",
 										"      const isInvulnerable =",
 										"  enemyAI.isInvulnerable(localVars.enemyBaseUID);",
@@ -537,10 +537,10 @@
 														{
 															"id": "set-instvar-value",
 															"objectClass": "EnemyBases",
-															"sid": 926202022160633,
+															"sid": 107973626474670,
 															"parameters": {
 																"instance-variable": "Knockback_Timer",
-																"value": "0.3"
+																"value": "0.5"
 															}
 														},
 														{
@@ -1233,6 +1233,15 @@
 												"y": "En_Crab_Mask.Y - 8",
 												"create-hierarchy": false,
 												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-animation",
+											"objectClass": "Particle",
+											"sid": 433739160449275,
+											"parameters": {
+												"animation": "\"Default\"",
+												"from": "beginning"
 											}
 										},
 										{

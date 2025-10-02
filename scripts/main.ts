@@ -287,9 +287,9 @@ runOnStartup(async runtime => {
 
     // Initialize Health System (independent of item system)
     try {
-      HealthSystem.initialize({
-        maxHealth: 6,
-        startingHealth: 6,
+      HealthSystem.initialize(runtime, {
+        maxHealth: 10,
+        startingHealth: 10,
         hurtDuration: 0.5,
         knockbackDuration: 0.3,
         invincibilityDuration: 1.0
@@ -312,6 +312,7 @@ runOnStartup(async runtime => {
           HealthSystem.setResistance(type as any, value),
 
         // Lifecycle
+        initialize: (config?: any) => HealthSystem.initialize(runtime, config),
         revive: (health?: number) => HealthSystem.revive(health),
         update: (dt: number) => HealthSystem.update(dt),
 

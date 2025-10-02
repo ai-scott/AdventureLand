@@ -86,16 +86,16 @@ export interface HealthEventCallbacks {
 export class HealthSystem {
     private static runtime: any = null;
     private static config: HealthConfig = {
-        maxHealth: 6,
-        startingHealth: 6,
+        maxHealth: 10,
+        startingHealth: 10,
         hurtDuration: 0.5,
         knockbackDuration: 0.3,
         invincibilityDuration: 1.0
     };
 
     private static state: HealthState = {
-        current: 6,
-        max: 6,
+        current: 10,
+        max: 10,
         temporary: 0,
         isHurt: false,
         isDead: false,
@@ -112,6 +112,7 @@ export class HealthSystem {
     private static callbacks: HealthEventCallbacks = {};
     private static resistances: Map<DamageType, number> = new Map();
     private static initialized = false;
+    private static allowExternalSync = false; // Prevent external sync for first few frames
 
     // Performance tracking
     private static performanceStats = {
@@ -124,18 +125,35 @@ export class HealthSystem {
     /**
      * Initialize the health system
      */
-    static initialize(config?: Partial<HealthConfig>): void {
+    static initialize(configOrRuntime?: Partial<HealthConfig> | any, config?: Partial<HealthConfig>): void {
         if (this.initialized) {
-            console.warn('⚠️ [HealthSystem] Already initialized');
+            console.warn('⚠️ [HealthSystem] Already initialized - reloading from save data');
+            this.loadFromSaveData();
+            console.log('✅ [HealthSystem] Health reloaded:', this.getState());
             return;
         }
 
         try {
-            this.runtime = (globalThis as any).runtime;
+            // Handle both old and new API: initialize(config) or initialize(runtime, config)
+            if (configOrRuntime && 'globalVars' in configOrRuntime) {
+                // New API: initialize(runtime, config)
+                this.runtime = configOrRuntime;
+                if (config) {
+                    this.config = { ...this.config, ...config };
+                }
+            } else {
+                // Old API: initialize(config) - try to get runtime from globalThis
+                this.runtime = (globalThis as any).runtime;
+                if (configOrRuntime) {
+                    this.config = { ...this.config, ...configOrRuntime };
+                }
+            }
 
-            // Apply custom config
-            if (config) {
-                this.config = { ...this.config, ...config };
+            console.log(`🔧 [HealthSystem] Runtime captured during init: ${!!this.runtime}`);
+
+            if (!this.runtime) {
+                console.error('❌ [HealthSystem] Runtime is not available at initialization!');
+                return;
             }
 
             // Initialize state from save data
@@ -145,6 +163,11 @@ export class HealthSystem {
             this.setupDefaultResistances();
 
             this.initialized = true;
+
+            // Disable external sync permanently - HealthSystem is the source of truth
+            // External changes should not override the HealthSystem state
+            this.allowExternalSync = false;
+
             console.log('✅ [HealthSystem] Initialized with state:', this.getState());
 
         } catch (error) {
@@ -159,23 +182,76 @@ export class HealthSystem {
         if (!this.runtime) return;
 
         try {
+            // Check if player was dead before loading (this persists across loads)
+            const wasDeadBeforeLoad = this.state.isDead;
+
             // First check global variables which should be the source of truth
             const globalHealth = this.runtime.globalVars.Health;
             const globalMaxHealth = this.runtime.globalVars.MaxHealth;
 
-            if (globalHealth !== undefined && globalHealth > 0) {
-                this.state.current = globalHealth;
-                this.state.max = globalMaxHealth || this.config.maxHealth;
-                console.log(`[HealthSystem] Loaded from global vars: ${this.state.current}/${this.state.max}`);
+            if (globalHealth !== undefined) {
+                // If player was dead before load, they're respawning regardless of loaded health
+                if (wasDeadBeforeLoad) {
+                    console.log(`[HealthSystem] Player was dead - respawning with ${this.config.startingHealth} health (loaded: ${globalHealth})`);
+                    this.state.current = this.config.startingHealth;
+                    this.state.max = globalMaxHealth || this.config.maxHealth;
+                } else if (globalHealth <= 0) {
+                    console.log(`[HealthSystem] Loaded health is 0 - resetting to ${this.config.startingHealth}`);
+                    this.state.current = this.config.startingHealth;
+                    this.state.max = globalMaxHealth || this.config.maxHealth;
+                } else {
+                    this.state.current = globalHealth;
+                    this.state.max = globalMaxHealth || this.config.maxHealth;
+                }
+
+                // Reset death state
+                this.state.isDead = false;
+                this.state.isHurt = false;
+                this.state.isInvincible = false;
+
+                // IMPORTANT: Sync to both Dictionary AND global variables
+                const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
+                if (dict) {
+                    dict.getDataMap().set('Health', this.state.current);
+                    dict.getDataMap().set('MaxHealth', this.state.max);
+                }
+                this.runtime.globalVars.Health = this.state.current;
+                this.runtime.globalVars.MaxHealth = this.state.max;
+
+                console.log(`[HealthSystem] Loaded from global vars: ${this.state.current}/${this.state.max} (alive, synced to Dict & C3)`);
                 return;
             }
 
             // Fall back to save data dictionary if globals not set
-            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
             const saveData = dict?.getDataMap();
             if (saveData) {
-                this.state.current = saveData.get('Health') || this.config.startingHealth;
-                this.state.max = saveData.get('MaxHealth') || this.config.maxHealth;
+                const dictHealth = saveData.get('Health') || 0;
+                const dictMaxHealth = saveData.get('MaxHealth') || this.config.maxHealth;
+
+                // If health is 0 or negative, reset to starting health (player respawn)
+                if (dictHealth <= 0) {
+                    console.log(`[HealthSystem] Respawning player - resetting health from Dict ${dictHealth} to ${this.config.startingHealth}`);
+                    this.state.current = this.config.startingHealth;
+                    this.state.max = dictMaxHealth;
+                } else {
+                    this.state.current = dictHealth;
+                    this.state.max = dictMaxHealth;
+                }
+
+                // Reset death state
+                this.state.isDead = false;
+                this.state.isHurt = false;
+                this.state.isInvincible = false;
+
+                // Sync back to Dictionary and globals
+                if (dict) {
+                    dict.getDataMap().set('Health', this.state.current);
+                    dict.getDataMap().set('MaxHealth', this.state.max);
+                }
+                this.runtime.globalVars.Health = this.state.current;
+                this.runtime.globalVars.MaxHealth = this.state.max;
+
                 console.log(`[HealthSystem] Loaded from save data: ${this.state.current}/${this.state.max}`);
             }
         } catch (error) {
@@ -264,7 +340,6 @@ export class HealthSystem {
         if (!this.runtime) return;
 
         const playerUID = 0; // Player is always UID 0 in single player
-        if (playerUID === null) return;
 
         // Check for defense potions
         const defenseBonus = PotionSystem.getEffectValue(playerUID, 'defense');
@@ -285,7 +360,7 @@ export class HealthSystem {
             isDead: this.state.isDead,
             isInvincible: this.state.isInvincible
         });
-        
+
         if (!this.initialized || this.state.isDead) {
             console.log('[HealthSystem] Damage ignored - not initialized or dead');
             return 0;
@@ -359,6 +434,17 @@ export class HealthSystem {
     private static calculateDamage(damageInfo: DamageInfo): number {
         let damage = damageInfo.amount;
 
+        console.log(`🛡️ [HealthSystem] calculateDamage START - runtime exists: ${!!this.runtime}, Defense: ${this.runtime?.globalVars?.Defense}`);
+
+        // Apply player Defense (base armor) - subtract from damage first
+        if (this.runtime && damageInfo.type !== 'true' && !damageInfo.ignoreArmor) {
+            const playerDefense = this.runtime.globalVars.Defense || 0;
+            damage = Math.max(1, damage - playerDefense); // Always deal at least 1 damage
+            console.log(`[HealthSystem] Applied Defense: ${damageInfo.amount} - ${playerDefense} = ${damage}`);
+        } else {
+            console.log(`⚠️ [HealthSystem] Defense SKIPPED - runtime: ${!!this.runtime}, type: ${damageInfo.type}, ignoreArmor: ${damageInfo.ignoreArmor}`);
+        }
+
         // Apply resistances (except for true damage)
         if (damageInfo.type !== 'true' && !damageInfo.ignoreArmor) {
             const resistance = this.resistances.get(damageInfo.type) || 0;
@@ -368,11 +454,9 @@ export class HealthSystem {
         // Apply defense potion effect
         if (this.runtime) {
             const playerUID = 0; // Player is always UID 0 in single player
-            if (playerUID !== null) {
-                const defenseBonus = PotionSystem.getEffectValue(playerUID, 'defense');
-                if (defenseBonus > 0 && damageInfo.type !== 'true') {
-                    damage *= (1 - defenseBonus / 100);
-                }
+            const defenseBonus = PotionSystem.getEffectValue(playerUID, 'defense');
+            if (defenseBonus > 0 && damageInfo.type !== 'true') {
+                damage *= (1 - defenseBonus / 100);
             }
         }
 
@@ -495,21 +579,26 @@ export class HealthSystem {
         if (!this.runtime) return;
 
         try {
+            console.log(`🔄 [HealthSystem] BEFORE sync - TS Health: ${this.state.current}, C3 Health: ${this.runtime.globalVars.Health}`);
+
+            // Update global variable FIRST (before adjustHealth reads it)
+            this.runtime.globalVars.Health = this.state.current;
+            this.runtime.globalVars.MaxHealth = this.state.max;
+
+            console.log(`🔄 [HealthSystem] AFTER globalVars update - C3 Health: ${this.runtime.globalVars.Health}`);
+
             // Update save data through Dictionary
-            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
                 dict.getDataMap().set('Health', this.state.current);
                 dict.getDataMap().set('MaxHealth', this.state.max);
+                console.log(`🔄 [HealthSystem] Dictionary updated - Dict Health: ${dict.getDataMap().get('Health')}`);
             }
 
-            // Update global variable
-            this.runtime.globalVars.Health = this.state.current;
-            console.log(`[HealthSystem] Synced to C3: Health=${this.state.current}, Global=${this.runtime.globalVars.Health}`);
+            // CRITICAL: Trigger C3 adjustHealth function to redraw heart containers
+            this.runtime.callFunction('adjustHealth', 0, '');
 
-            // Call the C3 adjustHealth function if needed
-            if (this.runtime?.callFunction) {
-                this.runtime.callFunction('adjustHealth', 0, false);
-            }
+            console.log(`✅ [HealthSystem] Synced complete - TS:${this.state.current}, C3:${this.runtime.globalVars.Health}`)
         } catch (error) {
             console.warn('[HealthSystem] Could not sync to C3:', error);
         }
@@ -519,22 +608,22 @@ export class HealthSystem {
      * Sync with save data (for external changes)
      */
     private static syncWithSaveData(): void {
-        if (!this.runtime) return;
+        if (!this.runtime || !this.allowExternalSync) return;
 
         try {
-            const dict = this.runtime?.objects.Dict_SaveGameData?.getFirstInstance();
+            const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
             const saveData = dict?.getDataMap();
             if (saveData) {
                 const dictHealth = saveData.get('Health') || 0;
                 const dictMaxHealth = saveData.get('MaxHealth') || this.config.maxHealth;
 
-                // Update if changed externally
-                if (dictHealth !== this.state.current) {
+                // Update if changed externally (only if significantly different to avoid fighting with our own updates)
+                if (Math.abs(dictHealth - this.state.current) > 0.1) {
                     console.log(`[HealthSystem] External health change: ${this.state.current} → ${dictHealth}`);
                     this.state.current = dictHealth;
                 }
 
-                if (dictMaxHealth !== this.state.max) {
+                if (Math.abs(dictMaxHealth - this.state.max) > 0.1) {
                     console.log(`[HealthSystem] External max health change: ${this.state.max} → ${dictMaxHealth}`);
                     this.state.max = dictMaxHealth;
                 }

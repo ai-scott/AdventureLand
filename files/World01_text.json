@@ -8,10 +8,37 @@
     "data": [
         [
             [
-                "Hi there! I'm Pete, the prospector. I've been feeling pretty sick lately."
+                "Hi there! I'm Pete, the prospector. I could use a little help."
             ],
             [
-                "Do you have any healing items? I'd really appreciate the help!"
+                ""
+            ],
+            [
+                "I've been feeling pretty sick lately. Usually I get herbs from the mountains to the south, but the bridge broke!"
+            ],
+            [
+                "Oh, I pan for gold in the rivers and streams. Been pretty lucky over the years."
+            ],
+            [
+                ""
+            ],
+            [
+                "It's a living, except I can't get to my house because the bridge broke. "
+            ],
+            [
+                "And I'm too sick to cross the river. Usually I get herbs from the mountains to the south. Could you help me?"
+            ],
+            [
+                ""
+            ],
+            [
+                " I really appreciate the help! I'll have a nice reward for you after I can get back home."
+            ],
+            [
+                ""
+            ],
+            [
+                " I'd really appreciate the help!"
             ],
             [
                 "Hello again, adventurer!"
@@ -33,33 +60,6 @@
             ],
             [
                 ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
             ]
         ],
         [
@@ -67,7 +67,7 @@
                 ""
             ],
             [
-                ""
+                "What do you need help with?"
             ],
             [
                 ""
@@ -76,7 +76,7 @@
                 ""
             ],
             [
-                ""
+                "That sounds pretty cool."
             ],
             [
                 ""
@@ -85,7 +85,7 @@
                 ""
             ],
             [
-                ""
+                "Sure, I'll help."
             ],
             [
                 ""
@@ -123,7 +123,7 @@
                 ""
             ],
             [
-                ""
+                "What's a prospector? "
             ],
             [
                 ""
@@ -132,7 +132,7 @@
                 ""
             ],
             [
-                ""
+                "You must be rich!"
             ],
             [
                 ""
@@ -141,7 +141,7 @@
                 ""
             ],
             [
-                ""
+                "Only if you give me some of that gold!"
             ],
             [
                 ""
@@ -179,37 +179,37 @@
                 "AL:Pete"
             ],
             [
+                "You"
+            ],
+            [
+                "AL:Pete"
+            ],
+            [
+                "AL:Pete"
+            ],
+            [
+                "You"
+            ],
+            [
                 "AL:Pete"
             ],
             [
                 "AL:Pete"
             ],
             [
-                ""
+                "You"
+            ],
+            [
+                "End"
             ],
             [
                 ""
             ],
             [
-                ""
+                "End"
             ],
             [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
+                "AL:Pete"
             ],
             [
                 ""
@@ -235,37 +235,37 @@
                 "Next"
             ],
             [
+                "002:003"
+            ],
+            [
+                "008"
+            ],
+            [
+                "Next"
+            ],
+            [
+                "005:005"
+            ],
+            [
+                "Next"
+            ],
+            [
+                "Next"
+            ],
+            [
+                "008:008"
+            ],
+            [
+                "Complete"
+            ],
+            [
+                ""
+            ],
+            [
+                "Complete:003"
+            ],
+            [
                 "End"
-            ],
-            [
-                "End"
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
-            ],
-            [
-                ""
             ],
             [
                 ""
@@ -291,7 +291,7 @@
                 "Not_Started:000"
             ],
             [
-                "Complete:003"
+                ""
             ],
             [
                 ""

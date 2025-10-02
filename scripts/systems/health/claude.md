@@ -23,11 +23,13 @@ Enhanced health management system with proper damage tracking, knockback effects
 
 // Player takes damage
 → On collision with Enemy
+  → Local number enemyStrength = 0
+  → Set enemyStrength to Enemy.Strength
   → Execute JavaScript:
     const healthSystem = globalThis.AdventureLand?.HealthSystem;
     if (healthSystem) {
         const damageInfo = {
-            amount: 1,
+            amount: localVars.enemyStrength,
             source: { uid: Enemy.UID, type: 'enemy', name: 'Crab' },
             type: 'physical',
             knockback: { x: Player.X - Enemy.X, y: Player.Y - Enemy.Y }
@@ -85,21 +87,21 @@ Enhanced health management system with proper damage tracking, knockback effects
 ```typescript
 // SAFE FOR PENNY - Damage configuration examples
 const DAMAGE_CONFIGS = {
-    // Enemy damage
+    // Enemy damage - use Enemy.Strength from event sheet
     CRAB_ATTACK: {
-        amount: 1,
+        amount: 2, // Example: Crab strength
         source: { uid: -1, type: 'enemy', name: 'Crab' },
         type: 'physical'
     },
 
-    // Environmental hazards
+    // Environmental hazards - fixed values OK
     FIRE_DAMAGE: {
         amount: 2,
         source: { uid: -1, type: 'hazard', name: 'Fire' },
         type: 'fire'
     },
 
-    // Fall damage
+    // Fall damage - fixed values OK
     FALL_DAMAGE: {
         amount: 3,
         source: { uid: -1, type: 'fall', name: 'Fall' },
@@ -113,16 +115,31 @@ const DAMAGE_CONFIGS = {
 
 ### Event Sheet Pattern
 ```javascript
-// Required pattern for C3 event sheets
-const healthSystem = globalThis.AdventureLand?.HealthSystem;
-if (healthSystem) {
-    const damageInfo = {
-        amount: 1,
-        source: { uid: Enemy.UID, type: 'enemy', name: 'Crab' },
-        type: 'physical'
-    };
-    healthSystem.takeDamage(damageInfo);
-}
+// Required pattern for C3 event sheets - Enemy damage
+→ On collision with Enemy
+  → Local number enemyStrength = Enemy.Strength
+  → Execute JavaScript:
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
+        const damageInfo = {
+            amount: localVars.enemyStrength, // Use Enemy.Strength from event sheet
+            source: { uid: Enemy.UID, type: 'enemy', name: 'Crab' },
+            type: 'physical'
+        };
+        healthSystem.takeDamage(damageInfo);
+    }
+
+// Environmental hazards use fixed damage amounts
+→ Execute JavaScript:
+  const healthSystem = globalThis.AdventureLand?.HealthSystem;
+  if (healthSystem) {
+      const damageInfo = {
+          amount: 2, // Fixed damage for hazards
+          source: { uid: -1, type: 'hazard', name: 'Fire' },
+          type: 'fire'
+      };
+      healthSystem.takeDamage(damageInfo);
+  }
 ```
 
 ### Import Pattern
@@ -160,6 +177,7 @@ import PotionSystem from '../potions/potion-system.js';
 → On collision between Player and Enemy
   → Local number enemyUID = Enemy.UID
   → Local string enemyType = Enemy.AnimationName
+  → Local number enemyStrength = Enemy.Strength
   → Local number knockbackX = Player.X - Enemy.X
   → Local number knockbackY = Player.Y - Enemy.Y
 
@@ -167,7 +185,7 @@ import PotionSystem from '../potions/potion-system.js';
     const healthSystem = globalThis.AdventureLand?.HealthSystem;
     if (healthSystem) {
         const damageInfo = {
-            amount: 1,
+            amount: localVars.enemyStrength,
             source: {
                 uid: localVars.enemyUID,
                 type: 'enemy',
