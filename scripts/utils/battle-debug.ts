@@ -35,7 +35,7 @@ export class BattleDebugger {
         if (!enemyBase) return null;
 
         // Get TypeScript enemy AI
-        const enemyAI = runtime.imports?.AdventureLand?.EnemyAI;
+        const enemyAI = (globalThis as any).AdventureLand?.EnemyAI;
         if (!enemyAI) {
             return {
                 enemyUID,
@@ -90,7 +90,7 @@ export class BattleDebugger {
         console.log(`🧪 Testing collision integration for enemy ${enemyUID}`);
 
         const runtime = (globalThis as any).runtime;
-        const enemyAI = runtime?.imports?.AdventureLand?.EnemyAI;
+        const enemyAI = (globalThis as any).AdventureLand?.EnemyAI;
 
         if (!runtime || !enemyAI) {
             console.error('❌ Runtime or EnemyAI not available');

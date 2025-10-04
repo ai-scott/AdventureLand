@@ -6,16 +6,13 @@ Enhanced health management system with proper damage tracking, knockback effects
 ## 🚀 Quick Usage
 
 ### From Event Sheets
-
-**Note:** Health System uses the modern **runtime.imports** pattern (not globalThis).
-
 ```javascript
 // Initialize health system on layout start
 → On start of layout
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
-        health.initialize({
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
+        healthSystem.initialize({
             maxHealth: 20,
             startingHealth: 20,
             hurtDuration: 1000,
@@ -29,15 +26,15 @@ Enhanced health management system with proper damage tracking, knockback effects
   → Local number enemyStrength = 0
   → Set enemyStrength to Enemy.Strength
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         const damageInfo = {
             amount: localVars.enemyStrength,
             source: { uid: Enemy.UID, type: 'enemy', name: 'Crab' },
             type: 'physical',
             knockback: { x: Player.X - Enemy.X, y: Player.Y - Enemy.Y }
         };
-        health.takeDamage(damageInfo);
+        healthSystem.takeDamage(damageInfo);
     }
 ```
 
@@ -51,15 +48,15 @@ Enhanced health management system with proper damage tracking, knockback effects
 
 ### Respawn Pattern (Load Game After Death)
 ```javascript
-// Re-initialize Health system after loading save data
+// Re-initialize HealthSystem after loading save data
 → LocalStorage: On item get "SaveGameData"
   → Dict_SaveGameData → Load from JSON
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         // Re-initialize to detect respawn and restore health
-        health.initialize();
-        console.log("🔄 Health system re-initialized after load game");
+        healthSystem.initialize();
+        console.log("🔄 HealthSystem re-initialized after load game");
     }
 ```
 
@@ -95,9 +92,9 @@ This ensures players always respawn with full health after death, regardless of 
 // SAFE FOR PENNY - Health system configuration
 → On start of layout
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
-        health.initialize({
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
+        healthSystem.initialize({
             maxHealth: 20,           // Maximum HP
             startingHealth: 20,      // Starting HP
             hurtDuration: 1000,      // Hurt animation time (ms)
@@ -147,7 +144,7 @@ const damageInfo = {
     source: { uid: Enemy.UID, type: 'enemy' },
     type: 'physical'
 };
-health.takeDamage(damageInfo);
+healthSystem.takeDamage(damageInfo);
 
 // ❌ WRONG - Don't calculate Defense in event sheet
 const damage = enemyStrength - runtime.globalVars.Defense; // NO!
@@ -167,26 +164,26 @@ const damage = enemyStrength - runtime.globalVars.Defense; // NO!
 → On collision with Enemy
   → Local number enemyStrength = Enemy.Strength
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         const damageInfo = {
             amount: localVars.enemyStrength, // Use Enemy.Strength from event sheet
             source: { uid: Enemy.UID, type: 'enemy', name: 'Crab' },
             type: 'physical'
         };
-        health.takeDamage(damageInfo);
+        healthSystem.takeDamage(damageInfo);
     }
 
 // Environmental hazards use fixed damage amounts
 → Execute JavaScript:
-  const health = runtime.imports.AdventureLand.Health;
-  if (health) {
+  const healthSystem = globalThis.AdventureLand?.HealthSystem;
+  if (healthSystem) {
       const damageInfo = {
           amount: 2, // Fixed damage for hazards
           source: { uid: -1, type: 'hazard', name: 'Fire' },
           type: 'fire'
       };
-      health.takeDamage(damageInfo);
+      healthSystem.takeDamage(damageInfo);
   }
 ```
 
@@ -230,8 +227,8 @@ import PotionSystem from '../potions/potion-system.js';
   → Local number knockbackY = Player.Y - Enemy.Y
 
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         const damageInfo = {
             amount: localVars.enemyStrength,
             source: {
@@ -245,7 +242,7 @@ import PotionSystem from '../potions/potion-system.js';
                 y: localVars.knockbackY
             }
         };
-        health.takeDamage(damageInfo);
+        healthSystem.takeDamage(damageInfo);
     }
 ```
 
@@ -254,14 +251,14 @@ import PotionSystem from '../potions/potion-system.js';
 // SAFE FOR PENNY - Healing potion usage
 → On H key pressed
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         const healInfo = {
             amount: 5,
             source: 'potion',
             showEffect: true
         };
-        health.heal(healInfo);
+        healthSystem.heal(healInfo);
     }
 ```
 
@@ -271,15 +268,15 @@ import PotionSystem from '../potions/potion-system.js';
 → Every 1.0 seconds
   → Player is overlapping Fire_Tilemap
     → Execute JavaScript:
-      const health = runtime.imports.AdventureLand.Health;
-      if (health) {
+      const healthSystem = globalThis.AdventureLand?.HealthSystem;
+      if (healthSystem) {
           const damageInfo = {
               amount: 1,
               source: { uid: -1, type: 'hazard', name: 'Fire' },
               type: 'fire',
               ignoreInvincibility: true  // DOT ignores i-frames
           };
-          health.takeDamage(damageInfo);
+          healthSystem.takeDamage(damageInfo);
       }
 ```
 
@@ -288,13 +285,13 @@ import PotionSystem from '../potions/potion-system.js';
 // SAFE FOR PENNY - Boss battle mechanics
 → On boss phase change
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
         // Give player temporary shield
-        health.addShield(10);
+        healthSystem.addShield(10);
 
         // Increase max health for boss fight
-        health.setMaxHealth(30);
+        healthSystem.setMaxHealth(30);
     }
 ```
 
@@ -303,12 +300,12 @@ import PotionSystem from '../potions/potion-system.js';
 ### Debug Functions
 ```javascript
 // View current health state
-const health = runtime.imports.AdventureLand.Health;
-if (health) {
-    health.getState();
+const healthSystem = globalThis.AdventureLand?.HealthSystem;
+if (healthSystem) {
+    healthSystem.getState();
 
     // Enable health system debug logging
-    health.setDebugMode(true);
+    healthSystem.setDebugMode(true);
 }
 ```
 
@@ -317,9 +314,9 @@ if (health) {
 // Monitor health changes
 → Every 0.5 seconds
   → Execute JavaScript:
-    const health = runtime.imports.AdventureLand.Health;
-    if (health) {
-        const state = health.getState();
+    const healthSystem = globalThis.AdventureLand?.HealthSystem;
+    if (healthSystem) {
+        const state = healthSystem.getState();
         runtime.globalVars.PlayerHealth = state.current;
         runtime.globalVars.PlayerMaxHealth = state.max;
         runtime.globalVars.PlayerShield = state.temporary;

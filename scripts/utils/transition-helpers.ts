@@ -7,9 +7,6 @@ export class TransitionHelpers {
         console.log("🌊 Starting transition cleanup...");
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Call existing cleanup function
             if ((globalThis as any).cleanupEnemies) {
                 (globalThis as any).cleanupEnemies();
@@ -19,8 +16,8 @@ export class TransitionHelpers {
             }
 
             // Clean up animations if active
-            if (al?.TileAnimations?.cleanup) {
-                al.TileAnimations.cleanup();
+            if ((globalThis as any).AdventureLand?.TileAnimations?.cleanup) {
+                (globalThis as any).AdventureLand.TileAnimations.cleanup();
                 console.log("✅ Animation cleanup completed");
             }
 
@@ -36,12 +33,9 @@ export class TransitionHelpers {
         console.log("🌍 Initializing world systems...");
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Initialize tile animations
-            if (al?.TileAnimations?.initialize) {
-                al.TileAnimations.initialize();
+            if ((globalThis as any).AdventureLand?.TileAnimations?.initialize) {
+                (globalThis as any).AdventureLand.TileAnimations.initialize();
                 console.log("✅ Tile animations initialized");
             }
 
@@ -57,12 +51,9 @@ export class TransitionHelpers {
         console.log(`${paused ? '⏸️ Pausing' : '▶️ Resuming'} all systems...`);
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Pause/resume animations
-            if (al?.TileAnimations?.pauseAll) {
-                al.TileAnimations.pauseAll(paused);
+            if ((globalThis as any).AdventureLand?.TileAnimations?.pauseAll) {
+                (globalThis as any).AdventureLand.TileAnimations.pauseAll(paused);
             }
 
             // Add other system pause/resume logic here

@@ -71,33 +71,13 @@ This pattern is **required** - direct function exports cause runtime errors in C
 1. **TypeScript works with UIDs, not instances** - C3 object instances cannot be directly manipulated from TypeScript
 2. **Event sheets call TypeScript** - TypeScript returns data that C3 uses to update objects
 3. **JSON data access** - Use runtime objects to access AJAX/Dictionary data
-4. **Runtime Imports Pattern (NEW)** - Use `runtime.imports.AdventureLand.SystemName` for modern systems (Health System uses this)
-5. **Namespace Access (Legacy)** - Use `globalThis.AdventureLand?.SystemName` for legacy systems (Enemy AI, Tiles use this)
+4. **Namespace Access in Event Sheets** - Always use `globalThis.AdventureLand?.SystemName` in C3 event sheets, NOT TypeScript casting (causes runtime bugs)
 
-## Event Sheet Integration Patterns
+## ⚠️ CRITICAL: TypeScript Event Sheet Bug
 
-### Modern Pattern: Runtime Imports (Recommended for New Systems)
+**DO NOT use `(globalThis as any)` in event sheets** - Using TypeScript casting multiple times causes runtime errors and breaks system access.
 
-**✅ CORRECT - Runtime Imports Pattern:**
-```javascript
-const health = runtime.imports.AdventureLand.Health;
-if (health) {
-    health.takeDamage({
-        amount: 5,
-        source: { type: 'enemy' }
-    });
-}
-```
-
-**Benefits:**
-- Cleaner syntax with no TypeScript casting issues
-- Better type safety and autocomplete
-- Proper ES module integration
-- Used by: Health System
-
-### Legacy Pattern: Global Namespace (Existing Systems Only)
-
-**✅ CORRECT - Legacy Pattern:**
+**✅ CORRECT Pattern** (JavaScript with optional chaining):
 ```javascript
 const enemyAI = globalThis.AdventureLand?.EnemyAI;
 if (enemyAI) {
@@ -105,16 +85,13 @@ if (enemyAI) {
 }
 ```
 
-**❌ WRONG - TypeScript Casting:**
+**❌ WRONG Pattern** (TypeScript casting - causes bugs):
 ```javascript
-// DO NOT use (globalThis as any) in event sheets
-// This pattern BREAKS when used multiple times
-(globalThis as any).AdventureLand.EnemyAI.methodName(); // BREAKS!
+// This pattern BREAKS when used multiple times - use safe pattern instead
+globalThis.AdventureLand?.EnemyAI.methodName(); // Safe JavaScript pattern
 ```
 
-**Used by:** Enemy AI, Tile Animations, Potions (will migrate to Runtime Imports)
-
-**Note:** TypeScript casting can only be used ONCE (in main.ts) before it breaks runtime access.
+This bug has been reported multiple times - TypeScript casting can only be used ONCE in the entire codebase before it breaks runtime access.
 
 ## Production Systems
 
@@ -127,18 +104,8 @@ if (enemyAI) {
 - **Physics Coordination**: Smooth knockback with C3 8Direction behavior
 - **Visual Synchronization**: TypeScript state coordinated with C3 visual effects
 
-### Health System (`health-system.ts`) ⭐ NEW
-- Production-ready health management with runtime.imports pattern
-- Features: damage tracking, knockback, invincibility frames, shields, regeneration
-- **Defense Calculation**: All damage calculations handled in TypeScript (not event sheets)
-- **Respawn System**: Proper death/revive mechanics with save game integration
-- **Heart Display Sync**: Fixed critical bug where hearts showed incorrect values
-- **Runtime Imports**: First system to use modern runtime.imports.AdventureLand.Health pattern
-- **Potion Integration**: Seamless healing and defense bonus calculations
-- Documentation: `/scripts/systems/health/claude.md`, `/docs/archive/2025-10-04-health-system-completion/`
-
 ### Tile Animation Manager (`tile-animation-manager.ts`)
-- High-performance tile animation system
+- High-performance tile animation system  
 - 67% CPU reduction (30% → 10%)
 - Handles water, fire, lava animations with special waterfall logic
 
@@ -296,7 +263,7 @@ import * as EnemyAI from "./enemy-ai";
 ```
 
 ### Current System Status
-- **Production Ready**: Enemy AI with Battle System, Tile Animations, Health System
+- **Production Ready**: Enemy AI with Battle System, Tile Animations
 - **In Migration**: Quest System, Inventory Optimization
 - **Planned**: Player Battle System, World Builder Tools, Advanced Debug System
 

@@ -42,21 +42,18 @@ export class DebugHelpers {
         console.log("🔍 === ADVENTURE LAND SYSTEM STATUS ===");
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Check tile animation system
-            if (al?.TileAnimations) {
+            if ((globalThis as any).AdventureLand?.TileAnimations) {
                 console.log("✅ TileAnimations system: Available");
-                if (al.TileAnimations.debugStatus) {
-                    al.TileAnimations.debugStatus();
+                if ((globalThis as any).AdventureLand.TileAnimations.debugStatus) {
+                    (globalThis as any).AdventureLand.TileAnimations.debugStatus();
                 }
             } else {
                 console.log("❌ TileAnimations system: Not available");
             }
 
             // Check transition system
-            if (al?.Transitions) {
+            if ((globalThis as any).AdventureLand?.Transitions) {
                 console.log("✅ Transitions system: Available");
             } else {
                 console.log("❌ Transitions system: Not available");
@@ -89,18 +86,15 @@ export class DebugHelpers {
         console.log("🧪 === TESTING ALL SYSTEMS ===");
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Test tile animations
             console.log("Testing tile animations...");
-            if (al?.TileAnimations?.initialize) {
+            if ((globalThis as any).AdventureLand?.TileAnimations?.initialize) {
                 console.log("✅ TileAnimations.initialize: Available");
             }
 
             // Test transitions
             console.log("Testing transitions...");
-            if (al?.Transitions?.pauseAllSystems) {
+            if ((globalThis as any).AdventureLand?.Transitions?.pauseAllSystems) {
                 console.log("✅ Transitions.pauseAllSystems: Available");
             }
 
@@ -125,13 +119,10 @@ export class DebugHelpers {
         const startTime = performance.now();
 
         try {
-            const runtime = (globalThis as any).runtime;
-            const al = runtime?.imports?.AdventureLand;
-
             // Measure tile animation performance
-            if (al?.TileAnimations?.debugStatus) {
+            if ((globalThis as any).AdventureLand?.TileAnimations?.debugStatus) {
                 const animStartTime = performance.now();
-                al.TileAnimations.debugStatus();
+                (globalThis as any).AdventureLand.TileAnimations.debugStatus();
                 const animEndTime = performance.now();
                 console.log(`🎬 Animation debug time: ${(animEndTime - animStartTime).toFixed(2)}ms`);
             }
