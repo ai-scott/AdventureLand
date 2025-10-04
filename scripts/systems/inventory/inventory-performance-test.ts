@@ -35,11 +35,12 @@ export class InventoryPerformanceTest {
 
         // Test O(1) performance (new TypeScript method)
         console.log("\n✅ Testing O(1) lookups (new method):");
+        const al = runtime.imports?.AdventureLand;
         for (const itemId of testItemIds) {
             const startTime = performance.now();
 
             for (let i = 0; i < testIterations; i++) {
-                (globalThis as any).AdventureLand.Items.getItemName(itemId);
+                al?.Items?.getItemName(itemId);
             }
 
             const endTime = performance.now();
@@ -71,7 +72,8 @@ export class InventoryPerformanceTest {
             checkCount++;
 
             // Test if update is needed
-            const shouldUpdate = (globalThis as any).AdventureLand.UIOptimizer.shouldUpdateInventory(runtime);
+            const al = runtime.imports?.AdventureLand;
+            const shouldUpdate = al?.UIOptimizer?.shouldUpdateInventory(runtime);
             if (shouldUpdate) {
                 updateCount++;
             }
@@ -134,7 +136,8 @@ export class InventoryPerformanceTest {
             console.log(`  Duration: ${duration.toFixed(2)}ms`);
 
             // Check UI stats after each operation
-            (globalThis as any).AdventureLand.UIOptimizer.getStats();
+            const al = runtime.imports?.AdventureLand;
+            al?.UIOptimizer?.getStats();
         }
     }
 

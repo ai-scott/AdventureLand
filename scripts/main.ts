@@ -50,7 +50,7 @@ runOnStartup(async runtime => {
       EnemyAI.updateEnemy(enemyUID),
     updateWithPause: (enemyUID: number) => {
       // Check pause state before updating
-      if ((globalThis as any).AdventureLand.EnemyPause?.isPaused()) {
+      if (runtime.imports.AdventureLand.EnemyPause?.isPaused()) {
         return;
       }
       EnemyAI.updateEnemy(enemyUID);
@@ -227,33 +227,27 @@ runOnStartup(async runtime => {
 
   // Legacy global functions for items (can be removed once event sheets are updated)
   (globalThis as any).getItemName = (id: number) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemName(id) || "";
+    return runtime.imports.AdventureLand?.Items?.getItemName(id) || "";
   };
 
   (globalThis as any).getItemCategory = (id: number) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemCategory(id) || "";
+    return runtime.imports.AdventureLand?.Items?.getItemCategory(id) || "";
   };
 
   (globalThis as any).getItemStrength = (id: number) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemStrength(id) || 0;
+    return runtime.imports.AdventureLand?.Items?.getItemStrength(id) || 0;
   };
 
   (globalThis as any).getItemCost = (id: number) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemCost(id) || 0;
+    return runtime.imports.AdventureLand?.Items?.getItemCost(id) || 0;
   };
 
   (globalThis as any).getItemID = (name: string) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemID(name) || 0;
+    return runtime.imports.AdventureLand?.Items?.getItemID(name) || 0;
   };
 
   (globalThis as any).getItemId = (name: string) => {
-    const al = (globalThis as any).AdventureLand;
-    return al?.Items?.getItemID(name) || 0;  // Alias for backward compatibility
+    return runtime.imports.AdventureLand?.Items?.getItemID(name) || 0;  // Alias for backward compatibility
   };
 
   // NEW: Initialize item system after project starts (when JSON is loaded)
@@ -268,7 +262,7 @@ runOnStartup(async runtime => {
       initializeItemSystem(runtime);
 
       // Verify it's working
-      const al = (globalThis as any).AdventureLand;
+      const al = runtime.imports.AdventureLand;
       if (al?.Items?.isInitialized()) {
         console.log("✅ Item system initialized successfully!");
         console.log(`📊 ${al.Items.getTotalDatabaseItems()} items loaded`);
@@ -359,7 +353,7 @@ runOnStartup(async runtime => {
   console.log("- Legacy global functions (for backward compatibility)");
 
   // Verify namespace exists
-  const al = (globalThis as any).AdventureLand;
+  const al = runtime.imports.AdventureLand;
   if (al) {
     console.log("✅ AdventureLand namespace verified");
     console.log("- EnemyAI methods:", al.EnemyAI ? Object.keys(al.EnemyAI).length : 0);

@@ -24,14 +24,15 @@ export function initializeItemSystem(runtime: any): void {
     const success = ItemManager.initialize(itemsData);
 
     if (success) {
+        const al = runtime.imports?.AdventureLand;
         console.log("✅ ItemManager initialized successfully!");
-        console.log(`📊 Total items loaded: ${(globalThis as any).AdventureLand.Items.getTotalDatabaseItems()}`);
+        console.log(`📊 Total items loaded: ${al?.Items?.getTotalDatabaseItems()}`);
 
         // Verify a few lookups
         console.log("🔍 Testing O(1) lookups:");
-        console.log("- Item 1 name:", (globalThis as any).AdventureLand.Items.getItemName(1));
-        console.log("- Item 2 cost:", (globalThis as any).AdventureLand.Items.getItemCost(2));
-        console.log("- Item 3 category:", (globalThis as any).AdventureLand.Items.getItemCategory(3));
+        console.log("- Item 1 name:", al?.Items?.getItemName(1));
+        console.log("- Item 2 cost:", al?.Items?.getItemCost(2));
+        console.log("- Item 3 category:", al?.Items?.getItemCategory(3));
     }
 }
 
@@ -49,22 +50,23 @@ export function initializeItemSystem(runtime: any): void {
 // 
 // NEW (O(1)):
 // In TypeScript blocks:
-// const name = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);
+// const name = runtime.imports.AdventureLand.Items.getItemName(localVars.ItemIndex);
 // localVars.TempReturnString = name || "";
 
 /**
  * Debug function to verify O(1) performance
  */
-export function verifyPerformance(): void {
+export function verifyPerformance(runtime: any): void {
     console.log("⚡ Performance Test: O(n) vs O(1)");
 
     const testItemId = 50; // Assuming you have 50+ items
     const iterations = 1000;
+    const al = runtime.imports?.AdventureLand;
 
     // Test O(1) lookup performance
     const startO1 = performance.now();
     for (let i = 0; i < iterations; i++) {
-        (globalThis as any).AdventureLand.Items.getItemName(testItemId);
+        al?.Items?.getItemName(testItemId);
     }
     const endO1 = performance.now();
 
