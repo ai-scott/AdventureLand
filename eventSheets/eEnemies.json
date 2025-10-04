@@ -273,7 +273,7 @@
 									"language": "javascript",
 									"script": [
 										"// Check if enemy is invulnerable",
-										"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+										"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
 										"  if (enemyAI && enemyAI.isInvulnerable) {",
 										"      const isInvulnerable =",
 										"  enemyAI.isInvulnerable(localVars.enemyBaseUID);",
@@ -491,7 +491,7 @@
 													"language": "javascript",
 													"script": [
 														"// JavaScript version - proper runtime API access",
-														"    const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+														"    const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
 														"    if (enemyAI) {",
 														"        // Get instances through runtime API",
 														"        const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
@@ -899,7 +899,7 @@
 											"language": "javascript",
 											"script": [
 												"// Notify enemy recovery",
-												"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+												"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
 												"if (enemyAI) {",
 												"    const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
 												"",
@@ -965,7 +965,7 @@
 													"language": "javascript",
 													"script": [
 														"// Handle enemy death",
-														"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+														"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
 														"if (enemyAI) {",
 														"    const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
 														"",

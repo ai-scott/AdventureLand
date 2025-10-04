@@ -4285,7 +4285,7 @@
 												"console.log(\"Player_Hurt script called, current health:\", runtime.globalVars.Health);",
 												"",
 												"// Use TypeScript health system for damage",
-												"const healthSystem = globalThis.AdventureLand?.HealthSystem;",
+												"const healthSystem = runtime.imports.AdventureLand.Health;",
 												"  if (healthSystem) {",
 												"      const enemy = runtime.objects.EnemyBases.getFirstPickedInstance();",
 												"      const hazard = runtime.objects.Hazards.getFirstPickedInstance();",

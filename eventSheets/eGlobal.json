@@ -1220,7 +1220,7 @@
 								"console.log(\"Getting item InvCollection\");",
 								"",
 								"// Re-initialize HealthSystem after loading save data",
-								"const healthSystem = globalThis.AdventureLand?.HealthSystem;",
+								"const healthSystem = runtime.imports.AdventureLand.Health;",
 								"if (healthSystem) {",
 								"    // Force re-initialization to load from the freshly loaded save data",
 								"    healthSystem.initialize();",
@@ -1928,29 +1928,46 @@
 								},
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
 										"// Track health change for TypeScript",
 										"console.log(\"adjusting Health\");",
-										"// Integrate with TypeScript health system",
-										"const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
 										"",
-										"if (healthSystem && localVars.health_change !== 0) {",
-										"    if (localVars.health_change > 0) {",
-										"        // Healing",
-										"        healthSystem.heal({",
-										"            amount: localVars.health_change,",
-										"            source: 'other',",
-										"            overheal: localVars.maxOutHealth",
-										"        });",
-										"    } else {",
-										"        // Damage (from non-combat sources like falling)",
-										"        healthSystem.takeDamage({",
-										"            amount: Math.abs(localVars.health_change),",
-										"            source: { uid: -1, type: 'other' },",
-										"            type: 'true', // True damage bypasses resistances",
-										"            ignoreInvincibility: true",
-										"        });",
+										"// ALWAYS sync with TypeScript health system, not just when health_change !== 0",
+										"const healthSystem = runtime.imports.AdventureLand.Health;",
+										"",
+										"if (healthSystem) {",
+										"    // First, get current health from HealthSystem",
+										"    const currentState = healthSystem.getState();",
+										"    console.log(`[adjustHealth] HealthSystem current: ${currentState.current}/${currentState.max}`);",
+										"    ",
+										"    // Apply any health changes if requested",
+										"    if (localVars.health_change !== 0) {",
+										"        if (localVars.health_change > 0) {",
+										"            // Healing",
+										"            healthSystem.heal({",
+										"                amount: localVars.health_change,",
+										"                source: 'other',",
+										"                overheal: localVars.maxOutHealth",
+										"            });",
+										"        } else {",
+										"            // Damage (from non-combat sources like falling)",
+										"            healthSystem.takeDamage({",
+										"                amount: Math.abs(localVars.health_change),",
+										"                source: { uid: -1, type: 'other' },",
+										"                type: 'true', // True damage bypasses resistances",
+										"                ignoreInvincibility: true",
+										"            });",
+										"        }",
+										"    }",
+										"    ",
+										"    // CRITICAL: Always update Dictionary from HealthSystem (source of truth)",
+										"    const finalState = healthSystem.getState();",
+										"    const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+										"    if (dict) {",
+										"        dict.getDataMap().set('Health', finalState.current);",
+										"        dict.getDataMap().set('MaxHealth', finalState.max);",
+										"        console.log(`[adjustHealth] Synced to Dict: ${finalState.current}/${finalState.max}`);",
 										"    }",
 										"}",
 										""
@@ -2060,7 +2077,16 @@
 											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const heart = runtime.objects.Heart.getFirstPickedInstance();",
+												"console.log(`[Action 45] Heart found - Index: ${heart.instVars.HeartIndex}, Layer: ${heart.layer.name}, MaxHealth/2: ${runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap().get('MaxHealth')/2}`);"
+											]
+										}
+									],
 									"sid": 331839091664004,
 									"children": [
 										{
@@ -2085,6 +2111,16 @@
 													"parameters": {
 														"frame-number": "\"Full\""
 													}
+												},
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"console.log(`[Action 46 Check] HeartIndex: ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex}, Health global: ${runtime.globalVars.Health}, Condition check: ${runtime.globalVars.Health} >= ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex * 2}`);",
+														"",
+														"console.log(`[SET FULL] Heart ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex} frame set to: ${runtime.objects.Heart.getFirstPickedInstance().animationFrame}`);",
+														""
+													]
 												}
 											],
 											"sid": 774793204377153
@@ -2095,7 +2131,7 @@
 												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
-													"sid": 878517479310794,
+													"sid": 732859248087345,
 													"parameters": {
 														"variable": "Health",
 														"comparison": 3,
@@ -2107,13 +2143,24 @@
 												{
 													"id": "set-animation-frame",
 													"objectClass": "Heart",
-													"sid": 502117072410474,
+													"sid": 257704337692474,
 													"parameters": {
 														"frame-number": "\"Empty\""
 													}
+												},
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const heart = runtime.objects.Heart.getFirstPickedInstance();",
+														"console.log(`[Action 47 Empty] HeartIndex: ${heart.instVars.HeartIndex}, Health: ${runtime.globalVars.Health}, Check: ${runtime.globalVars.Health} <= ${(heart.instVars.HeartIndex * 2) - 2}`);",
+														"",
+														"console.log(`[SET EMPTY] Heart ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex} frame set to: ${runtime.objects.Heart.getFirstPickedInstance().animationFrame}`);",
+														""
+													]
 												}
 											],
-											"sid": 218845261583178
+											"sid": 228728454648586
 										},
 										{
 											"eventType": "block",
@@ -2121,7 +2168,7 @@
 												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
-													"sid": 549540847838345,
+													"sid": 356600955464175,
 													"parameters": {
 														"variable": "Health",
 														"comparison": 0,
@@ -2133,13 +2180,24 @@
 												{
 													"id": "set-animation-frame",
 													"objectClass": "Heart",
-													"sid": 245066509864252,
+													"sid": 474795495240682,
 													"parameters": {
 														"frame-number": "\"Half\""
 													}
+												},
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const heart = runtime.objects.Heart.getFirstPickedInstance();",
+														"console.log(`[Action 48 Half] HeartIndex: ${heart.instVars.HeartIndex}, Health: ${runtime.globalVars.Health}, Check: ${runtime.globalVars.Health} == ${(heart.instVars.HeartIndex * 2) - 1}`);",
+														"",
+														"console.log(`[SET HALF] Heart ${heart.instVars.HeartIndex} frame set to: ${heart.animationFrame}`);",
+														""
+													]
 												}
 											],
-											"sid": 497800888935904
+											"sid": 483946103705926
 										}
 									]
 								},
@@ -2173,7 +2231,16 @@
 											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const heart = runtime.objects.Heart.getFirstPickedInstance();",
+												"console.log(`[Action 49] Heart found - Index: ${heart.instVars.HeartIndex}, Layer: ${heart.layer.name}, MaxHealth/2: ${runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap().get('MaxHealth')/2}`);"
+											]
+										}
+									],
 									"sid": 752548765438380,
 									"children": [
 										{
@@ -2255,27 +2322,6 @@
 											"sid": 689311661916270
 										}
 									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
-												"if (dict) {",
-												"    const dataMap = dict.getDataMap();    const newHealth = dataMap.get(\"Health\") || 0;    const healthSystem = (globalThis as any).AdventureLand?.HealthSystem;    ",
-												"    if (healthSystem) {",
-												"        // Function parameters are accessed via localVars        ",
-												"        healthSystem.syncAfterChange(newHealth, localVars.maxOutHealth);    }",
-												"}"
-											]
-										}
-									],
-									"sid": 329559415031571,
-									"disabled": true
 								}
 							]
 						},
@@ -2299,31 +2345,7 @@
 									}
 								}
 							],
-							"sid": 397217038669504,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"// Sync health system with save data",
-												"        const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
-												"",
-												"        if (healthSystem) {",
-												"            // Force a sync to ensure health matches save data",
-												"            healthSystem.update(0);",
-												"            console.log(\"Health system synced with save data\");",
-												"        }"
-											]
-										}
-									],
-									"sid": 589156565125165,
-									"disabled": true
-								}
-							]
+							"sid": 397217038669504
 						},
 						{
 							"eventType": "block",
@@ -2337,10 +2359,10 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
 										"// Update health system",
-										"    const healthSystem = (globalThis as any).AdventureLand.HealthSystem;",
+										"    const healthSystem = runtime.imports.AdventureLand.Health;",
 										"",
 										"    if (healthSystem) {",
 										"        healthSystem.update(runtime.dt);",
@@ -2528,6 +2550,13 @@
 										"variable": "ShopMode",
 										"value": "false"
 									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"console.log(\"[populateDictionaryItems] About to create hearts\");"
+									]
 								}
 							],
 							"sid": 810524137362292,
@@ -2556,6 +2585,48 @@
 										}
 									],
 									"sid": 563976404809790
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "Heart",
+											"sid": 797068452401090,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Heart",
+											"sid": 448062308715266
+										}
+									],
+									"sid": 734742828197740
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "Heart",
+											"sid": 927887776779280,
+											"parameters": {
+												"layer": "\"HUD_UI\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Heart",
+											"sid": 242965867448763
+										}
+									],
+									"sid": 346904072557298
 								},
 								{
 									"eventType": "comment",
@@ -2720,6 +2791,13 @@
 												"string": "\"grantFreeItem\"",
 												"function": "grantFreeItem"
 											}
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(\"[populateDictionaryItems] Hearts created, all set to Full\");"
+											]
 										}
 									],
 									"sid": 645907929529474,
@@ -3400,11 +3478,18 @@
 								},
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
+										"const hs = runtime.imports.AdventureLand.Health;",
+										"if (hs) {",
+										"    console.log(\"[Inventory Open] HealthSystem OK, state:\", hs.getState());",
+										"} else {",
+										"    console.log(\"[Inventory Open] HealthSystem is undefined!\");",
+										"}",
+										"",
 										"// Add this single debug script to OpenClose_Inventory",
-										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance()!;",
-										"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance()!;",
+										"const arr = runtime.objects.Arr_InvCollection.getFirstInstance();",
+										"const dict = runtime.objects.Dict_ItemNumbers.getFirstInstance();",
 										"",
 										"console.log(\"=== INVENTORY CHECK ===\");",
 										"",
@@ -3425,6 +3510,11 @@
 										"// Refresh heart display when inventory opens",
 										"runtime.callFunction('adjustHealth', 0, '');"
 									]
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": []
 								}
 							],
 							"sid": 192841212808491,
