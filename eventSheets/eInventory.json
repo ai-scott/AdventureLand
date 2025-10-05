@@ -2477,30 +2477,6 @@
 							]
 						}
 					]
-				},
-				{
-					"eventType": "comment",
-					"text": "At the start of the layout, we add all items into the Inventory layer"
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-signal",
-							"objectClass": "System",
-							"sid": 821832433919871,
-							"parameters": {
-								"tag": "\"Inventory UI Drawn\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"callFunction": "RefreshInventory",
-							"sid": 748035123977323
-						}
-					],
-					"sid": 443191555829982
 				}
 			],
 			"sid": 527921857146824
@@ -2515,31 +2491,6 @@
 				{
 					"eventType": "comment",
 					"text": "✪ All basic interactions with inventories and items can be performed only if the layer of the same name is Visible.\nThus, by simply hiding the layer, the ability to perform any actions with Items is disabled"
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "layer-is-visible",
-							"objectClass": "System",
-							"sid": 619909331511357,
-							"parameters": {
-								"layer": "\"Inventory\""
-							}
-						},
-						{
-							"id": "trigger-once-while-true",
-							"objectClass": "System",
-							"sid": 509931016007302
-						}
-					],
-					"actions": [
-						{
-							"callFunction": "RefreshInventory",
-							"sid": 191190809964603
-						}
-					],
-					"sid": 203495177913114
 				},
 				{
 					"functionName": "populateItemSlots",
@@ -2939,6 +2890,7 @@
 									"id": "set-instvar-value",
 									"objectClass": "ItemSlot",
 									"sid": 277462036054473,
+									"disabled": true,
 									"parameters": {
 										"instance-variable": "ItemName",
 										"value": "Dict_SaveGameData.Get(Self.InventoryState)"
@@ -2961,6 +2913,18 @@
 										"instance-variable": "InventoryWindow",
 										"value": "\"equip\""
 									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const itemSlot = runtime.objects.ItemSlot.getFirstPickedInstance();",
+										"const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
+										"const itemName = dict.getDataMap().get(itemSlot.instVars.InventoryState) || \"\";",
+										"itemSlot.instVars.ItemName = itemName;",
+										"",
+										"console.log(`[Equipment] ${itemSlot.instVars.InventoryState}: \"${itemName}\"`);"
+									]
 								}
 							],
 							"sid": 578390684740372,
@@ -3177,162 +3141,6 @@
 								}
 							],
 							"sid": 584752649485594
-						},
-						{
-							"eventType": "block",
-							"conditions": [],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"const debugInventoryState = () => {",
-										"    console.log(\"=== INVENTORY DEBUG ===\");",
-										"    ",
-										"    // Check ItemManager",
-										"    const itemManager = (globalThis as any).AdventureLand?.Items;",
-										"    if (!itemManager) {",
-										"        console.error(\"❌ ItemManager not found!\");",
-										"        return;",
-										"    }",
-										"    ",
-										"    // Check inventory array",
-										"    const invArray = runtime.objects.Arr_InvCollection.getFirstInstance();",
-										"    if (!invArray) {",
-										"        console.error(\"❌ Arr_InvCollection not found!\");",
-										"        return;",
-										"    }",
-										"    ",
-										"    // Check first few inventory slots",
-										"    console.log(\"\\n📦 Checking inventory array contents:\");",
-										"    let foundItems = 0;",
-										"    for (let i = 0; i < Math.min(25, invArray.width); i++) {",
-										"        const itemId = Number(invArray.getAt(i));",
-										"        if (itemId > 0) {",
-										"            const name = itemManager.getItemName(itemId);",
-										"            const category = itemManager.getItemCategory(itemId);",
-										"            console.log(`  Slot ${i}: ID=${itemId}, Name=\"${name}\", Category=\"${category}\"`);",
-										"            foundItems++;",
-										"        }",
-										"    }",
-										"    console.log(`Found ${foundItems} items in first 25 slots`);",
-										"    ",
-										"    // Check ItemSlot objects",
-										"    const itemSlots = runtime.objects.ItemSlot.getAllInstances();",
-										"    console.log(`\\n🎰 Total ItemSlots created: ${itemSlots.length}`);",
-										"    ",
-										"    // Check main inventory slots with more detail",
-										"    const mainSlots = itemSlots.filter(slot => ",
-										"        slot.instVars.InventoryState === \"main\"",
-										"    ).slice(0, 5);",
-										"    console.log(\"\\n📋 First 5 main inventory slots (detailed):\");",
-										"    mainSlots.forEach((slot, idx) => {",
-										"        const slotId = slot.instVars.SlotID;",
-										"        const itemId = slot.instVars.ItemID;",
-										"        const itemName = slot.instVars.ItemName;",
-										"        const itemCat = slot.instVars.ItemCat;",
-										"        console.log(`  Slot ${slotId}:`);",
-										"        console.log(`    ItemID: ${itemId} (AnimFrame: ${slot.animationFrame})`);",
-										"        console.log(`    ItemName: \"${itemName}\"`);",
-										"        console.log(`    ItemCat: \"${itemCat}\"`);",
-										"        ",
-										"        // Check if the ItemID matches what's in the array",
-										"        if (invArray && slotId < invArray.width) {",
-										"            const arrayItemId = Number(invArray.getAt(slotId));",
-										"            if (arrayItemId !== itemId) {",
-										"                console.log(`    ⚠️ MISMATCH: Array has ID ${arrayItemId}`);",
-										"            }",
-										"        }",
-										"    });",
-										"    ",
-										"    // Check equipment slots with full details",
-										"    const equipSlots = itemSlots.filter(slot => ",
-										"        slot.instVars.InventoryState !== \"main\" && ",
-										"        slot.instVars.InventoryState !== \"\"",
-										"    );",
-										"    console.log(\"\\n⚔️ Equipment slots (detailed):\");",
-										"    equipSlots.forEach(slot => {",
-										"        const state = slot.instVars.InventoryState;",
-										"        const itemName = slot.instVars.ItemName;",
-										"        const itemId = slot.instVars.ItemID;",
-										"        const itemCat = slot.instVars.ItemCat;",
-										"        console.log(`  ${state}:`);",
-										"        console.log(`    ItemName: \"${itemName}\"`);",
-										"        console.log(`    ItemID: ${itemId} (AnimFrame: ${slot.animationFrame})`);",
-										"        console.log(`    ItemCat: \"${itemCat}\"`);",
-										"        ",
-										"        // Try to resolve the item ID from name if ID is 0",
-										"        if (itemId === 0 && itemName && itemName !== \"\") {",
-										"            const resolvedId = itemManager.getItemId(itemName);",
-										"            console.log(`    ✅ Resolved ID from name: ${resolvedId}`);",
-										"            const resolvedCat = itemManager.getItemCategory(resolvedId);",
-										"            console.log(`    ✅ Resolved Category: \"${resolvedCat}\"`);",
-										"        }",
-										"    });",
-										"    ",
-										"    // Check SaveGameData for equipped items",
-										"    const saveData = runtime.objects.Dict_SaveGameData.getFirstInstance() as any;",
-										"    if (saveData) {",
-										"        console.log(\"\\n💾 Equipped items from SaveGameData:\");",
-										"        const categories = [\"Weapon\", \"Head\", \"Hand\", \"Neck\", \"Body\", \"Legs\", \"Boot\"];",
-										"        categories.forEach(cat => {",
-										"            try {",
-										"                const equipped = saveData.get(cat);",
-										"                if (equipped && equipped !== \"\") {",
-										"                    console.log(`  ${cat}: \"${equipped}\"`);",
-										"                    // Try to resolve the item ID",
-										"                    const itemId = itemManager.getItemId(equipped);",
-										"                    console.log(`    → ID: ${itemId}`);",
-										"                }",
-										"            } catch (e) {",
-										"                console.log(`  ${cat}: [Error reading]`);",
-										"            }",
-										"        });",
-										"    }",
-										"    ",
-										"    // Check Dict_ItemNumbers for quantities",
-										"    const itemNumbers = runtime.objects.Dict_ItemNumbers.getFirstInstance() as any;",
-										"    if (itemNumbers) {",
-										"        console.log(\"\\n📊 Item quantities (first 5 non-zero):\");",
-										"        let count = 0;",
-										"        // This is a bit tricky without knowing all keys, but we can check some known items",
-										"        const testItems = [\"Golden Tee-Shirt\", \"Brown Shorts\", \"Blue Slippers\", \"Axe\", \"Sword\"];",
-										"        testItems.forEach(itemName => {",
-										"            try {",
-										"                const qty = itemNumbers.get(itemName);",
-										"                if (qty && qty > 0) {",
-										"                    console.log(`  \"${itemName}\": ${qty}`);",
-										"                    count++;",
-										"                }",
-										"            } catch (e) {",
-										"                // Silent fail",
-										"            }",
-										"        });",
-										"        if (count === 0) {",
-										"            console.log(\"  (No quantities found for test items)\");",
-										"        }",
-										"    }",
-										"    ",
-										"    // Test the TypeScript integration",
-										"    console.log(\"\\n🔧 TypeScript Integration Test:\");",
-										"    const testItems = [\"Golden Tee-Shirt\", \"Brown Shorts\", \"Blue Slippers\"];",
-										"    testItems.forEach(itemName => {",
-										"        const id = itemManager.getItemId(itemName);",
-										"        const category = itemManager.getItemCategory(id);",
-										"        const strength = itemManager.getItemStrength(id);",
-										"        console.log(`  \"${itemName}\": ID=${id}, Cat=\"${category}\", Str=${strength}`);",
-										"    });",
-										"    ",
-										"    console.log(\"\\n=== END DEBUG ===\");",
-										"};",
-										"",
-										"// Call this in populateItemSlots after the order fix",
-										"debugInventoryState();"
-									],
-									"disabled": true
-								}
-							],
-							"sid": 862752138389394
 						}
 					]
 				},
@@ -7261,7 +7069,41 @@
 					],
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"console.log(\"=== Calc_Hero_Stats DEBUG ===\");",
+								"console.log(\"Mode:\", localVars.Mode);",
+								"",
+								"// Check all ItemSlots",
+								"const slots = runtime.objects.ItemSlot.getAllInstances();",
+								"console.log(\"Total ItemSlots:\", slots.length);",
+								"",
+								"slots.forEach(slot => {",
+								"    if (slot.instVars.InventoryState === \"Weapon\") {",
+								"        console.log(\"WEAPON SLOT FOUND:\");",
+								"        console.log(\"  InventoryState:\", slot.instVars.InventoryState);",
+								"        console.log(\"  ItemID:\", slot.instVars.ItemID);",
+								"        console.log(\"  ItemName:\", slot.instVars.ItemName);",
+								"        console.log(\"  InventoryWindow:\", slot.instVars.InventoryWindow);",
+								"        ",
+								"        // Try getting strength with the ItemID",
+								"        if (slot.instVars.ItemID > 0) {",
+								"            const strength = globalThis.AdventureLand.Items.getItemStrength(slot.instVars.ItemID);",
+								"            console.log(\"  Strength from ItemID:\", strength);",
+								"        }",
+								"    }",
+								"});",
+								"",
+								"// Check if GetItemStrength works",
+								"const testStrength = globalThis.AdventureLand.Items.getItemStrength(22); // Axe ID",
+								"console.log(\"Test: Axe (ID 22) strength =\", testStrength);",
+								"console.log(\"Current Attack global:\", runtime.globalVars.Attack);"
+							]
+						}
+					],
 					"sid": 419092822182234,
 					"children": [
 						{

@@ -1103,11 +1103,11 @@
 						},
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
 								"// In your Script action after JSON parse:",
-								"const itemsData = runtime.objects.JSON_ItemsLibrary.getFirstInstance()!.getJsonDataCopy();",
-								"const success = (globalThis as any).AdventureLand.Items.initialize(itemsData);",
+								"const itemsData = runtime.objects.JSON_ItemsLibrary.getFirstInstance().getJsonDataCopy();",
+								"const success = globalThis.AdventureLand.Items.initialize(itemsData);",
 								"",
 								"if (!success) {",
 								"    console.error(\"Failed to initialize item cache!\");",
@@ -1259,6 +1259,26 @@
 							"parameters": {
 								"key": "\"ItemTriggersCollected\""
 							}
+						},
+						{
+							"callFunction": "populateItemSlots",
+							"sid": 973406169518796
+						},
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 202220430141552,
+							"parameters": {
+								"seconds": "0",
+								"use-timescale": true
+							}
+						},
+						{
+							"callFunction": "Calc_Hero_Stats",
+							"sid": 465650752482746,
+							"parameters": [
+								"\"equip\""
+							]
 						}
 					],
 					"sid": 568863474959448
@@ -1315,26 +1335,48 @@
 							"parameters": {
 								"json": "LocalStorage.ItemValue"
 							}
-						},
-						{
-							"id": "set-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 939519607527865,
-							"parameters": {
-								"variable": "DataLoaded",
-								"value": "true"
-							}
-						},
-						{
-							"id": "signal",
-							"objectClass": "System",
-							"sid": 855472338345199,
-							"parameters": {
-								"tag": "\"DataLoaded\""
-							}
 						}
 					],
-					"sid": 780659093902356
+					"sid": 780659093902356,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 412226611461928,
+									"parameters": {
+										"first-value": "DataLoaded",
+										"comparison": 0,
+										"second-value": "\"true\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 335813317805293,
+									"parameters": {
+										"variable": "DataLoaded",
+										"value": "true"
+									}
+								},
+								{
+									"id": "signal",
+									"objectClass": "System",
+									"sid": 925597368556985,
+									"parameters": {
+										"tag": "\"DataLoaded\""
+									}
+								}
+							],
+							"sid": 970290295953315,
+							"disabled": true
+						}
+					]
 				},
 				{
 					"eventType": "comment",
@@ -1513,114 +1555,135 @@
 							"parameters": {
 								"json": "AJAX.LastData"
 							}
-						},
-						{
-							"id": "set-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 682169609144292,
-							"parameters": {
-								"variable": "DataLoaded",
-								"value": "true"
-							}
-						},
-						{
-							"id": "signal",
-							"objectClass": "System",
-							"sid": 130132489340270,
-							"parameters": {
-								"tag": "\"DataLoaded\""
-							}
-						},
-						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"// Add this enhanced debug to Event 28 (Load_InvCollection completed)",
-								"// This will show us what's happening during inventory loading",
-								"",
-								"console.log(\"=== INVENTORY LOADING DEBUG ===\");",
-								"",
-								"// Check if the array exists",
-								"const invArray = runtime.objects.Arr_InvCollection.getFirstInstance();",
-								"if (!invArray) {",
-								"    console.error(\"❌ Arr_InvCollection not found!\");",
-								"    return;",
-								"}",
-								"",
-								"console.log(\"Arr_InvCollection dimensions:\", {",
-								"    width: invArray.width,",
-								"    height: invArray.height,",
-								"    depth: invArray.depth",
-								"});",
-								"",
-								"// Check the actual array contents",
-								"console.log(\"First 10 array values:\");",
-								"for (let i = 0; i < Math.min(10, invArray.width); i++) {",
-								"    const value = invArray.getAt(i);",
-								"    console.log(`  [${i}] = ${value} (type: ${typeof value})`);",
-								"}",
-								"",
-								"",
-								"// Check if Dict_ItemNumbers loaded",
-								"const itemNumbersDict = runtime.objects.Dict_ItemNumbers.getFirstInstance();",
-								"if (itemNumbersDict && itemNumbersDict.getDataMap) {",
-								"    const dataMap = itemNumbersDict.getDataMap();",
-								"    console.log(\"Dictionary data:\", dataMap);",
-								"    ",
-								"    // Now you can iterate through the dictionary",
-								"    for (const [key, value] of dataMap) {",
-								"        console.log(`Found item: ${key}, Quantity=${value}`);",
-								"    }",
-								"}",
-								"",
-								"// For WRITING to dictionary, you typically need to use C3 actions, not TypeScript",
-								"// This is usually done through event sheets, not TypeScript",
-								"",
-								"",
-								"",
-								"// Build inventory data as before",
-								"const inventoryData = [];",
-								"for (let i = 0; i < invArray.width; i++) {",
-								"    const itemId = Number(invArray.getAt(i));",
-								"    if (itemId > 0 && itemNumbersDict) {  // Check itemNumbersDict is not null",
-								"        // Get the item name for this ID",
-								"        const itemNameResult = runtime.callFunction(\"GetItemName\", itemId);  // Pass itemId directly, not in array",
-								"        const itemName = String(itemNameResult || \"\");  // Convert to string and handle null",
-								"        ",
-								"        // Get the dictionary's data map",
-								"        const dataMap = itemNumbersDict.getDataMap();",
-								"        ",
-								"        // Get quantity from the map using the item name as key",
-								"        const quantity = Number(dataMap.get(itemName) || 1);",
-								"        ",
-								"        inventoryData.push({",
-								"            itemId: itemId,",
-								"            quantity: quantity",
-								"        });",
-								"        console.log(`  Found item: ID=${itemId}, Name=${itemName}, Quantity=${quantity}`);",
-								"    }",
-								"}",
-								"",
-								"",
-								"console.log(`Total items to load into ItemManager: ${inventoryData.length}`);",
-								"console.log(\"inventoryData:\", inventoryData);",
-								"",
-								"// Initialize inventory in ItemManager",
-								"(globalThis as any).AdventureLand.Items.initializeInventory(inventoryData);",
-								"",
-								"console.log(\"=== END INVENTORY LOADING DEBUG ===\");",
-								"",
-								"// Also add this to check if items are loading correctly",
-								"const itemManager = (globalThis as any).AdventureLand.Items;",
-								"if (itemManager) {",
-								"    console.log(\"Testing ItemManager lookups after init:\");",
-								"    console.log(\"  Pike ID:\", itemManager.getItemId(\"Pike\"));",
-								"    console.log(\"  Golden Tee-Shirt ID:\", itemManager.getItemId(\"Golden Tee-Shirt\"));",
-								"}"
-							]
 						}
 					],
-					"sid": 477728293557967
+					"sid": 477728293557967,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 408025093152912,
+									"parameters": {
+										"first-value": "DataLoaded",
+										"comparison": 0,
+										"second-value": "\"true\""
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 682169609144292,
+									"parameters": {
+										"variable": "DataLoaded",
+										"value": "true"
+									}
+								},
+								{
+									"id": "signal",
+									"objectClass": "System",
+									"sid": 130132489340270,
+									"parameters": {
+										"tag": "\"DataLoaded\""
+									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"// Add this enhanced debug to Event 28 (Load_InvCollection completed)",
+										"// This will show us what's happening during inventory loading",
+										"",
+										"console.log(\"=== INVENTORY LOADING DEBUG ===\");",
+										"",
+										"// Check if the array exists",
+										"const invArray = runtime.objects.Arr_InvCollection.getFirstInstance();",
+										"if (!invArray) {",
+										"    console.error(\"❌ Arr_InvCollection not found!\");",
+										"    return;",
+										"}",
+										"",
+										"console.log(\"Arr_InvCollection dimensions:\", {",
+										"    width: invArray.width,",
+										"    height: invArray.height,",
+										"    depth: invArray.depth",
+										"});",
+										"",
+										"// Check the actual array contents",
+										"console.log(\"First 10 array values:\");",
+										"for (let i = 0; i < Math.min(10, invArray.width); i++) {",
+										"    const value = invArray.getAt(i);",
+										"    console.log(`  [${i}] = ${value} (type: ${typeof value})`);",
+										"}",
+										"",
+										"",
+										"// Check if Dict_ItemNumbers loaded",
+										"const itemNumbersDict = runtime.objects.Dict_ItemNumbers.getFirstInstance();",
+										"if (itemNumbersDict && itemNumbersDict.getDataMap) {",
+										"    const dataMap = itemNumbersDict.getDataMap();",
+										"    console.log(\"Dictionary data:\", dataMap);",
+										"    ",
+										"    // Now you can iterate through the dictionary",
+										"    for (const [key, value] of dataMap) {",
+										"        console.log(`Found item: ${key}, Quantity=${value}`);",
+										"    }",
+										"}",
+										"",
+										"// For WRITING to dictionary, you typically need to use C3 actions, not TypeScript",
+										"// This is usually done through event sheets, not TypeScript",
+										"",
+										"",
+										"",
+										"// Build inventory data as before",
+										"const inventoryData = [];",
+										"for (let i = 0; i < invArray.width; i++) {",
+										"    const itemId = Number(invArray.getAt(i));",
+										"    if (itemId > 0 && itemNumbersDict) {  // Check itemNumbersDict is not null",
+										"        // Get the item name for this ID",
+										"        const itemNameResult = runtime.callFunction(\"GetItemName\", itemId);  // Pass itemId directly, not in array",
+										"        const itemName = String(itemNameResult || \"\");  // Convert to string and handle null",
+										"        ",
+										"        // Get the dictionary's data map",
+										"        const dataMap = itemNumbersDict.getDataMap();",
+										"        ",
+										"        // Get quantity from the map using the item name as key",
+										"        const quantity = Number(dataMap.get(itemName) || 1);",
+										"        ",
+										"        inventoryData.push({",
+										"            itemId: itemId,",
+										"            quantity: quantity",
+										"        });",
+										"        console.log(`  Found item: ID=${itemId}, Name=${itemName}, Quantity=${quantity}`);",
+										"    }",
+										"}",
+										"",
+										"",
+										"console.log(`Total items to load into ItemManager: ${inventoryData.length}`);",
+										"console.log(\"inventoryData:\", inventoryData);",
+										"",
+										"// Initialize inventory in ItemManager",
+										"globalThis.AdventureLand.Items.initializeInventory(inventoryData);",
+										"",
+										"console.log(\"=== END INVENTORY LOADING DEBUG ===\");",
+										"",
+										"// Also add this to check if items are loading correctly",
+										"const itemManager = runtime.imports.AdventureLand.Items;",
+										"if (itemManager) {",
+										"    console.log(\"Testing ItemManager lookups after init:\");",
+										"    console.log(\"  Pike ID:\", itemManager.getItemId(\"Pike\"));",
+										"    console.log(\"  Golden Tee-Shirt ID:\", itemManager.getItemId(\"Golden Tee-Shirt\"));",
+										"}"
+									]
+								}
+							],
+							"sid": 930982501233128
+						}
+					]
 				},
 				{
 					"eventType": "comment",
@@ -2550,13 +2613,6 @@
 										"variable": "ShopMode",
 										"value": "false"
 									}
-								},
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"console.log(\"[populateDictionaryItems] About to create hearts\");"
-									]
 								}
 							],
 							"sid": 810524137362292,
@@ -2572,6 +2628,11 @@
 												"variable": "DataLoaded"
 											},
 											"isInverted": true
+										},
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 895488914238656
 										}
 									],
 									"actions": [
@@ -2791,13 +2852,6 @@
 												"string": "\"grantFreeItem\"",
 												"function": "grantFreeItem"
 											}
-										},
-										{
-											"type": "script",
-											"language": "javascript",
-											"script": [
-												"console.log(\"[populateDictionaryItems] Hearts created, all set to Full\");"
-											]
 										}
 									],
 									"sid": 645907929529474,
@@ -3515,6 +3569,10 @@
 									"type": "script",
 									"language": "javascript",
 									"script": []
+								},
+								{
+									"callFunction": "populateItemSlots",
+									"sid": 217534238714704
 								}
 							],
 							"sid": 192841212808491,
@@ -3969,9 +4027,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const strength = (globalThis as any).AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
+										"const strength = globalThis.AdventureLand.Items.getItemStrength(localVars.ItemIndex);",
 										"    localVars.TempReturnNumber = strength || 0;"
 									]
 								},
@@ -4007,9 +4065,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const category = (globalThis as any).AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
+										"const category = globalThis.AdventureLand.Items.getItemCategory(localVars.ItemIndex);",
 										"    localVars.TempReturnString = category || \"\";"
 									]
 								},
@@ -4045,9 +4103,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const description = (globalThis as any).AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
+										"const description = globalThis.AdventureLand.Items.getItemDescription(localVars.ItemIndex);",
 										"localVars.TempReturnString = description || \"\";"
 									]
 								},
@@ -4083,9 +4141,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const name = (globalThis as any).AdventureLand.Items.getItemName(localVars.ItemIndex);",
+										"const name = globalThis.AdventureLand.Items.getItemName(localVars.ItemIndex);",
 										"localVars.TempReturnString = name || \"\";"
 									]
 								},
@@ -4121,9 +4179,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const costume = (globalThis as any).AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
+										"const costume = rglobalThis.AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
 										"localVars.TempReturnString = costume || \"\";"
 									]
 								},
@@ -4159,9 +4217,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const costume = (globalThis as any).AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
+										"const costume = globalThis.AdventureLand.Items.getItemCostumeByName(localVars.ItemName);",
 										"localVars.TempReturnString = costume || \"\";"
 									]
 								},
@@ -4197,9 +4255,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const itemId = (globalThis as any).AdventureLand.Items.getItemID(localVars.ItemName);",
+										"const itemId = globalThis.AdventureLand.Items.getItemID(localVars.ItemName);",
 										"localVars.TempReturnNumber = itemId || 0;"
 									]
 								},
@@ -4235,9 +4293,9 @@
 							"actions": [
 								{
 									"type": "script",
-									"language": "typescript",
+									"language": "javascript",
 									"script": [
-										"const cost = (globalThis as any).AdventureLand.Items.getItemCost(localVars.ItemIndex);",
+										"const cost = globalThis.AdventureLand.Items.getItemCost(localVars.ItemIndex);",
 										"localVars.TempReturnNumber = cost || 0;"
 									]
 								},
