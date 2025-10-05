@@ -3138,6 +3138,13 @@
 										"variable": "TempVarY",
 										"value": "\"CurrentItemSlot = \"&CurrentItemSlot&\" CurrentInvWindow =\"&CurrentInvWindow"
 									}
+								},
+								{
+									"callFunction": "Calc_Hero_Stats",
+									"sid": 939599217131319,
+									"parameters": [
+										"\"equip\""
+									]
 								}
 							],
 							"sid": 584752649485594

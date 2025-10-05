@@ -1263,22 +1263,6 @@
 						{
 							"callFunction": "populateItemSlots",
 							"sid": 973406169518796
-						},
-						{
-							"id": "wait",
-							"objectClass": "System",
-							"sid": 202220430141552,
-							"parameters": {
-								"seconds": "0",
-								"use-timescale": true
-							}
-						},
-						{
-							"callFunction": "Calc_Hero_Stats",
-							"sid": 465650752482746,
-							"parameters": [
-								"\"equip\""
-							]
 						}
 					],
 					"sid": 568863474959448
@@ -8809,6 +8793,16 @@
 													"parameters": {
 														"key": 65
 													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 396086693860817,
+													"parameters": {
+														"first-value": "PlayerAttackCooldown",
+														"comparison": 3,
+														"second-value": "0"
+													}
 												}
 											],
 											"actions": [
@@ -8828,6 +8822,16 @@
 													"sid": 117912771864648,
 													"parameters": {
 														"object": "Btn_Action"
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 752643578849242,
+													"parameters": {
+														"first-value": "PlayerAttackCooldown",
+														"comparison": 3,
+														"second-value": "0"
 													}
 												},
 												{

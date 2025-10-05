@@ -3,6 +3,26 @@
 	"events": [
 		{
 			"eventType": "variable",
+			"name": "ATTACK_COOLDOWN_TIME",
+			"type": "number",
+			"initialValue": "0.3",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 845953573288605
+		},
+		{
+			"eventType": "variable",
+			"name": "PlayerAttackCooldown",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 873672342139818
+		},
+		{
+			"eventType": "variable",
 			"name": "InteractionHintOn",
 			"type": "boolean",
 			"initialValue": "false",
@@ -2452,6 +2472,38 @@
 									"isActiveOnStart": true,
 									"children": [
 										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 339978183111966,
+													"parameters": {
+														"first-value": "PlayerAttackCooldown",
+														"comparison": 4,
+														"second-value": "0"
+													}
+												},
+												{
+													"id": "every-tick",
+													"objectClass": "System",
+													"sid": 426993726882497
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-eventvar",
+													"objectClass": "System",
+													"sid": 629819909361491,
+													"parameters": {
+														"variable": "PlayerAttackCooldown",
+														"value": "dt"
+													}
+												}
+											],
+											"sid": 330278348816563
+										},
+										{
 											"functionName": "StartAttack",
 											"functionDescription": "",
 											"functionCategory": "Battle",
@@ -2487,6 +2539,15 @@
 													"parameters": {
 														"instance-variable": "Attacking",
 														"value": "true"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 291036541233048,
+													"parameters": {
+														"variable": "PlayerAttackCooldown",
+														"value": "ATTACK_COOLDOWN_TIME"
 													}
 												},
 												{
