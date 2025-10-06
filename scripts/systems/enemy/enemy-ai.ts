@@ -335,7 +335,7 @@ export class EnhancedEnemyAIFactory {
     }
 
     // Log behavior change with complete enemy identification
-    console.log(`🎭 [${enemyData.type} mask:${enemyData.maskUid}] ${oldBehavior} → ${enemyData.currentBehavior.name} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, invul:${enemyData.invulnerableTimer.toFixed(3)}s)`);
+    //console.log(`🎭 [${enemyData.type} mask:${enemyData.maskUid}] ${oldBehavior} → ${enemyData.currentBehavior.name} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, invul:${enemyData.invulnerableTimer.toFixed(3)}s)`);
 
     // Special logging for retreat state
     if (enemyData.currentBehavior.name === "retreat") {
@@ -353,7 +353,7 @@ export class EnhancedEnemyAIFactory {
     const player = getPlayerInstance(this.runtime);
 
     // CRITICAL DEBUG: Log initial state when filtering
-    console.log(`🔍 FILTER DEBUG: ${enemyData.type} mask ${enemyData.maskUid} - isHurt:${enemyData.isHurt}, invulTimer:${enemyData.invulnerableTimer.toFixed(2)}, distance:${enemyData.lastPlayerDistance.toFixed(1)}`);
+    //console.log(`🔍 FILTER DEBUG: ${enemyData.type} mask ${enemyData.maskUid} - isHurt:${enemyData.isHurt}, invulTimer:${enemyData.invulnerableTimer.toFixed(2)}, distance:${enemyData.lastPlayerDistance.toFixed(1)}`);
 
     return behaviors.filter(behavior => {
       // ABSOLUTE BLOCK: Never allow retreat unless enemy was actually hurt first
@@ -395,19 +395,19 @@ export class EnhancedEnemyAIFactory {
           );
 
           // Enhanced logging for all behaviors and conditions
-          console.log(`📋 CONDITION: ${behavior.name} - ${condition.type} ${condition.operator} ${condition.value} = ${result} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer.toFixed(2)})`);
+         // console.log(`📋 CONDITION: ${behavior.name} - ${condition.type} ${condition.operator} ${condition.value} = ${result} (dist:${enemyData.lastPlayerDistance.toFixed(1)}, hurt:${enemyData.isHurt}, invul:${enemyData.invulnerableTimer.toFixed(2)})`);
 
           return result;
         });
 
         if (!conditionsResult) {
-          console.log(`❌ CONDITIONS FAILED: ${behavior.name} conditions not met`);
+         // console.log(`❌ CONDITIONS FAILED: ${behavior.name} conditions not met`);
         }
 
         return conditionsResult;
       }
 
-      console.log(`✅ BEHAVIOR AVAILABLE: ${behavior.name} (no conditions)`);
+      //console.log(`✅ BEHAVIOR AVAILABLE: ${behavior.name} (no conditions)`);
       return true;
     });
   }

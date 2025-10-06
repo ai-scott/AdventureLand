@@ -387,7 +387,7 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
           enemyData.currentAnimation = finalAnimationName; // Track the change
 
           const forceMsg = forceAnimation ? " (FORCED)" : "";
-          console.log(`✅ ANIM CHANGE: '${finalAnimationName}' on ${enemyData.type} mask ${enemyData.maskUid}${forceMsg}`);
+          //console.log(`✅ ANIM CHANGE: '${finalAnimationName}' on ${enemyData.type} mask ${enemyData.maskUid}${forceMsg}`);
 
           // Special logging for retreat
           if (finalAnimationName.includes('Retreat')) {
