@@ -453,9 +453,17 @@
 							],
 							"actions": [
 								{
+									"callFunction": "initiateDialogue",
+									"sid": 320681707020396,
+									"parameters": [
+										"CharactersTriggers.ObjectTypeName"
+									]
+								},
+								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
 									"sid": 622560522833656,
+									"disabled": true,
 									"parameters": {
 										"variable": "TextArrayZIndex",
 										"value": "CharactersTriggers.ID"
@@ -478,16 +486,9 @@
 											}
 										}
 									],
-									"actions": [
-										{
-											"callFunction": "initiateDialogue",
-											"sid": 907547859385234,
-											"parameters": [
-												"CharactersTriggers.ObjectTypeName"
-											]
-										}
-									],
-									"sid": 716823360405141
+									"actions": [],
+									"sid": 716823360405141,
+									"disabled": true
 								}
 							]
 						}
@@ -533,6 +534,7 @@
 									"id": "set-eventvar-value",
 									"objectClass": "System",
 									"sid": 763399515053002,
+									"disabled": true,
 									"parameters": {
 										"variable": "TextArrayZIndex",
 										"value": "Trigger_Scene.ID"
@@ -561,6 +563,36 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-key-pressed",
+							"objectClass": "Keyboard",
+							"sid": 744101324752630,
+							"parameters": {
+								"key": 84
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const dialogue = globalThis.AdventureLand?.Dialogue;",
+								"if (dialogue) {",
+								"    const result = dialogue.getDialogue(\"Pete\");",
+								"    console.log(\"=== PETE DIALOGUE ===\");",
+								"    console.log(\"Speaker:\", result.speaker);",
+								"    console.log(\"Text:\", result.text);",
+								"    console.log(\"Responses:\", result.responses);",
+								"}"
+							]
+						}
+					],
+					"sid": 353102858775054
+				},
+				{
 					"functionName": "initiateDialogue",
 					"functionDescription": "initiate dialogue session",
 					"functionCategory": "",
@@ -583,6 +615,7 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 428454802097250,
+							"disabled": true,
 							"parameters": {
 								"variable": "CharacterQuest",
 								"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
@@ -592,6 +625,7 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 909825309565916,
+							"disabled": true,
 							"parameters": {
 								"variable": "CurrentCharacter",
 								"value": "CharacterQuest"
@@ -601,20 +635,39 @@
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 282027671637769,
+							"disabled": true,
 							"parameters": {
 								"variable": "Quest",
 								"value": "CharacterQuest&\"Quest\""
 							}
 						},
 						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"// NEW - Use TypeScript dialogue system",
+								"     const dialogue = globalThis.AdventureLand?.Dialogue;",
+								"     if (dialogue) {",
+								"         const npcId = localVars.trigger; // Get NPC ID from function parameter",
+								"         dialogue.start(npcId, runtime);",
+								"",
+								"         // Bridge automatically sets:",
+								"         // - CurrentCharacter",
+								"         // - CurrentDialogueText",
+								"         // - InDialogue",
+								"         // - OptionsOpen",
+								"     }"
+							]
+						},
+						{
 							"id": "stop-animation",
 							"objectClass": "PlayerSystem",
-							"sid": 151904353198083
+							"sid": 715068470845837
 						},
 						{
 							"id": "set-group-active",
 							"objectClass": "System",
-							"sid": 243680344714072,
+							"sid": 531743356140464,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
@@ -623,7 +676,7 @@
 						{
 							"id": "set-group-active",
 							"objectClass": "System",
-							"sid": 715958807235296,
+							"sid": 186976400272583,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "deactivated"
@@ -637,6 +690,7 @@
 							"conditions": [],
 							"actions": [],
 							"sid": 425702858151215,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "comment",
@@ -676,7 +730,8 @@
 											}
 										}
 									],
-									"sid": 507908450300416
+									"sid": 507908450300416,
+									"disabled": true
 								},
 								{
 									"eventType": "comment",
@@ -725,6 +780,7 @@
 										}
 									],
 									"sid": 691410557784407,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -760,7 +816,8 @@
 													}
 												}
 											],
-											"sid": 377457727015892
+											"sid": 377457727015892,
+											"disabled": true
 										}
 									]
 								},
@@ -792,7 +849,8 @@
 											}
 										}
 									],
-									"sid": 695679321395346
+									"sid": 695679321395346,
+									"disabled": true
 								},
 								{
 									"eventType": "comment",
@@ -831,7 +889,8 @@
 											]
 										}
 									],
-									"sid": 975030360979164
+									"sid": 975030360979164,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -853,18 +912,54 @@
 											"sid": 118152276453037
 										}
 									],
-									"sid": 235514599018614
+									"sid": 235514599018614,
+									"disabled": true
 								}
 							]
 						}
 					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 880551464304732,
+							"parameters": {
+								"first-value": "CurrentDialogueText",
+								"comparison": 1,
+								"second-value": "\"\""
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 519984416889134,
+							"parameters": {
+								"variable": "InDialogue"
+							}
+						},
+						{
+							"id": "trigger-once-while-true",
+							"objectClass": "System",
+							"sid": 236200094760748
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "displayDialogue",
+							"sid": 848921240773985
+						}
+					],
+					"sid": 440665687207897
 				}
 			],
 			"sid": 388643027528216
 		},
 		{
 			"eventType": "group",
-			"disabled": false,
+			"disabled": true,
 			"title": "Process Current Dialogue Line",
 			"description": "",
 			"isActiveOnStart": true,
@@ -1103,34 +1198,23 @@
 											"type": "script",
 											"language": "typescript",
 											"script": [
-												"const dialogueResult = String(runtime.globalVars.DialogueResult);",
-												"const optionsArray = dialogueResult.split(\":\");",
+												"// When Enter/Space pressed (with OptionsOpen = true):",
+												"const dialogue = globalThis.AdventureLand?.Dialogue;",
+												"if (dialogue) {",
+												"    // Use OptionSelection to determine which response (0 or 1)",
+												"    const selectedIndex = runtime.globalVars.OptionSelection;",
+												"    dialogue.selectResponse(selectedIndex, runtime);",
 												"",
-												"const selected = runtime.globalVars.OptionSelection",
-												"  ? parseInt(optionsArray[1] ?? \"0\", 10)",
-												"  : parseInt(optionsArray[0] ?? \"0\", 10);",
+												"    // Reset selection to first option for next time",
+												"    runtime.globalVars.OptionSelection = 0;",
 												"",
-												"runtime.globalVars.CurrentDialogueLine = selected;",
-												""
+												"    // Bridge automatically:",
+												"    // ✅ Executes response actions (quest updates, give items, etc.)",
+												"    // ✅ Updates CurrentDialogueText if dialogue continues",
+												"    // ✅ Sets OptionsOpen correctly",
+												"    // ✅ Sets InDialogue = false if dialogue ends",
+												"}"
 											]
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 510583954217125,
-											"parameters": {
-												"variable": "OptionSelection",
-												"value": "0"
-											}
-										},
-										{
-											"id": "set-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 455251956861325,
-											"parameters": {
-												"variable": "OptionsOpen",
-												"value": "false"
-											}
 										},
 										{
 											"callFunction": "processDialogueLine",
@@ -2704,6 +2788,7 @@
 									"id": "add-to-eventvar",
 									"objectClass": "System",
 									"sid": 435583312457444,
+									"disabled": true,
 									"parameters": {
 										"variable": "CurrentDialogueLine",
 										"value": "1"
@@ -2712,8 +2797,19 @@
 								{
 									"callFunction": "processDialogueLine",
 									"sid": 776101437446710,
+									"disabled": true,
 									"parameters": [
 										"CurrentDialogueLine"
+									]
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const dialogue = globalThis.AdventureLand?.Dialogue;",
+										"if (dialogue) {",
+										"    dialogue.advance(runtime);",
+										"}"
 									]
 								}
 							],
@@ -2885,7 +2981,8 @@
 											}
 										}
 									],
-									"sid": 850631228031391
+									"sid": 850631228031391,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -2913,7 +3010,8 @@
 											}
 										}
 									],
-									"sid": 968511988864382
+									"sid": 968511988864382,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -2941,6 +3039,56 @@
 									"sid": 949996674660156
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 645747415443275,
+									"parameters": {
+										"variable": "OptionsOpen"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const dialogue = globalThis.AdventureLand?.Dialogue;",
+										"   if (dialogue) {",
+										"       // Get response text from bridge (WITHOUT icons)",
+										"       const option1 = dialogue.getResponseText(0);",
+										"       const option2 = dialogue.getResponseText(1);",
+										"",
+										"       // Find your text objects",
+										"       const textOpt1 = runtime.objects.obj_TextOption1.getFirstInstance();",
+										"       const textOpt2 = runtime.objects.obj_TextOption2.getFirstInstance();",
+										"",
+										"       // Add selection icons based on OptionSelection variable",
+										"       // (OptionSelection = 0 means option1 is selected, 1 means option2)",
+										"       const selectedIcon = \"[icon=Arrow] \";",
+										"       const unselectedIcon = \"[icon=Empty] \";",
+										"",
+										"       if (textOpt1) {",
+										"           const icon1 = (runtime.globalVars.OptionSelection === 0) ? selectedIcon : unselectedIcon;",
+										"           textOpt1.text = icon1 + option1;",
+										"           textOpt1.isVisible = (option1.length > 0);",
+										"       }",
+										"",
+										"       if (textOpt2) {",
+										"           const icon2 = (runtime.globalVars.OptionSelection === 1) ? selectedIcon : unselectedIcon;",
+										"           textOpt2.text = icon2 + option2;",
+										"           textOpt2.isVisible = (option2.length > 0);",
+										"       }",
+										"   }"
+									]
+								}
+							],
+							"sid": 665196297462836,
+							"disabled": true
 						}
 					],
 					"sid": 333062859736687

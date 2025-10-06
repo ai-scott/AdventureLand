@@ -6695,6 +6695,42 @@
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 836882077822044,
+													"parameters": {
+														"variable": "OptionsOpen"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const dialogue = globalThis.AdventureLand?.Dialogue;",
+														"if (dialogue) {",
+														"   dialogue.advance(runtime);",
+														"}",
+														"",
+														"const dialogue = globalThis.AdventureLand?.Dialogue;",
+														"if (dialogue) {",
+														"    const selectedIndex = runtime.globalVars.OptionSelection;",
+														"    dialogue.selectResponse(selectedIndex, runtime);",
+														"    ",
+														"    // Reset selection to first option for next time",
+														"    runtime.globalVars.OptionSelection = 0;",
+														"}"
+													]
+												}
+											],
+											"sid": 504377882282789
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
 													"id": "is-running-typewriter-text",
 													"objectClass": "obj_TextBlock",
 													"sid": 876878091489966
