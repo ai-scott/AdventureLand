@@ -6198,9 +6198,9 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLandDebug.testDisableEnemyAI();"
+								"globalThis.AdventureLandDebug.testDisableEnemyAI();"
 							]
 						}
 					],
@@ -6221,9 +6221,9 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLandDebug.testEnableEnemyAI();"
+								"globalThis.AdventureLandDebug.testEnableEnemyAI();"
 							]
 						}
 					],
@@ -6246,8 +6246,8 @@
 							"type": "script",
 							"language": "javascript",
 							"script": [
-								"if ((globalThis).AdventureLand && (globalThis).AdventureLand.Debug) {",
-								"    (globalThis).AdventureLand.Debug.logSystemStatus();",
+								"if (globalThis.AdventureLand && globalThis.AdventureLand.Debug) {",
+								"    globalThis.AdventureLand.Debug.logSystemStatus();",
 								"}"
 							]
 						}
@@ -6269,9 +6269,9 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLand.Debug.testAllSystems();"
+								"globalThis.AdventureLand.Debug.testAllSystems();"
 							]
 						}
 					],
@@ -6292,9 +6292,9 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLandDebug.testDialogueReader()"
+								"globalThis.AdventureLandDebug.testDialogueReader()"
 							]
 						}
 					],
@@ -6315,9 +6315,9 @@
 					"actions": [
 						{
 							"type": "script",
-							"language": "typescript",
+							"language": "javascript",
 							"script": [
-								"(globalThis as any).AdventureLandDebug.testPennyDialogue()"
+								"globalThis.AdventureLandDebug.testPennyDialogue()"
 							]
 						}
 					],
@@ -6368,40 +6368,6 @@
 						}
 					],
 					"sid": 196662075782166
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-key-pressed",
-							"objectClass": "Keyboard",
-							"sid": 903652099678937,
-							"parameters": {
-								"key": 84
-							}
-						}
-					],
-					"actions": [
-						{
-							"type": "script",
-							"language": "typescript",
-							"script": [
-								"// Show current enemies",
-								"               (globalThis as any).listActiveEnemies();",
-								"               ",
-								"               // Test cleanup without transition",
-								"               console.log(\"Testing cleanup...\");",
-								"               (globalThis as any).cleanupEnemies();",
-								"               ",
-								"               // Check result",
-								"               console.log(\"After cleanup:\");",
-								"               (globalThis as any).listActiveEnemies();",
-								"               ",
-								"               console.log(\"✅ Cleanup test complete - no transition triggered\");"
-							]
-						}
-					],
-					"sid": 889817627042434
 				},
 				{
 					"eventType": "block",
@@ -6695,42 +6661,6 @@
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 836882077822044,
-													"parameters": {
-														"variable": "OptionsOpen"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"const dialogue = globalThis.AdventureLand?.Dialogue;",
-														"if (dialogue) {",
-														"   dialogue.advance(runtime);",
-														"}",
-														"",
-														"const dialogue = globalThis.AdventureLand?.Dialogue;",
-														"if (dialogue) {",
-														"    const selectedIndex = runtime.globalVars.OptionSelection;",
-														"    dialogue.selectResponse(selectedIndex, runtime);",
-														"    ",
-														"    // Reset selection to first option for next time",
-														"    runtime.globalVars.OptionSelection = 0;",
-														"}"
-													]
-												}
-											],
-											"sid": 504377882282789
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
 													"id": "is-running-typewriter-text",
 													"objectClass": "obj_TextBlock",
 													"sid": 876878091489966
@@ -6744,6 +6674,36 @@
 												}
 											],
 											"sid": 431375157153390
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 672802893165662,
+													"parameters": {
+														"variable": "OptionsOpen"
+													}
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const dialogue = globalThis.AdventureLand?.Dialogue;",
+														"if (dialogue) {",
+														"    const selectedIndex = runtime.globalVars.OptionSelection;",
+														"    dialogue.selectResponse(selectedIndex, runtime);",
+														"    ",
+														"    // Reset selection to first option for next time",
+														"    runtime.globalVars.OptionSelection = 0;",
+														"}"
+													]
+												}
+											],
+											"sid": 470099928802479
 										},
 										{
 											"eventType": "comment",
@@ -6773,6 +6733,39 @@
 										},
 										{
 											"eventType": "block",
+											"conditions": [],
+											"actions": [],
+											"sid": 845022319952361
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 742520903871257,
+													"parameters": {
+														"variable": "OptionsOpen"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const dialogue = globalThis.AdventureLand?.Dialogue;",
+														"if (dialogue) {",
+														"   dialogue.advance(runtime);",
+														"}"
+													]
+												}
+											],
+											"sid": 916449454409973
+										},
+										{
+											"eventType": "block",
 											"conditions": [
 												{
 													"id": "else",
@@ -6789,7 +6782,8 @@
 													]
 												}
 											],
-											"sid": 712149555951124
+											"sid": 712149555951124,
+											"disabled": true
 										}
 									]
 								}

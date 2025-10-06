@@ -449,6 +449,15 @@
 									"parameters": {
 										"object": "Trigger_Player"
 									}
+								},
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 453090238418131,
+									"parameters": {
+										"variable": "InDialogue"
+									},
+									"isInverted": true
 								}
 							],
 							"actions": [
@@ -470,27 +479,7 @@
 									}
 								}
 							],
-							"sid": 184412931045519,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 950507576607263,
-											"parameters": {
-												"variable": "TextArrayZIndex",
-												"comparison": 1,
-												"value": "-1"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 716823360405141,
-									"disabled": true
-								}
-							]
+							"sid": 184412931045519
 						}
 					]
 				},
@@ -527,6 +516,15 @@
 									"parameters": {
 										"object": "Trigger_Player"
 									}
+								},
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 684238821783032,
+									"parameters": {
+										"variable": "InDialogue"
+									},
+									"isInverted": true
 								}
 							],
 							"actions": [

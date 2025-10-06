@@ -249,9 +249,8 @@ export class DialogueBridge {
 
     // Check if dialogue should continue or end
     if (response.leads_to && response.leads_to !== "End") {
-      // Navigate to next dialogue node
-      this.navigateToNode(response.leads_to, runtime);
-      return true; // Dialogue continues
+      // Navigate to next dialogue node (it will handle ending if needed)
+      return this.navigateToNode(response.leads_to, runtime);
     } else {
       // End dialogue
       this.endDialogue(runtime);
