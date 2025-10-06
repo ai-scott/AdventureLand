@@ -1,0 +1,46 @@
+// ===================================================================
+// shopkeepersarah-dialogue.ts
+// Auto-generated from World_text.json
+// NPC: Shopkeeper_Sarah, Quest: unknown_quest
+// ===================================================================
+
+import { NPCDialogue } from './dialogue-types.js';
+
+export const ShopkeeperSarahDialogue: NPCDialogue = {
+  npcId: "ShopkeeperSarah",
+  name: "Shopkeeper_Sarah",
+  defaultNode: "node_000",
+  worldId: "World00", // TODO: Update this
+  questRelations: ["unknown_quest"],
+
+  nodes: [
+    {
+      id: "node_000",
+      speaker: "Shopkeeper_Sarah",
+      text: "Welcome to the General Store. We have the best clothes in town.",
+      priority: 100,
+      conditions: [
+            {
+                  "type": "quest_status",
+                  "questId": "unknown_quest",
+                  "status": "Not_Started"
+            }
+      ],
+      autoAdvance: "node_001"
+    },
+    {
+      id: "node_001",
+      speaker: "Shopkeeper_Sarah",
+      text: " Some may even help with those weird green goos.",
+      priority: 99,
+      conditions: [
+            {
+                  "type": "quest_status",
+                  "questId": "unknown_quest",
+                  "status": "Complete"
+            }
+      ],
+      endsDialogue: true
+    }
+  ]
+};

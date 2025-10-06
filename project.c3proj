@@ -903,6 +903,138 @@
 					"items": [],
 					"subfolders": [],
 					"name": "archive"
+				},
+				{
+					"items": [],
+					"subfolders": [
+						{
+							"items": [
+								{
+									"name": "quest-dialogue-system.ts",
+									"type": "application/typescript",
+									"sid": 142810749665374,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "pete-dialogue-example.ts",
+									"type": "application/typescript",
+									"sid": 379207963564632,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "dialogue-reader.ts",
+									"type": "application/typescript",
+									"sid": 129496601025109,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "dialogue-types.ts",
+									"type": "application/typescript",
+									"sid": 469042323149093,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "index.ts",
+									"type": "application/typescript",
+									"sid": 779540932522208,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "convert-json-to-typescript.js",
+									"type": "application/javascript",
+									"sid": 682011095107601,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "windmillnick-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 749781933888101,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "dialogue-bridge.ts",
+									"type": "application/typescript",
+									"sid": 597272183163687,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "shopkeepersarah-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 674474740152658,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "shopkeepersophie-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 366478155665469,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "shopkeepersally-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 711088384900658,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "rosie-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 146259532533238,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "penny-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 316629562107162,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "al-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 250700522544762,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "multi-quest-example.ts",
+									"type": "application/typescript",
+									"sid": 135355714020875,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "quest-dialogue"
+						}
+					],
+					"name": "external"
 				}
 			],
 			"autoReloadOnPreview": true

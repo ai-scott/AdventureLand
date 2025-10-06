@@ -18,6 +18,19 @@ import PotionSystem from "./systems/potions/potion-system.js";
 // HEALTH SYSTEM IMPORT
 import HealthSystem from "./systems/health/health-system.js";
 
+// QUEST & DIALOGUE SYSTEM IMPORT
+import * as QuestDialogue from "./external/quest-dialogue/index.js";
+import { PeteDialogue } from "./external/quest-dialogue/pete-dialogue-example.js";
+
+// Auto-generated dialogue files (from World00_text.json)
+import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
+import { RosieDialogue } from "./external/quest-dialogue/rosie-dialogue.js";
+import { WindmillNickDialogue } from "./external/quest-dialogue/windmillnick-dialogue.js";
+import { ShopkeeperSallyDialogue } from "./external/quest-dialogue/shopkeepersally-dialogue.js";
+import { ShopkeeperSarahDialogue } from "./external/quest-dialogue/shopkeepersarah-dialogue.js";
+import { ShopkeeperSophieDialogue } from "./external/quest-dialogue/shopkeepersophie-dialogue.js";
+import { ALDialogue } from "./external/quest-dialogue/al-dialogue.js";
+
 // BATTLE DEBUG UTILITIES
 //import "./utils/battle-debug.js";
 
@@ -219,10 +232,15 @@ runOnStartup(async runtime => {
   (globalThis as any).hurtEnemy = EnemyAI.hurtEnemy;
   (globalThis as any).destroyEnemy = EnemyAI.destroyEnemy;
 
-  // Add missing processJSONObject function
-  (globalThis as any).processJSONObject = function (worldId: string, runtime: any) {
+  // Add processJSONObject function - delegates to Dialogue system
+  (globalThis as any).processJSONObject = async function (worldId: string, runtime: any) {
     console.log(`📄 processJSONObject called for world ${worldId}`);
-    return true;
+    const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+    if (dialogue) {
+      return await dialogue.processJSON(worldId, runtime);
+    }
+    console.warn("⚠️ Dialogue system not initialized yet");
+    return false;
   };
 
   // Legacy global functions for items (can be removed once event sheets are updated)
@@ -334,6 +352,80 @@ runOnStartup(async runtime => {
       console.log("✅ Health System v2 initialized!");
     } catch (error) {
       console.error("❌ Failed to initialize health system:", error);
+    }
+
+    // Initialize Quest & Dialogue System
+    try {
+      QuestDialogue.AdventureLandIntegration.initialize();
+
+      // Load Pete's example dialogue (World01)
+      QuestDialogue.DialogueManager.loadNPCDialogue(PeteDialogue);
+      console.log("✅ Pete's dialogue loaded!");
+
+      // Load auto-generated World00 dialogues
+      QuestDialogue.DialogueManager.loadNPCDialogue(PennyDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(RosieDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(WindmillNickDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSallyDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSarahDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSophieDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(ALDialogue);
+      console.log("✅ World00 dialogues loaded (7 NPCs)!");
+
+      // Set up dialogue system namespace
+      (globalThis as any).AdventureLand.Dialogue = {
+        // Bridge functions - USE THESE in event sheets!
+        start: (npcId: string, runtime: any) => QuestDialogue.DialogueBridge.startDialogue(npcId, runtime),
+        advance: (runtime: any) => QuestDialogue.DialogueBridge.advanceDialogue(runtime),
+        getResponseText: (index: number) => QuestDialogue.DialogueBridge.getResponseText(index),
+        selectResponse: (index: number, runtime: any) => QuestDialogue.DialogueBridge.selectResponse(index, runtime),
+        endDialogue: (runtime: any) => QuestDialogue.DialogueBridge.endDialogue(runtime),
+
+        // Low-level functions (for advanced use)
+        processJSON: async (worldId: string, runtime: any) => {
+          const nodes = await QuestDialogue.DialogueReader.loadWorldDialogue(worldId);
+          console.log(`✅ Loaded ${nodes.length} dialogue nodes for world ${worldId}`);
+          return nodes.length > 0;
+        },
+        initNPC: (npcId: string) =>
+          QuestDialogue.AdventureLandIntegration.initializeEnhancedDialogue(npcId),
+        getDialogue: (npcId: string) =>
+          QuestDialogue.AdventureLandIntegration.getEnhancedDialogue(npcId),
+
+        // Test helper - get dialogue with custom player state
+        testDialogue: (npcId: string, questStatus?: string) => {
+          const playerState = QuestDialogue.AdventureLandIntegration['getCurrentPlayerState']();
+
+          // Override quest status for testing
+          if (questStatus === 'Active') {
+            playerState.activeQuests.set('pete_herbs', {
+              id: 'pete_herbs',
+              status: 'Active',
+              currentStep: 0,
+              progress: {},
+              priority: 1
+            });
+          } else if (questStatus === 'Completed') {
+            playerState.completedQuests.add('pete_herbs');
+          }
+
+          const node = QuestDialogue.DialogueManager.getDialogueForNPC(npcId, playerState);
+          if (node) {
+            console.log(`\n🗣️ ${node.speaker}: "${node.text}"\n`);
+            if (node.responses && node.responses.length > 0) {
+              console.log("💬 Responses:");
+              node.responses.forEach((r, i) => console.log(`  ${i + 1}. ${r.text}`));
+            }
+            return node;
+          }
+          return null;
+        }
+      };
+
+      console.log("✅ Quest & Dialogue system initialized!");
+      console.log("💡 Use in event sheets: AdventureLand.Dialogue.start('Pete', runtime)");
+    } catch (error) {
+      console.error("❌ Failed to initialize quest/dialogue system:", error);
     }
   });
 
