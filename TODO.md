@@ -177,6 +177,36 @@ Modernize AdventureLand's TypeScript integration based on latest Construct 3 bes
 - [ ] Refactor all imports to use bare specifiers
 - [ ] Update documentation
 
+## Quest Dialogue System (In Progress)
+
+### COMPLETED: Dialogue System Foundation (2025-10-08)
+- [x] Dialogue system for nodes with endsDialogue: true working correctly (2025-10-08)
+- [x] Welcome dialogue created and functional (2025-10-08)
+- [x] Quest status saving to dictionary operational (2025-10-08)
+- [x] DialogueResult race condition fixed with delayed cleanup (2025-10-08)
+
+### IN PROGRESS: Dialogue System Polish
+- [~] Clean up heart/health console logs in event sheets
+  - Location: Health adjustment logic in event sheets
+  - Issue: Excessive console.log statements during gameplay
+  - Impact: Console noise during testing/debugging
+
+### OUTSTANDING: Dialogue System Integration
+- [ ] Make enemies stop/pause when InDialogue = true
+  - Enemies should pause all AI behavior during dialogue
+  - Resume normal behavior when dialogue ends
+  - Test with multiple enemy types (Crab, Ooze, etc.)
+
+- [ ] Quest status persistence to local storage needs testing
+  - SaveGameData call added to endDialogue
+  - Verify quest status survives game reload
+  - Test multiple quest states (not_started, in_progress, completed)
+
+- [ ] Fix interaction hint stuck in "Enter" state at game start
+  - Issue: Hint doesn't clear when moving away from door trigger
+  - Expected: Hint should only show when near interactable objects
+  - Test: Start game, move away from door, verify hint clears
+
 ## Notes
 - Each phase builds on the previous one
 - Maintain backwards compatibility throughout migration

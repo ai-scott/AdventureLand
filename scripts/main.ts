@@ -20,16 +20,24 @@ import HealthSystem from "./systems/health/health-system.js";
 
 // QUEST & DIALOGUE SYSTEM IMPORT
 import * as QuestDialogue from "./external/quest-dialogue/index.js";
-import { PeteDialogue } from "./external/quest-dialogue/pete-dialogue-example.js";
 
-// Auto-generated dialogue files (from World00_text.json)
+// World00 dialogue files (Leafwood Village)
+import { WelcomeDialogue } from "./external/quest-dialogue/welcome-dialogue.js";
 import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
 import { RosieDialogue } from "./external/quest-dialogue/rosie-dialogue.js";
 import { WindmillNickDialogue } from "./external/quest-dialogue/windmillnick-dialogue.js";
-import { ShopkeeperSallyDialogue } from "./external/quest-dialogue/shopkeepersally-dialogue.js";
-import { ShopkeeperSarahDialogue } from "./external/quest-dialogue/shopkeepersarah-dialogue.js";
-import { ShopkeeperSophieDialogue } from "./external/quest-dialogue/shopkeepersophie-dialogue.js";
-import { ALDialogue } from "./external/quest-dialogue/al-dialogue.js";
+import { BlacksmithDialogue } from "./external/quest-dialogue/blacksmith-dialogue.js";
+import { GeneralStoreDialogue } from "./external/quest-dialogue/generalstore-dialogue.js";
+import { AdventureShopDialogue } from "./external/quest-dialogue/adventureshop-dialogue.js";
+import { TreeSignDialogue } from "./external/quest-dialogue/treesign-dialogue.js";
+
+// World01 dialogue files (Leafwood Forest)
+import { PeteDialogue } from "./external/quest-dialogue/pete-dialogue.js";
+import { ForestSignDialogue } from "./external/quest-dialogue/forestsign-dialogue.js";
+
+// World10 dialogue files (The Bottomless Lake)
+import { SeaMonsterKeyDialogue } from "./external/quest-dialogue/seamonsterkey-dialogue.js";
+import { LakeSignDialogue } from "./external/quest-dialogue/lakesign-dialogue.js";
 
 // BATTLE DEBUG UTILITIES
 //import "./utils/battle-debug.js";
@@ -358,24 +366,31 @@ runOnStartup(async runtime => {
     try {
       QuestDialogue.AdventureLandIntegration.initialize();
 
-      // Load Pete's example dialogue (World01)
-      QuestDialogue.DialogueManager.loadNPCDialogue(PeteDialogue);
-      console.log("✅ Pete's dialogue loaded!");
-
-      // Load auto-generated World00 dialogues
+      // Load World00 dialogues (Leafwood Village)
+      QuestDialogue.DialogueManager.loadNPCDialogue(WelcomeDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(PennyDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(RosieDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(WindmillNickDialogue);
-      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSallyDialogue);
-      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSarahDialogue);
-      QuestDialogue.DialogueManager.loadNPCDialogue(ShopkeeperSophieDialogue);
-      QuestDialogue.DialogueManager.loadNPCDialogue(ALDialogue);
-      console.log("✅ World00 dialogues loaded (7 NPCs)!");
+      QuestDialogue.DialogueManager.loadNPCDialogue(BlacksmithDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(GeneralStoreDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(AdventureShopDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(TreeSignDialogue);
+      console.log("✅ World00 dialogues loaded (8 NPCs)!");
+
+      // Load World01 dialogues (Leafwood Forest)
+      QuestDialogue.DialogueManager.loadNPCDialogue(PeteDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(ForestSignDialogue);
+      console.log("✅ World01 dialogues loaded (2 NPCs)!");
+
+      // Load World10 dialogues (The Bottomless Lake)
+      QuestDialogue.DialogueManager.loadNPCDialogue(SeaMonsterKeyDialogue);
+      QuestDialogue.DialogueManager.loadNPCDialogue(LakeSignDialogue);
+      console.log("✅ World10 dialogues loaded (2 NPCs)!");
 
       // Set up dialogue system namespace
       (globalThis as any).AdventureLand.Dialogue = {
         // Bridge functions - USE THESE in event sheets!
-        start: (npcId: string, runtime: any) => QuestDialogue.DialogueBridge.startDialogue(npcId, runtime),
+        start: (npcId: string, runtime: any, triggerUID?: number) => QuestDialogue.DialogueBridge.startDialogue(npcId, runtime, triggerUID),
         advance: (runtime: any) => QuestDialogue.DialogueBridge.advanceDialogue(runtime),
         getResponseText: (index: number) => QuestDialogue.DialogueBridge.getResponseText(index),
         selectResponse: (index: number, runtime: any) => QuestDialogue.DialogueBridge.selectResponse(index, runtime),
