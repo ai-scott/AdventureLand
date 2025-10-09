@@ -24,56 +24,6 @@
 					}
 				},
 				{
-					"id": "map-function",
-					"objectClass": "Functions",
-					"sid": 198695848498209,
-					"parameters": {
-						"name": "\"DialogueFunctions\"",
-						"string": "\"DeployRosie\"",
-						"function": "AddRosieInScene"
-					}
-				},
-				{
-					"id": "map-function",
-					"objectClass": "Functions",
-					"sid": 842051886354173,
-					"parameters": {
-						"name": "\"DialogueFunctions\"",
-						"string": "\"PennyOpensHome\"",
-						"function": "PennyOpensHome"
-					}
-				},
-				{
-					"id": "map-function",
-					"objectClass": "Functions",
-					"sid": 967496489592275,
-					"parameters": {
-						"name": "\"DialogueFunctions\"",
-						"string": "\"RosiesHome\"",
-						"function": "RosiesHome"
-					}
-				},
-				{
-					"id": "map-function",
-					"objectClass": "Functions",
-					"sid": 116102845844237,
-					"parameters": {
-						"name": "\"DialogueFunctions\"",
-						"string": "\"CatchRosie\"",
-						"function": "CatchRosie"
-					}
-				},
-				{
-					"id": "map-function",
-					"objectClass": "Functions",
-					"sid": 322124417578056,
-					"parameters": {
-						"name": "\"DialogueFunctions\"",
-						"string": "\"SeaMonsterKeyFound\"",
-						"function": "FindSeaMonsterKey"
-					}
-				},
-				{
 					"id": "set-boolean-eventvar",
 					"objectClass": "System",
 					"sid": 429671082464100,
@@ -265,14 +215,13 @@
 					"eventType": "block",
 					"conditions": [
 						{
-							"id": "compare-value",
+							"id": "has-key",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 284578178284580,
+							"sid": 447450659343149,
 							"parameters": {
-								"key": "\"WelcomeQuest\"",
-								"comparison": 0,
-								"value": "\"Not_Started:000\""
-							}
+								"key": "\"welcome_quest\""
+							},
+							"isInverted": true
 						}
 					],
 					"actions": [
@@ -280,7 +229,8 @@
 							"callFunction": "initiateDialogue",
 							"sid": 277140473801482,
 							"parameters": [
-								"\"Welcome\""
+								"\"Welcome\"",
+								"0"
 							]
 						}
 					],
@@ -292,11 +242,11 @@
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 852305470332105,
+							"sid": 427077761386297,
 							"parameters": {
-								"key": "\"PennyQuest\"",
+								"key": "\"rescue_cat_quest\"",
 								"comparison": 0,
-								"value": "\"Not_Started:000\""
+								"value": "\"Not_Started\""
 							}
 						}
 					],
@@ -334,11 +284,11 @@
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 985611792651485,
+							"sid": 186535547217932,
 							"parameters": {
-								"key": "\"PennyQuest\"",
+								"key": "\"rescue_cat_quest\"",
 								"comparison": 0,
-								"value": "\"Start_Cat_Quest:010\" "
+								"value": "\"Start_Cat_Quest\" "
 							}
 						}
 					],
@@ -388,21 +338,21 @@
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 946963351636853,
+							"sid": 450475231111308,
 							"parameters": {
-								"key": "\"PennyQuest\"",
+								"key": "\"rescue_cat_quest\"",
 								"comparison": 0,
-								"value": "\"End_Cat_Quest:015\""
+								"value": "\"End_Cat_Quest\""
 							}
 						},
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 671980269844201,
+							"sid": 359874247907556,
 							"parameters": {
-								"key": "\"PennyQuest\"",
+								"key": "\"rescue_cat_quest\"",
 								"comparison": 0,
-								"value": "\"After_Cat_Quest:017\""
+								"value": "\"After_Cat_Quest\""
 							}
 						}
 					],
@@ -471,12 +421,12 @@
 				{
 					"id": "create-object",
 					"objectClass": "System",
-					"sid": 264373217478394,
+					"sid": 705682115257686,
 					"parameters": {
 						"object-to-create": "Trigger_Scene",
 						"layer": "\"Objects\"",
-						"x": "710",
-						"y": "474",
+						"x": "656",
+						"y": "420",
 						"create-hierarchy": false,
 						"template-name": "\"\""
 					}

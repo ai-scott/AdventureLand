@@ -974,30 +974,6 @@
 									}
 								},
 								{
-									"name": "shopkeepersarah-dialogue.ts",
-									"type": "application/typescript",
-									"sid": 674474740152658,
-									"script-info": {
-										"purpose": "none"
-									}
-								},
-								{
-									"name": "shopkeepersophie-dialogue.ts",
-									"type": "application/typescript",
-									"sid": 366478155665469,
-									"script-info": {
-										"purpose": "none"
-									}
-								},
-								{
-									"name": "shopkeepersally-dialogue.ts",
-									"type": "application/typescript",
-									"sid": 711088384900658,
-									"script-info": {
-										"purpose": "none"
-									}
-								},
-								{
 									"name": "rosie-dialogue.ts",
 									"type": "application/typescript",
 									"sid": 146259532533238,
@@ -1014,17 +990,81 @@
 									}
 								},
 								{
-									"name": "al-dialogue.ts",
+									"name": "multi-quest-example.ts",
 									"type": "application/typescript",
-									"sid": 250700522544762,
+									"sid": 135355714020875,
 									"script-info": {
 										"purpose": "none"
 									}
 								},
 								{
-									"name": "multi-quest-example.ts",
+									"name": "welcome-dialogue.ts",
 									"type": "application/typescript",
-									"sid": 135355714020875,
+									"sid": 288895092898682,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "seamonsterkey-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 826629128309835,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "treesign-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 596993241760629,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "blacksmith-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 285663244292268,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "adventureshop-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 343409170124662,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "generalstore-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 451994572321627,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "lakesign-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 683920787415162,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "forestsign-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 924502380178655,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "pete-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 574907748613707,
 									"script-info": {
 										"purpose": "none"
 									}

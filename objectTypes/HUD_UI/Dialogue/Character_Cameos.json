@@ -224,6 +224,42 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
+						"imageSpriteId": 6147691,
+						"collisionPoly": {
+							"points": [
+								0.05476190476190476,
+								0.07692307692307693,
+								0.10476190476190476,
+								0.09230769230769231,
+								0.1261904761904762,
+								0.16153846153846155,
+								0.1380952380952381,
+								0.3384615384615385,
+								0.1261904761904762,
+								0.4153846153846154,
+								0.047619047619047616,
+								0.47692307692307695,
+								0.023809523809523808,
+								0.4153846153846154,
+								0.014285714285714285,
+								0.36153846153846153,
+								0.02619047619047619,
+								0.16153846153846155
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "Pete"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
 						"imageSpriteId": 8136069,
 						"collisionPoly": {
 							"points": [

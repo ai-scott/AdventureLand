@@ -344,6 +344,11 @@
 							}
 						},
 						{
+							"id": "stop-animation",
+							"objectClass": "Character_Cameos",
+							"sid": 425012721881658
+						},
+						{
 							"id": "create-object-by-name",
 							"objectClass": "System",
 							"sid": 108806171204342,
@@ -7086,28 +7091,19 @@
 								"",
 								"// Check all ItemSlots",
 								"const slots = runtime.objects.ItemSlot.getAllInstances();",
-								"console.log(\"Total ItemSlots:\", slots.length);",
 								"",
 								"slots.forEach(slot => {",
 								"    if (slot.instVars.InventoryState === \"Weapon\") {",
-								"        console.log(\"WEAPON SLOT FOUND:\");",
-								"        console.log(\"  InventoryState:\", slot.instVars.InventoryState);",
-								"        console.log(\"  ItemID:\", slot.instVars.ItemID);",
-								"        console.log(\"  ItemName:\", slot.instVars.ItemName);",
-								"        console.log(\"  InventoryWindow:\", slot.instVars.InventoryWindow);",
 								"        ",
 								"        // Try getting strength with the ItemID",
 								"        if (slot.instVars.ItemID > 0) {",
 								"            const strength = globalThis.AdventureLand.Items.getItemStrength(slot.instVars.ItemID);",
-								"            console.log(\"  Strength from ItemID:\", strength);",
 								"        }",
 								"    }",
 								"});",
 								"",
 								"// Check if GetItemStrength works",
-								"const testStrength = globalThis.AdventureLand.Items.getItemStrength(22); // Axe ID",
-								"console.log(\"Test: Axe (ID 22) strength =\", testStrength);",
-								"console.log(\"Current Attack global:\", runtime.globalVars.Attack);"
+								"const testStrength = globalThis.AdventureLand.Items.getItemStrength(22); // Axe ID"
 							]
 						}
 					],

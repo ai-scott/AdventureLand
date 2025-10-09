@@ -396,9 +396,9 @@
 				},
 				{
 					"type": "script",
-					"language": "typescript",
+					"language": "javascript",
 					"script": [
-						"(globalThis as any).processJSONObject(runtime.globalVars.CurrentWorld, runtime)"
+						"globalThis.processJSONObject(runtime.globalVars.CurrentWorld, runtime)"
 					]
 				}
 			],
@@ -463,9 +463,10 @@
 							"actions": [
 								{
 									"callFunction": "initiateDialogue",
-									"sid": 320681707020396,
+									"sid": 416291806116526,
 									"parameters": [
-										"CharactersTriggers.ObjectTypeName"
+										"CharactersTriggers.ObjectTypeName",
+										"CharactersTriggers.UID"
 									]
 								},
 								{
@@ -540,9 +541,10 @@
 								},
 								{
 									"callFunction": "initiateDialogue",
-									"sid": 446466938593500,
+									"sid": 374583155815738,
 									"parameters": [
-										"Trigger_Scene.SceneName"
+										"Trigger_Scene.SceneName",
+										"Trigger_Scene.UID"
 									]
 								}
 							],
@@ -604,41 +606,18 @@
 							"initialValue": "",
 							"comment": "The hit box that triggered the dialogue",
 							"sid": 123001007928908
+						},
+						{
+							"name": "triggerUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 205215434665677
 						}
 					],
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 428454802097250,
-							"disabled": true,
-							"parameters": {
-								"variable": "CharacterQuest",
-								"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 909825309565916,
-							"disabled": true,
-							"parameters": {
-								"variable": "CurrentCharacter",
-								"value": "CharacterQuest"
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 282027671637769,
-							"disabled": true,
-							"parameters": {
-								"variable": "Quest",
-								"value": "CharacterQuest&\"Quest\""
-							}
-						},
 						{
 							"type": "script",
 							"language": "javascript",
@@ -647,7 +626,7 @@
 								"     const dialogue = globalThis.AdventureLand?.Dialogue;",
 								"     if (dialogue) {",
 								"         const npcId = localVars.trigger; // Get NPC ID from function parameter",
-								"         dialogue.start(npcId, runtime);",
+								"         dialogue.start(npcId, runtime, localVars.triggerUID);",
 								"",
 								"         // Bridge automatically sets:",
 								"         // - CurrentCharacter",
@@ -681,241 +660,7 @@
 							}
 						}
 					],
-					"sid": 864020133847971,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [],
-							"actions": [],
-							"sid": 425702858151215,
-							"disabled": true,
-							"children": [
-								{
-									"eventType": "comment",
-									"text": " if Character and Quest targets are different (separated by \":\" in CharacterQuest), update those values accordingly"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 340301190938306,
-											"parameters": {
-												"first-value": "find(CharacterQuest,\":\")",
-												"comparison": 1,
-												"second-value": "-1"
-											}
-										}
-									],
-									"actions": [
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
-												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
-												"runtime.globalVars.Quest = characterQuestArray[1];"
-											]
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 978241188583173,
-											"parameters": {
-												"variable": "Quest",
-												"value": "Quest&\"Quest\""
-											}
-										}
-									],
-									"sid": 507908450300416,
-									"disabled": true
-								},
-								{
-									"eventType": "comment",
-									"text": "look up dialogue line by Character Quest name and set CurrentDialogue to after \":\" "
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "has-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 772822527583472,
-											"parameters": {
-												"key": "trigger&\"Quest\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 691302838411987,
-											"parameters": {
-												"variable": "QuestStatus",
-												"value": "Dict_SaveGameData.Get(trigger&\"Quest\")"
-											}
-										},
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"if(runtime.globalVars.QuestStatus){",
-												"\tconst questAndDialogueLine = runtime.globalVars.QuestStatus.split(\":\");",
-												"\truntime.globalVars.CurrentDialogueLine = Number(questAndDialogueLine[1]);",
-												"}"
-											]
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 515895465233248,
-											"parameters": {
-												"variable": "CurrentCharacter",
-												"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
-											}
-										}
-									],
-									"sid": 691410557784407,
-									"disabled": true,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 565817727510293,
-													"parameters": {
-														"first-value": "find(CurrentCharacter,\":\")",
-														"comparison": 1,
-														"second-value": "-1"
-													}
-												}
-											],
-											"actions": [
-												{
-													"type": "script",
-													"language": "typescript",
-													"script": [
-														"const characterQuestArray = runtime.globalVars.CurrentCharacter.split(\":\");",
-														"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
-														"runtime.globalVars.Quest = characterQuestArray[1];"
-													]
-												},
-												{
-													"id": "set-eventvar-value",
-													"objectClass": "System",
-													"sid": 709754738462606,
-													"parameters": {
-														"variable": "Quest",
-														"value": "Quest&\"Quest\""
-													}
-												}
-											],
-											"sid": 377457727015892,
-											"disabled": true
-										}
-									]
-								},
-								{
-									"eventType": "comment",
-									"text": "if Quest isn't present in dictionary based on the trigger name, get Quest status from Quest name in JSON"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "has-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 617572740014594,
-											"parameters": {
-												"key": "trigger&\"Quest\""
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 992894424021972,
-											"parameters": {
-												"variable": "QuestStatus",
-												"value": "Dict_SaveGameData.Get(Quest)"
-											}
-										}
-									],
-									"sid": 695679321395346,
-									"disabled": true
-								},
-								{
-									"eventType": "comment",
-									"text": "call dialogue and send in line from Quest"
-								},
-								{
-									"bookmark": true,
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 971226435748381,
-											"parameters": {
-												"variable": "QuestStatus",
-												"comparison": 1,
-												"value": "\"Complete\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 743520642686017,
-											"parameters": {
-												"variable": "InDialogue",
-												"value": "true"
-											}
-										},
-										{
-											"callFunction": "processDialogueLine",
-											"sid": 880585218810568,
-											"parameters": [
-												"CurrentDialogueLine"
-											]
-										}
-									],
-									"sid": 975030360979164,
-									"disabled": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 866553253580574,
-											"parameters": {
-												"variable": "QuestStatus",
-												"comparison": 0,
-												"value": "\"Complete\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "endDialogue",
-											"sid": 118152276453037
-										}
-									],
-									"sid": 235514599018614,
-									"disabled": true
-								}
-							]
-						}
-					]
+					"sid": 864020133847971
 				},
 				{
 					"eventType": "block",
@@ -954,587 +699,6 @@
 				}
 			],
 			"sid": 388643027528216
-		},
-		{
-			"eventType": "group",
-			"disabled": true,
-			"title": "Process Current Dialogue Line",
-			"description": "",
-			"isActiveOnStart": true,
-			"children": [
-				{
-					"functionName": "processDialogueLine",
-					"functionDescription": "display text",
-					"functionCategory": "",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [
-						{
-							"name": "dialogueIndex",
-							"type": "number",
-							"initialValue": "0",
-							"comment": "",
-							"sid": 348993458604278
-						}
-					],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
-						{
-							"callFunction": "destroyDialogueUI",
-							"sid": 569190725707516
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 855919865612093,
-							"parameters": {
-								"variable": "DialogueResult",
-								"value": "Arr_Dialogue.At(4, CurrentDialogueLine,TextArrayZIndex)"
-							}
-						}
-					],
-					"sid": 554747244248817,
-					"children": [
-						{
-							"eventType": "comment",
-							"text": "Check for enhanced dialogue"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 492547999841755,
-									"parameters": {
-										"variable": "use_enhanced_dialogue"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"console.log(\"🎭 Processing enhanced dialogue for Pete...\");",
-										"",
-										"// Call the enhanced dialogue function (remove typeof!)",
-										"(window as any).initializeEnhancedDialogue('prospector_pete');",
-										"",
-										"// The function sets enhanced_dialogue_speaker and enhanced_dialogue_text",
-										"// Now we need to transfer them to CurrentCharacter and CurrentDialogueText",
-										"if (runtime.globalVars.enhanced_dialogue_speaker) {",
-										"    runtime.globalVars.CurrentCharacter = runtime.globalVars.enhanced_dialogue_speaker;",
-										"    console.log(\"✅ CurrentCharacter set to:\", runtime.globalVars.CurrentCharacter);",
-										"}",
-										"",
-										"if (runtime.globalVars.enhanced_dialogue_text) {",
-										"    runtime.globalVars.CurrentDialogueText = runtime.globalVars.enhanced_dialogue_text;",
-										"    console.log(\"✅ CurrentDialogueText set to:\", runtime.globalVars.CurrentDialogueText);",
-										"}",
-										"",
-										"//console.log(\"🎭 Pete dialogue ready!\");"
-									]
-								},
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 913279125619062,
-									"parameters": {
-										"variable": "use_enhanced_dialogue",
-										"value": "false"
-									}
-								}
-							],
-							"sid": 134050800397475,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 869127469649551,
-											"parameters": {
-												"first-value": "CurrentWorld",
-												"comparison": 0,
-												"second-value": "\"01\""
-											}
-										},
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 531592855143614,
-											"parameters": {
-												"first-value": "CurrentAction",
-												"comparison": 0,
-												"second-value": "\"Talk\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"console.log(\"🔧 Detected Pete with missing name - fixing...\");",
-												"",
-												"// We're in Forest World (01), talking, and missing character name = Pete!",
-												"runtime.globalVars.CurrentCharacter = \"Pete\";",
-												"",
-												"console.log(\"✅ Fixed: CurrentCharacter set to Pete\");",
-												"console.log(\"Current dialogue:\", runtime.globalVars.CurrentDialogueText);"
-											]
-										}
-									],
-									"sid": 736166714782767
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "else",
-									"objectClass": "System",
-									"sid": 296053572393874
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 314566500379776,
-									"parameters": {
-										"variable": "CurrentDialogueText",
-										"value": "Arr_Dialogue.At(0, dialogueIndex,TextArrayZIndex)"
-									}
-								},
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"// Fix missing character names (Pete and any other NPCs)",
-										"if (runtime.globalVars.CurrentCharacter === \"0\" && runtime.globalVars.CurrentAction === \"Talk\") {",
-										"    console.log(\"🔧 Missing character name detected\");",
-										"    ",
-										"    // Identify character by world location",
-										"    if (runtime.globalVars.CurrentWorld === \"01\") {",
-										"        runtime.globalVars.CurrentCharacter = \"Pete\";",
-										"        console.log(\"✅ Set CurrentCharacter to Pete (Forest World)\");",
-										"    } else if (runtime.globalVars.CurrentWorld === \"00\") {",
-										"        // Could add logic for Village NPCs if needed",
-										"        runtime.globalVars.CurrentCharacter = \"Unknown\";",
-										"        console.log(\"✅ Set CurrentCharacter to Unknown (Village)\");",
-										"    }",
-										"}"
-									]
-								}
-							],
-							"sid": 573560635675985
-						},
-						{
-							"eventType": "comment",
-							"text": "Check to see if there are Options for the player to choose (Choice1 column != empty)"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-at-xyz",
-									"objectClass": "Arr_Dialogue",
-									"sid": 449428750596660,
-									"parameters": {
-										"x": "1",
-										"y": "CurrentDialogueLine",
-										"z": "TextArrayZIndex",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [],
-							"sid": 812648999586484,
-							"children": [
-								{
-									"eventType": "comment",
-									"text": "If \"Listen for Player Choice\" is active, then process Player's choice - update dialogueIndex and process new Dialogue line"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-group-active",
-											"objectClass": "System",
-											"sid": 201356718182973,
-											"parameters": {
-												"group-name": "\"Listen for Player Choice\""
-											}
-										},
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 412448531067471,
-											"parameters": {
-												"variable": "OptionsOpen"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 979039115457087,
-											"parameters": {
-												"group-name": "\"Listen for Player Choice\"",
-												"state": "deactivated"
-											}
-										},
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"// When Enter/Space pressed (with OptionsOpen = true):",
-												"const dialogue = globalThis.AdventureLand?.Dialogue;",
-												"if (dialogue) {",
-												"    // Use OptionSelection to determine which response (0 or 1)",
-												"    const selectedIndex = runtime.globalVars.OptionSelection;",
-												"    dialogue.selectResponse(selectedIndex, runtime);",
-												"",
-												"    // Reset selection to first option for next time",
-												"    runtime.globalVars.OptionSelection = 0;",
-												"",
-												"    // Bridge automatically:",
-												"    // ✅ Executes response actions (quest updates, give items, etc.)",
-												"    // ✅ Updates CurrentDialogueText if dialogue continues",
-												"    // ✅ Sets OptionsOpen correctly",
-												"    // ✅ Sets InDialogue = false if dialogue ends",
-												"}"
-											]
-										},
-										{
-											"callFunction": "processDialogueLine",
-											"sid": 487174783678704,
-											"parameters": [
-												"CurrentDialogueLine"
-											]
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 745314018837390,
-											"parameters": {
-												"variable": "DynamicText",
-												"value": "\"processing options\""
-											}
-										}
-									],
-									"sid": 313344888508410
-								},
-								{
-									"eventType": "comment",
-									"text": "If \"Listen for Player Choice\" isn't active yet, display them"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "else",
-											"objectClass": "System",
-											"sid": 922745260357573
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "displayUserOptions",
-											"sid": 949233698763176
-										}
-									],
-									"sid": 818854419895091
-								}
-							]
-						},
-						{
-							"eventType": "comment",
-							"text": "Check for user Input and InputVariable"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-two-values",
-									"objectClass": "System",
-									"sid": 134942915920648,
-									"parameters": {
-										"first-value": "find(DialogueResult,\"Input\")",
-										"comparison": 1,
-										"second-value": "-1"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "comment",
-									"text": ""
-								},
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"const inputArray = runtime.globalVars.DialogueResult.split(\":\");",
-										"runtime.globalVars.InputVar = inputArray[1];"
-									]
-								},
-								{
-									"callFunction": "getUserText",
-									"sid": 279453549424864,
-									"parameters": [
-										"\"Enter your name\""
-									]
-								}
-							],
-							"sid": 439617669701992
-						},
-						{
-							"eventType": "comment",
-							"text": "Check to see if the user has unlocked a Quest (and update Quest status)!"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-at-xyz",
-									"objectClass": "Arr_Dialogue",
-									"sid": 317993969384417,
-									"parameters": {
-										"x": "5",
-										"y": "CurrentDialogueLine",
-										"z": "TextArrayZIndex",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 330937999746342,
-									"parameters": {
-										"variable": "CharacterQuest",
-										"value": "Arr_Dialogue.At(3,CurrentDialogueLine,TextArrayZIndex)"
-									}
-								}
-							],
-							"sid": 518562867079115,
-							"children": [
-								{
-									"eventType": "comment",
-									"text": "Check for \":\" in CharacterQuest then update Quest accordingly"
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 124129603233914,
-											"parameters": {
-												"first-value": "find(CharacterQuest,\":\")",
-												"comparison": 1,
-												"second-value": "-1"
-											}
-										}
-									],
-									"actions": [
-										{
-											"type": "script",
-											"language": "typescript",
-											"script": [
-												"const characterQuestArray = runtime.globalVars.CharacterQuest.split(\":\");",
-												"runtime.globalVars.CurrentCharacter = characterQuestArray[0];",
-												"runtime.globalVars.Quest = characterQuestArray[1];"
-											]
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 401077436766589,
-											"parameters": {
-												"variable": "Quest",
-												"value": "Quest&\"Quest\""
-											}
-										}
-									],
-									"sid": 202984431071791
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "else",
-											"objectClass": "System",
-											"sid": 378550068046580
-										}
-									],
-									"actions": [
-										{
-											"type": "comment",
-											"text": "If no split, set Quest the same as the speaking Character"
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 803270669901593,
-											"parameters": {
-												"variable": "CurrentCharacter",
-												"value": "CharacterQuest"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 355986100503516,
-											"parameters": {
-												"variable": "Quest",
-												"value": "CurrentCharacter&\"Quest\""
-											}
-										}
-									],
-									"sid": 516290459930053
-								},
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 106465359475349,
-											"parameters": {
-												"variable": "QuestStatus",
-												"value": "Arr_Dialogue.At(5, CurrentDialogueLine,TextArrayZIndex)"
-											}
-										},
-										{
-											"id": "set-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 194827986297458,
-											"parameters": {
-												"key": "Quest",
-												"value": "QuestStatus"
-											}
-										},
-										{
-											"callFunction": "SaveGameData",
-											"sid": 800076606186590
-										}
-									],
-									"sid": 296966325276807
-								}
-							]
-						},
-						{
-							"eventType": "comment",
-							"text": "Check to see if an Event has been triggered and call event function"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-at-xyz",
-									"objectClass": "Arr_Dialogue",
-									"sid": 419663578850978,
-									"parameters": {
-										"x": "6",
-										"y": "CurrentDialogueLine",
-										"z": "TextArrayZIndex",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "call-mapped-function",
-									"objectClass": "Functions",
-									"sid": 119358042734633,
-									"parameters": {
-										"name": "\"DialogueFunctions\"",
-										"string": "Arr_Dialogue.At(6,CurrentDialogueLine,TextArrayZIndex)",
-										"forward-params": "0"
-									}
-								}
-							],
-							"sid": 218446058008139
-						},
-						{
-							"eventType": "comment",
-							"text": "Check to see if a Key Item has been found"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-at-xyz",
-									"objectClass": "Arr_Dialogue",
-									"sid": 513539672397414,
-									"parameters": {
-										"x": "7",
-										"y": "CurrentDialogueLine",
-										"z": "TextArrayZIndex",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 259375447605022,
-									"parameters": {
-										"variable": "KeyItem",
-										"value": "Functions.GetItemID(Arr_Dialogue.At(7, CurrentDialogueLine, TextArrayZIndex))"
-									}
-								}
-							],
-							"sid": 411375020445170
-						},
-						{
-							"eventType": "comment",
-							"text": "Check to see if dialogue exists, then show it"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-at-xyz",
-									"objectClass": "Arr_Dialogue",
-									"sid": 952761386980728,
-									"parameters": {
-										"x": "0",
-										"y": "CurrentDialogueLine",
-										"z": "TextArrayZIndex",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "displayDialogue",
-									"sid": 186526813584057
-								}
-							],
-							"sid": 901830020110080
-						}
-					]
-				}
-			],
-			"sid": 703812526953493
 		},
 		{
 			"eventType": "group",
@@ -2354,22 +1518,7 @@
 								"  runtime.globalVars.enhanced_dialogue_text = \"Hello! I'm Pete and I'm feeling sick.\";",
 								"  runtime.globalVars.enhanced_dialogue_speaker = \"Pete\";",
 								"}",
-								"",
-								"// Parse the enhanced dialogue JSON result",
-								"/*if (runtime.globalVars.enhanced_dialogue_result && runtime.globalVars.enhanced_dialogue_result.length > 0) {",
-								"  try {",
-								"    const dialogueNode = JSON.parse(runtime.globalVars.enhanced_dialogue_result);",
-								"    runtime.globalVars.enhanced_dialogue_text = dialogueNode.text || \"\";",
-								"    runtime.globalVars.enhanced_dialogue_speaker = dialogueNode.speaker || \"Pete\";",
-								"    console.log(\"Enhanced dialogue parsed:\", dialogueNode.text);",
-								"  } catch (e) {",
-								"    console.log(\"Enhanced dialogue parsing failed:\", e);",
-								"    runtime.globalVars.use_enhanced_dialogue = false;",
-								"  }",
-								"} else {",
-								"  console.log(\"No enhanced dialogue result to parse\");",
-								"  runtime.globalVars.use_enhanced_dialogue = false;",
-								"}*/"
+								""
 							]
 						}
 					],
@@ -2588,68 +1737,6 @@
 								{
 									"id": "on-key-pressed",
 									"objectClass": "Keyboard",
-									"sid": 429202402888193,
-									"parameters": {
-										"key": 9
-									}
-								},
-								{
-									"id": "is-visible",
-									"objectClass": "obj_textInput",
-									"sid": 665414871923544
-								}
-							],
-							"actions": [],
-							"sid": 442889661903657,
-							"disabled": true,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-focused",
-											"objectClass": "obj_textInput",
-											"sid": 585111756281280
-										}
-									],
-									"actions": [
-										{
-											"id": "set-focused",
-											"objectClass": "GoButton",
-											"sid": 577008437108488
-										}
-									],
-									"sid": 822444471649712,
-									"disabled": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-focused",
-											"objectClass": "obj_textInput",
-											"sid": 585255143533249,
-											"isInverted": true
-										}
-									],
-									"actions": [
-										{
-											"id": "set-focused",
-											"objectClass": "obj_textInput",
-											"sid": 862900687854639
-										}
-									],
-									"sid": 428433321422668,
-									"disabled": true
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
 									"sid": 141916317048611,
 									"parameters": {
 										"key": 13
@@ -2732,13 +1819,6 @@
 												"variable": "CurrentDialogueLine",
 												"value": "1"
 											}
-										},
-										{
-											"callFunction": "processDialogueLine",
-											"sid": 204036576718619,
-											"parameters": [
-												"CurrentDialogueLine"
-											]
 										}
 									],
 									"sid": 477078997299729
@@ -2791,14 +1871,6 @@
 										"variable": "CurrentDialogueLine",
 										"value": "1"
 									}
-								},
-								{
-									"callFunction": "processDialogueLine",
-									"sid": 776101437446710,
-									"disabled": true,
-									"parameters": [
-										"CurrentDialogueLine"
-									]
 								},
 								{
 									"type": "script",
@@ -2904,7 +1976,9 @@
 									"type": "script",
 									"language": "typescript",
 									"script": [
-										"console.log(\"displaying options\")"
+										"console.log(\"displaying options\");",
+										"console.log(\"🏗️ displayUserOptions START - OptionsOpen:\", runtime.globalVars.OptionsOpen);",
+										"console.trace(\"Call stack:\");"
 									]
 								},
 								{
@@ -2949,68 +2023,19 @@
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const opt1 = runtime.objects.obj_TextOption1?.getFirstInstance();",
+										"const opt2 = runtime.objects.obj_TextOption2?.getFirstInstance();",
+										"console.log(\"✨ Created option objects - opt1:\", !!opt1, \"opt2:\", !!opt2);"
+									]
 								}
 							],
 							"sid": 905288731882706,
 							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-at-xyz",
-											"objectClass": "Arr_Dialogue",
-											"sid": 439431660431446,
-											"parameters": {
-												"x": "1",
-												"y": "CurrentDialogueLine",
-												"z": "TextArrayZIndex",
-												"comparison": 1,
-												"value": "\"\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-text",
-											"objectClass": "obj_TextOption1",
-											"sid": 127612808026697,
-											"parameters": {
-												"text": "\"[icon=Arrow] \" & Arr_Dialogue.At(1, CurrentDialogueLine,TextArrayZIndex)"
-											}
-										}
-									],
-									"sid": 850631228031391,
-									"disabled": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-at-xyz",
-											"objectClass": "Arr_Dialogue",
-											"sid": 385055376948333,
-											"parameters": {
-												"x": "2",
-												"y": "CurrentDialogueLine",
-												"z": "TextArrayZIndex",
-												"comparison": 1,
-												"value": "\"\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-text",
-											"objectClass": "obj_TextOption2",
-											"sid": 209778987777009,
-											"parameters": {
-												"text": "\"[icon=Empty] \" & Arr_Dialogue.At(2, CurrentDialogueLine,TextArrayZIndex)"
-											}
-										}
-									],
-									"sid": 968511988864382,
-									"disabled": true
-								},
 								{
 									"eventType": "block",
 									"conditions": [],
@@ -3032,61 +2057,27 @@
 												"variable": "OptionsOpen",
 												"value": "true"
 											}
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const dialogue = globalThis.AdventureLand?.Dialogue;",
+												"if (dialogue) {",
+												"    const text1 = dialogue.getResponseText(0);",
+												"    const text2 = dialogue.getResponseText(1);",
+												"    console.log(\"📄 Event sheet getting response texts:\", text1, text2);",
+												"    ",
+												"    const opt1 = runtime.objects.obj_TextOption1?.getFirstInstance();",
+												"    const opt2 = runtime.objects.obj_TextOption2?.getFirstInstance();",
+												"    console.log(\"🎨 Final text on objects - opt1:\", opt1?.text, \"opt2:\", opt2?.text);",
+												"}"
+											]
 										}
 									],
 									"sid": 949996674660156
 								}
 							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 645747415443275,
-									"parameters": {
-										"variable": "OptionsOpen"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"const dialogue = globalThis.AdventureLand?.Dialogue;",
-										"   if (dialogue) {",
-										"       // Get response text from bridge (WITHOUT icons)",
-										"       const option1 = dialogue.getResponseText(0);",
-										"       const option2 = dialogue.getResponseText(1);",
-										"",
-										"       // Find your text objects",
-										"       const textOpt1 = runtime.objects.obj_TextOption1.getFirstInstance();",
-										"       const textOpt2 = runtime.objects.obj_TextOption2.getFirstInstance();",
-										"",
-										"       // Add selection icons based on OptionSelection variable",
-										"       // (OptionSelection = 0 means option1 is selected, 1 means option2)",
-										"       const selectedIcon = \"[icon=Arrow] \";",
-										"       const unselectedIcon = \"[icon=Empty] \";",
-										"",
-										"       if (textOpt1) {",
-										"           const icon1 = (runtime.globalVars.OptionSelection === 0) ? selectedIcon : unselectedIcon;",
-										"           textOpt1.text = icon1 + option1;",
-										"           textOpt1.isVisible = (option1.length > 0);",
-										"       }",
-										"",
-										"       if (textOpt2) {",
-										"           const icon2 = (runtime.globalVars.OptionSelection === 1) ? selectedIcon : unselectedIcon;",
-										"           textOpt2.text = icon2 + option2;",
-										"           textOpt2.isVisible = (option2.length > 0);",
-										"       }",
-										"   }"
-									]
-								}
-							],
-							"sid": 665196297462836,
-							"disabled": true
 						}
 					],
 					"sid": 333062859736687
@@ -3184,14 +2175,6 @@
 							}
 						},
 						{
-							"id": "reset-eventvar",
-							"objectClass": "System",
-							"sid": 844744646307609,
-							"parameters": {
-								"variable": "DialogueResult"
-							}
-						},
-						{
 							"id": "wait",
 							"objectClass": "System",
 							"sid": 704896941198021,
@@ -3203,11 +2186,15 @@
 						{
 							"id": "set-boolean-eventvar",
 							"objectClass": "System",
-							"sid": 696209314698294,
+							"sid": 598905693505881,
 							"parameters": {
 								"variable": "InDialogue",
 								"value": "false"
 							}
+						},
+						{
+							"callFunction": "SaveGameData",
+							"sid": 716914604888022
 						}
 					],
 					"sid": 907377757676493

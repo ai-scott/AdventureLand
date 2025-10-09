@@ -881,10 +881,10 @@
 						{
 							"id": "set-position",
 							"objectClass": "obj_TextBlock",
-							"sid": 654448128140222,
+							"sid": 258338154456036,
 							"parameters": {
-								"x": "(ViewportLeft(0)/2)+(LayoutWidth/2)-(obj_TextBlock.Width/2)",
-								"y": "(LayoutHeight/2)-(obj_TextBlock.Height/2)"
+								"x": "ViewportLeft(0) + (ViewportWidth(0)/2) - (obj_TextBlock.Width/2)",
+								"y": "ViewportTop(0) + (ViewportHeight(0)/2) - (obj_TextBlock.Height/2)"
 							}
 						},
 						{
@@ -1977,16 +1977,12 @@
 									"type": "script",
 									"language": "javascript",
 									"script": [
-										"// Track health change for TypeScript",
-										"console.log(\"adjusting Health\");",
-										"",
 										"// ALWAYS sync with TypeScript health system, not just when health_change !== 0",
 										"const healthSystem = runtime.imports.AdventureLand.Health;",
 										"",
 										"if (healthSystem) {",
 										"    // First, get current health from HealthSystem",
 										"    const currentState = healthSystem.getState();",
-										"    console.log(`[adjustHealth] HealthSystem current: ${currentState.current}/${currentState.max}`);",
 										"    ",
 										"    // Apply any health changes if requested",
 										"    if (localVars.health_change !== 0) {",
@@ -2129,8 +2125,7 @@
 											"type": "script",
 											"language": "javascript",
 											"script": [
-												"const heart = runtime.objects.Heart.getFirstPickedInstance();",
-												"console.log(`[Action 45] Heart found - Index: ${heart.instVars.HeartIndex}, Layer: ${heart.layer.name}, MaxHealth/2: ${runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap().get('MaxHealth')/2}`);"
+												"const heart = runtime.objects.Heart.getFirstPickedInstance();"
 											]
 										}
 									],
@@ -2158,16 +2153,6 @@
 													"parameters": {
 														"frame-number": "\"Full\""
 													}
-												},
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"console.log(`[Action 46 Check] HeartIndex: ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex}, Health global: ${runtime.globalVars.Health}, Condition check: ${runtime.globalVars.Health} >= ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex * 2}`);",
-														"",
-														"console.log(`[SET FULL] Heart ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex} frame set to: ${runtime.objects.Heart.getFirstPickedInstance().animationFrame}`);",
-														""
-													]
 												}
 											],
 											"sid": 774793204377153
@@ -2194,17 +2179,6 @@
 													"parameters": {
 														"frame-number": "\"Empty\""
 													}
-												},
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"const heart = runtime.objects.Heart.getFirstPickedInstance();",
-														"console.log(`[Action 47 Empty] HeartIndex: ${heart.instVars.HeartIndex}, Health: ${runtime.globalVars.Health}, Check: ${runtime.globalVars.Health} <= ${(heart.instVars.HeartIndex * 2) - 2}`);",
-														"",
-														"console.log(`[SET EMPTY] Heart ${runtime.objects.Heart.getFirstPickedInstance().instVars.HeartIndex} frame set to: ${runtime.objects.Heart.getFirstPickedInstance().animationFrame}`);",
-														""
-													]
 												}
 											],
 											"sid": 228728454648586
@@ -2231,17 +2205,6 @@
 													"parameters": {
 														"frame-number": "\"Half\""
 													}
-												},
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"const heart = runtime.objects.Heart.getFirstPickedInstance();",
-														"console.log(`[Action 48 Half] HeartIndex: ${heart.instVars.HeartIndex}, Health: ${runtime.globalVars.Health}, Check: ${runtime.globalVars.Health} == ${(heart.instVars.HeartIndex * 2) - 1}`);",
-														"",
-														"console.log(`[SET HALF] Heart ${heart.instVars.HeartIndex} frame set to: ${heart.animationFrame}`);",
-														""
-													]
 												}
 											],
 											"sid": 483946103705926
@@ -2278,16 +2241,7 @@
 											}
 										}
 									],
-									"actions": [
-										{
-											"type": "script",
-											"language": "javascript",
-											"script": [
-												"const heart = runtime.objects.Heart.getFirstPickedInstance();",
-												"console.log(`[Action 49] Heart found - Index: ${heart.instVars.HeartIndex}, Layer: ${heart.layer.name}, MaxHealth/2: ${runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap().get('MaxHealth')/2}`);"
-											]
-										}
-									],
+									"actions": [],
 									"sid": 752548765438380,
 									"children": [
 										{
@@ -2816,25 +2770,6 @@
 											"parameters": {
 												"variable": "CurrentInvWindow",
 												"value": "\"main\""
-											}
-										},
-										{
-											"id": "wait",
-											"objectClass": "System",
-											"sid": 716869172602322,
-											"parameters": {
-												"seconds": ".1",
-												"use-timescale": true
-											}
-										},
-										{
-											"id": "map-function",
-											"objectClass": "Functions",
-											"sid": 455214967899236,
-											"parameters": {
-												"name": "\"DialogueFunctions\"",
-												"string": "\"grantFreeItem\"",
-												"function": "grantFreeItem"
 											}
 										}
 									],
@@ -6663,17 +6598,17 @@
 												{
 													"id": "is-running-typewriter-text",
 													"objectClass": "obj_TextBlock",
-													"sid": 876878091489966
+													"sid": 991994536726420
 												}
 											],
 											"actions": [
 												{
 													"id": "typewriter-finish",
 													"objectClass": "obj_TextBlock",
-													"sid": 234296888880243
+													"sid": 320523732140596
 												}
 											],
-											"sid": 431375157153390
+											"sid": 948676848954181
 										},
 										{
 											"eventType": "block",
@@ -6681,7 +6616,7 @@
 												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 672802893165662,
+													"sid": 507986777403614,
 													"parameters": {
 														"variable": "OptionsOpen"
 													}
@@ -6703,7 +6638,7 @@
 													]
 												}
 											],
-											"sid": 470099928802479
+											"sid": 478423804950131
 										},
 										{
 											"eventType": "comment",
@@ -6713,41 +6648,9 @@
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "compare-eventvar",
+													"id": "else",
 													"objectClass": "System",
-													"sid": 497486540097470,
-													"parameters": {
-														"variable": "DialogueResult",
-														"comparison": 0,
-														"value": "\"End\""
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "endDialogue",
-													"sid": 964637165648052
-												}
-											],
-											"sid": 231522065248876
-										},
-										{
-											"eventType": "block",
-											"conditions": [],
-											"actions": [],
-											"sid": 845022319952361
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 742520903871257,
-													"parameters": {
-														"variable": "OptionsOpen"
-													},
-													"isInverted": true
+													"sid": 450450156183651
 												}
 											],
 											"actions": [
@@ -6757,33 +6660,12 @@
 													"script": [
 														"const dialogue = globalThis.AdventureLand?.Dialogue;",
 														"if (dialogue) {",
-														"   dialogue.advance(runtime);",
+														"    dialogue.advance(runtime);",
 														"}"
 													]
 												}
 											],
-											"sid": 916449454409973
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "else",
-													"objectClass": "System",
-													"sid": 392696224248407
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "processDialogueLine",
-													"sid": 685781626945851,
-													"parameters": [
-														"CurrentDialogueLine"
-													]
-												}
-											],
-											"sid": 712149555951124,
-											"disabled": true
+											"sid": 383054273905688
 										}
 									]
 								}
@@ -8642,6 +8524,16 @@
 																"variable": "CurrentAction",
 																"comparison": 0,
 																"value": "\"Talk\""
+															}
+														},
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 452560007414086,
+															"parameters": {
+																"first-value": "DialogueResult",
+																"comparison": 1,
+																"second-value": "\"End\""
 															}
 														}
 													],
