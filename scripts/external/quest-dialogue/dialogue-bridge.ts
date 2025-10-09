@@ -16,6 +16,7 @@ export class DialogueBridge {
   private static currentNPC: string = "";
   private static currentNode: string = "";
   private static currentResponses: DialogueResponse[] = [];
+  private static triggerUID: number = -1;  // Track which trigger object initiated dialogue
 
   /**
    * Initialize dialogue with an NPC
@@ -23,9 +24,19 @@ export class DialogueBridge {
    *
    * @param npcId - NPC identifier (e.g., "Pete", "Penny")
    * @param runtime - Construct 3 runtime
+   * @param triggerUID - Optional UID of trigger object that initiated dialogue
    */
-  static startDialogue(npcId: string, runtime: any): boolean {
+  static startDialogue(npcId: string, runtime: any, triggerUID: number = -1): boolean {
     try {
+      // Check if already in dialogue
+      if (runtime.globalVars.InDialogue) {
+        return false;
+      }
+
+      // Set InDialogue = true IMMEDIATELY to prevent race conditions
+      runtime.globalVars.InDialogue = true;
+      runtime.globalVars.DialogueResult = "";
+
       const playerState = this.getPlayerStateFromRuntime(runtime);
       const node = DialogueManager.getDialogueForNPC(npcId, playerState);
 
@@ -38,11 +49,17 @@ export class DialogueBridge {
       this.currentNPC = npcId;
       this.currentNode = node.id;
       this.currentResponses = node.responses || [];
+      this.triggerUID = triggerUID;
 
       // Populate event sheet variables
       runtime.globalVars.CurrentCharacter = node.speaker;
       runtime.globalVars.CurrentDialogueText = node.text;
-      runtime.globalVars.InDialogue = true;
+
+      // Pause enemies
+      const adventureLand = (globalThis as any).AdventureLand;
+      if (adventureLand?.EnemyPause) {
+        adventureLand.EnemyPause.pause("dialogue");
+      }
 
       // Determine if options should be shown
       // Options are shown ONLY if there are actual response choices
@@ -53,15 +70,26 @@ export class DialogueBridge {
         !node.endsDialogue
       );
 
+      // Set flag to tell event sheet this node ends dialogue (don't auto-advance!)
+      if (typeof runtime.globalVars.DialogueEndsHere !== 'undefined') {
+        runtime.globalVars.DialogueEndsHere = node.endsDialogue || false;
+      }
+
+      // Also set DialogueResult for legacy event sheet compatibility
+      if (node.endsDialogue) {
+        runtime.globalVars.DialogueResult = "End";
+      } else if (node.autoAdvance) {
+        runtime.globalVars.DialogueResult = "Continue";
+      } else {
+        runtime.globalVars.DialogueResult = "";
+      }
+
       // Enhanced dialogue variables
       runtime.globalVars.enhanced_dialogue_speaker = node.speaker;
       runtime.globalVars.enhanced_dialogue_text = node.text;
       runtime.globalVars.use_enhanced_dialogue = true;
 
-      console.log(`💬 Started dialogue with ${npcId}:`, node.text);
-
       // Call displayDialogue to show UI
-      console.log("📞 Calling displayDialogue()...");
       runtime.callFunction("displayDialogue");
 
       // Execute any auto-actions (actions without requiring a response)
@@ -103,7 +131,6 @@ export class DialogueBridge {
   static getResponseText(index: number): string {
     const response = this.getResponse(index);
     const text = response ? response.text : "";
-    console.log(`🔍 getResponseText(${index}): "${text}"`);
     return text;
   }
 
@@ -131,7 +158,6 @@ export class DialogueBridge {
 
     // Check if this node auto-advances
     if (currentNodeData.autoAdvance) {
-      console.log(`→ Auto-advancing to: ${currentNodeData.autoAdvance}`);
 
       // Navigate to the next node by finding the target node
       const nextNode = npcDialogue.nodes.find(n => n.id === currentNodeData.autoAdvance);
@@ -160,8 +186,20 @@ export class DialogueBridge {
         !nextNode.endsDialogue
       );
 
-      console.log(`💬 Advanced to node: ${nextNode.text.substring(0, 50)}...`);
-      console.log(`📊 OptionsOpen: ${runtime.globalVars.OptionsOpen}, Responses: ${this.currentResponses.length}`);
+      // Set flag to tell event sheet this node ends dialogue (don't auto-advance!)
+      if (typeof runtime.globalVars.DialogueEndsHere !== 'undefined') {
+        runtime.globalVars.DialogueEndsHere = nextNode.endsDialogue || false;
+      }
+
+      // Also set DialogueResult for legacy event sheet compatibility
+      if (nextNode.endsDialogue) {
+        runtime.globalVars.DialogueResult = "End";
+      } else if (nextNode.autoAdvance) {
+        runtime.globalVars.DialogueResult = "Continue";
+      } else {
+        runtime.globalVars.DialogueResult = "";
+      }
+
 
       // Execute any actions on the new node (this will call getUserText for input nodes)
       if (nextNode.actions) {
@@ -169,54 +207,17 @@ export class DialogueBridge {
       }
 
       // Call displayDialogue to refresh UI (even for input nodes with empty text)
-      console.log("📞 Calling displayDialogue() after advance...");
       runtime.callFunction("displayDialogue");
 
-      // If options are open, call displayUserOptions to create the option objects
-      if (runtime.globalVars.OptionsOpen) {
-        console.log("📞 Calling displayUserOptions()...");
-        runtime.callFunction("displayUserOptions");
-      }
-
-      // Then manually update the response text objects
-      if (runtime.globalVars.OptionsOpen) {
-        console.log("📝 Manually updating response options...");
-        const option1 = this.getResponseText(0);
-        const option2 = this.getResponseText(1);
-
-        // Find the option objects
-        const textOpt1 = runtime.objects.obj_TextOption1?.getFirstInstance();
-        const textOpt2 = runtime.objects.obj_TextOption2?.getFirstInstance();
-
-        // Add selection icons based on OptionSelection
-        const selectedIcon = "[icon=Arrow] ";
-        const unselectedIcon = "[icon=Empty] ";
-
-        if (textOpt1) {
-          const icon1 = (runtime.globalVars.OptionSelection === 0) ? selectedIcon : unselectedIcon;
-          textOpt1.text = icon1 + option1;
-          textOpt1.isVisible = (option1.length > 0);
-          console.log(`✅ Set option1: ${textOpt1.text}`);
-        } else {
-          console.log("⚠️ obj_TextOption1 not found!");
-        }
-
-        if (textOpt2) {
-          const icon2 = (runtime.globalVars.OptionSelection === 1) ? selectedIcon : unselectedIcon;
-          textOpt2.text = icon2 + option2;
-          textOpt2.isVisible = (option2.length > 0);
-          console.log(`✅ Set option2: ${textOpt2.text}`);
-        } else {
-          console.log("⚠️ obj_TextOption2 not found!");
-        }
-      }
+      // DON'T call displayUserOptions here - the event sheet should handle it
+      // after all autoAdvance chains complete by checking OptionsOpen
+      // Calling it here causes duplicate calls and wrong text
 
       return true;
     }
 
     // Check if this node ends dialogue
     if (currentNodeData.endsDialogue) {
-      console.log(`💬 Dialogue ended (outcome: End)`);
       this.endDialogue(runtime);
       return false;
     }
@@ -240,7 +241,7 @@ export class DialogueBridge {
       return false;
     }
 
-    console.log(`✅ Player selected: "${response.text}"`);
+    console.log(`👆 Selected response ${index}: "${response.text}" → leads_to: "${response.leads_to}"`);
 
     // Execute response actions
     if (response.actions) {
@@ -249,6 +250,15 @@ export class DialogueBridge {
 
     // Check if dialogue should continue or end
     if (response.leads_to && response.leads_to !== "End") {
+      // Check if the target node ends dialogue, and set DialogueResult NOW
+      const npcDialogue = DialogueManager.getNPCDialogue(this.currentNPC);
+      if (npcDialogue) {
+        const targetNode = npcDialogue.nodes.find(n => n.id === response.leads_to);
+        if (targetNode?.endsDialogue) {
+          runtime.globalVars.DialogueResult = "End";
+        }
+      }
+
       // Navigate to next dialogue node (it will handle ending if needed)
       return this.navigateToNode(response.leads_to, runtime);
     } else {
@@ -265,7 +275,6 @@ export class DialogueBridge {
    * @param runtime - Construct 3 runtime
    */
   private static navigateToNode(nodeId: string, runtime: any): boolean {
-    console.log(`→ Navigate to node: ${nodeId}`);
 
     // Get the NPC's dialogue and find the target node
     const npcDialogue = DialogueManager.getNPCDialogue(this.currentNPC);
@@ -298,28 +307,45 @@ export class DialogueBridge {
       !processedNode.endsDialogue
     );
 
+    // Set flag to tell event sheet this node ends dialogue (don't auto-advance!)
+    if (typeof runtime.globalVars.DialogueEndsHere !== 'undefined') {
+      runtime.globalVars.DialogueEndsHere = processedNode.endsDialogue || false;
+    }
+
+    // Also set DialogueResult for legacy event sheet compatibility
+    if (processedNode.endsDialogue) {
+      runtime.globalVars.DialogueResult = "End";
+    } else if (processedNode.autoAdvance) {
+      runtime.globalVars.DialogueResult = "Continue";
+    } else {
+      runtime.globalVars.DialogueResult = "";
+    }
+
     console.log(`💬 Navigated to: ${processedNode.text.substring(0, 50)}...`);
     console.log(`📊 OptionsOpen: ${runtime.globalVars.OptionsOpen}, Responses: ${this.currentResponses.length}`);
+    console.log(`🔀 autoAdvance: ${processedNode.autoAdvance}, endsDialogue: ${processedNode.endsDialogue}`);
+    console.log(`📝 Response texts:`, this.currentResponses.map(r => r.text));
 
     // Execute any actions on the new node
     if (processedNode.actions) {
       this.executeActions(processedNode.actions, runtime);
     }
 
-    // Refresh UI
+    // Refresh UI - ALWAYS show the dialogue text first
+    console.log(`📢 Calling displayDialogue()`);
     runtime.callFunction("displayDialogue");
 
     // If options are open, create the option UI
     if (runtime.globalVars.OptionsOpen) {
+      console.log(`📋 Calling displayUserOptions() - Response 0: "${this.getResponseText(0)}", Response 1: "${this.getResponseText(1)}"`);
       runtime.callFunction("displayUserOptions");
+    } else {
+      console.log(`⏭️ No options to display (OptionsOpen is false)`);
     }
 
-    // Check if this node ends dialogue
-    if (processedNode.endsDialogue) {
-      console.log(`💬 Dialogue ended (outcome: End)`);
-      this.endDialogue(runtime);
-      return false;
-    }
+    // DON'T end dialogue here even if endsDialogue is true!
+    // The player needs to READ the text first, then click
+    // When they click, advanceDialogue() will see endsDialogue and end it properly
 
     return true;
   }
@@ -330,15 +356,36 @@ export class DialogueBridge {
    * @param runtime - Construct 3 runtime
    */
   static endDialogue(runtime: any): void {
-    runtime.globalVars.InDialogue = false;
-    runtime.globalVars.OptionsOpen = false;
-    runtime.globalVars.use_enhanced_dialogue = false;
 
+    // Clean up internal state
     this.currentNPC = "";
     this.currentNode = "";
     this.currentResponses = [];
+    runtime.globalVars.OptionsOpen = false;
+    runtime.globalVars.use_enhanced_dialogue = false;
 
-    console.log("💬 Dialogue ended");
+    // Resume enemies directly using the EnemyPause system
+    const adventureLand = (globalThis as any).AdventureLand;
+    if (adventureLand?.EnemyPause) {
+      adventureLand.EnemyPause.resume("dialogue");
+    }
+
+    // Call the event sheet's endDialogue function
+    // It will: destroy UI, activate Player Engine, reset vars, wait 0.1s, set InDialogue=false
+    try {
+      runtime.callFunction("endDialogue");
+    } catch (e) {
+      console.error("❌ Could not call endDialogue function:", e);
+    }
+
+    // IMPORTANT: Reset DialogueResult after a delay to allow the event sheet's endDialogue to complete
+    // We need to wait for the 0.1s wait in endDialogue, plus a bit more to ensure InDialogue is set to false
+    setTimeout(() => {
+      if (runtime && runtime.globalVars) {
+        runtime.globalVars.DialogueResult = "";
+      }
+    }, 200); // 200ms = 0.1s wait + 0.1s buffer
+
   }
 
   /**
@@ -349,12 +396,9 @@ export class DialogueBridge {
    */
   private static executeActions(actions: any[], runtime: any): void {
     actions.forEach(action => {
-      console.log(`🎬 Executing action:`, action.type);
-
       switch (action.type) {
         case 'start_quest':
           if (action.questId) {
-            console.log(`🎯 Starting quest: ${action.questId}`);
             // Call your existing quest start function
             // runtime.callFunction("StartQuest", action.questId);
 
@@ -368,18 +412,17 @@ export class DialogueBridge {
 
         case 'set_quest_status':
           if (action.questId && action.status) {
-            console.log(`📝 Setting quest status: ${action.questId} = ${action.status}`);
             const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
-              // Format: "StatusName:StepNumber" (matching your old system)
               dict.getDataMap().set(action.questId, action.status);
+            } else {
+              console.error(`❌ Dict_SaveGameData not found - cannot save quest status`);
             }
           }
           break;
 
         case 'complete_quest':
           if (action.questId) {
-            console.log(`✅ Completing quest: ${action.questId}`);
             const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
               dict.getDataMap().set(action.questId, 'Completed:0');
@@ -389,15 +432,80 @@ export class DialogueBridge {
 
         case 'give_item':
           if (action.itemId) {
-            console.log(`🎁 Giving item: ${action.itemId} (x${action.quantity || 1})`);
-            // Call your existing give item function
-            // runtime.callFunction("GiveItem", action.itemId, action.quantity || 1);
+            const adventureLand = (globalThis as any).AdventureLand;
+            if (adventureLand?.Items) {
+              const itemId = adventureLand.Items.getItemID(action.itemId);
+              if (itemId > 0) {
+                runtime.callFunction("UpdateNumbersOnPickup", itemId, action.quantity || 1);
+
+                // If destroyTrigger is true, destroy the trigger and overlapping objects
+                if (action.destroyTrigger && this.triggerUID >= 0) {
+                  const triggerInstance = runtime.getInstanceByUid(this.triggerUID);
+                  if (triggerInstance) {
+                    // Get trigger's bounding box
+                    const triggerLeft = triggerInstance.x - (triggerInstance.width / 2);
+                    const triggerRight = triggerInstance.x + (triggerInstance.width / 2);
+                    const triggerTop = triggerInstance.y - (triggerInstance.height / 2);
+                    const triggerBottom = triggerInstance.y + (triggerInstance.height / 2);
+
+                    // Destroy trigger first
+                    triggerInstance.destroy();
+
+                    // Destroy specified objects at trigger location (if provided)
+                    if (action.objectsToDestroy && action.objectsToDestroy.length > 0) {
+                      for (const objectName of action.objectsToDestroy) {
+                        const objectClass = runtime.objects[objectName];
+                        if (objectClass && typeof objectClass.getAllInstances === 'function') {
+                          const instances = objectClass.getAllInstances();
+                          for (const inst of instances) {
+                            // Get instance's bounding box
+                            const instLeft = inst.x - (inst.width / 2);
+                            const instRight = inst.x + (inst.width / 2);
+                            const instTop = inst.y - (inst.height / 2);
+                            const instBottom = inst.y + (inst.height / 2);
+
+                            // Check if bounding boxes overlap (AABB collision)
+                            const overlapsX = instRight >= triggerLeft && instLeft <= triggerRight;
+                            const overlapsY = instBottom >= triggerTop && instTop <= triggerBottom;
+
+                            if (overlapsX && overlapsY) {
+                              inst.destroy();
+                            }
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    console.warn(`⚠️ Could not destroy trigger (UID: ${this.triggerUID})`);
+                  }
+                }
+              } else {
+                console.error(`❌ Item not found: ${action.itemId}`);
+              }
+            } else {
+              console.error(`❌ ItemManager not found`);
+            }
+          }
+          break;
+
+        case 'remove_item':
+          if (action.itemId) {
+            const adventureLand = (globalThis as any).AdventureLand;
+            if (adventureLand?.Items) {
+              const itemId = adventureLand.Items.getItemID(action.itemId);
+              if (itemId > 0) {
+                adventureLand.Items.removeItem(itemId, action.quantity || 1);
+              } else {
+                console.error(`❌ Item not found: ${action.itemId}`);
+              }
+            } else {
+              console.error(`❌ ItemManager not found`);
+            }
           }
           break;
 
         case 'set_world_flag':
           if (action.flagKey) {
-            console.log(`🚩 Setting flag: ${action.flagKey} = ${action.flagValue}`);
             const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
               dict.setDataMap(action.flagKey, action.flagValue);
@@ -406,13 +514,11 @@ export class DialogueBridge {
           break;
 
         case 'set_npc_memory':
-          console.log(`🧠 Setting NPC memory: ${action.npcId}.${action.memoryKey}`);
           // Store NPC-specific memory if needed
           break;
 
         case 'input':
           if (action.variable) {
-            console.log(`⌨️ Input action for variable: ${action.variable}`);
             // Store which variable we're getting input for
             runtime.globalVars.InputVar = action.variable;
             // Call the existing getUserText function to show input UI
@@ -422,11 +528,11 @@ export class DialogueBridge {
 
         case 'custom':
           if (action.customFunction) {
-            console.log(`🔧 Calling custom function: ${action.customFunction}`);
+
             try {
               runtime.callFunction(action.customFunction);
             } catch (e) {
-              console.warn(`⚠️ Custom function failed: ${action.customFunction}`, e);
+              console.error(`❌ Custom function failed: ${action.customFunction}`, e);
             }
           }
           break;
@@ -448,22 +554,59 @@ export class DialogueBridge {
     const activeQuests = new Map();
     const completedQuests = new Set();
 
+    // Get all quest IDs from loaded dialogues
+    const allQuestIds = DialogueManager.getAllQuestIds();
+
     // Parse quest data from save game dictionary
     if (dict) {
       const dataMap = dict.getDataMap();
 
       dataMap.forEach((value: string, key: string) => {
-        // Check if this is a quest entry (format: "QuestName:Active:0" or "Completed:0")
-        if (typeof value === 'string' && value.includes(':')) {
-          const [status, step] = value.split(':');
+        // ONLY process keys that are known quest IDs from dialogue files
+        if (!allQuestIds.includes(key)) {
+          return;
+        }
 
-          if (status === 'Completed') {
-            completedQuests.add(key);
-          } else if (status === 'Active') {
+        // Skip empty values
+        if (!value) {
+          return;
+        }
+
+        // Quest entries can be in different formats:
+        // 1. New format: Just the status name like "Meet_Penny", "Start_Cat_Quest"
+        // 2. Old format: "Active:0" or "Completed:0"
+        if (typeof value === 'string') {
+          // Check if it's the old format with colons
+          if (value.includes(':')) {
+            const [status, step] = value.split(':');
+
+            if (status === 'Completed') {
+              completedQuests.add(key);
+            } else if (status === 'Active') {
+              activeQuests.set(key, {
+                id: key,
+                status: 'Active',
+                currentStep: parseInt(step) || 0,
+                progress: {},
+                priority: 1
+              });
+            } else {
+              // It's a status with a step number (like "Meet_Penny:0")
+              activeQuests.set(key, {
+                id: key,
+                status: status,
+                currentStep: parseInt(step) || 0,
+                progress: {},
+                priority: 1
+              });
+            }
+          } else {
+            // New format: just the status string
+            // Treat any non-empty status as an active quest with that status
             activeQuests.set(key, {
               id: key,
-              status: 'Active',
-              currentStep: parseInt(step) || 0,
+              status: value,
+              currentStep: 0,
               progress: {},
               priority: 1
             });

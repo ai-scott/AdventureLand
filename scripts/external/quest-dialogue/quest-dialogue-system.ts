@@ -221,26 +221,66 @@ export class QuestManager {
 
 export class DialogueManager {
   private static npcDialogues = new Map<string, NPCDialogue>();
-  
+
+  /**
+   * Get all unique quest IDs referenced in loaded dialogues
+   */
+  static getAllQuestIds(): string[] {
+    const questIds = new Set<string>();
+
+    this.npcDialogues.forEach(dialogue => {
+      // Add quest IDs from questRelations
+      dialogue.questRelations?.forEach(questId => questIds.add(questId));
+
+      // Also scan all nodes for quest_status conditions
+      dialogue.nodes.forEach(node => {
+        node.conditions?.forEach(condition => {
+          if (condition.type === 'quest_status' && condition.questId) {
+            questIds.add(condition.questId);
+          }
+        });
+
+        // Check actions too
+        node.actions?.forEach(action => {
+          if ((action.type === 'start_quest' || action.type === 'set_quest_status' || action.type === 'complete_quest') && action.questId) {
+            questIds.add(action.questId);
+          }
+        });
+      });
+    });
+
+    return Array.from(questIds);
+  }
+
   static getDialogueForNPC(npcId: string, playerState: PlayerState): DialogueNode | null {
     const npcDialogue = this.npcDialogues.get(npcId);
     if (!npcDialogue) {
       console.warn(`No dialogue found for NPC: ${npcId}`);
       return null;
     }
-    
-    const validNodes = npcDialogue.nodes.filter(node => 
-      this.evaluateConditions(node.conditions || [], playerState)
-    );
-    
+
+    console.log(`🔎 Evaluating ${npcDialogue.nodes.length} nodes for ${npcId}`);
+
+    const validNodes = npcDialogue.nodes.filter(node => {
+      const isValid = this.evaluateConditions(node.conditions || [], playerState);
+      if (isValid) {
+        console.log(`✅ Node ${node.id} (priority ${node.priority}) is VALID`);
+      }
+      return isValid;
+    });
+
+    console.log(`📋 Found ${validNodes.length} valid nodes`);
+
     if (validNodes.length === 0) {
+      console.log(`⚠️ No valid nodes, using default: ${npcDialogue.defaultNode}`);
       const defaultNode = npcDialogue.nodes.find(node => node.id === npcDialogue.defaultNode);
       return defaultNode || null;
     }
-    
+
     validNodes.sort((a, b) => b.priority - a.priority);
     const selectedNode = validNodes[0];
-    
+    console.log(`🎯 Selected node ${selectedNode.id} (priority ${selectedNode.priority}): "${selectedNode.text.substring(0, 40)}..."`);
+
     return this.processVariables(selectedNode, playerState);
   }
   
