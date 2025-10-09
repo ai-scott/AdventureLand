@@ -431,7 +431,7 @@ export class ItemManager {
     static removeFromInventory(itemId: number, quantity: number = 1): boolean {
         const index = this.inventory.findIndex(stack => stack.itemId === itemId);
         if (index === -1) {
-            console.warn(`[ItemManager] Cannot remove item ${itemId} - not in inventory`);
+            // Item not in inventory - silently return false
             return false;
         }
 

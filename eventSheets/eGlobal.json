@@ -6589,7 +6589,13 @@
 											}
 										}
 									],
-									"actions": [],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": []
+										}
+									],
 									"sid": 671455362298072,
 									"children": [
 										{

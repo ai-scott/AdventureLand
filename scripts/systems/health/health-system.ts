@@ -218,7 +218,6 @@ export class HealthSystem {
                 this.runtime.globalVars.Health = this.state.current;
                 this.runtime.globalVars.MaxHealth = this.state.max;
 
-                console.log(`[HealthSystem] Loaded from global vars: ${this.state.current}/${this.state.max} (alive, synced to Dict & C3)`);
                 return;
             }
 

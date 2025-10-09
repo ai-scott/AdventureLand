@@ -47,7 +47,6 @@ class EnemyPauseManager {
   static pause(reason: string = "default"): void {
     this.pauseReasons.add(reason);
     this.isPaused = true;
-    console.log(`⏸️ Enemy AI paused (reason: ${reason})`);
   }
 
   static resume(reason: string = "default"): void {
@@ -55,9 +54,6 @@ class EnemyPauseManager {
 
     if (this.pauseReasons.size === 0) {
       this.isPaused = false;
-      console.log("▶️ Enemy AI resumed");
-    } else {
-      console.log(`⏸️ Enemy AI still paused (${this.pauseReasons.size} reasons remain)`);
     }
   }
 

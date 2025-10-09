@@ -2070,6 +2070,10 @@
 												"    ",
 												"    const opt1 = runtime.objects.obj_TextOption1?.getFirstInstance();",
 												"    const opt2 = runtime.objects.obj_TextOption2?.getFirstInstance();",
+												"",
+												"    opt1.text = text1;",
+												"    opt2.text = text2;",
+												"",
 												"    console.log(\"🎨 Final text on objects - opt1:\", opt1?.text, \"opt2:\", opt2?.text);",
 												"}"
 											]
