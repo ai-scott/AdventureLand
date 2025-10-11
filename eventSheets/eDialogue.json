@@ -123,6 +123,36 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "Option2Text",
+			"type": "string",
+			"initialValue": "",
+			"comment": "user dialogue selections",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 824524959813069
+		},
+		{
+			"eventType": "variable",
+			"name": "Option1Text",
+			"type": "string",
+			"initialValue": "",
+			"comment": "user dialogue selections",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 789555267083941
+		},
+		{
+			"eventType": "variable",
+			"name": "OptionSelection",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "Current cursor selection",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 676183239391454
+		},
+		{
+			"eventType": "variable",
 			"name": "InDialogue",
 			"type": "boolean",
 			"initialValue": "false",
@@ -140,16 +170,6 @@
 			"isStatic": false,
 			"isConstant": false,
 			"sid": 173463828716428
-		},
-		{
-			"eventType": "variable",
-			"name": "OptionSelection",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "Current cursor selection",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 631431078947192
 		},
 		{
 			"eventType": "variable",
@@ -1934,17 +1954,17 @@
 										{
 											"id": "set-text",
 											"objectClass": "obj_TextOption1",
-											"sid": 351321837789931,
+											"sid": 455846743871129,
 											"parameters": {
-												"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+												"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & Option1Text"
 											}
 										},
 										{
 											"id": "set-text",
 											"objectClass": "obj_TextOption2",
-											"sid": 227310774604121,
+											"sid": 116921795701083,
 											"parameters": {
-												"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+												"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & Option2Text"
 											}
 										}
 									],
@@ -1978,7 +1998,10 @@
 									"script": [
 										"console.log(\"displaying options\");",
 										"console.log(\"🏗️ displayUserOptions START - OptionsOpen:\", runtime.globalVars.OptionsOpen);",
-										"console.trace(\"Call stack:\");"
+										"console.trace(\"Call stack:\");",
+										"",
+										"// Reset selection to first option for new dialogue",
+										"runtime.globalVars.OptionSelection = 0;"
 									]
 								},
 								{
@@ -2068,15 +2091,32 @@
 												"    const text2 = dialogue.getResponseText(1);",
 												"    console.log(\"📄 Event sheet getting response texts:\", text1, text2);",
 												"    ",
-												"    const opt1 = runtime.objects.obj_TextOption1?.getFirstInstance();",
-												"    const opt2 = runtime.objects.obj_TextOption2?.getFirstInstance();",
+												"    // Store raw texts in global variables for arrow key navigation",
+												"    runtime.globalVars.Option1Text = text1;",
+												"    runtime.globalVars.Option2Text = text2;",
+												"    ",
+												"    // Wait a tick for objects to be created, then set their text",
+												"    setTimeout(() => {",
+												"        const opt1 = runtime.objects.obj_TextOption1?.getFirstInstance();",
+												"        const opt2 = runtime.objects.obj_TextOption2?.getFirstInstance();",
 												"",
-												"    opt1.text = text1;",
-												"    opt2.text = text2;",
-												"",
-												"    console.log(\"🎨 Final text on objects - opt1:\", opt1?.text, \"opt2:\", opt2?.text);",
+												"        if (opt1 && opt2) {",
+												"            // Add arrow icon based on current selection",
+												"            opt1.text = (runtime.globalVars.OptionSelection === 0 ? \"[icon=Arrow]\" : \"[icon=Empty]\") + text1;",
+												"            opt2.text = (runtime.globalVars.OptionSelection === 1 ? \"[icon=Arrow]\" : \"[icon=Empty]\") + text2;",
+												"            ",
+												"            console.log(\"🎨 Final text on objects - opt1:\", opt1.text, \"opt2:\", opt2.text);",
+												"        } else {",
+												"            console.error(\"❌ Objects still not found after timeout! opt1:\", !!opt1, \"opt2:\", !!opt2);",
+												"        }",
+												"    }, 0);",
 												"}"
 											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "Character_Cameos",
+											"sid": 304728002424278
 										}
 									],
 									"sid": 949996674660156
@@ -2249,6 +2289,11 @@
 							"sid": 514644938466801
 						},
 						{
+							"id": "destroy",
+							"objectClass": "Character_Cameos",
+							"sid": 713017372880441
+						},
+						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
 							"sid": 411959461240124,
@@ -2260,27 +2305,6 @@
 					],
 					"sid": 647562806740159,
 					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-on-layer",
-									"objectClass": "Character_Cameos",
-									"sid": 559029030058766,
-									"parameters": {
-										"layer": "\"HUD_UI\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "destroy",
-									"objectClass": "Character_Cameos",
-									"sid": 515965021204980
-								}
-							],
-							"sid": 796807582919135
-						},
 						{
 							"eventType": "block",
 							"conditions": [

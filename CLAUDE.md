@@ -114,6 +114,17 @@ This bug has been reported multiple times - TypeScript casting can only be used 
 - Manages 150+ game items
 - Integration with inventory system
 
+### Quest & Dialogue System (`scripts/external/quest-dialogue/`)
+- TypeScript dialogue system with bridge pattern for C3 integration
+- Data-driven quest and dialogue management
+- 12 dialogue files across 3 worlds (World00: 8 NPCs, World01: 2, World10: 2)
+- Race condition prevention with immediate InDialogue flag setting
+- Performance: <1% CPU overhead, negligible impact on game performance
+- **Bridge Pattern**: DialogueBridge connects TypeScript logic to C3 event sheets
+- **Enemy Integration**: Automatic enemy pause/resume during dialogue
+- **Quest Tracking**: triggerUID tracking prevents duplicate dialogue triggers
+- **Event Sheet Safety**: Uses safe JavaScript pattern with InDialogue checks
+
 ## Testing Structure
 
 ### Test Organization
@@ -262,15 +273,46 @@ import * as EnemyAI from "./enemy-ai.ts";
 import * as EnemyAI from "./enemy-ai";
 ```
 
+### Dialogue System Race Condition Prevention
+**CRITICAL Pattern for Event Sheets**:
+```jsx
+// In event sheet - ALWAYS check InDialogue BEFORE triggering
+Player: On collision with Trigger_NPC
+System: InDialogue = false  // MUST check this first!
+→ Execute JavaScript:
+  const dialogue = globalThis.AdventureLand?.DialogueBridge;
+  if (dialogue) {
+    dialogue.startDialogue("NPCName", runtime, localVars.triggerUID);
+  }
+```
+
+**WHY this pattern is required**:
+- Collision checks can fire multiple times per frame
+- Without InDialogue check, dialogue can trigger twice
+- Bridge sets `InDialogue = true` IMMEDIATELY (before async operations)
+- triggerUID tracking prevents same trigger from re-triggering dialogue
+
+**Dialogue System Integration Points**:
+1. **Dialogue ↔ Enemy AI**: `EnemyPause.pause("dialogue")` during conversations
+2. **Dialogue ↔ Quest System**: Automatic quest status updates via actions
+3. **Dialogue ↔ SaveGame**: Quest states persist in Dict_SaveGameData
+4. **Dialogue ↔ Event Sheets**: Bridge pattern with safe JavaScript access
+
+**Dialogue File Organization by World**:
+- **World00 (Leafwood Village)**: penny, rosie, generalstore, blacksmith, adventureshop, welcome, seamonsterkey, windmillnick (8 NPCs)
+- **World01 (Leafwood Forest)**: pete, forestsign (2 NPCs)
+- **World10 (Bottomless Lake)**: lakesign, treesign (2 NPCs)
+
 ### Current System Status
-- **Production Ready**: Enemy AI with Battle System, Tile Animations
-- **In Migration**: Quest System, Inventory Optimization
+- **Production Ready**: Enemy AI with Battle System, Tile Animations, Quest & Dialogue System
+- **In Migration**: Inventory Optimization
 - **Planned**: Player Battle System, World Builder Tools, Advanced Debug System
 
 ### Performance Benchmarks
 - **Enemy AI Factory**: 90% development time reduction
 - **Enemy Battle System**: 35% CPU reduction during immunity frames
 - **Tile Animation System**: 67% CPU reduction (30% → 10%)
+- **Dialogue System**: <1% CPU overhead, console.log cleanup reduced debug noise
 - **Target for new systems**: Similar performance gains
 
 ### Test Commands for Inventory

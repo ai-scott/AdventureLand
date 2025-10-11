@@ -331,15 +331,13 @@ export class DialogueBridge {
       this.executeActions(processedNode.actions, runtime);
     }
 
-    // Refresh UI - ALWAYS show the dialogue text first
-    console.log(`📢 Calling displayDialogue()`);
-    runtime.callFunction("displayDialogue");
-
-    // If options are open, create the option UI
+    // Refresh UI - If options are open, show options UI instead of dialogue UI
     if (runtime.globalVars.OptionsOpen) {
       console.log(`📋 Calling displayUserOptions() - Response 0: "${this.getResponseText(0)}", Response 1: "${this.getResponseText(1)}"`);
       runtime.callFunction("displayUserOptions");
     } else {
+      console.log(`📢 Calling displayDialogue()`);
+      runtime.callFunction("displayDialogue");
       console.log(`⏭️ No options to display (OptionsOpen is false)`);
     }
 

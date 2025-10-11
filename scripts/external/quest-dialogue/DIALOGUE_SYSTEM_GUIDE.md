@@ -320,15 +320,41 @@ The quest status is only updated AFTER node_001 completes.
 
 ### Triggering Dialogue
 
+**CRITICAL: Race Condition Prevention Pattern**
+
 In your C3 event sheet:
 
-```javascript
-// IMPORTANT: Check if quest key exists first!
-System: On collision with Trigger_NPC
+```jsx
+// IMPORTANT: Check InDialogue flag FIRST to prevent duplicate triggers!
+Player: On collision with Trigger_NPC
+System: InDialogue = false  // CRITICAL: Must check this condition!
+→ Local number triggerUID = 0
+→ Set triggerUID to Trigger_NPC.UID
+→ Execute JavaScript:
+  const dialogue = globalThis.AdventureLand?.DialogueBridge;
+  if (dialogue) {
+    dialogue.startDialogue("NPCName", runtime, localVars.triggerUID);
+  }
+```
+
+**WHY this pattern is required**:
+- Collision events can fire multiple times per frame
+- Without `InDialogue = false` check, dialogue triggers twice
+- Bridge sets `InDialogue = true` IMMEDIATELY (before any async operations)
+- triggerUID tracking prevents same trigger from re-triggering dialogue
+- Safe JavaScript pattern (no TypeScript casting in event sheets)
+
+### Optional: Quest Status Checks (Additional Filtering)
+
+You can also add quest status checks if needed:
+
+```jsx
+// Additional conditions (optional)
+System: InDialogue = false  // Still required!
 Dict_SaveGameData: Key "npc_quest" exists (inverted)  // Fresh game
 OR
 Dict_SaveGameData: "npc_quest" ≠ "Complete"           // Already started
-→ Call initiateDialogue("NPCName")
+→ Call startDialogue("NPCName")
 ```
 
 **Why check key exists?**
@@ -410,15 +436,25 @@ Available variables:
 
 The dialogue system automatically pauses enemies during dialogue:
 
-```typescript
-// When dialogue starts
-AdventureLand.EnemyPause.pause("dialogue");
+```tsx
+// In dialogue-bridge.ts - When dialogue starts
+const adventureLand = (globalThis as any).AdventureLand;
+if (adventureLand?.EnemyPause) {
+  adventureLand.EnemyPause.pause("dialogue");
+}
 
-// When dialogue ends
-AdventureLand.EnemyPause.resume("dialogue");
+// In dialogue-bridge.ts - When dialogue ends
+if (adventureLand?.EnemyPause) {
+  adventureLand.EnemyPause.resume("dialogue");
+}
 ```
 
-Enemies using `updateWithPause()` will freeze during dialogue.
+**Integration Details**:
+- Enemies using `updateWithPause()` will freeze during dialogue
+- Automatic pause when `DialogueBridge.startDialogue()` is called
+- Automatic resume when `DialogueBridge.endDialogue()` is called
+- No manual pause/resume needed in event sheets
+- Improves UX by preventing enemy attacks during conversations
 
 ## Debugging
 

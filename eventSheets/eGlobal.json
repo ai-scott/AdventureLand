@@ -6486,17 +6486,17 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_TextOption1",
-									"sid": 755619168470625,
+									"sid": 341932801195442,
 									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & Option1Text"
 									}
 								},
 								{
 									"id": "set-text",
 									"objectClass": "obj_TextOption2",
-									"sid": 748330333899126,
+									"sid": 533481357059177,
 									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & Option2Text\n"
 									}
 								}
 							],
@@ -6536,17 +6536,17 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_TextOption1",
-									"sid": 575175597063576,
+									"sid": 722465503083996,
 									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & right(Self.Text, len(Self.Text) - 12)"
+										"text": "(OptionSelection ? \"[icon=Empty]\" : \"[icon=Arrow]\") & Option1Text"
 									}
 								},
 								{
 									"id": "set-text",
 									"objectClass": "obj_TextOption2",
-									"sid": 715355432132851,
+									"sid": 815583974463525,
 									"parameters": {
-										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & right(Self.Text, len(Self.Text) - 12)"
+										"text": "(OptionSelection ? \"[icon=Arrow]\" : \"[icon=Empty]\") & Option2Text"
 									}
 								}
 							],
@@ -6555,7 +6555,7 @@
 						},
 						{
 							"eventType": "comment",
-							"text": "Only run if Player is in Dialogue already"
+							"text": "Advancing dialogue "
 						},
 						{
 							"eventType": "block",
@@ -6589,13 +6589,7 @@
 											}
 										}
 									],
-									"actions": [
-										{
-											"type": "script",
-											"language": "javascript",
-											"script": []
-										}
-									],
+									"actions": [],
 									"sid": 671455362298072,
 									"children": [
 										{
@@ -6622,7 +6616,7 @@
 												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 507986777403614,
+													"sid": 727526825399279,
 													"parameters": {
 														"variable": "OptionsOpen"
 													}
@@ -6633,6 +6627,8 @@
 													"type": "script",
 													"language": "javascript",
 													"script": [
+														"console.log(\"🔴 EVENT 141 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
+														"",
 														"const dialogue = globalThis.AdventureLand?.Dialogue;",
 														"if (dialogue) {",
 														"    const selectedIndex = runtime.globalVars.OptionSelection;",
@@ -6644,7 +6640,7 @@
 													]
 												}
 											],
-											"sid": 478423804950131
+											"sid": 543915338783702
 										},
 										{
 											"eventType": "comment",
@@ -6664,9 +6660,17 @@
 													"type": "script",
 													"language": "javascript",
 													"script": [
+														"console.log(\"🔵 EVENT 142 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
+														"",
 														"const dialogue = globalThis.AdventureLand?.Dialogue;",
 														"if (dialogue) {",
 														"    dialogue.advance(runtime);",
+														"    ",
+														"    // After advancing, check if options appeared",
+														"    if (runtime.globalVars.OptionsOpen) {",
+														"        console.log(\"📋 Options appeared after advance, displaying them\");",
+														"        runtime.callFunction(\"displayUserOptions\");",
+														"    }",
 														"}"
 													]
 												}

@@ -30,7 +30,7 @@ export const WindmillNickDialogue: NPCDialogue = {
             },
             {
                   id: "node_001",
-                  speaker: "Windmill_Nick",
+                  speaker: "You",
                   text: "",
                   priority: 99,
                   conditions: [
@@ -81,7 +81,7 @@ export const WindmillNickDialogue: NPCDialogue = {
             },
             {
                   id: "node_004",
-                  speaker: "Windmill_Nick",
+                  speaker: "You",
                   text: "",
                   priority: 96,
                   conditions: [
@@ -132,7 +132,7 @@ export const WindmillNickDialogue: NPCDialogue = {
             },
             {
                   id: "node_007",
-                  speaker: "Windmill_Nick",
+                  speaker: "You",
                   text: "",
                   priority: 93,
                   conditions: [
