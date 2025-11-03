@@ -127,9 +127,7 @@ export class HealthSystem {
      */
     static initialize(configOrRuntime?: Partial<HealthConfig> | any, config?: Partial<HealthConfig>): void {
         if (this.initialized) {
-            console.warn('⚠️ [HealthSystem] Already initialized - reloading from save data');
             this.loadFromSaveData();
-            console.log('✅ [HealthSystem] Health reloaded:', this.getState());
             return;
         }
 
@@ -149,8 +147,6 @@ export class HealthSystem {
                 }
             }
 
-            console.log(`🔧 [HealthSystem] Runtime captured during init: ${!!this.runtime}`);
-
             if (!this.runtime) {
                 console.error('❌ [HealthSystem] Runtime is not available at initialization!');
                 return;
@@ -167,8 +163,6 @@ export class HealthSystem {
             // Disable external sync permanently - HealthSystem is the source of truth
             // External changes should not override the HealthSystem state
             this.allowExternalSync = false;
-
-            console.log('✅ [HealthSystem] Initialized with state:', this.getState());
 
         } catch (error) {
             console.error('❌ [HealthSystem] Initialization failed:', error);
@@ -192,11 +186,9 @@ export class HealthSystem {
             if (globalHealth !== undefined) {
                 // If player was dead before load, they're respawning regardless of loaded health
                 if (wasDeadBeforeLoad) {
-                    console.log(`[HealthSystem] Player was dead - respawning with ${this.config.startingHealth} health (loaded: ${globalHealth})`);
                     this.state.current = this.config.startingHealth;
                     this.state.max = globalMaxHealth || this.config.maxHealth;
                 } else if (globalHealth <= 0) {
-                    console.log(`[HealthSystem] Loaded health is 0 - resetting to ${this.config.startingHealth}`);
                     this.state.current = this.config.startingHealth;
                     this.state.max = globalMaxHealth || this.config.maxHealth;
                 } else {
@@ -230,7 +222,6 @@ export class HealthSystem {
 
                 // If health is 0 or negative, reset to starting health (player respawn)
                 if (dictHealth <= 0) {
-                    console.log(`[HealthSystem] Respawning player - resetting health from Dict ${dictHealth} to ${this.config.startingHealth}`);
                     this.state.current = this.config.startingHealth;
                     this.state.max = dictMaxHealth;
                 } else {
@@ -250,8 +241,6 @@ export class HealthSystem {
                 }
                 this.runtime.globalVars.Health = this.state.current;
                 this.runtime.globalVars.MaxHealth = this.state.max;
-
-                console.log(`[HealthSystem] Loaded from save data: ${this.state.current}/${this.state.max}`);
             }
         } catch (error) {
             console.warn('[HealthSystem] Could not load save data:', error);
@@ -351,29 +340,17 @@ export class HealthSystem {
      * Process incoming damage
      */
     static takeDamage(damageInfo: DamageInfo): number {
-        console.log('🎯 [HealthSystem] takeDamage called with:', {
-            amount: damageInfo.amount,
-            type: damageInfo.type,
-            source: damageInfo.source,
-            currentHealth: this.state.current,
-            isDead: this.state.isDead,
-            isInvincible: this.state.isInvincible
-        });
-
         if (!this.initialized || this.state.isDead) {
-            console.log('[HealthSystem] Damage ignored - not initialized or dead');
             return 0;
         }
 
         // Check invincibility
         if (this.state.isInvincible && !damageInfo.ignoreInvincibility) {
-            console.log('[HealthSystem] Damage blocked by invincibility');
             return 0;
         }
 
         // Calculate actual damage
         let actualDamage = this.calculateDamage(damageInfo);
-        console.log(`[HealthSystem] Calculated damage: ${damageInfo.amount} → ${actualDamage}`);
 
         // Apply to temporary HP first
         if (this.state.temporary > 0) {
@@ -388,7 +365,6 @@ export class HealthSystem {
 
         // Apply remaining damage to health
         if (actualDamage > 0) {
-            const oldHealth = this.state.current;
             this.state.current = Math.max(0, this.state.current - actualDamage);
 
             // Update state
@@ -414,14 +390,11 @@ export class HealthSystem {
 
             // Check for death
             if (this.state.current <= 0 && !this.state.isDead) {
-                console.log('☠️ [HealthSystem] Player has died! Triggering death sequence...');
                 this.die(damageInfo.source);
             }
 
             // Sync with C3
             this.syncHealthToC3();
-
-            console.log(`💔 [HealthSystem] Damage: ${actualDamage} (${oldHealth} → ${this.state.current})`);
         }
 
         return actualDamage;
@@ -433,15 +406,10 @@ export class HealthSystem {
     private static calculateDamage(damageInfo: DamageInfo): number {
         let damage = damageInfo.amount;
 
-        console.log(`🛡️ [HealthSystem] calculateDamage START - runtime exists: ${!!this.runtime}, Defense: ${this.runtime?.globalVars?.Defense}`);
-
         // Apply player Defense (base armor) - subtract from damage first
         if (this.runtime && damageInfo.type !== 'true' && !damageInfo.ignoreArmor) {
             const playerDefense = this.runtime.globalVars.Defense || 0;
             damage = Math.max(1, damage - playerDefense); // Always deal at least 1 damage
-            console.log(`[HealthSystem] Applied Defense: ${damageInfo.amount} - ${playerDefense} = ${damage}`);
-        } else {
-            console.log(`⚠️ [HealthSystem] Defense SKIPPED - runtime: ${!!this.runtime}, type: ${damageInfo.type}, ignoreArmor: ${damageInfo.ignoreArmor}`);
         }
 
         // Apply resistances (except for true damage)
@@ -468,7 +436,6 @@ export class HealthSystem {
     static heal(healInfo: HealInfo): number {
         if (!this.initialized || this.state.isDead) return 0;
 
-        const oldHealth = this.state.current;
         const maxHeal = healInfo.overheal ?
             this.state.max + this.state.temporary :
             this.state.max - this.state.current;
@@ -487,8 +454,6 @@ export class HealthSystem {
 
             // Sync with C3
             this.syncHealthToC3();
-
-            console.log(`💚 [HealthSystem] Heal: ${actualHeal} (${oldHealth} → ${this.state.current})`);
         }
 
         return actualHeal;
@@ -505,8 +470,6 @@ export class HealthSystem {
         if (this.callbacks.onShieldGain) {
             this.callbacks.onShieldGain(amount);
         }
-
-        console.log(`🛡️ [HealthSystem] Shield added: ${amount} (total: ${this.state.temporary})`);
     }
 
     /**
@@ -527,8 +490,6 @@ export class HealthSystem {
         }
 
         this.syncHealthToC3();
-
-        console.log(`❤️ [HealthSystem] Max health: ${oldMax} → ${this.state.max}`);
     }
 
     /**
@@ -541,8 +502,6 @@ export class HealthSystem {
         if (this.callbacks.onDeath) {
             this.callbacks.onDeath(source);
         }
-
-        console.log(`☠️ [HealthSystem] Death from ${source.type} (UID: ${source.uid})`);
     }
 
     /**
@@ -567,8 +526,6 @@ export class HealthSystem {
         }
 
         this.syncHealthToC3();
-
-        console.log(`🔄 [HealthSystem] Revived with ${this.state.current} health`);
     }
 
     /**
@@ -578,26 +535,19 @@ export class HealthSystem {
         if (!this.runtime) return;
 
         try {
-            console.log(`🔄 [HealthSystem] BEFORE sync - TS Health: ${this.state.current}, C3 Health: ${this.runtime.globalVars.Health}`);
-
             // Update global variable FIRST (before adjustHealth reads it)
             this.runtime.globalVars.Health = this.state.current;
             this.runtime.globalVars.MaxHealth = this.state.max;
-
-            console.log(`🔄 [HealthSystem] AFTER globalVars update - C3 Health: ${this.runtime.globalVars.Health}`);
 
             // Update save data through Dictionary
             const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
                 dict.getDataMap().set('Health', this.state.current);
                 dict.getDataMap().set('MaxHealth', this.state.max);
-                console.log(`🔄 [HealthSystem] Dictionary updated - Dict Health: ${dict.getDataMap().get('Health')}`);
             }
 
             // CRITICAL: Trigger C3 adjustHealth function to redraw heart containers
             this.runtime.callFunction('adjustHealth', 0, '');
-
-            console.log(`✅ [HealthSystem] Synced complete - TS:${this.state.current}, C3:${this.runtime.globalVars.Health}`)
         } catch (error) {
             console.warn('[HealthSystem] Could not sync to C3:', error);
         }
@@ -618,12 +568,10 @@ export class HealthSystem {
 
                 // Update if changed externally (only if significantly different to avoid fighting with our own updates)
                 if (Math.abs(dictHealth - this.state.current) > 0.1) {
-                    console.log(`[HealthSystem] External health change: ${this.state.current} → ${dictHealth}`);
                     this.state.current = dictHealth;
                 }
 
                 if (Math.abs(dictMaxHealth - this.state.max) > 0.1) {
-                    console.log(`[HealthSystem] External max health change: ${this.state.max} → ${dictMaxHealth}`);
                     this.state.max = dictMaxHealth;
                 }
             }

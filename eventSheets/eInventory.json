@@ -1762,6 +1762,7 @@
 									"sid": 469151688730498
 								},
 								{
+									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -2928,7 +2929,7 @@
 										"const itemName = dict.getDataMap().get(itemSlot.instVars.InventoryState) || \"\";",
 										"itemSlot.instVars.ItemName = itemName;",
 										"",
-										"console.log(`[Equipment] ${itemSlot.instVars.InventoryState}: \"${itemName}\"`);"
+										"//console.log(`[Equipment] ${itemSlot.instVars.InventoryState}: \"${itemName}\"`);"
 									]
 								}
 							],
@@ -3303,6 +3304,7 @@
 							"sid": 238539580128191
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [],
@@ -4733,6 +4735,7 @@
 					"functionCopyPicked": false,
 					"functionIsAsync": false,
 					"functionParameters": [],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -7086,9 +7089,6 @@
 							"type": "script",
 							"language": "javascript",
 							"script": [
-								"console.log(\"=== Calc_Hero_Stats DEBUG ===\");",
-								"console.log(\"Mode:\", localVars.Mode);",
-								"",
 								"// Check all ItemSlots",
 								"const slots = runtime.objects.ItemSlot.getAllInstances();",
 								"",
@@ -7270,7 +7270,6 @@
 											"sid": 738398783677823
 										},
 										{
-											"bookmark": true,
 											"eventType": "block",
 											"conditions": [
 												{
@@ -7633,7 +7632,6 @@
 							"sid": 984843580296484
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [
 						{
@@ -8289,7 +8287,6 @@
 							"sid": 846457891862036,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [

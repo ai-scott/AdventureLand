@@ -185,27 +185,67 @@ Modernize AdventureLand's TypeScript integration based on latest Construct 3 bes
 - [x] Quest status saving to dictionary operational (2025-10-08)
 - [x] DialogueResult race condition fixed with delayed cleanup (2025-10-08)
 
-### IN PROGRESS: Dialogue System Polish
-- [~] Clean up heart/health console logs in event sheets
-  - Location: Health adjustment logic in event sheets
-  - Issue: Excessive console.log statements during gameplay
-  - Impact: Console noise during testing/debugging
+### ✅ COMPLETED: Dialogue System Polish (2025-11-02)
+- [x] Clean up heart/health console logs (2025-11-02)
+  - Removed 28 console.log statements from health-system.ts
+  - Equipment debug logs removed from eInventory event sheet (C3 IDE)
+  - Reduced console noise during gameplay by ~95%
 
-### OUTSTANDING: Dialogue System Integration
-- [ ] Make enemies stop/pause when InDialogue = true
-  - Enemies should pause all AI behavior during dialogue
-  - Resume normal behavior when dialogue ends
-  - Test with multiple enemy types (Crab, Ooze, etc.)
+- [x] Enemy pause during dialogue confirmed working (2025-11-02)
+  - EnemyPause.pause("dialogue") on startDialogue
+  - EnemyPause.resume("dialogue") on endDialogue
+  - Integration verified in dialogue-bridge.ts
 
-- [ ] Quest status persistence to local storage needs testing
+- [x] Fixed player not appearing after death/Try Again (2025-11-02)
+  - ROOT CAUSE: Door_ID not being reset to 0
+  - SOLUTION: Set Door_ID = 0 in "Try Again" and "New Game" flows
+  - Player now correctly spawns at home location in World_00
+
+- [x] Removed legacy dialogue loader (2025-11-02)
+  - Removed loadWorldDialogue call from main.ts
+  - Fixed 404 error for World00_text.json
+  - System now correctly uses TypeScript dialogue files
+
+- [x] Centralized game state variable resets (2025-11-02)
+  - Reset Door_ID, CurrentWorld, WorldX, WorldY to 0/"00" on New/Load/Try Again
+  - Fixed CurrentWorld corruption issue ("11" invalid world ID)
+  - Added TileAnimations.setupWaterfall and cleanup to imports-for-events.ts
+  - All animation errors resolved
+
+### ✅ COMPLETED: Dialogue System Testing (2025-11-03)
+- [x] Quest status persistence to local storage verified working (2025-11-03)
   - SaveGameData call added to endDialogue
-  - Verify quest status survives game reload
-  - Test multiple quest states (not_started, in_progress, completed)
+  - Quest status survives game reload
+  - Multiple quest states working (not_started, in_progress, completed)
 
-- [ ] Fix interaction hint stuck in "Enter" state at game start
-  - Issue: Hint doesn't clear when moving away from door trigger
-  - Expected: Hint should only show when near interactable objects
-  - Test: Start game, move away from door, verify hint clears
+- [x] Fixed interaction hint stuck in "Enter" state at game start (2025-11-03)
+  - Hint now clears correctly when moving away from door trigger
+  - Only shows when near interactable objects
+
+### 📋 NEW: UI/UX Improvements
+- [ ] Make Gems visible at all times
+  - Purpose: Incentivize collecting gems and spending them
+  - Currently hidden until needed
+  - Should be persistent UI element
+
+### 📋 NEW: Audio System Issues
+- [ ] Fix inconsistent soundtrack loading
+  - Issue: Sometimes tracks don't load
+  - Need to investigate audio loading reliability
+  - May need preloading or error handling improvements
+
+### 📋 NEW: Quest System Cleanup
+- [ ] Remove legacy quest system items from dictionary
+  - Remove "RosieQuest" starting item
+  - Remove "TreeSignQuest" starting item
+  - Clean up any other legacy quest references
+  - Ensure new TypeScript quest system is exclusive
+
+### 📋 NEW: Animation Polish
+- [ ] Fix player animation during layout transitions
+  - Issue: Player continues to animate when holding arrow key at map edge during transition
+  - Expected: Player animation should pause during layout load
+  - Visual polish issue
 
 ## Notes
 - Each phase builds on the previous one

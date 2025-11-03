@@ -397,10 +397,10 @@ runOnStartup(async runtime => {
         endDialogue: (runtime: any) => QuestDialogue.DialogueBridge.endDialogue(runtime),
 
         // Low-level functions (for advanced use)
+        // NOTE: Legacy JSON-based dialogue system removed - all dialogues now in TypeScript files
         processJSON: async (worldId: string, runtime: any) => {
-          const nodes = await QuestDialogue.DialogueReader.loadWorldDialogue(worldId);
-          console.log(`✅ Loaded ${nodes.length} dialogue nodes for world ${worldId}`);
-          return nodes.length > 0;
+          console.log(`✅ Dialogue system ready for world ${worldId} (using TypeScript dialogue files)`);
+          return true;
         },
         initNPC: (npcId: string) =>
           QuestDialogue.AdventureLandIntegration.initializeEnhancedDialogue(npcId),

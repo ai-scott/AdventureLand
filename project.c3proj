@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 44902,
+	"savedWithRelease": 45802,
 	"name": "Adventure Land 6.16.25",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -717,13 +717,7 @@
 							}
 						}
 					],
-					"subfolders": [
-						{
-							"items": [],
-							"subfolders": [],
-							"name": "instances"
-						}
-					],
+					"subfolders": [],
 					"name": "types"
 				},
 				{
@@ -1715,8 +1709,8 @@
 		],
 		"orientations": "any",
 		"webgpu": "auto",
+		"multitexturing": "auto",
 		"gpuPreference": "high-performance",
-		"scriptsType": "module",
 		"framerateMode": "vsync",
 		"sampling": "nearest",
 		"downscaling": "medium",
@@ -1727,10 +1721,11 @@
 		"maxSpriteSheetSize": 2048,
 		"loaderStyle": "progress-logo",
 		"preloadSounds": true,
+		"uidAllocationMode": "increment",
 		"cordovaiOSScheme": "app",
 		"cordovaAndroidScheme": "https",
 		"exportFileStructure": "folders",
-		"uidAllocationMode": "increment"
+		"scriptsType": "module"
 	},
 	"viewportWidth": 420,
 	"viewportHeight": 240,

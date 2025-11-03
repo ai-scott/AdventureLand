@@ -5159,6 +5159,7 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"bookmark": true,
 					"eventType": "block",
 					"conditions": [
 						{
@@ -5655,6 +5656,7 @@
 							"sid": 343108707196427
 						}
 					],
+					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [

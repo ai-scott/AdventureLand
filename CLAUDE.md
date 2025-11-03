@@ -6,6 +6,60 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AdventureLand is a TypeScript-enhanced Construct 3 game project. It uses a hybrid architecture where Construct 3 handles visuals/UI while TypeScript manages complex logic and data processing.
 
+## Documentation Structure & Context Loading
+
+This project uses **hierarchical documentation** - context-specific `.md` files located near relevant code. **IMPORTANT**: When working on a system, always read the relevant documentation first to understand patterns, gotchas, and current state.
+
+### Documentation Hierarchy
+
+1. **Root Level** (project-wide context)
+   - `CLAUDE.md` (this file) - General guidance and critical patterns
+   - `README.md` - Project overview, architecture, quick start
+   - `TODO.md` - Active work, modernization plan, current priorities
+
+2. **System-Specific Context** (`scripts/systems/[system-name]/claude.md`)
+   - Read BEFORE working on any system
+   - Contains system-specific patterns, state, and integration notes
+   - Available for: `enemy/`, `health/`, `inventory/`, `items/`, `player/`, `tiles/`, `potions/`, `utils/`
+   - Example: Working on enemy AI? → Read `scripts/systems/enemy/claude.md`
+
+3. **Pattern Documentation** (`docs/patterns/`)
+   - Proven integration patterns with metrics
+   - Decision matrices (TypeScript vs Event Sheets)
+   - Anti-patterns to avoid
+   - Key patterns: nested-object, c3-picking-bridge, data-driven-config, performance-migration
+
+4. **Testing Documentation** (`docs/testing-guide.md`)
+   - Comprehensive test commands
+   - Browser console testing patterns
+   - System-specific test strategies
+   - Troubleshooting common issues
+
+5. **Architecture Documentation** (`scripts/README.md`)
+   - TypeScript architecture overview
+   - Adding new systems workflow
+   - Integration rules and common issues
+
+### Context Loading Strategy
+
+**When starting work:**
+1. Read this CLAUDE.md for project-wide patterns
+2. Check `TODO.md` for current priorities and active work
+3. Read system-specific `claude.md` for the area you're working on
+4. Reference pattern docs as needed
+
+**Examples:**
+- Fixing enemy AI bug → Read `scripts/systems/enemy/claude.md` + `docs/patterns/c3-picking-bridge-pattern.md`
+- Performance issue → Read `docs/patterns/performance-migration-pattern.md` + `docs/testing-guide.md`
+- Adding new system → Read `scripts/README.md` + `docs/patterns/nested-object-pattern.md`
+- Quest/dialogue work → Read `scripts/external/quest-dialogue/claude.md` + dialogue guides
+
+**Why this structure?**
+- Keeps context close to code
+- Avoids information duplication
+- Scales as project grows
+- Makes it easy to find relevant information
+
 ## Essential Commands
 
 ### Development & Testing

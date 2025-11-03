@@ -45,8 +45,15 @@ export const Systems = {
         addLavaAnimation: (name: string, tilemap: string) => TileAnimationManager.addLavaAnimation(name, tilemap),
         addWaterfallAnimation: (name: string, tilemap: string, frameDelay?: number) =>
             TileAnimationManager.addWaterfallAnimation(name, tilemap, frameDelay),
+        // Legacy setupWaterfall function for event sheet compatibility
+        setupWaterfall: (runtime: any, animationName: string, tilemapName: string, frameDelay: number = 150) => {
+            TileAnimationManager.initialize(runtime);
+            TileAnimationManager.addWaterfallAnimation(animationName, tilemapName, frameDelay);
+            TileAnimationManager.start();
+        },
         start: () => TileAnimationManager.start(),
         stop: () => TileAnimationManager.stop(),
+        cleanup: () => TileAnimationManager.cleanup(),
         analyzeTilemap: (tilemapName: string) => TileAnimationManager.analyzeTilemap(tilemapName),
         debugTilesetFrames: (tilemapName: string, tileX: number, tileY: number) =>
             TileAnimationManager.debugTilesetFrames(tilemapName, tileX, tileY)

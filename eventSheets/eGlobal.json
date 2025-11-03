@@ -53,6 +53,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "WorldX",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 509410652625465
+		},
+		{
+			"eventType": "variable",
 			"name": "WorldY",
 			"type": "number",
 			"initialValue": "0",
@@ -70,16 +80,6 @@
 			"isStatic": false,
 			"isConstant": false,
 			"sid": 239346529391165
-		},
-		{
-			"eventType": "variable",
-			"name": "WorldX",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 406163752705466
 		},
 		{
 			"eventType": "variable",
@@ -3178,6 +3178,7 @@
 									"sid": 318452935104219
 								}
 							],
+							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [],
@@ -5053,6 +5054,7 @@
 					"sid": 593623740786653
 				},
 				{
+					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Hints & Gems",
@@ -5599,6 +5601,7 @@
 					"sid": 201288502150000
 				},
 				{
+					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Option Menus",
@@ -5630,7 +5633,44 @@
 							],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 671729780007119,
+									"parameters": {
+										"variable": "Door_ID",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 339452054256656,
+									"parameters": {
+										"variable": "CurrentWorld",
+										"value": "\"00\""
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 589009656374962,
+									"parameters": {
+										"variable": "WorldX",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 636281990318803,
+									"parameters": {
+										"variable": "WorldY",
+										"value": "0"
+									}
+								}
+							],
 							"sid": 620714950063135,
 							"children": [
 								{

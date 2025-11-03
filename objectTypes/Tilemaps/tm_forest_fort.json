@@ -22,7 +22,7 @@
 		"exportFormat": "lossless",
 		"exportQuality": 0.8,
 		"fileType": "image/png",
-		"imageSpriteId": 53095,
+		"imageSpriteId": 1311598,
 		"useCollisionPoly": true,
 		"tag": ""
 	},
@@ -11317,32 +11317,38 @@
 		"731": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
-					1,
+					0.1875,
 					0,
 					1,
-					1,
 					0,
-					1
+					1,
+					1,
+					0.875,
+					1,
+					0.1875,
+					0.1875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"732": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.8125,
 					0,
-					1,
+					0.8125,
+					0.1875,
+					0.3125,
+					0.9375,
+					0.25,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"733": {
 			"collisionPoly": {
@@ -18317,47 +18323,65 @@
 		"1168": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.9375,
+					0.1875,
 					1,
-					0,
+					0.1875,
 					1,
 					1,
-					0,
-					1
+					0.5625,
+					1,
+					0.5625,
+					0.5625,
+					0.625,
+					0.4375,
+					0.8125,
+					0.25
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1169": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.125,
+					0.125,
+					1,
+					0.125,
+					1,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.1875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1170": {
 			"collisionPoly": {
 				"points": [
+					0.4375,
 					0,
+					0.625,
 					0,
+					0.6875,
+					0.0625,
+					0.6875,
+					0.25,
+					0.1896033653846154,
+					0.3395996093750001,
+					0.1875,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.125,
+					0.125,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1171": {
 			"collisionPoly": {
@@ -19891,17 +19915,23 @@
 		"1268": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
-					1,
+					0.5625,
 					0,
 					1,
-					1,
 					0,
-					1
+					1,
+					0.6875,
+					0.9375,
+					0.6875,
+					0.8125,
+					0.625,
+					0.6875,
+					0.5,
+					0.5625,
+					0.3125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1269": {
 			"collisionPoly": {
@@ -19911,27 +19941,37 @@
 					1,
 					0,
 					1,
-					1,
+					0.5625,
+					0.9375,
+					0.625,
+					0.8125,
+					0.6875,
+					0.625,
+					0.75,
+					0.125,
+					0.75,
 					0,
-					1
+					0.6875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1270": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.1875,
 					0,
-					1,
-					1,
+					0.1875,
+					0.3125,
+					0.0625,
+					0.5,
 					0,
-					1
+					0.5
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1271": {
 			"collisionPoly": {
@@ -28793,47 +28833,63 @@
 		"1847": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.8125,
+					0.875,
 					1,
-					0,
+					0.875,
 					1,
 					1,
-					0,
-					1
+					0.75,
+					1,
+					0.75,
+					0.9375
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1848": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.5,
+					0.0625,
+					0.625,
+					0.0625,
+					1,
+					0.375,
+					1,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.8125,
+					0.4778113731971155,
+					0.549476036658654,
+					0.4375,
+					0.125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1849": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.1875,
+					0.0625,
+					0.375,
+					0.0625,
+					0.375,
+					0.25,
+					0.0625,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.3125,
+					0.0625,
+					0.1875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1850": {
 			"collisionPoly": {
@@ -29003,32 +29059,42 @@
 		"1861": {
 			"collisionPoly": {
 				"points": [
+					0.625,
 					0,
+					0.8125,
 					0,
 					1,
-					0,
+					0.1875,
 					1,
 					1,
-					0,
-					1
+					0.625,
+					1,
+					0.5,
+					0.875,
+					0.5,
+					0.125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1862": {
 			"collisionPoly": {
 				"points": [
 					0,
-					0,
-					1,
-					0,
-					1,
+					0.25,
+					0.0625,
+					0.25,
+					0.4375,
+					0.625,
+					0.5625,
+					0.875,
+					0.5625,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1863": {
 			"collisionPoly": {
@@ -30263,77 +30329,72 @@
 		"1945": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
+					0.9375,
+					0.375,
 					1,
-					0,
+					0.375,
 					1,
 					1,
-					0,
-					1
+					0.875,
+					1,
+					0.875,
+					0.875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1946": {
 			"collisionPoly": {
 				"points": [
 					0,
-					0,
+					0.3125,
+					0.875,
+					0.3125,
 					1,
-					0,
+					0.375,
 					1,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1947": {
 			"collisionPoly": {
 				"points": [
+					0.625,
 					0,
+					1,
 					0,
+					1,
 					1,
 					0,
 					1,
-					1,
 					0,
-					1
+					0.3125,
+					0.0625,
+					0.25
 				]
 			},
-			"useCollisionPoly": false
-		},
-		"1948": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1949": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.125,
 					0,
-					1,
+					0.5625,
+					0.875,
+					0.5625,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1950": {
 			"collisionPoly": {
@@ -30503,32 +30564,42 @@
 		"1961": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
-					1,
+					0.6875,
 					0,
 					1,
-					1,
 					0,
-					1
+					1,
+					0.75,
+					0.875,
+					0.75,
+					0.75,
+					0.625,
+					0.6875,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1962": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.625,
 					0,
-					1,
-					1,
+					0.6875,
+					0.125,
+					0.6875,
+					0.375,
+					0.625,
+					0.4375,
+					0.0625,
+					0.6875,
 					0,
-					1
+					0.6875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"1963": {
 			"collisionPoly": {
@@ -31760,95 +31831,37 @@
 			},
 			"useCollisionPoly": false
 		},
-		"2045": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"2046": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"2047": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"2048": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
 		"2049": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.625,
 					0,
+					1,
+					0.75,
 					1,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2050": {
 			"collisionPoly": {
 				"points": [
 					0,
-					0,
-					1,
-					0,
-					1,
+					0.875,
+					0.0625,
+					0.875,
+					0.0625,
 					1,
 					0,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2051": {
 			"collisionPoly": {
@@ -33263,17 +33276,27 @@
 		"2145": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
-					1,
+					0.8125,
 					0,
 					1,
-					1,
 					0,
-					1
+					1,
+					0.625,
+					0.9375,
+					0.6875,
+					0.8125,
+					0.75,
+					0.625,
+					0.75,
+					0.5,
+					0.6875,
+					0.5,
+					0.5625,
+					0.75,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2146": {
 			"collisionPoly": {
@@ -33283,12 +33306,12 @@
 					1,
 					0,
 					1,
-					1,
+					0.5625,
 					0,
-					1
+					0.625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2147": {
 			"collisionPoly": {
@@ -33299,26 +33322,15 @@
 					0,
 					1,
 					1,
+					0.1875,
+					1,
+					0.125,
+					0.9375,
 					0,
-					1
+					0.6875
 				]
 			},
-			"useCollisionPoly": false
-		},
-		"2148": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2149": {
 			"collisionPoly": {
@@ -33328,27 +33340,35 @@
 					1,
 					0,
 					1,
-					1,
+					0.5,
+					0.9375,
+					0.5625,
+					0.0625,
+					0.9375,
 					0,
-					1
+					0.9375
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2150": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.125,
 					0,
-					1,
-					1,
+					0.25,
+					0.25,
+					0.25,
+					0.375,
+					0.1875,
+					0.4375,
 					0,
-					1
+					0.4375
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2151": {
 			"collisionPoly": {
@@ -34793,32 +34813,44 @@
 		"2247": {
 			"collisionPoly": {
 				"points": [
-					0,
-					0,
-					1,
+					0.1875,
 					0,
 					1,
-					1,
 					0,
-					1
+					1,
+					0.625,
+					0.8125,
+					0.6875,
+					0.5625,
+					0.6875,
+					0.4375,
+					0.5625,
+					0.1875,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2248": {
 			"collisionPoly": {
 				"points": [
 					0,
 					0,
-					1,
+					0.8125,
 					0,
-					1,
-					1,
+					0.8125,
+					0.0625,
+					0.6875,
+					0.1875,
+					0.4375,
+					0.375,
+					0.125,
+					0.5625,
 					0,
-					1
+					0.5625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"2249": {
 			"collisionPoly": {
@@ -48143,51 +48175,6 @@
 			},
 			"useCollisionPoly": true
 		},
-		"3127": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3128": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3129": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
 		"3130": {
 			"collisionPoly": {
 				"points": [
@@ -48313,51 +48300,6 @@
 				]
 			},
 			"useCollisionPoly": true
-		},
-		"3138": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3139": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3140": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
 		},
 		"3141": {
 			"collisionPoly": {
@@ -48994,17 +48936,31 @@
 		"3183": {
 			"collisionPoly": {
 				"points": [
+					0.8125,
 					0,
+					0.9375,
 					0,
 					1,
-					0,
+					0.0625,
 					1,
+					0.5,
+					0.9375,
+					0.6875,
+					0.75,
 					1,
-					0,
-					1
+					0.375,
+					1,
+					0.25,
+					0.75,
+					0.25,
+					0.625,
+					0.3125,
+					0.1875,
+					0.375,
+					0.125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3184": {
 			"collisionPoly": {
@@ -49069,17 +49025,31 @@
 		"3188": {
 			"collisionPoly": {
 				"points": [
+					0.0625,
 					0,
+					0.1875,
 					0,
+					0.625,
+					0.125,
+					0.6875,
+					0.1875,
+					0.75,
+					0.625,
+					0.75,
+					0.75,
+					0.625,
 					1,
-					0,
+					0.25,
 					1,
-					1,
+					0.0625,
+					0.6875,
 					0,
-					1
+					0.5,
+					0,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3189": {
 			"collisionPoly": {
@@ -49661,51 +49631,6 @@
 			},
 			"useCollisionPoly": true
 		},
-		"3227": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3228": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3229": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
 		"3230": {
 			"collisionPoly": {
 				"points": [
@@ -49831,51 +49756,6 @@
 				]
 			},
 			"useCollisionPoly": true
-		},
-		"3238": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3239": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
-		},
-		"3240": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
 		},
 		"3241": {
 			"collisionPoly": {
@@ -50558,17 +50438,23 @@
 		"3283": {
 			"collisionPoly": {
 				"points": [
+					0.3125,
 					0,
+					0.8125,
 					0,
+					0.7528076171874998,
+					0.36327185997596145,
+					0.7527606670673076,
+					0.9988919771634615,
+					0.1875,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.19262695312500003,
+					0.880418043870192,
+					0.42437274639423084,
+					0.8533935546874997
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3284": {
 			"collisionPoly": {
@@ -50633,17 +50519,23 @@
 		"3288": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
+					0.6875,
 					0,
+					0.5723219651442305,
+					0.8623422475961536,
+					0.8052696814903844,
+					0.8780517578124999,
+					0.8125,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.2478309044471154,
+					0.9972017728365384,
+					0.24278846153846168,
+					0.8668682391826918
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3289": {
 			"collisionPoly": {
@@ -51255,21 +51147,6 @@
 				]
 			},
 			"useCollisionPoly": true
-		},
-		"3328": {
-			"collisionPoly": {
-				"points": [
-					0,
-					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
-				]
-			},
-			"useCollisionPoly": false
 		},
 		"3329": {
 			"collisionPoly": {
@@ -52126,17 +52003,17 @@
 		"3383": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
-					0,
+					0.7503662109374999,
+					0.002178485576923077,
+					0.7513991135817306,
 					1,
-					0,
-					1,
-					1,
-					0,
+					0.1875,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3384": {
 			"collisionPoly": {
@@ -52201,17 +52078,17 @@
 		"3388": {
 			"collisionPoly": {
 				"points": [
+					0.24486365685096173,
+					0.0010892427884615385,
+					0.8125,
 					0,
-					0,
+					0.8125,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.2509859525240386,
+					0.9990046574519229
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3389": {
 			"collisionPoly": {
@@ -53656,17 +53533,19 @@
 		"3483": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
+					0.7481032151442305,
 					0,
+					0.7543194110576922,
 					1,
-					0,
+					0.3125,
 					1,
-					1,
-					0,
-					1
+					0.25,
+					0.9375
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3484": {
 			"collisionPoly": {
@@ -53731,17 +53610,19 @@
 		"3488": {
 			"collisionPoly": {
 				"points": [
+					0.25188739483173084,
 					0,
+					0.8125,
 					0,
+					0.75,
+					0.9375,
+					0.6875,
 					1,
-					0,
-					1,
-					1,
-					0,
+					0.24637545072115408,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3489": {
 			"collisionPoly": {
@@ -55156,17 +55037,21 @@
 		"3583": {
 			"collisionPoly": {
 				"points": [
+					0.3125,
 					0,
+					0.8049128605769231,
 					0,
+					0.8127723106971149,
+					0.9983379657451922,
+					0.3125,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.25,
+					0.8125,
+					0.25,
+					0.5
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3584": {
 			"collisionPoly": {
@@ -55231,17 +55116,21 @@
 		"3588": {
 			"collisionPoly": {
 				"points": [
+					0.23911696213942318,
+					0.0016338641826923077,
+					0.6875,
 					0,
-					0,
+					0.75,
+					0.5,
+					0.75,
+					0.8125,
+					0.6875,
 					1,
-					0,
-					1,
-					1,
-					0,
+					0.24667593149038472,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3589": {
 			"collisionPoly": {
@@ -56656,17 +56545,21 @@
 		"3683": {
 			"collisionPoly": {
 				"points": [
+					0.3125,
 					0,
+					0.8090256911057689,
 					0,
+					0.8105656550480769,
 					1,
-					0,
+					0.3125,
 					1,
-					1,
-					0,
-					1
+					0.25,
+					0.75,
+					0.25,
+					0.4375
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3684": {
 			"collisionPoly": {
@@ -56731,17 +56624,21 @@
 		"3688": {
 			"collisionPoly": {
 				"points": [
+					0.247229942908654,
+					0.002723106971153846,
+					0.6875,
 					0,
-					0,
+					0.75,
+					0.4375,
+					0.75,
+					0.75,
+					0.6875,
 					1,
-					0,
-					1,
-					1,
-					0,
+					0.24752103365384634,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3689": {
 			"collisionPoly": {
@@ -58156,17 +58053,21 @@
 		"3783": {
 			"collisionPoly": {
 				"points": [
+					0.3125,
 					0,
-					0,
+					0.797710712139423,
+					0.0010892427884615385,
+					0.809983473557692,
 					1,
-					0,
+					0.3125,
 					1,
-					1,
-					0,
-					1
+					0.25,
+					0.625,
+					0.25,
+					0.3125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3784": {
 			"collisionPoly": {
@@ -58231,17 +58132,21 @@
 		"3788": {
 			"collisionPoly": {
 				"points": [
+					0.2435866135817308,
+					0.00027231069711538495,
+					0.6875,
 					0,
-					0,
+					0.75,
+					0.3125,
+					0.75,
+					0.625,
+					0.6875,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.24315467247596154,
+					0.997783954326923
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3789": {
 			"collisionPoly": {
@@ -59656,17 +59561,27 @@
 		"3883": {
 			"collisionPoly": {
 				"points": [
+					0.375,
 					0,
-					0,
+					0.8066781850961532,
+					0.0015305739182692303,
+					0.8127535306490382,
+					0.9417818509615381,
+					0.8125,
 					1,
-					0,
+					0.5,
 					1,
-					1,
-					0,
-					1
+					0.375,
+					0.9375,
+					0.3125,
+					0.875,
+					0.25,
+					0.5,
+					0.25,
+					0.1875
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3884": {
 			"collisionPoly": {
@@ -59731,17 +59646,27 @@
 		"3888": {
 			"collisionPoly": {
 				"points": [
+					0.23903245192307698,
+					0.002488356370192307,
+					0.625,
 					0,
-					0,
+					0.75,
+					0.1875,
+					0.75,
+					0.5,
+					0.6875,
+					0.875,
+					0.625,
+					0.9375,
+					0.5,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.24529559795673087,
+					0.9964693509615383,
+					0.2481407752403847,
+					0.9317439152644228
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3889": {
 			"collisionPoly": {
@@ -61156,17 +61081,21 @@
 		"3983": {
 			"collisionPoly": {
 				"points": [
+					0.3125,
 					0,
-					0,
+					0.8104999248798075,
+					0.0017841045673076923,
+					0.8094482421874996,
+					0.9988919771634615,
+					0.4984741210937498,
+					0.9994459885817307,
+					0.1875,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.25,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3984": {
 			"collisionPoly": {
@@ -61231,17 +61160,19 @@
 		"3988": {
 			"collisionPoly": {
 				"points": [
+					0.2445162259615386,
 					0,
+					0.6875,
 					0,
+					0.75,
+					0.0625,
+					0.8125,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.24566180889423078,
+					0.9984600360576923
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"3989": {
 			"collisionPoly": {
@@ -62656,17 +62587,17 @@
 		"4083": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
-					0,
+					0.7419339693509615,
+					0.0010892427884615385,
+					0.7521503155048072,
 					1,
-					0,
-					1,
-					1,
-					0,
+					0.1875,
 					1
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4084": {
 			"collisionPoly": {
@@ -62731,17 +62662,17 @@
 		"4088": {
 			"collisionPoly": {
 				"points": [
+					0.3061429537259617,
 					0,
+					0.8125,
 					0,
+					0.8125,
 					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.3096548227163463,
+					0.9981219951923077
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4089": {
 			"collisionPoly": {
@@ -64156,17 +64087,23 @@
 		"4183": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
-					0,
+					0.7478590745192307,
+					0.002178485576923077,
+					0.7571458082932685,
+					0.5052302433894234,
+					0.8125,
 					1,
-					0,
+					0.4375,
 					1,
-					1,
-					0,
-					1
+					0.3125,
+					0.8125,
+					0.1875,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4184": {
 			"collisionPoly": {
@@ -64231,17 +64168,23 @@
 		"4188": {
 			"collisionPoly": {
 				"points": [
+					0.29256497896634637,
 					0,
+					0.8125,
 					0,
+					0.8125,
+					0.0625,
+					0.6875,
+					0.8125,
+					0.5625,
 					1,
-					0,
+					0.1875,
 					1,
-					1,
-					0,
-					1
+					0.2484882061298079,
+					0.5488562950721153
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4189": {
 			"collisionPoly": {
@@ -65656,17 +65599,27 @@
 		"4283": {
 			"collisionPoly": {
 				"points": [
+					0.4375,
 					0,
+					0.8125,
 					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.875,
+					0.125,
+					0.875,
+					0.8125,
+					0.6875,
+					0.8125,
+					0.625,
+					0.75,
+					0.4375,
+					0.5,
+					0.375,
+					0.25,
+					0.375,
+					0.0625
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4284": {
 			"collisionPoly": {
@@ -65731,17 +65684,27 @@
 		"4288": {
 			"collisionPoly": {
 				"points": [
+					0.1875,
 					0,
+					0.5625,
 					0,
-					1,
-					0,
-					1,
-					1,
-					0,
-					1
+					0.625,
+					0.0625,
+					0.625,
+					0.25,
+					0.5625,
+					0.5,
+					0.375,
+					0.75,
+					0.3125,
+					0.8125,
+					0.125,
+					0.8125,
+					0.125,
+					0.125
 				]
 			},
-			"useCollisionPoly": false
+			"useCollisionPoly": true
 		},
 		"4289": {
 			"collisionPoly": {
