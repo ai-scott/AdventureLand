@@ -597,36 +597,68 @@ export class AdventureLandIntegration {
   
   private static getCurrentPlayerState(): PlayerState {
     const runtime = (globalThis as any).runtime;
-    
+
     const activeQuests = new Map<string, QuestState>();
     const completedQuests = new Set<string>();
-    
+
     try {
+      // Use the ORIGINAL Dictionary access pattern (from globalVars, not objects)
       const saveData = runtime?.globalVars?.Dict_SaveGameData;
+
       if (saveData) {
-        const questNames = [
-          'PennyQuest', 'RosieQuest', 'Prospector_PeteQuest', 
+        // Dynamic quest discovery from loaded dialogues
+        const dynamicQuestIds = DialogueManager.getAllQuestIds();
+        console.log(`🔍 Dynamic quest discovery found ${dynamicQuestIds.length} quests:`, dynamicQuestIds);
+
+        // Legacy quest names (for backward compatibility)
+        const legacyQuestIds = [
+          'PennyQuest', 'RosieQuest', 'Prospector_PeteQuest',
           'WelcomeQuest', 'TreeSignQuest', 'LakeSignQuest'
         ];
-        
-        questNames.forEach(questName => {
-          const questData = saveData.Get?.(questName);
+
+        // Combine both sources, ensuring no duplicates
+        const allQuestIds = Array.from(new Set([...dynamicQuestIds, ...legacyQuestIds]));
+        console.log(`📋 Total quest IDs to check: ${allQuestIds.length}`, allQuestIds);
+
+        allQuestIds.forEach(questId => {
+          const questData = saveData.Get?.(questId);
           if (questData) {
-            const questState = QuestManager.parseQuestState(questData);
-            questState.id = questName;
-            
-            if (questState.status === 'Completed') {
-              completedQuests.add(questName);
-            } else if (questState.status === 'Active') {
-              activeQuests.set(questName, questState);
+            let questState: QuestState;
+
+            // Handle both legacy format (Status:Step) and new format (custom status strings)
+            if (typeof questData === 'string' && questData.includes(':')) {
+              // Legacy format: "Active:000" or "Completed:001"
+              questState = QuestManager.parseQuestState(questData);
+            } else {
+              // New format: "Meet_Penny", "Complete", etc.
+              const statusStr = String(questData);
+              questState = {
+                id: questId,
+                status: statusStr === 'Complete' ? 'Completed' : (statusStr as any),
+                currentStep: 0,
+                progress: {},
+                priority: 1
+              };
+            }
+
+            questState.id = questId;
+
+            // Check if quest is completed
+            const isCompleted = questState.status === 'Completed' || questData === 'Complete';
+
+            if (isCompleted) {
+              completedQuests.add(questId);
+            } else if (questState.status === 'Active' || (questState.status !== 'Not_Started' && questState.status !== 'Failed' && questState.status !== 'Paused' && !isCompleted)) {
+              // Consider any non-completed, non-not-started status as active (handles custom statuses)
+              activeQuests.set(questId, questState);
             }
           }
         });
       }
     } catch (error) {
-      console.warn("Could not parse existing quest data:", error);
+      console.warn("Could not parse quest data:", error);
     }
-    
+
     return {
       activeQuests,
       completedQuests,

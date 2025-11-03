@@ -1321,46 +1321,7 @@
 							}
 						}
 					],
-					"sid": 780659093902356,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-two-values",
-									"objectClass": "System",
-									"sid": 412226611461928,
-									"parameters": {
-										"first-value": "DataLoaded",
-										"comparison": 0,
-										"second-value": "\"true\""
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 335813317805293,
-									"parameters": {
-										"variable": "DataLoaded",
-										"value": "true"
-									}
-								},
-								{
-									"id": "signal",
-									"objectClass": "System",
-									"sid": 925597368556985,
-									"parameters": {
-										"tag": "\"DataLoaded\""
-									}
-								}
-							],
-							"sid": 970290295953315,
-							"disabled": true
-						}
-					]
+					"sid": 780659093902356
 				},
 				{
 					"eventType": "comment",
@@ -3580,9 +3541,12 @@
 										},
 										{
 											"type": "script",
-											"language": "typescript",
+											"language": "javascript",
 											"script": [
-												"(globalThis as any).AdventureLand.EnemyPause.pause(\"inventory\");"
+												"const enemyPause = globalThis.AdventureLand?.EnemyPause;",
+												"if (enemyPause) {",
+												"    enemyPause.pause(\"inventory\");",
+												"}"
 											]
 										},
 										{
@@ -3776,9 +3740,12 @@
 										},
 										{
 											"type": "script",
-											"language": "typescript",
+											"language": "javascript",
 											"script": [
-												"(globalThis as any).AdventureLand.EnemyPause.resume(\"inventory\");"
+												"const enemyPause = globalThis.AdventureLand?.EnemyPause;",
+												"if (enemyPause) {",
+												"    enemyPause.resume(\"inventory\");",
+												"}"
 											]
 										},
 										{
@@ -4597,37 +4564,6 @@
 								}
 							],
 							"sid": 932203439264816
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-between-angles",
-									"objectClass": "System",
-									"sid": 115774628225134,
-									"parameters": {
-										"angle": "0",
-										"first-angle": "0",
-										"second-angle": "45"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"// Initialize Health System",
-										"    //const runtime = (globalThis as any).runtime;",
-										"    if (runtime && (globalThis as any).AdventureLand?.HealthSystem) {",
-										"        (globalThis as any).AdventureLand.HealthSystem.initialize(runtime);",
-										"        console.log(\"✅ Health System initialized\");",
-										"    }"
-									]
-								}
-							],
-							"sid": 997761357972236,
-							"disabled": true
 						}
 					]
 				},

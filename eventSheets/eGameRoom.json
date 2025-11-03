@@ -1546,16 +1546,6 @@
 															"parameters": {
 																"object": "Trigger_Player"
 															}
-														},
-														{
-															"id": "compare-value",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 558883501984274,
-															"parameters": {
-																"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
-																"comparison": 1,
-																"value": "\"Complete\"\n"
-															}
 														}
 													],
 													"actions": [
@@ -1569,37 +1559,7 @@
 															}
 														}
 													],
-													"sid": 164368929914289,
-													"children": [
-														{
-															"bookmark": true,
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "compare-two-values",
-																	"objectClass": "System",
-																	"sid": 958181786671881,
-																	"parameters": {
-																		"first-value": "CharactersTriggers.ObjectTypeName",
-																		"comparison": 0,
-																		"second-value": "\"Prospector_Pete\""
-																	}
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-boolean-eventvar",
-																	"objectClass": "System",
-																	"sid": 442114133398867,
-																	"parameters": {
-																		"variable": "use_enhanced_dialogue",
-																		"value": "true"
-																	}
-																}
-															],
-															"sid": 172215678524114
-														}
-													]
+													"sid": 164368929914289
 												},
 												{
 													"eventType": "block",
@@ -1898,16 +1858,6 @@
 																"variable": "InteractionHintOn"
 															},
 															"isInverted": true
-														},
-														{
-															"id": "compare-value",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 756522021258472,
-															"parameters": {
-																"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
-																"comparison": 1,
-																"value": "\"Complete\"\n"
-															}
 														}
 													],
 													"actions": [
@@ -2025,45 +1975,16 @@
 															"isInverted": true
 														}
 													],
-													"actions": [],
-													"sid": 693634571011521,
-													"children": [
+													"actions": [
 														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "compare-value",
-																	"objectClass": "Dict_SaveGameData",
-																	"sid": 491864500290922,
-																	"parameters": {
-																		"key": "CharactersTriggers.ObjectTypeName&\"Quest\"",
-																		"comparison": 1,
-																		"value": "\"Complete\"\n"
-																	}
-																},
-																{
-																	"id": "has-key",
-																	"objectClass": "Dict_SaveGameData",
-																	"sid": 461204387351449,
-																	"parameters": {
-																		"key": "CharactersTriggers.ObjectTypeName&\"Quest\""
-																	},
-																	"isInverted": true
-																}
-															],
-															"actions": [
-																{
-																	"callFunction": "showInteractionHint",
-																	"sid": 723750028154599,
-																	"parameters": [
-																		"Action"
-																	]
-																}
-															],
-															"sid": 345531170653059,
-															"isOrBlock": true
+															"callFunction": "showInteractionHint",
+															"sid": 280964392782058,
+															"parameters": [
+																"Action"
+															]
 														}
-													]
+													],
+													"sid": 693634571011521
 												}
 											],
 											"isOrBlock": true
