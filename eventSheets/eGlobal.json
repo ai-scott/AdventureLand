@@ -524,6 +524,15 @@
 							}
 						},
 						{
+							"id": "set-size",
+							"objectClass": "Transition",
+							"sid": 852014704258439,
+							"parameters": {
+								"width": "ViewportWidth(0)",
+								"height": "ViewportHeight(0)"
+							}
+						},
+						{
 							"id": "set-opacity",
 							"objectClass": "Transition",
 							"sid": 538854088704716,
@@ -844,6 +853,24 @@
 								"y": "LayoutHeight/2",
 								"create-hierarchy": false,
 								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-position",
+							"objectClass": "Transition",
+							"sid": 585264139397101,
+							"parameters": {
+								"x": "ViewportLeft(0)",
+								"y": "ViewportTop(0)"
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "Transition",
+							"sid": 210688907125092,
+							"parameters": {
+								"width": "ViewportWidth(0)",
+								"height": "ViewportHeight(0)"
 							}
 						},
 						{
