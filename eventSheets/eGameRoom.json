@@ -5686,7 +5686,32 @@
 							"sid": 565606943279954
 						}
 					],
-					"actions": [],
+					"actions": [
+						{
+							"id": "preload",
+							"objectClass": "Audio",
+							"sid": 249966487505258,
+							"parameters": {
+								"audio-file": "Adventureland1 Danger_01"
+							}
+						},
+						{
+							"id": "preload",
+							"objectClass": "Audio",
+							"sid": 124784181960224,
+							"parameters": {
+								"audio-file": "Adventureland1 Happy_01"
+							}
+						},
+						{
+							"id": "preload",
+							"objectClass": "Audio",
+							"sid": 617187003445557,
+							"parameters": {
+								"audio-file": "Adventureland1 Stress_01"
+							}
+						}
+					],
 					"sid": 906746873954103,
 					"children": [
 						{
@@ -5813,11 +5838,21 @@
 								{
 									"id": "compare-two-values",
 									"objectClass": "System",
-									"sid": 202835818793470,
+									"sid": 997092879823116,
 									"parameters": {
-										"first-value": "LayoutName",
+										"first-value": "left(LayoutName, 6)",
 										"comparison": 0,
-										"second-value": "\"World_00\""
+										"second-value": "\"World_\""
+									}
+								},
+								{
+									"id": "compare-two-values",
+									"objectClass": "System",
+									"sid": 844642053011304,
+									"parameters": {
+										"first-value": "len(LayoutName)",
+										"comparison": 0,
+										"second-value": "8"
 									}
 								},
 								{
@@ -6105,9 +6140,9 @@
 								{
 									"id": "wait",
 									"objectClass": "System",
-									"sid": 562572656066528,
+									"sid": 426559462596132,
 									"parameters": {
-										"seconds": ".1",
+										"seconds": ".5",
 										"use-timescale": true
 									}
 								},
@@ -6138,9 +6173,9 @@
 								{
 									"id": "wait",
 									"objectClass": "System",
-									"sid": 992263863613553,
+									"sid": 552175574709022,
 									"parameters": {
-										"seconds": ".1",
+										"seconds": ".3",
 										"use-timescale": true
 									}
 								},

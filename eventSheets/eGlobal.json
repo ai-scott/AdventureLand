@@ -623,6 +623,24 @@
 							}
 						},
 						{
+							"id": "set-position",
+							"objectClass": "Transition",
+							"sid": 704784180675279,
+							"parameters": {
+								"x": "ViewportLeft(0)",
+								"y": "ViewportTop(0)"
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "Transition",
+							"sid": 556613982194178,
+							"parameters": {
+								"width": "ViewportWidth(0)",
+								"height": "ViewportHeight(0)"
+							}
+						},
+						{
 							"id": "fade-volume",
 							"objectClass": "Audio",
 							"sid": 714537895900102,
@@ -758,6 +776,24 @@
 							"sid": 721048751343029,
 							"parameters": {
 								"opacity": "Self.Opacity - 100 * dt"
+							}
+						},
+						{
+							"id": "set-position",
+							"objectClass": "Transition",
+							"sid": 785093920123201,
+							"parameters": {
+								"x": "ViewportLeft(0)",
+								"y": "ViewportTop(0)"
+							}
+						},
+						{
+							"id": "set-size",
+							"objectClass": "Transition",
+							"sid": 558668961394129,
+							"parameters": {
+								"width": "ViewportWidth(0)",
+								"height": "ViewportHeight(0)"
 							}
 						}
 					],
