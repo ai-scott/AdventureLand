@@ -3,6 +3,10 @@ import { initializeRuntimeFacade } from "./types/c3-runtime-facade.js";
 import * as EnemyAI from "./systems/enemy/enemy-ai.js";
 import "./systems/items/item-manager.js";  // Side-effect import - sets up global namespace
 
+// BAT ENEMY SYSTEM IMPORTS
+import { BatTerritoryManager } from "./systems/enemy/bat-territory-manager.js";
+import { BatShadowManager } from "./systems/enemy/bat-shadow-manager.js";
+
 // NEW: Import the imports-for-events module
 import { registerWithRuntime } from "./imports-for-events.js";
 
@@ -101,6 +105,37 @@ runOnStartup(async runtime => {
     // Visual effect control
     shouldStopEffects: (baseUID: number) =>
       EnemyAI.shouldStopEnemyVisualEffects(baseUID)
+  };
+
+  // BAT ENEMY SYSTEM - Territory Management
+  (globalThis as any).AdventureLand.BatTerritoryManager = {
+    initialize: (runtime: any) => BatTerritoryManager.initialize(runtime),
+    registerBat: (batBaseUID: number) => BatTerritoryManager.registerBat(batBaseUID),
+    getTerritory: (batBaseUID: number) => BatTerritoryManager.getTerritory(batBaseUID),
+    findNearestUnoccupiedTree: (batBaseUID: number, currentX: number, currentY: number) =>
+      BatTerritoryManager.findNearestUnoccupiedTree(batBaseUID, currentX, currentY),
+    updateBatTree: (batBaseUID: number, newTreeIndex: number) =>
+      BatTerritoryManager.updateBatTree(batBaseUID, newTreeIndex),
+    getTreePosition: (index: number) => BatTerritoryManager.getTreePosition(index),
+    getAllTrees: () => BatTerritoryManager.getAllTrees(),
+    unregisterBat: (batBaseUID: number) => BatTerritoryManager.unregisterBat(batBaseUID),
+    reset: () => BatTerritoryManager.reset()
+  };
+
+  // BAT ENEMY SYSTEM - Shadow Synchronization
+  (globalThis as any).AdventureLand.BatShadowManager = {
+    initialize: (runtime: any) => BatShadowManager.initialize(runtime),
+    registerShadow: (batBaseUID: number, shadowUID: number) =>
+      BatShadowManager.registerShadow(batBaseUID, shadowUID),
+    updateShadow: (batBaseUID: number) => BatShadowManager.updateShadow(batBaseUID),
+    updateAllShadows: () => BatShadowManager.updateAllShadows(),
+    setShadowOffset: (batBaseUID: number, offsetY: number) =>
+      BatShadowManager.setShadowOffset(batBaseUID, offsetY),
+    unregisterShadow: (batBaseUID: number) => BatShadowManager.unregisterShadow(batBaseUID),
+    getShadowUID: (batBaseUID: number) => BatShadowManager.getShadowUID(batBaseUID),
+    hasShadow: (batBaseUID: number) => BatShadowManager.hasShadow(batBaseUID),
+    getAllShadows: () => BatShadowManager.getAllShadows(),
+    reset: () => BatShadowManager.reset()
   };
 
   // Create placeholder for Items and Inventory (will be populated by item-manager.ts)

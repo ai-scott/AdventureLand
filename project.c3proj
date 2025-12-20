@@ -417,7 +417,8 @@
 					"Door",
 					"Destructible",
 					"Trigger_Function",
-					"Ramp"
+					"Ramp",
+					"Bat_Tree_Marker"
 				],
 				"subfolders": [],
 				"name": "Objects"
@@ -520,8 +521,6 @@
 					"En_Skeleton_Mask",
 					"En_Statue",
 					"Projectile_Statue",
-					"En_Ooze_Mask2",
-					"En_Ooze_Base2",
 					"En_Skeleton_Base",
 					"En_Ghost_Base",
 					"En_Ghost_Mask",
@@ -539,7 +538,10 @@
 					"Projectile_Demon_Sword",
 					"Projectile_Golem",
 					"En_Crab_Base",
-					"En_Crab_Mask"
+					"En_Crab_Mask",
+					"En_Bat_Mask",
+					"En_Bat_Base",
+					"En_Shadow"
 				],
 				"subfolders": [],
 				"name": "Enemies"
@@ -600,12 +602,6 @@
 			"members": [
 				"En_Ooze_Base",
 				"En_Ooze_Mask"
-			]
-		},
-		{
-			"members": [
-				"En_Ooze_Base2",
-				"En_Ooze_Mask2"
 			]
 		},
 		{
@@ -681,7 +677,8 @@
 			"eInventory",
 			"eEnemies",
 			"eEnemy_Ooze",
-			"eEnemy_Crab"
+			"eEnemy_Crab",
+			"eEnemy_Bat"
 		],
 		"subfolders": []
 	},
@@ -797,6 +794,30 @@
 									"name": "enemy-utils.ts",
 									"type": "application/typescript",
 									"sid": 895130737829845,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "bat-movement-utils.ts",
+									"type": "application/typescript",
+									"sid": 969974548566064,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "bat-territory-manager.ts",
+									"type": "application/typescript",
+									"sid": 114535547756473,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "bat-shadow-manager.ts",
+									"type": "application/typescript",
+									"sid": 923038575023231,
 									"script-info": {
 										"purpose": "none"
 									}

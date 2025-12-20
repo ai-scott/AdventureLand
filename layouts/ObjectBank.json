@@ -1035,72 +1035,6 @@
 					}
 				},
 				{
-					"type": "En_Ooze_Mask2",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Idle_Down",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 95,
-					"sid": 605368063700115,
-					"tags": "",
-					"instanceVariables": {
-						"Hurt_FX": 0,
-						"Active": false,
-						"DontActivate": false,
-						"State": "Idle",
-						"State_Timer": 0
-					},
-					"behaviors": {
-						"Flash": {
-							"properties": {}
-						}
-					},
-					"effects": {
-						"Brightness": {
-							"isEnabled": true,
-							"parameters": {
-								"brightness": 1
-							}
-						},
-						"Tint": {
-							"isEnabled": true,
-							"parameters": {
-								"color": [
-									1,
-									0,
-									0,
-									1
-								]
-							}
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 605368063700115,
-						"expanded": true
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 279.34222621129925,
-						"y": 39.38930962059089,
-						"width": 48,
-						"height": 48,
-						"originX": 0.5,
-						"originY": 0.791667,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
 					"type": "Gem",
 					"properties": {
 						"initially-visible": true,
@@ -1150,70 +1084,6 @@
 						"height": 24,
 						"originX": 0.5,
 						"originY": 0.708333,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"angle": 0,
-						"zElevation": 0
-					}
-				},
-				{
-					"type": "En_Ooze_Base2",
-					"properties": {
-						"initially-visible": false,
-						"initial-animation": "Default",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 94,
-					"sid": 146650570695457,
-					"tags": "",
-					"instanceVariables": {
-						"Health": 4,
-						"Strength": 4,
-						"Pair_ID": 0,
-						"Direction": "",
-						"Player_AngleDiff": 0,
-						"Knockback_Timer": 0,
-						"Default_MaxSpeed": 300,
-						"Default_Acceleration": 3000,
-						"Default_Deceleration": 500,
-						"Hurt": false,
-						"CanBeKnockedBack": true,
-						"State": "",
-						"State_Timer": 0
-					},
-					"behaviors": {
-						"8Direction": {
-							"properties": {
-								"max-speed": 300,
-								"acceleration": 3000,
-								"deceleration": 500,
-								"directions": "dir-8",
-								"set-angle": "no",
-								"allow-sliding": false,
-								"default-controls": false,
-								"enabled": true
-							}
-						}
-					},
-					"instanceFolderItem": {
-						"sid": 146650570695457,
-						"expanded": true
-					},
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 342.97192679989587,
-						"y": 44.07136574985259,
-						"width": 48,
-						"height": 48,
-						"originX": 0.5,
-						"originY": 0.791667,
 						"color": [
 							1,
 							1,
@@ -5887,6 +5757,163 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "En_Shadow",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 95,
+					"sid": 870273782418890,
+					"tags": "",
+					"instanceVariables": {
+						"ParentEnemyUID": 0
+					},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 870273782418890,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 438,
+						"y": -43,
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "En_Bat_Mask",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Fly_Left",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 138,
+					"sid": 358332239716021,
+					"tags": "",
+					"instanceVariables": {
+						"Hurt_FX": 0,
+						"Active": false,
+						"DontActivate": false
+					},
+					"behaviors": {
+						"Flash": {
+							"properties": {}
+						}
+					},
+					"effects": {
+						"Brightness": {
+							"isEnabled": true,
+							"parameters": {
+								"brightness": 1
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 358332239716021,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 471,
+						"y": -44,
+						"width": 32,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "En_Bat_Base",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 278,
+					"sid": 977318521131877,
+					"tags": "",
+					"instanceVariables": {
+						"Health": 12,
+						"Strength": 4,
+						"Pair_ID": 0,
+						"Direction": "",
+						"Player_AngleDiff": 0,
+						"Knockback_Timer": 0,
+						"Default_MaxSpeed": 40,
+						"Default_Acceleration": 20,
+						"Default_Deceleration": 100,
+						"Hurt": false,
+						"CanBeKnockedBack": true,
+						"State": "",
+						"State_Timer": 0,
+						"BatId": 0
+					},
+					"behaviors": {
+						"8Direction": {
+							"properties": {
+								"max-speed": 60,
+								"acceleration": 100,
+								"deceleration": 100,
+								"directions": "dir-8",
+								"set-angle": "no",
+								"allow-sliding": false,
+								"default-controls": false,
+								"enabled": true
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 977318521131877,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 507,
+						"y": -30,
+						"width": 48,
+						"height": 48,
+						"originX": 0.5,
+						"originY": 0.791667,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 381827460024951,
@@ -5954,15 +5981,7 @@
 				"expanded": true
 			},
 			{
-				"sid": 605368063700115,
-				"expanded": true
-			},
-			{
 				"sid": 730124015747742,
-				"expanded": true
-			},
-			{
-				"sid": 146650570695457,
 				"expanded": true
 			},
 			{

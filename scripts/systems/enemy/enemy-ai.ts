@@ -15,6 +15,11 @@ import {
   moveSideways,
   moveTowardPlayer
 } from "./enemy-utils.js";
+import {
+  calculateSwoopToPlayer,
+  calculateFleeToTree,
+  calculateIdleInTree
+} from "./bat-movement-utils.js";
 
 // Enhanced Enemy Data with missing properties
 export interface EnhancedEnemyData extends EnemyData {
@@ -37,6 +42,14 @@ export interface EnhancedEnemyData extends EnemyData {
   currentHealth: number; // Current HP
   maxHealth: number; // Maximum HP
   isDead: boolean; // Death state tracking
+
+  // Bat-specific data
+  batId?: number; // Unique bat ID (1-3)
+  batFlightPath?: any; // BatFlightPath from bat-movement-utils.ts
+  batShadowUID?: number; // UID of the shadow sprite
+  batTargetTreeX?: number; // Target tree X position
+  batTargetTreeY?: number; // Target tree Y position
+  batGroundLevel?: number; // Y position for shadow (player-relative)
 }
 
 // ============= PAUSE SYSTEM =============
@@ -503,6 +516,15 @@ export class EnhancedEnemyAIFactory {
         case 'random':
           moveRandomly(behavior8Dir, enemyData, speed);
           break;
+        case 'swoop_to_player':
+          this.executeBatSwoopToPlayer(behavior8Dir, enemy, enemyData, speed);
+          break;
+        case 'flee_to_nearest_tree':
+          this.executeBatFleeToTree(behavior8Dir, enemy, enemyData, speed);
+          break;
+        case 'idle_in_tree':
+          this.executeBatIdleInTree(behavior8Dir, enemyData);
+          break;
         case 'stop':
         default:
           enemyData.targetSpeed = 0;
@@ -511,6 +533,76 @@ export class EnhancedEnemyAIFactory {
     } catch (error) {
       console.error(`[EnemyAI] Movement error:`, error);
     }
+  }
+
+  // ============= BAT-SPECIFIC MOVEMENT METHODS =============
+
+  private executeBatSwoopToPlayer(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
+    const player = getPlayerInstance(this.runtime);
+    if (!player) return;
+
+    const dt = this.runtime?.dt || 0.016;
+
+    const result = calculateSwoopToPlayer(
+      enemy.x,
+      enemy.y,
+      player.x,
+      player.y,
+      speed,
+      enemyData.batFlightPath || null,
+      dt
+    );
+
+    // Update flight path in enemy data
+    enemyData.batFlightPath = result.flightPath;
+
+    // Set movement angle and speed
+    behavior8Dir.simulateControl("left", result.angle < 0);
+    behavior8Dir.simulateControl("right", result.angle > 0);
+    behavior8Dir.simulateControl("up", Math.abs(result.angle) > Math.PI / 4);
+    behavior8Dir.simulateControl("down", Math.abs(result.angle) < Math.PI / 4);
+  }
+
+  private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
+    // Check if we have a target tree set
+    if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
+      // No target tree - stop movement
+      enemyData.targetSpeed = 0;
+      return;
+    }
+
+    const result = calculateFleeToTree(
+      enemy.x,
+      enemy.y,
+      enemyData.batTargetTreeX,
+      enemyData.batTargetTreeY,
+      speed
+    );
+
+    // Check if we've reached the tree (within 5 pixels)
+    if (result.distance < 5) {
+      // Clear target tree when reached
+      enemyData.batTargetTreeX = undefined;
+      enemyData.batTargetTreeY = undefined;
+      enemyData.targetSpeed = 0;
+      return;
+    }
+
+    // Set movement angle and speed
+    const angle = result.angle;
+    behavior8Dir.simulateControl("left", angle < -Math.PI / 4 || angle > 3 * Math.PI / 4);
+    behavior8Dir.simulateControl("right", angle > Math.PI / 4 && angle < 3 * Math.PI / 4);
+    behavior8Dir.simulateControl("up", angle < -Math.PI / 4 && angle > -3 * Math.PI / 4);
+    behavior8Dir.simulateControl("down", angle > -Math.PI / 4 && angle < Math.PI / 4);
+  }
+
+  private executeBatIdleInTree(behavior8Dir: any, enemyData: EnhancedEnemyData): void {
+    // Stop all movement
+    enemyData.targetSpeed = 0;
+    behavior8Dir.simulateControl("left", false);
+    behavior8Dir.simulateControl("right", false);
+    behavior8Dir.simulateControl("up", false);
+    behavior8Dir.simulateControl("down", false);
   }
 
   private executeAnimationAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {

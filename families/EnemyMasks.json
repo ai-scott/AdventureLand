@@ -40,11 +40,11 @@
 	],
 	"members": [
 		"En_Ooze_Mask",
-		"En_Ooze_Mask2",
 		"En_Skeleton_Mask",
 		"En_Ghost_Mask",
 		"En_Golem_Mask",
 		"En_Demon_Mask",
-		"En_Crab_Mask"
+		"En_Crab_Mask",
+		"En_Bat_Mask"
 	]
 }

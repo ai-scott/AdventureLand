@@ -13,7 +13,7 @@ export interface ActionConfig {
   type: "move" | "animate" | "sound" | "invulnerable" | "set_effect";
   params: {
     // Movement params
-    pattern?: "toward_player" | "away_from_player" | "random" | "stop" | "sideways_left" | "sideways_right" | "crab_toward_player";
+    pattern?: "toward_player" | "away_from_player" | "random" | "stop" | "sideways_left" | "sideways_right" | "crab_toward_player" | "swoop_to_player" | "flee_to_nearest_tree" | "idle_in_tree";
     speed?: number;
 
     // Animation params
@@ -74,7 +74,8 @@ export interface EnemyData {
 export function getEnemyConfig(type: string): EnemyConfig | null {
   const configs: { [key: string]: EnemyConfig } = {
     "Ooze": OOZE_CONFIG,
-    "Crab": CRAB_CONFIG
+    "Crab": CRAB_CONFIG,
+    "Bat": BAT_CONFIG
   };
   return configs[type] || null;
 }
@@ -200,6 +201,84 @@ export const CRAB_CONFIG: EnemyConfig = {
         { type: 'animate', params: { name: 'Retreat_{direction}' } },
         { type: 'move', params: { pattern: 'away_from_player', speed: 100 } },  // MUCH faster for dramatic visibility
         { type: 'sound', params: { sound: 'Crab_Retreat' } }  // Audio feedback for retreat (removed SetColor effect since it doesn't exist)
+      ]
+    }
+  ]
+};
+
+export const BAT_CONFIG: EnemyConfig = {
+  type: "Bat",
+  baseStats: {
+    health: 12,
+    speed: 32,
+    viewDistance: 202,
+    attackDistance: 88
+  },
+  behaviors: [
+    {
+      name: "idle_hanging",
+      duration: [0.5, 1.0],
+      weight: 2,
+      conditions: [
+        { type: 'distance', operator: '>', value: 202 }  // Beyond viewDistance
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Idle' } },
+        { type: 'move', params: { pattern: 'idle_in_tree' } }
+      ]
+    },
+    {
+      name: "swoop_attack",
+      duration: [2.0, 3.0],
+      weight: 8,
+      conditions: [
+        { type: 'distance', operator: '<', value: 202 },  // Within viewDistance
+        { type: 'distance', operator: '>', value: 10 }    // But beyond bite range
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Fly_{direction}' } },
+        { type: 'move', params: { pattern: 'swoop_to_player', speed: 32 } }
+      ]
+    },
+    {
+      name: "bite_attack",
+      duration: [0.2, 0.2],  // 2 frames at 0.1s each = 0.2s total
+      weight: 10,
+      cooldown: 1.0,  // 1 second cooldown between bites
+      conditions: [
+        { type: 'distance', operator: '<', value: 10 }  // Within bite range
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Attack_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'sound', params: { sound: 'Bat_Bite' } }
+      ]
+    },
+    {
+      name: "hurt_flash",
+      duration: [0.1, 0.1],  // Brief hurt flash
+      weight: 0,  // Not selected randomly
+      conditions: [
+        { type: 'hurt', operator: '==', value: 1 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'invulnerable', params: { duration: 1.5 } }  // 1.5 seconds invulnerability
+      ]
+    },
+    {
+      name: "flee_to_tree",
+      duration: [1.0, 2.0],
+      weight: 99,  // High priority when invulnerable
+      conditions: [
+        { type: 'hurt', operator: '==', value: 0 },     // Not currently in hurt state
+        { type: 'invulnerable', operator: '==', value: 1 }  // But still invulnerable
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Fly_{direction}' } },
+        { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 80 } },
+        { type: 'sound', params: { sound: 'Bat_Flee' } }
       ]
     }
   ]

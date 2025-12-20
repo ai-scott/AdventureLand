@@ -3,7 +3,119 @@
 	"events": [
 		{
 			"eventType": "include",
-			"includeSheet": "eAnimateTiles"
+			"includeSheet": "eGameRoom"
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 430416967917845
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"const batTerritory = globalThis.AdventureLand?.BatTerritoryManager;",
+						"    const batShadow = globalThis.AdventureLand?.BatShadowManager;",
+						"    ",
+						"    if (batTerritory) {",
+						"      batTerritory.initialize(runtime);",
+						"      console.log(\"✅ Bat Territory Manager initialized\");",
+						"    }",
+						"    ",
+						"    if (batShadow) {",
+						"      batShadow.initialize(runtime);",
+						"      console.log(\"✅ Bat Shadow Manager initialized\");",
+						"    }",
+						""
+					]
+				}
+			],
+			"sid": 508792732892299
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "repeat",
+					"objectClass": "System",
+					"sid": 757435405328292,
+					"parameters": {
+						"count": "3"
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "wait",
+					"objectClass": "System",
+					"sid": 245042178798490,
+					"parameters": {
+						"seconds": "0.1",
+						"use-timescale": true
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 427167854891391,
+					"parameters": {
+						"object-to-create": "En_Bat_Base",
+						"layer": "\"Objects\"",
+						"x": "0",
+						"y": "0",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 977839845949089,
+					"parameters": {
+						"object-to-create": "En_Bat_Mask",
+						"layer": "\"Objects\"",
+						"x": "En_Bat_Base.X",
+						"y": "En_Bat_Base.Y",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"id": "create-object",
+					"objectClass": "System",
+					"sid": 197756713031568,
+					"parameters": {
+						"object-to-create": "En_Shadow",
+						"layer": "\"Objects\"",
+						"x": "En_Bat_Base.X",
+						"y": "En_Bat_Base.Y",
+						"create-hierarchy": false,
+						"template-name": "\"\""
+					}
+				},
+				{
+					"callFunction": "InitializeBat",
+					"sid": 932239869267663,
+					"parameters": [
+						"En_Bat_Base.UID",
+						"En_Bat_Mask.UID",
+						"En_Shadow.UID"
+					]
+				},
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"console.log(\"✅ Added bat to Objects\");"
+					]
+				}
+			],
+			"sid": 213412568229292
 		}
 	],
 	"sid": 243424796585151

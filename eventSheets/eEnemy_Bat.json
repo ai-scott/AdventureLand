@@ -1,0 +1,395 @@
+{
+	"name": "eEnemy_Bat",
+	"events": [
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "🦇 Bat Initialization",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "InitializeBat",
+					"functionDescription": "",
+					"functionCategory": "",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "batBaseUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 876320207657110
+						},
+						{
+							"name": "maskUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 738010719885961
+						},
+						{
+							"name": "shadowUID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 334475146859393
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"    const batTerritory = globalThis.AdventureLand?.BatTerritoryManager;",
+								"    const batShadow = globalThis.AdventureLand?.BatShadowManager;",
+								"",
+								"    if (enemyAI && batTerritory && batShadow) {",
+								"      // Use localVars with the exact parameter names from the function definition",
+								"      const registration = batTerritory.registerBat(localVars.batBaseUID);",
+								"",
+								"      if (registration) {",
+								"        enemyAI.init(localVars.batBaseUID, localVars.maskUID, \"Bat\");",
+								"        batShadow.registerShadow(localVars.batBaseUID, localVars.shadowUID);",
+								"",
+								"        const batInstance = runtime.objects.En_Bat_Base.getInstanceByUid(localVars.batBaseUID);",
+								"        const shadowInstance = runtime.objects.En_Shadow.getInstanceByUid(localVars.shadowUID);",
+								"        ",
+								"        if (batInstance) {",
+								"          batInstance.x = registration.startingTreePos.x;",
+								"          batInstance.y = registration.startingTreePos.y;",
+								"          batInstance.instVars.BatId = registration.batId;",
+								"        }",
+								"",
+								"        if (shadowInstance) {",
+								"          shadowInstance.instVars.ParentEnemyUID = localVars.batBaseUID;",
+								"        }",
+								"",
+								"        console.log(`🦇 Bat ${registration.batId} initialized at tree (${registration.startingTreePos.x.toFixed(1)}, ${registration.startingTreePos.y.toFixed(1)})`);",
+								"      } else {",
+								"        console.warn(\"⚠️ Bat registration failed - max 3 bats allowed\");",
+								"      }",
+								"    } else {",
+								"      console.error(\"❌ Bat systems not initialized!\");",
+								"    }"
+							]
+						}
+					],
+					"sid": 929886139272807
+				}
+			],
+			"sid": 868789268199634
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "🦇 Bat AI Update",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "variable",
+					"name": "baseUID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 554162325136792
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "every-x-seconds",
+							"objectClass": "System",
+							"sid": 657348700660548,
+							"parameters": {
+								"interval-seconds": "0.1"
+							}
+						},
+						{
+							"id": "for-each",
+							"objectClass": "System",
+							"sid": 482984141602324,
+							"parameters": {
+								"object": "En_Bat_Base"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 440964272941202,
+							"parameters": {
+								"variable": "baseUID",
+								"value": "En_Bat_Base.UID"
+							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"      if (enemyAI) {",
+								"        enemyAI.update(localVars.baseUID);",
+								"      }"
+							]
+						}
+					],
+					"sid": 654843601341169
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "every-x-seconds",
+							"objectClass": "System",
+							"sid": 265000882229636,
+							"parameters": {
+								"interval-seconds": "0.1"
+							}
+						},
+						{
+							"id": "for-each",
+							"objectClass": "System",
+							"sid": 717738194021748,
+							"parameters": {
+								"object": "En_Bat_Base"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 870413477964169,
+							"parameters": {
+								"variable": "baseUID",
+								"value": "En_Bat_Base.UID"
+							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"      const batTerritory = globalThis.AdventureLand?.BatTerritoryManager;",
+								"",
+								"      if (enemyAI && batTerritory && enemyAI.isInvulnerable(localVars.batUID)) {",
+								"        const enemyData = enemyAI.getAllEnemies()[localVars.batUID];",
+								"",
+								"        if (enemyData && !enemyData.batTargetTreeX) {",
+								"          const batInstance = runtime.objects.En_Bat_Base.getInstanceByUid(localVars.batUID);",
+								"",
+								"          if (batInstance) {",
+								"            const nearestTree = batTerritory.findNearestUnoccupiedTree(",
+								"              localVars.batUID,",
+								"              batInstance.x,",
+								"              batInstance.y",
+								"            );",
+								"",
+								"            if (nearestTree) {",
+								"              enemyData.batTargetTreeX = nearestTree.x;",
+								"              enemyData.batTargetTreeY = nearestTree.y;",
+								"              console.log(`🎯 Bat ${enemyData.batId} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);",
+								"            }",
+								"          }",
+								"        }",
+								"      }"
+							]
+						}
+					],
+					"sid": 976921959942704
+				}
+			],
+			"sid": 804512829110795
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "🦇 Shadow Synchronization",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "variable",
+					"name": "parentUID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 265195416867723
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for-each",
+							"objectClass": "System",
+							"sid": 673963071153151,
+							"parameters": {
+								"object": "En_Shadow"
+							}
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "En_Shadow",
+							"sid": 864596655930509,
+							"parameters": {
+								"instance-variable": "ParentEnemyUID",
+								"comparison": 1,
+								"value": "0"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 206406020454238,
+							"parameters": {
+								"variable": "parentUID",
+								"value": "En_Shadow.ParentEnemyUID"
+							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const batShadow = globalThis.AdventureLand?.BatShadowManager;",
+								"      if (batShadow) {",
+								"        const position = batShadow.updateShadow(localVars.parentUID);",
+								"",
+								"        if (position) {",
+								"          // Find the shadow instance for this parent",
+								"          const shadowInstance = runtime.objects.En_Shadow.getAllInstances()",
+								"            .find(s => s.instVars.ParentEnemyUID === localVars.parentUID);",
+								"          ",
+								"          if (shadowInstance) {",
+								"            shadowInstance.x = position.x;",
+								"            shadowInstance.y = position.y;",
+								"          }",
+								"        }",
+								"      }"
+							]
+						}
+					],
+					"sid": 608654198467640
+				}
+			],
+			"sid": 639248658559017
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "🦇 Bat Combat",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "comment",
+					"text": "// Hurt animation completion - Left"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-animation-finished",
+							"objectClass": "En_Bat_Base",
+							"sid": 852716664051234,
+							"parameters": {
+								"animation": "\"Hurt_Left\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"    if (enemyAI) {",
+								"      enemyAI.notifyRecovery(En_Bat_Base.UID);",
+								"    }"
+							]
+						}
+					],
+					"sid": 602037998451978
+				},
+				{
+					"eventType": "comment",
+					"text": "// Hurt animation completion - Up_Left"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-animation-finished",
+							"objectClass": "En_Bat_Base",
+							"sid": 906992273700754,
+							"parameters": {
+								"animation": "\"Hurt_Up_Left\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"    if (enemyAI) {",
+								"      enemyAI.notifyRecovery(En_Bat_Base.UID);",
+								"    }"
+							]
+						}
+					],
+					"sid": 814137900694722
+				},
+				{
+					"eventType": "comment",
+					"text": "//Death cleanup"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-destroyed",
+							"objectClass": "En_Bat_Base",
+							"sid": 348845741177024
+						}
+					],
+					"actions": [
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
+								"    const batTerritory = globalThis.AdventureLand?.BatTerritoryManager;",
+								"    const batShadow = globalThis.AdventureLand?.BatShadowManager;",
+								"    ",
+								"    const batUID = self.uid;",
+								"    if (enemyAI) enemyAI.notifyDeath(batUID);",
+								"    if (batTerritory) batTerritory.unregisterBat(batUID);",
+								"    if (batShadow) batShadow.unregisterShadow(batUID);",
+								"    ",
+								"    console.log(`💀 Bat ${batUID} fully cleaned up`);"
+							]
+						}
+					],
+					"sid": 563407513106398
+				}
+			],
+			"sid": 155506277075003
+		}
+	],
+	"sid": 612212200638902
+}

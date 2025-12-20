@@ -57,7 +57,7 @@ export function getMaskInstance(maskUID: number, runtime: IC3RuntimeFacade | nul
     }
 
     // If not found, try specific mask types
-    const maskTypes = ["En_Crab_Mask", "En_Ooze_Mask", "En_Ooze_Mask2"];
+    const maskTypes = ["En_Crab_Mask", "En_Ooze_Mask"];
     for (const type of maskTypes) {
       const instances = runtime.getAllInstances(type);
       if (instances && Array.isArray(instances)) {
