@@ -36,19 +36,31 @@ class BatTerritoryManagerClass {
     const markerObjectType = runtime.objects.Bat_Tree_Marker;
     if (!markerObjectType) {
       console.error("❌ Bat_Tree_Marker object type not found!");
+      console.log("   Available object types:", Object.keys(runtime.objects));
       return;
     }
 
     const markers = markerObjectType.getAllInstances();
-    if (markers.length !== 9) {
-      console.warn(`⚠️ Expected 9 tree markers, found ${markers.length}`);
+    console.log(`🔍 Found ${markers.length} marker instances (raw)`);
+
+    // Filter out any undefined/null markers before processing
+    const validMarkers = markers.filter((marker: any) => {
+      if (!marker) {
+        console.warn("⚠️ Found undefined marker in array");
+        return false;
+      }
+      return true;
+    });
+
+    if (validMarkers.length !== 9) {
+      console.warn(`⚠️ Expected 9 tree markers, found ${validMarkers.length} valid markers`);
     }
 
-    // Read all marker positions
-    this.treePositions = markers.map((marker: any) => ({
+    // Read all marker positions with defensive null checks
+    this.treePositions = validMarkers.map((marker: any) => ({
       x: marker.x,
       y: marker.y,
-      iid: marker.instVars.IID || marker.uid, // Use IID if available, fallback to UID
+      iid: marker.instVars?.IID || marker.uid, // Safe navigation + fallback to UID
       occupied: false,
       occupiedByBatId: undefined
     }));

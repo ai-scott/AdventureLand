@@ -3202,7 +3202,6 @@
 									"sid": 318452935104219
 								}
 							],
-							"bookmark": true,
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [],
@@ -5053,7 +5052,6 @@
 					"sid": 593623740786653
 				},
 				{
-					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Hints & Gems",
@@ -5600,7 +5598,6 @@
 					"sid": 201288502150000
 				},
 				{
-					"bookmark": true,
 					"eventType": "group",
 					"disabled": false,
 					"title": "Option Menus",

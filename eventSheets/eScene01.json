@@ -35,87 +35,146 @@
 					]
 				}
 			],
-			"sid": 508792732892299
-		},
-		{
-			"eventType": "block",
-			"conditions": [
+			"sid": 508792732892299,
+			"children": [
 				{
-					"id": "repeat",
-					"objectClass": "System",
-					"sid": 757435405328292,
-					"parameters": {
-						"count": "3"
-					}
+					"eventType": "variable",
+					"name": "batBaseUID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 550642343774153
+				},
+				{
+					"eventType": "variable",
+					"name": "batMaskUID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 146219095256383
+				},
+				{
+					"eventType": "variable",
+					"name": "batShadowUID",
+					"type": "number",
+					"initialValue": "0",
+					"comment": "",
+					"isStatic": false,
+					"isConstant": false,
+					"sid": 377268716568268
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "repeat",
+							"objectClass": "System",
+							"sid": 335831936888706,
+							"parameters": {
+								"count": "3"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 562415368594808,
+							"parameters": {
+								"seconds": "0.1",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 962603003677885,
+							"parameters": {
+								"object-to-create": "En_Bat_Base",
+								"layer": "\"Objects\"",
+								"x": "0",
+								"y": "0",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 679398641669108,
+							"parameters": {
+								"object-to-create": "En_Bat_Mask",
+								"layer": "\"Objects\"",
+								"x": "En_Bat_Base.X",
+								"y": "En_Bat_Base.Y",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "create-object",
+							"objectClass": "System",
+							"sid": 818934672770047,
+							"parameters": {
+								"object-to-create": "En_Shadow",
+								"layer": "\"Objects\"",
+								"x": "En_Bat_Base.X",
+								"y": "En_Bat_Base.Y",
+								"create-hierarchy": false,
+								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 477949343587271,
+							"parameters": {
+								"variable": "batBaseUID",
+								"value": "En_Bat_Base.UID"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 374165604413504,
+							"parameters": {
+								"variable": "batMaskUID",
+								"value": "En_Bat_Mask.UID"
+							}
+						},
+						{
+							"id": "set-eventvar-value",
+							"objectClass": "System",
+							"sid": 269967466153821,
+							"parameters": {
+								"variable": "batShadowUID",
+								"value": "En_Shadow.UID"
+							}
+						},
+						{
+							"callFunction": "InitializeBat",
+							"sid": 944973128186231,
+							"parameters": [
+								"batBaseUID",
+								"batMaskUID",
+								"batShadowUID"
+							]
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"console.log(\"✅ Added bat to Objects\");"
+							]
+						}
+					],
+					"sid": 627071795770023
 				}
-			],
-			"actions": [
-				{
-					"id": "wait",
-					"objectClass": "System",
-					"sid": 245042178798490,
-					"parameters": {
-						"seconds": "0.1",
-						"use-timescale": true
-					}
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 427167854891391,
-					"parameters": {
-						"object-to-create": "En_Bat_Base",
-						"layer": "\"Objects\"",
-						"x": "0",
-						"y": "0",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 977839845949089,
-					"parameters": {
-						"object-to-create": "En_Bat_Mask",
-						"layer": "\"Objects\"",
-						"x": "En_Bat_Base.X",
-						"y": "En_Bat_Base.Y",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 197756713031568,
-					"parameters": {
-						"object-to-create": "En_Shadow",
-						"layer": "\"Objects\"",
-						"x": "En_Bat_Base.X",
-						"y": "En_Bat_Base.Y",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"callFunction": "InitializeBat",
-					"sid": 932239869267663,
-					"parameters": [
-						"En_Bat_Base.UID",
-						"En_Bat_Mask.UID",
-						"En_Shadow.UID"
-					]
-				},
-				{
-					"type": "script",
-					"language": "javascript",
-					"script": [
-						"console.log(\"✅ Added bat to Objects\");"
-					]
-				}
-			],
-			"sid": 213412568229292
+			]
 		}
 	],
 	"sid": 243424796585151
