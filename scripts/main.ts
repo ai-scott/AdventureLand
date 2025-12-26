@@ -104,7 +104,10 @@ runOnStartup(async runtime => {
       EnemyAI.getEnemyKnockbackVector(baseUID),
     // Visual effect control
     shouldStopEffects: (baseUID: number) =>
-      EnemyAI.shouldStopEnemyVisualEffects(baseUID)
+      EnemyAI.shouldStopEnemyVisualEffects(baseUID),
+    // Enemy data access
+    getAllEnemies: () =>
+      EnemyAI.getAllEnemies()
   };
 
   // BAT ENEMY SYSTEM - Territory Management

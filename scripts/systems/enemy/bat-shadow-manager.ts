@@ -32,7 +32,7 @@ class BatShadowManagerClass {
     const shadowData: ShadowData = {
       shadowUID,
       batBaseUID,
-      offsetY: 0  // Will be updated on first sync
+      offsetY: 20  // Shadow appears 20 pixels below bat (on ground)
     };
 
     this.shadows.set(batBaseUID, shadowData);
@@ -69,24 +69,11 @@ class BatShadowManagerClass {
         return null;
       }
 
-      // Get player instance for ground level reference
-      const playerBases = this.runtime.objects.Player_Base;
-      if (!playerBases) {
-        console.warn("⚠️ Player_Base object type not found");
-        return null;
-      }
-
-      const playerInstance = playerBases.getFirstInstance();
-      if (!playerInstance) {
-        console.warn("⚠️ Player instance not found");
-        return null;
-      }
-
       // Calculate shadow position
       // X follows bat exactly
-      // Y is at player's Y position plus a small offset (ground level)
+      // Y is offset below the bat to simulate ground shadow
       const shadowX = batInstance.x;
-      const shadowY = playerInstance.y + shadowData.offsetY;
+      const shadowY = batInstance.y + shadowData.offsetY;
 
       return { x: shadowX, y: shadowY };
 

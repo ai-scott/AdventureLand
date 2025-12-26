@@ -32,6 +32,13 @@ class BatTerritoryManagerClass {
   public initialize(runtime: any): void {
     console.log("🦇 Initializing Bat Territory Manager...");
 
+    // Reset state from previous layout if needed
+    if (this.initialized) {
+      console.log("🔄 Resetting territory manager from previous layout");
+      this.territories.clear();
+      this.nextBatId = 1;
+    }
+
     // Get all Bat_Tree_Marker instances
     const markerObjectType = runtime.objects.Bat_Tree_Marker;
     if (!markerObjectType) {
