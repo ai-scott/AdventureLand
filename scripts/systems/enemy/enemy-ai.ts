@@ -551,14 +551,12 @@ export class EnhancedEnemyAIFactory {
     // Update flight path in enemy data
     enemyData.batFlightPath = result.flightPath;
 
-    // Set target speed for smooth movement system
-    enemyData.targetSpeed = speed;
+    // Set movement using vectors (same method as crabs - THIS WORKS!)
+    const vx = Math.cos(result.angle) * speed;
+    const vy = Math.sin(result.angle) * speed;
 
-    // Set movement controls using angle directly (ORIGINAL WORKING VERSION)
-    behavior8Dir.simulateControl("left", result.angle < 0);
-    behavior8Dir.simulateControl("right", result.angle > 0);
-    behavior8Dir.simulateControl("up", Math.abs(result.angle) > Math.PI / 4);
-    behavior8Dir.simulateControl("down", Math.abs(result.angle) < Math.PI / 4);
+    behavior8Dir.vectorX = vx;
+    behavior8Dir.vectorY = vy;
   }
 
   private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
