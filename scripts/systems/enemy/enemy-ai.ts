@@ -580,25 +580,23 @@ export class EnhancedEnemyAIFactory {
       // Clear target tree when reached
       enemyData.batTargetTreeX = undefined;
       enemyData.batTargetTreeY = undefined;
-      enemyData.targetSpeed = 0;
+      behavior8Dir.vectorX = 0;
+      behavior8Dir.vectorY = 0;
       return;
     }
 
-    // Set movement angle and speed
-    const angle = result.angle;
-    behavior8Dir.simulateControl("left", angle < -Math.PI / 4 || angle > 3 * Math.PI / 4);
-    behavior8Dir.simulateControl("right", angle > Math.PI / 4 && angle < 3 * Math.PI / 4);
-    behavior8Dir.simulateControl("up", angle < -Math.PI / 4 && angle > -3 * Math.PI / 4);
-    behavior8Dir.simulateControl("down", angle > -Math.PI / 4 && angle < Math.PI / 4);
+    // Set movement using vectors (same as swoop)
+    const vx = Math.cos(result.angle) * speed;
+    const vy = Math.sin(result.angle) * speed;
+
+    behavior8Dir.vectorX = vx;
+    behavior8Dir.vectorY = vy;
   }
 
   private executeBatIdleInTree(behavior8Dir: any, enemyData: EnhancedEnemyData): void {
-    // Stop all movement
-    enemyData.targetSpeed = 0;
-    behavior8Dir.simulateControl("left", false);
-    behavior8Dir.simulateControl("right", false);
-    behavior8Dir.simulateControl("up", false);
-    behavior8Dir.simulateControl("down", false);
+    // Stop all movement using vectors
+    behavior8Dir.vectorX = 0;
+    behavior8Dir.vectorY = 0;
   }
 
   private executeAnimationAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {

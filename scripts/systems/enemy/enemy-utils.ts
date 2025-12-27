@@ -402,6 +402,18 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
       } else {
         console.log(`❌ No setAnimation method found on mask ${enemyData.maskUid}`);
       }
+
+      // Update mirroring every frame for bats
+      // Bat sprites use _Left animations, mirror when moving right
+      if (enemyData.type === "Bat" && enemyData.direction) {
+        const dir = enemyData.direction.toLowerCase();
+        // C3 uses width sign for horizontal flipping
+        if (dir === 'right' && mask.width > 0) {
+          mask.width = -Math.abs(mask.width);  // Negative width = flipped
+        } else if (dir === 'left' && mask.width < 0) {
+          mask.width = Math.abs(mask.width);   // Positive width = normal
+        }
+      }
     } else {
       console.log(`❌ CRITICAL: No mask found with UID ${enemyData.maskUid} among [${allMasks.map((m: any) => m.uid).join(', ')}]`);
     }

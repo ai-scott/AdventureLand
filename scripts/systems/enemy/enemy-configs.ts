@@ -229,7 +229,7 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "swoop_attack",
-      duration: [2.0, 3.0],
+      duration: [1.5, 2.5],  // Shorter duration for quicker swoops
       weight: 8,
       conditions: [
         { type: 'distance', operator: '<', value: 202 },  // Within viewDistance
@@ -237,7 +237,7 @@ export const BAT_CONFIG: EnemyConfig = {
       ],
       actions: [
         { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right
-        { type: 'move', params: { pattern: 'swoop_to_player', speed: 32 } }
+        { type: 'move', params: { pattern: 'swoop_to_player', speed: 64 } }  // Faster swoop speed
       ]
     },
     {
