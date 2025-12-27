@@ -222,6 +222,11 @@ export class EnhancedEnemyAIFactory {
 
     enemyData.stateTimer -= dt;
 
+    // DEBUG for bats - show update status
+    if (enemyData.type === "Bat" && Math.random() < 0.02) {
+      console.log(`🦇 Update: behavior=${enemyData.currentBehavior?.name}, timer=${enemyData.stateTimer.toFixed(2)}, dist=${enemyData.lastPlayerDistance.toFixed(1)}`);
+    }
+
     // Update enhanced timers
     if (enemyData.knockbackTimer > 0) {
       enemyData.knockbackTimer -= dt;
@@ -259,12 +264,12 @@ export class EnhancedEnemyAIFactory {
 
     if (enemyData.stateTimer <= 0) {
       // Auto-reset hurt state when hurt behaviors end
-      if (enemyData.currentBehavior.name.includes('hurt')) {
+      if (enemyData.currentBehavior?.name?.includes('hurt')) {
         enemyData.isHurt = false;
       }
 
       // Special protection: If currently retreating and still invulnerable, extend retreat
-      if (enemyData.currentBehavior.name === "retreat" && enemyData.invulnerableTimer > 0) {
+      if (enemyData.currentBehavior?.name === "retreat" && enemyData.invulnerableTimer > 0) {
         enemyData.stateTimer = 0.1; // Extend by 100ms to stay in retreat
       } else {
         this.selectNewBehavior(enemyData);
@@ -282,6 +287,12 @@ export class EnhancedEnemyAIFactory {
     const availableBehaviors = this.filterBehaviors(enemyData.config.behaviors, enemyData);
     const oldBehavior = enemyData.currentBehavior?.name || "none";
 
+    // DEBUG for bats
+    if (enemyData.type === "Bat") {
+      console.log(`🦇 Selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
+      console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
+    }
+
     // CRITICAL FIX: Force retreat when invulnerable to ensure proper visual transition
     if (enemyData.invulnerableTimer > 0) {
       const retreatBehavior = availableBehaviors.find(b => b.name === "retreat" || b.name === "flee_to_tree");
@@ -296,6 +307,11 @@ export class EnhancedEnemyAIFactory {
     enemyData.state = enemyData.currentBehavior.name;
     enemyData.stateTimer = getRandomDuration(enemyData.currentBehavior.duration);
     enemyData.behaviorStarted = false;
+
+    // DEBUG for bats
+    if (enemyData.type === "Bat") {
+      console.log(`   → Selected: ${enemyData.currentBehavior.name}`);
+    }
 
     // Reset animation state when changing behaviors to prevent visual glitches
     if (oldBehavior !== enemyData.currentBehavior.name) {
@@ -560,10 +576,37 @@ export class EnhancedEnemyAIFactory {
   }
 
   private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
-    // Check if we have a target tree set
+    // Auto-find nearest tree if no target set
     if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
-      // No target tree - stop movement
-      enemyData.targetSpeed = 0;
+      const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
+      if (batTerritory && enemy.uid) {
+        const nearestTree = batTerritory.findNearestUnoccupiedTree(
+          enemy.uid as number,
+          enemy.x,
+          enemy.y
+        );
+        if (nearestTree) {
+          enemyData.batTargetTreeX = nearestTree.x;
+          enemyData.batTargetTreeY = nearestTree.y;
+          console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
+        } else {
+          // No tree available - stop movement
+          behavior8Dir.vectorX = 0;
+          behavior8Dir.vectorY = 0;
+          return;
+        }
+      } else {
+        // Territory manager not available or no UID
+        behavior8Dir.vectorX = 0;
+        behavior8Dir.vectorY = 0;
+        return;
+      }
+    }
+
+    // Double-check we have target (TypeScript safety)
+    if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
+      behavior8Dir.vectorX = 0;
+      behavior8Dir.vectorY = 0;
       return;
     }
 

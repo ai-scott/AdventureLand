@@ -217,11 +217,9 @@ export const BAT_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle_hanging",
-      duration: [0.5, 1.0],
-      weight: 2,
-      conditions: [
-        { type: 'distance', operator: '>', value: 202 }  // Beyond viewDistance
-      ],
+      duration: [0.5, 1.0],  // Short duration for quick player detection
+      weight: 1,  // Lowest weight - always available fallback
+      conditions: [],  // NO CONDITIONS - always available as last resort
       actions: [
         { type: 'animate', params: { name: 'Idle' } },
         { type: 'move', params: { pattern: 'idle_in_tree' } }
@@ -229,8 +227,9 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "swoop_attack",
-      duration: [1.5, 2.5],  // Shorter duration for quicker swoops
+      duration: [1.0, 1.5],  // Quick swoop
       weight: 8,
+      cooldown: 2.0,  // 2 second cooldown forces retreat after swoop
       conditions: [
         { type: 'distance', operator: '<', value: 202 },  // Within viewDistance
         { type: 'distance', operator: '>', value: 10 }    // But beyond bite range
@@ -270,14 +269,14 @@ export const BAT_CONFIG: EnemyConfig = {
     {
       name: "flee_to_tree",
       duration: [1.0, 2.0],
-      weight: 99,  // High priority when invulnerable
+      weight: 99,  // High priority when invulnerable (after being hurt)
       conditions: [
         { type: 'hurt', operator: '==', value: 0 },     // Not currently in hurt state
         { type: 'invulnerable', operator: '==', value: 1 }  // But still invulnerable
       ],
       actions: [
         { type: 'animate', params: { name: 'Fly_Left' } },  // Use _Left, mirroring handles direction
-        { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 80 } },
+        { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 96 } },  // Fast escape!
         { type: 'sound', params: { sound: 'Bat_Flee' } }
       ]
     }
