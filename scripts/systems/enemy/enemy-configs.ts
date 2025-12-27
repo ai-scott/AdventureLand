@@ -236,7 +236,7 @@ export const BAT_CONFIG: EnemyConfig = {
         { type: 'distance', operator: '>', value: 10 }    // But beyond bite range
       ],
       actions: [
-        { type: 'animate', params: { name: 'Fly_{direction}' } },
+        { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right
         { type: 'move', params: { pattern: 'swoop_to_player', speed: 32 } }
       ]
     },
@@ -249,7 +249,7 @@ export const BAT_CONFIG: EnemyConfig = {
         { type: 'distance', operator: '<', value: 10 }  // Within bite range
       ],
       actions: [
-        { type: 'animate', params: { name: 'Attack_{direction}' } },
+        { type: 'animate', params: { name: 'Attack_Left' } },  // Use _Left, mirroring handles direction
         { type: 'move', params: { pattern: 'stop' } },
         { type: 'sound', params: { sound: 'Bat_Bite' } }
       ]
@@ -262,7 +262,7 @@ export const BAT_CONFIG: EnemyConfig = {
         { type: 'hurt', operator: '==', value: 1 }
       ],
       actions: [
-        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'animate', params: { name: 'Hurt_Left' } },  // Use _Left, mirroring handles direction
         { type: 'move', params: { pattern: 'stop' } },
         { type: 'invulnerable', params: { duration: 1.5 } }  // 1.5 seconds invulnerability
       ]
@@ -276,7 +276,7 @@ export const BAT_CONFIG: EnemyConfig = {
         { type: 'invulnerable', operator: '==', value: 1 }  // But still invulnerable
       ],
       actions: [
-        { type: 'animate', params: { name: 'Fly_{direction}' } },
+        { type: 'animate', params: { name: 'Fly_Left' } },  // Use _Left, mirroring handles direction
         { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 80 } },
         { type: 'sound', params: { sound: 'Bat_Flee' } }
       ]

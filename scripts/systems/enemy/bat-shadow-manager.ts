@@ -56,14 +56,8 @@ class BatShadowManagerClass {
     }
 
     try {
-      // Get bat instance
-      const batBases = this.runtime.objects.En_Bat_Base;
-      if (!batBases) {
-        console.warn("⚠️ En_Bat_Base object type not found");
-        return null;
-      }
-
-      const batInstance = batBases.getInstanceByUid(batBaseUID);
+      // Get bat instance using runtime.getInstanceByUid (not objectType.getInstanceByUid)
+      const batInstance = this.runtime.getInstanceByUid(batBaseUID);
       if (!batInstance) {
         console.warn(`⚠️ Bat instance ${batBaseUID} not found`);
         return null;

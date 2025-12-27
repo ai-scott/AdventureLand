@@ -1372,6 +1372,10 @@
 		{
 			"eventType": "include",
 			"includeSheet": "eEnemy_Ooze"
+		},
+		{
+			"eventType": "include",
+			"includeSheet": "eEnemy_Bat"
 		}
 	],
 	"sid": 512296049886527

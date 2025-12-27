@@ -181,50 +181,45 @@ export class EnhancedEnemyAIFactory {
 
   private initializeMovementBehavior(baseUID: number, config: EnemyConfig): void {
     const enemy = getEnemyInstance(baseUID, this.runtime);
-    if (!enemy) return;
+    if (!enemy) {
+      console.warn(`⚠️ Could not get enemy instance ${baseUID} for movement init`);
+      return;
+    }
 
     try {
       const behavior8Dir = enemy.behaviors?._8Direction || enemy.behaviors?.['8Direction'];
+
       if (behavior8Dir) {
         behavior8Dir.maxSpeed = config.baseStats.speed;
         behavior8Dir.acceleration = config.baseStats.speed * 3;
         behavior8Dir.deceleration = config.baseStats.speed * 5;
+
+        console.log(`✅ ${config.type} movement configured: speed=${config.baseStats.speed}`);
+      } else {
+        console.error(`❌ No 8Direction behavior found for ${config.type}`);
       }
     } catch (error) {
       console.error(`[EnemyAI] Movement setup error for ${config.type}:`, error);
+      console.error(`   Error details:`, error);
     }
   }
 
   public updateEnemy(baseUID: number): void {
-    // CHECK PAUSE STATE FIRST - This is the key addition!
+    // CHECK PAUSE STATE FIRST
     if (EnemyPauseManager.shouldPause()) {
       return; // Skip all AI updates when paused
     }
 
     const enemyData = this.enemyData.get(baseUID);
-    if (!enemyData) {
-      console.warn(`[EnemyAI] No data found for enemy ${baseUID}`);
-      return;
-    }
+    if (!enemyData) return;
 
-    if (!this.runtime) {
-      console.error("[EnemyAI] No runtime available!");
-      return;
-    }
+    if (!this.runtime) return;
 
     const enemy = getEnemyInstance(baseUID, this.runtime);
-    if (!enemy) {
-      console.warn(`[EnemyAI] No instance found for enemy ${baseUID}`);
-      return;
-    }
+    if (!enemy) return;
 
-    // Use facade to get dt
     const dt = this.runtime.dt;
 
-    // Debug log every 60 frames
-    if (Math.random() < 0.016) {
-      //console.log(`[EnemyAI] Updating ${enemyData.type} - dt: ${dt}, state: ${enemyData.state}`);
-    }
     enemyData.stateTimer -= dt;
 
     // Update enhanced timers
@@ -289,7 +284,7 @@ export class EnhancedEnemyAIFactory {
 
     // CRITICAL FIX: Force retreat when invulnerable to ensure proper visual transition
     if (enemyData.invulnerableTimer > 0) {
-      const retreatBehavior = availableBehaviors.find(b => b.name === "retreat");
+      const retreatBehavior = availableBehaviors.find(b => b.name === "retreat" || b.name === "flee_to_tree");
       if (retreatBehavior) {
         enemyData.currentBehavior = retreatBehavior;
       } else {
@@ -556,7 +551,10 @@ export class EnhancedEnemyAIFactory {
     // Update flight path in enemy data
     enemyData.batFlightPath = result.flightPath;
 
-    // Set movement angle and speed
+    // Set target speed for smooth movement system
+    enemyData.targetSpeed = speed;
+
+    // Set movement controls using angle directly (ORIGINAL WORKING VERSION)
     behavior8Dir.simulateControl("left", result.angle < 0);
     behavior8Dir.simulateControl("right", result.angle > 0);
     behavior8Dir.simulateControl("up", Math.abs(result.angle) > Math.PI / 4);
@@ -745,7 +743,7 @@ export class EnhancedEnemyAIFactory {
 
     // Force hurt behavior if available
     const hurtBehavior = enemyData.config.behaviors.find(b =>
-        b.name.includes("hurt") || b.name === "hurt_flash"
+      b.name.includes("hurt") || b.name === "hurt_flash"
     );
     if (hurtBehavior) {
       enemyData.currentBehavior = hurtBehavior;
@@ -782,7 +780,7 @@ export class EnhancedEnemyAIFactory {
 
     // Only reset to idle if no longer invulnerable
     const idleBehavior = enemyData.config.behaviors.find(b =>
-        b.name === "idle" || b.name === "patrol"
+      b.name === "idle" || b.name === "patrol"
     );
     if (idleBehavior) {
       enemyData.currentBehavior = idleBehavior;
@@ -936,6 +934,7 @@ export function initEnemy(baseUID: number, maskUID: number, enemyType: string): 
   }
 
   factory.initEnemy(baseUID, maskUID, enemyType, config);
+  console.log(`✅ ${enemyType} initialized (UID ${baseUID})`);
 }
 
 export function updateEnemy(baseUID: number): void {

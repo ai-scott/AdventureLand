@@ -381,17 +381,31 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
       }
 
       if (mask.setAnimation) {
-        // CRITICAL: Only set animation if it's different from current OR we're forcing it
+        // CRITICAL: Only CHANGE animation if it's different from current OR we're forcing it
         if (enemyData.currentAnimation !== finalAnimationName || forceAnimation) {
-          mask.setAnimation(finalAnimationName);
-          enemyData.currentAnimation = finalAnimationName; // Track the change
+          try {
+            mask.setAnimation(finalAnimationName);
+            enemyData.currentAnimation = finalAnimationName; // Track the change
 
-          const forceMsg = forceAnimation ? " (FORCED)" : "";
-          //console.log(`✅ ANIM CHANGE: '${finalAnimationName}' on ${enemyData.type} mask ${enemyData.maskUid}${forceMsg}`);
+            const forceMsg = forceAnimation ? " (FORCED)" : "";
+            //console.log(`✅ ANIM CHANGE: '${finalAnimationName}' on ${enemyData.type} mask ${enemyData.maskUid}${forceMsg}`);
 
-          // Special logging for retreat
-          if (finalAnimationName.includes('Retreat')) {
-            console.log(`🎬 RETREAT ANIMATION NOW PLAYING: ${finalAnimationName} on mask ${enemyData.maskUid}${forceMsg}`);
+            // Special logging for retreat
+            if (finalAnimationName.includes('Retreat')) {
+              console.log(`🎬 RETREAT ANIMATION NOW PLAYING: ${finalAnimationName} on mask ${enemyData.maskUid}${forceMsg}`);
+            }
+          } catch (animError) {
+            // Animation doesn't exist - try fallback
+            const baseName = finalAnimationName.split('_')[0]; // Get "Fly" from "Fly_Right"
+            try {
+              mask.setAnimation(baseName);
+              mask.isPlaying = true;
+              enemyData.currentAnimation = baseName;
+              console.log(`🦇 Animation fallback: '${finalAnimationName}' → '${baseName}'`);
+            } catch (fallbackError) {
+              // Even the base animation doesn't exist - skip silently
+              // Don't block movement just because animation is missing
+            }
           }
         } else {
           // Animation already playing - don't spam it
@@ -401,6 +415,17 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
         }
       } else {
         console.log(`❌ No setAnimation method found on mask ${enemyData.maskUid}`);
+      }
+
+      // Update mirroring EVERY frame based on current direction
+      // Bat sprites face LEFT by default, so mirror when facing RIGHT
+      if (enemyData.direction && mask.isMirrored !== undefined) {
+        const dir = enemyData.direction.toLowerCase();
+        if (dir === 'right') {
+          mask.isMirrored = true;
+        } else if (dir === 'left') {
+          mask.isMirrored = false;
+        }
       }
     } else {
       console.log(`❌ CRITICAL: No mask found with UID ${enemyData.maskUid} among [${allMasks.map((m: any) => m.uid).join(', ')}]`);

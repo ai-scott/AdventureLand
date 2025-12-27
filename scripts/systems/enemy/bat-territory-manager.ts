@@ -135,16 +135,19 @@ class BatTerritoryManagerClass {
     const startIndex = (batId - 1) * treesPerTerritory;
     const assignedIndices = [startIndex, startIndex + 1, startIndex + 2];
 
+    // Randomly select starting tree from the assigned territory
+    const randomTreeIndex = assignedIndices[Math.floor(Math.random() * treesPerTerritory)];
+
     const territory: BatTerritory = {
       batId,
       assignedTreeIndices: assignedIndices,
-      currentTreeIndex: startIndex  // Start at first tree in territory
+      currentTreeIndex: randomTreeIndex  // Start at random tree in territory
     };
 
     this.territories.set(batBaseUID, territory);
 
     // Mark starting tree as occupied
-    const startingTree = this.treePositions[startIndex];
+    const startingTree = this.treePositions[randomTreeIndex];
     startingTree.occupied = true;
     startingTree.occupiedByBatId = batId;
 
