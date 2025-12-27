@@ -194,6 +194,22 @@ export class EnhancedEnemyAIFactory {
         behavior8Dir.acceleration = config.baseStats.speed * 3;
         behavior8Dir.deceleration = config.baseStats.speed * 5;
 
+        // For flying enemies (bats), configure 8Direction to ignore Solids
+        if (config.type === "Bat") {
+          try {
+            // Try to disable solid obstacle checking for this bat's 8Direction
+            if (behavior8Dir.setObstacles) {
+              behavior8Dir.setObstacles([]); // No obstacles for flying bats
+              console.log(`✅ Disabled solid obstacles for flying bat`);
+            } else if (behavior8Dir.addObstacleClass) {
+              // Can't find method to clear obstacles - will need C3 configuration
+              console.log(`⚠️ Can't disable obstacles via script - configure in C3`);
+            }
+          } catch (e) {
+            console.log(`⚠️ Obstacle configuration not available for bats`);
+          }
+        }
+
         console.log(`✅ ${config.type} movement configured: speed=${config.baseStats.speed}`);
       } else {
         console.error(`❌ No 8Direction behavior found for ${config.type}`);
@@ -571,32 +587,62 @@ export class EnhancedEnemyAIFactory {
     const vx = Math.cos(result.angle) * speed;
     const vy = Math.sin(result.angle) * speed;
 
-    behavior8Dir.vectorX = vx;
-    behavior8Dir.vectorY = vy;
+    // Clamp bat position to map boundaries (prevent flying offscreen)
+    // World_01 (Leafwood Forest) is 720x480
+    const margin = 30;
+    const minX = margin;
+    const maxX = 720 - margin;
+    const minY = margin;
+    const maxY = 480 - margin;
+
+    // If near boundary, push bat back toward center
+    if (enemy.x < minX) {
+      behavior8Dir.vectorX = Math.abs(vx); // Force right
+    } else if (enemy.x > maxX) {
+      behavior8Dir.vectorX = -Math.abs(vx); // Force left
+    } else {
+      behavior8Dir.vectorX = vx;
+    }
+
+    if (enemy.y < minY) {
+      behavior8Dir.vectorY = Math.abs(vy); // Force down
+    } else if (enemy.y > maxY) {
+      behavior8Dir.vectorY = -Math.abs(vy); // Force up
+    } else {
+      behavior8Dir.vectorY = vy;
+    }
   }
 
   private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
-    // Auto-find nearest tree if no target set
+    // Auto-find nearest tree ONLY when behavior first starts (no target and not started yet)
     if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
-      const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
-      if (batTerritory && enemy.uid) {
-        const nearestTree = batTerritory.findNearestUnoccupiedTree(
-          enemy.uid as number,
-          enemy.x,
-          enemy.y
-        );
-        if (nearestTree) {
-          enemyData.batTargetTreeX = nearestTree.x;
-          enemyData.batTargetTreeY = nearestTree.y;
-          console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
+      if (!enemyData.behaviorStarted) {
+        const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
+        if (batTerritory && enemy.uid) {
+          const nearestTree = batTerritory.findNearestUnoccupiedTree(
+            enemy.uid as number,
+            enemy.x,
+            enemy.y
+          );
+          if (nearestTree) {
+            enemyData.batTargetTreeX = nearestTree.x;
+            enemyData.batTargetTreeY = nearestTree.y;
+            enemyData.behaviorStarted = true;  // Mark as started
+            console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
+          } else {
+            // No tree available - stop movement
+            behavior8Dir.vectorX = 0;
+            behavior8Dir.vectorY = 0;
+            return;
+          }
         } else {
-          // No tree available - stop movement
+          // Territory manager not available or no UID
           behavior8Dir.vectorX = 0;
           behavior8Dir.vectorY = 0;
           return;
         }
       } else {
-        // Territory manager not available or no UID
+        // Behavior started but no target (reached tree) - just stop
         behavior8Dir.vectorX = 0;
         behavior8Dir.vectorY = 0;
         return;
@@ -623,8 +669,12 @@ export class EnhancedEnemyAIFactory {
       // Clear target tree when reached
       enemyData.batTargetTreeX = undefined;
       enemyData.batTargetTreeY = undefined;
+      enemyData.behaviorStarted = false;  // Reset so next flee can find a tree
       behavior8Dir.vectorX = 0;
       behavior8Dir.vectorY = 0;
+
+      // Put flee on long cooldown so bat doesn't immediately flee again
+      enemyData.behaviorCooldowns.set('flee_to_tree', 10.0);
       return;
     }
 

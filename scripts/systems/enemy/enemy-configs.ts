@@ -217,9 +217,11 @@ export const BAT_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle_hanging",
-      duration: [0.5, 1.0],  // Short duration for quick player detection
-      weight: 1,  // Lowest weight - always available fallback
-      conditions: [],  // NO CONDITIONS - always available as last resort
+      duration: [1.0, 2.0],  // Hang for a bit
+      weight: 2,  // Low weight
+      conditions: [
+        { type: 'distance', operator: '>', value: 150 }  // Only when player far
+      ],
       actions: [
         { type: 'animate', params: { name: 'Idle' } },
         { type: 'move', params: { pattern: 'idle_in_tree' } }
@@ -227,9 +229,9 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "swoop_attack",
-      duration: [1.0, 1.5],  // Quick swoop
-      weight: 8,
-      cooldown: 2.0,  // 2 second cooldown forces retreat after swoop
+      duration: [1.5, 2.0],  // 2 second swoop duration
+      weight: 15,  // Highest priority - always swoop when available
+      cooldown: 3.0,  // 3 second cooldown forces return to tree
       conditions: [
         { type: 'distance', operator: '<', value: 202 },  // Within viewDistance
         { type: 'distance', operator: '>', value: 10 }    // But beyond bite range
@@ -268,16 +270,14 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "flee_to_tree",
-      duration: [1.0, 2.0],
-      weight: 99,  // High priority when invulnerable (after being hurt)
+      duration: [1.5, 2.5],  // Time to reach tree
+      weight: 5,  // Higher than idle
       conditions: [
-        { type: 'hurt', operator: '==', value: 0 },     // Not currently in hurt state
-        { type: 'invulnerable', operator: '==', value: 1 }  // But still invulnerable
+        { type: 'distance', operator: '<', value: 200 }  // Only if player in view range
       ],
       actions: [
-        { type: 'animate', params: { name: 'Fly_Left' } },  // Use _Left, mirroring handles direction
-        { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 96 } },  // Fast escape!
-        { type: 'sound', params: { sound: 'Bat_Flee' } }
+        { type: 'animate', params: { name: 'Fly_Left' } },
+        { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 48 } }  // Return to tree
       ]
     }
   ]

@@ -131,7 +131,7 @@
 								"//console.log(\"⏰ Every 0.1s event fired!\");",
 								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
 								"const bats = runtime.objects.En_Bat_Base?.getAllInstances() || [];",
-								"console.log(`   Found ${bats.length} bats`);",
+								"//console.log(`   Found ${bats.length} bats`);",
 								"for (const bat of bats) {",
 								"    if (enemyAI && bat) {",
 								"        enemyAI.updateWithPause(bat.uid);",
