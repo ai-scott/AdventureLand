@@ -57,6 +57,19 @@ Data-driven enemy behavior system that reduces enemy creation time by 90% (from 
 - `enemy-ai.ts` - Core behavior logic and state management
 - `enemy-utils.ts` - Movement patterns and utility functions
 
+### 📚 ENEMY-SPECIFIC DOCUMENTATION
+For complex enemies that require custom systems, see the `docs/` folder:
+- **[docs/bat-enemy.md](docs/bat-enemy.md)** - Bat enemy with territory, shadow, and swooping
+  - Territory management system (9 trees, 3 bats)
+  - Shadow synchronization
+  - Parabolic swoop patterns
+  - Custom movement utilities
+
+**Documentation Pattern:**
+- **Simple enemies** (Ooze, Crab) → Configuration in `enemy-configs.ts` with inline comments
+- **Complex enemies** (Bat, future bosses) → Dedicated guide in `docs/[enemy-name].md`
+- **Cross-cutting patterns** → Main `claude.md` (this file)
+
 ## 🔧 Configuration
 
 ### Creating New Enemy Type
@@ -293,12 +306,37 @@ npm run test:configs
 
 ---
 
-**Movement Patterns Available:**
+## 📦 Enemy-Specific Modules
+
+Some enemies require specialized systems beyond the base AI factory:
+
+### Bat Enemy Modules
+- `bat-territory-manager.ts` - Divides 9 tree markers into 3 territories
+- `bat-shadow-manager.ts` - Synchronizes shadow sprites with bat position
+- `bat-movement-utils.ts` - Parabolic swooping and flee calculations
+
+**See [docs/bat-enemy.md](docs/bat-enemy.md) for full integration guide.**
+
+---
+
+## 🗺️ Movement Patterns Available
+
+**Basic Patterns:**
 - `toward_player` - Direct chase
 - `away_from_player` - Retreat
 - `crab_toward_player` - Side-to-side crab movement
 - `sideways_left` / `sideways_right` - Lateral movement
 - `random` - Random direction changes
 - `stop` - No movement
+
+**Bat-Specific Patterns:**
+- `swoop_to_player` - Parabolic swoop with bezier curves
+- `flee_to_nearest_tree` - Direct flight to nearest unoccupied tree
+- `idle_in_tree` - Stop all movement (hanging)
+
+**Adding Custom Patterns:**
+To add a new movement pattern, implement it in `enemy-utils.ts` and add the pattern name to the `ActionConfig` type in `enemy-configs.ts`.
+
+---
 
 **The Enemy AI Factory makes enemy creation data-driven and testable. Add new enemies in minutes, not hours!**
