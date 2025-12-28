@@ -235,7 +235,9 @@ export class EnhancedEnemyAIFactory {
     const enemy = getEnemyInstance(baseUID, this.runtime);
     if (!enemy) return;
 
-    const dt = this.runtime.dt;
+    // Use fixed dt=0.1 since update is called every 0.1s from event sheet
+    // Using runtime.dt would cause timers to run 6x slower (~0.016s per frame at 60fps)
+    const dt = 0.1;
 
     enemyData.stateTimer -= dt;
 
@@ -324,19 +326,26 @@ export class EnhancedEnemyAIFactory {
     }
 
     // CRITICAL: Force flee when just swooped or recently hurt
-    // For bats: Check if invuln > 1.0s (just got hurt) since isHurt gets cleared immediately
+    // For bats: Check if invuln > 0.5s (just got hurt) since isHurt gets cleared immediately
     // For others: Use isHurt flag
     const wasJustHurt = enemyData.type === "Bat" ?
-      enemyData.invulnerableTimer > 1.0 :  // Bat just hurt if >1s invuln remaining (1.5s total)
+      enemyData.invulnerableTimer > 0.5 :  // Bat just hurt if >0.5s invuln remaining (1.0s total)
       enemyData.isHurt;
 
     if (enemyData.justSwooped || wasJustHurt) {
+      // CRITICAL: Clear flee cooldown when forced (swoop/hurt overrides cooldown)
+      if (wasJustHurt || enemyData.justSwooped) {
+        enemyData.behaviorCooldowns.delete('flee_to_tree');
+        if (enemyData.type === "Bat") console.log(`   🔥 Clearing flee cooldown (justSwooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt})`);
+      }
+
       const fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
       if (fleeBehavior) {
         enemyData.currentBehavior = fleeBehavior;
         enemyData.justSwooped = false;  // Clear flag
         if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
+        if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior available! AvailableBehaviors:`, availableBehaviors.map(b => b.name));
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
     } else {
@@ -860,9 +869,9 @@ export class EnhancedEnemyAIFactory {
     enemyData.isHurt = true;
 
     // CRITICAL: Set invulnerability timer immediately
-    // For Bat: 1.5s (matches BAT_CONFIG hurt_flash invulnerable duration)
+    // For Bat: 1.0s (allows ~1s to flee, then can be hit again)
     // For others: 0.7s default
-    const invulnDuration = enemyData.type === "Bat" ? 1.5 : 0.7;
+    const invulnDuration = enemyData.type === "Bat" ? 1.0 : 0.7;
     enemyData.invulnerableTimer = invulnDuration;
 
     // Store knockback physics for smooth interpolation
