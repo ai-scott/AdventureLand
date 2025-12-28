@@ -311,6 +311,19 @@ export class EnhancedEnemyAIFactory {
     // CRITICAL: Reset behaviorStarted FIRST so new behavior can initialize
     enemyData.behaviorStarted = false;
 
+    // CRITICAL: Check for forced flee BEFORE filtering behaviors
+    // For bats: Check if invuln > 0.5s (just got hurt) since isHurt gets cleared immediately
+    // For others: Use isHurt flag
+    const wasJustHurt = enemyData.type === "Bat" ?
+      enemyData.invulnerableTimer > 0.5 :  // Bat just hurt if >0.5s invuln remaining (1.0s total)
+      enemyData.isHurt;
+
+    // Clear flee cooldown BEFORE filtering if we need to force flee
+    if (enemyData.justSwooped || wasJustHurt) {
+      enemyData.behaviorCooldowns.delete('flee_to_tree');
+      if (enemyData.type === "Bat") console.log(`   🔥 Clearing flee cooldown (justSwooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt})`);
+    }
+
     const availableBehaviors = this.filterBehaviors(enemyData.config.behaviors, enemyData);
     const oldBehavior = enemyData.currentBehavior?.name || "none";
 
@@ -318,34 +331,26 @@ export class EnhancedEnemyAIFactory {
     if (enemyData.type === "Bat") {
       console.log(`🦇 Selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
       console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
-    }
-
-    // DEBUG log state
-    if (enemyData.type === "Bat") {
       console.log(`   justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
     }
 
-    // CRITICAL: Force flee when just swooped or recently hurt
-    // For bats: Check if invuln > 0.5s (just got hurt) since isHurt gets cleared immediately
-    // For others: Use isHurt flag
-    const wasJustHurt = enemyData.type === "Bat" ?
-      enemyData.invulnerableTimer > 0.5 :  // Bat just hurt if >0.5s invuln remaining (1.0s total)
-      enemyData.isHurt;
-
+    // Force flee when just swooped or recently hurt
     if (enemyData.justSwooped || wasJustHurt) {
-      // CRITICAL: Clear flee cooldown when forced (swoop/hurt overrides cooldown)
-      if (wasJustHurt || enemyData.justSwooped) {
-        enemyData.behaviorCooldowns.delete('flee_to_tree');
-        if (enemyData.type === "Bat") console.log(`   🔥 Clearing flee cooldown (justSwooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt})`);
+      // Try to find flee in available behaviors first
+      let fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
+
+      // If flee was filtered out, get it directly from config (forced behaviors bypass filters)
+      if (!fleeBehavior) {
+        fleeBehavior = enemyData.config.behaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
+        if (enemyData.type === "Bat") console.log(`   🔥 Flee filtered out, forcing from config directly!`);
       }
 
-      const fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
       if (fleeBehavior) {
         enemyData.currentBehavior = fleeBehavior;
         enemyData.justSwooped = false;  // Clear flag
         if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
-        if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior available! AvailableBehaviors:`, availableBehaviors.map(b => b.name));
+        if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior in config! This should never happen!`);
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
     } else {
