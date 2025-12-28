@@ -50,6 +50,7 @@ export interface EnhancedEnemyData extends EnemyData {
   batTargetTreeX?: number; // Target tree X position
   batTargetTreeY?: number; // Target tree Y position
   batGroundLevel?: number; // Y position for shadow (player-relative)
+  justSwooped?: boolean; // True when swoop just ended, triggers flee
 }
 
 // ============= PAUSE SYSTEM =============
@@ -284,6 +285,11 @@ export class EnhancedEnemyAIFactory {
         enemyData.isHurt = false;
       }
 
+      // Set justSwooped flag when swoop ends (triggers flee)
+      if (enemyData.currentBehavior?.name === 'swoop_attack') {
+        enemyData.justSwooped = true;
+      }
+
       // Special protection: If currently retreating and still invulnerable, extend retreat
       if (enemyData.currentBehavior?.name === "retreat" && enemyData.invulnerableTimer > 0) {
         enemyData.stateTimer = 0.1; // Extend by 100ms to stay in retreat
@@ -300,6 +306,9 @@ export class EnhancedEnemyAIFactory {
   }
 
   private selectNewBehavior(enemyData: EnhancedEnemyData): void {
+    // CRITICAL: Reset behaviorStarted FIRST so new behavior can initialize
+    enemyData.behaviorStarted = false;
+
     const availableBehaviors = this.filterBehaviors(enemyData.config.behaviors, enemyData);
     const oldBehavior = enemyData.currentBehavior?.name || "none";
 
@@ -309,11 +318,24 @@ export class EnhancedEnemyAIFactory {
       console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
     }
 
-    // CRITICAL FIX: Force retreat when invulnerable to ensure proper visual transition
-    if (enemyData.invulnerableTimer > 0) {
-      const retreatBehavior = availableBehaviors.find(b => b.name === "retreat" || b.name === "flee_to_tree");
-      if (retreatBehavior) {
-        enemyData.currentBehavior = retreatBehavior;
+    // DEBUG log state
+    if (enemyData.type === "Bat") {
+      console.log(`   justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
+    }
+
+    // CRITICAL: Force flee when just swooped or recently hurt
+    // For bats: Check if invuln > 1.0s (just got hurt) since isHurt gets cleared immediately
+    // For others: Use isHurt flag
+    const wasJustHurt = enemyData.type === "Bat" ?
+      enemyData.invulnerableTimer > 1.0 :  // Bat just hurt if >1s invuln remaining (1.5s total)
+      enemyData.isHurt;
+
+    if (enemyData.justSwooped || wasJustHurt) {
+      const fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
+      if (fleeBehavior) {
+        enemyData.currentBehavior = fleeBehavior;
+        enemyData.justSwooped = false;  // Clear flag
+        if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
@@ -322,7 +344,7 @@ export class EnhancedEnemyAIFactory {
     }
     enemyData.state = enemyData.currentBehavior.name;
     enemyData.stateTimer = getRandomDuration(enemyData.currentBehavior.duration);
-    enemyData.behaviorStarted = false;
+    // behaviorStarted already reset at top of function
 
     // DEBUG for bats
     if (enemyData.type === "Bat") {
@@ -614,35 +636,27 @@ export class EnhancedEnemyAIFactory {
   }
 
   private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
-    // Auto-find nearest tree ONLY when behavior first starts (no target and not started yet)
+    // Auto-find nearest tree if no target (will only find once due to target persistence)
     if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
-      if (!enemyData.behaviorStarted) {
-        const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
-        if (batTerritory && enemy.uid) {
-          const nearestTree = batTerritory.findNearestUnoccupiedTree(
-            enemy.uid as number,
-            enemy.x,
-            enemy.y
-          );
-          if (nearestTree) {
-            enemyData.batTargetTreeX = nearestTree.x;
-            enemyData.batTargetTreeY = nearestTree.y;
-            enemyData.behaviorStarted = true;  // Mark as started
-            console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
-          } else {
-            // No tree available - stop movement
-            behavior8Dir.vectorX = 0;
-            behavior8Dir.vectorY = 0;
-            return;
-          }
+      const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
+      if (batTerritory && enemy.uid) {
+        const nearestTree = batTerritory.findNearestUnoccupiedTree(
+          enemy.uid as number,
+          enemy.x,
+          enemy.y
+        );
+        if (nearestTree) {
+          enemyData.batTargetTreeX = nearestTree.x;
+          enemyData.batTargetTreeY = nearestTree.y;
+          console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
         } else {
-          // Territory manager not available or no UID
+          // No tree available - stop movement
           behavior8Dir.vectorX = 0;
           behavior8Dir.vectorY = 0;
           return;
         }
       } else {
-        // Behavior started but no target (reached tree) - just stop
+        // Territory manager not available - stop movement
         behavior8Dir.vectorX = 0;
         behavior8Dir.vectorY = 0;
         return;
@@ -664,17 +678,39 @@ export class EnhancedEnemyAIFactory {
       speed
     );
 
-    // Check if we've reached the tree (within 5 pixels)
-    if (result.distance < 5) {
-      // Clear target tree when reached
+    // Check if we've reached the tree
+    // Threshold: 20px (bat moves 4.8px/frame at speed 48, so 10px was too strict)
+    if (result.distance < 20) {
+      console.log(`✅ Bat reached tree at distance ${result.distance.toFixed(1)}px! Ending flee behavior.`);
+
+      // Update territory manager to mark this tree as current
+      const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
+      if (batTerritory) {
+        // Find which tree index this position corresponds to
+        const territory = batTerritory.getTerritory(enemy.uid);
+        if (territory) {
+          const allTrees = batTerritory.getAllTrees();
+          const targetTreeIndex = allTrees.findIndex((tree: any) =>
+            tree.x === enemyData.batTargetTreeX && tree.y === enemyData.batTargetTreeY
+          );
+          if (targetTreeIndex !== -1) {
+            batTerritory.updateBatTree(enemy.uid, targetTreeIndex);
+            console.log(`🏠 Bat ${enemy.uid} now at tree ${targetTreeIndex}`);
+          }
+        }
+      }
+
+      // Clear target and stop movement
       enemyData.batTargetTreeX = undefined;
       enemyData.batTargetTreeY = undefined;
-      enemyData.behaviorStarted = false;  // Reset so next flee can find a tree
       behavior8Dir.vectorX = 0;
       behavior8Dir.vectorY = 0;
 
-      // Put flee on long cooldown so bat doesn't immediately flee again
-      enemyData.behaviorCooldowns.set('flee_to_tree', 10.0);
+      // END FLEE IMMEDIATELY by setting timer to 0
+      enemyData.stateTimer = 0;
+
+      // Put flee on cooldown (5s - enough time to swoop/bite before fleeing again)
+      enemyData.behaviorCooldowns.set('flee_to_tree', 5.0);
       return;
     }
 
@@ -823,8 +859,11 @@ export class EnhancedEnemyAIFactory {
     enemyData.hurtEffectTimer = 0.2; // Match hurt_flash duration exactly
     enemyData.isHurt = true;
 
-    // CRITICAL: Set invulnerability timer immediately so retreat condition can see it
-    enemyData.invulnerableTimer = 0.7; // Same duration as hurt_flash behavior
+    // CRITICAL: Set invulnerability timer immediately
+    // For Bat: 1.5s (matches BAT_CONFIG hurt_flash invulnerable duration)
+    // For others: 0.7s default
+    const invulnDuration = enemyData.type === "Bat" ? 1.5 : 0.7;
+    enemyData.invulnerableTimer = invulnDuration;
 
     // Store knockback physics for smooth interpolation
     enemyData.knockbackVectorX = knockbackVectorX;

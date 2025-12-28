@@ -217,11 +217,9 @@ export const BAT_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle_hanging",
-      duration: [1.0, 2.0],  // Hang for a bit
-      weight: 2,  // Low weight
-      conditions: [
-        { type: 'distance', operator: '>', value: 150 }  // Only when player far
-      ],
+      duration: [0.4, 0.7],  // Very short for responsive player detection
+      weight: 1,  // Lowest - always available failsafe
+      conditions: [],  // NO CONDITIONS - prevents empty behavior list
       actions: [
         { type: 'animate', params: { name: 'Idle' } },
         { type: 'move', params: { pattern: 'idle_in_tree' } }
@@ -271,10 +269,8 @@ export const BAT_CONFIG: EnemyConfig = {
     {
       name: "flee_to_tree",
       duration: [1.5, 2.5],  // Time to reach tree
-      weight: 5,  // Higher than idle
-      conditions: [
-        { type: 'distance', operator: '<', value: 200 }  // Only if player in view range
-      ],
+      weight: 0,  // NEVER randomly selected - only forced after swoop/hurt
+      conditions: [],  // NO CONDITIONS - can flee regardless of player distance
       actions: [
         { type: 'animate', params: { name: 'Fly_Left' } },
         { type: 'move', params: { pattern: 'flee_to_nearest_tree', speed: 48 } }  // Return to tree

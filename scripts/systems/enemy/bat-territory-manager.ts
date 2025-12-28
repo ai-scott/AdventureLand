@@ -185,8 +185,7 @@ class BatTerritoryManagerClass {
     for (const treeIndex of territory.assignedTreeIndices) {
       const tree = this.treePositions[treeIndex];
 
-      // Skip if this is the current tree or if occupied by another bat
-      if (treeIndex === territory.currentTreeIndex) continue;
+      // Skip if occupied by ANOTHER bat (but allow returning to own tree)
       if (tree.occupied && tree.occupiedByBatId !== territory.batId) continue;
 
       const distance = Math.sqrt(
