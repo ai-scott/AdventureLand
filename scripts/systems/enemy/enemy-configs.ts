@@ -217,7 +217,7 @@ export const BAT_CONFIG: EnemyConfig = {
   behaviors: [
     {
       name: "idle_hanging",
-      duration: [0.4, 0.7],  // Very short for responsive player detection
+      duration: [1.0, 2.0],  // Longer idle for visible rest at tree (was 0.4-0.7)
       weight: 1,  // Lowest - always available failsafe
       conditions: [],  // NO CONDITIONS - prevents empty behavior list
       actions: [
@@ -227,12 +227,11 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "swoop_attack",
-      duration: [1.5, 2.0],  // 2 second swoop duration
+      duration: [2.0, 2.5],  // 2.5s swoop - longer pursuit (was 1.5-2.0)
       weight: 15,  // Highest priority - always swoop when available
-      cooldown: 3.0,  // 3 second cooldown forces return to tree
+      cooldown: 3.5,  // 3.5s cooldown - ensures 1-2s idle after flee
       conditions: [
-        { type: 'distance', operator: '<', value: 202 },  // Within viewDistance
-        { type: 'distance', operator: '>', value: 10 }    // But beyond bite range
+        { type: 'distance', operator: '<', value: 202 }  // Within viewDistance
       ],
       actions: [
         { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right
@@ -241,15 +240,15 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "bite_attack",
-      duration: [0.2, 0.2],  // 2 frames at 0.1s each = 0.2s total
-      weight: 10,
-      cooldown: 1.0,  // 1 second cooldown between bites
+      duration: [0.3, 0.3],  // Brief bite animation
+      weight: 12,  // Higher than idle, lower than swoop - shows when very close
+      cooldown: 2.0,  // 2s cooldown prevents bite spam
       conditions: [
-        { type: 'distance', operator: '<', value: 10 }  // Within bite range
+        { type: 'distance', operator: '<', value: 30 }  // Within close range (30px)
       ],
       actions: [
-        { type: 'animate', params: { name: 'Attack_Left' } },  // Use _Left, mirroring handles direction
-        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'animate', params: { name: 'Attack_Left' } },  // Bite animation
+        { type: 'move', params: { pattern: 'swoop_to_player', speed: 32 } },  // Continue swooping slowly during bite
         { type: 'sound', params: { sound: 'Bat_Bite' } }
       ]
     },
@@ -268,7 +267,7 @@ export const BAT_CONFIG: EnemyConfig = {
     },
     {
       name: "flee_to_tree",
-      duration: [1.5, 2.5],  // Time to reach tree
+      duration: [10.0, 10.0],  // Long max duration - always ends early when tree reached (line 723)
       weight: 0,  // NEVER randomly selected - only forced after swoop/hurt
       conditions: [],  // NO CONDITIONS - can flee regardless of player distance
       actions: [

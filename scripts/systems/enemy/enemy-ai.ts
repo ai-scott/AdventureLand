@@ -277,7 +277,8 @@ export class EnhancedEnemyAIFactory {
       Math.sqrt(Math.pow(enemy.x - player.x, 2) + Math.pow(enemy.y - player.y, 2)) : 999;
     enemyData.lastPlayerDistance = playerDistance;
 
-    if (player && playerDistance < enemyData.config.baseStats.viewDistance) {
+    // Always update direction for proper sprite mirroring (not just in viewDistance)
+    if (player) {
       enemyData.direction = calculateDirection(enemy, player);
     }
 
@@ -312,10 +313,11 @@ export class EnhancedEnemyAIFactory {
     enemyData.behaviorStarted = false;
 
     // CRITICAL: Check for forced flee BEFORE filtering behaviors
-    // For bats: Check if invuln > 0.5s (just got hurt) since isHurt gets cleared immediately
+    // For bats: Only force flee if JUST got hurt (invuln > 0.9s means brand new hit)
+    // This prevents repeated flee-loop while invulnerable
     // For others: Use isHurt flag
     const wasJustHurt = enemyData.type === "Bat" ?
-      enemyData.invulnerableTimer > 0.5 :  // Bat just hurt if >0.5s invuln remaining (1.0s total)
+      enemyData.invulnerableTimer > 0.9 :  // Only if just hit (>0.9s of 1.0s total) - prevents flee spam
       enemyData.isHurt;
 
     // Clear flee cooldown BEFORE filtering if we need to force flee
@@ -332,6 +334,18 @@ export class EnhancedEnemyAIFactory {
       console.log(`🦇 Selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
       console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
       console.log(`   justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
+
+      // Debug bite availability in detail
+      const biteBehavior = enemyData.config.behaviors.find(b => b.name === "bite_attack");
+      const hasBite = availableBehaviors.some(b => b.name === "bite_attack");
+      const biteOnCooldown = enemyData.behaviorCooldowns.has('bite_attack');
+
+      if (enemyData.lastPlayerDistance < 30) {
+        console.log(`   🦷 BITE CHECK: inList=${hasBite}, onCooldown=${biteOnCooldown}, weight=${biteBehavior?.weight}, distance=${enemyData.lastPlayerDistance.toFixed(1)}`);
+        if (!hasBite && !biteOnCooldown) {
+          console.log(`   ⚠️ Bite filtered out by conditions even though not on cooldown!`);
+        }
+      }
     }
 
     // Force flee when just swooped or recently hurt
@@ -586,7 +600,7 @@ export class EnhancedEnemyAIFactory {
           this.executeBatFleeToTree(behavior8Dir, enemy, enemyData, speed);
           break;
         case 'idle_in_tree':
-          this.executeBatIdleInTree(behavior8Dir, enemyData);
+          this.executeBatIdleInTree(behavior8Dir);
           break;
         case 'stop':
         default:
@@ -604,49 +618,14 @@ export class EnhancedEnemyAIFactory {
     const player = getPlayerInstance(this.runtime);
     if (!player) return;
 
-    const dt = this.runtime?.dt || 0.016;
+    // Simple direct flight toward player (updates every frame for responsive tracking)
+    const dx = player.x - enemy.x;
+    const dy = player.y - enemy.y;
+    const angle = Math.atan2(dy, dx);
 
-    const result = calculateSwoopToPlayer(
-      enemy.x,
-      enemy.y,
-      player.x,
-      player.y,
-      speed,
-      enemyData.batFlightPath || null,
-      dt
-    );
-
-    // Update flight path in enemy data
-    enemyData.batFlightPath = result.flightPath;
-
-    // Set movement using vectors (same method as crabs - THIS WORKS!)
-    const vx = Math.cos(result.angle) * speed;
-    const vy = Math.sin(result.angle) * speed;
-
-    // Clamp bat position to map boundaries (prevent flying offscreen)
-    // World_01 (Leafwood Forest) is 720x480
-    const margin = 30;
-    const minX = margin;
-    const maxX = 720 - margin;
-    const minY = margin;
-    const maxY = 480 - margin;
-
-    // If near boundary, push bat back toward center
-    if (enemy.x < minX) {
-      behavior8Dir.vectorX = Math.abs(vx); // Force right
-    } else if (enemy.x > maxX) {
-      behavior8Dir.vectorX = -Math.abs(vx); // Force left
-    } else {
-      behavior8Dir.vectorX = vx;
-    }
-
-    if (enemy.y < minY) {
-      behavior8Dir.vectorY = Math.abs(vy); // Force down
-    } else if (enemy.y > maxY) {
-      behavior8Dir.vectorY = -Math.abs(vy); // Force up
-    } else {
-      behavior8Dir.vectorY = vy;
-    }
+    // Set movement vectors
+    behavior8Dir.vectorX = Math.cos(angle) * speed;
+    behavior8Dir.vectorY = Math.sin(angle) * speed;
   }
 
   private executeBatFleeToTree(behavior8Dir: any, enemy: any, enemyData: EnhancedEnemyData, speed: number): void {
@@ -654,15 +633,28 @@ export class EnhancedEnemyAIFactory {
     if (!enemyData.batTargetTreeX || !enemyData.batTargetTreeY) {
       const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
       if (batTerritory && enemy.uid) {
-        const nearestTree = batTerritory.findNearestUnoccupiedTree(
-          enemy.uid as number,
-          enemy.x,
-          enemy.y
-        );
+        // Find ABSOLUTE nearest tree across ALL 9 trees (not just bat's territory)
+        // This allows bats to chase player through the forest
+        const allTrees = batTerritory.getAllTrees();
+        let nearestTree: any = null;
+        let nearestDistance = Infinity;
+
+        for (const tree of allTrees) {
+          const distance = Math.sqrt(
+            Math.pow(tree.x - enemy.x, 2) +
+            Math.pow(tree.y - enemy.y, 2)
+          );
+
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestTree = tree;
+          }
+        }
+
         if (nearestTree) {
           enemyData.batTargetTreeX = nearestTree.x;
           enemyData.batTargetTreeY = nearestTree.y;
-          console.log(`🎯 Bat ${enemy.uid} fleeing to tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)})`);
+          console.log(`🎯 Bat ${enemy.uid} fleeing to nearest tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)}) - ${nearestDistance.toFixed(1)}px away`);
         } else {
           // No tree available - stop movement
           behavior8Dir.vectorX = 0;
@@ -693,8 +685,8 @@ export class EnhancedEnemyAIFactory {
     );
 
     // Check if we've reached the tree
-    // Threshold: 20px (bat moves 4.8px/frame at speed 48, so 10px was too strict)
-    if (result.distance < 20) {
+    // Threshold: 10px (tighter tolerance for precise tree positioning)
+    if (result.distance < 10) {
       console.log(`✅ Bat reached tree at distance ${result.distance.toFixed(1)}px! Ending flee behavior.`);
 
       // Update territory manager to mark this tree as current
@@ -723,8 +715,8 @@ export class EnhancedEnemyAIFactory {
       // END FLEE IMMEDIATELY by setting timer to 0
       enemyData.stateTimer = 0;
 
-      // Put flee on cooldown (5s - enough time to swoop/bite before fleeing again)
-      enemyData.behaviorCooldowns.set('flee_to_tree', 5.0);
+      // Put flee on cooldown (10s - prevents repeated fleeing)
+      enemyData.behaviorCooldowns.set('flee_to_tree', 10.0);
       return;
     }
 
@@ -736,8 +728,8 @@ export class EnhancedEnemyAIFactory {
     behavior8Dir.vectorY = vy;
   }
 
-  private executeBatIdleInTree(behavior8Dir: any, enemyData: EnhancedEnemyData): void {
-    // Stop all movement using vectors
+  private executeBatIdleInTree(behavior8Dir: any): void {
+    // Stop all movement - bat hangs at tree
     behavior8Dir.vectorX = 0;
     behavior8Dir.vectorY = 0;
   }
@@ -832,13 +824,17 @@ export class EnhancedEnemyAIFactory {
       return;
     }
 
+    console.log(`⚔️ notifyHurt called for ${enemyData.type} ${baseUID}, invuln=${enemyData.invulnerableTimer.toFixed(2)}`);
+
     // Don't process if already dead
     if (enemyData.isDead) {
+      console.log(`   ⏭️ Skipping - enemy already dead`);
       return;
     }
 
     // Don't process if already in knockback or invulnerable
     if (enemyData.knockbackTimer > 0 || enemyData.invulnerableTimer > 0) {
+      console.log(`   ⏭️ Skipping - enemy invulnerable or in knockback`);
       return;
     }
 
@@ -883,19 +879,37 @@ export class EnhancedEnemyAIFactory {
     enemyData.knockbackVectorX = knockbackVectorX;
     enemyData.knockbackVectorY = knockbackVectorY;
 
-    // Force hurt behavior if available
-    const hurtBehavior = enemyData.config.behaviors.find(b =>
-      b.name.includes("hurt") || b.name === "hurt_flash"
-    );
-    if (hurtBehavior) {
-      enemyData.currentBehavior = hurtBehavior;
-      enemyData.state = hurtBehavior.name;
-      enemyData.stateTimer = getRandomDuration(hurtBehavior.duration);
-      enemyData.behaviorStarted = false;
+    // For bats: Skip hurt_flash and go straight to flee (more responsive)
+    // For others: Show hurt flash first
+    if (enemyData.type === "Bat") {
+      // Clear ALL cooldowns so bat can flee immediately
+      enemyData.behaviorCooldowns.delete('swoop_attack');
+      enemyData.behaviorCooldowns.delete('flee_to_tree');
+      enemyData.behaviorCooldowns.delete('bite_attack');
 
-      // CRITICAL: Reset animation state to allow hurt animation to play fresh
-      enemyData.currentAnimation = undefined;
-      enemyData.executedActions?.clear(); // Reset one-time actions for forced behavior
+      const fleeBehavior = enemyData.config.behaviors.find(b => b.name === "flee_to_tree");
+      if (fleeBehavior) {
+        enemyData.currentBehavior = fleeBehavior;
+        enemyData.state = fleeBehavior.name;
+        enemyData.stateTimer = getRandomDuration(fleeBehavior.duration);
+        enemyData.behaviorStarted = false;
+        console.log(`🦇 Bat hit! Clearing all cooldowns and forcing immediate flee`);
+      }
+    } else {
+      // Other enemies show hurt flash
+      const hurtBehavior = enemyData.config.behaviors.find(b =>
+        b.name.includes("hurt") || b.name === "hurt_flash"
+      );
+      if (hurtBehavior) {
+        enemyData.currentBehavior = hurtBehavior;
+        enemyData.state = hurtBehavior.name;
+        enemyData.stateTimer = getRandomDuration(hurtBehavior.duration);
+        enemyData.behaviorStarted = false;
+
+        // CRITICAL: Reset animation state to allow hurt animation to play fresh
+        enemyData.currentAnimation = undefined;
+        enemyData.executedActions?.clear(); // Reset one-time actions for forced behavior
+      }
     }
   }
 
