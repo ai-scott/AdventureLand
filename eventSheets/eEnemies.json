@@ -229,13 +229,13 @@
 						},
 						{
 							"eventType": "variable",
-							"name": "canDamage",
+							"name": "enemyMaskUID",
 							"type": "number",
-							"initialValue": "1",
+							"initialValue": "0",
 							"comment": "",
 							"isStatic": false,
 							"isConstant": false,
-							"sid": 699534376064379
+							"sid": 298373296379485
 						},
 						{
 							"eventType": "block",
@@ -262,7 +262,16 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
-									"sid": 953873137037657,
+									"sid": 174742673776334,
+									"parameters": {
+										"variable": "enemyMaskUID",
+										"value": "EnemyMasks.UID"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 909353327072649,
 									"parameters": {
 										"variable": "enemyBaseUID",
 										"value": "EnemyBases.UID"
@@ -272,18 +281,19 @@
 									"type": "script",
 									"language": "javascript",
 									"script": [
-										"// Check if enemy is invulnerable",
 										"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
-										"  if (enemyAI && enemyAI.isInvulnerable) {",
-										"      const isInvulnerable =",
-										"  enemyAI.isInvulnerable(localVars.enemyBaseUID);",
-										"      localVars.canDamage = isInvulnerable ? 0 : 1;",
+										"const maskInstance = runtime.objects.EnemyMasks.getFirstPickedInstance();",
 										"",
-										"      if (isInvulnerable) {",
-										"          console.log(`🛡️ Enemy ${localVars.enemyBaseUID} is ",
-										"  invulnerable - blocking damage`);",
-										"      }",
-										"  }"
+										"if (maskInstance && enemyAI) {",
+										"  const enemyBaseUID = maskInstance.instVars.Pair_ID;",
+										"  ",
+										"  if (!enemyAI.isInvulnerable(enemyBaseUID)) {",
+										"    console.log(`🔍 COLLISION DETECTED! Enemy ${enemyBaseUID} can be damaged`);",
+										"    runtime.callFunction(\"Enemy_Hurt\", maskInstance.uid);",
+										"  } else {",
+										"    console.log(`🛡️ Enemy ${enemyBaseUID} is invulnerable - blocking damage`);",
+										"  }",
+										"}"
 									]
 								}
 							],
@@ -291,18 +301,7 @@
 							"children": [
 								{
 									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-two-values",
-											"objectClass": "System",
-											"sid": 181808834871196,
-											"parameters": {
-												"first-value": "canDamage",
-												"comparison": 0,
-												"second-value": "1"
-											}
-										}
-									],
+									"conditions": [],
 									"actions": [
 										{
 											"callFunction": "Enemy_Hurt",
@@ -312,7 +311,8 @@
 											]
 										}
 									],
-									"sid": 884060990061701
+									"sid": 884060990061701,
+									"disabled": true
 								}
 							]
 						},
@@ -490,23 +490,49 @@
 													"type": "script",
 													"language": "javascript",
 													"script": [
-														"// JavaScript version - proper runtime API access",
-														"    const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
-														"    if (enemyAI) {",
-														"        // Get instances through runtime API",
-														"        const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
-														"        const playerBase = runtime.objects.Player_Base.getFirstInstance();",
-														"        ",
-														"        if (enemyBase && playerBase) {",
-														"            // Calculate knockback",
-														"            const knockbackX = enemyBase.x - playerBase.x;",
-														"            const knockbackY = enemyBase.y - playerBase.y;",
-														"            ",
-														"            enemyAI.notifyHurt(enemyBase.uid, knockbackX, knockbackY);",
-														"            console.log(`🗡️ Enemy ${enemyBase.uid} hit! NEW TS integration ",
-														"    working`);",
-														"        }",
-														"    }"
+														"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
+														"const maskInstance = runtime.getInstanceByUid(localVars.enemyUid);",
+														"",
+														"if (!maskInstance) {",
+														"  console.log(`❌ ERROR: Mask instance ${localVars.enemyUid} not found!`);",
+														"  return;",
+														"}",
+														"",
+														"if (!enemyAI) {",
+														"  console.log(`❌ ERROR: EnemyAI system not available!`);",
+														"  return;",
+														"}",
+														"",
+														"const baseUID = maskInstance.instVars.Pair_ID;",
+														"",
+														"if (!baseUID || baseUID === 0) {",
+														"  console.log(`❌ ERROR: Mask ${localVars.enemyUid} has no Pair_ID! Pairing not set up correctly.`);",
+														"  return;",
+														"}",
+														"",
+														"console.log(`🔍 Checking enemy ${baseUID} (mask ${localVars.enemyUid})`);",
+														"",
+														"// CRITICAL: Double-check invulnerability before ANY visual effects",
+														"if (enemyAI.isInvulnerable(baseUID)) {",
+														"  console.log(`⚠️ Enemy ${baseUID} is invulnerable - blocking all effects`);",
+														"  return;",
+														"}",
+														"",
+														"// Proceed with hurt effects...",
+														"console.log(`ENEMY HURT!`);",
+														"",
+														"const enemyBase = runtime.getInstanceByUid(baseUID);",
+														"const playerBase = runtime.objects.Player_Base.getFirstInstance();",
+														"",
+														"if (enemyBase && playerBase) {",
+														"  const knockbackX = enemyBase.x - playerBase.x;",
+														"  const knockbackY = enemyBase.y - playerBase.y;",
+														"  ",
+														"  enemyAI.notifyHurt(baseUID, knockbackX, knockbackY);",
+														"  console.log(`🗡️ Enemy ${baseUID} hit! Calling notifyHurt`);",
+														"} else {",
+														"  console.log(`❌ ERROR: Could not find enemyBase (${baseUID}) or playerBase`);",
+														"}"
 													]
 												}
 											],
@@ -959,22 +985,6 @@
 													"parameters": [
 														"EnemyBases.Pair_ID"
 													]
-												},
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"// Handle enemy death",
-														"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
-														"if (enemyAI) {",
-														"    const enemyBase = runtime.objects.EnemyBases.getFirstPickedInstance();",
-														"",
-														"    if (enemyBase) {",
-														"        enemyAI.notifyDeath(enemyBase.uid);",
-														"        console.log(`☠️ Enemy ${enemyBase.uid} defeated!`);",
-														"    }",
-														"}"
-													]
 												}
 											],
 											"sid": 229875017681821
@@ -992,7 +1002,7 @@
 							"functionIsAsync": false,
 							"functionParameters": [
 								{
-									"name": "pairUid",
+									"name": "maskUid",
 									"type": "number",
 									"initialValue": "0",
 									"comment": "",
@@ -1012,7 +1022,7 @@
 											"objectClass": "En_Ooze_Mask",
 											"sid": 527851621443745,
 											"parameters": {
-												"unique-id": "pairUid"
+												"unique-id": "maskUid"
 											}
 										}
 									],
@@ -1063,7 +1073,7 @@
 											"objectClass": "En_Crab_Mask",
 											"sid": 487350788030010,
 											"parameters": {
-												"unique-id": "pairUid"
+												"unique-id": "maskUid"
 											}
 										}
 									],
@@ -1105,6 +1115,44 @@
 										}
 									],
 									"sid": 135518690781362
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Bat_Mask",
+											"sid": 884111108010607,
+											"parameters": {
+												"unique-id": "maskUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
+												"const maskInstance = runtime.getInstanceByUid(localVars.maskUid);",
+												"",
+												"if (maskInstance && enemyAI) {",
+												"    const baseUID = maskInstance.instVars.Pair_ID;  // Get base from mask",
+												"    ",
+												"    // Set Hurt to False on the base",
+												"    const baseInstance = runtime.getInstanceByUid(baseUID);",
+												"    if (baseInstance) {",
+												"    baseInstance.instVars.Hurt = false;",
+												"    }",
+												"    ",
+												"    // Notify TypeScript recovery system",
+												"    enemyAI.notifyRecovery(baseUID);",
+												"    console.log(`✅ Enemy ${baseUID} recovered from damage`);",
+												"}"
+											]
+										}
+									],
+									"sid": 883266878540336
 								}
 							]
 						},
@@ -1117,7 +1165,7 @@
 							"functionIsAsync": false,
 							"functionParameters": [
 								{
-									"name": "pairUid",
+									"name": "maskUid",
 									"type": "number",
 									"initialValue": "0",
 									"comment": "",
@@ -1130,6 +1178,52 @@
 								{
 									"callFunction": "enemyGoneMusic",
 									"sid": 210618460497653
+								},
+								{
+									"callFunction": "Audio_Play_Sound",
+									"sid": 739672724617211,
+									"parameters": [
+										"\"Enemy_Destroy\"",
+										"0",
+										"\"Enemy_Destroy\""
+									]
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const enemyAI = runtime.imports.AdventureLand.EnemyAI;",
+										"const maskInstance = runtime.getInstanceByUid(localVars.maskUid);",
+										"",
+										"if (maskInstance && enemyAI) {",
+										"  const baseUID = maskInstance.instVars.Pair_ID;",
+										"  const baseInstance = runtime.getInstanceByUid(baseUID);",
+										"  ",
+										"  if (baseInstance) {",
+										"    // Get enemy type from object name (simpler than TypeScript lookup)",
+										"    const objectName = baseInstance.objectType.name;  // \"En_Bat_Base\", \"En_Ooze_Base\", etc.",
+										"    const enemyType = objectName.includes(\"Bat\") ? \"Bat\" :",
+										"                      objectName.includes(\"Ooze\") ? \"Ooze\" :",
+										"                      objectName.includes(\"Crab\") ? \"Crab\" : \"Unknown\";",
+										"    ",
+										"    console.log(`💀 Enemy ${baseUID} (${enemyType}) defeated!`);",
+										"    ",
+										"    // Cleanup TypeScript",
+										"    enemyAI.notifyDeath(baseUID);",
+										"    ",
+										"    // Enemy-specific cleanup",
+										"    if (enemyType === \"Bat\") {",
+										"      const batTerritory = runtime.imports.AdventureLand.BatTerritoryManager;",
+										"      const batShadow = runtime.imports.AdventureLand.BatShadowManager;",
+										"      if (batTerritory) batTerritory.unregisterBat(baseUID);",
+										"      if (batShadow) batShadow.unregisterShadow(baseUID);",
+										"    }",
+										"    ",
+										"    // Destroy the base sprite",
+										"    baseInstance.destroy();",
+										"  }",
+										"}"
+									]
 								}
 							],
 							"sid": 130921791830216,
@@ -1139,37 +1233,23 @@
 									"conditions": [
 										{
 											"id": "pick-by-unique-id",
-											"objectClass": "En_Ooze_Mask",
+											"objectClass": "EnemyMasks",
 											"sid": 694523680015364,
 											"parameters": {
-												"unique-id": "pairUid"
+												"unique-id": "maskUid"
 											}
 										}
 									],
 									"actions": [
 										{
-											"callFunction": "Audio_Play_Sound",
-											"sid": 501631490259927,
-											"parameters": [
-												"\"Enemy_Destroy\"",
-												"0",
-												"\"Enemy_Destroy\""
-											]
-										},
-										{
-											"id": "destroy",
-											"objectClass": "En_Ooze_Mask",
-											"sid": 555764465317884
-										},
-										{
 											"id": "create-object",
 											"objectClass": "System",
-											"sid": 274138303017104,
+											"sid": 249011443471999,
 											"parameters": {
 												"object-to-create": "Particle",
 												"layer": "\"Objects\"",
-												"x": "En_Ooze_Mask.X",
-												"y": "En_Ooze_Mask.Y - 8",
+												"x": "EnemyMasks.X",
+												"y": "EnemyMasks.Y - 8",
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
@@ -1185,12 +1265,24 @@
 										},
 										{
 											"callFunction": "dropLoot",
-											"sid": 255997774407675,
+											"sid": 316041490822795,
 											"parameters": [
-												"En_Ooze_Mask.X",
-												"En_Ooze_Mask.Y - 8",
+												"EnemyMasks.X",
+												"EnemyMasks.Y - 8",
 												"int(2 + random(2))"
 											]
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(`💀 Enemy ${localVars.maskUid} defeated and loot dropped!`);"
+											]
+										},
+										{
+											"id": "destroy",
+											"objectClass": "EnemyMasks",
+											"sid": 705276200628983
 										}
 									],
 									"sid": 972974441024976
@@ -1203,56 +1295,11 @@
 											"objectClass": "En_Crab_Mask",
 											"sid": 437798694988274,
 											"parameters": {
-												"unique-id": "pairUid"
+												"unique-id": "maskUid"
 											}
 										}
 									],
 									"actions": [
-										{
-											"callFunction": "Audio_Play_Sound",
-											"sid": 724649876674201,
-											"parameters": [
-												"\"Enemy_Destroy\"",
-												"0",
-												"\"Enemy_Destroy\""
-											]
-										},
-										{
-											"id": "destroy",
-											"objectClass": "En_Crab_Mask",
-											"sid": 972142046662817
-										},
-										{
-											"id": "create-object",
-											"objectClass": "System",
-											"sid": 344467646710986,
-											"parameters": {
-												"object-to-create": "Particle",
-												"layer": "\"Objects\"",
-												"x": "En_Crab_Mask.X",
-												"y": "En_Crab_Mask.Y - 8",
-												"create-hierarchy": false,
-												"template-name": "\"\""
-											}
-										},
-										{
-											"id": "set-animation",
-											"objectClass": "Particle",
-											"sid": 433739160449275,
-											"parameters": {
-												"animation": "\"Default\"",
-												"from": "beginning"
-											}
-										},
-										{
-											"callFunction": "dropLoot",
-											"sid": 268986632767170,
-											"parameters": [
-												"En_Crab_Mask.X",
-												"En_Crab_Mask.Y - 8",
-												"int(3 + random(3))"
-											]
-										},
 										{
 											"id": "stop",
 											"objectClass": "Audio",
@@ -1263,6 +1310,30 @@
 										}
 									],
 									"sid": 102781622293885
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "pick-by-unique-id",
+											"objectClass": "En_Bat_Mask",
+											"sid": 274383476832780,
+											"parameters": {
+												"unique-id": "maskUid"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "stop",
+											"objectClass": "Audio",
+											"sid": 482412043051495,
+											"parameters": {
+												"tag": "\"bat\""
+											}
+										}
+									],
+									"sid": 886049529261885
 								}
 							]
 						},

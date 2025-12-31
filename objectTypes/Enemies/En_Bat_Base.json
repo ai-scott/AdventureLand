@@ -11,6 +11,13 @@
 			"desc": "",
 			"show": true,
 			"sid": 191668629822281
+		},
+		{
+			"name": "BiteTimer",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 990716737170403
 		}
 	],
 	"behaviorTypes": [],

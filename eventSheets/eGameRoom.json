@@ -237,6 +237,18 @@
 								"variable": "CurrentWorld",
 								"value": "str(tokenat(LayoutName,1,\"_\"))"
 							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"//init y-sort system",
+								"const ySort = globalThis.AdventureLand?.YSort;",
+								"if (ySort) {",
+								"  ySort.initialize(runtime);",
+								"  console.log(\"✅ Y-Sort system initialized\");",
+								"}"
+							]
 						}
 					],
 					"sid": 358502206381280,
@@ -925,175 +937,16 @@
 							"isActiveOnStart": true,
 							"children": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each-ordered",
-											"objectClass": "System",
-											"sid": 492521706498344,
-											"parameters": {
-												"object": "CharactersTriggers",
-												"expression": "CharactersTriggers.y",
-												"order": "ascending"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "move-to-top",
-											"objectClass": "CharactersTriggers",
-											"sid": 930520760211518
-										}
-									],
-									"sid": 587831072508544,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-y",
-													"objectClass": "PlayerSystem",
-													"sid": 171559033868678,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "CharactersTriggers.Y"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "move-to-top",
-													"objectClass": "PlayerSystem",
-													"sid": 932611109713727
-												}
-											],
-											"sid": 725713693220604,
-											"isOrBlock": true
-										}
-									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each-ordered",
-											"objectClass": "System",
-											"sid": 435207515861107,
-											"parameters": {
-												"object": "EnemyMasks",
-												"expression": "CharactersTriggers.y",
-												"order": "ascending"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "move-to-top",
-											"objectClass": "EnemyMasks",
-											"sid": 963119387996343
-										}
-									],
-									"sid": 477550487702737,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-y",
-													"objectClass": "PlayerSystem",
-													"sid": 305582207528590,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "CharactersTriggers.Y"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "move-to-top",
-													"objectClass": "PlayerSystem",
-													"sid": 680619567421269
-												}
-											],
-											"sid": 832538981534639,
-											"isOrBlock": true
-										}
-									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each-ordered",
-											"objectClass": "System",
-											"sid": 784170224278905,
-											"parameters": {
-												"object": "Structures",
-												"expression": "Structures.y",
-												"order": "ascending"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "move-to-top",
-											"objectClass": "Structures",
-											"sid": 877208156193279
-										}
-									],
-									"sid": 880744496891080,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-y",
-													"objectClass": "CharactersTriggers",
-													"sid": 745169856882110,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "Structures.Y"
-													}
-												},
-												{
-													"id": "compare-y",
-													"objectClass": "PlayerSystem",
-													"sid": 802766761752499,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "Structures.Y"
-													}
-												},
-												{
-													"id": "compare-y",
-													"objectClass": "EnemyMasks",
-													"sid": 282646958999239,
-													"parameters": {
-														"comparison": 4,
-														"y-co-ordinate": "Structures.Y"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "move-to-top",
-													"objectClass": "CharactersTriggers",
-													"sid": 197445470490316
-												},
-												{
-													"id": "move-to-top",
-													"objectClass": "PlayerSystem",
-													"sid": 144876447086091
-												},
-												{
-													"id": "move-to-top",
-													"objectClass": "EnemyMasks",
-													"sid": 371919996104740
-												}
-											],
-											"sid": 302257215247610,
-											"isOrBlock": true
-										}
+									"eventType": "script",
+									"language": "javascript",
+									"script": [
+										"console.log(\"📊 Event 25 running!\");",
+										"const ySort = globalThis.AdventureLand?.YSort;",
+										"console.log(\"📊 YSort exists?\", !!ySort);",
+										"if (ySort) {",
+										"  console.log(\"📊 Calling sortWithAltitude...\");",
+										"  ySort.sortWithAltitude();",
+										"}"
 									]
 								},
 								{
@@ -4057,6 +3910,14 @@
 							"eventType": "block",
 							"conditions": [
 								{
+									"id": "on-collision-with-another-object",
+									"objectClass": "Player_Base",
+									"sid": 107238285168739,
+									"parameters": {
+										"object": "EnemyMasks"
+									}
+								},
+								{
 									"id": "is-boolean-instance-variable-set",
 									"objectClass": "Player_Mask",
 									"sid": 994692487905316,
@@ -4075,66 +3936,57 @@
 									"isInverted": true
 								}
 							],
-							"actions": [],
-							"sid": 321471235692020,
-							"children": [
+							"actions": [
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-overlapping-another-object",
-											"objectClass": "Player_Base",
-											"sid": 569975198196341,
-											"parameters": {
-												"object": "EnemyBases"
-											}
-										},
-										{
-											"id": "trigger-once-while-true",
-											"objectClass": "System",
-											"sid": 496664253004904
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "Player_Hurt",
-											"sid": 115681152864599,
-											"parameters": [
-												"EnemyBases.UID"
-											]
-										}
-									],
-									"sid": 976955102091803
+									"callFunction": "Player_Hurt",
+									"sid": 524004613966846,
+									"parameters": [
+										"EnemyBases.UID"
+									]
+								}
+							],
+							"sid": 321471235692020
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-collision-with-another-object",
+									"objectClass": "Player_Base",
+									"sid": 278789900732452,
+									"parameters": {
+										"object": "Hazards"
+									}
 								},
 								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-overlapping-another-object",
-											"objectClass": "Player_Base",
-											"sid": 147944429916373,
-											"parameters": {
-												"object": "Hazards"
-											}
-										},
-										{
-											"id": "trigger-once-while-true",
-											"objectClass": "System",
-											"sid": 806636535418392
-										}
-									],
-									"actions": [
-										{
-											"callFunction": "Player_Hurt",
-											"sid": 763251209844700,
-											"parameters": [
-												"Hazards.UID"
-											]
-										}
-									],
-									"sid": 589531697189925
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "Player_Mask",
+									"sid": 674868578529934,
+									"parameters": {
+										"instance-variable": "Hurt"
+									},
+									"isInverted": true
+								},
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "Player_Mask",
+									"sid": 894622295509195,
+									"parameters": {
+										"instance-variable": "Dashing"
+									},
+									"isInverted": true
 								}
-							]
+							],
+							"actions": [
+								{
+									"callFunction": "Player_Hurt",
+									"sid": 110977330863429,
+									"parameters": [
+										"Hazards.UID"
+									]
+								}
+							],
+							"sid": 144625377273737
 						},
 						{
 							"eventType": "comment",
@@ -5690,7 +5542,9 @@
 							"objectClass": "Audio",
 							"sid": 249966487505258,
 							"parameters": {
-								"audio-file": "Adventureland1 Danger_01"
+								"audio-file": {
+									"path": "Soundtrack/Adventureland1 Danger_01"
+								}
 							}
 						},
 						{
@@ -5698,7 +5552,9 @@
 							"objectClass": "Audio",
 							"sid": 124784181960224,
 							"parameters": {
-								"audio-file": "Adventureland1 Happy_01"
+								"audio-file": {
+									"path": "Soundtrack/Adventureland1 Happy_01"
+								}
 							}
 						},
 						{
@@ -5706,7 +5562,9 @@
 							"objectClass": "Audio",
 							"sid": 617187003445557,
 							"parameters": {
-								"audio-file": "Adventureland1 Stress_01"
+								"audio-file": {
+									"path": "Soundtrack/Adventureland1 Stress_01"
+								}
 							}
 						}
 					],
@@ -5772,7 +5630,9 @@
 									"objectClass": "Audio",
 									"sid": 201991553128786,
 									"parameters": {
-										"audio-file": "Adventureland2_01",
+										"audio-file": {
+											"path": "Adventureland2_01"
+										},
 										"loop": "looping",
 										"volume": "AudioLevel",
 										"stereo-pan": "0",
@@ -5816,7 +5676,9 @@
 									"objectClass": "Audio",
 									"sid": 757449464987305,
 									"parameters": {
-										"audio-file": "Adventureland3_01",
+										"audio-file": {
+											"path": "Adventureland3_01"
+										},
 										"loop": "looping",
 										"volume": "AudioLevel",
 										"stereo-pan": "0",
@@ -6117,7 +5979,9 @@
 									"objectClass": "Audio",
 									"sid": 668205237057864,
 									"parameters": {
-										"audio-file": "Adventureland1 Happy_01",
+										"audio-file": {
+											"path": "Soundtrack/Adventureland1 Happy_01"
+										},
 										"loop": "looping",
 										"volume": "-100",
 										"stereo-pan": "0",
@@ -6149,7 +6013,9 @@
 									"objectClass": "Audio",
 									"sid": 165045565736140,
 									"parameters": {
-										"audio-file": "Adventureland1 Stress_01",
+										"audio-file": {
+											"path": "Soundtrack/Adventureland1 Stress_01"
+										},
 										"loop": "looping",
 										"volume": "-100",
 										"stereo-pan": "0",
@@ -6161,7 +6027,9 @@
 									"objectClass": "Audio",
 									"sid": 672250093225525,
 									"parameters": {
-										"audio-file": "Adventureland1 Danger_01",
+										"audio-file": {
+											"path": "Soundtrack/Adventureland1 Danger_01"
+										},
 										"loop": "looping",
 										"volume": "-100",
 										"stereo-pan": "0",

@@ -1109,7 +1109,9 @@
 									"sid": 302899642957780,
 									"parameters": {
 										"tag": "\"LoadItemsLibrary\"",
-										"file": "ItemsLibrary.json"
+										"file": {
+											"path": "ItemsLibrary.json"
+										}
 									}
 								},
 								{
@@ -1118,7 +1120,9 @@
 									"sid": 937946043779929,
 									"parameters": {
 										"tag": "\"LoadItemTriggers\"",
-										"file": "ItemTriggers.json"
+										"file": {
+											"path": "ItemTriggers.json"
+										}
 									}
 								},
 								{
@@ -1415,7 +1419,9 @@
 							"sid": 132740749364629,
 							"parameters": {
 								"tag": "\"Load_SaveGameData\"",
-								"file": "SaveGameData.json"
+								"file": {
+									"path": "SaveGameData.json"
+								}
 							}
 						},
 						{
@@ -1462,7 +1468,9 @@
 							"sid": 540535801057421,
 							"parameters": {
 								"tag": "\"Load_InvCollection\"",
-								"file": "InvCollection.json"
+								"file": {
+									"path": "InvCollection.json"
+								}
 							}
 						}
 					],
@@ -1495,7 +1503,9 @@
 							"sid": 375476404864422,
 							"parameters": {
 								"tag": "\"Load_ItemTriggersCollected\"",
-								"file": "ItemTriggersCollected.json"
+								"file": {
+									"path": "ItemTriggersCollected.json"
+								}
 							}
 						},
 						{
@@ -1537,7 +1547,9 @@
 							"sid": 923850753986509,
 							"parameters": {
 								"tag": "\"Load_ItemNumbers\"",
-								"file": "ItemNumbers.json"
+								"file": {
+									"path": "ItemNumbers.json"
+								}
 							}
 						}
 					],
@@ -2893,7 +2905,9 @@
 									"objectClass": "Audio",
 									"sid": 216129418894958,
 									"parameters": {
-										"audio-file": "delete",
+										"audio-file": {
+											"path": "Inventory/delete"
+										},
 										"loop": "not-looping",
 										"volume": "-5",
 										"stereo-pan": "0",

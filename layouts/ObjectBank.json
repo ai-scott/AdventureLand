@@ -75,7 +75,7 @@
 					},
 					"uid": 50,
 					"sid": 670366446735034,
-					"tags": "",
+					"tags": "\"player\"",
 					"instanceVariables": {},
 					"behaviors": {
 						"8Direction": {
@@ -888,6 +888,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": true,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -995,6 +996,7 @@
 						"Hurt_FX": 0,
 						"Active": false,
 						"DontActivate": false,
+						"Pair_ID": 0,
 						"State": "Idle",
 						"State_Timer": 0
 					},
@@ -2768,6 +2770,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": false,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -5654,6 +5657,7 @@
 						"Hurt_FX": 0,
 						"Active": false,
 						"DontActivate": false,
+						"Pair_ID": 0,
 						"State": "Idle",
 						"State_Timer": 0,
 						"StateLimit": 1
@@ -5812,7 +5816,8 @@
 					"instanceVariables": {
 						"Hurt_FX": 0,
 						"Active": false,
-						"DontActivate": false
+						"DontActivate": false,
+						"Pair_ID": 0
 					},
 					"behaviors": {
 						"Flash": {
@@ -5856,7 +5861,7 @@
 						"initially-visible": false,
 						"initial-animation": "Default",
 						"initial-frame": 0,
-						"enable-collisions": true,
+						"enable-collisions": false,
 						"live-preview": false
 					},
 					"uid": 278,
@@ -5876,7 +5881,8 @@
 						"CanBeKnockedBack": true,
 						"State": "",
 						"State_Timer": 0,
-						"BatId": 0
+						"BatId": 0,
+						"BiteTimer": 0
 					},
 					"behaviors": {
 						"8Direction": {

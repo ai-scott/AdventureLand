@@ -327,7 +327,9 @@
 							"sid": 961040417192014,
 							"parameters": {
 								"tag": "\"LoadGameText\"",
-								"file": "World00_text.json"
+								"file": {
+									"path": "World00_text.json"
+								}
 							}
 						}
 					],
@@ -352,7 +354,9 @@
 							"sid": 219762890203641,
 							"parameters": {
 								"tag": "\"LoadGameText\"",
-								"file": "World10_text.json"
+								"file": {
+									"path": "World10_text.json"
+								}
 							}
 						}
 					],
@@ -377,7 +381,9 @@
 							"sid": 956448213383121,
 							"parameters": {
 								"tag": "\"LoadGameText\"",
-								"file": "World01_text.json"
+								"file": {
+									"path": "World01_text.json"
+								}
 							}
 						}
 					],

@@ -102,6 +102,15 @@
 							}
 						},
 						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Ooze_Mask",
+							"sid": 633008755861734,
+							"parameters": {
+								"instance-variable": "Pair_ID",
+								"value": "En_Ooze_Base.UID"
+							}
+						},
+						{
 							"type": "script",
 							"language": "typescript",
 							"script": [

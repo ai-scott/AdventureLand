@@ -90,6 +90,49 @@
 						}
 					],
 					"sid": 929886139272807
+				},
+				{
+					"eventType": "comment",
+					"text": "Configure Bat Collision Filtering"
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-start-of-layout",
+							"objectClass": "System",
+							"sid": 932359961561794
+						}
+					],
+					"actions": [],
+					"sid": 417594334630344,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 420200108909365,
+									"parameters": {
+										"object": "En_Bat_Base"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-solid-collision-filter",
+									"objectClass": "En_Bat_Base",
+									"sid": 606001285471922,
+									"parameters": {
+										"mode": "inclusive",
+										"tags": "\"player\""
+									}
+								}
+							],
+							"sid": 763953097884001
+						}
+					]
 				}
 			],
 			"sid": 868789268199634
@@ -246,14 +289,6 @@
 											}
 										},
 										{
-											"id": "pick-by-unique-id",
-											"objectClass": "En_Bat_Mask",
-											"sid": 501702116427882,
-											"parameters": {
-												"unique-id": "En_Bat_Base.Pair_ID"
-											}
-										},
-										{
 											"id": "pick-by-evaluate",
 											"objectClass": "System",
 											"sid": 775204273453057,
@@ -264,16 +299,6 @@
 										}
 									],
 									"actions": [
-										{
-											"id": "destroy",
-											"objectClass": "En_Bat_Mask",
-											"sid": 537813502570265
-										},
-										{
-											"id": "destroy",
-											"objectClass": "En_Bat_Base",
-											"sid": 402477727934663
-										},
 										{
 											"id": "destroy",
 											"objectClass": "En_Shadow",
@@ -352,6 +377,49 @@
 								}
 							],
 							"sid": 862247412810378
+						},
+						{
+							"eventType": "comment",
+							"text": "Z-Order Logic"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 992907004824132,
+									"parameters": {
+										"object": "En_Bat_Base"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"// Get picked bat mask (corresponding to this bat base)",
+										"const batMask = runtime.objects.EnemyMasks.getFirstPickedInstance();",
+										"const shadowManager = globalThis.AdventureLand?.BatShadowManager;",
+										"",
+										"if (batMask && shadowManager) {",
+										"  // Get shadow data for this specific bat",
+										"  const allShadows = shadowManager.getAllShadows();",
+										"  const shadowData = allShadows.find(s => s.batBaseUID === localVars.batBaseUID);",
+										"  ",
+										"  if (shadowData) {",
+										"    // Map offset 15-80px to Z elevation 10 to -10",
+										"    // Low (15px) = above player (10)",
+										"    // High (80px) = below player (-10)",
+										"    const t = (shadowData.offsetY - 15) / (80 - 15); // 0.0 to 1.0",
+										"    batMask.zElevation = 10 - (t * 20); // 10 to -10",
+										"  }",
+										"}"
+									]
+								}
+							],
+							"sid": 376714736496341
 						}
 					]
 				}
@@ -426,37 +494,47 @@
 					"sid": 814137900694722
 				},
 				{
-					"eventType": "comment",
-					"text": "//Death cleanup"
-				},
-				{
 					"eventType": "block",
 					"conditions": [
 						{
-							"id": "on-destroyed",
-							"objectClass": "En_Bat_Base",
-							"sid": 348845741177024
+							"id": "on-collision-with-another-object",
+							"objectClass": "Player_Base",
+							"sid": 978806204084941,
+							"parameters": {
+								"object": "En_Bat_Base"
+							}
+						},
+						{
+							"id": "is-boolean-instance-variable-set",
+							"objectClass": "Player_Mask",
+							"sid": 474467690844548,
+							"parameters": {
+								"instance-variable": "Hurt"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "is-boolean-instance-variable-set",
+							"objectClass": "Player_Mask",
+							"sid": 790710393002390,
+							"parameters": {
+								"instance-variable": "Dashing"
+							},
+							"isInverted": true
 						}
 					],
 					"actions": [
 						{
-							"type": "script",
-							"language": "javascript",
-							"script": [
-								"const enemyAI = globalThis.AdventureLand?.EnemyAI;",
-								"    const batTerritory = globalThis.AdventureLand?.BatTerritoryManager;",
-								"    const batShadow = globalThis.AdventureLand?.BatShadowManager;",
-								"    ",
-								"    const batUID = self.uid;",
-								"    if (enemyAI) enemyAI.notifyDeath(batUID);",
-								"    if (batTerritory) batTerritory.unregisterBat(batUID);",
-								"    if (batShadow) batShadow.unregisterShadow(batUID);",
-								"    ",
-								"    console.log(`💀 Bat ${batUID} fully cleaned up`);"
-							]
+							"id": "set-animation",
+							"objectClass": "En_Bat_Mask",
+							"sid": 795042883828195,
+							"parameters": {
+								"animation": "\"Attack_Left\"",
+								"from": "beginning"
+							}
 						}
 					],
-					"sid": 563407513106398
+					"sid": 400365713217406
 				}
 			],
 			"sid": 155506277075003

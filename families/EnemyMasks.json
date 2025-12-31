@@ -23,6 +23,13 @@
 			"desc": "",
 			"show": true,
 			"sid": 747232161106927
+		},
+		{
+			"name": "Pair_ID",
+			"type": "number",
+			"desc": "the UID of the matching enemy base",
+			"show": true,
+			"sid": 901172285888284
 		}
 	],
 	"behaviorTypes": [

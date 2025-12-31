@@ -103,6 +103,15 @@
 							}
 						},
 						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Crab_Mask",
+							"sid": 356185316580297,
+							"parameters": {
+								"instance-variable": "Pair_ID",
+								"value": "En_Crab_Base.UID"
+							}
+						},
+						{
 							"type": "script",
 							"language": "typescript",
 							"script": [

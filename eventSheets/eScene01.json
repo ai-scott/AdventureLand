@@ -170,6 +170,24 @@
 							"script": [
 								"console.log(\"✅ Added bat to Objects\");"
 							]
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Bat_Base",
+							"sid": 936032743734215,
+							"parameters": {
+								"instance-variable": "Pair_ID",
+								"value": "batMaskUID"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "En_Bat_Mask",
+							"sid": 409328873766738,
+							"parameters": {
+								"instance-variable": "Pair_ID",
+								"value": "batBaseUID"
+							}
 						}
 					],
 					"sid": 627071795770023

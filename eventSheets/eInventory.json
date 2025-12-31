@@ -5083,7 +5083,9 @@
 									"objectClass": "Audio",
 									"sid": 141375739121645,
 									"parameters": {
-										"audio-file": "delete",
+										"audio-file": {
+											"path": "Inventory/delete"
+										},
 										"loop": "not-looping",
 										"volume": "-5",
 										"stereo-pan": "0",
@@ -5581,7 +5583,9 @@
 											"objectClass": "Audio",
 											"sid": 318685068259089,
 											"parameters": {
-												"audio-file": "eat",
+												"audio-file": {
+													"path": "Inventory/eat"
+												},
 												"loop": "not-looping",
 												"volume": "-5",
 												"stereo-pan": "0",
@@ -5838,7 +5842,9 @@
 									"objectClass": "Audio",
 									"sid": 832007213125079,
 									"parameters": {
-										"audio-file": "item",
+										"audio-file": {
+											"path": "Inventory/item"
+										},
 										"loop": "not-looping",
 										"volume": "-5",
 										"stereo-pan": "0",
@@ -7700,7 +7706,9 @@
 							"objectClass": "Audio",
 							"sid": 113883687468236,
 							"parameters": {
-								"audio-file": "tap",
+								"audio-file": {
+									"path": "Inventory/tap"
+								},
 								"loop": "not-looping",
 								"volume": "-5",
 								"stereo-pan": "0",
