@@ -229,9 +229,9 @@ export const BAT_CONFIG: EnemyConfig = {
       name: "swoop_attack",
       duration: [2.0, 2.5],  // 2.5s swoop - longer pursuit (was 1.5-2.0)
       weight: 15,  // Highest priority - always swoop when available
-      cooldown: 3.5,  // 3.5s cooldown - ensures 1-2s idle after flee
+      cooldown: 5.0,  // 5s cooldown - less aggressive, gives player breathing room
       conditions: [
-        { type: 'distance', operator: '<', value: 202 }  // Within viewDistance
+        { type: 'distance', operator: '<', value: 180 }  // Slightly shorter range - less aggressive
       ],
       actions: [
         { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right (switches to Attack_Left when close)
@@ -248,7 +248,7 @@ export const BAT_CONFIG: EnemyConfig = {
       actions: [
         { type: 'animate', params: { name: 'Hurt_Left' } },  // Use _Left, mirroring handles direction
         { type: 'move', params: { pattern: 'stop' } },
-        { type: 'invulnerable', params: { duration: 1.5 } }  // 1.5 seconds invulnerability
+        { type: 'invulnerable', params: { duration: 0.2 } }  // 0.2s - just enough for visual flash, height-based invuln takes over during flee
       ]
     },
     {

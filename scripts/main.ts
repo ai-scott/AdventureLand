@@ -7,6 +7,9 @@ import "./systems/items/item-manager.js";  // Side-effect import - sets up globa
 import { BatTerritoryManager } from "./systems/enemy/bat-territory-manager.js";
 import { BatShadowManager } from "./systems/enemy/bat-shadow-manager.js";
 
+// RENDERING SYSTEM IMPORTS
+import { YSortManager } from "./systems/rendering/y-sort-manager.js";
+
 // NEW: Import the imports-for-events module
 import { registerWithRuntime } from "./imports-for-events.js";
 
@@ -134,11 +137,24 @@ runOnStartup(async runtime => {
     updateAllShadows: () => BatShadowManager.updateAllShadows(),
     setShadowOffset: (batBaseUID: number, offsetY: number) =>
       BatShadowManager.setShadowOffset(batBaseUID, offsetY),
+    updateShadowEasing: (batBaseUID: number, dt?: number) =>
+      BatShadowManager.updateShadowEasing(batBaseUID, dt),
+    calculateShadowOffsetForBehavior: (behavior: string, distanceToPlayer: number) =>
+      BatShadowManager.calculateShadowOffsetForBehavior(behavior, distanceToPlayer),
+    isBatAtSafeAltitude: (batBaseUID: number) =>
+      BatShadowManager.isBatAtSafeAltitude(batBaseUID),
     unregisterShadow: (batBaseUID: number) => BatShadowManager.unregisterShadow(batBaseUID),
     getShadowUID: (batBaseUID: number) => BatShadowManager.getShadowUID(batBaseUID),
     hasShadow: (batBaseUID: number) => BatShadowManager.hasShadow(batBaseUID),
     getAllShadows: () => BatShadowManager.getAllShadows(),
     reset: () => BatShadowManager.reset()
+  };
+
+  // Y-SORTING SYSTEM - Unified Depth Sorting for Top-Down View
+  (globalThis as any).AdventureLand.YSort = {
+    initialize: (runtime: any) => YSortManager.initialize(runtime),
+    sortAllByY: () => YSortManager.sortAllObjectsByY(),
+    sortWithAltitude: () => YSortManager.sortWithAltitude()
   };
 
   // Create placeholder for Items and Inventory (will be populated by item-manager.ts)

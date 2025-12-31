@@ -306,6 +306,11 @@ export class EnhancedEnemyAIFactory {
 
     // Update smooth movement
     this.updateSmoothMovement(enemyData, enemy, dt);
+
+    // Update bat shadow offset based on behavior (height system)
+    if (enemyData.type === "Bat") {
+      this.updateBatShadowHeight(baseUID, enemyData);
+    }
   }
 
   private selectNewBehavior(enemyData: EnhancedEnemyData): void {
@@ -337,11 +342,7 @@ export class EnhancedEnemyAIFactory {
     }
 
     // Force flee when just swooped or recently hurt
-    // BUT: For bats, if very close (< 30px), let bite happen first
-    const shouldForceFlee = enemyData.justSwooped || wasJustHurt;
-    const bitePriority = enemyData.type === "Bat" && enemyData.lastPlayerDistance < 30 && availableBehaviors.some(b => b.name === "bite_attack");
-
-    if (shouldForceFlee && !bitePriority) {
+    if (enemyData.justSwooped || wasJustHurt) {
       // Try to find flee in available behaviors first
       let fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
 
@@ -357,15 +358,6 @@ export class EnhancedEnemyAIFactory {
         if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
         if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior in config! This should never happen!`);
-        enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
-      }
-    } else if (bitePriority) {
-      // Very close - bite takes priority over flee
-      const biteBehavior = availableBehaviors.find(b => b.name === "bite_attack");
-      if (biteBehavior) {
-        enemyData.currentBehavior = biteBehavior;
-        if (enemyData.type === "Bat") console.log(`   🦷 BITE PRIORITY! Close range (${enemyData.lastPlayerDistance.toFixed(1)}px) - bite before flee`);
-      } else {
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
     } else {
@@ -789,6 +781,25 @@ export class EnhancedEnemyAIFactory {
     }
   }
 
+  private updateBatShadowHeight(baseUID: number, enemyData: EnhancedEnemyData): void {
+    // Access shadow manager from global namespace
+    const shadowManager = (globalThis as any).AdventureLand?.BatShadowManager;
+    if (!shadowManager) return;
+
+    // Calculate target shadow offset based on current behavior and distance
+    const behaviorName = enemyData.currentBehavior?.name || 'idle_hanging';
+    const targetShadowOffset = shadowManager.calculateShadowOffsetForBehavior(
+      behaviorName,
+      enemyData.lastPlayerDistance
+    );
+
+    // Set target offset (will ease smoothly)
+    shadowManager.setShadowOffset(baseUID, targetShadowOffset);
+
+    // Update easing to smoothly transition to target
+    shadowManager.updateShadowEasing(baseUID);
+  }
+
   public hurtEnemy(enemyUID: number, damage: number = 1): void {
     const enemyData = this.enemyData.get(enemyUID);
     if (!enemyData) return;
@@ -836,7 +847,22 @@ export class EnhancedEnemyAIFactory {
     if (!data) {
       return false; // If enemy doesn't exist, it's not invulnerable
     }
-    return data.invulnerableTimer > 0 || data.knockbackTimer > 0;
+
+    // Check standard invulnerability (timers)
+    const hasInvulnerabilityFrames = data.invulnerableTimer > 0 || data.knockbackTimer > 0;
+
+    // Check bat altitude invulnerability (too high to hit)
+    if (data.type === "Bat") {
+      const shadowManager = (globalThis as any).AdventureLand?.BatShadowManager;
+      if (shadowManager) {
+        const isAtSafeAltitude = shadowManager.isBatAtSafeAltitude(baseUID);
+        if (isAtSafeAltitude) {
+          return true; // Bat is too high - invulnerable (shadow offset >= 40px)
+        }
+      }
+    }
+
+    return hasInvulnerabilityFrames;
   }
 
   // ============= EVENT SHEET CALLBACK METHODS =============
@@ -895,9 +921,9 @@ export class EnhancedEnemyAIFactory {
     enemyData.isHurt = true;
 
     // CRITICAL: Set invulnerability timer immediately
-    // For Bat: 1.0s (allows ~1s to flee, then can be hit again)
+    // For Bat: 0.3s (brief, height-based invuln takes over during flee)
     // For others: 0.7s default
-    const invulnDuration = enemyData.type === "Bat" ? 1.0 : 0.7;
+    const invulnDuration = enemyData.type === "Bat" ? 0.3 : 0.7;
     enemyData.invulnerableTimer = invulnDuration;
 
     // Store knockback physics for smooth interpolation
