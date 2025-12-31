@@ -234,22 +234,8 @@ export const BAT_CONFIG: EnemyConfig = {
         { type: 'distance', operator: '<', value: 202 }  // Within viewDistance
       ],
       actions: [
-        { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right
-        { type: 'move', params: { pattern: 'swoop_to_player', speed: 64 } }  // Faster swoop speed
-      ]
-    },
-    {
-      name: "bite_attack",
-      duration: [0.3, 0.3],  // Brief bite animation
-      weight: 12,  // Higher than idle, lower than swoop - shows when very close
-      cooldown: 2.0,  // 2s cooldown prevents bite spam
-      conditions: [
-        { type: 'distance', operator: '<', value: 30 }  // Within close range (30px)
-      ],
-      actions: [
-        { type: 'animate', params: { name: 'Attack_Left' } },  // Bite animation
-        { type: 'move', params: { pattern: 'swoop_to_player', speed: 32 } },  // Continue swooping slowly during bite
-        { type: 'sound', params: { sound: 'Bat_Bite' } }
+        { type: 'animate', params: { name: 'Fly_Left' } },  // Bat uses _Left, mirroring handles right (switches to Attack_Left when close)
+        { type: 'move', params: { pattern: 'swoop_to_player', speed: 64 } }  // Faster swoop speed - auto-triggers bite animation when < 40px
       ]
     },
     {

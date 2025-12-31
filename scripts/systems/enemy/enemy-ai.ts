@@ -334,22 +334,14 @@ export class EnhancedEnemyAIFactory {
       console.log(`🦇 Selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
       console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
       console.log(`   justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
-
-      // Debug bite availability in detail
-      const biteBehavior = enemyData.config.behaviors.find(b => b.name === "bite_attack");
-      const hasBite = availableBehaviors.some(b => b.name === "bite_attack");
-      const biteOnCooldown = enemyData.behaviorCooldowns.has('bite_attack');
-
-      if (enemyData.lastPlayerDistance < 30) {
-        console.log(`   🦷 BITE CHECK: inList=${hasBite}, onCooldown=${biteOnCooldown}, weight=${biteBehavior?.weight}, distance=${enemyData.lastPlayerDistance.toFixed(1)}`);
-        if (!hasBite && !biteOnCooldown) {
-          console.log(`   ⚠️ Bite filtered out by conditions even though not on cooldown!`);
-        }
-      }
     }
 
     // Force flee when just swooped or recently hurt
-    if (enemyData.justSwooped || wasJustHurt) {
+    // BUT: For bats, if very close (< 30px), let bite happen first
+    const shouldForceFlee = enemyData.justSwooped || wasJustHurt;
+    const bitePriority = enemyData.type === "Bat" && enemyData.lastPlayerDistance < 30 && availableBehaviors.some(b => b.name === "bite_attack");
+
+    if (shouldForceFlee && !bitePriority) {
       // Try to find flee in available behaviors first
       let fleeBehavior = availableBehaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
 
@@ -365,6 +357,15 @@ export class EnhancedEnemyAIFactory {
         if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
         if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior in config! This should never happen!`);
+        enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
+      }
+    } else if (bitePriority) {
+      // Very close - bite takes priority over flee
+      const biteBehavior = availableBehaviors.find(b => b.name === "bite_attack");
+      if (biteBehavior) {
+        enemyData.currentBehavior = biteBehavior;
+        if (enemyData.type === "Bat") console.log(`   🦷 BITE PRIORITY! Close range (${enemyData.lastPlayerDistance.toFixed(1)}px) - bite before flee`);
+      } else {
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
     } else {
@@ -572,6 +573,30 @@ export class EnhancedEnemyAIFactory {
         enemyData.targetSpeed = 0;
       } else {
         enemyData.targetSpeed = speed;
+      }
+
+      // SPECIAL: Bat bite animation during swoop - switch based on distance
+      if (enemyData.type === "Bat" && pattern === 'swoop_to_player') {
+        if (enemyData.lastPlayerDistance < 40) {
+          // Switch to bite animation when within 40px during swoop
+          if (enemyData.currentAnimation !== 'Attack_Left') {
+            executeAnimation(enemy, enemyData, 'Attack_Left', this.runtime, true);
+            // Play bite sound (one-time) - will fail gracefully if sound doesn't exist yet
+            if (this.runtime?.callFunction) {
+              try {
+                const uniqueTag = `Bat_${enemy.uid}`;
+                this.runtime.callFunction("Audio_Play_Sound", "Bat_Bite", 1.0, uniqueTag);
+              } catch (error) {
+                // Sound file doesn't exist yet - fail silently
+              }
+            }
+          }
+        } else {
+          // Switch back to fly animation when player moves away
+          if (enemyData.currentAnimation === 'Attack_Left') {
+            executeAnimation(enemy, enemyData, 'Fly_Left', this.runtime, true);
+          }
+        }
       }
 
       switch (pattern) {
@@ -885,7 +910,6 @@ export class EnhancedEnemyAIFactory {
       // Clear ALL cooldowns so bat can flee immediately
       enemyData.behaviorCooldowns.delete('swoop_attack');
       enemyData.behaviorCooldowns.delete('flee_to_tree');
-      enemyData.behaviorCooldowns.delete('bite_attack');
 
       const fleeBehavior = enemyData.config.behaviors.find(b => b.name === "flee_to_tree");
       if (fleeBehavior) {
