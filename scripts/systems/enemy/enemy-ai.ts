@@ -373,6 +373,7 @@ export class EnhancedEnemyAIFactory {
     }
 
     // Reset animation state when changing behaviors to prevent visual glitches
+    // This prevents bats getting stuck in Attack_Left when fleeing
     if (oldBehavior !== enemyData.currentBehavior.name) {
       enemyData.currentAnimation = undefined;
       enemyData.executedActions?.clear(); // Reset one-time actions for new behavior
@@ -786,17 +787,21 @@ export class EnhancedEnemyAIFactory {
     const shadowManager = (globalThis as any).AdventureLand?.BatShadowManager;
     if (!shadowManager) return;
 
-    // Calculate target shadow offset based on current behavior and distance
     const behaviorName = enemyData.currentBehavior?.name || 'idle_hanging';
+
+    // SPECIAL: Don't update shadow while idling - freeze it at current position
+    // This prevents visible drift when bat settles in tree
+    if (behaviorName === 'idle_hanging') {
+      return; // Shadow stays frozen at whatever height it was when idling started
+    }
+
+    // For all other behaviors, calculate and ease to target height
     const targetShadowOffset = shadowManager.calculateShadowOffsetForBehavior(
       behaviorName,
       enemyData.lastPlayerDistance
     );
 
-    // Set target offset (will ease smoothly)
     shadowManager.setShadowOffset(baseUID, targetShadowOffset);
-
-    // Update easing to smoothly transition to target
     shadowManager.updateShadowEasing(baseUID);
   }
 
@@ -943,6 +948,11 @@ export class EnhancedEnemyAIFactory {
         enemyData.state = fleeBehavior.name;
         enemyData.stateTimer = getRandomDuration(fleeBehavior.duration);
         enemyData.behaviorStarted = false;
+
+        // CRITICAL: Reset animation state so flee can play Fly_Left (not stuck in Attack_Left)
+        enemyData.currentAnimation = undefined;
+        enemyData.executedActions?.clear();
+
         console.log(`🦇 Bat hit! Clearing all cooldowns and forcing immediate flee`);
       }
     } else {

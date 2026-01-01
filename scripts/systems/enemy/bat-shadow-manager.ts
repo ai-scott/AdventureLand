@@ -33,8 +33,8 @@ class BatShadowManagerClass {
     const shadowData: ShadowData = {
       shadowUID,
       batBaseUID,
-      offsetY: 80,  // Start at tree height (bats spawn in trees)
-      targetOffsetY: 80  // Start at tree height (bats spawn in trees)
+      offsetY: 60,  // Start at tree height (bats spawn in trees)
+      targetOffsetY: 60  // Start at tree height (bats spawn in trees)
     };
 
     this.shadows.set(batBaseUID, shadowData);
@@ -141,12 +141,12 @@ class BatShadowManagerClass {
     switch (behavior) {
       case 'idle_hanging':
         // Bat is perched high in tree - shadow far below
-        return 80;
+        return 60;
 
       case 'flee_to_tree':
         // Bat is fleeing back to tree - already at tree height
         // Use same offset as idle to avoid shadow drift when bat stops
-        return 80;
+        return 60;
 
       case 'swoop_attack':
         // Bat is swooping - shadow distance decreases as it gets closer to player
