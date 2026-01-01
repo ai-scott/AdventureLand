@@ -20,11 +20,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
 **Systems Involved**: Item Manager, Equipment, Quest/Dialogue
 **Priority**: HIGH - Expected functionality missing
 
-### Map Transitions
-- [ ] **#14**: Player keeps animating while stuck when reaching screen edge during fade transition (should continue moving off-screen)
-
-**Systems Involved**: Map transitions, Player movement
-**Priority**: HIGH - Breaks screen transitions
 
 ## Medium Priority (Polish/UX)
 
@@ -97,6 +92,11 @@ This file tracks bugs discovered during TypeScript migration and system developm
 - [X] **#16**: Player body and clothing render separately when mirrored during death
 
 **Solution**: Removed duplicate animation call that caused clothing desync
+
+### Player Animation (Resolved 2026-01-01)
+- [X] **#14**: Player keeps animating after death or during transitions
+
+**Solution**: Added Health > 0 check before applying hurt effects/animations, disabled 8Direction on death
 
 ---
 
