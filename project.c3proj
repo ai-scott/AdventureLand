@@ -936,6 +936,20 @@
 							],
 							"subfolders": [],
 							"name": "rendering"
+						},
+						{
+							"items": [
+								{
+									"name": "currency-system.ts",
+									"type": "application/typescript",
+									"sid": 439456830398187,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "currency"
 						}
 					],
 					"name": "systems"

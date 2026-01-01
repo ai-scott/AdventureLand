@@ -5,24 +5,36 @@ This file tracks bugs discovered during TypeScript migration and system developm
 ## Critical (Breaks Core Gameplay)
 
 ### SaveGame/HUD Sync Issues
-- [ ] **#1**: Money repairs hearts visually in HUD, but inventory shows incorrect values
-- [ ] **#2**: Gems shows 0 in inventory until >100, then displays correctly
-- [ ] **#11**: Gems/Health display dramatically different from global variables (Gems shows 0, var has 506; Health shows 10, var shows 0)
-- [ ] **#12**: Health changes when opening/closing inventory menu
+- [X] **#1**: Money repairs hearts visually in HUD, but inventory shows incorrect values - **RESOLVED** via CurrencySystem
+- [X] **#2**: Gems shows 0 in inventory until >100, then displays correctly - **RESOLVED** via CurrencySystem
+- [X] **#11**: Gems/Health display dramatically different from global variables - **RESOLVED** via proper sync pattern
+- [X] **#12**: Health changes when opening/closing inventory menu - **RESOLVED** via HealthSystem.adjustHealth()
 
-**Root Cause**: Likely SaveGameData dictionary sync with HUD/inventory display system
-**Systems Involved**: Health System, Inventory UI, SaveGame persistence
-**Priority**: CRITICAL - Fix together as one issue
+**Resolution Date**: 2026-01-01
+**Root Cause**: Inconsistent data flow - Gems/Health were being read from different sources (Dictionary vs global vars)
+**Solution**: Created CurrencySystem (TypeScript) following HealthSystem pattern
+  - TypeScript State → runtime.globalVars → Dict_SaveGameData (proper 3-way sync)
+  - All UI reads from global variables consistently
+  - Event sheet helper functions (adjustHealth, adjustGems) manage sync
+**Systems Involved**: Health System, Currency System, Inventory UI, SaveGame persistence
+**Files Changed**:
+  - `scripts/systems/currency/currency-system.ts` (new)
+  - `scripts/systems/health/health-system.ts` (added adjustHealth helper)
+  - `scripts/main.ts` (added Currency namespace)
+  - Event sheets: eGlobal.json (Adjust_Gems, adjustHealth simplified)
+  - Event sheets: eGameRoom.json (added adjustHealth call after takeDamage)
 
 ### Item Management
 - [ ] **#10**: Equipped items disappear when replaced with new item (should return to inventory)
 - [ ] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
+- [X] **#18**: Heart loot pickups heal 1 health instead of 2 (one heart = 2 health points)
 
-**Systems Involved**: Item Manager, Equipment System
-**Priority**: CRITICAL - Data loss bugs
+**Systems Involved**: Item Manager, Equipment System, Loot System
+**Priority**: CRITICAL - Data loss bugs and incorrect healing
+**Location**: eGameRoom.json - Heart loot collision calls AdjustHealthAndSave(1) should be AdjustHealthAndSave(2)
 
 ### Player State
-- [ ] **#17**: Player gets stuck and won't move until attack is performed
+- [ ] **#17**: Player gets stuck and won't move until attack is performed, happens sometimes after getting hurt or on layout start
 
 **Systems Involved**: Player input/movement, State machine
 **Priority**: CRITICAL - Blocks gameplay
@@ -65,10 +77,12 @@ This file tracks bugs discovered during TypeScript migration and system developm
 ## Low Priority (Visual/UI Polish)
 
 ### HUD Display
-- [ ] **#3**: Gems should show on HUD (like hearts) so collection is visible
-- [ ] **#7**: "Gems" label should adjust position based on number width
+- [X] **#3**: Gems should show on HUD (like hearts) so collection is visible - **RESOLVED** (already implemented)
+- [X] **#7**: "Gems" label should adjust position based on number width - **RESOLVED** via consistent global var display
 
-**Systems Involved**: HUD layout
+**Resolution Date**: 2026-01-01
+**Solution**: Gems now display consistently from global variable, fixing positioning issues
+**Systems Involved**: HUD layout, Currency System
 **Priority**: LOW - Visual polish
 
 ### Death Animation

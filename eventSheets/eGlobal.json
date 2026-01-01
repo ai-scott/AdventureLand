@@ -73,7 +73,7 @@
 		},
 		{
 			"eventType": "variable",
-			"name": "Gems_Total",
+			"name": "Gems",
 			"type": "number",
 			"initialValue": "0",
 			"comment": "",
@@ -1910,13 +1910,218 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"eventType": "comment",
-							"text": "Adjust health",
-							"background-color": [
-								0.16862745098039217,
-								1,
-								0,
-								1
+							"functionName": "initiateHealth",
+							"functionDescription": "draw initial hearts object",
+							"functionCategory": "Stats",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"console.log(\"❤️ initiating health\");"
+									]
+								}
+							],
+							"sid": 588713163951648,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "Heart",
+											"sid": 520639978643141,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Heart",
+											"sid": 631467454009022
+										}
+									],
+									"sid": 714783358138778
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "Heart",
+											"sid": 993655595209777,
+											"parameters": {
+												"layer": "\"HUD_UI\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Heart",
+											"sid": 538099089643009
+										}
+									],
+									"sid": 435219790145751
+								},
+								{
+									"eventType": "comment",
+									"text": "Hearts inheirit from Dict_SaveGameData "
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for",
+											"objectClass": "System",
+											"sid": 760778169461948,
+											"parameters": {
+												"name": "\"\"",
+												"start-index": "1",
+												"end-index": "Dict_SaveGameData.Get(\"MaxHealth\")/2"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 237478312966734,
+											"parameters": {
+												"object-to-create": "Heart",
+												"layer": "\"Inventory\"",
+												"x": "138 + ((loopindex-1)*24)",
+												"y": "66",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Heart",
+											"sid": 420069782535815,
+											"parameters": {
+												"scale": "2"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Heart",
+											"sid": 941724567971078,
+											"parameters": {
+												"frame-number": "\"Full\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Heart",
+											"sid": 855344632937740
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Heart",
+											"sid": 597555841099033,
+											"parameters": {
+												"instance-variable": "HeartIndex",
+												"value": "loopindex"
+											}
+										}
+									],
+									"sid": 888658327460477
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for",
+											"objectClass": "System",
+											"sid": 736750342302422,
+											"parameters": {
+												"name": "\"\"",
+												"start-index": "1",
+												"end-index": "Dict_SaveGameData.Get(\"MaxHealth\")/2"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 831155194147382,
+											"parameters": {
+												"object-to-create": "Heart",
+												"layer": "\"HUD_UI\"",
+												"x": "6 + ((loopindex-1)*12)",
+												"y": "4",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-scale",
+											"objectClass": "Heart",
+											"sid": 493673584776240,
+											"parameters": {
+												"scale": "1"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "Heart",
+											"sid": 167487330564209,
+											"parameters": {
+												"frame-number": "\"Full\""
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "Heart",
+											"sid": 639476860007268
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Heart",
+											"sid": 964013269962114,
+											"parameters": {
+												"instance-variable": "HeartIndex",
+												"value": "loopindex"
+											}
+										}
+									],
+									"sid": 598934538452367
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "wait",
+											"objectClass": "System",
+											"sid": 341296855923153,
+											"parameters": {
+												"seconds": "0.05",
+												"use-timescale": true
+											}
+										},
+										{
+											"callFunction": "adjustHealth",
+											"sid": 163378903078817,
+											"parameters": [
+												"0",
+												"\"\""
+											]
+										}
+									],
+									"sid": 624884075826478
+								}
 							]
 						},
 						{
@@ -1955,7 +2160,8 @@
 								},
 								{
 									"callFunction": "RefreshInventory",
-									"sid": 912396061905983
+									"sid": 912396061905983,
+									"disabled": true
 								},
 								{
 									"callFunction": "SaveGameData",
@@ -2013,119 +2219,16 @@
 									"type": "script",
 									"language": "javascript",
 									"script": [
-										"// ALWAYS sync with TypeScript health system, not just when health_change !== 0",
-										"const healthSystem = runtime.imports.AdventureLand.Health;",
-										"",
+										"const healthSystem = globalThis.AdventureLand?.HealthSystem;",
 										"if (healthSystem) {",
-										"    // First, get current health from HealthSystem",
-										"    const currentState = healthSystem.getState();",
-										"    ",
-										"    // Apply any health changes if requested",
-										"    if (localVars.health_change !== 0) {",
-										"        if (localVars.health_change > 0) {",
-										"            // Healing",
-										"            healthSystem.heal({",
-										"                amount: localVars.health_change,",
-										"                source: 'other',",
-										"                overheal: localVars.maxOutHealth",
-										"            });",
-										"        } else {",
-										"            // Damage (from non-combat sources like falling)",
-										"            healthSystem.takeDamage({",
-										"                amount: Math.abs(localVars.health_change),",
-										"                source: { uid: -1, type: 'other' },",
-										"                type: 'true', // True damage bypasses resistances",
-										"                ignoreInvincibility: true",
-										"            });",
-										"        }",
-										"    }",
-										"    ",
-										"    // CRITICAL: Always update Dictionary from HealthSystem (source of truth)",
-										"    const finalState = healthSystem.getState();",
-										"    const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();",
-										"    if (dict) {",
-										"        dict.getDataMap().set('Health', finalState.current);",
-										"        dict.getDataMap().set('MaxHealth', finalState.max);",
-										"        console.log(`[adjustHealth] Synced to Dict: ${finalState.current}/${finalState.max}`);",
-										"    }",
-										"}",
-										""
+										"    healthSystem.adjustHealth(localVars.health_change, localVars.maxOutHealth === \"TRUE\");",
+										"    console.log(\"adjusting health by \"+localVars.health_change);",
+										"}"
 									]
 								}
 							],
 							"sid": 179579311758576,
 							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 776366918241119,
-											"parameters": {
-												"variable": "maxOutHealth",
-												"comparison": 0,
-												"value": "\"TRUE\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 167670254838865,
-											"parameters": {
-												"key": "\"Health\"",
-												"value": "Self.Get(\"MaxHealth\")"
-											}
-										}
-									],
-									"sid": 814796171516179
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-eventvar",
-											"objectClass": "System",
-											"sid": 966220622415252,
-											"parameters": {
-												"variable": "maxOutHealth",
-												"comparison": 0,
-												"value": "\"TRUE\""
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [
-										{
-											"id": "set-key",
-											"objectClass": "Dict_SaveGameData",
-											"sid": 505987706018588,
-											"parameters": {
-												"key": "\"Health\"",
-												"value": "clamp((Self.Get(\"Health\") +health_change), -100, Self.Get(\"MaxHealth\")) "
-											}
-										}
-									],
-									"sid": 859425698097537
-								},
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 952800134606350,
-											"parameters": {
-												"variable": "Health",
-												"value": "Dict_SaveGameData.Get(\"Health\")"
-											}
-										}
-									],
-									"sid": 693226539406853
-								},
 								{
 									"eventType": "block",
 									"conditions": [
@@ -2380,6 +2483,10 @@
 										"seconds": "0.1",
 										"use-timescale": true
 									}
+								},
+								{
+									"callFunction": "initiateHealth",
+									"sid": 730918773872418
 								}
 							],
 							"sid": 397217038669504
@@ -2428,7 +2535,7 @@
 							"functionIsAsync": false,
 							"functionParameters": [
 								{
-									"name": "gems",
+									"name": "gem_adjustment",
 									"type": "number",
 									"initialValue": "0",
 									"comment": "",
@@ -2442,12 +2549,13 @@
 									"callFunction": "Adjust_Gems",
 									"sid": 594770776244289,
 									"parameters": [
-										"gems"
+										"gem_adjustment"
 									]
 								},
 								{
 									"callFunction": "RefreshInventory",
-									"sid": 509640477004506
+									"sid": 509640477004506,
+									"disabled": true
 								},
 								{
 									"callFunction": "SaveGameData",
@@ -2465,7 +2573,7 @@
 							"functionIsAsync": false,
 							"functionParameters": [
 								{
-									"name": "gems",
+									"name": "gem_adjustment",
 									"type": "number",
 									"initialValue": "0",
 									"comment": "",
@@ -2476,22 +2584,14 @@
 							"conditions": [],
 							"actions": [
 								{
-									"id": "set-key",
-									"objectClass": "Dict_SaveGameData",
-									"sid": 737810028650440,
-									"parameters": {
-										"key": "\"Gems\"",
-										"value": "Self.Get(\"Gems\") + clamp(gems, -999, 999)"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 987608784463297,
-									"parameters": {
-										"variable": "Gems_Total",
-										"value": "Dict_SaveGameData.Get(\"Gems\")"
-									}
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const currency = globalThis.AdventureLand?.Currency;",
+										"    if (currency) {",
+										"        currency.adjustGems(localVars.gem_adjustment);",
+										"    }"
+									]
 								}
 							],
 							"sid": 903592720547356,
@@ -2516,7 +2616,7 @@
 											"objectClass": "UI_Font",
 											"sid": 860306728948243,
 											"parameters": {
-												"text": "Gems_Total"
+												"text": "Gems"
 											}
 										}
 									],
@@ -2542,7 +2642,7 @@
 											"objectClass": "obj_Text_A",
 											"sid": 631519327226390,
 											"parameters": {
-												"text": "Gems_Total"
+												"text": "Gems"
 											}
 										}
 									],
@@ -2578,17 +2678,7 @@
 							"functionParameters": [],
 							"eventType": "function-block",
 							"conditions": [],
-							"actions": [
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 500141920263205,
-									"parameters": {
-										"variable": "ShopMode",
-										"value": "false"
-									}
-								}
-							],
+							"actions": [],
 							"sid": 810524137362292,
 							"children": [
 								{
@@ -2597,7 +2687,7 @@
 										{
 											"id": "compare-boolean-eventvar",
 											"objectClass": "System",
-											"sid": 691717121193466,
+											"sid": 726584502028582,
 											"parameters": {
 												"variable": "DataLoaded"
 											},
@@ -2606,188 +2696,20 @@
 										{
 											"id": "trigger-once-while-true",
 											"objectClass": "System",
-											"sid": 895488914238656
+											"sid": 955841338655594
 										}
 									],
 									"actions": [
 										{
 											"id": "wait-for-signal",
 											"objectClass": "System",
-											"sid": 688162311028496,
+											"sid": 371010657831615,
 											"parameters": {
 												"tag": "\"DataLoaded\""
 											}
 										}
 									],
-									"sid": 563976404809790
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-on-layer",
-											"objectClass": "Heart",
-											"sid": 797068452401090,
-											"parameters": {
-												"layer": "\"Inventory\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "destroy",
-											"objectClass": "Heart",
-											"sid": 448062308715266
-										}
-									],
-									"sid": 734742828197740
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "is-on-layer",
-											"objectClass": "Heart",
-											"sid": 927887776779280,
-											"parameters": {
-												"layer": "\"HUD_UI\""
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "destroy",
-											"objectClass": "Heart",
-											"sid": 242965867448763
-										}
-									],
-									"sid": 346904072557298
-								},
-								{
-									"eventType": "comment",
-									"text": "Hearts inheirit from Dict_SaveGameData "
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for",
-											"objectClass": "System",
-											"sid": 148661874472000,
-											"parameters": {
-												"name": "\"\"",
-												"start-index": "1",
-												"end-index": "Dict_SaveGameData.Get(\"MaxHealth\")/2"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "create-object",
-											"objectClass": "System",
-											"sid": 173799017818410,
-											"parameters": {
-												"object-to-create": "Heart",
-												"layer": "\"Inventory\"",
-												"x": "138 + ((loopindex-1)*24)",
-												"y": "66",
-												"create-hierarchy": false,
-												"template-name": "\"\""
-											}
-										},
-										{
-											"id": "set-scale",
-											"objectClass": "Heart",
-											"sid": 161871665158150,
-											"parameters": {
-												"scale": "2"
-											}
-										},
-										{
-											"id": "set-animation-frame",
-											"objectClass": "Heart",
-											"sid": 400153969811969,
-											"parameters": {
-												"frame-number": "\"Full\""
-											}
-										},
-										{
-											"id": "stop-animation",
-											"objectClass": "Heart",
-											"sid": 310241512964833
-										},
-										{
-											"id": "set-instvar-value",
-											"objectClass": "Heart",
-											"sid": 601114061038593,
-											"parameters": {
-												"instance-variable": "HeartIndex",
-												"value": "loopindex"
-											}
-										}
-									],
-									"sid": 735145536739776
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for",
-											"objectClass": "System",
-											"sid": 654239882885899,
-											"parameters": {
-												"name": "\"\"",
-												"start-index": "1",
-												"end-index": "Dict_SaveGameData.Get(\"MaxHealth\")/2"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "create-object",
-											"objectClass": "System",
-											"sid": 313379101743301,
-											"parameters": {
-												"object-to-create": "Heart",
-												"layer": "\"HUD_UI\"",
-												"x": "6 + ((loopindex-1)*12)",
-												"y": "4",
-												"create-hierarchy": false,
-												"template-name": "\"\""
-											}
-										},
-										{
-											"id": "set-scale",
-											"objectClass": "Heart",
-											"sid": 970048382981596,
-											"parameters": {
-												"scale": "1"
-											}
-										},
-										{
-											"id": "set-animation-frame",
-											"objectClass": "Heart",
-											"sid": 439004614582767,
-											"parameters": {
-												"frame-number": "\"Full\""
-											}
-										},
-										{
-											"id": "stop-animation",
-											"objectClass": "Heart",
-											"sid": 468748461552995
-										},
-										{
-											"id": "set-instvar-value",
-											"objectClass": "Heart",
-											"sid": 957613811221869,
-											"parameters": {
-												"instance-variable": "HeartIndex",
-												"value": "loopindex"
-											}
-										}
-									],
-									"sid": 268659485087119
+									"sid": 249856227137219
 								},
 								{
 									"eventType": "block",
@@ -4144,7 +4066,7 @@
 									"type": "script",
 									"language": "javascript",
 									"script": [
-										"const costume = rglobalThis.AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
+										"const costume = globalThis.AdventureLand.Items.getItemCostume(localVars.ItemIndex);",
 										"localVars.TempReturnString = costume || \"\";"
 									]
 								},
@@ -5553,9 +5475,9 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_Text_A",
-									"sid": 563201006655611,
+									"sid": 272421772870925,
 									"parameters": {
-										"text": "Dict_SaveGameData.Get(\"Gems\")"
+										"text": "Gems"
 									}
 								},
 								{
@@ -5600,9 +5522,9 @@
 								{
 									"id": "set-text",
 									"objectClass": "obj_Text_A",
-									"sid": 201311518482519,
+									"sid": 810138311967604,
 									"parameters": {
-										"text": "Dict_SaveGameData.Get(\"Gems\")"
+										"text": "Gems"
 									}
 								}
 							],

@@ -31,6 +31,15 @@
 						"variable": "Interior",
 						"value": "false"
 					}
+				},
+				{
+					"id": "set-boolean-eventvar",
+					"objectClass": "System",
+					"sid": 888347267678259,
+					"parameters": {
+						"variable": "ShopMode",
+						"value": "false"
+					}
 				}
 			],
 			"sid": 803443797666277,

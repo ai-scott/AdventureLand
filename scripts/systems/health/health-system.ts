@@ -530,12 +530,14 @@ export class HealthSystem {
 
     /**
      * Sync health state to Construct 3
+     * NOTE: Does NOT call adjustHealth to avoid infinite recursion
+     * The event sheet adjustHealth function calls this indirectly via takeDamage/heal
      */
     private static syncHealthToC3(): void {
         if (!this.runtime) return;
 
         try {
-            // Update global variable FIRST (before adjustHealth reads it)
+            // Update global variable FIRST (so C3 can read current values)
             this.runtime.globalVars.Health = this.state.current;
             this.runtime.globalVars.MaxHealth = this.state.max;
 
@@ -546,8 +548,8 @@ export class HealthSystem {
                 dict.getDataMap().set('MaxHealth', this.state.max);
             }
 
-            // CRITICAL: Trigger C3 adjustHealth function to redraw heart containers
-            this.runtime.callFunction('adjustHealth', 0, '');
+            // UI updates are handled by the adjustHealth event sheet function
+            // which contains the heart sprite loops
         } catch (error) {
             console.warn('[HealthSystem] Could not sync to C3:', error);
         }
@@ -660,6 +662,39 @@ export class HealthSystem {
         this.state.temporary = data.temporary || 0;
         this.state.totalDamageTaken = data.totalDamageTaken || 0;
         this.state.totalHealing = data.totalHealing || 0;
+    }
+
+    /**
+     * Helper function for event sheets to call adjustHealth
+     * Handles both healing and damage, then syncs everything
+     * This replaces the JavaScript in the adjustHealth event sheet function
+     */
+    static adjustHealth(healthChange: number, maxOutHealth: boolean = false): void {
+        if (!this.initialized) return;
+
+        // Apply health change if requested
+        if (healthChange !== 0) {
+            if (healthChange > 0) {
+                // Healing
+                this.heal({
+                    amount: healthChange,
+                    source: 'other',
+                    overheal: maxOutHealth
+                });
+            } else {
+                // Damage (from non-combat sources like falling)
+                this.takeDamage({
+                    amount: Math.abs(healthChange),
+                    source: { uid: -1, type: 'other' },
+                    type: 'true', // True damage bypasses resistances
+                    ignoreInvincibility: true
+                });
+            }
+        }
+
+        // Always ensure sync (even if healthChange is 0)
+        // This is called to refresh UI, so force a sync
+        this.syncHealthToC3();
     }
 
     /**

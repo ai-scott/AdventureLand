@@ -940,11 +940,11 @@
 									"eventType": "script",
 									"language": "javascript",
 									"script": [
-										"console.log(\"📊 Event 25 running!\");",
+										"//console.log(\"📊 Event 25 running!\");",
 										"const ySort = globalThis.AdventureLand?.YSort;",
-										"console.log(\"📊 YSort exists?\", !!ySort);",
+										"//console.log(\"📊 YSort exists?\", !!ySort);",
 										"if (ySort) {",
-										"  console.log(\"📊 Calling sortWithAltitude...\");",
+										"  //console.log(\"📊 Calling sortWithAltitude...\");",
 										"  ySort.sortWithAltitude();",
 										"}"
 									]
@@ -4165,6 +4165,7 @@
 												"              });",
 												"",
 												"              localVars.damageDealt = damage;",
+												"              runtime.callFunction('adjustHealth', 0, '');",
 												"          }",
 												"      }",
 												"  }"
@@ -6433,6 +6434,10 @@
 							],
 							"actions": [
 								{
+									"type": "comment",
+									"text": "Pickup Heart and recover 1 Heart (= 2 Health)"
+								},
+								{
 									"callFunction": "Audio_Play_Sound",
 									"sid": 458667207508155,
 									"parameters": [
@@ -6443,9 +6448,9 @@
 								},
 								{
 									"callFunction": "AdjustHealthAndSave",
-									"sid": 261328588330995,
+									"sid": 649299888513776,
 									"parameters": [
-										"1",
+										"2",
 										"\"\""
 									]
 								}

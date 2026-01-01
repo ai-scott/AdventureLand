@@ -25,6 +25,9 @@ import PotionSystem from "./systems/potions/potion-system.js";
 // HEALTH SYSTEM IMPORT
 import HealthSystem from "./systems/health/health-system.js";
 
+// CURRENCY SYSTEM IMPORT
+import CurrencySystem from "./systems/currency/currency-system.js";
+
 // QUEST & DIALOGUE SYSTEM IMPORT
 import * as QuestDialogue from "./external/quest-dialogue/index.js";
 
@@ -365,6 +368,39 @@ runOnStartup(async runtime => {
       console.error("❌ Failed to initialize item/inventory systems:", error);
     }
 
+    // Initialize Currency System (Gems)
+    try {
+      CurrencySystem.initialize(runtime, {
+        startingGems: 0,
+        maxGems: 9999
+      });
+
+      // Set up currency system namespace
+      (globalThis as any).AdventureLand.Currency = {
+        // Event sheet helper (replaces JavaScript in Adjust_Gems function)
+        adjustGems: (gemsChange: number) => CurrencySystem.adjustGems(gemsChange),
+
+        // Core functions
+        addGems: (amount: number) => CurrencySystem.addGems(amount),
+        removeGems: (amount: number) => CurrencySystem.removeGems(amount),
+        setGems: (amount: number) => CurrencySystem.setGems(amount),
+        hasGems: (amount: number) => CurrencySystem.hasGems(amount),
+        getGems: () => CurrencySystem.getGems(),
+
+        // State and stats
+        getState: () => CurrencySystem.getState(),
+        getSaveData: () => CurrencySystem.getSaveData(),
+        loadSaveData: (data: any) => CurrencySystem.loadSaveData(data),
+
+        // Debug
+        debug: () => CurrencySystem.debug()
+      };
+
+      console.log("✅ Currency System initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize currency system:", error);
+    }
+
     // Initialize Health System (independent of item system)
     try {
       HealthSystem.initialize(runtime, {
@@ -377,6 +413,10 @@ runOnStartup(async runtime => {
 
       // Set up health system namespace
       (globalThis as any).AdventureLand.HealthSystem = {
+        // Event sheet helper (replaces JavaScript in adjustHealth function)
+        adjustHealth: (healthChange: number, maxOutHealth: boolean = false) =>
+          HealthSystem.adjustHealth(healthChange, maxOutHealth),
+
         // Core functions
         takeDamage: (damage: any) => HealthSystem.takeDamage(damage),
         heal: (heal: any) => HealthSystem.heal(heal),
@@ -505,6 +545,7 @@ runOnStartup(async runtime => {
   console.log("✅ Transitions system ready");
   console.log("✅ Potion system ready - effects and cooldowns managed");
   console.log("✅ Health system ready - damage types, resistances, and events");
+  console.log("✅ Currency system ready - gems with proper sync");
   console.log("✅ Performance optimizations ready - O(1) lookups + smart UI updates");
 
   // Debug info
@@ -516,6 +557,7 @@ runOnStartup(async runtime => {
   console.log("- AdventureLand.Transitions (world transitions)");
   console.log("- AdventureLand.Potions (potion effects and consumables)");
   console.log("- AdventureLand.HealthSystem (advanced health management)");
+  console.log("- AdventureLand.Currency (gems management with sync)");
   console.log("- AdventureLand.EnemyPause (pause system integrated in enemy-ai.ts)");
   console.log("- Legacy global functions (for backward compatibility)");
 

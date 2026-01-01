@@ -5632,14 +5632,6 @@
 												"seconds": "0.01",
 												"use-timescale": true
 											}
-										},
-										{
-											"callFunction": "Calc_Hero_Stats",
-											"sid": 505182931282631,
-											"disabled": true,
-											"parameters": [
-												"\"hunger\""
-											]
 										}
 									],
 									"sid": 524426638508057
