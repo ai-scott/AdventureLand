@@ -34,11 +34,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
 **Systems Involved**: Collision/interaction priority, Z-order
 **Priority**: MEDIUM - Workarounds possible
 
-### Inventory UI
-- [ ] **#5**: Can't change hair in inventory system
-
-**Systems Involved**: Equipment system, Cosmetics
-**Priority**: MEDIUM - Feature not working
 
 ### First-Time Experience
 - [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
@@ -48,11 +43,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## Low Priority (Visual/UI Polish)
 
-### Death Animation
-- [ ] **#16**: Player body and clothing render separately when mirrored during death (body mirrored, clothes not)
-
-**Systems Involved**: Player sprite, Animation system
-**Priority**: LOW - Visual glitch only
 
 ---
 
@@ -97,6 +87,16 @@ This file tracks bugs discovered during TypeScript migration and system developm
 - [X] **#17**: Player gets stuck and won't move until attack is performed
 
 **Solution**: Added Player Engine activate call at end of Player_Hurt event
+
+### Inventory UI (Resolved 2026-01-01)
+- [X] **#5**: Can't change hair in inventory system
+
+**Solution**: Fixed typo in item lookup call
+
+### Death Animation (Resolved 2026-01-01)
+- [X] **#16**: Player body and clothing render separately when mirrored during death
+
+**Solution**: Removed duplicate animation call that caused clothing desync
 
 ---
 

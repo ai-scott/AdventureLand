@@ -883,11 +883,6 @@
 									"sid": 748594407451735
 								},
 								{
-									"callFunction": "updateOutfit",
-									"sid": 746450374367206,
-									"disabled": true
-								},
-								{
 									"callFunction": "displayInteractionHint",
 									"sid": 691165851842045,
 									"parameters": [
@@ -4301,15 +4296,6 @@
 									"conditions": [],
 									"actions": [
 										{
-											"id": "set-animation",
-											"objectClass": "Player_Mask",
-											"sid": 307107690256875,
-											"parameters": {
-												"animation": "\"Hurt_\" & Self.Direction",
-												"from": "beginning"
-											}
-										},
-										{
 											"id": "set-instvar-value",
 											"objectClass": "Player_Mask",
 											"sid": 112554983219491,
@@ -4404,6 +4390,15 @@
 												"effect": "\"Brightness\"",
 												"parameter-index": "0",
 												"value": "100"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 677532335117770,
+											"parameters": {
+												"group-name": "\"Player Engine\"",
+												"state": "activated"
 											}
 										}
 									],
@@ -4640,11 +4635,29 @@
 													],
 													"actions": [
 														{
+															"id": "set-ignoring-input",
+															"objectClass": "Player_Base",
+															"sid": 149323135408009,
+															"behaviorType": "8Direction",
+															"parameters": {
+																"input": "start-ignoring"
+															}
+														},
+														{
 															"id": "set-group-active",
 															"objectClass": "System",
 															"sid": 857665054000634,
 															"parameters": {
 																"group-name": "\"Player\"",
+																"state": "deactivated"
+															}
+														},
+														{
+															"id": "set-group-active",
+															"objectClass": "System",
+															"sid": 728629409905845,
+															"parameters": {
+																"group-name": "\"Player Engine\"",
 																"state": "deactivated"
 															}
 														},
@@ -4709,24 +4722,6 @@
 															}
 														},
 														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 612628910990149,
-															"parameters": {
-																"group-name": "\"Player\"",
-																"state": "activated"
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 576730712337476,
-															"parameters": {
-																"group-name": "\"Player Engine\"",
-																"state": "activated"
-															}
-														},
-														{
 															"id": "go-to-layout-by-name",
 															"objectClass": "System",
 															"sid": 128319059150195,
@@ -4735,9 +4730,34 @@
 															}
 														},
 														{
+															"id": "set-group-active",
+															"objectClass": "System",
+															"sid": 221327712877978,
+															"parameters": {
+																"group-name": "\"Player\"",
+																"state": "activated"
+															}
+														},
+														{
+															"id": "set-group-active",
+															"objectClass": "System",
+															"sid": 921238051353205,
+															"parameters": {
+																"group-name": "\"Player Engine\"",
+																"state": "activated"
+															}
+														},
+														{
 															"id": "stop-all",
 															"objectClass": "Audio",
 															"sid": 398766466487187
+														},
+														{
+															"type": "script",
+															"language": "javascript",
+															"script": [
+																"console.log(\"☠️ Player is dead!\");"
+															]
 														}
 													],
 													"sid": 502334177986979

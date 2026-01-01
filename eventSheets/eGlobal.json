@@ -1910,6 +1910,32 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-start-of-layout",
+									"objectClass": "System",
+									"sid": 842092962014952
+								}
+							],
+							"actions": [
+								{
+									"id": "wait",
+									"objectClass": "System",
+									"sid": 167672137258352,
+									"parameters": {
+										"seconds": "0.1",
+										"use-timescale": true
+									}
+								},
+								{
+									"callFunction": "initiateHealth",
+									"sid": 734770419568381
+								}
+							],
+							"sid": 318127183110178
+						},
+						{
 							"functionName": "initiateHealth",
 							"functionDescription": "draw initial hearts object",
 							"functionCategory": "Stats",
@@ -2157,11 +2183,6 @@
 										"health_change",
 										"maxOutHealth"
 									]
-								},
-								{
-									"callFunction": "RefreshInventory",
-									"sid": 912396061905983,
-									"disabled": true
 								},
 								{
 									"callFunction": "SaveGameData",
@@ -2469,32 +2490,6 @@
 							"eventType": "block",
 							"conditions": [
 								{
-									"id": "on-start-of-layout",
-									"objectClass": "System",
-									"sid": 986799989075599
-								}
-							],
-							"actions": [
-								{
-									"id": "wait",
-									"objectClass": "System",
-									"sid": 486020727040782,
-									"parameters": {
-										"seconds": "0.1",
-										"use-timescale": true
-									}
-								},
-								{
-									"callFunction": "initiateHealth",
-									"sid": 730918773872418
-								}
-							],
-							"sid": 397217038669504
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
 									"id": "every-tick",
 									"objectClass": "System",
 									"sid": 795248306442678
@@ -2551,11 +2546,6 @@
 									"parameters": [
 										"gem_adjustment"
 									]
-								},
-								{
-									"callFunction": "RefreshInventory",
-									"sid": 509640477004506,
-									"disabled": true
 								},
 								{
 									"callFunction": "SaveGameData",
@@ -2764,13 +2754,7 @@
 						},
 						{
 							"eventType": "comment",
-							"text": "Debug event to clear local storage for testing - remove on publish",
-							"background-color": [
-								1,
-								0.5843137254901961,
-								0,
-								1
-							]
+							"text": "Debug event to clear local storage for testing - remove on publish"
 						},
 						{
 							"eventType": "block",

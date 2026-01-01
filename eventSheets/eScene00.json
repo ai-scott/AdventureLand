@@ -163,6 +163,10 @@
 					"sid": 899255459969248
 				},
 				{
+					"eventType": "comment",
+					"text": "Determine if in Shop"
+				},
+				{
 					"eventType": "block",
 					"conditions": [
 						{
