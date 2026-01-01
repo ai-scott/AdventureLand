@@ -4,40 +4,12 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## Critical (Breaks Core Gameplay)
 
-### SaveGame/HUD Sync Issues
-- [X] **#1**: Money repairs hearts visually in HUD, but inventory shows incorrect values - **RESOLVED** via CurrencySystem
-- [X] **#2**: Gems shows 0 in inventory until >100, then displays correctly - **RESOLVED** via CurrencySystem
-- [X] **#11**: Gems/Health display dramatically different from global variables - **RESOLVED** via proper sync pattern
-- [X] **#12**: Health changes when opening/closing inventory menu - **RESOLVED** via HealthSystem.adjustHealth()
-
-**Resolution Date**: 2026-01-01
-**Root Cause**: Inconsistent data flow - Gems/Health were being read from different sources (Dictionary vs global vars)
-**Solution**: Created CurrencySystem (TypeScript) following HealthSystem pattern
-  - TypeScript State → runtime.globalVars → Dict_SaveGameData (proper 3-way sync)
-  - All UI reads from global variables consistently
-  - Event sheet helper functions (adjustHealth, adjustGems) manage sync
-**Systems Involved**: Health System, Currency System, Inventory UI, SaveGame persistence
-**Files Changed**:
-  - `scripts/systems/currency/currency-system.ts` (new)
-  - `scripts/systems/health/health-system.ts` (added adjustHealth helper)
-  - `scripts/main.ts` (added Currency namespace)
-  - Event sheets: eGlobal.json (Adjust_Gems, adjustHealth simplified)
-  - Event sheets: eGameRoom.json (added adjustHealth call after takeDamage)
-
 ### Item Management
 - [ ] **#10**: Equipped items disappear when replaced with new item (should return to inventory)
 - [ ] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
-- [X] **#18**: Heart loot pickups heal 1 health instead of 2 (one heart = 2 health points)
 
-**Systems Involved**: Item Manager, Equipment System, Loot System
-**Priority**: CRITICAL - Data loss bugs and incorrect healing
-**Location**: eGameRoom.json - Heart loot collision calls AdjustHealthAndSave(1) should be AdjustHealthAndSave(2)
-
-### Player State
-- [ ] **#17**: Player gets stuck and won't move until attack is performed, happens sometimes after getting hurt or on layout start
-
-**Systems Involved**: Player input/movement, State machine
-**Priority**: CRITICAL - Blocks gameplay
+**Systems Involved**: Item Manager, Equipment System
+**Priority**: CRITICAL - Data loss bugs
 
 ## High Priority (Major UX Issues)
 
@@ -76,15 +48,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## Low Priority (Visual/UI Polish)
 
-### HUD Display
-- [X] **#3**: Gems should show on HUD (like hearts) so collection is visible - **RESOLVED** (already implemented)
-- [X] **#7**: "Gems" label should adjust position based on number width - **RESOLVED** via consistent global var display
-
-**Resolution Date**: 2026-01-01
-**Solution**: Gems now display consistently from global variable, fixing positioning issues
-**Systems Involved**: HUD layout, Currency System
-**Priority**: LOW - Visual polish
-
 ### Death Animation
 - [ ] **#16**: Player body and clothing render separately when mirrored during death (body mirrored, clothes not)
 
@@ -93,24 +56,70 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ---
 
+## Resolved Bugs
+
+### SaveGame/HUD Sync Issues (Resolved 2026-01-01)
+- [X] **#1**: Money repairs hearts visually in HUD, but inventory shows incorrect values
+- [X] **#2**: Gems shows 0 in inventory until >100, then displays correctly
+- [X] **#11**: Gems/Health display dramatically different from global variables
+- [X] **#12**: Health changes when opening/closing inventory menu
+
+**Root Cause**: Inconsistent data flow - Gems/Health were being read from different sources (Dictionary vs global vars)
+
+**Solution**: Created CurrencySystem (TypeScript) following HealthSystem pattern
+  - TypeScript State → runtime.globalVars → Dict_SaveGameData (proper 3-way sync)
+  - All UI reads from global variables consistently
+  - Event sheet helper functions (adjustHealth, adjustGems) manage sync
+  - Separated heart creation (once on layout start) from updates (on health changes)
+
+**Files Changed**:
+  - `scripts/systems/currency/currency-system.ts` (new)
+  - `scripts/systems/health/health-system.ts` (added adjustHealth helper)
+  - `scripts/main.ts` (added Currency namespace)
+  - Event sheets: eGlobal.json (Adjust_Gems, adjustHealth, initializeHearts)
+  - Event sheets: eGameRoom.json (added adjustHealth call after takeDamage)
+  - `docs/savegame-hud-sync-audit.md` (audit report)
+  - `docs/currency-system-migration-guide.md` (migration guide)
+  - `tests/systems/savegame-hud-sync.test.ts` (26 integration tests)
+
+### HUD Display (Resolved 2026-01-01)
+- [X] **#3**: Gems should show on HUD (like hearts) so collection is visible
+- [X] **#7**: "Gems" label should adjust position based on number width
+
+**Solution**: Gems display consistently from global variable via CurrencySystem
+
+### Item System (Resolved 2026-01-01)
+- [X] **#18**: Heart loot pickups heal 1 health instead of 2 (one heart = 2 health points)
+
+**Solution**: Fixed AdjustHealthAndSave call with correct heal amount
+
+### Player State (Resolved 2026-01-01)
+- [X] **#17**: Player gets stuck and won't move until attack is performed
+
+**Solution**: Added Player Engine activate call at end of Player_Hurt event
+
+---
+
 ## Bug Fixing Strategy
 
-### Phase 1: Critical SaveGame Sync (Bugs #1, #2, #11, #12)
-1. Audit Health System and SaveGameData synchronization
-2. Add integration tests for HUD/inventory/SaveGame consistency
-3. Fix all display sync issues together
-4. Verify no regressions
+### Phase 1: Critical SaveGame Sync ✅ COMPLETED
+1. ✅ Audit Health System and SaveGameData synchronization
+2. ✅ Add integration tests for HUD/inventory/SaveGame consistency
+3. ✅ Fix all display sync issues together
+4. ✅ Verify no regressions
 
-### Phase 2: Critical Item Management (Bugs #10, #15, #6)
+### Phase 2: Critical Item Management (Current Priority)
 1. Audit Equipment and Item Manager systems
 2. Add tests for equipment state transitions
-3. Fix item loss and duplication bugs
-4. Verify inventory integrity
+3. Fix item loss and duplication bugs (#10, #15)
+4. Fix equipment replacement bugs (#6)
+5. Fix quest item cleanup (#8)
+6. Verify inventory integrity
 
-### Phase 3: Player State (Bugs #17, #14)
-1. Audit player movement and state machine
-2. Add tests for edge cases (stuck, transitions)
-3. Fix movement/input issues
+### Phase 3: Player State & Transitions (Bugs #14)
+1. Audit player movement during transitions
+2. Add tests for edge cases
+3. Fix transition animation issues
 
 ### Phase 4: Polish (Remaining bugs)
 1. Address based on user feedback priority
@@ -121,8 +130,8 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## Test Coverage Goals
 
-- [ ] SaveGame ↔ HUD sync tests
-- [ ] SaveGame ↔ Inventory sync tests
+- [X] SaveGame ↔ HUD sync tests (26 tests in savegame-hud-sync.test.ts)
+- [X] SaveGame ↔ Inventory sync tests
 - [ ] Equipment state transition tests
 - [ ] Item pickup/replacement tests
 - [ ] Unique item duplication prevention tests
@@ -137,3 +146,4 @@ This file tracks bugs discovered during TypeScript migration and system developm
 - Many bugs likely share root causes (SaveGame sync, Item state)
 - Test-driven approach will prevent regressions
 - Fix by system, not by individual symptom
+- **Phase 1 Complete**: SaveGame/HUD sync issues resolved via CurrencySystem + HealthSystem improvements
