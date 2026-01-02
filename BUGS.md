@@ -21,6 +21,7 @@ This file tracks bugs discovered during TypeScript migration and system developm
 **Priority**: HIGH - Expected functionality missing
 
 
+
 ## Medium Priority (Polish/UX)
 
 ### Interaction System
@@ -97,6 +98,11 @@ This file tracks bugs discovered during TypeScript migration and system developm
 - [X] **#14**: Player keeps animating after death or during transitions
 
 **Solution**: Added Health > 0 check before applying hurt effects/animations, disabled 8Direction on death
+
+### Map Transitions (Resolved 2026-01-01)
+- [X] **#19**: Player stuck at map edge during transition (animation continues, doesn't move off-screen)
+
+**Solution**: Restructured edge detection to use OR conditions with adjusted offsets (+8/+16/-8/-16) allowing player to move completely off-screen before transition triggers
 
 ---
 

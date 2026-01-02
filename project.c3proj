@@ -1729,6 +1729,7 @@
 	},
 	"timelines": {
 		"items": [
+			"Leave Map",
 			"Penny_Enters_House"
 		],
 		"subfolders": [

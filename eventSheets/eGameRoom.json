@@ -4323,15 +4323,6 @@
 											}
 										},
 										{
-											"id": "set-boolean-instvar",
-											"objectClass": "Player_Mask",
-											"sid": 174037370339526,
-											"parameters": {
-												"instance-variable": "Hurt",
-												"value": "true"
-											}
-										},
-										{
 											"id": "flash",
 											"objectClass": "Player_Mask",
 											"sid": 493711472214190,
@@ -4399,6 +4390,15 @@
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
+											}
+										},
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Player_Mask",
+											"sid": 260996869178394,
+											"parameters": {
+												"instance-variable": "Hurt",
+												"value": "true"
 											}
 										}
 									],
@@ -4599,7 +4599,7 @@
 										},
 										{
 											"eventType": "comment",
-											"text": "Death"
+											"text": "Player Death"
 										},
 										{
 											"eventType": "block",
@@ -4694,6 +4694,11 @@
 															"parameters": {
 																"frame-number": "180"
 															}
+														},
+														{
+															"id": "stop-animation",
+															"objectClass": "PlayerSystem",
+															"sid": 360116406898000
 														},
 														{
 															"id": "wait",
@@ -5117,14 +5122,40 @@
 					"eventType": "block",
 					"conditions": [
 						{
-							"id": "is-outside-layout",
+							"id": "compare-x",
 							"objectClass": "Player_Base",
-							"sid": 880966461938222
+							"sid": 548068841228190,
+							"parameters": {
+								"comparison": 5,
+								"x-co-ordinate": "LayoutWidth-16"
+							}
 						},
 						{
-							"id": "trigger-once-while-true",
-							"objectClass": "System",
-							"sid": 900467901469579
+							"id": "compare-y",
+							"objectClass": "Player_Base",
+							"sid": 415361032917913,
+							"parameters": {
+								"comparison": 5,
+								"y-co-ordinate": "LayoutHeight+16"
+							}
+						},
+						{
+							"id": "compare-x",
+							"objectClass": "Player_Base",
+							"sid": 124044157478761,
+							"parameters": {
+								"comparison": 3,
+								"x-co-ordinate": "16"
+							}
+						},
+						{
+							"id": "compare-y",
+							"objectClass": "Player_Base",
+							"sid": 565222023012826,
+							"parameters": {
+								"comparison": 3,
+								"y-co-ordinate": "-16"
+							}
 						}
 					],
 					"actions": [
@@ -5145,6 +5176,21 @@
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
 							}
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "Player_Mask",
+							"sid": 397264304475104
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "Player_Mask",
+							"sid": 331990833342877
+						},
+						{
+							"id": "stop-animation",
+							"objectClass": "PlayerSystem",
+							"sid": 363088258575062
 						}
 					],
 					"sid": 834292969715961,
@@ -5160,6 +5206,11 @@
 										"comparison": 5,
 										"x-co-ordinate": "LayoutWidth-16"
 									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 559449939499707
 								}
 							],
 							"actions": [
@@ -5208,11 +5259,16 @@
 								{
 									"id": "compare-y",
 									"objectClass": "Player_Base",
-									"sid": 486339384731875,
+									"sid": 114735869936371,
 									"parameters": {
 										"comparison": 5,
-										"y-co-ordinate": "LayoutHeight-16"
+										"y-co-ordinate": "LayoutHeight+16"
 									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 156731602309769
 								}
 							],
 							"actions": [
@@ -5266,6 +5322,11 @@
 										"comparison": 3,
 										"x-co-ordinate": "16"
 									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 285069349808893
 								}
 							],
 							"actions": [
@@ -5314,11 +5375,16 @@
 								{
 									"id": "compare-y",
 									"objectClass": "Player_Base",
-									"sid": 643292153464356,
+									"sid": 950621807309981,
 									"parameters": {
 										"comparison": 3,
-										"y-co-ordinate": "16"
+										"y-co-ordinate": "-16"
 									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 390419599572812
 								}
 							],
 							"actions": [
@@ -5363,7 +5429,13 @@
 						},
 						{
 							"eventType": "block",
-							"conditions": [],
+							"conditions": [
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 492830357978212
+								}
+							],
 							"actions": [
 								{
 									"callFunction": "Transition",
@@ -5393,7 +5465,8 @@
 							],
 							"sid": 451083767067010
 						}
-					]
+					],
+					"isOrBlock": true
 				}
 			],
 			"sid": 335396481170134

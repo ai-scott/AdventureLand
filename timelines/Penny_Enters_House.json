@@ -238,7 +238,10 @@
 							"aValue": "Idle",
 							"addons": [
 								{
-									"id": "initial-animation"
+									"id": "initial-animation",
+									"data": {
+										"sf": "default"
+									}
 								}
 							]
 						},
@@ -253,7 +256,10 @@
 							"aValue": "Walk_Up",
 							"addons": [
 								{
-									"id": "initial-animation"
+									"id": "initial-animation",
+									"data": {
+										"sf": "default"
+									}
 								}
 							]
 						},
@@ -268,11 +274,19 @@
 							"aValue": "Walk_Up",
 							"addons": [
 								{
-									"id": "initial-animation"
+									"id": "initial-animation",
+									"data": {
+										"sf": "default"
+									}
 								}
 							]
 						}
-					]
+					],
+					"sourceAdapter": {
+						"up": {
+							"sf": "current-frame"
+						}
+					}
 				}
 			],
 			"propertyTracksRoot": {
@@ -314,5 +328,6 @@
 		"subfolders": []
 	},
 	"nestedData": {},
+	"childrenNestedData": {},
 	"transitionsData": []
 }
