@@ -1832,6 +1832,16 @@
 								"layer": "\"Hint\"",
 								"visibility": "invisible"
 							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const shopState = globalThis.AdventureLand?.ShopState;",
+								"  if (shopState) {",
+								"      shopState.updateShopState(runtime.layout.name);",
+								"  }"
+							]
 						}
 					],
 					"sid": 189012469709380,

@@ -28,6 +28,9 @@ import HealthSystem from "./systems/health/health-system.js";
 // CURRENCY SYSTEM IMPORT
 import CurrencySystem from "./systems/currency/currency-system.js";
 
+// SHOP STATE SYSTEM IMPORT
+import ShopStateSystem from "./systems/shop/shop-state-system.js";
+
 // QUEST & DIALOGUE SYSTEM IMPORT
 import * as QuestDialogue from "./external/quest-dialogue/index.js";
 
@@ -368,6 +371,28 @@ runOnStartup(async runtime => {
       console.error("❌ Failed to initialize item/inventory systems:", error);
     }
 
+    // Initialize Shop State System
+    try {
+      ShopStateSystem.initialize(runtime);
+
+      // Set up shop state namespace
+      (globalThis as any).AdventureLand.ShopState = {
+        // Core functions
+        updateShopState: (layoutName: string) => ShopStateSystem.updateShopState(layoutName),
+        setShopMode: (isShop: boolean) => ShopStateSystem.setShopMode(isShop),
+        isShopMode: () => ShopStateSystem.isShopMode(),
+        getCurrentShop: () => ShopStateSystem.getCurrentShop(),
+        registerShopLayout: (layoutName: string) => ShopStateSystem.registerShopLayout(layoutName),
+
+        // Debug
+        debug: () => ShopStateSystem.debug()
+      };
+
+      console.log("✅ Shop State System initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize shop state system:", error);
+    }
+
     // Initialize Currency System (Gems)
     try {
       CurrencySystem.initialize(runtime, {
@@ -545,6 +570,7 @@ runOnStartup(async runtime => {
   console.log("✅ Transitions system ready");
   console.log("✅ Potion system ready - effects and cooldowns managed");
   console.log("✅ Health system ready - damage types, resistances, and events");
+  console.log("✅ Shop state system ready - centralized shop mode management");
   console.log("✅ Currency system ready - gems with proper sync");
   console.log("✅ Performance optimizations ready - O(1) lookups + smart UI updates");
 
@@ -557,6 +583,7 @@ runOnStartup(async runtime => {
   console.log("- AdventureLand.Transitions (world transitions)");
   console.log("- AdventureLand.Potions (potion effects and consumables)");
   console.log("- AdventureLand.HealthSystem (advanced health management)");
+  console.log("- AdventureLand.ShopState (centralized shop mode management)");
   console.log("- AdventureLand.Currency (gems management with sync)");
   console.log("- AdventureLand.EnemyPause (pause system integrated in enemy-ai.ts)");
   console.log("- Legacy global functions (for backward compatibility)");

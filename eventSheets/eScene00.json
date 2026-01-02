@@ -31,15 +31,6 @@
 						"variable": "Interior",
 						"value": "false"
 					}
-				},
-				{
-					"id": "set-boolean-eventvar",
-					"objectClass": "System",
-					"sid": 888347267678259,
-					"parameters": {
-						"variable": "ShopMode",
-						"value": "false"
-					}
 				}
 			],
 			"sid": 803443797666277,
@@ -161,68 +152,6 @@
 						}
 					],
 					"sid": 899255459969248
-				},
-				{
-					"eventType": "comment",
-					"text": "Determine if in Shop"
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-two-values",
-							"objectClass": "System",
-							"sid": 273954393421684,
-							"parameters": {
-								"first-value": "LayoutName",
-								"comparison": 0,
-								"second-value": "\"World_00_Blacksmith\""
-							}
-						},
-						{
-							"id": "compare-two-values",
-							"objectClass": "System",
-							"sid": 771219159757006,
-							"parameters": {
-								"first-value": "LayoutName",
-								"comparison": 0,
-								"second-value": "\"World_00_General_Store\""
-							}
-						},
-						{
-							"id": "compare-two-values",
-							"objectClass": "System",
-							"sid": 750098496825186,
-							"parameters": {
-								"first-value": "LayoutName",
-								"comparison": 0,
-								"second-value": "\"World_00_Adventure_Shop\""
-							}
-						},
-						{
-							"id": "compare-two-values",
-							"objectClass": "System",
-							"sid": 553868233012381,
-							"parameters": {
-								"first-value": "LayoutName",
-								"comparison": 0,
-								"second-value": "\"World_00_Pennys_House\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "set-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 705143007131737,
-							"parameters": {
-								"variable": "ShopMode",
-								"value": "true"
-							}
-						}
-					],
-					"sid": 439157041525642,
-					"isOrBlock": true
 				},
 				{
 					"eventType": "block",
