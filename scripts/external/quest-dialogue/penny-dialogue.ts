@@ -172,6 +172,10 @@ export const PennyDialogue: NPCDialogue = {
                               "type": "set_quest_status",
                               "questId": "rescue_cat_quest",
                               "status": "Start_Cat_Quest"
+                        },
+                        {
+                              "type": "spawn_unique_item",
+                              "itemName": "Rosie"
                         }
                   ]
             },

@@ -53,10 +53,11 @@ export interface DialogueResponse {
 }
 
 export interface DialogueAction {
-  type: 'start_quest' | 'complete_quest' | 'set_quest_status' | 'give_item' | 'remove_item' | 'take_item' | 'set_flag' | 'set_world_flag' | 'set_npc_memory' | 'deploy_npc' | 'play_sound' | 'teleport_player' | 'input' | 'custom';
+  type: 'start_quest' | 'complete_quest' | 'set_quest_status' | 'give_item' | 'remove_item' | 'take_item' | 'set_flag' | 'set_world_flag' | 'set_npc_memory' | 'deploy_npc' | 'play_sound' | 'teleport_player' | 'input' | 'custom' | 'spawn_unique_item';
   questId?: string;                     // Quest to start/complete/update
   status?: string;                      // Quest status to set (for set_quest_status)
   itemId?: string;                      // Item to give/take/remove
+  itemName?: string;                    // Item name for spawn_unique_item action
   quantity?: number;                    // How many items
   destroyTrigger?: boolean;             // If true, destroy the trigger object after giving item
   objectsToDestroy?: string[];          // Array of object type names to destroy at trigger location (e.g., ["Rosie", "Particle"])

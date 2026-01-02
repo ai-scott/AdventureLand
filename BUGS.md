@@ -4,11 +4,7 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## Critical (Breaks Core Gameplay)
 
-### Item Management
-- [ ] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
-
-**Systems Involved**: Item Manager, Loot System
-**Priority**: CRITICAL - Unique item duplication
+None! 🎉
 
 ## High Priority (Major UX Issues)
 
@@ -24,12 +20,18 @@ This file tracks bugs discovered during TypeScript migration and system developm
 **Systems Involved**: Collision/interaction priority, Z-order
 **Priority**: MEDIUM - Workarounds possible
 
+### HUD Display
+- [ ] **#3**: Gems should show on HUD (like hearts) so collection is visible
+- [ ] **#7**: "Gems" label should adjust position based on number width
+
+**Systems Involved**: HUD layout, Currency System
+**Priority**: MEDIUM - Visual enhancement
+
 ### Inventory UI
 - [ ] **#21**: Adventure Land logo "AL" sometimes doesn't appear in inventory screen
 
 **Systems Involved**: Inventory UI, Layer management
 **Priority**: MEDIUM - Intermittent visual issue
-
 
 ### First-Time Experience
 - [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
@@ -68,11 +70,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
   - `docs/currency-system-migration-guide.md` (migration guide)
   - `tests/systems/savegame-hud-sync.test.ts` (26 integration tests)
 
-### HUD Display (Resolved 2026-01-01)
-- [X] **#3**: Gems should show on HUD (like hearts) so collection is visible
-- [X] **#7**: "Gems" label should adjust position based on number width
-
-**Solution**: Gems display consistently from global variable via CurrencySystem
 
 ### Item System (Resolved 2026-01-01)
 - [X] **#18**: Heart loot pickups heal 1 health instead of 2 (one heart = 2 health points)
@@ -122,6 +119,35 @@ This file tracks bugs discovered during TypeScript migration and system developm
   - Arr_InvCollection (inventory array)
   - ItemManager TypeScript inventory
 **Result**: Quest items now properly removed from all inventory systems when given during dialogue
+
+### Unique Item System (Resolved 2026-01-02)
+- [X] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
+
+**Root Cause**: Pre-placed triggers respawned on layout reload, no collection tracking system
+**Solution**: Created comprehensive config-driven unique items system:
+  - Created UniqueItemSpawner with spawn tracking via Dict_SaveGameData
+  - Quest-conditional spawning support (e.g., Rosie only spawns when quest status = "Start_Cat_Quest")
+  - Layout-based spawning (e.g., Sea Monster Key spawns on layout start)
+  - Dialogue action `spawn_unique_item` for quest-triggered items
+  - All spawn data in version-controlled TypeScript config
+  - Dialogue system handles collection and destruction via `destroyTrigger` + `objectsToDestroy`
+
+**Files Created**:
+  - `scripts/external/unique-items/unique-items-config.ts` (spawn configurations)
+  - `scripts/external/unique-items/unique-items-spawner.ts` (spawn logic)
+  - `scripts/external/unique-items/README.md` (comprehensive documentation)
+
+**Files Modified**:
+  - `scripts/external/quest-dialogue/dialogue-bridge.ts` (added spawn_unique_item action handler)
+  - `scripts/external/quest-dialogue/dialogue-types.ts` (added spawn_unique_item to action types)
+  - `scripts/external/quest-dialogue/penny-dialogue.ts` (added Rosie spawn action)
+  - `scripts/main.ts` (exposed spawner in AdventureLand.Dialogue namespace)
+
+**Result**:
+  - Unique items tracked in SaveGameData (UniqueItem_${itemName})
+  - No duplicates possible - items only spawn once
+  - Scalable system - adding new unique items is trivial
+  - Quest-triggered and layout-based spawning patterns supported
 
 ---
 

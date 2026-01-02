@@ -34,6 +34,9 @@ import ShopStateSystem from "./systems/shop/shop-state-system.js";
 // QUEST & DIALOGUE SYSTEM IMPORT
 import * as QuestDialogue from "./external/quest-dialogue/index.js";
 
+// UNIQUE ITEMS SYSTEM IMPORT
+import { UniqueItemSpawner } from "./external/unique-items/unique-items-spawner.js";
+
 // World00 dialogue files (Leafwood Village)
 import { WelcomeDialogue } from "./external/quest-dialogue/welcome-dialogue.js";
 import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
@@ -514,6 +517,11 @@ runOnStartup(async runtime => {
         getResponseText: (index: number) => QuestDialogue.DialogueBridge.getResponseText(index),
         selectResponse: (index: number, runtime: any) => QuestDialogue.DialogueBridge.selectResponse(index, runtime),
         endDialogue: (runtime: any) => QuestDialogue.DialogueBridge.endDialogue(runtime),
+
+        // Unique item spawning helpers
+        shouldSpawnUniqueItem: (runtime: any, itemName: string) => QuestDialogue.DialogueBridge.shouldSpawnUniqueItem(runtime, itemName),
+        spawnUniqueItemsForWorld: (runtime: any, worldId: string) => UniqueItemSpawner.spawnUniqueItemsForWorld(runtime, worldId),
+        spawnSpecificItem: (runtime: any, itemName: string) => UniqueItemSpawner.spawnSpecificItem(runtime, itemName),
 
         // Low-level functions (for advanced use)
         // NOTE: Legacy JSON-based dialogue system removed - all dialogues now in TypeScript files

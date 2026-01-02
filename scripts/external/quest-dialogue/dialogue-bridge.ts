@@ -434,6 +434,37 @@ export class DialogueBridge {
             if (adventureLand?.Items) {
               const itemId = adventureLand.Items.getItemID(action.itemId);
               if (itemId > 0) {
+                // Check if this is a unique/quest item
+                const isQuestItem = adventureLand.Items.isQuestItem(itemId);
+
+                if (isQuestItem) {
+                  // Check if already collected (stored in SaveGameData)
+                  const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
+                  const collectedKey = `UniqueItem_${action.itemId}`;
+                  const alreadyCollected = saveDict?.getDataMap().get(collectedKey) === true;
+
+                  if (alreadyCollected) {
+                    console.log(`[Dialogue] Unique item already collected: ${action.itemId} - skipping duplicate`);
+
+                    // Still destroy trigger if requested (prevent re-spawn)
+                    if (action.destroyTrigger && this.triggerUID >= 0) {
+                      const triggerInstance = runtime.getInstanceByUid(this.triggerUID);
+                      if (triggerInstance) {
+                        triggerInstance.destroy();
+                        console.log(`[Dialogue] Destroyed trigger to prevent re-spawn`);
+                      }
+                    }
+
+                    return; // Skip giving the item
+                  }
+
+                  // Mark as collected in SaveGameData
+                  if (saveDict) {
+                    saveDict.getDataMap().set(collectedKey, true);
+                    console.log(`[Dialogue] Marked ${action.itemId} as collected`);
+                  }
+                }
+
                 runtime.callFunction("UpdateNumbersOnPickup", itemId, action.quantity || 1);
 
                 // If destroyTrigger is true, destroy the trigger and overlapping objects
@@ -546,6 +577,19 @@ export class DialogueBridge {
             const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
             if (dict) {
               dict.setDataMap(action.flagKey, action.flagValue);
+            }
+          }
+          break;
+
+        case 'spawn_unique_item':
+          // Spawn a specific unique item (for quest-triggered spawning)
+          if (action.itemName) {
+            const adventureLand = (globalThis as any).AdventureLand;
+            if (adventureLand?.Dialogue?.spawnSpecificItem) {
+              adventureLand.Dialogue.spawnSpecificItem(runtime, action.itemName);
+              console.log(`[Dialogue] Triggered spawn for unique item: ${action.itemName}`);
+            } else {
+              console.error(`❌ [Dialogue] spawnSpecificItem not found`);
             }
           }
           break;
@@ -682,5 +726,25 @@ export class DialogueBridge {
       responseCount: this.currentResponses.length,
       responses: this.currentResponses.map(r => r.text)
     };
+  }
+
+  /**
+   * Check if a unique item has been collected
+   * Used for conditional spawning in event sheets
+   *
+   * @param runtime - Construct 3 runtime
+   * @param itemName - Name of the unique item (e.g., "Sea Monster Key")
+   * @returns true if item should be spawned, false if already collected
+   */
+  static shouldSpawnUniqueItem(runtime: any, itemName: string): boolean {
+    const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
+    if (!saveDict) {
+      console.warn(`[DialogueBridge] SaveGameData not found - defaulting to spawn ${itemName}`);
+      return true; // Default to spawning if save data not found
+    }
+
+    const wasCollected = saveDict.getDataMap().get(`UniqueItem_${itemName}`) === true;
+    console.log(`[DialogueBridge] Unique item check: ${itemName} - ${wasCollected ? 'already collected (skip spawn)' : 'not collected (spawn)'}`);
+    return !wasCollected;
   }
 }
