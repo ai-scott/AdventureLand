@@ -18,10 +18,17 @@ This file tracks bugs discovered during TypeScript migration and system developm
 ## Medium Priority (Polish/UX)
 
 ### Interaction System
-- [ ] **#4**: Character hotspots (Rosie, Sally) block interactive objects (strawberry, weapons) - can't interact with items
+- [ ] **#4**: Character hotspot (Sally) blocks interactive objects - can't interact with items
 
+**Note**: Rosie trigger fixed (repositioned), Sally still has collision issues
 **Systems Involved**: Collision/interaction priority, Z-order
 **Priority**: MEDIUM - Workarounds possible
+
+### Inventory UI
+- [ ] **#21**: Adventure Land logo "AL" sometimes doesn't appear in inventory screen
+
+**Systems Involved**: Inventory UI, Layer management
+**Priority**: MEDIUM - Intermittent visual issue
 
 
 ### First-Time Experience
