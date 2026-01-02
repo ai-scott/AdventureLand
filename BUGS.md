@@ -29,9 +29,10 @@ None! 🎉
 
 ### Inventory UI
 - [ ] **#21**: Adventure Land logo "AL" sometimes doesn't appear in inventory screen
+- [ ] **#22**: Player avatar in inventory screen can be knocked back if attacked while menu is open
 
-**Systems Involved**: Inventory UI, Layer management
-**Priority**: MEDIUM - Intermittent visual issue
+**Systems Involved**: Inventory UI, Layer management, Player knockback behavior
+**Priority**: MEDIUM - Visual issues, player behavior during menu
 
 ### First-Time Experience
 - [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
