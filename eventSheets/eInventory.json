@@ -6440,10 +6440,10 @@
 						{
 							"id": "set-eventvar-value",
 							"objectClass": "System",
-							"sid": 531290512845545,
+							"sid": 617371742956293,
 							"parameters": {
 								"variable": "oldEquippedID",
-								"value": "int(Dict_SaveGameData.Get(equipCategory))"
+								"value": "Functions.GetItemID(Dict_SaveGameData.Get(equipCategory))"
 							}
 						},
 						{

@@ -5,16 +5,14 @@ This file tracks bugs discovered during TypeScript migration and system developm
 ## Critical (Breaks Core Gameplay)
 
 ### Item Management
-- [ ] **#10**: Equipped items disappear when replaced with new item (should return to inventory)
 - [ ] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
 
-**Systems Involved**: Item Manager, Equipment System
-**Priority**: CRITICAL - Data loss bugs
+**Systems Involved**: Item Manager, Loot System
+**Priority**: CRITICAL - Unique item duplication
 
 ## High Priority (Major UX Issues)
 
 ### Item/Equipment System
-- [ ] **#6**: Getting weapon when one is equipped replaces active weapon instead of adding to inventory
 - [ ] **#8**: Quest items (like Rosie) not removed from inventory after being given in dialogue
 
 **Systems Involved**: Item Manager, Equipment, Quest/Dialogue
@@ -103,6 +101,15 @@ This file tracks bugs discovered during TypeScript migration and system developm
 - [X] **#19**: Player stuck at map edge during transition (animation continues, doesn't move off-screen)
 
 **Solution**: Restructured edge detection to use OR conditions with adjusted offsets (+8/+16/-8/-16) allowing player to move completely off-screen before transition triggers
+
+### Equipment System (Resolved 2026-01-02)
+- [X] **#6**: Getting weapon when one is equipped replaces active weapon instead of adding to inventory
+- [X] **#10**: Equipped items disappear when replaced with new item
+
+**Root Cause**: Type mismatch - Dictionary stores item NAMES but code tried to use int() conversion to get ID, which always returned 0
+**Solution**: Changed `int(Dict_SaveGameData.Get(equipCategory))` to `Functions.GetItemID(Dict_SaveGameData.Get(equipCategory))`
+**Location**: eInventory.json, EquipItem function line ~6445
+**Result**: Old equipped items now correctly return to inventory when replacing with new items
 
 ---
 

@@ -717,12 +717,6 @@
 												"create-hierarchy": false,
 												"template-name": "\"\""
 											}
-										},
-										{
-											"id": "destroy",
-											"objectClass": "Trigger_Item",
-											"sid": 118609239647596,
-											"disabled": true
 										}
 									],
 									"sid": 829771743113041,
@@ -5124,10 +5118,10 @@
 						{
 							"id": "compare-x",
 							"objectClass": "Player_Base",
-							"sid": 548068841228190,
+							"sid": 607767957834313,
 							"parameters": {
 								"comparison": 5,
-								"x-co-ordinate": "LayoutWidth-16"
+								"x-co-ordinate": "LayoutWidth+8"
 							}
 						},
 						{
@@ -5142,10 +5136,10 @@
 						{
 							"id": "compare-x",
 							"objectClass": "Player_Base",
-							"sid": 124044157478761,
+							"sid": 661902503014872,
 							"parameters": {
 								"comparison": 3,
-								"x-co-ordinate": "16"
+								"x-co-ordinate": "-8"
 							}
 						},
 						{
@@ -5201,10 +5195,10 @@
 								{
 									"id": "compare-x",
 									"objectClass": "Player_Base",
-									"sid": 477287714359969,
+									"sid": 177049514883007,
 									"parameters": {
 										"comparison": 5,
-										"x-co-ordinate": "LayoutWidth-16"
+										"x-co-ordinate": "LayoutWidth+8"
 									}
 								},
 								{
@@ -5317,10 +5311,10 @@
 								{
 									"id": "compare-x",
 									"objectClass": "Player_Base",
-									"sid": 789543428081782,
+									"sid": 585855378112068,
 									"parameters": {
 										"comparison": 3,
-										"x-co-ordinate": "16"
+										"x-co-ordinate": "-8"
 									}
 								},
 								{
