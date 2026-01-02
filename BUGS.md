@@ -22,17 +22,18 @@ None! 🎉
 
 ### HUD Display
 - [ ] **#3**: Gems should show on HUD (like hearts) so collection is visible
-- [ ] **#7**: "Gems" label should adjust position based on number width
+- [X] **#7**: "Gems" label should adjust position based on number width
 
 **Systems Involved**: HUD layout, Currency System
 **Priority**: MEDIUM - Visual enhancement
 
+**#7 Status**: RESOLVED - Label now positions dynamically based on gem count width
+
 ### Inventory UI
-- [ ] **#21**: Adventure Land logo "AL" sometimes doesn't appear in inventory screen
 - [ ] **#22**: Player avatar in inventory screen can be knocked back if attacked while menu is open
 
-**Systems Involved**: Inventory UI, Layer management, Player knockback behavior
-**Priority**: MEDIUM - Visual issues, player behavior during menu
+**Systems Involved**: Inventory UI, Player knockback behavior
+**Priority**: MEDIUM - Player behavior during menu
 
 ### First-Time Experience
 - [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
@@ -120,6 +121,38 @@ None! 🎉
   - Arr_InvCollection (inventory array)
   - ItemManager TypeScript inventory
 **Result**: Quest items now properly removed from all inventory systems when given during dialogue
+
+### Inventory Display (Resolved 2026-01-02)
+- [X] **#7**: "Gems" label should adjust position based on number width
+- [X] **#21**: Adventure Land logo "AL" sometimes doesn't appear in inventory screen
+- [X] **#23**: Gems show 0 in inventory after loading saved game (global var has correct value)
+- [X] **#24**: Gems persist from previous game when starting New Game
+
+**#21 Root Cause**: Dialogue system destroys AL cameo without layer filtering - destroyed Inventory layer AL when cleaning up dialogue AL on HUD_UI layer
+**#21 Solution**: Added layer filtering to Character_Cameos destruction logic in dialogue cleanup
+**#21 Location**: eDialogue.json (destroy function now filters by HUD_UI layer)
+
+**#7 Root Cause**: Gems label positioned at fixed offset (x+42) causing overlap with large gem counts
+**#7 Solution**: Modified createStat function to calculate label position dynamically based on number width
+**#7 Location**: eInventory.json, createStat function - added numberWidth local var and dynamic positioning
+**#7 Implementation**:
+  - Get number UI_Font width after creation
+  - Position label at (UI_Font.X + numberWidth) instead of (x + 42)
+  - Only applies to "Gems" stat (controlled by text comparison)
+
+**#23 Root Cause**: Inventory gems display created with hardcoded "00" on layout start, never updated when inventory opens
+**#23 Solution**: Call Adjust_Gems(0) when inventory opens to refresh display from global vars
+**#23 Location**: OpenClose_Inventory function - added refresh call when making layer visible
+
+**#24 Root Cause**: Currency load handler runs on New Game, loading old gems from SaveGameData before it's cleared
+**#24 Solution**: Added GameInitialized check before loading currency - only reload on actual save game load
+**#24 Location**: eGlobal.json, Load_SaveGameData handler - conditional reload based on GameInitialized flag
+
+**Result**:
+  - AL logo always appears in inventory
+  - Gems label positions correctly for all gem counts (0-9999)
+  - Inventory shows correct gem count when opened
+  - New Game properly resets gems to 0
 
 ### Unique Item System (Resolved 2026-01-02)
 - [X] **#15**: Duplicate Sea Monster Keys possible (unique items can spawn multiple times)
