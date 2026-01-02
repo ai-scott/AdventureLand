@@ -950,6 +950,20 @@
 							],
 							"subfolders": [],
 							"name": "currency"
+						},
+						{
+							"items": [
+								{
+									"name": "shop-state-system.ts",
+									"type": "application/typescript",
+									"sid": 637941871191504,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "shop"
 						}
 					],
 					"name": "systems"

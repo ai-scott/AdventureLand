@@ -491,8 +491,47 @@ export class DialogueBridge {
             const adventureLand = (globalThis as any).AdventureLand;
             if (adventureLand?.Items) {
               const itemId = adventureLand.Items.getItemID(action.itemId);
+              const itemName = action.itemId;
+
               if (itemId > 0) {
+                console.log(`[Dialogue] Removing quest item: ${itemName} (ID: ${itemId})`);
+
+                // Update C3 Dictionary
+                const dict = runtime.objects.Dict_ItemNumbers?.getFirstInstance();
+                if (dict) {
+                  const currentCount = dict.getDataMap().get(itemName) || 0;
+                  const newCount = Math.max(0, currentCount - (action.quantity || 1));
+
+                  if (newCount === 0) {
+                    // Remove from dictionary entirely
+                    dict.getDataMap().delete(itemName);
+                    console.log(`[Dialogue] Removed ${itemName} from Dict_ItemNumbers`);
+                  } else {
+                    dict.getDataMap().set(itemName, newCount);
+                    console.log(`[Dialogue] Updated ${itemName} count: ${currentCount} → ${newCount}`);
+                  }
+                }
+
+                // Update C3 Array - find and remove item
+                const arr = runtime.objects.Arr_InvCollection?.getFirstInstance();
+                if (arr) {
+                  // Find item in array and set to 0
+                  for (let i = 0; i < arr.height; i++) {
+                    if (arr.getAt(i) === itemId) {
+                      arr.setAt(0, i, 0); // setAt(value, x, y) - clear the slot
+                      console.log(`[Dialogue] Removed ${itemName} from Arr_InvCollection at index ${i}`);
+                      break;
+                    }
+                  }
+                }
+
+                // Remove from TypeScript inventory
                 adventureLand.Items.removeItem(itemId, action.quantity || 1);
+
+                // Refresh inventory display
+                runtime.callFunction("populateItemSlots");
+
+                console.log(`✅ [Dialogue] Successfully removed quest item: ${itemName}`);
               } else {
                 console.error(`❌ Item not found: ${action.itemId}`);
               }

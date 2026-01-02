@@ -506,6 +506,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": false,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -548,6 +549,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": true,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -671,8 +673,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 243.70516294510475,
-						"y": 107.6572143011293,
+						"x": 219.70516294510475,
+						"y": 73.6572143011293,
 						"width": 17.520669404047112,
 						"height": 23.903651240687992,
 						"originX": 0.46875,
@@ -778,6 +780,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": true,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}

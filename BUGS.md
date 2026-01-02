@@ -12,11 +12,6 @@ This file tracks bugs discovered during TypeScript migration and system developm
 
 ## High Priority (Major UX Issues)
 
-### Item/Equipment System
-- [ ] **#8**: Quest items (like Rosie) not removed from inventory after being given in dialogue
-
-**Systems Involved**: Item Manager, Equipment, Quest/Dialogue
-**Priority**: HIGH - Expected functionality missing
 
 
 
@@ -110,6 +105,16 @@ This file tracks bugs discovered during TypeScript migration and system developm
 **Solution**: Changed `int(Dict_SaveGameData.Get(equipCategory))` to `Functions.GetItemID(Dict_SaveGameData.Get(equipCategory))`
 **Location**: eInventory.json, EquipItem function line ~6445
 **Result**: Old equipped items now correctly return to inventory when replacing with new items
+
+### Quest/Dialogue System (Resolved 2026-01-02)
+- [X] **#8**: Quest items (like Rosie) not removed from inventory after being given in dialogue
+
+**Root Cause**: remove_item action only updated TypeScript inventory, not C3 Dictionary/Array
+**Solution**: Enhanced remove_item handler in dialogue-bridge.ts to update all three data sources:
+  - Dict_ItemNumbers (item counts)
+  - Arr_InvCollection (inventory array)
+  - ItemManager TypeScript inventory
+**Result**: Quest items now properly removed from all inventory systems when given during dialogue
 
 ---
 
