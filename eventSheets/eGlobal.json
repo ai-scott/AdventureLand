@@ -524,6 +524,15 @@
 							}
 						},
 						{
+							"id": "set-position",
+							"objectClass": "Transition",
+							"sid": 679770756392082,
+							"parameters": {
+								"x": "ViewportLeft(0)",
+								"y": "ViewportTop(0)"
+							}
+						},
+						{
 							"id": "set-size",
 							"objectClass": "Transition",
 							"sid": 852014704258439,

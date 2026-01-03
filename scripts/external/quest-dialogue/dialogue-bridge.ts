@@ -376,13 +376,9 @@ export class DialogueBridge {
       console.error("❌ Could not call endDialogue function:", e);
     }
 
-    // IMPORTANT: Reset DialogueResult after a delay to allow the event sheet's endDialogue to complete
-    // We need to wait for the 0.1s wait in endDialogue, plus a bit more to ensure InDialogue is set to false
-    setTimeout(() => {
-      if (runtime && runtime.globalVars) {
-        runtime.globalVars.DialogueResult = "";
-      }
-    }, 200); // 200ms = 0.1s wait + 0.1s buffer
+    // Reset DialogueResult immediately to prevent blocking subsequent dialogues
+    // The event sheet's endDialogue will handle InDialogue timing properly
+    runtime.globalVars.DialogueResult = "";
 
   }
 
@@ -547,13 +543,16 @@ export class DialogueBridge {
                 const arr = runtime.objects.Arr_InvCollection?.getFirstInstance();
                 if (arr) {
                   // Find item in array and set to 0
+                  // Note: Array is 1D (width=1, height=N), so use arr.getAt(0, y)
                   for (let i = 0; i < arr.height; i++) {
-                    if (arr.getAt(i) === itemId) {
+                    const currentValue = arr.getAt(0, i); // getAt(x, y) for 2D arrays
+                    if (currentValue === itemId) {
                       arr.setAt(0, i, 0); // setAt(value, x, y) - clear the slot
-                      console.log(`[Dialogue] Removed ${itemName} from Arr_InvCollection at index ${i}`);
                       break;
                     }
                   }
+                } else {
+                  console.error(`[Dialogue] ❌ Arr_InvCollection not found!`);
                 }
 
                 // Remove from TypeScript inventory

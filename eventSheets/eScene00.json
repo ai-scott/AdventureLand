@@ -31,6 +31,16 @@
 						"variable": "Interior",
 						"value": "false"
 					}
+				},
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"const dialogue = globalThis.AdventureLand?.Dialogue;",
+						"if (dialogue) {",
+						"    dialogue.spawnUniqueItemsForWorld(runtime, \"World00\");",
+						"}"
+					]
 				}
 			],
 			"sid": 803443797666277,
@@ -116,6 +126,15 @@
 									"parameters": {
 										"layer": "\"HUD_UI\"",
 										"scale": "1"
+									}
+								},
+								{
+									"id": "set-layer-scale",
+									"objectClass": "System",
+									"sid": 296934337288700,
+									"parameters": {
+										"layer": "\"Transitions\"",
+										"scale": "1.25"
 									}
 								}
 							],
@@ -241,6 +260,7 @@
 						}
 					],
 					"sid": 236906520672814,
+					"disabled": true,
 					"isOrBlock": true
 				},
 				{
@@ -401,7 +421,8 @@
 					}
 				}
 			],
-			"sid": 534993334847665
+			"sid": 534993334847665,
+			"disabled": true
 		},
 		{
 			"functionName": "CatchRosie",
@@ -429,6 +450,7 @@
 				}
 			],
 			"sid": 350103097360180,
+			"disabled": true,
 			"children": [
 				{
 					"eventType": "block",
@@ -451,7 +473,8 @@
 							"sid": 685659725089388
 						}
 					],
-					"sid": 470269512660752
+					"sid": 470269512660752,
+					"disabled": true
 				}
 			]
 		},
