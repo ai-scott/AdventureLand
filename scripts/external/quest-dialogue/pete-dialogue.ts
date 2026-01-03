@@ -161,23 +161,16 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_008",
       speaker: "Pete",
-      text: "I really appreciate the help! I'll have a nice reward for you after I can get back",
+      text: "I really appreciate the help! I'll have a reward for you after I can get back home.",
       priority: 92,
+      endsDialogue: true,
       conditions: [
         {
           "type": "quest_status",
           "questId": "pete_herbs_quest",
-          "status": "Not_Started"
+          "status": "Not-Started"
         }
       ],
-      autoAdvance: "node_008b"
-    },
-    {
-      id: "node_008b",
-      speaker: "Pete",
-      text: "home.",
-      priority: 91,
-      endsDialogue: true,
       actions: [
         {
           "type": "set_quest_status",
@@ -189,7 +182,7 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_010",
       speaker: "Pete",
-      text: "I'd really appreciate the help!",
+      text: "Thank ye kindly for the help!",
       priority: 90,
       conditions: [
         {

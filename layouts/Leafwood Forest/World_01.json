@@ -615,8 +615,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 508,
-						"y": 40,
+						"x": 494,
+						"y": 34,
 						"width": 64,
 						"height": 64,
 						"originX": 0.46875,
@@ -997,6 +997,51 @@
 						"y": 179.60499572753906,
 						"width": 16,
 						"height": 16,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "ForestSign",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 13,
+					"sid": 157432924345198,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {
+						"Solid": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": false,
+								"tags": ""
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 157432924345198,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 496,
+						"y": 32,
+						"width": 52,
+						"height": 45,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [

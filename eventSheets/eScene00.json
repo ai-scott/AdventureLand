@@ -253,12 +253,7 @@
 							}
 						}
 					],
-					"actions": [
-						{
-							"callFunction": "AddRosieInScene",
-							"sid": 518498768697869
-						}
-					],
+					"actions": [],
 					"sid": 236906520672814,
 					"disabled": true,
 					"isOrBlock": true
@@ -346,135 +341,6 @@
 						}
 					],
 					"isOrBlock": true
-				}
-			]
-		},
-		{
-			"functionName": "AddRosieInScene",
-			"functionDescription": "",
-			"functionCategory": "DialogueEvent",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [],
-			"eventType": "function-block",
-			"conditions": [],
-			"actions": [
-				{
-					"type": "script",
-					"language": "typescript",
-					"script": [
-						"console.log(\"Adding Rosie\")"
-					]
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 761059984570959,
-					"parameters": {
-						"object-to-create": "Rosie",
-						"layer": "\"Decor 3 - over P\"",
-						"x": "656",
-						"y": "416",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"id": "create-object",
-					"objectClass": "System",
-					"sid": 705682115257686,
-					"parameters": {
-						"object-to-create": "Trigger_Scene",
-						"layer": "\"Objects\"",
-						"x": "656",
-						"y": "420",
-						"create-hierarchy": false,
-						"template-name": "\"\""
-					}
-				},
-				{
-					"id": "set-instvar-value",
-					"objectClass": "Trigger_Scene",
-					"sid": 590457322296645,
-					"parameters": {
-						"instance-variable": "ID",
-						"value": "3"
-					}
-				},
-				{
-					"id": "set-instvar-value",
-					"objectClass": "Trigger_Scene",
-					"sid": 637426324274319,
-					"parameters": {
-						"instance-variable": "SceneName",
-						"value": "\"Rosie\""
-					}
-				},
-				{
-					"id": "set-animation",
-					"objectClass": "Rosie",
-					"sid": 525292727400682,
-					"parameters": {
-						"animation": "\"Tail_Wag_Left\"",
-						"from": "beginning"
-					}
-				}
-			],
-			"sid": 534993334847665,
-			"disabled": true
-		},
-		{
-			"functionName": "CatchRosie",
-			"functionDescription": "",
-			"functionCategory": "",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [],
-			"eventType": "function-block",
-			"conditions": [],
-			"actions": [
-				{
-					"id": "destroy",
-					"objectClass": "Rosie",
-					"sid": 481749397717093
-				},
-				{
-					"callFunction": "UpdateNumbersOnPickup",
-					"sid": 166961385401568,
-					"parameters": [
-						"122",
-						"1"
-					]
-				}
-			],
-			"sid": 350103097360180,
-			"disabled": true,
-			"children": [
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-instance-variable",
-							"objectClass": "Trigger_Scene",
-							"sid": 753576971893018,
-							"parameters": {
-								"instance-variable": "ID",
-								"comparison": 0,
-								"value": "3"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "destroy",
-							"objectClass": "Trigger_Scene",
-							"sid": 685659725089388
-						}
-					],
-					"sid": 470269512660752,
-					"disabled": true
 				}
 			]
 		},
@@ -619,27 +485,6 @@
 				}
 			],
 			"sid": 835496645361954
-		},
-		{
-			"functionName": "RosiesHome",
-			"functionDescription": "Set Rosie up for being at Penny's - remove from inv.",
-			"functionCategory": "DialogueEvent",
-			"functionReturnType": "none",
-			"functionCopyPicked": false,
-			"functionIsAsync": false,
-			"functionParameters": [],
-			"eventType": "function-block",
-			"conditions": [],
-			"actions": [
-				{
-					"callFunction": "UpdateNumbersOnDrop",
-					"sid": 174352337285507,
-					"parameters": [
-						"122"
-					]
-				}
-			],
-			"sid": 426256096190503
 		}
 	],
 	"sid": 911891923434025

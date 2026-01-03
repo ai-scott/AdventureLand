@@ -6142,13 +6142,6 @@
 										"string": "\"checkYourself\"",
 										"function": "OpenClose_Inventory"
 									}
-								},
-								{
-									"type": "script",
-									"language": "typescript",
-									"script": [
-										"console.log(\"Testing function access:\", typeof (window as any).debugPlayerSimple);"
-									]
 								}
 							],
 							"sid": 119729088397068
