@@ -130,9 +130,10 @@ export class CurrencySystem {
 
     /**
      * Add gems (collection, rewards, etc.)
+     * Also handles negative amounts for spending
      */
     static addGems(amount: number): number {
-        if (!this.initialized || amount <= 0) return 0;
+        if (!this.initialized || amount === 0) return 0;
 
         // Clamp to valid range (-999 to +999 per the C3 pattern)
         const clampedAmount = Math.max(-999, Math.min(999, amount));

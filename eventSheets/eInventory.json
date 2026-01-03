@@ -5121,6 +5121,16 @@
 					"sid": 435680012914501,
 					"children": [
 						{
+							"eventType": "variable",
+							"name": "sellItemID",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 919328721515659
+						},
+						{
 							"eventType": "block",
 							"conditions": [
 								{
@@ -5173,6 +5183,15 @@
 								{
 									"id": "set-eventvar-value",
 									"objectClass": "System",
+									"sid": 797499102602589,
+									"parameters": {
+										"variable": "sellItemID",
+										"value": "InventoryItems.ItemID"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
 									"sid": 252241969827651,
 									"parameters": {
 										"variable": "CurrentItemSlot",
@@ -5216,10 +5235,10 @@
 									"actions": [
 										{
 											"callFunction": "sellItem",
-											"sid": 986732945324619,
+											"sid": 769017487490264,
 											"parameters": [
-												"InventoryItems.ItemID",
-												"Functions.GetItemCostbyID(InventoryItems.ItemID) / 2"
+												"sellItemID",
+												"Functions.GetItemCostbyID(sellItemID) / 2"
 											]
 										}
 									],
@@ -5985,11 +6004,10 @@
 							],
 							"actions": [
 								{
-									"callFunction": "AdjustHealthAndSave",
-									"sid": 496929955874897,
+									"callFunction": "AdjustGemsAndSave",
+									"sid": 741895674319768,
 									"parameters": [
-										"-purchasePrice",
-										"\"\""
+										"-purchasePrice"
 									]
 								}
 							],
@@ -6025,7 +6043,7 @@
 					"actions": [
 						{
 							"callFunction": "AdjustGemsAndSave",
-							"sid": 906973053083693,
+							"sid": 952168504590363,
 							"parameters": [
 								"ceil(sellPrice)"
 							]

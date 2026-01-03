@@ -2611,9 +2611,11 @@
 									"language": "javascript",
 									"script": [
 										"const currency = globalThis.AdventureLand?.Currency;",
-										"    if (currency) {",
-										"        currency.adjustGems(localVars.gem_adjustment);",
-										"    }"
+										"if (currency) {",
+										"    currency.adjustGems(localVars.gem_adjustment);",
+										"} else {",
+										"    console.error('[Adjust_Gems] Currency system not found!');",
+										"}"
 									]
 								}
 							],
