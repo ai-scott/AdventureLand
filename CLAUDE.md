@@ -2,6 +2,38 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL: Construct 3 Git Workflow
+
+**NEVER run `git restore` or destructive git commands without explicit user confirmation.**
+
+When working with Construct 3 projects, ALL changes happen in `.json` files (event sheets, layouts, project files). These files are modified by the C3 IDE and MUST be committed together.
+
+### MANDATORY Workflow for C3 Changes:
+
+1. **Make changes in Construct 3 IDE**
+2. **Save project in C3** (File → Save)
+3. **Close C3 IDE** (this ensures all .json files are written to disk)
+4. **Run `git status`** to see what changed
+5. **Commit ALL modified files** (event sheets, layouts, project.c3proj)
+   - NEVER commit only some C3 files - commit all or none
+   - Include both TypeScript changes AND C3 .json files in same commit
+6. **Write detailed commit messages** explaining what was changed in C3
+
+### Before ANY destructive git operation:
+
+- **Ask user first** before: `git restore`, `git reset`, `git clean`
+- **Check what will be lost**: run `git diff` first
+- **Confirm with user** they understand uncommitted C3 work will be permanently lost
+- **Suggest `git stash`** as safer alternative when possible
+
+### Warning Signs of Trouble:
+
+- Modified .json files in `git status` that weren't intentionally changed
+- User mentions C3 changes but no .json files show in `git status` (C3 not saved/closed)
+- Commit includes TypeScript but no C3 files (when C3 work was mentioned)
+
+**Why this matters:** C3 work can represent hours of visual/event sheet development that cannot be recovered once lost. A single `git restore` can destroy an entire day's work.
+
 ## Project Overview
 
 AdventureLand is a TypeScript-enhanced Construct 3 game project. It uses a hybrid architecture where Construct 3 handles visuals/UI while TypeScript manages complex logic and data processing.
