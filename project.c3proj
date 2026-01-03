@@ -1141,6 +1141,28 @@
 							],
 							"subfolders": [],
 							"name": "quest-dialogue"
+						},
+						{
+							"items": [
+								{
+									"name": "unique-items-spawner.ts",
+									"type": "application/typescript",
+									"sid": 882407832837693,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "unique-items-config.ts",
+									"type": "application/typescript",
+									"sid": 442436816943892,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "unique-items"
 						}
 					],
 					"name": "external"

@@ -2415,6 +2415,16 @@
 					"sid": 925745067555712,
 					"children": [
 						{
+							"eventType": "variable",
+							"name": "numberWidth",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "width of gems length",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 801386482010382
+						},
+						{
 							"eventType": "block",
 							"conditions": [
 								{
@@ -2480,6 +2490,58 @@
 									"sid": 303049388841703
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "UI_Font",
+									"sid": 874156349494766,
+									"parameters": {
+										"instance-variable": "state",
+										"comparison": 0,
+										"value": "\"gems\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 150626317300909,
+									"parameters": {
+										"variable": "numberWidth",
+										"value": "UI_Font.TextWidth"
+									}
+								}
+							],
+							"sid": 895613592731773
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-text",
+									"objectClass": "UI_Font",
+									"sid": 250512148128106,
+									"parameters": {
+										"text-to-compare": "\"Gems\"",
+										"case-sensitivity": "ignore-case"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-x",
+									"objectClass": "UI_Font",
+									"sid": 413461877283676,
+									"parameters": {
+										"x": "UI_Font.X+numberWidth"
+									}
+								}
+							],
+							"sid": 133741552811850
 						}
 					]
 				}
@@ -8274,7 +8336,6 @@
 							"sid": 846457891862036,
 							"children": [
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [],
 									"actions": [

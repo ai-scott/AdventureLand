@@ -465,6 +465,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": false,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -515,6 +516,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": false,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -565,6 +567,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": false,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -611,6 +614,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": true,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -669,40 +673,6 @@
 			"global": false
 		},
 		{
-			"name": "Transitions",
-			"overriden": 0,
-			"subLayers": [],
-			"instances": [],
-			"sid": 154741798178387,
-			"effectTypes": [],
-			"isInitiallyVisible": true,
-			"isInitiallyInteractive": true,
-			"isHTMLElementsLayer": false,
-			"color": [
-				1,
-				1,
-				1,
-				1
-			],
-			"backgroundColor": [
-				0.3686274509803922,
-				0.3686274509803922,
-				0.3686274509803922,
-				1
-			],
-			"isTransparent": true,
-			"parallaxX": 1,
-			"parallaxY": 1,
-			"scaleRate": 1,
-			"forceOwnTexture": false,
-			"renderingMode": "3d",
-			"drawOrder": "z-order",
-			"useRenderCells": false,
-			"blendMode": "normal",
-			"zElevation": 0,
-			"global": false
-		},
-		{
 			"name": "Collision",
 			"overriden": 0,
 			"subLayers": [],
@@ -729,6 +699,7 @@
 						"Solid": {
 							"properties": {
 								"enabled": true,
+								"use-instance-tags": false,
 								"tags": ""
 							}
 						}
@@ -806,6 +777,40 @@
 			"subLayers": [],
 			"instances": [],
 			"sid": 762336705324309,
+			"effectTypes": [],
+			"isInitiallyVisible": true,
+			"isInitiallyInteractive": true,
+			"isHTMLElementsLayer": false,
+			"color": [
+				1,
+				1,
+				1,
+				1
+			],
+			"backgroundColor": [
+				0.3686274509803922,
+				0.3686274509803922,
+				0.3686274509803922,
+				1
+			],
+			"isTransparent": true,
+			"parallaxX": 1,
+			"parallaxY": 1,
+			"scaleRate": 1,
+			"forceOwnTexture": false,
+			"renderingMode": "3d",
+			"drawOrder": "z-order",
+			"useRenderCells": false,
+			"blendMode": "normal",
+			"zElevation": 0,
+			"global": false
+		},
+		{
+			"name": "Transitions",
+			"overriden": 0,
+			"subLayers": [],
+			"instances": [],
+			"sid": 154741798178387,
 			"effectTypes": [],
 			"isInitiallyVisible": true,
 			"isInitiallyInteractive": true,

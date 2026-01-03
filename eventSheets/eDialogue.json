@@ -2067,7 +2067,16 @@
 							"children": [
 								{
 									"eventType": "block",
-									"conditions": [],
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "Character_Cameos",
+											"sid": 582157439257771,
+											"parameters": {
+												"layer": "\"HUD_UI\""
+											}
+										}
+									],
 									"actions": [
 										{
 											"id": "set-group-active",
@@ -2259,6 +2268,14 @@
 					"functionParameters": [],
 					"eventType": "function-block",
 					"conditions": [
+						{
+							"id": "is-on-layer",
+							"objectClass": "Character_Cameos",
+							"sid": 928840951366064,
+							"parameters": {
+								"layer": "\"HUD_UI\""
+							}
+						},
 						{
 							"id": "is-on-layer",
 							"objectClass": "obj_TextBlock",

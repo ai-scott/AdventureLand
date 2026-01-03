@@ -1292,6 +1292,20 @@
 								"    // Force re-initialization to load from the freshly loaded save data",
 								"    healthSystem.initialize();",
 								"    console.log(\"🔄 HealthSystem re-initialized after load game\");",
+								"}",
+								"// Only reload currency if NOT a new game",
+								"const isNewGame = runtime.globalVars.GameInitialized === false;",
+								"",
+								"if (!isNewGame) {",
+								"    const currency = globalThis.AdventureLand?.Currency;",
+								"    if (currency && currency.loadSaveData) {",
+								"    const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();",
+								"    const gems = dict?.getDataMap().get('Gems') || 0;",
+								"    currency.loadSaveData({ gems });",
+								"    console.log(`[Load Game] Reloaded currency system: ${gems} gems`);",
+								"    }",
+								"} else {",
+								"    console.log('[Load Game] New game detected - skipping currency reload');",
 								"}"
 							]
 						}
@@ -2647,6 +2661,68 @@
 										}
 									],
 									"sid": 181140870703463
+								},
+								{
+									"eventType": "variable",
+									"name": "gemsXPosAndWidth",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"isStatic": false,
+									"isConstant": false,
+									"sid": 451017112052980
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "UI_Font",
+											"sid": 938432688077408,
+											"parameters": {
+												"instance-variable": "state",
+												"comparison": 0,
+												"value": "\"gems\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 599609394369784,
+											"parameters": {
+												"variable": "gemsXPosAndWidth",
+												"value": "UI_Font.X + UI_Font.TextWidth"
+											}
+										}
+									],
+									"sid": 328694295085868
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-text",
+											"objectClass": "UI_Font",
+											"sid": 349486863725017,
+											"parameters": {
+												"text-to-compare": "\"Gems\"",
+												"case-sensitivity": "ignore-case"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-x",
+											"objectClass": "UI_Font",
+											"sid": 736616318489546,
+											"parameters": {
+												"x": "gemsXPosAndWidth + 4"
+											}
+										}
+									],
+									"sid": 960212525418081
 								}
 							]
 						}
@@ -3446,6 +3522,13 @@
 								{
 									"callFunction": "populateItemSlots",
 									"sid": 217534238714704
+								},
+								{
+									"callFunction": "Adjust_Gems",
+									"sid": 472991690316194,
+									"parameters": [
+										"0"
+									]
 								}
 							],
 							"sid": 192841212808491,
