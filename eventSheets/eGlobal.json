@@ -2276,7 +2276,6 @@
 										"const healthSystem = globalThis.AdventureLand?.HealthSystem;",
 										"if (healthSystem) {",
 										"    healthSystem.adjustHealth(localVars.health_change, localVars.maxOutHealth === \"TRUE\");",
-										"    console.log(\"adjusting health by \"+localVars.health_change);",
 										"}"
 									]
 								}
@@ -2976,6 +2975,86 @@
 					"description": "",
 					"isActiveOnStart": true,
 					"children": [
+						{
+							"eventType": "group",
+							"disabled": false,
+							"title": "Inventory Position Lock",
+							"description": "Keep Player in correct place while inventory is open",
+							"isActiveOnStart": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-on-layer",
+											"objectClass": "PlayerSystem",
+											"sid": 134873404679865,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										},
+										{
+											"id": "is-on-layer",
+											"objectClass": "Player_Base",
+											"sid": 498546356464817,
+											"parameters": {
+												"layer": "\"Inventory\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-effect-enabled",
+											"objectClass": "PlayerSystem",
+											"sid": 765849093635973,
+											"parameters": {
+												"mode": "disable",
+												"effect": "\"Flash\""
+											}
+										},
+										{
+											"id": "set-position",
+											"objectClass": "PlayerSystem",
+											"sid": 947547807991270,
+											"parameters": {
+												"x": "430",
+												"y": "230"
+											}
+										},
+										{
+											"id": "set-animation-frame",
+											"objectClass": "PlayerSystem",
+											"sid": 561507820120941,
+											"parameters": {
+												"frame-number": "0"
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "PlayerSystem",
+											"sid": 513925443162616
+										},
+										{
+											"id": "stop",
+											"objectClass": "Player_Base",
+											"sid": 683670348983791,
+											"behaviorType": "8Direction"
+										},
+										{
+											"id": "set-position",
+											"objectClass": "Player_Base",
+											"sid": 960799628165878,
+											"parameters": {
+												"x": "430",
+												"y": "230"
+											}
+										}
+									],
+									"sid": 253611521028572
+								}
+							],
+							"sid": 592607723094424
+						},
 						{
 							"eventType": "comment",
 							"text": "These actions update the quantities of the items that are dropped or picked up"

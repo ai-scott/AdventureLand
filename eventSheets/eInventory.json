@@ -10023,15 +10023,6 @@
 								"comparison": 0,
 								"value": "\"hint\""
 							}
-						},
-						{
-							"id": "is-on-layer",
-							"objectClass": "Btn_Select",
-							"sid": 361283613520744,
-							"disabled": true,
-							"parameters": {
-								"layer": "\"Hint\""
-							}
 						}
 					],
 					"actions": [

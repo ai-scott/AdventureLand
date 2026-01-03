@@ -3923,6 +3923,15 @@
 										"instance-variable": "Dashing"
 									},
 									"isInverted": true
+								},
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 814091318268236,
+									"parameters": {
+										"layer": "\"Inventory\""
+									},
+									"isInverted": true
 								}
 							],
 							"actions": [
@@ -3962,6 +3971,15 @@
 									"sid": 894622295509195,
 									"parameters": {
 										"instance-variable": "Dashing"
+									},
+									"isInverted": true
+								},
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 290525826501903,
+									"parameters": {
+										"layer": "\"Inventory\""
 									},
 									"isInverted": true
 								}
@@ -4072,7 +4090,17 @@
 								{
 									"bookmark": true,
 									"eventType": "block",
-									"conditions": [],
+									"conditions": [
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 293435555285904,
+											"parameters": {
+												"layer": "\"Inventory\""
+											},
+											"isInverted": true
+										}
+									],
 									"actions": [
 										{
 											"id": "set-ignoring-input",
@@ -4613,7 +4641,6 @@
 											"sid": 469058466382776,
 											"children": [
 												{
-													"bookmark": true,
 													"eventType": "block",
 													"conditions": [
 														{
