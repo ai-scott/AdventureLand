@@ -30,6 +30,7 @@ export class UIButtonManager {
   // Configuration
   private static readonly DEFAULT_BUTTON_TYPE = "Btn_Action";
   private static readonly DEFAULT_TEXT_PADDING = 6;
+  private static readonly DEFAULT_BUTTON_HEIGHT = 24;
   private static readonly MAX_POOL_SIZE = 50;  // Prevent unlimited growth
 
   // ============================================================================
@@ -81,6 +82,32 @@ export class UIButtonManager {
     return dimensions;
   }
 
+  /**
+   * Calculate centered text position on button
+   * @param buttonX - Button X position
+   * @param buttonY - Button Y position
+   * @param buttonWidth - Button width
+   * @param buttonHeight - Button height
+   * @param text - Text to position
+   * @returns Centered X and Y coordinates
+   */
+  private static calculateTextPosition(
+    buttonX: number,
+    buttonY: number,
+    buttonWidth: number,
+    buttonHeight: number,
+    text: string
+  ): { x: number; y: number } {
+    const textDimensions = this.measureText(text);
+
+    // Center horizontally and vertically on button
+    // Note: C3 buttons may have centered origin, so we center relative to button position
+    return {
+      x: buttonX + (buttonWidth - textDimensions.width) / 2,
+      y: buttonY
+    };
+  }
+
   // ============================================================================
   // BUTTON LIFECYCLE
   // ============================================================================
@@ -112,7 +139,7 @@ export class UIButtonManager {
 
       config.size = {
         width: Math.max(textDimensions.width + padding, config.minWidth ?? 0),
-        height: config.size?.height ?? 36
+        height: config.size?.height ?? this.DEFAULT_BUTTON_HEIGHT
       };
     }
 
@@ -210,6 +237,17 @@ export class UIButtonManager {
           const padding = button.config.textPadding ?? this.DEFAULT_TEXT_PADDING;
           buttonInstance.width = textDimensions.width + padding;
         }
+
+        // Recenter text on button
+        const textPos = this.calculateTextPosition(
+          buttonInstance.x,
+          buttonInstance.y,
+          buttonInstance.width,
+          buttonInstance.height,
+          updates.text
+        );
+        textInstance.x = textPos.x;
+        textInstance.y = textPos.y;
       }
     }
 
@@ -344,18 +382,56 @@ export class UIButtonManager {
           buttonInstance.animationFrame = config.animationFrame;
         }
 
-        // Update text if it exists
-        if (existing.textUID && config.text) {
-          const textInstance = this.getTextInstance(existing.textUID);
-          if (textInstance) {
+        // Handle text label - update if exists, create if needed
+        let textUID = existing.textUID;
+        if (config.text) {
+          const textPos = this.calculateTextPosition(
+            buttonInstance.x,
+            buttonInstance.y,
+            buttonInstance.width,
+            buttonInstance.height,
+            config.text
+          );
+
+          if (existing.textUID) {
+            // Update existing text
+            const textInstance = this.getTextInstance(existing.textUID);
+            if (textInstance) {
+              textInstance.text = config.text;
+              textInstance.isVisible = true;
+              textInstance.x = textPos.x;
+              textInstance.y = textPos.y;
+              // Ensure proper z-order: button first, then text on top
+              buttonInstance.moveToTop();
+              textInstance.moveToTop();
+            }
+          } else {
+            // Create text if it didn't exist before
+            const layerObj = this.runtime.layout.getLayer(config.layer);
+            const layerIndex = layerObj?.index ?? 0;
+
+            const textInstance = this.runtime.objects.obj_Text_A.createInstance(
+              layerIndex,
+              textPos.x,
+              textPos.y
+            ) as any;
+
             textInstance.text = config.text;
             textInstance.isVisible = true;
-            textInstance.x = buttonInstance.x + 4;
-            textInstance.y = buttonInstance.y + 4;
+            textUID = textInstance.uid;
+            // Ensure proper z-order: button first, then text on top
+            buttonInstance.moveToTop();
+            textInstance.moveToTop();
+          }
+        } else if (existing.textUID) {
+          // Hide text if no text needed but exists
+          const textInstance = this.getTextInstance(existing.textUID);
+          if (textInstance) {
+            textInstance.isVisible = false;
           }
         }
 
-        return { buttonUID: existing.uid, textUID: existing.textUID };
+        return { buttonUID: existing.uid, textUID: textUID };
       }
     }
 
@@ -398,15 +474,26 @@ export class UIButtonManager {
       // Create text label if provided (using obj_Text_A for icon support)
       let textUID: number | undefined;
       if (config.text) {
+        const textPos = this.calculateTextPosition(
+          buttonInstance.x,
+          buttonInstance.y,
+          buttonInstance.width,
+          buttonInstance.height,
+          config.text
+        );
+
         const textInstance = this.runtime.objects.obj_Text_A.createInstance(
           layerIndex,
-          buttonInstance.x + 4,  // Offset from button edge
-          buttonInstance.y + 4
+          textPos.x,
+          textPos.y
         ) as any;
 
         textInstance.text = config.text;
         textInstance.isVisible = true;
         textUID = textInstance.uid;
+        // Ensure proper z-order: button first, then text on top
+        buttonInstance.moveToTop();
+        textInstance.moveToTop();
       }
 
       return { buttonUID: buttonInstance.uid, textUID: textUID };
