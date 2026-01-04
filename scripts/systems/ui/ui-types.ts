@@ -7,7 +7,8 @@
  * Following the proven patterns from Enemy AI, Inventory UI, and Dialogue systems.
  */
 
-import type { IRuntime } from "construct3";
+// Note: Using 'any' for runtime type to match existing system patterns
+// C3 auto-generated types are in ts-defs/ but we use 'any' for flexibility
 
 // ============================================================================
 // BUTTON POSITIONING

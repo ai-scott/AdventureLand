@@ -68,54 +68,27 @@ This is the single source of truth for all active development tasks. Completed w
 
 ### 📅 Phase 2: Typed Instance Classes (LOW PRIORITY)
 
-### 2.1 Research & Planning
-- [ ] Document all Construct objects that need typed instances
-- [ ] Identify which objects would benefit most (Player, Enemy, Item)
-- [ ] Create type definition structure plan
-- [ ] Test typed instance pattern with one simple object
+- [ ] Research which C3 objects would benefit from typed instances
+- [ ] Create Player/Enemy/Item typed instance classes
+- [ ] Register with `setInstanceClass()`
+- [ ] Test performance impact
 
-### 2.2 Implement Core Typed Instances
-- [ ] Create typed Player instance class
-- [ ] Create typed Enemy base class
-- [ ] Create typed Item instance class
-- [ ] Register instances with `setInstanceClass()`
-- [ ] Update type definitions for better IDE support
+### 📅 Phase 3: Import Maps Configuration (LOW PRIORITY)
 
-### 2.3 Migrate Existing Systems
-- [ ] Update EnemyAI to use typed Enemy instances
-- [ ] Update ItemManager to use typed Item instances
-- [ ] Update HealthSystem to use typed Player instance
-- [ ] Test performance impact of typed instances
+- [ ] Create import map JSON config
+- [ ] Define namespace structure (@adventure/core, etc.)
+- [ ] Configure C3 to use import map
+- [ ] Refactor imports to bare specifiers
 
-## Phase 3: Import Maps Configuration (Week 4)
+**Note**: Current `.js` extension pattern works well. Low priority.
 
-### 3.1 Setup Import Maps
-- [ ] Create import map JSON configuration
-- [ ] Define namespace structure (@adventure/core, @adventure/enemies, etc.)
-- [ ] Configure Construct 3 to use import map
-- [ ] Test import resolution in development
+## Advanced Patterns (FUTURE)
 
-### 3.2 Refactor Imports
-- [ ] Update all imports to use bare specifiers
-- [ ] Test module resolution in browser
-- [ ] Update build/compilation process if needed
-- [ ] Document import map usage
+- [ ] Enemy subclassing (CrabEnemy extends Enemy)
+- [ ] Runtime event listeners
+- [ ] Lifecycle hooks for instances
 
-## Phase 4: Advanced Patterns (Week 5-6)
-
-### 4.1 Instance Subclassing
-- [ ] Create enemy subclasses (CrabEnemy extends Enemy)
-- [ ] Implement behavior inheritance patterns
-- [ ] Use composition for shared behaviors
-- [ ] Document subclassing patterns
-
-### 4.2 Runtime Event Integration
-- [ ] Implement proper event listeners for runtime events
-- [ ] Create event-driven initialization system
-- [ ] Add lifecycle hooks for instances
-- [ ] Performance optimization for event handlers
-
-## Phase 5: Documentation & Migration Guide (Week 7)
+**Note**: Current systems work well. These are optimization opportunities, not requirements.
 
 ### 5.1 Update Documentation
 - [ ] Comprehensive update to CLAUDE.md
@@ -142,44 +115,12 @@ This is the single source of truth for all active development tasks. Completed w
 - Git tags at each phase completion
 - Documented rollback procedures
 
-## Battle System Migration (In Progress)
-
-### ✅ COMPLETED: Enemy Battle System (2025-09-22)
-- [x] Enemy_Hurt TypeScript integration working (2025-09-21)
-- [x] Collision detection fixed - re-enabled "Enemies" group in eGlobal (2025-09-21)
-- [x] Knockback system integrated with TypeScript (2025-09-21)
-- [x] Invulnerability frames working correctly (2025-09-21)
-- [x] Debug logging confirms dual system active (2025-09-21)
-- [x] Battle system callbacks implemented (notifyHurt, notifyRecovery, notifyDeath) (2025-09-21)
-- [x] Enemy battle system documentation consolidated (2025-09-22)
-- [x] Visual effects coordination between TypeScript and C3 (2025-09-22)
-- [x] Production-ready enemy battle system with 35% CPU improvement (2025-09-22)
-
-### ✅ COMPLETED: Enemy Battle System Integration
-- [x] Enemy battle system fully integrated and production-ready (2025-09-22)
-- [x] Unified TypeScript battle system for all enemy types (2025-09-22)
-- [x] Invulnerability system prevents damage spam (2025-09-22)
-- [x] Battle documentation consolidated and archived (2025-09-22)
-
-### ✅ COMPLETED: Health System Respawn Fix (2025-10-01)
-- [x] Fixed player respawn bug where health stayed at 0 after death and load game (2025-10-01)
-- [x] Implemented wasDeadBeforeLoad detection in loadFromSaveData() (2025-10-01)
-- [x] Added proper sync to both global variables AND Dictionary (2025-10-01)
-- [x] Exposed initialize() method in global namespace for event sheet access (2025-10-01)
-- [x] Updated event sheet to call HealthSystem.initialize() on load game (2025-10-01)
-- [x] Moved Defense calculation to TypeScript (removed event sheet duplication) (2025-10-01)
-- [x] All health system tests passing with improved coverage (2025-10-01)
+## Battle System
 
 ### 📅 PLANNED: Player Battle System Enhancements (Future Phase)
 - [ ] Add player invulnerability frames similar to enemy system
 - [ ] Implement damage types and resistance system for players
 - [ ] Add visual feedback for damage types (fire, ice, poison effects)
-
-### ✅ COMPLETED: Enemy Battle System Testing
-- [x] Enemy battle system tested and validated in production (2025-09-22)
-- [x] Performance benchmarks completed (35% CPU reduction) (2025-09-22)
-- [x] Integration tests for enemy combat completed (2025-09-22)
-- [x] Edge case testing completed (immunity frames prevent spam) (2025-09-22)
 
 ### 📅 PLANNED: Player Battle System Testing (Future)
 - [ ] Create player battle system test suite
@@ -187,25 +128,7 @@ This is the single source of truth for all active development tasks. Completed w
 - [ ] Integration tests for complete player vs enemy combat
 - [ ] Edge case testing for player damage scenarios
 
-## TypeScript Implementation Status (Migrated from CLAUDE.md)
-
-### ✅ COMPLETED: TypeScript Foundation
-
-#### TypeScript Type System Working
-- [x] Auto-generated types: Complete type definitions in `ts-defs/` folder (2025-09-21)
-- [x] Full IntelliSense: All Construct 3 objects, behaviors, and instance variables typed (2025-09-21)
-- [x] Live compilation: TypeScript compiles automatically with proper error checking (2025-09-21)
-- [x] Import patterns: All imports use `.js` extensions as required (2025-09-21)
-
-#### Event Sheet Integration
-- [x] `scripts/imports-for-events.ts` file bridges TypeScript modules to Construct 3 event sheets (2025-09-21)
-- [x] Both legacy and modern patterns work simultaneously (2025-09-21)
-- [x] Event sheet usage patterns documented (2025-09-21)
-
-#### Battle System Enhancements
-- [x] Enhanced Enemy AI Integration with battle system callbacks (2025-09-21)
-- [x] Battle system callbacks implemented (notifyHurt, notifyRecovery, notifyDeath) (2025-09-21)
-- [x] Event sheet usage patterns for battle events (2025-09-21)
+## TypeScript Modernization
 
 ### 🔄 IN PROGRESS: Typed Instance Classes
 - [ ] Create base instance classes
@@ -220,52 +143,13 @@ This is the single source of truth for all active development tasks. Completed w
 - [ ] Refactor all imports to use bare specifiers
 - [ ] Update documentation
 
-## Quest Dialogue System (In Progress)
+---
 
-### COMPLETED: Dialogue System Foundation (2025-10-08)
-- [x] Dialogue system for nodes with endsDialogue: true working correctly (2025-10-08)
-- [x] Welcome dialogue created and functional (2025-10-08)
-- [x] Quest status saving to dictionary operational (2025-10-08)
-- [x] DialogueResult race condition fixed with delayed cleanup (2025-10-08)
+## ✅ Completed Work Archive (2025-2026)
 
-### ✅ COMPLETED: Dialogue System Polish (2025-11-02)
-- [x] Clean up heart/health console logs (2025-11-02)
-  - Removed 28 console.log statements from health-system.ts
-  - Equipment debug logs removed from eInventory event sheet (C3 IDE)
-  - Reduced console noise during gameplay by ~95%
+See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work.
 
-- [x] Enemy pause during dialogue confirmed working (2025-11-02)
-  - EnemyPause.pause("dialogue") on startDialogue
-  - EnemyPause.resume("dialogue") on endDialogue
-  - Integration verified in dialogue-bridge.ts
-
-- [x] Fixed player not appearing after death/Try Again (2025-11-02)
-  - ROOT CAUSE: Door_ID not being reset to 0
-  - SOLUTION: Set Door_ID = 0 in "Try Again" and "New Game" flows
-  - Player now correctly spawns at home location in World_00
-
-- [x] Removed legacy dialogue loader (2025-11-02)
-  - Removed loadWorldDialogue call from main.ts
-  - Fixed 404 error for World00_text.json
-  - System now correctly uses TypeScript dialogue files
-
-- [x] Centralized game state variable resets (2025-11-02)
-  - Reset Door_ID, CurrentWorld, WorldX, WorldY to 0/"00" on New/Load/Try Again
-  - Fixed CurrentWorld corruption issue ("11" invalid world ID)
-  - Added TileAnimations.setupWaterfall and cleanup to imports-for-events.ts
-  - All animation errors resolved
-
-### ✅ COMPLETED: Dialogue System Testing (2025-11-03)
-- [x] Quest status persistence to local storage verified working (2025-11-03)
-  - SaveGameData call added to endDialogue
-  - Quest status survives game reload
-  - Multiple quest states working (not_started, in_progress, completed)
-
-- [x] Fixed interaction hint stuck in "Enter" state at game start (2025-11-03)
-  - Hint now clears correctly when moving away from door trigger
-  - Only shows when near interactable objects
-
-### ✅ COMPLETED: UI Button System - Phase 1 (2026-01-04)
+### UI Button System - Phase 1 ✅ COMPLETE (Jan 2026)
 - [x] Design comprehensive 3-layer UI button system architecture (2026-01-04)
   - Layer 1: UIButtonManager (button pooling, positioning, sizing)
   - Layer 2: MessagePanelManager (panels with background + content + buttons)
@@ -316,21 +200,21 @@ This is the single source of truth for all active development tasks. Completed w
   - ✅ Shows during gameplay
   - Purpose: Incentivize collecting gems and spending them
 
-### 📋 NEW: Audio System Issues
-- [ ] Fix inconsistent soundtrack loading
+### 📋 NEW: Audio System Issues ✅ COMPLETE (Dec 2025)
+- [X] Fix inconsistent soundtrack loading
   - Issue: Sometimes tracks don't load
   - Need to investigate audio loading reliability
   - May need preloading or error handling improvements
 
-### 📋 NEW: Quest System Cleanup
-- [ ] Remove legacy quest system items from dictionary
+### 📋 NEW: Quest System Cleanup ✅ COMPLETE (Sep 2025)
+- [X] Remove legacy quest system items from dictionary
   - Remove "RosieQuest" starting item
   - Remove "TreeSignQuest" starting item
   - Clean up any other legacy quest references
   - Ensure new TypeScript quest system is exclusive
 
-### 📋 NEW: Animation Polish
-- [ ] Fix player animation during layout transitions
+### 📋 NEW: Animation Polish ✅ COMPLETE (Dec 2025)
+- [X] Fix player animation during layout transitions
   - Issue: Player continues to animate when holding arrow key at map edge during transition
   - Expected: Player animation should pause during layout load
   - Visual polish issue
