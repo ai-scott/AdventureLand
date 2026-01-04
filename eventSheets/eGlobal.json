@@ -4567,10 +4567,10 @@
 						{
 							"id": "set-instvar-value",
 							"objectClass": "obj_Text_A",
-							"sid": 790823678444032,
+							"sid": 488967137628804,
 							"parameters": {
 								"instance-variable": "field",
-								"value": "\"GemsShadow\""
+								"value": "\"Gems\""
 							}
 						},
 						{
@@ -6290,9 +6290,9 @@
 						{
 							"id": "on-key-pressed",
 							"objectClass": "Keyboard",
-							"sid": 783430427227209,
+							"sid": 717859294770144,
 							"parameters": {
-								"key": 80
+								"key": 121
 							}
 						}
 					],
@@ -6301,7 +6301,19 @@
 							"type": "script",
 							"language": "javascript",
 							"script": [
-								"globalThis.AdventureLandDebug.testPennyDialogue()"
+								"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+								"  if (buttonMgr) {",
+								"    // Test creating a button",
+								"    buttonMgr.showButton(\"test-btn\", {",
+								"      text: \"Test!\",",
+								"      position: { x: 100, y: 100 },",
+								"      layer: \"HUD_UI\",",
+								"      action: \"test\"",
+								"    });",
+								"    ",
+								"    // Log state",
+								"    buttonMgr.debugState();",
+								"  }"
 							]
 						}
 					],

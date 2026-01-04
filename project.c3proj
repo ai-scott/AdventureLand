@@ -965,6 +965,28 @@
 							],
 							"subfolders": [],
 							"name": "shop"
+						},
+						{
+							"items": [
+								{
+									"name": "button-manager.ts",
+									"type": "application/typescript",
+									"sid": 565028061097635,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "ui-types.ts",
+									"type": "application/typescript",
+									"sid": 939276668620817,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "ui"
 						}
 					],
 					"name": "systems"
