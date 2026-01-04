@@ -3551,6 +3551,10 @@
 									"sid": 545374664722762
 								},
 								{
+									"callFunction": "hideAttackHint",
+									"sid": 835524663107271
+								},
+								{
 									"callFunction": "displayInteractionHint",
 									"sid": 727499860833843,
 									"parameters": [
@@ -4379,6 +4383,26 @@
 							"id": "on-start-of-layout",
 							"objectClass": "System",
 							"sid": 166548278395195
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 308729416789537,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 1,
+								"second-value": "\"TitleScreen\""
+							}
+						},
+						{
+							"id": "compare-two-values",
+							"objectClass": "System",
+							"sid": 482219788901246,
+							"parameters": {
+								"first-value": "LayoutName",
+								"comparison": 1,
+								"second-value": "\"GameOver\""
+							}
 						}
 					],
 					"actions": [
@@ -4525,10 +4549,10 @@
 						{
 							"id": "set-instvar-value",
 							"objectClass": "obj_Text_A",
-							"sid": 751030198923396,
+							"sid": 790823678444032,
 							"parameters": {
 								"instance-variable": "field",
-								"value": "\"Gems\""
+								"value": "\"GemsShadow\""
 							}
 						},
 						{

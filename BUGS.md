@@ -21,7 +21,6 @@ None! 🎉
 **Priority**: MEDIUM - Workarounds possible
 
 ### HUD Display
-- [ ] **#3**: Gems should show on HUD (like hearts) so collection is visible
 - [X] **#7**: "Gems" label should adjust position based on number width
 
 **Systems Involved**: HUD layout, Currency System
@@ -30,10 +29,6 @@ None! 🎉
 **#7 Status**: RESOLVED - Label now positions dynamically based on gem count width
 
 ### Inventory UI
-- [ ] **#22**: Player avatar in inventory screen can be knocked back if attacked while menu is open
-
-**Systems Involved**: Inventory UI, Player knockback behavior
-**Priority**: MEDIUM - Player behavior during menu
 
 ### First-Time Experience
 - [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
@@ -182,6 +177,32 @@ None! 🎉
   - No duplicates possible - items only spawn once
   - Scalable system - adding new unique items is trivial
   - Quest-triggered and layout-based spawning patterns supported
+
+### HUD & Inventory (Resolved 2026-01-03)
+- [X] **#3**: Gems should show on HUD (like hearts) so collection is visible
+- [X] **#22**: Player avatar in inventory screen can be knocked back if attacked while menu is open
+
+**#3 Root Cause**: Gems collection not visible during gameplay, requiring inventory to check
+**#3 Solution**: Added gems display to HUD with shadow text, heart-style positioning
+**#3 Location**: eGlobal.json (layout start - creates gems display on HUD_UI layer)
+
+**#22 Root Cause**: Player knockback behavior active while inventory menu open
+**#22 Solution**: Disable player 8Direction behavior when inventory opens, re-enable on close
+**#22 Location**: eGlobal.json (OpenClose_Inventory function - added 8Direction enable/disable)
+
+**Additional Fixes in Same Commit**:
+  - Fixed costume mirroring (player body and clothing now mirror together)
+  - Hide attack/item hints when inventory opens
+  - Only show gems display on gameplay layouts (not TitleScreen/GameOver)
+  - Fixed gems shadow field name for proper text rendering
+
+**Files Modified**:
+  - eventSheets/eGlobal.json (HUD initialization, inventory state management)
+
+**Result**:
+  - Gems visible on HUD during gameplay
+  - Player cannot be knocked back while in inventory
+  - Cleaner UI state transitions
 
 ---
 
