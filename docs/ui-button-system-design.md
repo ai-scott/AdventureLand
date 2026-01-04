@@ -190,6 +190,9 @@ interface ButtonConfig {
   id: string;                    // "attack-hint", "inventory-btn", etc.
   layer: string;                 // "HUD_UI", "Hint", etc.
 
+  // Button type (C3 object to use)
+  buttonType?: string;           // "Btn_Action" (default), "Btn_Arrow", "InventorySlot", etc.
+
   // Positioning (flexible modes)
   position: ButtonPosition | { x: number; y: number }; // Simple or advanced
 
@@ -206,6 +209,9 @@ interface ButtonConfig {
   action: string;                // "Inventory", "Attack", "Notification"
   animationFrame?: number;       // 0=normal, 1=hover, 2=gray
   enabled?: boolean;             // Default: true
+
+  // Keyboard navigation
+  linkID?: number;               // For Ctrl_Btns.CurrentLink integration
 
   // Touch/Mobile
   touchModeOverrides?: Partial<ButtonConfig>; // Auto TouchMode handling
@@ -1752,3 +1758,107 @@ uiHelpers.showItemPickupNotification("Red Apple", true);
 - Weeks 2-3: Layer 2 (panels + notifications)
 - Week 4: Layer 3 (actions + helpers)
 - Week 5: Testing + documentation
+
+---
+
+## Button Type Support
+
+**Multiple C3 Button Objects Supported**:
+
+The system supports different button object types while using the same TypeScript interface:
+
+```typescript
+// Standard button (default)
+buttonMgr.showButton("cancel-btn", {
+  buttonType: "Btn_Action",  // Default, can be omitted
+  text: "Cancel",
+  action: "cancel"
+});
+
+// Arrow button (carousel navigation)
+buttonMgr.showButton("next-arrow", {
+  buttonType: "Btn_Arrow",   // Visually distinct arrow sprite
+  action: "next",
+  position: { x: 200, y: 100 }
+});
+
+// Inventory slot (selection frame)
+buttonMgr.showButton("inv-slot-5", {
+  buttonType: "InventorySlot",  // Highlight frame
+  action: "select-item",
+  linkID: 5,
+  position: { x: 100, y: 150 }
+});
+```
+
+**Supported Button Types** (from C3 project):
+- `Btn_Action` - Standard button (default)
+- `Btn_Arrow` - Carousel arrows (visually distinct)
+- `Btn_Select` - Selection buttons
+- `Btn_Discard` - Discard buttons
+- `Btn_Cancel` - Cancel buttons
+- `InventorySlot` - Inventory selection frames
+- Any future button sprites
+
+**Implementation Note**: ButtonManager creates instances of the specified C3 object type, but all use the same TypeScript pooling/positioning/action system.
+
+---
+
+## Quick Start Guide
+
+### Step 1: Create Directory Structure
+```bash
+mkdir -p scripts/systems/ui
+mkdir -p tests/systems
+```
+
+### Step 2: Create Core Interfaces (`ui-types.ts`)
+Start with type definitions - this provides the contract for all implementations.
+
+Key interfaces:
+- `ButtonPosition` - Positioning modes
+- `ButtonConfig` - Button creation config
+- `ButtonState` - Button runtime state
+- `ButtonGroupConfig` - Multi-button layouts
+
+### Step 3: Implement Basic ButtonManager (`button-manager.ts`)
+Build incrementally:
+1. ✅ Basic pooling (show/hide/track buttons)
+2. ✅ Text measurement (with icon support)
+3. ✅ Simple absolute positioning
+4. ✅ Expose in namespace
+
+Then add:
+5. Relative positioning
+6. TouchMode handling
+7. LinkID integration
+8. Button groups
+
+### Step 4: Expose in Namespace (`main.ts`)
+```typescript
+(globalThis as any).AdventureLand.ButtonManager = {
+  showButton: (id: string, config: any) => UIButtonManager.showButton(id, config),
+  hideButton: (id: string) => UIButtonManager.hideButton(id),
+  updateButton: (id: string, updates: any) => UIButtonManager.updateButton(id, updates),
+  debugState: () => UIButtonManager.debugState()
+};
+```
+
+### Step 5: Test with Attack Hint Migration
+Simplest use case - validates the approach:
+- Before: 40+ event sheet actions
+- After: 1 function call
+
+### Step 6: Write Tests
+```bash
+npm run test:watch  # While developing
+npm run test        # Final validation
+```
+
+**Migration Strategy**:
+- Keep existing button event sheets working during development
+- Build new system in parallel
+- Migrate one feature at a time
+- Can roll back if issues arise
+
+**Safety**: Following the proven Construct 3 git workflow from CLAUDE.md
