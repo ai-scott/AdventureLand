@@ -3538,6 +3538,15 @@
 									}
 								},
 								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 839621940602027,
+									"parameters": {
+										"group-name": "\"Maps\"",
+										"state": "deactivated"
+									}
+								},
+								{
 									"id": "set-enabled",
 									"objectClass": "Player_Base",
 									"sid": 487454495346396,
@@ -3974,6 +3983,15 @@
 											"sid": 813735239121750,
 											"parameters": {
 												"group-name": "\"Enemies\"",
+												"state": "activated"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 687672014844044,
+											"parameters": {
+												"group-name": "\"Maps\"",
 												"state": "activated"
 											}
 										},
