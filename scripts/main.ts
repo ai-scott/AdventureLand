@@ -37,6 +37,9 @@ import * as QuestDialogue from "./external/quest-dialogue/index.js";
 // UNIQUE ITEMS SYSTEM IMPORT
 import { UniqueItemSpawner } from "./external/unique-items/unique-items-spawner.js";
 
+// UI BUTTON SYSTEM IMPORT
+import { UIButtonManager } from "./systems/ui/button-manager.js";
+
 // World00 dialogue files (Leafwood Village)
 import { WelcomeDialogue } from "./external/quest-dialogue/welcome-dialogue.js";
 import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
@@ -482,6 +485,27 @@ runOnStartup(async runtime => {
       console.log("✅ Health System v2 initialized!");
     } catch (error) {
       console.error("❌ Failed to initialize health system:", error);
+    }
+
+    // Initialize UI Button System
+    try {
+      UIButtonManager.initialize(runtime);
+
+      // Set up button manager namespace
+      (globalThis as any).AdventureLand.ButtonManager = {
+        showButton: (id: string, config: any) => UIButtonManager.showButton(id, config),
+        hideButton: (id: string) => UIButtonManager.hideButton(id),
+        updateButton: (id: string, updates: any) => UIButtonManager.updateButton(id, updates),
+        measureText: (text: string) => UIButtonManager.measureText(text),
+        isVisible: (id: string) => UIButtonManager.isButtonVisible(id),
+        getActive: () => UIButtonManager.getActiveButtons(),
+        hideAll: () => UIButtonManager.hideAllButtons(),
+        debugState: () => UIButtonManager.debugState()
+      };
+
+      console.log("✅ UI Button System initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize UI button system:", error);
     }
 
     // Initialize Quest & Dialogue System
