@@ -120,19 +120,20 @@ export class UIButtonManager {
     const position = this.calculatePosition(config, existing);
 
     // Create or reuse button
-    const buttonUID = this.createOrReuseButton(id, config, position);
+    const result = this.createOrReuseButton(id, config, position);
 
-    if (buttonUID === -1) {
+    if (result.buttonUID === -1) {
       console.error(`Failed to create button "${id}"`);
       return false;
     }
 
     // Store button state
     this.buttonPool.set(id, {
-      uid: buttonUID,
+      uid: result.buttonUID,
       config: config,
       isVisible: true,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      textUID: result.textUID  // Store text UID if text created
     });
 
     // Track for 'relative-to-previous' positioning
@@ -162,11 +163,13 @@ export class UIButtonManager {
     const buttonInstance = this.getButtonInstance(button.uid);
     if (buttonInstance) {
       buttonInstance.isVisible = false;
+    }
 
-      // Hide associated text/icon if exists
-      if (button.textUID) {
-        const textInstance = this.getTextInstance(button.textUID);
-        if (textInstance) textInstance.isVisible = false;
+    // Hide associated text if exists
+    if (button.textUID) {
+      const textInstance = this.getTextInstance(button.textUID);
+      if (textInstance) {
+        textInstance.isVisible = false;
       }
     }
 
@@ -309,14 +312,15 @@ export class UIButtonManager {
 
   /**
    * Create new button or reuse from pool
+   * Returns button UID and optional text UID
    */
   private static createOrReuseButton(
     id: string,
     config: ButtonConfig,
     position: { x: number; y: number }
-  ): number {
+  ): { buttonUID: number; textUID?: number } {
 
-    if (!this.runtime) return -1;
+    if (!this.runtime) return { buttonUID: -1 };
 
     const buttonType = config.buttonType ?? this.DEFAULT_BUTTON_TYPE;
 
@@ -340,7 +344,18 @@ export class UIButtonManager {
           buttonInstance.animationFrame = config.animationFrame;
         }
 
-        return existing.uid;
+        // Update text if it exists
+        if (existing.textUID && config.text) {
+          const textInstance = this.getTextInstance(existing.textUID);
+          if (textInstance) {
+            textInstance.text = config.text;
+            textInstance.isVisible = true;
+            textInstance.x = buttonInstance.x + 4;
+            textInstance.y = buttonInstance.y + 4;
+          }
+        }
+
+        return { buttonUID: existing.uid, textUID: existing.textUID };
       }
     }
 
@@ -380,11 +395,25 @@ export class UIButtonManager {
         buttonInstance.instVars.LinkID = config.linkID;
       }
 
-      return buttonInstance.uid;
+      // Create text label if provided
+      let textUID: number | undefined;
+      if (config.text) {
+        const textInstance = this.runtime.objects.UI_Font.createInstance(
+          layerIndex,
+          buttonInstance.x + 4,  // Offset from button edge
+          buttonInstance.y + 4
+        ) as any;
+
+        textInstance.text = config.text;
+        textInstance.isVisible = true;
+        textUID = textInstance.uid;
+      }
+
+      return { buttonUID: buttonInstance.uid, textUID: textUID };
 
     } catch (error) {
       console.error(`Error creating button "${id}":`, error);
-      return -1;
+      return { buttonUID: -1 };
     }
   }
 

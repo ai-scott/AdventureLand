@@ -84,7 +84,7 @@ export interface ButtonState {
   config: ButtonConfig;
   isVisible: boolean;
   createdAt: number;
-  textUID?: number;       // Associated text object UID
+  textUID?: number;       // Associated text object UID (for button labels)
   iconUID?: number;       // Associated icon sprite UID
 }
 
