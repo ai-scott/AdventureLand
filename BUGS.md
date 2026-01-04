@@ -20,13 +20,7 @@ None! 🎉
 **Systems Involved**: Collision/interaction priority, Z-order
 **Priority**: MEDIUM - Workarounds possible
 
-### HUD Display
-- [X] **#7**: "Gems" label should adjust position based on number width
 
-**Systems Involved**: HUD layout, Currency System
-**Priority**: MEDIUM - Visual enhancement
-
-**#7 Status**: RESOLVED - Label now positions dynamically based on gem count width
 
 ### Inventory UI
 
@@ -42,6 +36,14 @@ None! 🎉
 ---
 
 ## Resolved Bugs
+
+### HUD Display
+- [X] **#7**: "Gems" label should adjust position based on number width
+
+**Systems Involved**: HUD layout, Currency System
+**Priority**: MEDIUM - Visual enhancement
+
+**#7 Status**: RESOLVED - Label now positions dynamically based on gem count width
 
 ### SaveGame/HUD Sync Issues (Resolved 2026-01-01)
 - [X] **#1**: Money repairs hearts visually in HUD, but inventory shows incorrect values

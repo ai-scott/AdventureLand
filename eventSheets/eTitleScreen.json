@@ -6,13 +6,20 @@
 			"includeSheet": "eGlobal"
 		},
 		{
-			"bookmark": true,
 			"eventType": "block",
 			"conditions": [
 				{
 					"id": "on-start-of-layout",
 					"objectClass": "System",
 					"sid": 559717648183104
+				},
+				{
+					"id": "is-on-layer",
+					"objectClass": "obj_Text_A",
+					"sid": 110248866490279,
+					"parameters": {
+						"layer": "\"Transitions\""
+					}
 				}
 			],
 			"actions": [

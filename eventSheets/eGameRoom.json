@@ -1659,6 +1659,14 @@
 																"comparison": 0,
 																"value": "\"HUD space\""
 															}
+														},
+														{
+															"id": "is-clockwise-from",
+															"objectClass": "transArc",
+															"sid": 737858005280793,
+															"parameters": {
+																"angle": "180"
+															}
 														}
 													],
 													"actions": [
@@ -1774,6 +1782,14 @@
 																"comparison": 0,
 																"value": "\"HUD space\""
 															}
+														},
+														{
+															"id": "is-clockwise-from",
+															"objectClass": "transArc",
+															"sid": 345740575162968,
+															"parameters": {
+																"angle": "180"
+															}
 														}
 													],
 													"actions": [
@@ -1887,6 +1903,14 @@
 																"instance-variable": "field",
 																"comparison": 0,
 																"value": "\"HUD space\""
+															}
+														},
+														{
+															"id": "is-clockwise-from",
+															"objectClass": "transArc",
+															"sid": 116693204986086,
+															"parameters": {
+																"angle": "180"
 															}
 														}
 													],
@@ -2087,6 +2111,15 @@
 											"id": "set-size",
 											"objectClass": "transArc",
 											"sid": 247384757774829,
+											"parameters": {
+												"width": "70",
+												"height": "70"
+											}
+										},
+										{
+											"id": "set-size",
+											"objectClass": "transArc",
+											"sid": 456547478024202,
 											"parameters": {
 												"width": "70",
 												"height": "70"
