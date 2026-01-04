@@ -135,13 +135,11 @@
 					"eventType": "block",
 					"conditions": [
 						{
-							"id": "compare-instance-variable",
+							"id": "is-on-layer",
 							"objectClass": "obj_Text_A",
-							"sid": 781155964688707,
+							"sid": 217525790813169,
 							"parameters": {
-								"instance-variable": "field",
-								"comparison": 0,
-								"value": "\"over\""
+								"layer": "\"Transitions\""
 							}
 						}
 					],
@@ -149,9 +147,9 @@
 						{
 							"id": "wait",
 							"objectClass": "System",
-							"sid": 690166659341017,
+							"sid": 465040996909689,
 							"parameters": {
-								"seconds": "2",
+								"seconds": "1",
 								"use-timescale": true
 							}
 						},
@@ -280,13 +278,11 @@
 							}
 						},
 						{
-							"id": "compare-instance-variable",
+							"id": "is-on-layer",
 							"objectClass": "obj_Text_A",
-							"sid": 636826993740689,
+							"sid": 379674206764033,
 							"parameters": {
-								"instance-variable": "field",
-								"comparison": 0,
-								"value": "\"begin\""
+								"layer": "\"Transitions\""
 							}
 						}
 					],

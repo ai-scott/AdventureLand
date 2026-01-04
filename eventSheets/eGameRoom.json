@@ -4717,6 +4717,14 @@
 															}
 														},
 														{
+															"id": "set-animation-frame",
+															"objectClass": "PlayerSystem",
+															"sid": 870288237182240,
+															"parameters": {
+																"frame-number": "180"
+															}
+														},
+														{
 															"id": "stop-animation",
 															"objectClass": "PlayerSystem",
 															"sid": 360116406898000
@@ -4786,7 +4794,52 @@
 															]
 														}
 													],
-													"sid": 502334177986979
+													"sid": 502334177986979,
+													"children": [
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-mirrored",
+																	"objectClass": "Player_Mask",
+																	"sid": 903478518714824
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-mirrored",
+																	"objectClass": "PlayerSystem",
+																	"sid": 326811863663856,
+																	"parameters": {
+																		"state": "mirrored"
+																	}
+																}
+															],
+															"sid": 720197731709209
+														},
+														{
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "is-mirrored",
+																	"objectClass": "Player_Mask",
+																	"sid": 604354533889266,
+																	"isInverted": true
+																}
+															],
+															"actions": [
+																{
+																	"id": "set-mirrored",
+																	"objectClass": "PlayerSystem",
+																	"sid": 742904724354303,
+																	"parameters": {
+																		"state": "not-mirrored"
+																	}
+																}
+															],
+															"sid": 598640327609461
+														}
+													]
 												},
 												{
 													"eventType": "block",

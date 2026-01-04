@@ -7607,10 +7607,6 @@
 												"group-name": "\"Player Attack\"",
 												"state": "deactivated"
 											}
-										},
-										{
-											"callFunction": "showGemsInHUD",
-											"sid": 939267307633965
 										}
 									],
 									"sid": 948825915152561,
