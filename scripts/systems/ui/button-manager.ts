@@ -328,11 +328,16 @@ export class UIButtonManager {
       if (buttonInstance) {
         buttonInstance.x = position.x;
         buttonInstance.y = position.y;
-        buttonInstance.isVisible = true;
+        buttonInstance.isVisible = true;  // Ensure visible when reusing
 
         if (config.size) {
           buttonInstance.width = config.size.width;
           buttonInstance.height = config.size.height;
+        }
+
+        // Update animation frame if changed
+        if (config.animationFrame !== undefined) {
+          buttonInstance.animationFrame = config.animationFrame;
         }
 
         return existing.uid;
