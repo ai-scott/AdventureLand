@@ -222,11 +222,56 @@ Modernize AdventureLand's TypeScript integration based on latest Construct 3 bes
   - Hint now clears correctly when moving away from door trigger
   - Only shows when near interactable objects
 
+### ✅ COMPLETED: UI Button System - Phase 1 (2026-01-04)
+- [x] Design comprehensive 3-layer UI button system architecture (2026-01-04)
+  - Layer 1: UIButtonManager (button pooling, positioning, sizing)
+  - Layer 2: MessagePanelManager (panels with background + content + buttons)
+  - Layer 3: UIHelpers (game-specific shortcuts)
+  - Complete design document: docs/ui-button-system-design.md
+
+- [x] Implement Phase 1 - Core Button Manager (2026-01-04)
+  - Created scripts/systems/ui/ directory structure
+  - Implemented ui-types.ts with all TypeScript interfaces
+  - Implemented button-manager.ts with button pooling
+  - Text measurement with [icon=Name] support
+  - Relative positioning (absolute, relative-to-object, relative-to-previous)
+  - Multiple button type support (Btn_Action, Btn_Arrow, etc.)
+  - LinkID integration for keyboard navigation
+  - Exposed in AdventureLand.ButtonManager namespace
+
+- [x] Test Phase 1 implementation (2026-01-04)
+  - Added F10 debug test in event sheet
+  - Fixed layer index bug (caught by test-before-push workflow!)
+  - Validated: button creation, pooling, auto-sizing all working
+  - Test output: "Total buttons in pool: 1, size: 78x36"
+
+### 🔄 IN PROGRESS: UI Button System - Phase 2
+- [ ] Test buttons with existing notification system
+  - Add buttons to first item pickup notification
+  - Validate button integration with message display
+
+- [ ] Implement MessagePanelManager
+  - Panel with background auto-sizing
+  - Content layout (title, description, stats, buttons)
+  - Icon positioning (left/right/top)
+  - Stat displays ([icon] + number combos)
+
+- [ ] Implement convenience functions (UIHelpers)
+  - showItemPanel() - item interactions
+  - showShopPanel() - shop purchases
+  - showItemPickupNotification() - solves Bug #9!
+
+### 📋 PLANNED: UI Button System - Phase 3-4
+- [ ] Implement ButtonActionRegistry (action routing)
+- [ ] Write comprehensive tests
+- [ ] Create system documentation (claude.md)
+- [ ] Performance benchmarking
+
 ### 📋 NEW: UI/UX Improvements
-- [ ] Make Gems visible at all times
+- [x] Make Gems visible at all times (2026-01-03)
+  - ✅ Added gems display to HUD
+  - ✅ Shows during gameplay
   - Purpose: Incentivize collecting gems and spending them
-  - Currently hidden until needed
-  - Should be persistent UI element
 
 ### 📋 NEW: Audio System Issues
 - [ ] Fix inconsistent soundtrack loading
