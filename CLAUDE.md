@@ -92,6 +92,84 @@ This project uses **hierarchical documentation** - context-specific `.md` files 
 - Scales as project grows
 - Makes it easy to find relevant information
 
+## ⚠️ CRITICAL: Browser Console Limitations
+
+**Construct 3 PREVENTS direct console execution** - you cannot call functions or manipulate objects from the browser DevTools console.
+
+### What DOESN'T Work:
+```javascript
+// ❌ CANNOT call functions from console
+AdventureLand.ButtonManager.showButton(...)  // Won't work!
+AdventureLand.EnemyAI.debug()                 // Won't work!
+```
+
+### What DOES Work:
+```javascript
+// ✅ CAN inspect global state
+AdventureLand                                 // Shows namespace
+AdventureLand.ButtonManager                   // Shows methods
+globalThis.TestVariable                       // Read global variables
+
+// ✅ CAN read console.log output
+// TypeScript code: console.log("Button created:", buttonId);
+// Console shows: "Button created: attack-hint"
+```
+
+### Debugging Strategies:
+
+**Strategy 1: Set Global Debug Variables** (in TypeScript)
+```typescript
+// In button-manager.ts
+static debugState(): void {
+  (globalThis as any).DEBUG_BUTTONS = {
+    pool: Array.from(this.buttonPool.entries()),
+    active: this.getActiveButtons(),
+    timestamp: Date.now()
+  };
+  console.log("✅ Debug data written to globalThis.DEBUG_BUTTONS");
+}
+```
+
+**Strategy 2: Set Instance Variables** (in TypeScript)
+```typescript
+// Store debug info on C3 object
+const debugObj = runtime.objects.Ctrl_Debug?.getFirstInstance();
+if (debugObj) {
+  debugObj.instVars.LastButton = buttonId;
+  debugObj.instVars.ButtonCount = this.buttonPool.size;
+}
+```
+
+**Strategy 3: Comprehensive Console Logging** (preferred)
+```typescript
+// Log everything you need to inspect
+console.log("=== Button State ===");
+console.log("Pool size:", this.buttonPool.size);
+console.log("Active buttons:", this.getActiveButtons());
+this.buttonPool.forEach((state, id) => {
+  console.log(`  ${id}:`, state);
+});
+```
+
+**Strategy 4: Debug Keyboard Shortcut** (in event sheet)
+```javascript
+// In C3 event sheet
+on-key-pressed: F12 {
+  const buttonMgr = globalThis.AdventureLand?.ButtonManager;
+  if (buttonMgr) {
+    buttonMgr.debugState();  // Logs to console + sets global
+  }
+}
+```
+
+**Testing Pattern**:
+- Add debug methods that write to global variables
+- Trigger debug from event sheets (keyboard shortcuts)
+- Inspect global variables in console
+- Read console.log output
+
+**Why this limitation exists**: C3 runs in a sandboxed module context that prevents external script execution for security reasons.
+
 ## Essential Commands
 
 ### Development & Testing
