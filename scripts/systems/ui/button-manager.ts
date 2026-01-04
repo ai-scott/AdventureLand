@@ -341,9 +341,12 @@ export class UIButtonManager {
 
     // Create new button
     try {
-      const layer = this.runtime.layout.getLayer(config.layer);
+      // Get layer index (createInstance needs index, not layer object)
+      const layerObj = this.runtime.layout.getLayer(config.layer);
+      const layerIndex = layerObj?.index ?? 0;
+
       const buttonInstance = this.runtime.objects[buttonType].createInstance(
-        layer,
+        layerIndex,
         position.x,
         position.y
       ) as any;
