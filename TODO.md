@@ -1,29 +1,72 @@
-# AdventureLand TypeScript Modernization TODO
+# AdventureLand Development TODO
+
+**Last Updated**: 2026-01-04
+**Archive**: See bottom of file for completed 2025 work
 
 ## Overview
-Modernize AdventureLand's TypeScript integration based on latest Construct 3 best practices (Aug 2025 research). This is the single source of truth for all development tasks.
+This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
 
-## Phase 1: Foundation - Imports for Events Pattern (Week 1)
+## Current Sprint: UI Button System (Phase 2)
 
-### 1.1 Create imports-for-events.ts
-- [ ] Create `scripts/imports-for-events.ts` file
-- [ ] Import all existing modules (enemy-ai, item-manager, tile-animations, etc.)
-- [ ] Re-export modules for event sheet consumption
-- [ ] Add JSDoc comments for event sheet usage examples
+### 🔄 IN PROGRESS: Message Panels & Notifications
 
-### 1.2 Update Event Sheet Integration
-- [ ] Update event sheet script blocks to use imports-for-events
-- [ ] Test each system after migration (TileAnimations, EnemyAI, etc.)
-- [ ] Document new pattern in CLAUDE.md
-- [ ] Create before/after examples for reference
+**Goal**: Panels with background + content + buttons (solves Bug #9!)
 
-### 1.3 Refactor main.ts
-- [ ] Move module exports to imports-for-events.ts
-- [ ] Keep only runtime initialization in main.ts
-- [ ] Use `beforeprojectstart` event for initialization
-- [ ] Maintain backward compatibility during transition
+- [ ] Test buttons with first item pickup notification
+  - Add "Open [icon=Bag]" and "Dismiss" buttons
+  - Validate relative positioning works
+  - Validate keyboard navigation (LinkID + Ctrl_Btns)
+  - Confirm button click actions work
 
-## Phase 2: Typed Instance Classes (Week 2-3)
+- [ ] Implement MessagePanelManager
+  - Panel size calculation (measures content)
+  - Background sprite auto-sizing
+  - Content layout (title, description, stats, buttons)
+  - Icon positioning (left/right/top)
+  - Stat displays ([icon] + number)
+
+- [ ] Implement UIHelpers
+  - showItemPanel() - item interactions
+  - showShopPanel() - shop purchases
+  - showItemPickupNotification() - **Bug #9!**
+
+- [ ] Implement NotificationManager
+  - Queue with priority
+  - Auto-dismiss
+  - "Show once" tracking
+
+**Success**: Bug #9 resolved, <1% CPU overhead
+
+### 📋 NEXT: UI Button System - Phase 3 (Week 4)
+
+- [ ] Implement ButtonActionRegistry (action routing)
+- [ ] Register all button actions
+- [ ] Update event sheets for generic routing
+- [ ] Write Phase 3 tests
+
+### 📋 NEXT: UI Button System - Phase 4 (Week 5)
+
+- [ ] Comprehensive testing (100% coverage)
+- [ ] Performance benchmarking
+- [ ] System documentation (claude.md)
+- [ ] Update CLAUDE.md with UI patterns
+
+## Active Bugs & Polish
+
+### 🐛 Bug Fixes
+
+- [ ] **Bug #4**: Sally hotspot blocks interactive objects
+- [ ] **Bug #9**: First item notification (**Solving in UI Phase 2!**)
+
+### 🎨 Polish Items
+
+- [ ] Audio: Fix inconsistent soundtrack loading
+- [ ] Animation: Fix player animation during transitions
+- [ ] Quest: Remove legacy quest items from dictionary
+
+## Future: TypeScript Modernization (Phase 2-3)
+
+### 📅 Phase 2: Typed Instance Classes (LOW PRIORITY)
 
 ### 2.1 Research & Planning
 - [ ] Document all Construct objects that need typed instances
@@ -292,9 +335,49 @@ Modernize AdventureLand's TypeScript integration based on latest Construct 3 bes
   - Expected: Player animation should pause during layout load
   - Visual polish issue
 
+---
+
+## ✅ Completed Work Archive (2025-2026)
+
+See `docs/TODO-ARCHIVE-2025.md` for full details.
+
+### Phase 1: Foundation - Imports for Events ✅ COMPLETE (Sep 2025)
+- ✅ Created imports-for-events.ts with all system imports
+- ✅ Event sheets use modern pattern (`runtime.imports.AdventureLand`)
+- ✅ Backward compatibility maintained (legacy pattern still works)
+- ✅ Documented in CLAUDE.md
+
+### TypeScript Foundation ✅ COMPLETE (Sep 2025)
+- ✅ Auto-generated types, full IntelliSense
+- ✅ Live compilation, proper import patterns
+- ✅ Event sheet integration documented
+
+### Production Systems ✅ COMPLETE (Sep 2025 - Jan 2026)
+- ✅ Enemy AI Factory (90% dev reduction, 35% CPU improvement)
+- ✅ Tile Animations (67% CPU reduction)
+- ✅ Item Manager (O(1) lookups)
+- ✅ Health System (battle integration)
+- ✅ Currency System (gems with sync)
+- ✅ Shop State System
+- ✅ Quest & Dialogue System (12 dialogues, <1% CPU)
+- ✅ Unique Items System
+- ✅ Potion System
+
+### Documentation ✅ COMPLETE (2025-2026)
+- ✅ CLAUDE.md updated comprehensively
+- ✅ Testing guide (docs/testing-guide.md)
+- ✅ 9 pattern files (docs/patterns/)
+- ✅ System-specific docs (8 systems)
+- ✅ Browser console debugging strategies
+
+### UI Button System - Phase 1 ✅ COMPLETE (Jan 2026)
+- ✅ 3-layer architecture designed
+- ✅ Core ButtonManager implemented
+- ✅ Button pooling, positioning, text measurement
+- ✅ Tested and validated (F10 debug test)
+
 ## Notes
-- Each phase builds on the previous one
-- Maintain backwards compatibility throughout migration
-- Test thoroughly at each phase before proceeding
-- Document learnings and gotchas as we go
-- All completed tasks marked with completion date for tracking
+- Test-before-push workflow (see CLAUDE.md)
+- Maintain backward compatibility
+- Document learnings as we go
+- Performance targets: <1% CPU overhead for new systems
