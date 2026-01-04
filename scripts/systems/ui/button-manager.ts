@@ -395,10 +395,10 @@ export class UIButtonManager {
         buttonInstance.instVars.LinkID = config.linkID;
       }
 
-      // Create text label if provided
+      // Create text label if provided (using obj_Text_A for icon support)
       let textUID: number | undefined;
       if (config.text) {
-        const textInstance = this.runtime.objects.UI_Font.createInstance(
+        const textInstance = this.runtime.objects.obj_Text_A.createInstance(
           layerIndex,
           buttonInstance.x + 4,  // Offset from button edge
           buttonInstance.y + 4
@@ -452,7 +452,7 @@ export class UIButtonManager {
    */
   private static getTextInstance(uid: number): any {
     if (!this.runtime) return null;
-    const instances = this.runtime.objects.UI_Font?.getAllInstances() || [];
+    const instances = this.runtime.objects.obj_Text_A?.getAllInstances() || [];
     return instances.find((inst: any) => inst.uid === uid) ?? null;
   }
 
