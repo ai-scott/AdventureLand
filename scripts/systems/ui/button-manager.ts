@@ -582,6 +582,42 @@ export class UIButtonManager {
   }
 
   // ============================================================================
+  // KEYBOARD NAVIGATION
+  // ============================================================================
+
+  /**
+   * Update button highlights based on current selection
+   * Call this when CurrentLink changes via keyboard navigation
+   *
+   * @param currentLink - The currently selected LinkID (from Ctrl_Btns.CurrentLink)
+   * @param highlightedFrame - Animation frame for highlighted button (default: 1)
+   * @param normalFrame - Animation frame for normal button (default: 0)
+   */
+  static updateButtonHighlights(
+    currentLink: number,
+    highlightedFrame: number = 1,
+    normalFrame: number = 0
+  ): void {
+    if (!this.runtime) return;
+
+    // Update all visible buttons in pool
+    this.buttonPool.forEach((state) => {
+      if (!state.isVisible) return;
+      if (state.config.linkID === undefined) return;
+
+      const buttonInstance = this.getButtonInstance(state.uid);
+      if (!buttonInstance) return;
+
+      // Set animation frame based on selection
+      if (state.config.linkID === currentLink) {
+        buttonInstance.animationFrame = highlightedFrame;
+      } else {
+        buttonInstance.animationFrame = normalFrame;
+      }
+    });
+  }
+
+  // ============================================================================
   // CLEANUP
   // ============================================================================
 
