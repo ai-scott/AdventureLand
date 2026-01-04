@@ -14,10 +14,17 @@ When working with Construct 3 projects, ALL changes happen in `.json` files (eve
 2. **Save project in C3** (File → Save)
 3. **Close C3 IDE** (this ensures all .json files are written to disk)
 4. **Run `git status`** to see what changed
-5. **Commit ALL modified files** (event sheets, layouts, project.c3proj)
+5. **TEST the changes in C3** (re-open, run game, verify functionality)
+   - ALWAYS test TypeScript changes before committing
+   - ALWAYS test event sheet changes before committing
+   - If bugs found, fix and repeat from step 1
+6. **Commit ALL modified files** (event sheets, layouts, project.c3proj)
    - NEVER commit only some C3 files - commit all or none
    - Include both TypeScript changes AND C3 .json files in same commit
-6. **Write detailed commit messages** explaining what was changed in C3
+7. **Write detailed commit messages** explaining what was changed in C3
+8. **ONLY push after successful testing**
+   - NEVER push untested code
+   - If tests fail, fix locally before pushing
 
 ### Before ANY destructive git operation:
 
@@ -33,6 +40,33 @@ When working with Construct 3 projects, ALL changes happen in `.json` files (eve
 - Commit includes TypeScript but no C3 files (when C3 work was mentioned)
 
 **Why this matters:** C3 work can represent hours of visual/event sheet development that cannot be recovered once lost. A single `git restore` can destroy an entire day's work.
+
+### CRITICAL: New TypeScript Files MUST Be Imported in C3
+
+**When creating new `.ts` files**, you MUST:
+
+1. **Create the TypeScript file** in the appropriate directory
+2. **Import in `main.ts`** (if it's a system module)
+3. **PROMPT USER to add to C3 project**:
+   - Open Construct 3
+   - Right-click "Scripts" folder in Project panel
+   - Select "Add script" → "Import script file"
+   - Navigate to the new `.ts` file
+   - Select it to add to C3 project
+
+**Why this is critical**: C3 won't compile/load TypeScript files that aren't added to the project. The file can exist in the filesystem but C3 won't see it.
+
+**Symptoms of missing import**:
+- "Module not found" errors in console
+- TypeScript compiles locally but fails in C3
+- System initialization errors
+- `undefined` when accessing new modules
+
+**Example**:
+```bash
+# After creating scripts/systems/ui/button-manager.ts
+# MUST tell user: "Please add button-manager.ts to C3 project via Import script file"
+```
 
 ## Project Overview
 
@@ -91,6 +125,84 @@ This project uses **hierarchical documentation** - context-specific `.md` files 
 - Avoids information duplication
 - Scales as project grows
 - Makes it easy to find relevant information
+
+## ⚠️ CRITICAL: Browser Console Limitations
+
+**Construct 3 PREVENTS direct console execution** - you cannot call functions or manipulate objects from the browser DevTools console.
+
+### What DOESN'T Work:
+```javascript
+// ❌ CANNOT call functions from console
+AdventureLand.ButtonManager.showButton(...)  // Won't work!
+AdventureLand.EnemyAI.debug()                 // Won't work!
+```
+
+### What DOES Work:
+```javascript
+// ✅ CAN inspect global state
+AdventureLand                                 // Shows namespace
+AdventureLand.ButtonManager                   // Shows methods
+globalThis.TestVariable                       // Read global variables
+
+// ✅ CAN read console.log output
+// TypeScript code: console.log("Button created:", buttonId);
+// Console shows: "Button created: attack-hint"
+```
+
+### Debugging Strategies:
+
+**Strategy 1: Set Global Debug Variables** (in TypeScript)
+```typescript
+// In button-manager.ts
+static debugState(): void {
+  (globalThis as any).DEBUG_BUTTONS = {
+    pool: Array.from(this.buttonPool.entries()),
+    active: this.getActiveButtons(),
+    timestamp: Date.now()
+  };
+  console.log("✅ Debug data written to globalThis.DEBUG_BUTTONS");
+}
+```
+
+**Strategy 2: Set Instance Variables** (in TypeScript)
+```typescript
+// Store debug info on C3 object
+const debugObj = runtime.objects.Ctrl_Debug?.getFirstInstance();
+if (debugObj) {
+  debugObj.instVars.LastButton = buttonId;
+  debugObj.instVars.ButtonCount = this.buttonPool.size;
+}
+```
+
+**Strategy 3: Comprehensive Console Logging** (preferred)
+```typescript
+// Log everything you need to inspect
+console.log("=== Button State ===");
+console.log("Pool size:", this.buttonPool.size);
+console.log("Active buttons:", this.getActiveButtons());
+this.buttonPool.forEach((state, id) => {
+  console.log(`  ${id}:`, state);
+});
+```
+
+**Strategy 4: Debug Keyboard Shortcut** (in event sheet)
+```javascript
+// In C3 event sheet
+on-key-pressed: F12 {
+  const buttonMgr = globalThis.AdventureLand?.ButtonManager;
+  if (buttonMgr) {
+    buttonMgr.debugState();  // Logs to console + sets global
+  }
+}
+```
+
+**Testing Pattern**:
+- Add debug methods that write to global variables
+- Trigger debug from event sheets (keyboard shortcuts)
+- Inspect global variables in console
+- Read console.log output
+
+**Why this limitation exists**: C3 runs in a sandboxed module context that prevents external script execution for security reasons.
 
 ## Essential Commands
 
