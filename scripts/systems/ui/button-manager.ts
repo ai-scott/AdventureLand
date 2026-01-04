@@ -351,6 +351,9 @@ export class UIButtonManager {
         position.y
       ) as any;
 
+      // Make button visible
+      buttonInstance.isVisible = true;
+
       // Set size
       if (config.size) {
         buttonInstance.width = config.size.width;
