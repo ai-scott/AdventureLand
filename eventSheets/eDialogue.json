@@ -1302,7 +1302,6 @@
 							"sid": 488981697524835
 						}
 					],
-					"bookmark": true,
 					"eventType": "function-block",
 					"conditions": [],
 					"actions": [
@@ -1516,6 +1515,63 @@
 										"text": "subMessage",
 										"duration": "len(subMessage)/TypewriterSpeed"
 									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 837803083772915,
+									"parameters": {
+										"group-name": "\"Player Engine\"",
+										"state": "deactivated"
+									}
+								},
+								{
+									"id": "set-group-active",
+									"objectClass": "System",
+									"sid": 792243657557154,
+									"parameters": {
+										"group-name": "\"Enemies\"",
+										"state": "deactivated"
+									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"// Create buttons",
+										"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+										"",
+										"if (buttonMgr) {",
+										"  // Create buttons",
+										"  buttonMgr.showButton(\"item-open\", {",
+										"    action: \"open-inventory\",",
+										"    text: \"Open [icon=Bag]\",",
+										"    layer: \"HUD_UI\",",
+										"    position: { x: 74, y: 210 },",
+										"    linkID: 0",
+										"  });",
+										"",
+										"  buttonMgr.showButton(\"item-dismiss\", {",
+										"    action: \"dismiss\",",
+										"    text: \"Close\",",
+										"    layer: \"HUD_UI\",",
+										"    position: {",
+										"      mode: 'relative-to-previous',",
+										"      relativeTo: { edge: 'right', offset: 8 }",
+										"    },",
+										"    linkID: 1",
+										"  });",
+										"",
+										"  // THEN initialize navigation",
+										"  runtime.globalVars.ItemBtnSelection = 0;",
+										"  runtime.globalVars.ButtonMgrActive = true;",
+										"  buttonMgr.updateButtonHighlights(0);",
+										"  ",
+										"  // Debug",
+										"  buttonMgr.debugState();",
+										"  console.log(\"✅ ButtonManager navigation active\");",
+										"}"
+									]
 								}
 							],
 							"sid": 932892998279187
@@ -2324,6 +2380,40 @@
 								"variable": "KeyItem",
 								"value": "0"
 							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 844117200587021,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "activated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 693711190802274,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "activated"
+							}
+						},
+						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"// Hide buttons",
+								"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+								"if (buttonMgr) {",
+								"  buttonMgr.hideAllButtons();",
+								"}",
+								"",
+								"// Deactivate ButtonManager navigation",
+								"runtime.globalVars.ButtonMgrActive = false;  // <-- DISABLE FLAG",
+								"runtime.globalVars.ItemBtnSelection = 0;",
+								"console.log(\"✅ ButtonManager deactivated, Player Engine reactivated\");"
+							]
 						}
 					],
 					"sid": 647562806740159,

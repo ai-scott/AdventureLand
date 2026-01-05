@@ -6128,10 +6128,10 @@
 								},
 								{
 									"callFunction": "showMessage",
-									"sid": 321117663378328,
+									"sid": 809180336179576,
 									"parameters": [
 										"(\"You got a \" & Functions.GetItemName(itemID)) & \"!\"",
-										"\"Open [icon=Bag] with 'i' and equip it, then tap [icon=Sword] or 'a' to attack\""
+										"\"Equip in [icon=Bag] & tap [icon=Sword] or 'a' to attack\""
 									]
 								},
 								{
@@ -6197,10 +6197,10 @@
 								},
 								{
 									"callFunction": "showMessage",
-									"sid": 754834325902015,
+									"sid": 387733885610418,
 									"parameters": [
 										"(\"You got a \" & Functions.GetItemName(itemID)) & \"!\"",
-										"\"Open inventory with 'i' or [icon=Bag] and wear it to power up your skills!\""
+										"\"Wear it in [icon=Bag] to power up your skills!\""
 									]
 								},
 								{
@@ -6256,10 +6256,10 @@
 								},
 								{
 									"callFunction": "showMessage",
-									"sid": 702792779676721,
+									"sid": 930863659702661,
 									"parameters": [
 										"(\"You got a \" & Functions.GetItemName(itemID)) & \"!\"",
-										"\"Open [icon=Bag] with 'i' to eat it when you need  [icon=Heart]\""
+										"\"Eat it in [icon=Bag] to give you [icon=Heart]\""
 									]
 								},
 								{
