@@ -40,6 +40,9 @@ import { UniqueItemSpawner } from "./external/unique-items/unique-items-spawner.
 // UI BUTTON SYSTEM IMPORT
 import { UIButtonManager } from "./systems/ui/button-manager.js";
 
+// GAME STATE MANAGER IMPORT
+import { GameStateManager } from "./systems/game-state-manager.js";
+
 // World00 dialogue files (Leafwood Village)
 import { WelcomeDialogue } from "./external/quest-dialogue/welcome-dialogue.js";
 import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
@@ -485,6 +488,23 @@ runOnStartup(async runtime => {
       console.log("✅ Health System v2 initialized!");
     } catch (error) {
       console.error("❌ Failed to initialize health system:", error);
+    }
+
+    // Initialize Game State Manager
+    try {
+      GameStateManager.initialize(runtime);
+
+      // Set up game state namespace
+      (globalThis as any).AdventureLand.GameState = {
+        setState: (state: string) => GameStateManager.setState(state as any),
+        getState: () => GameStateManager.getState(),
+        isState: (state: string) => GameStateManager.isState(state as any),
+        canPlayerMove: () => GameStateManager.canPlayerMove()
+      };
+
+      console.log("✅ Game State Manager initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize game state manager:", error);
     }
 
     // Initialize UI Button System

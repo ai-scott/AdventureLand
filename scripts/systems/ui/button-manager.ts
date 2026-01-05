@@ -603,9 +603,6 @@ export class UIButtonManager {
       return;
     }
 
-    console.log(`🎨 updateButtonHighlights called: currentLink=${currentLink}, highlighted=${highlightedFrame}, normal=${normalFrame}`);
-
-    let updatedCount = 0;
     // Update all visible buttons in pool
     this.buttonPool.forEach((state) => {
       if (!state.isVisible) return;
@@ -614,16 +611,26 @@ export class UIButtonManager {
       const buttonInstance = this.getButtonInstance(state.uid);
       if (!buttonInstance) return;
 
-      // Set animation frame based on selection
-      const newFrame = state.config.linkID === currentLink ? highlightedFrame : normalFrame;
-      const oldFrame = buttonInstance.animationFrame;
+      // Set both frame AND opacity for visual feedback
+      // Note: Frame may get reset by C3, but opacity persists reliably
+      const isHighlighted = state.config.linkID === currentLink;
+      const newFrame = isHighlighted ? highlightedFrame : normalFrame;
+
       buttonInstance.animationFrame = newFrame;
+      buttonInstance.opacity = isHighlighted ? 1.0 : 0.6;
 
-      console.log(`  Button LinkID=${state.config.linkID}: frame ${oldFrame} → ${newFrame} ${state.config.linkID === currentLink ? '✅ HIGHLIGHTED' : ''}`);
-      updatedCount++;
+      // Ensure proper z-order when highlighting (prevents text from going behind)
+      buttonInstance.moveToTop();
+
+      // Update text opacity and z-order for consistency
+      if (state.textUID) {
+        const textInstance = this.getTextInstance(state.textUID);
+        if (textInstance) {
+          textInstance.opacity = isHighlighted ? 1.0 : 0.6;
+          textInstance.moveToTop();  // Keep text above button
+        }
+      }
     });
-
-    console.log(`🎨 Updated ${updatedCount} button(s)`);
   }
 
   // ============================================================================
