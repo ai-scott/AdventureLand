@@ -598,8 +598,14 @@ export class UIButtonManager {
     highlightedFrame: number = 1,
     normalFrame: number = 0
   ): void {
-    if (!this.runtime) return;
+    if (!this.runtime) {
+      console.warn("⚠️ updateButtonHighlights: runtime not initialized");
+      return;
+    }
 
+    console.log(`🎨 updateButtonHighlights called: currentLink=${currentLink}, highlighted=${highlightedFrame}, normal=${normalFrame}`);
+
+    let updatedCount = 0;
     // Update all visible buttons in pool
     this.buttonPool.forEach((state) => {
       if (!state.isVisible) return;
@@ -609,12 +615,15 @@ export class UIButtonManager {
       if (!buttonInstance) return;
 
       // Set animation frame based on selection
-      if (state.config.linkID === currentLink) {
-        buttonInstance.animationFrame = highlightedFrame;
-      } else {
-        buttonInstance.animationFrame = normalFrame;
-      }
+      const newFrame = state.config.linkID === currentLink ? highlightedFrame : normalFrame;
+      const oldFrame = buttonInstance.animationFrame;
+      buttonInstance.animationFrame = newFrame;
+
+      console.log(`  Button LinkID=${state.config.linkID}: frame ${oldFrame} → ${newFrame} ${state.config.linkID === currentLink ? '✅ HIGHLIGHTED' : ''}`);
+      updatedCount++;
     });
+
+    console.log(`🎨 Updated ${updatedCount} button(s)`);
   }
 
   // ============================================================================
@@ -639,6 +648,7 @@ export class UIButtonManager {
    */
   static debugState(): void {
     console.log("=== UIButtonManager Debug ===");
+    console.log(`Runtime initialized: ${!!this.runtime}`);
     console.log(`Total buttons in pool: ${this.buttonPool.size}`);
     console.log(`Visible buttons: ${this.getActiveButtons().length}`);
     console.log("\nButton Details:");
@@ -647,11 +657,36 @@ export class UIButtonManager {
       const instance = this.getButtonInstance(state.uid);
       console.log(`  ${id}:`, {
         visible: state.isVisible,
+        instanceExists: !!instance,
+        instanceVisible: instance?.isVisible ?? "N/A",
         action: state.config.action,
         position: instance ? `(${instance.x}, ${instance.y})` : "N/A",
         size: instance ? `${instance.width}x${instance.height}` : "N/A",
-        linkID: state.config.linkID
+        linkID: state.config.linkID,
+        textUID: state.textUID,
+        hasText: !!state.config.text
       });
+
+      // Check text instance
+      if (state.textUID) {
+        const textInstance = this.getTextInstance(state.textUID);
+        console.log(`    Text:`, {
+          exists: !!textInstance,
+          visible: textInstance?.isVisible ?? "N/A",
+          text: textInstance?.text ?? "N/A",
+          position: textInstance ? `(${textInstance.x}, ${textInstance.y})` : "N/A"
+        });
+      }
     });
+
+    // Also check Ctrl_Btns state if runtime available
+    if (this.runtime?.objects?.Ctrl_Btns) {
+      const ctrlBtns = this.runtime.objects.Ctrl_Btns.getFirstInstance();
+      if (ctrlBtns) {
+        console.log("\nCtrl_Btns State:");
+        console.log(`  CurrentLink: ${ctrlBtns.instVars.CurrentLink}`);
+        console.log(`  MaxLinks: ${ctrlBtns.instVars.MaxLinks}`);
+      }
+    }
   }
 }

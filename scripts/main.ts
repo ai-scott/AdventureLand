@@ -500,6 +500,9 @@ runOnStartup(async runtime => {
         isVisible: (id: string) => UIButtonManager.isButtonVisible(id),
         getActive: () => UIButtonManager.getActiveButtons(),
         hideAll: () => UIButtonManager.hideAllButtons(),
+        hideAllButtons: () => UIButtonManager.hideAllButtons(),  // Alias for consistency
+        updateButtonHighlights: (currentLink: number, highlightedFrame?: number, normalFrame?: number) =>
+          UIButtonManager.updateButtonHighlights(currentLink, highlightedFrame, normalFrame),
         debugState: () => UIButtonManager.debugState()
       };
 
