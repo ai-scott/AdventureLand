@@ -54,778 +54,572 @@
 		{
 			"eventType": "group",
 			"disabled": false,
-			"title": "Start / Create Player",
+			"title": "Player",
 			"description": "",
 			"isActiveOnStart": true,
 			"children": [
 				{
-					"functionName": "Create_Player",
-					"functionDescription": "",
-					"functionCategory": "",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [
-						{
-							"name": "DestX",
-							"type": "number",
-							"initialValue": "0",
-							"comment": "",
-							"sid": 610243884838651
-						},
-						{
-							"name": "DestY",
-							"type": "number",
-							"initialValue": "0",
-							"comment": "",
-							"sid": 781848006139573
-						},
-						{
-							"name": "layer",
-							"type": "string",
-							"initialValue": "",
-							"comment": "",
-							"sid": 931816637326904
-						}
-					],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 606631371249326,
+					"eventType": "group",
+					"disabled": false,
+					"title": "Start / Create Player",
+					"description": "",
+					"isActiveOnStart": true,
 					"children": [
 						{
-							"eventType": "block",
-							"conditions": [
+							"functionName": "Create_Player",
+							"functionDescription": "",
+							"functionCategory": "",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [
 								{
-									"id": "is-on-layer",
-									"objectClass": "PlayerSystem",
-									"sid": 303763436430197,
-									"parameters": {
-										"layer": "layer"
-									}
+									"name": "DestX",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 610243884838651
 								},
 								{
-									"id": "is-on-layer",
-									"objectClass": "Player_Base",
-									"sid": 903606212919009,
-									"parameters": {
-										"layer": "layer"
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "destroy",
-									"objectClass": "Player_Base",
-									"sid": 713546520275516
+									"name": "DestY",
+									"type": "number",
+									"initialValue": "0",
+									"comment": "",
+									"sid": 781848006139573
 								},
 								{
-									"id": "destroy",
-									"objectClass": "PlayerSystem",
-									"sid": 672985633837750
+									"name": "layer",
+									"type": "string",
+									"initialValue": "",
+									"comment": "",
+									"sid": 931816637326904
 								}
 							],
-							"sid": 538769120632103
-						},
-						{
-							"eventType": "block",
+							"eventType": "function-block",
 							"conditions": [],
-							"actions": [
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 720962471279217,
-									"parameters": {
-										"object-to-create": "Player_Base",
-										"layer": "layer",
-										"x": "DestX",
-										"y": "DestY",
-										"create-hierarchy": true,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "set-max-speed",
-									"objectClass": "Player_Base",
-									"sid": 126392445911138,
-									"behaviorType": "8Direction",
-									"parameters": {
-										"max-speed": "PlayerSpeed"
-									}
-								},
-								{
-									"id": "create-object",
-									"objectClass": "System",
-									"sid": 798840591599716,
-									"parameters": {
-										"object-to-create": "Trigger_Player",
-										"layer": "layer",
-										"x": "DestX",
-										"y": "DestY",
-										"create-hierarchy": false,
-										"template-name": "\"\""
-									}
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "Trigger_Player",
-									"sid": 492180909723527,
-									"parameters": {
-										"visibility": "invisible"
-									}
-								},
-								{
-									"id": "add-child",
-									"objectClass": "Player_Mask",
-									"sid": 690327716854903,
-									"parameters": {
-										"child": "Trigger_Player",
-										"transform-x": true,
-										"transform-y": true,
-										"transform-w": true,
-										"transform-h": true,
-										"transform-a": true,
-										"transform-o": false,
-										"transform-z-elevation": true,
-										"transform-visibility": false,
-										"destroy-with-parent": true
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 395247008902910,
-									"parameters": {
-										"group-name": "\"Player Attack\"",
-										"state": "deactivated"
-									}
-								}
-							],
-							"sid": 584256868717015
-						}
-					]
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-start-of-layout",
-							"objectClass": "System",
-							"sid": 939898119966254
-						}
-					],
-					"actions": [
-						{
-							"id": "set-canvas-size",
-							"objectClass": "System",
-							"sid": 516015828849920,
-							"parameters": {
-								"width": "420",
-								"height": "240"
-							}
-						},
-						{
-							"id": "unload-unused-images",
-							"objectClass": "System",
-							"sid": 700822089088669
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 636687613124652,
-							"parameters": {
-								"variable": "CurrentWorld",
-								"value": "str(tokenat(LayoutName,1,\"_\"))"
-							}
-						},
-						{
-							"type": "script",
-							"language": "javascript",
-							"script": [
-								"//init y-sort system",
-								"const ySort = globalThis.AdventureLand?.YSort;",
-								"if (ySort) {",
-								"  ySort.initialize(runtime);",
-								"  console.log(\"✅ Y-Sort system initialized\");",
-								"}"
-							]
-						}
-					],
-					"sid": 358502206381280,
-					"children": [
-						{
-							"eventType": "comment",
-							"text": "Fade in & activate Player"
-						},
-						{
-							"eventType": "block",
-							"conditions": [],
-							"actions": [
-								{
-									"callFunction": "Transition",
-									"sid": 127457433878154,
-									"parameters": [
-										"\"In\"",
-										"\"LayoutChange\"",
-										"\"\""
-									]
-								},
-								{
-									"id": "wait-for-signal",
-									"objectClass": "System",
-									"sid": 960413592578765,
-									"parameters": {
-										"tag": "\"LayoutChange\""
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 721706213376669,
-									"parameters": {
-										"variable": "PauseLock",
-										"value": "0"
-									}
-								}
-							],
-							"sid": 366184543531441
-						},
-						{
-							"eventType": "comment",
-							"text": "Create player at a door"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "Trigger_Door",
-									"sid": 408793657382970,
-									"parameters": {
-										"instance-variable": "ID",
-										"comparison": 0,
-										"value": "Door_ID"
-									}
-								},
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 626832788128065,
-									"parameters": {
-										"variable": "Player_WorldStart_X",
-										"comparison": 4,
-										"value": "0"
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "Create_Player",
-									"sid": 980440533811621,
-									"parameters": [
-										"Trigger_Door.X",
-										"Trigger_Door.BBoxBottom-6",
-										"\"Objects\""
-									]
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "Player_Mask",
-									"sid": 786697041361242,
-									"parameters": {
-										"visibility": "visible"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Player_Mask",
-									"sid": 651422774790133,
-									"parameters": {
-										"instance-variable": "Direction",
-										"value": "Trigger_Door.Direction"
-									}
-								},
-								{
-									"callFunction": "Player_Reset",
-									"sid": 952105710726286
-								}
-							],
-							"sid": 749155047843843
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "else",
-									"objectClass": "System",
-									"sid": 874057298444417
-								},
-								{
-									"id": "is-boolean-instance-variable-set",
-									"objectClass": "Trigger_Door",
-									"sid": 178254653994377,
-									"parameters": {
-										"instance-variable": "StartingDoor"
-									}
-								},
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 249343950093511,
-									"parameters": {
-										"variable": "Player_WorldStart_X",
-										"comparison": 4,
-										"value": "0"
-									},
-									"isInverted": true
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "Create_Player",
-									"sid": 807840019778386,
-									"parameters": [
-										"Trigger_Door.X",
-										"Trigger_Door.BBoxBottom-6",
-										"\"Objects\""
-									]
-								},
-								{
-									"id": "set-visible",
-									"objectClass": "Player_Mask",
-									"sid": 453944185502677,
-									"parameters": {
-										"visibility": "visible"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Player_Mask",
-									"sid": 392010315589744,
-									"parameters": {
-										"instance-variable": "Direction",
-										"value": "Trigger_Door.Direction"
-									}
-								},
-								{
-									"callFunction": "Player_Reset",
-									"sid": 253725775460667
-								}
-							],
-							"sid": 535406115366285
-						},
-						{
-							"eventType": "comment",
-							"text": "Create player in new World"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 764327166014925,
-									"parameters": {
-										"variable": "Player_WorldStart_X",
-										"comparison": 4,
-										"value": "0"
-									}
-								},
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 145801203041830,
-									"parameters": {
-										"variable": "Player_WorldStart_Y",
-										"comparison": 4,
-										"value": "0"
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "Create_Player",
-									"sid": 800902956966983,
-									"parameters": [
-										"Player_WorldStart_X",
-										"Player_WorldStart_Y",
-										"\"Objects\""
-									]
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Player_Mask",
-									"sid": 913264306588354,
-									"parameters": {
-										"instance-variable": "Direction",
-										"value": "\"Down\""
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 897940855865741,
-									"parameters": {
-										"variable": "Player_WorldStart_X",
-										"value": "0"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 928173537513085,
-									"parameters": {
-										"variable": "Player_WorldStart_Y",
-										"value": "0"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 922758194398872,
-									"parameters": {
-										"variable": "Door_ID",
-										"value": "-1"
-									}
-								},
-								{
-									"id": "stop-loop",
-									"objectClass": "System",
-									"sid": 787128672887021
-								},
-								{
-									"callFunction": "Player_Reset",
-									"sid": 806064822650777
-								}
-							],
-							"sid": 946286635259274
-						},
-						{
-							"eventType": "comment",
-							"text": "Testing for Pete dialogue system in Leafwood Forest"
-						}
-					]
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-signal",
-							"objectClass": "System",
-							"sid": 262609721052586,
-							"parameters": {
-								"tag": "\"Inventory UI Drawn\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"callFunction": "ChangeEquipmentAndSave",
-							"sid": 347050926548620,
-							"parameters": [
-								"\"\""
-							]
-						}
-					],
-					"sid": 568659072698040
-				},
-				{
-					"functionName": "updateOutfit",
-					"functionDescription": "redraw outfit items",
-					"functionCategory": "Player",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
-						{
-							"callFunction": "changeOutfit",
-							"sid": 891469337687551,
-							"parameters": [
-								"\"Hair\"",
-								"Dict_SaveGameData.Get(\"Hair\")",
-								"\"\"",
-								"\"\"",
-								"\"\""
-							]
-						},
-						{
-							"callFunction": "changeOutfit",
-							"sid": 363978794161988,
-							"parameters": [
-								"\"Head\"",
-								"Dict_SaveGameData.Get(\"Head\")",
-								"\"\"",
-								"\"\"",
-								"\"\""
-							]
-						},
-						{
-							"callFunction": "changeOutfit",
-							"sid": 753209401327350,
-							"parameters": [
-								"\"Neck\"",
-								"Dict_SaveGameData.Get(\"Neck\")",
-								"\"\"",
-								"\"\"",
-								"\"\""
-							]
-						},
-						{
-							"callFunction": "changeOutfit",
-							"sid": 369190989366125,
-							"parameters": [
-								"\"Body\"",
-								"Dict_SaveGameData.Get(\"Body\")",
-								"\"\"",
-								"Functions.GetItemCostumeByName(Dict_SaveGameData.Get(\"Body\"))",
-								"\"\""
-							]
-						},
-						{
-							"callFunction": "changeOutfit",
-							"sid": 714031946957944,
-							"parameters": [
-								"\"Legs\"",
-								"Dict_SaveGameData.Get(\"Legs\")",
-								"\"\"",
-								"\"\"",
-								"\"\""
-							]
-						},
-						{
-							"callFunction": "changeOutfit",
-							"sid": 240959254424861,
-							"parameters": [
-								"\"Boot\"",
-								"Dict_SaveGameData.Get(\"Boot\")",
-								"\"\"",
-								"\"\"",
-								"\"\""
-							]
-						}
-					],
-					"sid": 625089250008160
-				}
-			],
-			"sid": 670751244126356
-		},
-		{
-			"eventType": "group",
-			"disabled": false,
-			"title": "Items",
-			"description": "Create non-collected items on layout",
-			"isActiveOnStart": true,
-			"children": [
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-signal",
-							"objectClass": "System",
-							"sid": 609482544850788,
-							"parameters": {
-								"tag": "\"Game Layers Created\""
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "add-key",
-							"objectClass": "Dict_SaveGameData",
-							"sid": 498799292866579,
-							"parameters": {
-								"key": "LayoutName&\"Loaded\"",
-								"value": "\"true\""
-							}
-						},
-						{
-							"callFunction": "processItemCreation",
-							"sid": 398003641904868
-						},
-						{
-							"callFunction": "SaveGameData",
-							"sid": 883486621399579
-						}
-					],
-					"sid": 249166851450080
-				},
-				{
-					"functionName": "processItemCreation",
-					"functionDescription": "convert Item Triggers into items",
-					"functionCategory": "Inventory",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [],
-					"sid": 210054235549364,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "for-each",
-									"objectClass": "JSON_ItemTriggers",
-									"sid": 616826694207571,
-									"parameters": {
-										"path": "\"items\""
-									}
-								}
-							],
 							"actions": [],
-							"sid": 964660401401353,
+							"sid": 996910598029397,
 							"children": [
 								{
 									"eventType": "block",
 									"conditions": [
 										{
-											"id": "compare-instance-variable",
-											"objectClass": "Trigger_Item",
-											"sid": 171033938128681,
+											"id": "is-on-layer",
+											"objectClass": "PlayerSystem",
+											"sid": 981311783585034,
 											"parameters": {
-												"instance-variable": "itemTriggerID",
-												"comparison": 0,
-												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")"
+												"layer": "layer"
 											}
 										},
 										{
-											"id": "contains-value",
-											"objectClass": "Arr_ItemTriggersCollected",
-											"sid": 391333119601170,
+											"id": "is-on-layer",
+											"objectClass": "Player_Base",
+											"sid": 686072302601132,
 											"parameters": {
-												"value": "Trigger_Item.itemTriggerID"
+												"layer": "layer"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "destroy",
+											"objectClass": "Player_Base",
+											"sid": 453740500658350
+										},
+										{
+											"id": "destroy",
+											"objectClass": "PlayerSystem",
+											"sid": 482704047139090
+										}
+									],
+									"sid": 997946978122841
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 840380688739344,
+											"parameters": {
+												"object-to-create": "Player_Base",
+												"layer": "layer",
+												"x": "DestX",
+												"y": "DestY",
+												"create-hierarchy": true,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-max-speed",
+											"objectClass": "Player_Base",
+											"sid": 632433593509377,
+											"behaviorType": "8Direction",
+											"parameters": {
+												"max-speed": "PlayerSpeed"
+											}
+										},
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 208640231773459,
+											"parameters": {
+												"object-to-create": "Trigger_Player",
+												"layer": "layer",
+												"x": "DestX",
+												"y": "DestY",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Trigger_Player",
+											"sid": 203874458549521,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "Player_Mask",
+											"sid": 171428309413548,
+											"parameters": {
+												"child": "Trigger_Player",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": true,
+												"transform-h": true,
+												"transform-a": true,
+												"transform-o": false,
+												"transform-z-elevation": true,
+												"transform-visibility": false,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 309532613071771,
+											"parameters": {
+												"group-name": "\"Player Attack\"",
+												"state": "deactivated"
+											}
+										}
+									],
+									"sid": 574353791055137
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-start-of-layout",
+									"objectClass": "System",
+									"sid": 204890044685274
+								}
+							],
+							"actions": [
+								{
+									"id": "set-canvas-size",
+									"objectClass": "System",
+									"sid": 111456777581119,
+									"parameters": {
+										"width": "420",
+										"height": "240"
+									}
+								},
+								{
+									"id": "unload-unused-images",
+									"objectClass": "System",
+									"sid": 544753330697419
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 698100821725153,
+									"parameters": {
+										"variable": "CurrentWorld",
+										"value": "str(tokenat(LayoutName,1,\"_\"))"
+									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"//init y-sort system",
+										"const ySort = globalThis.AdventureLand?.YSort;",
+										"if (ySort) {",
+										"  ySort.initialize(runtime);",
+										"  console.log(\"✅ Y-Sort system initialized\");",
+										"}"
+									]
+								}
+							],
+							"sid": 547970304172072,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Fade in & activate Player"
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"callFunction": "Transition",
+											"sid": 471720147170010,
+											"parameters": [
+												"\"In\"",
+												"\"LayoutChange\"",
+												"\"\""
+											]
+										},
+										{
+											"id": "wait-for-signal",
+											"objectClass": "System",
+											"sid": 633772537782299,
+											"parameters": {
+												"tag": "\"LayoutChange\""
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 306650195879996,
+											"parameters": {
+												"variable": "PauseLock",
+												"value": "0"
+											}
+										}
+									],
+									"sid": 899111434793818
+								},
+								{
+									"eventType": "comment",
+									"text": "Create player at a door"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Trigger_Door",
+											"sid": 285050773606030,
+											"parameters": {
+												"instance-variable": "ID",
+												"comparison": 0,
+												"value": "Door_ID"
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 527984045038111,
+											"parameters": {
+												"variable": "Player_WorldStart_X",
+												"comparison": 4,
+												"value": "0"
 											},
 											"isInverted": true
 										}
 									],
 									"actions": [
 										{
-											"id": "create-object",
-											"objectClass": "System",
-											"sid": 756508013191544,
+											"callFunction": "Create_Player",
+											"sid": 850350701857470,
+											"parameters": [
+												"Trigger_Door.X",
+												"Trigger_Door.BBoxBottom-6",
+												"\"Objects\""
+											]
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Player_Mask",
+											"sid": 859290401498277,
 											"parameters": {
-												"object-to-create": "ItemShowcase",
-												"layer": "\"Items\"",
-												"x": "Trigger_Item.X",
-												"y": "Trigger_Item.Y",
-												"create-hierarchy": false,
-												"template-name": "\"\""
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Player_Mask",
+											"sid": 277120734377737,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "Trigger_Door.Direction"
+											}
+										},
+										{
+											"callFunction": "Player_Reset",
+											"sid": 346637045841756
+										}
+									],
+									"sid": 344221618776503
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 447823815513207
+										},
+										{
+											"id": "is-boolean-instance-variable-set",
+											"objectClass": "Trigger_Door",
+											"sid": 888642247665572,
+											"parameters": {
+												"instance-variable": "StartingDoor"
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 635588243070499,
+											"parameters": {
+												"variable": "Player_WorldStart_X",
+												"comparison": 4,
+												"value": "0"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "Create_Player",
+											"sid": 977541932421047,
+											"parameters": [
+												"Trigger_Door.X",
+												"Trigger_Door.BBoxBottom-6",
+												"\"Objects\""
+											]
+										},
+										{
+											"id": "set-visible",
+											"objectClass": "Player_Mask",
+											"sid": 132662145669353,
+											"parameters": {
+												"visibility": "visible"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Player_Mask",
+											"sid": 144091613447795,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "Trigger_Door.Direction"
+											}
+										},
+										{
+											"callFunction": "Player_Reset",
+											"sid": 683842596804620
+										}
+									],
+									"sid": 141618822288156
+								},
+								{
+									"eventType": "comment",
+									"text": "Create player in new World"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 687057362374328,
+											"parameters": {
+												"variable": "Player_WorldStart_X",
+												"comparison": 4,
+												"value": "0"
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 310203896957246,
+											"parameters": {
+												"variable": "Player_WorldStart_Y",
+												"comparison": 4,
+												"value": "0"
 											}
 										}
 									],
-									"sid": 829771743113041,
-									"children": [
+									"actions": [
 										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "JSON_ItemTriggers",
-													"sid": 189350395006669,
-													"parameters": {
-														"path": "\".itemTriggerID\"",
-														"cmp": 0,
-														"value": "Trigger_Item.itemTriggerID"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-instvar-value",
-													"objectClass": "ItemShowcase",
-													"sid": 124412191990237,
-													"parameters": {
-														"instance-variable": "ItemName",
-														"value": "JSON_ItemTriggers.Get(\".itemName\")"
-													}
-												},
-												{
-													"id": "set-instvar-value",
-													"objectClass": "ItemShowcase",
-													"sid": 616556191329386,
-													"parameters": {
-														"instance-variable": "ItemID",
-														"value": "Functions.GetItemID(Self.ItemName)"
-													}
-												},
-												{
-													"id": "set-instvar-value",
-													"objectClass": "ItemShowcase",
-													"sid": 731203991743591,
-													"parameters": {
-														"instance-variable": "NumberOfItems",
-														"value": "JSON_ItemTriggers.Get(\".numOfItems\")"
-													}
-												},
-												{
-													"id": "set-animation-frame",
-													"objectClass": "ItemShowcase",
-													"sid": 636220499260476,
-													"parameters": {
-														"frame-number": "Self.ItemID"
-													}
-												}
-											],
-											"sid": 726537768855185,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-boolean-set",
-															"objectClass": "JSON_ItemTriggers",
-															"sid": 667491960598095,
-															"parameters": {
-																"path": "\".unique\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "ItemShowcase",
-															"sid": 841068735488595,
-															"parameters": {
-																"instance-variable": "unique",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-value",
-															"objectClass": "JSON_ItemTriggers",
-															"sid": 654838422357697,
-															"parameters": {
-																"path": "\".uid\"",
-																"value": "ItemShowcase.UID"
-															}
-														}
-													],
-													"sid": 861577472113725
-												}
+											"callFunction": "Create_Player",
+											"sid": 784232034572871,
+											"parameters": [
+												"Player_WorldStart_X",
+												"Player_WorldStart_Y",
+												"\"Objects\""
 											]
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "Player_Mask",
+											"sid": 462809039841708,
+											"parameters": {
+												"instance-variable": "Direction",
+												"value": "\"Down\""
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 434191142870083,
+											"parameters": {
+												"variable": "Player_WorldStart_X",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 818149829746818,
+											"parameters": {
+												"variable": "Player_WorldStart_Y",
+												"value": "0"
+											}
+										},
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 856124306230798,
+											"parameters": {
+												"variable": "Door_ID",
+												"value": "-1"
+											}
+										},
+										{
+											"id": "stop-loop",
+											"objectClass": "System",
+											"sid": 977776843461794
+										},
+										{
+											"callFunction": "Player_Reset",
+											"sid": 942222832138248
 										}
-									]
+									],
+									"sid": 485202653487563
+								},
+								{
+									"eventType": "comment",
+									"text": "Testing for Pete dialogue system in Leafwood Forest"
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-signal",
+									"objectClass": "System",
+									"sid": 143304721498790,
+									"parameters": {
+										"tag": "\"Inventory UI Drawn\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "ChangeEquipmentAndSave",
+									"sid": 714242746211521,
+									"parameters": [
+										"\"\""
+									]
+								}
+							],
+							"sid": 487227037081650
+						},
+						{
+							"functionName": "updateOutfit",
+							"functionDescription": "redraw outfit items",
+							"functionCategory": "Player",
+							"functionReturnType": "none",
+							"functionCopyPicked": false,
+							"functionIsAsync": false,
+							"functionParameters": [],
+							"eventType": "function-block",
+							"conditions": [],
+							"actions": [
+								{
+									"callFunction": "changeOutfit",
+									"sid": 504861071063602,
+									"parameters": [
+										"\"Hair\"",
+										"Dict_SaveGameData.Get(\"Hair\")",
+										"\"\"",
+										"\"\"",
+										"\"\""
+									]
+								},
+								{
+									"callFunction": "changeOutfit",
+									"sid": 400613707144858,
+									"parameters": [
+										"\"Head\"",
+										"Dict_SaveGameData.Get(\"Head\")",
+										"\"\"",
+										"\"\"",
+										"\"\""
+									]
+								},
+								{
+									"callFunction": "changeOutfit",
+									"sid": 847609671393126,
+									"parameters": [
+										"\"Neck\"",
+										"Dict_SaveGameData.Get(\"Neck\")",
+										"\"\"",
+										"\"\"",
+										"\"\""
+									]
+								},
+								{
+									"callFunction": "changeOutfit",
+									"sid": 640067276575791,
+									"parameters": [
+										"\"Body\"",
+										"Dict_SaveGameData.Get(\"Body\")",
+										"\"\"",
+										"Functions.GetItemCostumeByName(Dict_SaveGameData.Get(\"Body\"))",
+										"\"\""
+									]
+								},
+								{
+									"callFunction": "changeOutfit",
+									"sid": 496232858161819,
+									"parameters": [
+										"\"Legs\"",
+										"Dict_SaveGameData.Get(\"Legs\")",
+										"\"\"",
+										"\"\"",
+										"\"\""
+									]
+								},
+								{
+									"callFunction": "changeOutfit",
+									"sid": 304954484591259,
+									"parameters": [
+										"\"Boot\"",
+										"Dict_SaveGameData.Get(\"Boot\")",
+										"\"\"",
+										"\"\"",
+										"\"\""
+									]
+								}
+							],
+							"sid": 281275642816716
 						}
-					]
-				}
-			],
-			"sid": 870939301510714
-		},
-		{
-			"eventType": "group",
-			"disabled": false,
-			"title": "Player",
-			"description": "",
-			"isActiveOnStart": true,
-			"children": [
+					],
+					"sid": 202871666595277
+				},
 				{
 					"eventType": "group",
 					"disabled": false,
@@ -4062,15 +3856,6 @@
 									"conditions": [],
 									"actions": [
 										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 937525773833267,
-											"parameters": {
-												"group-name": "\"Player Engine\"",
-												"state": "deactivated"
-											}
-										},
-										{
 											"callFunction": "Player_Reset",
 											"sid": 870264257791699
 										},
@@ -4142,6 +3927,15 @@
 											"behaviorType": "8Direction",
 											"parameters": {
 												"input": "start-ignoring"
+											}
+										},
+										{
+											"id": "set-group-active",
+											"objectClass": "System",
+											"sid": 584747071323328,
+											"parameters": {
+												"group-name": "\"Player Engine\"",
+												"state": "deactivated"
 											}
 										},
 										{
@@ -4700,15 +4494,6 @@
 														{
 															"id": "set-group-active",
 															"objectClass": "System",
-															"sid": 857665054000634,
-															"parameters": {
-																"group-name": "\"Player\"",
-																"state": "deactivated"
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
 															"sid": 728629409905845,
 															"parameters": {
 																"group-name": "\"Player Engine\"",
@@ -4794,15 +4579,6 @@
 															"sid": 128319059150195,
 															"parameters": {
 																"layout": "\"GameOver\""
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 221327712877978,
-															"parameters": {
-																"group-name": "\"Player\"",
-																"state": "activated"
 															}
 														},
 														{
@@ -5056,6 +4832,212 @@
 				}
 			],
 			"sid": 225622431931570
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Items",
+			"description": "Create non-collected items on layout",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-signal",
+							"objectClass": "System",
+							"sid": 691486905040832,
+							"parameters": {
+								"tag": "\"Game Layers Created\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "add-key",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 430198065715333,
+							"parameters": {
+								"key": "LayoutName&\"Loaded\"",
+								"value": "\"true\""
+							}
+						},
+						{
+							"callFunction": "processItemCreation",
+							"sid": 784279988171924
+						},
+						{
+							"callFunction": "SaveGameData",
+							"sid": 640787169122672
+						}
+					],
+					"sid": 953963380749056
+				},
+				{
+					"functionName": "processItemCreation",
+					"functionDescription": "convert Item Triggers into items",
+					"functionCategory": "Inventory",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 272982350863988,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "JSON_ItemTriggers",
+									"sid": 338577129617516,
+									"parameters": {
+										"path": "\"items\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 686300127386407,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Trigger_Item",
+											"sid": 976478017246694,
+											"parameters": {
+												"instance-variable": "itemTriggerID",
+												"comparison": 0,
+												"value": "JSON_ItemTriggers.Get(\".itemTriggerID\")"
+											}
+										},
+										{
+											"id": "contains-value",
+											"objectClass": "Arr_ItemTriggersCollected",
+											"sid": 726256986896297,
+											"parameters": {
+												"value": "Trigger_Item.itemTriggerID"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "create-object",
+											"objectClass": "System",
+											"sid": 752558990967286,
+											"parameters": {
+												"object-to-create": "ItemShowcase",
+												"layer": "\"Items\"",
+												"x": "Trigger_Item.X",
+												"y": "Trigger_Item.Y",
+												"create-hierarchy": false,
+												"template-name": "\"\""
+											}
+										}
+									],
+									"sid": 107809510181893,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-value",
+													"objectClass": "JSON_ItemTriggers",
+													"sid": 617903853280502,
+													"parameters": {
+														"path": "\".itemTriggerID\"",
+														"cmp": 0,
+														"value": "Trigger_Item.itemTriggerID"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "ItemShowcase",
+													"sid": 638216263009814,
+													"parameters": {
+														"instance-variable": "ItemName",
+														"value": "JSON_ItemTriggers.Get(\".itemName\")"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "ItemShowcase",
+													"sid": 811636154204974,
+													"parameters": {
+														"instance-variable": "ItemID",
+														"value": "Functions.GetItemID(Self.ItemName)"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "ItemShowcase",
+													"sid": 138229474196115,
+													"parameters": {
+														"instance-variable": "NumberOfItems",
+														"value": "JSON_ItemTriggers.Get(\".numOfItems\")"
+													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "ItemShowcase",
+													"sid": 398526156576930,
+													"parameters": {
+														"frame-number": "Self.ItemID"
+													}
+												}
+											],
+											"sid": 548224850646606,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-boolean-set",
+															"objectClass": "JSON_ItemTriggers",
+															"sid": 454409210520127,
+															"parameters": {
+																"path": "\".unique\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "set-boolean-instvar",
+															"objectClass": "ItemShowcase",
+															"sid": 575126089238026,
+															"parameters": {
+																"instance-variable": "unique",
+																"value": "true"
+															}
+														},
+														{
+															"id": "set-value",
+															"objectClass": "JSON_ItemTriggers",
+															"sid": 696533174490479,
+															"parameters": {
+																"path": "\".uid\"",
+																"value": "ItemShowcase.UID"
+															}
+														}
+													],
+													"sid": 428157402884285
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			],
+			"sid": 793230173786995
 		},
 		{
 			"eventType": "group",

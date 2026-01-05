@@ -628,6 +628,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 337534451207592,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
@@ -859,6 +860,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 506912980602774,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Player Engine\"",
 										"state": "activated"
@@ -886,6 +888,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 847418418162699,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Enemies\"",
 										"state": "activated"
@@ -1834,14 +1837,14 @@
 						{
 							"id": "on-start-of-layout",
 							"objectClass": "System",
-							"sid": 900994491755670
+							"sid": 942668027722845
 						}
 					],
 					"actions": [
 						{
 							"id": "add-layer",
 							"objectClass": "System",
-							"sid": 362996124766172,
+							"sid": 620225694630844,
 							"parameters": {
 								"name": "\"Inventory\"",
 								"insert-by": "\"HUD_UI\"",
@@ -1851,7 +1854,7 @@
 						{
 							"id": "set-layer-visible",
 							"objectClass": "System",
-							"sid": 694405663922828,
+							"sid": 241755824403392,
 							"parameters": {
 								"layer": "\"Inventory\"",
 								"visibility": "invisible"
@@ -1860,7 +1863,7 @@
 						{
 							"id": "add-layer",
 							"objectClass": "System",
-							"sid": 336530442286288,
+							"sid": 780753227875660,
 							"parameters": {
 								"name": "\"Hint\"",
 								"insert-by": "\"Inventory\"",
@@ -1870,7 +1873,7 @@
 						{
 							"id": "set-layer-visible",
 							"objectClass": "System",
-							"sid": 944922299010099,
+							"sid": 126394449104969,
 							"parameters": {
 								"layer": "\"Hint\"",
 								"visibility": "invisible"
@@ -1887,7 +1890,7 @@
 							]
 						}
 					],
-					"sid": 189012469709380,
+					"sid": 813046891473548,
 					"children": [
 						{
 							"eventType": "block",
@@ -1895,7 +1898,7 @@
 								{
 									"id": "for",
 									"objectClass": "System",
-									"sid": 616415610877151,
+									"sid": 769193911796607,
 									"parameters": {
 										"name": "\"Layers\"",
 										"start-index": "0",
@@ -1905,7 +1908,7 @@
 								{
 									"id": "trigger-once-while-true",
 									"objectClass": "System",
-									"sid": 647059835185388,
+									"sid": 238542190891566,
 									"disabled": true
 								}
 							],
@@ -1913,14 +1916,14 @@
 								{
 									"id": "set-layer-scale",
 									"objectClass": "System",
-									"sid": 967296721358141,
+									"sid": 416633123144543,
 									"parameters": {
 										"layer": "loopindex",
 										"scale": "1"
 									}
 								}
 							],
-							"sid": 724395405541595
+							"sid": 293246628636967
 						},
 						{
 							"eventType": "block",
@@ -1928,25 +1931,1267 @@
 								{
 									"id": "trigger-once-while-true",
 									"objectClass": "System",
-									"sid": 625229613565887
+									"sid": 542219326064317
 								}
 							],
 							"actions": [
 								{
 									"id": "signal",
 									"objectClass": "System",
-									"sid": 724650198038800,
+									"sid": 699212193693432,
 									"parameters": {
 										"tag": "\"Game Layers Created\""
 									}
 								}
 							],
-							"sid": 669781769815566
+							"sid": 432061828838501
 						}
 					]
 				}
 			],
-			"sid": 731698851710396
+			"sid": 953147146179413
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Gameplay Status ",
+			"description": "Check on state of game and enable/disable engines appropriately",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 434675002907354,
+							"parameters": {
+								"variable": "InDialogue"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 937204102397982,
+							"parameters": {
+								"variable": "OptionsOpen"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 503037633916598,
+							"parameters": {
+								"variable": "ItemShowing"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "layer-is-visible",
+							"objectClass": "System",
+							"sid": 262182670645116,
+							"parameters": {
+								"layer": "\"Inventory\""
+							},
+							"isInverted": true
+						},
+						{
+							"id": "compare-opacity",
+							"objectClass": "Transition",
+							"sid": 822763906014244,
+							"disabled": true,
+							"parameters": {
+								"comparison": 0,
+								"opacity": "0"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 639673732350521,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "activated"
+							}
+						},
+						{
+							"id": "set-ignoring-input",
+							"objectClass": "Player_Base",
+							"sid": 379529716557236,
+							"behaviorType": "8Direction",
+							"parameters": {
+								"input": "stop-ignoring"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 197860941726217,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "activated"
+							}
+						}
+					],
+					"sid": 178440721719252
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 394463665799102,
+							"parameters": {
+								"variable": "InDialogue"
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 457269997440545,
+							"parameters": {
+								"variable": "ItemShowing"
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 793518925886531,
+							"parameters": {
+								"variable": "OptionsOpen"
+							}
+						},
+						{
+							"id": "layer-is-visible",
+							"objectClass": "System",
+							"sid": 441430081926131,
+							"parameters": {
+								"layer": "\"Inventory\""
+							}
+						},
+						{
+							"id": "compare-opacity",
+							"objectClass": "Transition",
+							"sid": 221702133532987,
+							"disabled": true,
+							"parameters": {
+								"comparison": 5,
+								"opacity": "0"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-ignoring-input",
+							"objectClass": "Player_Base",
+							"sid": 965603162086460,
+							"behaviorType": "8Direction",
+							"parameters": {
+								"input": "start-ignoring"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 897285149220235,
+							"parameters": {
+								"group-name": "\"Player Engine\"",
+								"state": "deactivated"
+							}
+						},
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 110933125908987,
+							"parameters": {
+								"group-name": "\"Enemies\"",
+								"state": "deactivated"
+							}
+						}
+					],
+					"sid": 726774077671023,
+					"isOrBlock": true
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 445721229719172,
+							"parameters": {
+								"variable": "InDialogue"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 429700397660587,
+							"parameters": {
+								"group-name": "\"In Dialogue\"",
+								"state": "activated"
+							}
+						}
+					],
+					"sid": 358336228612346,
+					"disabled": true,
+					"isOrBlock": true
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 634548644741967,
+							"parameters": {
+								"variable": "InDialogue"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [
+						{
+							"id": "set-group-active",
+							"objectClass": "System",
+							"sid": 723405060693834,
+							"parameters": {
+								"group-name": "\"In Dialogue\"",
+								"state": "deactivated"
+							}
+						}
+					],
+					"sid": 344424867799616,
+					"disabled": true,
+					"isOrBlock": true
+				}
+			],
+			"sid": 202514956850395
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Player is Active",
+			"description": "\"Player Engine\" is on and player is moving through world",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-group-active",
+							"objectClass": "System",
+							"sid": 603008124511157,
+							"parameters": {
+								"group-name": "\"Player Engine\""
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 134264171019726,
+							"parameters": {
+								"variable": "InDialogue"
+							},
+							"isInverted": true
+						}
+					],
+					"actions": [],
+					"sid": 169208668496071,
+					"children": [
+						{
+							"eventType": "group",
+							"disabled": false,
+							"title": "Player Action",
+							"description": "",
+							"isActiveOnStart": true,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "Slash"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 226578840493569,
+											"parameters": {
+												"key": 65
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 155144567108155,
+											"parameters": {
+												"first-value": "PlayerAttackCooldown",
+												"comparison": 3,
+												"second-value": "0"
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "StartAttack",
+											"sid": 130429692581005
+										}
+									],
+									"sid": 436484303497894
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-tap-object",
+											"objectClass": "Touch",
+											"sid": 829997186552291,
+											"parameters": {
+												"object": "Btn_Action"
+											}
+										},
+										{
+											"id": "compare-two-values",
+											"objectClass": "System",
+											"sid": 147002001874564,
+											"parameters": {
+												"first-value": "PlayerAttackCooldown",
+												"comparison": 3,
+												"second-value": "0"
+											}
+										},
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Btn_Action",
+											"sid": 734496076835860,
+											"parameters": {
+												"instance-variable": "Actions",
+												"comparison": 0,
+												"value": "\"Attack\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"callFunction": "StartAttack",
+											"sid": 547351391545767
+										}
+									],
+									"sid": 675451751673221
+								}
+							],
+							"sid": 185345381157602
+						},
+						{
+							"eventType": "group",
+							"disabled": false,
+							"title": "Player Walk",
+							"description": "Detect for input to move player",
+							"isActiveOnStart": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 850718599088194,
+											"parameters": {
+												"variable": "TouchMode"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 127042804411553,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 829326026057558,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-animation-frame-tag",
+													"objectClass": "DPad_Arrow",
+													"sid": 595131160285561,
+													"parameters": {
+														"comparison": 0,
+														"tag": "\"LtUp\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 926937585451498,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 517713843439449,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 954867448267583,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Up\""
+													}
+												}
+											],
+											"sid": 386688391217058
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 240238519630170,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "DPad_Arrow",
+													"sid": 212210080180002,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"UpLeft\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 944018552814838,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												},
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 148776342929489,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 220256178449090,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 922713327673804,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Up\""
+													}
+												}
+											],
+											"sid": 749471863333054
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 175760612014659,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-animation-frame-tag",
+													"objectClass": "DPad_Arrow",
+													"sid": 658571645419226,
+													"parameters": {
+														"comparison": 0,
+														"tag": "\"LtLeft\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 881271673686221,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 860997878442747,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 430026933886642,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Left\""
+													}
+												}
+											],
+											"sid": 749180870396493
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 181832374292792,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "DPad_Arrow",
+													"sid": 888344483550845,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"DownLeft\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 288916576568869,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												},
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 797283607154734,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 428809588302106,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 560789048555104,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Down\""
+													}
+												}
+											],
+											"sid": 634289478691163
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 384431582120781,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-animation-frame-tag",
+													"objectClass": "DPad_Arrow",
+													"sid": 259633348523814,
+													"parameters": {
+														"comparison": 0,
+														"tag": "\"LtDown\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 572455727133288,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 897226717844232,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 533690439569273,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Down\""
+													}
+												}
+											],
+											"sid": 613516904224799
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 578823346183254,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "DPad_Arrow",
+													"sid": 301685835763315,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"DownRight\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 914992227953394,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												},
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 237904421040353,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 584984479823916,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 859311187164866,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Down\""
+													}
+												}
+											],
+											"sid": 295086412008613
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 717549380583467,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-animation-frame-tag",
+													"objectClass": "DPad_Arrow",
+													"sid": 615148861646378,
+													"parameters": {
+														"comparison": 0,
+														"tag": "\"LtRight\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 419928533589497,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 266267937069010,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 954050047055795,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Right\""
+													}
+												}
+											],
+											"sid": 813785558996488
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 212207774954515,
+													"parameters": {
+														"object": "DPad_Arrow"
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "DPad_Arrow",
+													"sid": 127576016664389,
+													"parameters": {
+														"instance-variable": "Direction",
+														"comparison": 0,
+														"value": "\"UpRight\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 656572178349410,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												},
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 617739866142121,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 203292395587367,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 812233414311014,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Up\""
+													}
+												}
+											],
+											"sid": 449684839073957
+										}
+									]
+								},
+								{
+									"eventType": "comment",
+									"text": "Allow the player to move in 8 directions but only change directions if a single direction is being pressed."
+								},
+								{
+									"eventType": "comment",
+									"text": "Keyboard"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 910106079290506,
+											"parameters": {
+												"key": 38
+											}
+										}
+									],
+									"actions": [],
+									"sid": 443697260108987,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 903510637102790,
+													"parameters": {
+														"key": 40
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 927933473828887,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "up"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 208282966924031,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 104220062948336,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Up\""
+													}
+												}
+											],
+											"sid": 205302840087738
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 201472482715937,
+													"parameters": {
+														"key": 37
+													},
+													"isInverted": true
+												},
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 970940936464765,
+													"parameters": {
+														"key": 39
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [],
+											"sid": 222072150889323
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 638957795995006,
+											"parameters": {
+												"key": 40
+											}
+										}
+									],
+									"actions": [],
+									"sid": 965028129116505,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 932012163249099,
+													"parameters": {
+														"key": 38
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 314945989963401,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "down"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 624521578301332,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 321411424452158,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Down\""
+													}
+												}
+											],
+											"sid": 724378472813417
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 800656928253206,
+													"parameters": {
+														"key": 37
+													},
+													"isInverted": true
+												},
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 660705051923145,
+													"parameters": {
+														"key": 39
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [],
+											"sid": 764008196492983
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 112440442034831,
+											"parameters": {
+												"key": 37
+											}
+										}
+									],
+									"actions": [],
+									"sid": 657349917566240,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 532533009586984,
+													"parameters": {
+														"key": 39
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 881242089298662,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "left"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 257759016785711,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 445263269145753,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Left\""
+													}
+												}
+											],
+											"sid": 855263699618009
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 387248944730571,
+													"parameters": {
+														"key": 38
+													},
+													"isInverted": true
+												},
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 817986704519254,
+													"parameters": {
+														"key": 40
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [],
+											"sid": 463279612962637
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 184348649004430,
+											"parameters": {
+												"key": 39
+											}
+										}
+									],
+									"actions": [],
+									"sid": 216229702311914,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 959400091288482,
+													"parameters": {
+														"key": 37
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [
+												{
+													"id": "simulate-control",
+													"objectClass": "Player_Base",
+													"sid": 912951541674593,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"control": "right"
+													}
+												},
+												{
+													"id": "set-boolean-instvar",
+													"objectClass": "Player_Mask",
+													"sid": 595803365869374,
+													"parameters": {
+														"instance-variable": "Walking",
+														"value": "true"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "Player_Mask",
+													"sid": 242742795794686,
+													"parameters": {
+														"instance-variable": "Direction",
+														"value": "\"Right\""
+													}
+												}
+											],
+											"sid": 817433519623340
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 442061880140708,
+													"parameters": {
+														"key": 38
+													},
+													"isInverted": true
+												},
+												{
+													"id": "key-is-down",
+													"objectClass": "Keyboard",
+													"sid": 567536672440163,
+													"parameters": {
+														"key": 40
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [],
+											"sid": 178837185304126
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 432772702571309,
+											"parameters": {
+												"key": 38
+											},
+											"isInverted": true
+										},
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 198377652706254,
+											"parameters": {
+												"key": 40
+											},
+											"isInverted": true
+										},
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 192158292381542,
+											"parameters": {
+												"key": 37
+											},
+											"isInverted": true
+										},
+										{
+											"id": "key-is-down",
+											"objectClass": "Keyboard",
+											"sid": 185498611782764,
+											"parameters": {
+												"key": 39
+											},
+											"isInverted": true
+										},
+										{
+											"id": "is-touching-object",
+											"objectClass": "Touch",
+											"sid": 716742481331149,
+											"parameters": {
+												"object": "DPad_Arrow"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Player_Mask",
+											"sid": 262418321513492,
+											"parameters": {
+												"instance-variable": "Walking",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 134554386487540
+								}
+							],
+							"sid": 266628031224000
+						}
+					]
+				}
+			],
+			"sid": 929545442610977
 		},
 		{
 			"eventType": "group",
@@ -3543,6 +4788,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 906819367482514,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Player Engine\"",
 										"state": "deactivated"
@@ -3552,6 +4798,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 817721059329517,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Enemies\"",
 										"state": "deactivated"
@@ -3851,6 +5098,7 @@
 													"id": "set-group-active",
 													"objectClass": "System",
 													"sid": 845567280403477,
+													"disabled": true,
 													"parameters": {
 														"group-name": "\"Player Engine\"",
 														"state": "deactivated"
@@ -3983,6 +5231,7 @@
 											"id": "set-group-active",
 											"objectClass": "System",
 											"sid": 527298806889168,
+											"disabled": true,
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
@@ -4001,6 +5250,7 @@
 											"id": "set-group-active",
 											"objectClass": "System",
 											"sid": 813735239121750,
+											"disabled": true,
 											"parameters": {
 												"group-name": "\"Enemies\"",
 												"state": "activated"
@@ -5844,6 +7094,7 @@
 											"id": "set-group-active",
 											"objectClass": "System",
 											"sid": 389462231105840,
+											"disabled": true,
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
@@ -5919,6 +7170,7 @@
 											"id": "set-group-active",
 											"objectClass": "System",
 											"sid": 868785798795151,
+											"disabled": true,
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
@@ -6566,6 +7818,13 @@
 							],
 							"actions": [
 								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"console.log(\"⬅️ LEFT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
+									]
+								},
+								{
 									"id": "subtract-from-eventvar",
 									"objectClass": "System",
 									"sid": 289036763778614,
@@ -6581,6 +7840,7 @@
 										"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 										"    if (buttonMgr) {",
 										"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
+										"      console.log(\"⬅️ LEFT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
 										"    }"
 									]
 								}
@@ -6593,9 +7853,9 @@
 								{
 									"id": "on-key-pressed",
 									"objectClass": "Keyboard",
-									"sid": 770279290756878,
+									"sid": 101609347443110,
 									"parameters": {
-										"key": 37
+										"key": 39
 									}
 								},
 								{
@@ -6619,9 +7879,16 @@
 							],
 							"actions": [
 								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"console.log(\"➡️ RIGHT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
+									]
+								},
+								{
 									"id": "add-to-eventvar",
 									"objectClass": "System",
-									"sid": 210125082800733,
+									"sid": 732526834970097,
 									"parameters": {
 										"variable": "ItemBtnSelection",
 										"value": "1"
@@ -6634,6 +7901,7 @@
 										"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 										"    if (buttonMgr) {",
 										"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
+										"      console.log(\"➡️ RIGHT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
 										"    }"
 									]
 								}
@@ -7798,6 +9066,7 @@
 													"id": "compare-instance-variable",
 													"objectClass": "Btn_Action",
 													"sid": 540787868316079,
+													"disabled": true,
 													"parameters": {
 														"instance-variable": "LinkID",
 														"comparison": 0,
@@ -7913,6 +9182,24 @@
 													],
 													"actions": [
 														{
+															"id": "set-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 368647282504469,
+															"parameters": {
+																"variable": "InDialogue",
+																"value": "false"
+															}
+														},
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 609039754393344,
+															"parameters": {
+																"variable": "DialogueResult",
+																"value": "\"End\""
+															}
+														},
+														{
 															"callFunction": "OpenClose_Inventory",
 															"sid": 847635339772085
 														},
@@ -7924,26 +9211,9 @@
 																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 																"if (buttonMgr) {",
 																"  runtime.callFunction(\"destroyDialogueUI\");  // Hides all buttons, no need for specific IDs",
+																"  console.log(\"➡️ Dismissing dialogue\");",
 																"}"
 															]
-														},
-														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 989600647216130,
-															"parameters": {
-																"variable": "InDialogue",
-																"value": "false"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 175683689978966,
-															"parameters": {
-																"variable": "DialogueResult",
-																"value": "\"End\""
-															}
 														}
 													],
 													"sid": 672422852961842
@@ -8013,895 +9283,6 @@
 						}
 					],
 					"sid": 154126821032044
-				},
-				{
-					"eventType": "group",
-					"disabled": false,
-					"title": "Menus_Mechanics",
-					"description": "",
-					"isActiveOnStart": true,
-					"children": [
-						{
-							"eventType": "comment",
-							"text": "Text Option Menus"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "for-each",
-									"objectClass": "System",
-									"sid": 414770972822927,
-									"parameters": {
-										"object": "Ctrl_Menu"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 868635600466012,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 236631404823550,
-											"parameters": {
-												"instance-variable": "Menu",
-												"comparison": 0,
-												"value": "Current_Menu"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-boolean-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 224776057218376,
-											"parameters": {
-												"instance-variable": "IsCurrentMenu",
-												"value": "true"
-											}
-										}
-									],
-									"sid": 719563536256883
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "Ctrl_Menu",
-											"sid": 274420033630414,
-											"parameters": {
-												"instance-variable": "Menu",
-												"comparison": 1,
-												"value": "Current_Menu"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-boolean-instvar",
-											"objectClass": "Ctrl_Menu",
-											"sid": 561410298611165,
-											"parameters": {
-												"instance-variable": "IsCurrentMenu",
-												"value": "false"
-											}
-										}
-									],
-									"sid": 695288954588621
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "is-boolean-instance-variable-set",
-									"objectClass": "Ctrl_Menu",
-									"sid": 207943299973308,
-									"parameters": {
-										"instance-variable": "IsCurrentMenu"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 323947983981432,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "on-key-pressed",
-											"objectClass": "Keyboard",
-											"sid": 328110018904399,
-											"parameters": {
-												"key": 40
-											}
-										},
-										{
-											"id": "on-button-pressed",
-											"objectClass": "Gamepad",
-											"sid": 859972631576152,
-											"parameters": {
-												"gamepad": "0",
-												"button": "d-pad-down"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 155344650880038,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "Ctrl_Menu",
-													"sid": 710782194728236,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"comparison": 2,
-														"value": "Self.MaxLinks"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "add-to-instvar",
-													"objectClass": "Ctrl_Menu",
-													"sid": 750187542893743,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"value": "1"
-													}
-												}
-											],
-											"sid": 435773423148624
-										}
-									],
-									"isOrBlock": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "on-key-pressed",
-											"objectClass": "Keyboard",
-											"sid": 229983866891078,
-											"parameters": {
-												"key": 38
-											}
-										},
-										{
-											"id": "on-button-pressed",
-											"objectClass": "Gamepad",
-											"sid": 833006648602456,
-											"parameters": {
-												"gamepad": "0",
-												"button": "d-pad-up"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 300130448840369,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "Ctrl_Menu",
-													"sid": 848576698782025,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"comparison": 4,
-														"value": "0"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "subtract-from-instvar",
-													"objectClass": "Ctrl_Menu",
-													"sid": 837765805396614,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"value": "1"
-													}
-												}
-											],
-											"sid": 511379936187045
-										}
-									],
-									"isOrBlock": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 420259055888338,
-											"parameters": {
-												"instance-variable": "Menu",
-												"comparison": 0,
-												"value": "Ctrl_Menu.Menu"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 364799745001279,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "SpriteFont_Menu",
-													"sid": 948167799554804,
-													"parameters": {
-														"instance-variable": "Link_ID",
-														"comparison": 0,
-														"value": "Ctrl_Menu.CurrentLink"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-effect-parameter",
-													"objectClass": "SpriteFont_Menu",
-													"sid": 395293711828436,
-													"parameters": {
-														"effect": "\"Brightness\"",
-														"parameter-index": "0",
-														"value": "100"
-													}
-												}
-											],
-											"sid": 875042853279688,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "on-key-pressed",
-															"objectClass": "Keyboard",
-															"sid": 266085109811919,
-															"parameters": {
-																"key": 90
-															}
-														},
-														{
-															"id": "on-button-pressed",
-															"objectClass": "Gamepad",
-															"sid": 855966123006561,
-															"parameters": {
-																"gamepad": "0",
-																"button": "button-b"
-															}
-														},
-														{
-															"id": "on-key-pressed",
-															"objectClass": "Keyboard",
-															"sid": 888302166966407,
-															"parameters": {
-																"key": 32
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "Menu_Select",
-															"sid": 589495010881820,
-															"parameters": [
-																"SpriteFont_Menu.Text",
-																"SpriteFont_Menu.Menu"
-															]
-														}
-													],
-													"sid": 614981061448494,
-													"isOrBlock": true
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "SpriteFont_Menu",
-													"sid": 150670261608415,
-													"parameters": {
-														"instance-variable": "Link_ID",
-														"comparison": 1,
-														"value": "Ctrl_Menu.CurrentLink"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-effect-parameter",
-													"objectClass": "SpriteFont_Menu",
-													"sid": 744179062430095,
-													"parameters": {
-														"effect": "\"Brightness\"",
-														"parameter-index": "0",
-														"value": "50"
-													}
-												}
-											],
-											"sid": 493143311212439
-										}
-									]
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-tap-object",
-									"objectClass": "Touch",
-									"sid": 539966429615680,
-									"parameters": {
-										"object": "SpriteFont_Menu"
-									}
-								}
-							],
-							"actions": [
-								{
-									"callFunction": "Menu_Select",
-									"sid": 874030647735520,
-									"parameters": [
-										"SpriteFont_Menu.Text",
-										"SpriteFont_Menu.Menu"
-									]
-								},
-								{
-									"id": "set-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 669901958785667,
-									"parameters": {
-										"variable": "TouchMode",
-										"value": "true"
-									}
-								}
-							],
-							"sid": 650232857313822
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "cursor-is-over-object",
-									"objectClass": "Mouse",
-									"sid": 267585708105658,
-									"parameters": {
-										"object": "SpriteFont_Menu"
-									}
-								},
-								{
-									"id": "compare-instance-variable",
-									"objectClass": "SpriteFont_Menu",
-									"sid": 370385780685653,
-									"parameters": {
-										"instance-variable": "Menu",
-										"comparison": 1,
-										"value": "\"\""
-									}
-								}
-							],
-							"actions": [
-								{
-									"id": "set-effect-parameter",
-									"objectClass": "SpriteFont_Menu",
-									"sid": 972480910700284,
-									"parameters": {
-										"effect": "\"Brightness\"",
-										"parameter-index": "0",
-										"value": "100"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Ctrl_Menu",
-									"sid": 796130402622398,
-									"parameters": {
-										"instance-variable": "CurrentLink",
-										"value": "SpriteFont_Menu.Link_ID"
-									}
-								}
-							],
-							"sid": 716315776113892,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 250841387219557,
-											"parameters": {
-												"instance-variable": "Link_ID",
-												"comparison": 1,
-												"value": "Ctrl_Menu.CurrentLink"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-effect-parameter",
-											"objectClass": "SpriteFont_Menu",
-											"sid": 242229249188455,
-											"parameters": {
-												"effect": "\"Brightness\"",
-												"parameter-index": "0",
-												"value": "50"
-											}
-										}
-									],
-									"sid": 273096875246628
-								}
-							]
-						},
-						{
-							"eventType": "comment",
-							"text": "Selection of item hint buttons by keyboard"
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 183654324026747,
-									"parameters": {
-										"layer": "\"Hint\""
-									}
-								},
-								{
-									"id": "trigger-once-while-true",
-									"objectClass": "System",
-									"sid": 891538731413020
-								}
-							],
-							"actions": [
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Ctrl_Btns",
-									"sid": 281454250812843,
-									"parameters": {
-										"instance-variable": "MaxLinks",
-										"value": "-1"
-									}
-								},
-								{
-									"id": "set-instvar-value",
-									"objectClass": "Ctrl_Btns",
-									"sid": 943358722356538,
-									"parameters": {
-										"instance-variable": "CurrentLink",
-										"value": "0"
-									}
-								}
-							],
-							"sid": 878896928274706,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "for-each",
-											"objectClass": "System",
-											"sid": 931972036511261,
-											"parameters": {
-												"object": "InventoryBtns"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 309319839533720,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "InventoryBtns",
-													"sid": 757724715850121,
-													"parameters": {
-														"instance-variable": "Actions",
-														"comparison": 1,
-														"value": "\"hidden\""
-													}
-												},
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 442363137329146,
-													"parameters": {
-														"first-value": "InventoryBtns.ObjectTypeName",
-														"comparison": 1,
-														"second-value": "\"Btn_Arrow\""
-													}
-												},
-												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 345846506379475,
-													"parameters": {
-														"first-value": "InventoryBtns.ObjectTypeName",
-														"comparison": 1,
-														"second-value": "\"Btn_Action\""
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "add-to-instvar",
-													"objectClass": "Ctrl_Btns",
-													"sid": 324468219088094,
-													"parameters": {
-														"instance-variable": "MaxLinks",
-														"value": "1"
-													}
-												},
-												{
-													"id": "set-instvar-value",
-													"objectClass": "InventoryBtns",
-													"sid": 882585073148359,
-													"parameters": {
-														"instance-variable": "LinkID",
-														"value": "Ctrl_Btns.MaxLinks"
-													}
-												}
-											],
-											"sid": 652483005486461
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "InventoryBtns",
-													"sid": 253539454964264,
-													"parameters": {
-														"instance-variable": "Actions",
-														"comparison": 0,
-														"value": "\"hidden\""
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-instvar-value",
-													"objectClass": "InventoryBtns",
-													"sid": 376809144080589,
-													"parameters": {
-														"instance-variable": "LinkID",
-														"value": "-1"
-													}
-												}
-											],
-											"sid": 779143456792582
-										}
-									]
-								}
-							]
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "layer-is-visible",
-									"objectClass": "System",
-									"sid": 873575793435700,
-									"parameters": {
-										"layer": "\"Hint\""
-									}
-								},
-								{
-									"id": "is-on-layer",
-									"objectClass": "InventoryBtns",
-									"sid": 770876142628684,
-									"parameters": {
-										"layer": "\"Hint\"\n"
-									}
-								}
-							],
-							"actions": [],
-							"sid": 995279100112227,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "on-key-pressed",
-											"objectClass": "Keyboard",
-											"sid": 116040456031142,
-											"parameters": {
-												"key": 37
-											}
-										},
-										{
-											"id": "on-button-pressed",
-											"objectClass": "Gamepad",
-											"sid": 150857083586234,
-											"parameters": {
-												"gamepad": "0",
-												"button": "d-pad-left"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 793779815256163,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "Ctrl_Btns",
-													"sid": 552068254426008,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"comparison": 4,
-														"value": "0"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "subtract-from-instvar",
-													"objectClass": "Ctrl_Btns",
-													"sid": 307524785700112,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"value": "1"
-													}
-												}
-											],
-											"sid": 112944696339515
-										}
-									],
-									"isOrBlock": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "on-key-pressed",
-											"objectClass": "Keyboard",
-											"sid": 626798504837977,
-											"parameters": {
-												"key": 39
-											}
-										},
-										{
-											"id": "on-button-pressed",
-											"objectClass": "Gamepad",
-											"sid": 962983329060280,
-											"parameters": {
-												"gamepad": "0",
-												"button": "d-pad-right"
-											}
-										}
-									],
-									"actions": [],
-									"sid": 557863881201170,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "Ctrl_Btns",
-													"sid": 941603971288719,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"comparison": 2,
-														"value": "Self.MaxLinks"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "add-to-instvar",
-													"objectClass": "Ctrl_Btns",
-													"sid": 580328779487304,
-													"parameters": {
-														"instance-variable": "CurrentLink",
-														"value": "1"
-													}
-												}
-											],
-											"sid": 192967997754501
-										}
-									],
-									"isOrBlock": true
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "InventoryBtns",
-											"sid": 683465020399531,
-											"parameters": {
-												"instance-variable": "LinkID",
-												"comparison": 1,
-												"value": "Ctrl_Btns.CurrentLink"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-animation-frame",
-											"objectClass": "InventoryBtns",
-											"sid": 541465198841684,
-											"parameters": {
-												"frame-number": "0"
-											}
-										},
-										{
-											"id": "stop-animation",
-											"objectClass": "InventoryBtns",
-											"sid": 474829464674598
-										}
-									],
-									"sid": 855235283690133
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-instance-variable",
-											"objectClass": "InventoryBtns",
-											"sid": 227846452866644,
-											"parameters": {
-												"instance-variable": "LinkID",
-												"comparison": 0,
-												"value": "Ctrl_Btns.CurrentLink"
-											}
-										}
-									],
-									"actions": [
-										{
-											"id": "set-animation-frame",
-											"objectClass": "InventoryBtns",
-											"sid": 185798274834678,
-											"parameters": {
-												"frame-number": "1"
-											}
-										},
-										{
-											"id": "stop-animation",
-											"objectClass": "InventoryBtns",
-											"sid": 970166900067375
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 368748338421913,
-											"parameters": {
-												"variable": "TempVarY",
-												"value": "\"current link?\"&Ctrl_Btns.CurrentLink&\" ObjectTypeName = \"&InventoryBtns.ObjectTypeName&\" AnimationFrame = \"&InventoryBtns.AnimationFrame"
-											}
-										}
-									],
-									"sid": 406455848345900,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "on-key-pressed",
-													"objectClass": "Keyboard",
-													"sid": 550344924351867,
-													"parameters": {
-														"key": 90
-													}
-												},
-												{
-													"id": "on-button-pressed",
-													"objectClass": "Gamepad",
-													"sid": 953363082254164,
-													"parameters": {
-														"gamepad": "0",
-														"button": "button-b"
-													}
-												},
-												{
-													"id": "on-key-pressed",
-													"objectClass": "Keyboard",
-													"sid": 186267104819246,
-													"parameters": {
-														"key": 32
-													}
-												}
-											],
-											"actions": [],
-											"sid": 315109642839151,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 367858719957086,
-															"parameters": {
-																"first-value": "InventoryBtns.ObjectTypeName",
-																"comparison": 0,
-																"second-value": "\"Btn_Select\"\n"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "selectItem",
-															"sid": 756949137874105
-														}
-													],
-													"sid": 302600365443878
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 522508461810796,
-															"parameters": {
-																"first-value": "InventoryBtns.ObjectTypeName",
-																"comparison": 0,
-																"second-value": "\"Btn_Discard\"\n"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "discardItem",
-															"sid": 299803909163878
-														}
-													],
-													"sid": 436880036018066
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 114675335800265,
-															"parameters": {
-																"first-value": "InventoryBtns.ObjectTypeName",
-																"comparison": 0,
-																"second-value": "\"Btn_Cancel\"\n"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "hideItemHint",
-															"sid": 207072147375379
-														}
-													],
-													"sid": 720391369979197
-												}
-											],
-											"isOrBlock": true
-										}
-									]
-								}
-							]
-						}
-					],
-					"sid": 679437998879336
 				},
 				{
 					"eventType": "group",
@@ -9160,1020 +9541,900 @@
 				{
 					"eventType": "group",
 					"disabled": false,
-					"title": "Player is Active",
-					"description": "\"Player Engine\" is on and player is moving through world",
+					"title": "Menus_Mechanics",
+					"description": "",
 					"isActiveOnStart": true,
 					"children": [
+						{
+							"eventType": "comment",
+							"text": "Text Option Menus"
+						},
 						{
 							"eventType": "block",
 							"conditions": [
 								{
-									"id": "is-group-active",
+									"id": "for-each",
 									"objectClass": "System",
-									"sid": 134077656833494,
+									"sid": 449065334043805,
 									"parameters": {
-										"group-name": "\"Player Engine\""
+										"object": "Ctrl_Menu"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 233267609247300,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 643681883215272,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 0,
+												"value": "Current_Menu"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 165120884286057,
+											"parameters": {
+												"instance-variable": "IsCurrentMenu",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 137780951432167
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "Ctrl_Menu",
+											"sid": 339769590223377,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 1,
+												"value": "Current_Menu"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "Ctrl_Menu",
+											"sid": 179126658667664,
+											"parameters": {
+												"instance-variable": "IsCurrentMenu",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 916510766467417
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "Ctrl_Menu",
+									"sid": 924260540546368,
+									"parameters": {
+										"instance-variable": "IsCurrentMenu"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 959555341062923,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 541739705217296,
+											"parameters": {
+												"key": 40
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 883909825660114,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-down"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 975909372000336,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Menu",
+													"sid": 280046781450981,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 2,
+														"value": "Self.MaxLinks"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Menu",
+													"sid": 572672695210946,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 183666668226862
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 442490441646059,
+											"parameters": {
+												"key": 38
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 748455500686830,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-up"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 967894758770384,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Menu",
+													"sid": 418460933525313,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 4,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-instvar",
+													"objectClass": "Ctrl_Menu",
+													"sid": 129951455419690,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 386669273744500
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 931541908540146,
+											"parameters": {
+												"instance-variable": "Menu",
+												"comparison": 0,
+												"value": "Ctrl_Menu.Menu"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 343389920389152,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 821791027172645,
+													"parameters": {
+														"instance-variable": "Link_ID",
+														"comparison": 0,
+														"value": "Ctrl_Menu.CurrentLink"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-effect-parameter",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 941950736797652,
+													"parameters": {
+														"effect": "\"Brightness\"",
+														"parameter-index": "0",
+														"value": "100"
+													}
+												}
+											],
+											"sid": 250982440596554,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "on-key-pressed",
+															"objectClass": "Keyboard",
+															"sid": 259728515295519,
+															"parameters": {
+																"key": 90
+															}
+														},
+														{
+															"id": "on-button-pressed",
+															"objectClass": "Gamepad",
+															"sid": 747487554133007,
+															"parameters": {
+																"gamepad": "0",
+																"button": "button-b"
+															}
+														},
+														{
+															"id": "on-key-pressed",
+															"objectClass": "Keyboard",
+															"sid": 386054907517156,
+															"parameters": {
+																"key": 32
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "Menu_Select",
+															"sid": 168973762441658,
+															"parameters": [
+																"SpriteFont_Menu.Text",
+																"SpriteFont_Menu.Menu"
+															]
+														}
+													],
+													"sid": 439496410324899,
+													"isOrBlock": true
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 630983509219136,
+													"parameters": {
+														"instance-variable": "Link_ID",
+														"comparison": 1,
+														"value": "Ctrl_Menu.CurrentLink"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-effect-parameter",
+													"objectClass": "SpriteFont_Menu",
+													"sid": 982360211231789,
+													"parameters": {
+														"effect": "\"Brightness\"",
+														"parameter-index": "0",
+														"value": "50"
+													}
+												}
+											],
+											"sid": 145898326830733
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-tap-object",
+									"objectClass": "Touch",
+									"sid": 534291941365175,
+									"parameters": {
+										"object": "SpriteFont_Menu"
+									}
+								}
+							],
+							"actions": [
+								{
+									"callFunction": "Menu_Select",
+									"sid": 159702174860576,
+									"parameters": [
+										"SpriteFont_Menu.Text",
+										"SpriteFont_Menu.Menu"
+									]
+								},
+								{
+									"id": "set-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 323914783702959,
+									"parameters": {
+										"variable": "TouchMode",
+										"value": "true"
+									}
+								}
+							],
+							"sid": 218024235417054
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "cursor-is-over-object",
+									"objectClass": "Mouse",
+									"sid": 287984839768675,
+									"parameters": {
+										"object": "SpriteFont_Menu"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 738939722009169,
+									"parameters": {
+										"instance-variable": "Menu",
+										"comparison": 1,
+										"value": "\"\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 664172780670796,
+									"parameters": {
+										"effect": "\"Brightness\"",
+										"parameter-index": "0",
+										"value": "100"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Menu",
+									"sid": 465067926503757,
+									"parameters": {
+										"instance-variable": "CurrentLink",
+										"value": "SpriteFont_Menu.Link_ID"
+									}
+								}
+							],
+							"sid": 786408640232033,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 983377079228911,
+											"parameters": {
+												"instance-variable": "Link_ID",
+												"comparison": 1,
+												"value": "Ctrl_Menu.CurrentLink"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-effect-parameter",
+											"objectClass": "SpriteFont_Menu",
+											"sid": 579336618369170,
+											"parameters": {
+												"effect": "\"Brightness\"",
+												"parameter-index": "0",
+												"value": "50"
+											}
+										}
+									],
+									"sid": 244602583527881
+								}
+							]
+						},
+						{
+							"eventType": "comment",
+							"text": "Selection of item hint buttons by keyboard"
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 790578041440615,
+									"parameters": {
+										"layer": "\"Hint\""
+									}
+								},
+								{
+									"id": "trigger-once-while-true",
+									"objectClass": "System",
+									"sid": 174056404525062
+								},
+								{
+									"id": "compare-boolean-eventvar",
+									"objectClass": "System",
+									"sid": 164038423700925,
+									"parameters": {
+										"variable": "ButtonMgrActive"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Btns",
+									"sid": 957236971075841,
+									"parameters": {
+										"instance-variable": "MaxLinks",
+										"value": "-1"
+									}
+								},
+								{
+									"id": "set-instvar-value",
+									"objectClass": "Ctrl_Btns",
+									"sid": 233265987375161,
+									"parameters": {
+										"instance-variable": "CurrentLink",
+										"value": "0"
+									}
+								}
+							],
+							"sid": 936349500550638,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each",
+											"objectClass": "System",
+											"sid": 722820923960240,
+											"parameters": {
+												"object": "InventoryBtns"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 678174321107065,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "InventoryBtns",
+													"sid": 515998528305734,
+													"parameters": {
+														"instance-variable": "Actions",
+														"comparison": 1,
+														"value": "\"hidden\""
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 943035279997170,
+													"parameters": {
+														"first-value": "InventoryBtns.ObjectTypeName",
+														"comparison": 1,
+														"second-value": "\"Btn_Arrow\""
+													}
+												},
+												{
+													"id": "compare-two-values",
+													"objectClass": "System",
+													"sid": 214523190735777,
+													"parameters": {
+														"first-value": "InventoryBtns.ObjectTypeName",
+														"comparison": 1,
+														"second-value": "\"Btn_Action\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 549560206541425,
+													"parameters": {
+														"instance-variable": "MaxLinks",
+														"value": "1"
+													}
+												},
+												{
+													"id": "set-instvar-value",
+													"objectClass": "InventoryBtns",
+													"sid": 498526776557575,
+													"parameters": {
+														"instance-variable": "LinkID",
+														"value": "Ctrl_Btns.MaxLinks"
+													}
+												}
+											],
+											"sid": 304542563683963
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "InventoryBtns",
+													"sid": 335089077678901,
+													"parameters": {
+														"instance-variable": "Actions",
+														"comparison": 0,
+														"value": "\"hidden\""
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-instvar-value",
+													"objectClass": "InventoryBtns",
+													"sid": 682183672290720,
+													"parameters": {
+														"instance-variable": "LinkID",
+														"value": "-1"
+													}
+												}
+											],
+											"sid": 684481049596255
+										}
+									]
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "layer-is-visible",
+									"objectClass": "System",
+									"sid": 313562817387073,
+									"parameters": {
+										"layer": "\"Hint\""
+									}
+								},
+								{
+									"id": "is-on-layer",
+									"objectClass": "InventoryBtns",
+									"sid": 621656857267263,
+									"parameters": {
+										"layer": "\"Hint\"\n"
 									}
 								},
 								{
 									"id": "compare-boolean-eventvar",
 									"objectClass": "System",
-									"sid": 963995306240327,
+									"sid": 989351798462573,
 									"parameters": {
-										"variable": "InDialogue"
+										"variable": "ButtonMgrActive"
 									},
 									"isInverted": true
 								}
 							],
 							"actions": [],
-							"sid": 609885731329188,
+							"sid": 371531351289903,
 							"children": [
 								{
-									"eventType": "group",
-									"disabled": false,
-									"title": "Player Action",
-									"description": "",
-									"isActiveOnStart": true,
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 558663625165251,
+											"parameters": {
+												"key": 37
+											}
+										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 487853689137352,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-left"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 528835061915534,
 									"children": [
 										{
-											"eventType": "comment",
-											"text": "Slash"
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Btns",
+													"sid": 640399809991444,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 4,
+														"value": "0"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "subtract-from-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 160423663033818,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 816519479559818
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 470928255344678,
+											"parameters": {
+												"key": 39
+											}
 										},
+										{
+											"id": "on-button-pressed",
+											"objectClass": "Gamepad",
+											"sid": 390316257270784,
+											"parameters": {
+												"gamepad": "0",
+												"button": "d-pad-right"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 376092177988229,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "Ctrl_Btns",
+													"sid": 366598317003393,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"comparison": 2,
+														"value": "Self.MaxLinks"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "add-to-instvar",
+													"objectClass": "Ctrl_Btns",
+													"sid": 128430082580260,
+													"parameters": {
+														"instance-variable": "CurrentLink",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 637562478485666
+										}
+									],
+									"isOrBlock": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "InventoryBtns",
+											"sid": 374659608103255,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"comparison": 1,
+												"value": "Ctrl_Btns.CurrentLink"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "InventoryBtns",
+											"sid": 866698356628961,
+											"parameters": {
+												"frame-number": "0"
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "InventoryBtns",
+											"sid": 255790658319709
+										}
+									],
+									"sid": 586741390786880
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "InventoryBtns",
+											"sid": 556292538294174,
+											"parameters": {
+												"instance-variable": "LinkID",
+												"comparison": 0,
+												"value": "Ctrl_Btns.CurrentLink"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-animation-frame",
+											"objectClass": "InventoryBtns",
+											"sid": 268563308413861,
+											"parameters": {
+												"frame-number": "1"
+											}
+										},
+										{
+											"id": "stop-animation",
+											"objectClass": "InventoryBtns",
+											"sid": 993001535958994
+										}
+									],
+									"sid": 469348574389203,
+									"children": [
 										{
 											"eventType": "block",
 											"conditions": [
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 650311503562123,
+													"sid": 712366743540973,
 													"parameters": {
-														"key": 65
+														"key": 90
 													}
 												},
 												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 396086693860817,
+													"id": "on-button-pressed",
+													"objectClass": "Gamepad",
+													"sid": 721122740702641,
 													"parameters": {
-														"first-value": "PlayerAttackCooldown",
-														"comparison": 3,
-														"second-value": "0"
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "StartAttack",
-													"sid": 692279968015697
-												}
-											],
-											"sid": 256369553617262
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "on-tap-object",
-													"objectClass": "Touch",
-													"sid": 117912771864648,
-													"parameters": {
-														"object": "Btn_Action"
+														"gamepad": "0",
+														"button": "button-b"
 													}
 												},
 												{
-													"id": "compare-two-values",
-													"objectClass": "System",
-													"sid": 752643578849242,
-													"parameters": {
-														"first-value": "PlayerAttackCooldown",
-														"comparison": 3,
-														"second-value": "0"
-													}
-												},
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "Btn_Action",
-													"sid": 857503735451679,
-													"parameters": {
-														"instance-variable": "Actions",
-														"comparison": 0,
-														"value": "\"Attack\""
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "StartAttack",
-													"sid": 432940516802877
-												}
-											],
-											"sid": 877822256123223
-										}
-									],
-									"sid": 250486973387350
-								},
-								{
-									"eventType": "group",
-									"disabled": false,
-									"title": "Player Walk",
-									"description": "Detect for input to move player",
-									"isActiveOnStart": true,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 470040224444486,
-													"parameters": {
-														"variable": "TouchMode"
-													}
-												}
-											],
-											"actions": [],
-											"sid": 800399529680963,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 297619612558673,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-animation-frame-tag",
-															"objectClass": "DPad_Arrow",
-															"sid": 543156665208478,
-															"parameters": {
-																"comparison": 0,
-																"tag": "\"LtUp\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 439870466888946,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "up"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 354992826859067,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 731001458943273,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Up\""
-															}
-														}
-													],
-													"sid": 633224196340157
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 612542983986249,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "DPad_Arrow",
-															"sid": 382387026202191,
-															"parameters": {
-																"instance-variable": "Direction",
-																"comparison": 0,
-																"value": "\"UpLeft\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 695448373925660,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "up"
-															}
-														},
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 578799254401976,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "left"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 122230722985189,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 695735122546709,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Up\""
-															}
-														}
-													],
-													"sid": 212274240874380
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 287342820602819,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-animation-frame-tag",
-															"objectClass": "DPad_Arrow",
-															"sid": 414616450951725,
-															"parameters": {
-																"comparison": 0,
-																"tag": "\"LtLeft\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 267054863987715,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "left"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 477691540244952,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 500187633124149,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Left\""
-															}
-														}
-													],
-													"sid": 228552511934932
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 517528543921656,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "DPad_Arrow",
-															"sid": 318138415449017,
-															"parameters": {
-																"instance-variable": "Direction",
-																"comparison": 0,
-																"value": "\"DownLeft\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 150412580481946,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "down"
-															}
-														},
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 620121368098997,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "left"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 391399809408321,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 474379819233332,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Down\""
-															}
-														}
-													],
-													"sid": 501069628493630
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 172917928527159,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-animation-frame-tag",
-															"objectClass": "DPad_Arrow",
-															"sid": 383977686510485,
-															"parameters": {
-																"comparison": 0,
-																"tag": "\"LtDown\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 670492677190424,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "down"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 777875881500652,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 190913693702581,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Down\""
-															}
-														}
-													],
-													"sid": 778480398574015
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 757389974176787,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "DPad_Arrow",
-															"sid": 785451311056730,
-															"parameters": {
-																"instance-variable": "Direction",
-																"comparison": 0,
-																"value": "\"DownRight\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 971494058087512,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "down"
-															}
-														},
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 971811313160724,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "right"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 847233037039454,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 622872274115387,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Down\""
-															}
-														}
-													],
-													"sid": 765026566481185
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 832304298598635,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-animation-frame-tag",
-															"objectClass": "DPad_Arrow",
-															"sid": 238711465498941,
-															"parameters": {
-																"comparison": 0,
-																"tag": "\"LtRight\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 549949485397363,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "right"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 656303156936987,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 435147406232669,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Right\""
-															}
-														}
-													],
-													"sid": 770345138452735
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "is-touching-object",
-															"objectClass": "Touch",
-															"sid": 439611885890959,
-															"parameters": {
-																"object": "DPad_Arrow"
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "DPad_Arrow",
-															"sid": 683618194779085,
-															"parameters": {
-																"instance-variable": "Direction",
-																"comparison": 0,
-																"value": "\"UpRight\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 433538874708948,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "up"
-															}
-														},
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 154577332759639,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "right"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 543083953122232,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 654394917886618,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Up\""
-															}
-														}
-													],
-													"sid": 667157819058846
-												}
-											]
-										},
-										{
-											"eventType": "comment",
-											"text": "Allow the player to move in 8 directions but only change directions if a single direction is being pressed."
-										},
-										{
-											"eventType": "comment",
-											"text": "Keyboard"
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "key-is-down",
+													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 815784599944497,
+													"sid": 484912397224954,
 													"parameters": {
-														"key": 38
+														"key": 32
 													}
 												}
 											],
 											"actions": [],
-											"sid": 510742580781960,
+											"sid": 384812031450959,
 											"children": [
 												{
 													"eventType": "block",
 													"conditions": [
 														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 190125024477012,
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 809446663171647,
 															"parameters": {
-																"key": 40
-															},
-															"isInverted": true
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Select\"\n"
+															}
 														}
 													],
 													"actions": [
 														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 690544851393685,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "up"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 478396758612301,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 495136594232411,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Up\""
-															}
+															"callFunction": "selectItem",
+															"sid": 256090219190720
 														}
 													],
-													"sid": 178208440827577
+													"sid": 255736366403710
 												},
 												{
 													"eventType": "block",
 													"conditions": [
 														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 967440310914083,
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 895721654016022,
 															"parameters": {
-																"key": 37
-															},
-															"isInverted": true
-														},
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 269361792387362,
-															"parameters": {
-																"key": 39
-															},
-															"isInverted": true
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Discard\"\n"
+															}
 														}
 													],
-													"actions": [],
-													"sid": 412758655907474
+													"actions": [
+														{
+															"callFunction": "discardItem",
+															"sid": 995544960244175
+														}
+													],
+													"sid": 268692802378357
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 317029221252542,
+															"parameters": {
+																"first-value": "InventoryBtns.ObjectTypeName",
+																"comparison": 0,
+																"second-value": "\"Btn_Cancel\"\n"
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "hideItemHint",
+															"sid": 124281798585583
+														}
+													],
+													"sid": 913475233554444
 												}
 											],
 											"isOrBlock": true
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 299133885533341,
-													"parameters": {
-														"key": 40
-													}
-												}
-											],
-											"actions": [],
-											"sid": 594348268211337,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 608359526832053,
-															"parameters": {
-																"key": 38
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 896725204469311,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "down"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 575951019922664,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 137927141717675,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Down\""
-															}
-														}
-													],
-													"sid": 210333084695597
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 695976820031422,
-															"parameters": {
-																"key": 37
-															},
-															"isInverted": true
-														},
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 261831048291392,
-															"parameters": {
-																"key": 39
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [],
-													"sid": 636137980940864
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 887132451908060,
-													"parameters": {
-														"key": 37
-													}
-												}
-											],
-											"actions": [],
-											"sid": 889868488905225,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 360303135643272,
-															"parameters": {
-																"key": 39
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 728697413118536,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "left"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 237640200476054,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 728076766426512,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Left\""
-															}
-														}
-													],
-													"sid": 777955656788866
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 116298410066454,
-															"parameters": {
-																"key": 38
-															},
-															"isInverted": true
-														},
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 919423285302611,
-															"parameters": {
-																"key": 40
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [],
-													"sid": 932368886409896
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 776639641469689,
-													"parameters": {
-														"key": 39
-													}
-												}
-											],
-											"actions": [],
-											"sid": 151686644140816,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 607337673812309,
-															"parameters": {
-																"key": 37
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"id": "simulate-control",
-															"objectClass": "Player_Base",
-															"sid": 107110151939916,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"control": "right"
-															}
-														},
-														{
-															"id": "set-boolean-instvar",
-															"objectClass": "Player_Mask",
-															"sid": 350818179602932,
-															"parameters": {
-																"instance-variable": "Walking",
-																"value": "true"
-															}
-														},
-														{
-															"id": "set-instvar-value",
-															"objectClass": "Player_Mask",
-															"sid": 114407278594690,
-															"parameters": {
-																"instance-variable": "Direction",
-																"value": "\"Right\""
-															}
-														}
-													],
-													"sid": 291120332672127
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 548012126004913,
-															"parameters": {
-																"key": 38
-															},
-															"isInverted": true
-														},
-														{
-															"id": "key-is-down",
-															"objectClass": "Keyboard",
-															"sid": 260554199302705,
-															"parameters": {
-																"key": 40
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [],
-													"sid": 209559866940848
-												}
-											]
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 400889704441855,
-													"parameters": {
-														"key": 38
-													},
-													"isInverted": true
-												},
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 673232105575813,
-													"parameters": {
-														"key": 40
-													},
-													"isInverted": true
-												},
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 794568203189670,
-													"parameters": {
-														"key": 37
-													},
-													"isInverted": true
-												},
-												{
-													"id": "key-is-down",
-													"objectClass": "Keyboard",
-													"sid": 692222524702983,
-													"parameters": {
-														"key": 39
-													},
-													"isInverted": true
-												},
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 415635974963958,
-													"parameters": {
-														"object": "DPad_Arrow"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [
-												{
-													"id": "set-boolean-instvar",
-													"objectClass": "Player_Mask",
-													"sid": 161248534683187,
-													"parameters": {
-														"instance-variable": "Walking",
-														"value": "false"
-													}
-												}
-											],
-											"sid": 500370667901788
 										}
-									],
-									"sid": 339891723693422
+									]
 								}
 							]
 						}
 					],
-					"sid": 958060508946580
+					"sid": 748823808394702
 				}
 			],
 			"sid": 327192124059834

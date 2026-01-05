@@ -408,6 +408,7 @@
 					"id": "set-group-active",
 					"objectClass": "System",
 					"sid": 450504985873595,
+					"disabled": true,
 					"parameters": {
 						"group-name": "\"Player Engine\"",
 						"state": "deactivated"

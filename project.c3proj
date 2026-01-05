@@ -763,7 +763,16 @@
 					"name": "utils"
 				},
 				{
-					"items": [],
+					"items": [
+						{
+							"name": "game-state-manager.ts",
+							"type": "application/typescript",
+							"sid": 317456393426529,
+							"script-info": {
+								"purpose": "none"
+							}
+						}
+					],
 					"subfolders": [
 						{
 							"items": [

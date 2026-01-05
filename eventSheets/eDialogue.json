@@ -671,6 +671,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 531743356140464,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
@@ -680,6 +681,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 186976400272583,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "deactivated"
@@ -1520,6 +1522,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 837803083772915,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Player Engine\"",
 										"state": "deactivated"
@@ -1529,6 +1532,7 @@
 									"id": "set-group-active",
 									"objectClass": "System",
 									"sid": 792243657557154,
+									"disabled": true,
 									"parameters": {
 										"group-name": "\"Enemies\"",
 										"state": "deactivated"
@@ -2226,6 +2230,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 951282809925270,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "activated"
@@ -2235,6 +2240,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 834965331262614,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "activated"
@@ -2385,6 +2391,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 844117200587021,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "activated"
@@ -2394,6 +2401,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 693711190802274,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "activated"

@@ -4850,6 +4850,15 @@
 							}
 						},
 						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 974004713711745,
+							"parameters": {
+								"variable": "ButtonMgrActive"
+							},
+							"isInverted": true
+						},
+						{
 							"id": "cursor-is-over-object",
 							"objectClass": "Mouse",
 							"sid": 762332797669740,
@@ -7754,6 +7763,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 513046280446428,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Player Engine\"",
 								"state": "deactivated"
@@ -7763,6 +7773,7 @@
 							"id": "set-group-active",
 							"objectClass": "System",
 							"sid": 460449611128935,
+							"disabled": true,
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "deactivated"
@@ -10172,7 +10183,8 @@
 									}
 								}
 							],
-							"sid": 288211007817488
+							"sid": 288211007817488,
+							"disabled": true
 						},
 						{
 							"eventType": "block",
