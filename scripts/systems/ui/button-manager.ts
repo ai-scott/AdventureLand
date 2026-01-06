@@ -611,25 +611,51 @@ export class UIButtonManager {
       const buttonInstance = this.getButtonInstance(state.uid);
       if (!buttonInstance) return;
 
-      // Set both frame AND opacity for visual feedback
-      // Note: Frame may get reset by C3, but opacity persists reliably
+      // Set animation frame for visual feedback
       const isHighlighted = state.config.linkID === currentLink;
       const newFrame = isHighlighted ? highlightedFrame : normalFrame;
 
       buttonInstance.animationFrame = newFrame;
-      buttonInstance.opacity = isHighlighted ? 1.0 : 0.6;
 
       // Ensure proper z-order when highlighting (prevents text from going behind)
       buttonInstance.moveToTop();
 
-      // Update text opacity and z-order for consistency
+      // Update text z-order for consistency
       if (state.textUID) {
         const textInstance = this.getTextInstance(state.textUID);
         if (textInstance) {
-          textInstance.opacity = isHighlighted ? 1.0 : 0.6;
           textInstance.moveToTop();  // Keep text above button
         }
       }
+    });
+  }
+
+  /**
+   * Highlight specific button by UID (for mouse hover)
+   * Mouse has priority - changes frame regardless of keyboard selection
+   *
+   * @param buttonUID - UID of button to highlight (or -1 to restore keyboard selection)
+   */
+  static highlightButtonByUID(buttonUID: number): void {
+    if (!this.runtime) return;
+
+    // If UID is -1, restore keyboard-based highlighting
+    if (buttonUID === -1) {
+      // Find current keyboard selection
+      const currentLink = this.runtime.globalVars?.ItemBtnSelection ?? 0;
+      this.updateButtonHighlights(currentLink);
+      return;
+    }
+
+    // Highlight only the hovered button, normal state for others
+    this.buttonPool.forEach((state) => {
+      if (!state.isVisible) return;
+
+      const buttonInstance = this.getButtonInstance(state.uid);
+      if (!buttonInstance) return;
+
+      const isHovered = state.uid === buttonUID;
+      buttonInstance.animationFrame = isHovered ? 1 : 0;
     });
   }
 
