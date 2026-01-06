@@ -6,36 +6,55 @@
 ## Overview
 This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
 
-## Current Sprint: UI Button System (Phase 2)
+## Current Sprint: UI Button System - Phase 1 ✅ COMPLETE!
 
-### 🔄 IN PROGRESS: Message Panels & Notifications
+### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
 
-**Goal**: Panels with background + content + buttons (solves Bug #9!)
+**Bug #9 RESOLVED!** Item pickup notifications now have interactive buttons.
 
-- [ ] Test buttons with first item pickup notification
-  - Add "Open [icon=Bag]" and "Dismiss" buttons
-  - Validate relative positioning works
-  - Validate keyboard navigation (LinkID + Ctrl_Btns)
-  - Confirm button click actions work
+- [x] Core ButtonManager implementation
+  - Button pooling and reuse
+  - Auto-sized text labels with [icon=Name] support
+  - Relative positioning (absolute, relative-to-object, relative-to-previous)
+  - 24px button height, centered text
+  - Z-order management (text above buttons above background)
+
+- [x] Full keyboard navigation
+  - Arrow keys (left/right) to select between buttons
+  - Spacebar to activate selected button
+  - Animation frame highlighting (frame 1 = yellow outline)
+  - ItemBtnSelection variable tracks selection (avoids Ctrl_Btns conflicts)
+  - ButtonMgrActive flag prevents interference with other systems
+
+- [x] Mouse hover support
+  - Mouse priority - highlights hovered button
+  - Restores keyboard selection when mouse leaves
+  - highlightButtonByUID() method for direct control
+  - ButtonMgrActive checks prevent InventoryBtns conflicts
+
+- [x] GameState Manager (BONUS!)
+  - Centralized engine group control (Player Engine, Enemies, Triggers)
+  - Every-tick controller prevents race conditions
+  - Foundation for future state management expansion
+
+- [x] Integration & testing
+  - Item pickup shows "Open [icon=Bag]" and "Close" buttons
+  - Opens inventory or dismisses notification
+  - No player movement during button interaction
+  - No item hint on inventory open
+  - All cleanup properly handled
+
+**Result**: Phase 1 complete, Bug #9 resolved, production-ready system!
+
+### 📋 NEXT: UI Button System - Phase 2 (Future)
 
 - [ ] Implement MessagePanelManager
-  - Panel size calculation (measures content)
-  - Background sprite auto-sizing
+  - Panel with auto-sized background
   - Content layout (title, description, stats, buttons)
-  - Icon positioning (left/right/top)
-  - Stat displays ([icon] + number)
+  - Icon positioning, stat displays
 
-- [ ] Implement UIHelpers
-  - showItemPanel() - item interactions
-  - showShopPanel() - shop purchases
-  - showItemPickupNotification() - **Bug #9!**
-
-- [ ] Implement NotificationManager
-  - Queue with priority
-  - Auto-dismiss
-  - "Show once" tracking
-
-**Success**: Bug #9 resolved, <1% CPU overhead
+- [ ] Implement UIHelpers convenience functions
+- [ ] Implement NotificationManager (queue, auto-dismiss)
 
 ### 📋 NEXT: UI Button System - Phase 3 (Week 4)
 
@@ -56,7 +75,6 @@ This is the single source of truth for all active development tasks. Completed w
 ### 🐛 Bug Fixes
 
 - [ ] **Bug #4**: Sally hotspot blocks interactive objects
-- [ ] **Bug #9**: First item notification (**Solving in UI Phase 2!**)
 
 ### 🎨 Polish Items
 
