@@ -4822,6 +4822,15 @@
 							"parameters": {
 								"object": "InventoryBtns"
 							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 720438258634249,
+							"parameters": {
+								"variable": "ButtonMgrActive"
+							},
+							"isInverted": true
 						}
 					],
 					"actions": [
