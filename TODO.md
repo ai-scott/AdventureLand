@@ -78,8 +78,8 @@ This is the single source of truth for all active development tasks. Completed w
 
 ### 🎨 Polish Items
 
-- [ ] Audio: Fix inconsistent soundtrack loading
-- [ ] Animation: Fix player animation during transitions
+- [x] Audio: Fix inconsistent soundtrack loading ✅ COMPLETE (Dec 2025)
+- [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
 - [ ] Quest: Remove legacy quest items from dictionary
 
 ## Future: TypeScript Modernization (Phase 2-3)
