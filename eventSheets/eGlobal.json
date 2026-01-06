@@ -7747,6 +7747,218 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"eventType": "group",
+							"disabled": false,
+							"title": "Button Manager",
+							"description": "",
+							"isActiveOnStart": true,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 423928319964668,
+											"parameters": {
+												"key": 37
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 995360393889021,
+											"parameters": {
+												"variable": "ItemBtnSelection",
+												"comparison": 4,
+												"value": "0"
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 663198734729561,
+											"parameters": {
+												"variable": "ButtonMgrActive"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(\"⬅️ LEFT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
+											]
+										},
+										{
+											"id": "subtract-from-eventvar",
+											"objectClass": "System",
+											"sid": 844540041878447,
+											"parameters": {
+												"variable": "ItemBtnSelection",
+												"value": "1"
+											}
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+												"    if (buttonMgr) {",
+												"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
+												"      console.log(\"⬅️ LEFT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
+												"    }"
+											]
+										}
+									],
+									"sid": 197714208200505
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "on-key-pressed",
+											"objectClass": "Keyboard",
+											"sid": 602662764716895,
+											"parameters": {
+												"key": 39
+											}
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 459721317724106,
+											"parameters": {
+												"variable": "ButtonMgrActive"
+											}
+										},
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 187356258710055,
+											"parameters": {
+												"variable": "ItemBtnSelection",
+												"comparison": 2,
+												"value": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(\"➡️ RIGHT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
+											]
+										},
+										{
+											"id": "add-to-eventvar",
+											"objectClass": "System",
+											"sid": 629735930096430,
+											"parameters": {
+												"variable": "ItemBtnSelection",
+												"value": "1"
+											}
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+												"    if (buttonMgr) {",
+												"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
+												"      console.log(\"➡️ RIGHT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
+												"    }"
+											]
+										}
+									],
+									"sid": 782687959820617
+								},
+								{
+									"eventType": "group",
+									"disabled": false,
+									"title": "Cursor is over Btn_Action",
+									"description": "",
+									"isActiveOnStart": true,
+									"children": [
+										{
+											"eventType": "comment",
+											"text": "Mouse: Cursor is over Btn_Action"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 299367708971202,
+													"parameters": {
+														"variable": "ButtonMgrActive"
+													}
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+														"if (buttonMgr) {",
+														"  const hoveredBtn = runtime.objects.Btn_Action.getFirstPickedInstance();",
+														"  if (hoveredBtn) {",
+														"    runtime.globalVars.MouseOverButton = hoveredBtn.uid;  // Store which button is hovered",
+														"    buttonMgr.highlightButtonByUID(hoveredBtn.uid);",
+														"  }",
+														"}"
+													]
+												}
+											],
+											"sid": 239397982438796
+										},
+										{
+											"eventType": "comment",
+											"text": "Mouse: Cursor is NOT over Btn_Action"
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 348807305433457,
+													"parameters": {
+														"variable": "ButtonMgrActive"
+													}
+												},
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 361645484256582
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+														"    if (buttonMgr) {",
+														"      // Restore keyboard-based highlighting (-1 means restore to ItemBtnSelection)",
+														"      buttonMgr.highlightButtonByUID(-1);",
+														"    }"
+													]
+												}
+											],
+											"sid": 264535433375353
+										}
+									],
+									"sid": 344763668179089
+								}
+							],
+							"sid": 607020567019639
+						},
+						{
 							"eventType": "block",
 							"conditions": [
 								{
@@ -7785,128 +7997,6 @@
 								}
 							],
 							"sid": 983607908481668
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 323529181530411,
-									"parameters": {
-										"key": 37
-									}
-								},
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 247838134399879,
-									"parameters": {
-										"variable": "ItemBtnSelection",
-										"comparison": 4,
-										"value": "0"
-									}
-								},
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 615583759447874,
-									"parameters": {
-										"variable": "ButtonMgrActive"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"console.log(\"⬅️ LEFT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
-									]
-								},
-								{
-									"id": "subtract-from-eventvar",
-									"objectClass": "System",
-									"sid": 289036763778614,
-									"parameters": {
-										"variable": "ItemBtnSelection",
-										"value": "1"
-									}
-								},
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
-										"    if (buttonMgr) {",
-										"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
-										"      console.log(\"⬅️ LEFT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
-										"    }"
-									]
-								}
-							],
-							"sid": 307567260519753
-						},
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 101609347443110,
-									"parameters": {
-										"key": 39
-									}
-								},
-								{
-									"id": "compare-boolean-eventvar",
-									"objectClass": "System",
-									"sid": 726148192971433,
-									"parameters": {
-										"variable": "ButtonMgrActive"
-									}
-								},
-								{
-									"id": "compare-eventvar",
-									"objectClass": "System",
-									"sid": 627776485003128,
-									"parameters": {
-										"variable": "ItemBtnSelection",
-										"comparison": 2,
-										"value": "1"
-									}
-								}
-							],
-							"actions": [
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"console.log(\"➡️ RIGHT ARROW - Before:\", runtime.globalVars.ItemBtnSelection);"
-									]
-								},
-								{
-									"id": "add-to-eventvar",
-									"objectClass": "System",
-									"sid": 732526834970097,
-									"parameters": {
-										"variable": "ItemBtnSelection",
-										"value": "1"
-									}
-								},
-								{
-									"type": "script",
-									"language": "javascript",
-									"script": [
-										"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
-										"    if (buttonMgr) {",
-										"      buttonMgr.updateButtonHighlights(runtime.globalVars.ItemBtnSelection);",
-										"      console.log(\"➡️ RIGHT ARROW - After:\", runtime.globalVars.ItemBtnSelection);",
-										"    }"
-									]
-								}
-							],
-							"sid": 928811806069245
 						},
 						{
 							"eventType": "block",
@@ -8167,7 +8257,7 @@
 							"children": [
 								{
 									"eventType": "comment",
-									"text": "Inspect Items"
+									"text": "Inspect Items in World & Inventory"
 								},
 								{
 									"eventType": "block",

@@ -25,10 +25,37 @@ None! 🎉
 ### Inventory UI
 
 ### First-Time Experience
-- [ ] **#9**: When finding new item type for first time, should show prompt to open inventory
+- [X] **#9**: When finding new item type for first time, should show prompt to open inventory
 
-**Systems Involved**: Item pickup, UI notifications
+**Systems Involved**: Item pickup, UI notifications, ButtonManager
 **Priority**: MEDIUM - Nice-to-have feature
+
+**#9 Status**: RESOLVED - Implemented complete UI Button System with keyboard navigation
+**Solution**: Created UIButtonManager with full mouse/keyboard support:
+  - Shows "Open [icon=Bag]" and "Close" buttons on item pickup notifications
+  - Arrow key navigation (left/right to select, spacebar to activate)
+  - Mouse hover support with priority over keyboard selection
+  - Animation frame highlighting (frame 1 = highlighted, frame 0 = normal)
+  - Proper state management (ButtonMgrActive flag prevents conflicts)
+  - Centralized engine control prevents player movement during button interaction
+
+**Files Created**:
+  - `scripts/systems/ui/button-manager.ts` (core button pooling and management)
+  - `scripts/systems/ui/ui-types.ts` (TypeScript interfaces)
+  - `scripts/systems/game-state-manager.ts` (centralized state control)
+
+**Files Modified**:
+  - `scripts/main.ts` (ButtonManager + GameState namespaces)
+  - `eventSheets/eDialogue.json` (button creation in showMessage)
+  - `eventSheets/eGlobal.json` (keyboard nav, centralized engine control, mouse hover)
+  - `eventSheets/eInventory.json` (conflict prevention)
+
+**Result**:
+  - Item notifications show interactive buttons
+  - Full keyboard navigation support
+  - Mouse hover highlights buttons with priority
+  - Clean state transitions, no race conditions
+  - Foundation for Phase 2 (MessagePanelManager) and Phase 3 (ButtonActionRegistry)
 
 ## Low Priority (Visual/UI Polish)
 
