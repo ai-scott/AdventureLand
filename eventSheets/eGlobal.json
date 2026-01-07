@@ -7773,7 +7773,18 @@
 									"sid": 135915695331738
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const triggerMgr = globalThis.AdventureLand?.TriggerManager;",
+										"    if (triggerMgr) {",
+										"      triggerMgr.triggerCurrent(runtime);",
+										"    }"
+									]
+								}
+							],
 							"sid": 238773707236066,
 							"children": [
 								{
@@ -7809,6 +7820,7 @@
 									],
 									"actions": [],
 									"sid": 649435145558529,
+									"disabled": true,
 									"children": [
 										{
 											"eventType": "block",
@@ -7843,6 +7855,7 @@
 											],
 											"actions": [],
 											"sid": 801243090436378,
+											"disabled": true,
 											"children": [
 												{
 													"eventType": "block",
@@ -7874,7 +7887,8 @@
 															"sid": 266659886525874
 														}
 													],
-													"sid": 121366240559428
+													"sid": 121366240559428,
+													"disabled": true
 												},
 												{
 													"eventType": "block",
@@ -7897,6 +7911,7 @@
 														}
 													],
 													"sid": 824442849437505,
+													"disabled": true,
 													"isOrBlock": true
 												},
 												{
@@ -7943,7 +7958,8 @@
 															}
 														}
 													],
-													"sid": 404350003920895
+													"sid": 404350003920895,
+													"disabled": true
 												},
 												{
 													"eventType": "block",
@@ -7991,7 +8007,8 @@
 															"sid": 277088068173966
 														}
 													],
-													"sid": 841960075831484
+													"sid": 841960075831484,
+													"disabled": true
 												}
 											]
 										}
@@ -8517,7 +8534,8 @@
 													]
 												}
 											],
-											"sid": 486291389442886
+											"sid": 486291389442886,
+											"disabled": true
 										},
 										{
 											"eventType": "block",

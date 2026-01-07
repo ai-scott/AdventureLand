@@ -52,7 +52,17 @@ export class DialogueController {
 
     // Register with InputManager for dialogue context
     InputManager.registerHandler('dialogue', {
-      onSpace: () => this.handleSpacePress(),
+      onSpace: () => {
+        // TEMPORARY: Call old DialogueBridge.advance() if using old system
+        // TODO: Remove this once fully migrated to DialogueController
+        const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+        if (dialogue && runtime.globalVars.InDialogue) {
+          console.log('🎹 [Dialogue Context] Space pressed - calling old dialogue.advance()');
+          dialogue.advance(runtime);
+        } else {
+          this.handleSpacePress();
+        }
+      },
       onEnter: () => this.handleEnter(),
       onEscape: () => this.handleEscape(),
       onArrowUp: () => this.handleArrowUp(),

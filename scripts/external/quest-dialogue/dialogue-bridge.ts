@@ -41,6 +41,13 @@ export class DialogueBridge {
       runtime.globalVars.InDialogue = true;
       console.log(`🎭 [START] Starting dialogue with ${npcId}`);
 
+      // Switch InputManager to dialogue context (for new input system)
+      const inputMgr = (globalThis as any).AdventureLand?.InputManager;
+      if (inputMgr) {
+        inputMgr.setContext('dialogue');
+        console.log('🎮 [START] Switched InputManager to dialogue context');
+      }
+
       const playerState = this.getPlayerStateFromRuntime(runtime);
       const node = DialogueManager.getDialogueForNPC(npcId, playerState);
 
@@ -406,6 +413,13 @@ export class DialogueBridge {
     const adventureLand = (globalThis as any).AdventureLand;
     if (adventureLand?.EnemyPause) {
       adventureLand.EnemyPause.resume("dialogue");
+    }
+
+    // Switch InputManager back to game context (for new input system)
+    const inputMgr = adventureLand?.InputManager;
+    if (inputMgr) {
+      inputMgr.setContext('game');
+      console.log('🎮 [END] Switched InputManager back to game context');
     }
 
     // Call the event sheet's endDialogue function

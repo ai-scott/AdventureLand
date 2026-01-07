@@ -821,6 +821,7 @@
 										{
 											"callFunction": "checkForInteractionHint",
 											"sid": 822495769714165,
+											"disabled": true,
 											"parameters": [
 												"\"\""
 											]
@@ -829,6 +830,16 @@
 											"id": "move-to-top",
 											"objectClass": "Glimmer",
 											"sid": 423830058622034
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const triggerMgr = globalThis.AdventureLand?.TriggerManager;",
+												"if (triggerMgr) {",
+												"  triggerMgr.checkProximity(runtime);",
+												"}"
+											]
 										}
 									],
 									"sid": 765619192007108

@@ -523,8 +523,21 @@ runOnStartup(async runtime => {
       // Step 3: Initialize DialogueController
       DialogueController.initialize(runtime);
 
-      // Step 4: Register all 5 trigger types with TriggerManager
-      // (We'll do this after DialogueController is set up)
+      // Step 4: Register game context handler with InputManager
+      InputManager.registerHandler('game', {
+        onSpace: () => {
+          console.log('🎹 [Game Context] Space pressed - checking triggers');
+          TriggerManager.triggerCurrent(runtime);
+        }
+      });
+
+      // Step 5: Register menu context (no handlers - let C3 menus work normally)
+      InputManager.registerHandler('menu', {
+        // Empty handler - let C3 event sheets handle menu input
+      });
+
+      // Step 6: Start in menu context (will switch to 'game' on layout start)
+      InputManager.setActiveContext('menu');
 
       console.log("✅ Input/Trigger/Dialogue systems initialized!");
     } catch (error) {
@@ -651,11 +664,16 @@ runOnStartup(async runtime => {
       TriggerManager.registerTriggerType('character', 1, {
         canTrigger: (trigger, runtime) => !DialogueController.isActive(),
         onTrigger: (trigger, runtime) => {
-          const npcId = trigger.instVars?.ObjectTypeName || 'Unknown';
+          // Get NPC ID from object type name (e.g., "Trigger_Penny")
+          const objectTypeName = trigger.objectType?.name || 'Unknown';
+          // Remove "Trigger_" prefix if present
+          const npcId = objectTypeName.replace('Trigger_', '');
+          console.log(`🎯 [TriggerManager] Triggering NPC: ${npcId} (from ${objectTypeName})`);
           DialogueController.start(npcId, runtime, trigger.uid);
         },
         getHintText: (trigger) => {
-          const npcName = trigger.instVars?.ObjectTypeName || 'NPC';
+          const objectTypeName = trigger.objectType?.name || 'NPC';
+          const npcName = objectTypeName.replace('Trigger_', '');
           return `[Space] Talk to ${npcName}`;
         }
       }, 'CharactersTriggers');

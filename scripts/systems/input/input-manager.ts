@@ -164,11 +164,13 @@ export class InputManager {
         break;
     }
 
-    // Prevent C3 event sheet from also processing this key
+    // Only prevent default if we actually handled the input
+    // If no handler for current context, let C3 event sheets handle it (e.g., menus)
     if (handled) {
       e.preventDefault();
       e.stopPropagation();
     }
+    // If not handled, C3 event sheets will process normally (menu system, etc.)
   }
 
   /**
