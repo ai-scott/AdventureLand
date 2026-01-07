@@ -27,14 +27,14 @@
 export type InputContext = 'game' | 'dialogue' | 'menu' | 'inventory';
 
 export interface InputHandler {
-  onSpace?: () => void;
-  onEnter?: () => void;
-  onEscape?: () => void;
-  onArrowUp?: () => void;
-  onArrowDown?: () => void;
-  onArrowLeft?: () => void;
-  onArrowRight?: () => void;
-  onClick?: (x: number, y: number) => void;
+  onSpace?: () => boolean | void; // Return false to NOT preventDefault (let C3 handle)
+  onEnter?: () => boolean | void;
+  onEscape?: () => boolean | void;
+  onArrowUp?: () => boolean | void;
+  onArrowDown?: () => boolean | void;
+  onArrowLeft?: () => boolean | void;
+  onArrowRight?: () => boolean | void;
+  onClick?: (x: number, y: number) => boolean | void;
 }
 
 export class InputManager {
@@ -116,8 +116,9 @@ export class InputManager {
       case ' ':
       case 'Spacebar': // Legacy browser support
         if (handler.onSpace) {
-          handler.onSpace();
-          handled = true;
+          const result = handler.onSpace();
+          // Handler can return false to NOT preventDefault (let C3 handle)
+          handled = result !== false;
         }
         break;
 

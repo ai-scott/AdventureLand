@@ -131,7 +131,7 @@ export class DialogueController {
 
   /**
    * Handle spacebar press during dialogue
-   * This is where we control when to advance!
+   * TEMPORARY: Not used while using DialogueBridge (called from initialize onSpace handler)
    */
   private static handleSpacePress(): void {
     console.log(`🎹 [DialogueController] Space pressed (state: ${this.state})`);
@@ -193,11 +193,15 @@ export class DialogueController {
    * Handle arrow up (option selection)
    */
   private static handleArrowUp(): void {
-    if (this.state === DialogueState.SHOWING_OPTIONS) {
+    // TEMPORARY: Check OptionsOpen instead of state when using DialogueBridge
+    const checkOptions = this.runtime?.globalVars.OptionsOpen || (this.state === DialogueState.SHOWING_OPTIONS);
+
+    if (checkOptions && this.runtime) {
       const current = this.runtime.globalVars.OptionSelection;
       if (current > 0) {
         this.runtime.globalVars.OptionSelection = current - 1;
-        this.runtime.callFunction("changeDialogueSelection");
+        this.updateOptionUI();
+        console.log('⬆️ [DialogueController] Arrow up - selection now:', current - 1);
       }
     }
   }
@@ -206,13 +210,37 @@ export class DialogueController {
    * Handle arrow down (option selection)
    */
   private static handleArrowDown(): void {
-    if (this.state === DialogueState.SHOWING_OPTIONS) {
+    // TEMPORARY: Check OptionsOpen instead of state when using DialogueBridge
+    const checkOptions = this.runtime?.globalVars.OptionsOpen || (this.state === DialogueState.SHOWING_OPTIONS);
+
+    if (checkOptions && this.runtime) {
       const current = this.runtime.globalVars.OptionSelection;
-      const maxOptions = this.runtime.globalVars.NumDialogueOptions || 1;
+      const maxOptions = this.runtime.globalVars.NumDialogueOptions || 2; // Default to 2 for now
       if (current < maxOptions - 1) {
         this.runtime.globalVars.OptionSelection = current + 1;
-        this.runtime.callFunction("changeDialogueSelection");
+        this.updateOptionUI();
+        console.log('⬇️ [DialogueController] Arrow down - selection now:', current + 1);
       }
+    }
+  }
+
+  /**
+   * Update option UI to reflect current selection
+   * Updates arrow icons on option text objects
+   */
+  private static updateOptionUI(): void {
+    if (!this.runtime) return;
+
+    const opt1 = this.runtime.objects.obj_TextOption1?.getFirstInstance();
+    const opt2 = this.runtime.objects.obj_TextOption2?.getFirstInstance();
+    const selection = this.runtime.globalVars.OptionSelection;
+    const text1 = this.runtime.globalVars.Option1Text || '';
+    const text2 = this.runtime.globalVars.Option2Text || '';
+
+    if (opt1 && opt2) {
+      opt1.text = (selection === 0 ? '[icon=Arrow]' : '[icon=Empty]') + text1;
+      opt2.text = (selection === 1 ? '[icon=Arrow]' : '[icon=Empty]') + text2;
+      console.log('🎨 Updated option UI - selection:', selection);
     }
   }
 

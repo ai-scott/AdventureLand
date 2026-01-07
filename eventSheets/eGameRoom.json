@@ -821,7 +821,6 @@
 										{
 											"callFunction": "checkForInteractionHint",
 											"sid": 822495769714165,
-											"disabled": true,
 											"parameters": [
 												"\"\""
 											]
@@ -839,7 +838,8 @@
 												"if (triggerMgr) {",
 												"  triggerMgr.checkProximity(runtime);",
 												"}"
-											]
+											],
+											"disabled": true
 										}
 									],
 									"sid": 765619192007108

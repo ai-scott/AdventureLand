@@ -526,26 +526,26 @@ runOnStartup(async runtime => {
       // Step 4: Register game context handler with InputManager
       InputManager.registerHandler('game', {
         onSpace: () => {
-          // Check if UI systems are active - if so, don't handle spacebar
-          // Let C3 event sheets handle button selection, item hints, etc.
-          if (runtime.globalVars.ItemShowing || runtime.globalVars.ButtonMgrActive) {
-            console.log('🎹 [Game Context] Space pressed - UI active, letting C3 handle it');
-            return; // Don't call preventDefault - let C3 events fire
-          }
-
-          console.log('🎹 [Game Context] Space pressed');
-
-          // TEMPORARY: Use old CurrentAction system until TriggerManager fully works
+          // Use OLD CurrentAction system (checkForInteractionHint still running)
+          // Return false for actions we DON'T handle = let C3 events fire
           const currentAction = runtime.globalVars.CurrentAction;
-          console.log(`   CurrentAction: ${currentAction}`);
+          console.log(`🎹 [Game Context] Space pressed - CurrentAction: ${currentAction}`);
 
+          // Handle specific actions, let C3 handle the rest
           if (currentAction === 'Talk') {
             runtime.callFunction('checkCharacter');
+            return true; // We handled it
           } else if (currentAction === 'Look') {
             runtime.callFunction('checkScene');
+            return true; // We handled it
+          } else if (currentAction === 'Enter') {
+            runtime.callFunction('enterDoor');
+            return true; // We handled it
           } else {
-            // For other actions, try TriggerManager
-            TriggerManager.triggerCurrent(runtime);
+            // For Interact, Check, and other actions - let C3 handle it
+            // Return false = DON'T call preventDefault
+            console.log(`   ${currentAction}: Letting C3 event sheets handle it`);
+            return false; // Don't preventDefault - let C3 Event 196-201, 260-263, 174 fire!
           }
         }
       });
@@ -618,7 +618,15 @@ runOnStartup(async runtime => {
       (globalThis as any).AdventureLand.Dialogue = {
         // Bridge functions - USE THESE in event sheets!
         start: (npcId: string, runtime: any, triggerUID?: number) => QuestDialogue.DialogueBridge.startDialogue(npcId, runtime, triggerUID),
-        advance: (runtime: any) => QuestDialogue.DialogueBridge.advanceDialogue(runtime),
+        advance: (runtime: any) => {
+          // If options are open, select the current option instead of advancing
+          if (runtime.globalVars.OptionsOpen) {
+            console.log('📋 [Dialogue.advance] Options open - selecting option', runtime.globalVars.OptionSelection);
+            return QuestDialogue.DialogueBridge.selectResponse(runtime.globalVars.OptionSelection, runtime);
+          }
+          // Otherwise, advance dialogue normally
+          return QuestDialogue.DialogueBridge.advanceDialogue(runtime);
+        },
         getResponseText: (index: number) => QuestDialogue.DialogueBridge.getResponseText(index),
         selectResponse: (index: number, runtime: any) => QuestDialogue.DialogueBridge.selectResponse(index, runtime),
         endDialogue: (runtime: any) => QuestDialogue.DialogueBridge.endDialogue(runtime),

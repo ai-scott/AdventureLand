@@ -675,6 +675,9 @@ export class UIButtonManager {
   /**
    * Cleanup all buttons and reset game state
    * Call this when dismissing button prompts/notifications
+   *
+   * NOTE: Does NOT call GameStateManager.setState() - let the dialogue system
+   * control that to avoid race conditions during dialogue execution
    */
   static cleanup(): void {
     if (!this.runtime) {
@@ -687,13 +690,15 @@ export class UIButtonManager {
 
     // Reset dialogue variables (clear stuck "End" states)
     this.runtime.globalVars.DialogueResult = "";
-    this.runtime.globalVars.InDialogue = false;
+    // NOTE: Do NOT set InDialogue here - let GameStateManager control it
+    // this.runtime.globalVars.InDialogue = false;
 
-    // Reset game state to Playing
-    const gameState = (globalThis as any).AdventureLand?.GameState;
-    if (gameState) {
-      gameState.setState('Playing');
-    }
+    // NOTE: Do NOT reset game state here - causes race conditions during dialogue
+    // Let the dialogue/menu systems call GameStateManager.setState() explicitly
+    // const gameState = (globalThis as any).AdventureLand?.GameState;
+    // if (gameState) {
+    //   gameState.setState('Playing');
+    // }
 
     console.log("🧹 ButtonManager cleanup complete");
   }

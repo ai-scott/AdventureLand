@@ -238,6 +238,7 @@ export class DialogueBridge {
         runtime.globalVars.DialogueResult = "";
       }
       console.log(`📋 [ADVANCE] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
+      console.log(`📊 [ADVANCE] OptionsOpen: ${runtime.globalVars.OptionsOpen}, ResponseCount: ${this.currentResponses.length}`);
 
 
       // Execute any actions on the new node (this will call getUserText for input nodes)
@@ -246,16 +247,18 @@ export class DialogueBridge {
         this.executeActions(nextNode.actions, runtime);
       }
 
-      // Call displayDialogue to refresh UI (even for input nodes with empty text)
-      runtime.callFunction("displayDialogue");
+      // Call appropriate UI function based on node type
+      if (runtime.globalVars.OptionsOpen) {
+        console.log(`📋 [ADVANCE] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
+        runtime.callFunction("displayUserOptions");
+      } else {
+        console.log(`📢 [ADVANCE] Calling displayDialogue()`);
+        runtime.callFunction("displayDialogue");
+      }
 
       // Don't auto-advance - wait for player input (space/click)
       // The event sheet will call advanceDialogue() when player presses space
       console.log(`⏸️ [ADVANCE] Waiting for player input to advance...`);
-
-      // DON'T call displayUserOptions here - the event sheet should handle it
-      // after all autoAdvance chains complete by checking OptionsOpen
-      // Calling it here causes duplicate calls and wrong text
 
       return true;
     }
