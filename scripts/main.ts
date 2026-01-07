@@ -526,8 +526,20 @@ runOnStartup(async runtime => {
       // Step 4: Register game context handler with InputManager
       InputManager.registerHandler('game', {
         onSpace: () => {
-          console.log('🎹 [Game Context] Space pressed - checking triggers');
-          TriggerManager.triggerCurrent(runtime);
+          console.log('🎹 [Game Context] Space pressed');
+
+          // TEMPORARY: Use old CurrentAction system until TriggerManager fully works
+          const currentAction = runtime.globalVars.CurrentAction;
+          console.log(`   CurrentAction: ${currentAction}`);
+
+          if (currentAction === 'Talk') {
+            runtime.callFunction('checkCharacter');
+          } else if (currentAction === 'Look') {
+            runtime.callFunction('checkScene');
+          } else {
+            // For other actions, try TriggerManager
+            TriggerManager.triggerCurrent(runtime);
+          }
         }
       });
 
@@ -661,19 +673,22 @@ runOnStartup(async runtime => {
       console.log("📝 Registering trigger types...");
 
       // Priority 1 (Highest): Character dialogue (NPCs)
+      // CharactersTriggers is a FAMILY containing: Penny, Pete, Rosie, etc.
       TriggerManager.registerTriggerType('character', 1, {
         canTrigger: (trigger, runtime) => !DialogueController.isActive(),
         onTrigger: (trigger, runtime) => {
-          // Get NPC ID from object type name (e.g., "Trigger_Penny")
-          const objectTypeName = trigger.objectType?.name || 'Unknown';
-          // Remove "Trigger_" prefix if present
-          const npcId = objectTypeName.replace('Trigger_', '');
-          console.log(`🎯 [TriggerManager] Triggering NPC: ${npcId} (from ${objectTypeName})`);
-          DialogueController.start(npcId, runtime, trigger.uid);
+          // Get NPC ID from objectType.name (family members have unique types)
+          const npcId = trigger.objectType?.name || 'Unknown';
+          console.log(`🎯 [TriggerManager] Triggering NPC: "${npcId}"`);
+
+          // Use old DialogueBridge.start() for now
+          const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+          if (dialogue) {
+            dialogue.start(npcId, runtime, trigger.uid);
+          }
         },
         getHintText: (trigger) => {
-          const objectTypeName = trigger.objectType?.name || 'NPC';
-          const npcName = objectTypeName.replace('Trigger_', '');
+          const npcName = trigger.objectType?.name || 'NPC';
           return `[Space] Talk to ${npcName}`;
         }
       }, 'CharactersTriggers');

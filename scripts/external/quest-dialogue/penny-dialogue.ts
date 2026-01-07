@@ -114,7 +114,7 @@ export const PennyDialogue: NPCDialogue = {
             {
                   id: "node_006",
                   speaker: "Penny",
-                  text: "I’ll give you anything if you can bring her back. Please can you try to find her?",
+                  text: "I'll give you anything if you can bring her back. Please can you try to find her?",
                   priority: 94,
                   conditions: [
                         {
@@ -123,13 +123,8 @@ export const PennyDialogue: NPCDialogue = {
                               "status": "Meet_Penny"
                         }
                   ],
-                  autoAdvance: "node_007",
-                  actions: [
-                        {
-                              "type": "custom",
-                              "customFunction": "AddRosieInScene"
-                        }
-                  ]
+                  autoAdvance: "node_007"
+                  // Removed AddRosieInScene - NPC spawning handled by quest system
             },
             {
                   id: "node_007",
