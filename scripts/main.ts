@@ -526,6 +526,13 @@ runOnStartup(async runtime => {
       // Step 4: Register game context handler with InputManager
       InputManager.registerHandler('game', {
         onSpace: () => {
+          // Check if UI systems are active - if so, don't handle spacebar
+          // Let C3 event sheets handle button selection, item hints, etc.
+          if (runtime.globalVars.ItemShowing || runtime.globalVars.ButtonMgrActive) {
+            console.log('🎹 [Game Context] Space pressed - UI active, letting C3 handle it');
+            return; // Don't call preventDefault - let C3 events fire
+          }
+
           console.log('🎹 [Game Context] Space pressed');
 
           // TEMPORARY: Use old CurrentAction system until TriggerManager fully works
