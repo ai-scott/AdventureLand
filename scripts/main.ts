@@ -34,6 +34,11 @@ import ShopStateSystem from "./systems/shop/shop-state-system.js";
 // QUEST & DIALOGUE SYSTEM IMPORT
 import * as QuestDialogue from "./external/quest-dialogue/index.js";
 
+// NEW INPUT/TRIGGER/DIALOGUE SYSTEMS
+import { InputManager } from "./systems/input/input-manager.js";
+import { TriggerManager } from "./systems/triggers/trigger-manager.js";
+import { DialogueController } from "./systems/dialogue/dialogue-controller.js";
+
 // UNIQUE ITEMS SYSTEM IMPORT
 import { UniqueItemSpawner } from "./external/unique-items/unique-items-spawner.js";
 
@@ -507,6 +512,25 @@ runOnStartup(async runtime => {
       console.error("❌ Failed to initialize game state manager:", error);
     }
 
+    // Initialize Input/Trigger/Dialogue Systems (NEW!)
+    try {
+      // Step 1: Initialize InputManager (foundation)
+      InputManager.initialize();
+
+      // Step 2: Initialize TriggerManager
+      TriggerManager.initialize(runtime);
+
+      // Step 3: Initialize DialogueController
+      DialogueController.initialize(runtime);
+
+      // Step 4: Register all 5 trigger types with TriggerManager
+      // (We'll do this after DialogueController is set up)
+
+      console.log("✅ Input/Trigger/Dialogue systems initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize Input/Trigger/Dialogue systems:", error);
+    }
+
     // Initialize UI Button System
     try {
       UIButtonManager.initialize(runtime);
@@ -617,6 +641,99 @@ runOnStartup(async runtime => {
       console.log("💡 Use in event sheets: AdventureLand.Dialogue.start('Pete', runtime)");
     } catch (error) {
       console.error("❌ Failed to initialize quest/dialogue system:", error);
+    }
+
+    // Register Trigger Types with TriggerManager (NEW!)
+    try {
+      console.log("📝 Registering trigger types...");
+
+      // Priority 1 (Highest): Character dialogue (NPCs)
+      TriggerManager.registerTriggerType('character', 1, {
+        canTrigger: (trigger, runtime) => !DialogueController.isActive(),
+        onTrigger: (trigger, runtime) => {
+          const npcId = trigger.instVars?.ObjectTypeName || 'Unknown';
+          DialogueController.start(npcId, runtime, trigger.uid);
+        },
+        getHintText: (trigger) => {
+          const npcName = trigger.instVars?.ObjectTypeName || 'NPC';
+          return `[Space] Talk to ${npcName}`;
+        }
+      }, 'CharactersTriggers');
+
+      // Priority 2: Custom function triggers (mirrors, special objects)
+      TriggerManager.registerTriggerType('function', 2, {
+        canTrigger: (trigger, runtime) => true,
+        onTrigger: (trigger, runtime) => {
+          const functionName = trigger.instVars?.Function || 'unknown';
+          console.log(`⚙️ Triggering custom function: ${functionName}`);
+          runtime.callFunction(functionName);
+        },
+        getHintText: (trigger) => {
+          const functionName = trigger.instVars?.Function || 'Check';
+          return `[Space] ${functionName}`;
+        }
+      }, 'Trigger_Function');
+
+      // Priority 3: Scene triggers (signs, objects)
+      TriggerManager.registerTriggerType('scene', 3, {
+        canTrigger: (trigger, runtime) => !DialogueController.isActive(),
+        onTrigger: (trigger, runtime) => {
+          const sceneId = trigger.instVars?.SceneName || 'Unknown';
+          DialogueController.start(sceneId, runtime, trigger.uid);
+        },
+        getHintText: (trigger) => `[Space] Look`
+      }, 'Trigger_Scene');
+
+      // Priority 4: World items (collectibles, inspectable)
+      TriggerManager.registerTriggerType('item', 4, {
+        canTrigger: (trigger, runtime) => !runtime.globalVars.ItemShowing,
+        onTrigger: (trigger, runtime) => {
+          console.log(`🔍 Inspecting item: ${trigger.uid}`);
+          runtime.callFunction("inspectItem", trigger.uid);
+        },
+        getHintText: (trigger) => {
+          const itemName = trigger.instVars?.ItemName || 'Item';
+          return `[Space] Inspect ${itemName}`;
+        }
+      }, 'InventoryItems');
+
+      // Priority 5 (Lowest): Doors/transitions
+      TriggerManager.registerTriggerType('door', 5, {
+        canTrigger: (trigger, runtime) => {
+          const isStartingDoor = trigger.instVars?.IsStartingDoor || false;
+          const inDialogue = runtime.globalVars.InDialogue || false;
+          return !isStartingDoor && !inDialogue;
+        },
+        onTrigger: (trigger, runtime) => {
+          console.log(`🚪 Entering door: ${trigger.uid}`);
+          runtime.callFunction("enterDoor");
+        },
+        getHintText: (trigger) => `[Space] Enter`
+      }, 'Trigger_Door');
+
+      // Expose to globalThis for event sheet access
+      (globalThis as any).AdventureLand.InputManager = {
+        setContext: (context: string) => InputManager.setActiveContext(context as any),
+        getContext: () => InputManager.getActiveContext()
+      };
+
+      (globalThis as any).AdventureLand.TriggerManager = {
+        checkProximity: (runtime: any) => TriggerManager.checkProximity(runtime),
+        blockTriggers: (reason: string) => TriggerManager.blockTriggers(reason),
+        unblockTriggers: (reason: string) => TriggerManager.unblockTriggers(reason),
+        triggerCurrent: (runtime: any) => TriggerManager.triggerCurrent(runtime)
+      };
+
+      (globalThis as any).AdventureLand.DialogueController = {
+        start: (npcId: string, runtime: any, triggerUID?: number) => DialogueController.start(npcId, runtime, triggerUID),
+        end: (runtime: any) => DialogueController.end(),
+        isActive: () => DialogueController.isActive(),
+        getDebugInfo: () => DialogueController.getDebugInfo()
+      };
+
+      console.log("✅ Trigger types registered and exposed to globalThis!");
+    } catch (error) {
+      console.error("❌ Failed to register trigger types:", error);
     }
   });
 
