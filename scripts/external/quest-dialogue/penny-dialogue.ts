@@ -123,8 +123,13 @@ export const PennyDialogue: NPCDialogue = {
                               "status": "Meet_Penny"
                         }
                   ],
-                  autoAdvance: "node_007"
-                  // Removed AddRosieInScene - NPC spawning handled by quest system
+                  autoAdvance: "node_007",
+                  actions: [
+                        {
+                              "type": "spawn_unique_item",
+                              "itemName": "Rosie"
+                        }
+                  ]
             },
             {
                   id: "node_007",
