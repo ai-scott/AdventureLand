@@ -12,6 +12,55 @@ The current trigger system is spread across multiple event sheets with complex i
 
 ---
 
+## Event Sheet: eGlobal
+
+### Group: Player Engine (Events 44-63)
+
+**Visual Reference:** Screenshot "Player is Active" (Events 44-63)
+
+**Purpose:** Handle player movement and attack input
+
+✅ **Note: This system is CORRECTLY DESIGNED - already respects InDialogue!**
+
+#### Event 44: Player is Active (Top-Level Guard)
+```
+Conditions:
+  - Group "Player Engine" is active
+  - System: NOT InDialogue
+
+Purpose: Disable all player movement/attack when in dialogue
+```
+
+#### Event 46-48: Player Action (Attack)
+```
+Event 47: Keyboard A pressed
+        PlayerAttackCooldown ≤ 0
+  → Call StartAttack
+
+Event 48: Touch on Btn_Action (Actions = "Attack")
+        PlayerAttackCooldown ≤ 0
+  → Call StartAttack
+```
+
+#### Event 49-63: Player Walk (Movement)
+```
+Event 59-63: Keyboard arrow keys
+  → Player_Base: Simulate 8Direction
+  → Player_Mask: Set Walking, Direction
+```
+
+**Player Engine Integration:**
+
+✅ **Works correctly with dialogue:**
+- Top-level `NOT InDialogue` guard in Event 44
+- When DialogueController sets `InDialogue = true`, entire Player Engine disables
+- No spacebar handlers (uses A key for attack, arrows for movement)
+- Does NOT contribute to the 7 competing spacebar handlers
+
+**No changes needed** - Player Engine will automatically work with new dialogue system.
+
+---
+
 ## Event Sheet: eGlobal (Interaction Check)
 
 **Visual Reference:** See screenshot "Interaction Check Group" (Event 168-175)

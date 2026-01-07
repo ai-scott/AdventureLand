@@ -996,6 +996,48 @@
 							],
 							"subfolders": [],
 							"name": "ui"
+						},
+						{
+							"items": [
+								{
+									"name": "input-manager.ts",
+									"type": "application/typescript",
+									"sid": 945708055744970,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "input"
+						},
+						{
+							"items": [
+								{
+									"name": "trigger-manager.ts",
+									"type": "application/typescript",
+									"sid": 817393203898119,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "triggers"
+						},
+						{
+							"items": [
+								{
+									"name": "dialogue-controller.ts",
+									"type": "application/typescript",
+									"sid": 280291034750922,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "dialogue"
 						}
 					],
 					"name": "systems"
