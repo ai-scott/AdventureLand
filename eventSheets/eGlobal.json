@@ -292,6 +292,16 @@
 			"sid": 653002014247112
 		},
 		{
+			"eventType": "variable",
+			"name": "RequiresPlayerInput",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "are we waiting on player to input something",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 166845716335890
+		},
+		{
 			"eventType": "group",
 			"disabled": false,
 			"title": "Window Scale & Positioning",
@@ -7742,6 +7752,260 @@
 				{
 					"eventType": "group",
 					"disabled": false,
+					"title": "Interaction Check",
+					"description": "As player is exploring world, does a tap/space hit to engage: Look (at Trigger), Talk (to character), Enter (door), Interact (with object/collectible)",
+					"isActiveOnStart": true,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-key-pressed",
+									"objectClass": "Keyboard",
+									"sid": 761082703442781,
+									"parameters": {
+										"key": 32
+									}
+								},
+								{
+									"id": "on-tap",
+									"objectClass": "Touch",
+									"sid": 135915695331738
+								}
+							],
+							"actions": [],
+							"sid": 238773707236066,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 243260140877372,
+											"parameters": {
+												"variable": "InDialogue"
+											},
+											"isInverted": true
+										},
+										{
+											"id": "layer-is-visible",
+											"objectClass": "System",
+											"sid": 376073479269417,
+											"parameters": {
+												"layer": "\"Inventory\""
+											},
+											"isInverted": true
+										},
+										{
+											"id": "compare-boolean-eventvar",
+											"objectClass": "System",
+											"sid": 959744023921543,
+											"parameters": {
+												"variable": "ItemShowing"
+											},
+											"isInverted": true
+										}
+									],
+									"actions": [],
+									"sid": 649435145558529,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 950497457651283,
+													"parameters": {
+														"object": "DPad_Arrow"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 495238748331793,
+													"parameters": {
+														"object": "InventoryBtns"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 118339822316454,
+													"parameters": {
+														"object": "InventoryItems"
+													},
+													"isInverted": true
+												}
+											],
+											"actions": [],
+											"sid": 801243090436378,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 883731978504244,
+															"parameters": {
+																"variable": "CurrentAction",
+																"comparison": 0,
+																"value": "\"Talk\""
+															}
+														},
+														{
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 445459492313162,
+															"parameters": {
+																"first-value": "DialogueResult",
+																"comparison": 1,
+																"second-value": "\"End\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "checkCharacter",
+															"sid": 266659886525874
+														}
+													],
+													"sid": 121366240559428
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 978193927915168,
+															"parameters": {
+																"variable": "CurrentAction",
+																"comparison": 0,
+																"value": "\"Look\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "checkScene",
+															"sid": 137056142504470
+														}
+													],
+													"sid": 824442849437505,
+													"isOrBlock": true
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 815835738100249,
+															"parameters": {
+																"variable": "CurrentAction",
+																"comparison": 0,
+																"value": "\"Check\""
+															}
+														},
+														{
+															"id": "pick-nearestfurthest",
+															"objectClass": "Trigger_Function",
+															"sid": 498018004163434,
+															"parameters": {
+																"which": "nearest",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y"
+															}
+														},
+														{
+															"id": "is-overlapping-another-object",
+															"objectClass": "Trigger_Function",
+															"sid": 128612481600720,
+															"parameters": {
+																"object": "Trigger_Player"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "call-mapped-function",
+															"objectClass": "Functions",
+															"sid": 757614642037939,
+															"parameters": {
+																"name": "\"TriggerFunctions\"",
+																"string": "Trigger_Function.Function",
+																"forward-params": "0"
+															}
+														}
+													],
+													"sid": 404350003920895
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "compare-eventvar",
+															"objectClass": "System",
+															"sid": 981593178276621,
+															"parameters": {
+																"variable": "CurrentAction",
+																"comparison": 0,
+																"value": "\"Enter\""
+															}
+														},
+														{
+															"id": "is-overlapping-another-object",
+															"objectClass": "Trigger_Player",
+															"sid": 694685789872668,
+															"parameters": {
+																"object": "Trigger_Door"
+															}
+														},
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "Player_Mask",
+															"sid": 921807719575048,
+															"parameters": {
+																"instance-variable": "Walking"
+															},
+															"isInverted": true
+														},
+														{
+															"id": "is-boolean-instance-variable-set",
+															"objectClass": "Trigger_Door",
+															"sid": 988622171632773,
+															"parameters": {
+																"instance-variable": "Void"
+															},
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"callFunction": "enterDoor",
+															"sid": 277088068173966
+														}
+													],
+													"sid": 841960075831484
+												}
+											]
+										}
+									]
+								}
+							],
+							"isOrBlock": true
+						}
+					],
+					"sid": 497940600663281
+				},
+				{
+					"eventType": "group",
+					"disabled": false,
 					"title": "In Dialogue",
 					"description": "",
 					"isActiveOnStart": true,
@@ -7896,25 +8160,49 @@
 													"parameters": {
 														"variable": "ButtonMgrActive"
 													}
-												}
-											],
-											"actions": [
+												},
 												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
-														"if (buttonMgr) {",
-														"  const hoveredBtn = runtime.objects.Btn_Action.getFirstPickedInstance();",
-														"  if (hoveredBtn) {",
-														"    runtime.globalVars.MouseOverButton = hoveredBtn.uid;  // Store which button is hovered",
-														"    buttonMgr.highlightButtonByUID(hoveredBtn.uid);",
-														"  }",
-														"}"
-													]
+													"id": "for-each",
+													"objectClass": "System",
+													"sid": 509659755154748,
+													"parameters": {
+														"object": "Btn_Action"
+													}
 												}
 											],
-											"sid": 239397982438796
+											"actions": [],
+											"sid": 239397982438796,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "cursor-is-over-object",
+															"objectClass": "Mouse",
+															"sid": 379721579232604,
+															"parameters": {
+																"object": "Btn_Action"
+															}
+														}
+													],
+													"actions": [
+														{
+															"type": "script",
+															"language": "javascript",
+															"script": [
+																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+																"          if (buttonMgr) {",
+																"            const hoveredBtn = runtime.objects.Btn_Action.getFirstPickedInstance();",
+																"            if (hoveredBtn) {",
+																"              buttonMgr.highlightButtonByUID(hoveredBtn.uid);",
+																"            }",
+																"          }"
+															]
+														}
+													],
+													"sid": 381088836115509
+												}
+											]
 										},
 										{
 											"eventType": "comment",
@@ -7932,9 +8220,13 @@
 													}
 												},
 												{
-													"id": "trigger-once-while-true",
-													"objectClass": "System",
-													"sid": 361645484256582
+													"id": "cursor-is-over-object",
+													"objectClass": "Mouse",
+													"sid": 224977044536318,
+													"parameters": {
+														"object": "Btn_Action"
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
@@ -7942,10 +8234,10 @@
 													"type": "script",
 													"language": "javascript",
 													"script": [
-														"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+														"// Restore keyboard selection when mouse not hovering",
+														"    const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 														"    if (buttonMgr) {",
-														"      // Restore keyboard-based highlighting (-1 means restore to ItemBtnSelection)",
-														"      buttonMgr.highlightButtonByUID(-1);",
+														"      buttonMgr.highlightButtonByUID(-1);  // -1 = restore keyboard selection",
 														"    }"
 													]
 												}
@@ -8204,9 +8496,37 @@
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "else",
+													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 450450156183651
+													"sid": 979071474683263,
+													"parameters": {
+														"variable": "RequiresPlayerInput"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 946839469867755,
+													"disabled": true,
+													"parameters": {
+														"variable": "DialogueResult",
+														"comparison": 1,
+														"value": "\"End\""
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 766151310280804,
+													"disabled": true,
+													"parameters": {
+														"variable": "DialogueResult",
+														"comparison": 1,
+														"value": "\"Continue\""
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
@@ -8225,9 +8545,7 @@
 														"        console.log(\"📋 Options appeared after advance, displaying them\");",
 														"        runtime.callFunction(\"displayUserOptions\");",
 														"    }",
-														"}",
-														"",
-														""
+														"}"
 													]
 												}
 											],
@@ -9153,17 +9471,6 @@
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "compare-instance-variable",
-													"objectClass": "Btn_Action",
-													"sid": 540787868316079,
-													"disabled": true,
-													"parameters": {
-														"instance-variable": "LinkID",
-														"comparison": 0,
-														"value": "Ctrl_Btns.CurrentLink"
-													}
-												},
-												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
 													"sid": 922874787725618,
@@ -9206,6 +9513,24 @@
 													],
 													"actions": [
 														{
+															"id": "set-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 665364842138809,
+															"parameters": {
+																"variable": "InDialogue",
+																"value": "false"
+															}
+														},
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 959260251384103,
+															"parameters": {
+																"variable": "DialogueResult",
+																"value": "\"End\""
+															}
+														},
+														{
 															"type": "script",
 															"language": "javascript",
 															"script": [
@@ -9226,24 +9551,6 @@
 																"    console.log(\"➡️ Dismissing dialogue\");",
 																"    }"
 															]
-														},
-														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 597176485754771,
-															"parameters": {
-																"variable": "InDialogue",
-																"value": "false"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 174684420960194,
-															"parameters": {
-																"variable": "DialogueResult",
-																"value": "\"End\""
-															}
 														}
 													],
 													"sid": 429118892114658
@@ -9275,6 +9582,7 @@
 															"id": "set-boolean-eventvar",
 															"objectClass": "System",
 															"sid": 368647282504469,
+															"disabled": true,
 															"parameters": {
 																"variable": "InDialogue",
 																"value": "false"
@@ -9284,6 +9592,7 @@
 															"id": "set-eventvar-value",
 															"objectClass": "System",
 															"sid": 609039754393344,
+															"disabled": true,
 															"parameters": {
 																"variable": "DialogueResult",
 																"value": "\"End\""
@@ -9332,6 +9641,26 @@
 													],
 													"actions": [
 														{
+															"id": "set-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 151601310022375,
+															"disabled": true,
+															"parameters": {
+																"variable": "InDialogue",
+																"value": "false"
+															}
+														},
+														{
+															"id": "set-eventvar-value",
+															"objectClass": "System",
+															"sid": 846141162914688,
+															"disabled": true,
+															"parameters": {
+																"variable": "DialogueResult",
+																"value": "\"End\""
+															}
+														},
+														{
 															"type": "script",
 															"language": "javascript",
 															"script": [
@@ -9341,24 +9670,6 @@
 																"  console.log(\"➡️ Dismissing dialogue\");",
 																"}"
 															]
-														},
-														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 167492430154755,
-															"parameters": {
-																"variable": "InDialogue",
-																"value": "false"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 961236979142077,
-															"parameters": {
-																"variable": "DialogueResult",
-																"value": "\"End\""
-															}
 														}
 													],
 													"sid": 675300420458290
@@ -9373,260 +9684,6 @@
 						}
 					],
 					"sid": 154126821032044
-				},
-				{
-					"eventType": "group",
-					"disabled": false,
-					"title": "Interaction Check",
-					"description": "As player is exploring world, does a tap/space hit to engage: Look (at Trigger), Talk (to character), Enter (door), Interact (with object/collectible)",
-					"isActiveOnStart": true,
-					"children": [
-						{
-							"eventType": "block",
-							"conditions": [
-								{
-									"id": "on-key-pressed",
-									"objectClass": "Keyboard",
-									"sid": 202998808465338,
-									"parameters": {
-										"key": 32
-									}
-								},
-								{
-									"id": "on-tap",
-									"objectClass": "Touch",
-									"sid": 243356198273780
-								}
-							],
-							"actions": [],
-							"sid": 807350736415575,
-							"children": [
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 440606344063100,
-											"parameters": {
-												"variable": "InDialogue"
-											},
-											"isInverted": true
-										},
-										{
-											"id": "layer-is-visible",
-											"objectClass": "System",
-											"sid": 823845509687764,
-											"parameters": {
-												"layer": "\"Inventory\""
-											},
-											"isInverted": true
-										},
-										{
-											"id": "compare-boolean-eventvar",
-											"objectClass": "System",
-											"sid": 858672203697957,
-											"parameters": {
-												"variable": "ItemShowing"
-											},
-											"isInverted": true
-										}
-									],
-									"actions": [],
-									"sid": 609255298983006,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 192912938425315,
-													"parameters": {
-														"object": "DPad_Arrow"
-													},
-													"isInverted": true
-												},
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 904498202125344,
-													"parameters": {
-														"object": "InventoryBtns"
-													},
-													"isInverted": true
-												},
-												{
-													"id": "is-touching-object",
-													"objectClass": "Touch",
-													"sid": 419859255935917,
-													"parameters": {
-														"object": "InventoryItems"
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [],
-											"sid": 398489967948123,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 812949646018702,
-															"parameters": {
-																"variable": "CurrentAction",
-																"comparison": 0,
-																"value": "\"Talk\""
-															}
-														},
-														{
-															"id": "compare-two-values",
-															"objectClass": "System",
-															"sid": 452560007414086,
-															"parameters": {
-																"first-value": "DialogueResult",
-																"comparison": 1,
-																"second-value": "\"End\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "checkCharacter",
-															"sid": 449069526845110
-														}
-													],
-													"sid": 194867010688502
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 924865805926956,
-															"parameters": {
-																"variable": "CurrentAction",
-																"comparison": 0,
-																"value": "\"Look\""
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "checkScene",
-															"sid": 920096507583604
-														}
-													],
-													"sid": 199229126198146,
-													"isOrBlock": true
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 210663282442984,
-															"parameters": {
-																"variable": "CurrentAction",
-																"comparison": 0,
-																"value": "\"Check\""
-															}
-														},
-														{
-															"id": "pick-nearestfurthest",
-															"objectClass": "Trigger_Function",
-															"sid": 365052426316181,
-															"parameters": {
-																"which": "nearest",
-																"x": "Player_Base.X",
-																"y": "Player_Base.Y"
-															}
-														},
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "Trigger_Function",
-															"sid": 827775143225138,
-															"parameters": {
-																"object": "Trigger_Player"
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "call-mapped-function",
-															"objectClass": "Functions",
-															"sid": 566681222265261,
-															"parameters": {
-																"name": "\"TriggerFunctions\"",
-																"string": "Trigger_Function.Function",
-																"forward-params": "0"
-															}
-														}
-													],
-													"sid": 708431162903973
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-eventvar",
-															"objectClass": "System",
-															"sid": 203479329798302,
-															"parameters": {
-																"variable": "CurrentAction",
-																"comparison": 0,
-																"value": "\"Enter\""
-															}
-														},
-														{
-															"id": "is-overlapping-another-object",
-															"objectClass": "Trigger_Player",
-															"sid": 716614997601028,
-															"parameters": {
-																"object": "Trigger_Door"
-															}
-														},
-														{
-															"id": "is-boolean-instance-variable-set",
-															"objectClass": "Player_Mask",
-															"sid": 164480700260896,
-															"parameters": {
-																"instance-variable": "Walking"
-															},
-															"isInverted": true
-														},
-														{
-															"id": "is-boolean-instance-variable-set",
-															"objectClass": "Trigger_Door",
-															"sid": 133501063649400,
-															"parameters": {
-																"instance-variable": "Void"
-															},
-															"isInverted": true
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "enterDoor",
-															"sid": 693469327183483
-														}
-													],
-													"sid": 135269934667993
-												}
-											]
-										}
-									]
-								}
-							],
-							"isOrBlock": true
-						}
-					],
-					"sid": 449241251849058
 				},
 				{
 					"eventType": "group",

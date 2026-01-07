@@ -521,6 +521,7 @@ runOnStartup(async runtime => {
         getActive: () => UIButtonManager.getActiveButtons(),
         hideAll: () => UIButtonManager.hideAllButtons(),
         hideAllButtons: () => UIButtonManager.hideAllButtons(),  // Alias for consistency
+        cleanup: () => UIButtonManager.cleanup(),  // Cleanup buttons + reset game state
         updateButtonHighlights: (currentLink: number, highlightedFrame?: number, normalFrame?: number) =>
           UIButtonManager.updateButtonHighlights(currentLink, highlightedFrame, normalFrame),
         highlightButtonByUID: (buttonUID: number) => UIButtonManager.highlightButtonByUID(buttonUID),

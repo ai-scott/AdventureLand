@@ -672,6 +672,32 @@ export class UIButtonManager {
     });
   }
 
+  /**
+   * Cleanup all buttons and reset game state
+   * Call this when dismissing button prompts/notifications
+   */
+  static cleanup(): void {
+    if (!this.runtime) {
+      console.warn("ButtonManager not initialized");
+      return;
+    }
+
+    // Hide all buttons
+    this.hideAllButtons();
+
+    // Reset dialogue variables (clear stuck "End" states)
+    this.runtime.globalVars.DialogueResult = "";
+    this.runtime.globalVars.InDialogue = false;
+
+    // Reset game state to Playing
+    const gameState = (globalThis as any).AdventureLand?.GameState;
+    if (gameState) {
+      gameState.setState('Playing');
+    }
+
+    console.log("🧹 ButtonManager cleanup complete");
+  }
+
   // ============================================================================
   // DEBUG
   // ============================================================================

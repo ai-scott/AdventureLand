@@ -28,14 +28,18 @@ export class DialogueBridge {
    */
   static startDialogue(npcId: string, runtime: any, triggerUID: number = -1): boolean {
     try {
-      // Check if already in dialogue
+      // ALWAYS reset DialogueResult first (clears stuck "End" states from previous dialogues)
+      runtime.globalVars.DialogueResult = "";
+
+      // Check if already in dialogue (temporarily only checking InDialogue to debug)
       if (runtime.globalVars.InDialogue) {
+        console.warn(`⚠️ [START] Already in dialogue! Rejecting startDialogue("${npcId}"). Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}, InDialogue: ${runtime.globalVars.InDialogue}`);
         return false;
       }
 
       // Set InDialogue = true IMMEDIATELY to prevent race conditions
       runtime.globalVars.InDialogue = true;
-      runtime.globalVars.DialogueResult = "";
+      console.log(`🎭 [START] Starting dialogue with ${npcId}`);
 
       const playerState = this.getPlayerStateFromRuntime(runtime);
       const node = DialogueManager.getDialogueForNPC(npcId, playerState);
@@ -44,6 +48,8 @@ export class DialogueBridge {
         console.warn(`⚠️ No dialogue found for NPC: ${npcId}`);
         return false;
       }
+
+      console.log(`📍 [START] Selected node: ${node.id}, speaker: "${node.speaker}", text: "${node.text.substring(0, 30)}..."`);
 
       // Store current state
       this.currentNPC = npcId;
@@ -75,14 +81,21 @@ export class DialogueBridge {
         runtime.globalVars.DialogueEndsHere = node.endsDialogue || false;
       }
 
+      // Check if this node requires player text input FIRST
+      const requiresInput = node.actions?.some((action: any) => action.type === 'input') || false;
+      runtime.globalVars.RequiresPlayerInput = requiresInput;
+      console.log(`🔍 [START] Node ${node.id} requiresInput: ${requiresInput}, autoAdvance: ${node.autoAdvance}`);
+
       // Also set DialogueResult for legacy event sheet compatibility
+      // DON'T set "Continue" if node requires input - wait for input submission!
       if (node.endsDialogue) {
         runtime.globalVars.DialogueResult = "End";
-      } else if (node.autoAdvance) {
+      } else if (node.autoAdvance && !requiresInput) {
         runtime.globalVars.DialogueResult = "Continue";
       } else {
         runtime.globalVars.DialogueResult = "";
       }
+      console.log(`📋 [START] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
 
       // Enhanced dialogue variables
       runtime.globalVars.enhanced_dialogue_speaker = node.speaker;
@@ -94,8 +107,13 @@ export class DialogueBridge {
 
       // Execute any auto-actions (actions without requiring a response)
       if (node.actions) {
+        console.log(`⚙️ [START] Executing ${node.actions.length} actions for node ${node.id}`);
         this.executeActions(node.actions, runtime);
       }
+
+      // Don't auto-advance - wait for player input (space/click)
+      // The event sheet will call advanceDialogue() when player presses space
+      console.log(`⏸️ [START] Waiting for player input to advance...`);
 
       return true;
     } catch (error) {
@@ -142,22 +160,28 @@ export class DialogueBridge {
    * @returns true if dialogue continues, false if it ended
    */
   static advanceDialogue(runtime: any): boolean {
+    console.log(`➡️ [ADVANCE] Called for NPC: ${this.currentNPC}, currentNode: ${this.currentNode}`);
+
     // Get the current node directly by ID (don't re-evaluate conditions)
     const npcDialogue = DialogueManager.getNPCDialogue(this.currentNPC);
     if (!npcDialogue) {
+      console.log(`❌ [ADVANCE] No dialogue found for NPC: ${this.currentNPC}`);
       this.endDialogue(runtime);
       return false;
     }
 
     const currentNodeData = npcDialogue.nodes.find(n => n.id === this.currentNode);
     if (!currentNodeData) {
-      console.error(`❌ Current node not found: ${this.currentNode}`);
+      console.error(`❌ [ADVANCE] Current node not found: ${this.currentNode}`);
       this.endDialogue(runtime);
       return false;
     }
 
+    console.log(`📍 [ADVANCE] Current node: ${currentNodeData.id}, autoAdvance: ${currentNodeData.autoAdvance}`);
+
     // Check if this node auto-advances
     if (currentNodeData.autoAdvance) {
+      console.log(`🔄 [ADVANCE] Auto-advancing from ${currentNodeData.id} to ${currentNodeData.autoAdvance}`);
 
       // Navigate to the next node by finding the target node
       const nextNode = npcDialogue.nodes.find(n => n.id === currentNodeData.autoAdvance);
@@ -174,6 +198,7 @@ export class DialogueBridge {
       // Update our internal state
       this.currentNode = processedNode.id;
       this.currentResponses = processedNode.responses || [];
+      console.log(`📍 [ADVANCE] Advanced to node: ${processedNode.id}, speaker: "${processedNode.speaker}"`);
 
       // Update UI with next node (with variables replaced)
       runtime.globalVars.CurrentCharacter = processedNode.speaker;
@@ -191,23 +216,35 @@ export class DialogueBridge {
         runtime.globalVars.DialogueEndsHere = nextNode.endsDialogue || false;
       }
 
+      // Check if next node requires player input FIRST (before setting DialogueResult)
+      const requiresInput = nextNode.actions?.some(action => action.type === 'input') || false;
+      runtime.globalVars.RequiresPlayerInput = requiresInput;
+      console.log(`🔍 [ADVANCE] Node ${nextNode.id} requiresInput: ${requiresInput}, autoAdvance: ${nextNode.autoAdvance}`);
+
       // Also set DialogueResult for legacy event sheet compatibility
+      // DON'T set "Continue" if node requires input - wait for input submission!
       if (nextNode.endsDialogue) {
         runtime.globalVars.DialogueResult = "End";
-      } else if (nextNode.autoAdvance) {
+      } else if (nextNode.autoAdvance && !requiresInput) {
         runtime.globalVars.DialogueResult = "Continue";
       } else {
         runtime.globalVars.DialogueResult = "";
       }
+      console.log(`📋 [ADVANCE] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
 
 
       // Execute any actions on the new node (this will call getUserText for input nodes)
       if (nextNode.actions) {
+        console.log(`⚙️ [ADVANCE] Executing ${nextNode.actions.length} actions for node ${nextNode.id}`);
         this.executeActions(nextNode.actions, runtime);
       }
 
       // Call displayDialogue to refresh UI (even for input nodes with empty text)
       runtime.callFunction("displayDialogue");
+
+      // Don't auto-advance - wait for player input (space/click)
+      // The event sheet will call advanceDialogue() when player presses space
+      console.log(`⏸️ [ADVANCE] Waiting for player input to advance...`);
 
       // DON'T call displayUserOptions here - the event sheet should handle it
       // after all autoAdvance chains complete by checking OptionsOpen
@@ -354,6 +391,8 @@ export class DialogueBridge {
    * @param runtime - Construct 3 runtime
    */
   static endDialogue(runtime: any): void {
+    console.log(`🛑 [END] endDialogue() called. Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}`);
+    console.trace("Stack trace:");
 
     // Clean up internal state
     this.currentNPC = "";
@@ -361,6 +400,7 @@ export class DialogueBridge {
     this.currentResponses = [];
     runtime.globalVars.OptionsOpen = false;
     runtime.globalVars.use_enhanced_dialogue = false;
+    runtime.globalVars.RequiresPlayerInput = false;  // Clear input flag
 
     // Resume enemies directly using the EnemyPause system
     const adventureLand = (globalThis as any).AdventureLand;

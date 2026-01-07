@@ -494,16 +494,6 @@
 										"CharactersTriggers.ObjectTypeName",
 										"CharactersTriggers.UID"
 									]
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 622560522833656,
-									"disabled": true,
-									"parameters": {
-										"variable": "TextArrayZIndex",
-										"value": "CharactersTriggers.ID"
-									}
 								}
 							],
 							"sid": 184412931045519
@@ -556,16 +546,6 @@
 							],
 							"actions": [
 								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 763399515053002,
-									"disabled": true,
-									"parameters": {
-										"variable": "TextArrayZIndex",
-										"value": "Trigger_Scene.ID"
-									}
-								},
-								{
 									"callFunction": "initiateDialogue",
 									"sid": 374583155815738,
 									"parameters": [
@@ -588,36 +568,6 @@
 			"description": "",
 			"isActiveOnStart": true,
 			"children": [
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "on-key-pressed",
-							"objectClass": "Keyboard",
-							"sid": 744101324752630,
-							"parameters": {
-								"key": 84
-							}
-						}
-					],
-					"actions": [
-						{
-							"type": "script",
-							"language": "javascript",
-							"script": [
-								"const dialogue = globalThis.AdventureLand?.Dialogue;",
-								"if (dialogue) {",
-								"    const result = dialogue.getDialogue(\"Pete\");",
-								"    console.log(\"=== PETE DIALOGUE ===\");",
-								"    console.log(\"Speaker:\", result.speaker);",
-								"    console.log(\"Text:\", result.text);",
-								"    console.log(\"Responses:\", result.responses);",
-								"}"
-							]
-						}
-					],
-					"sid": 353102858775054
-				},
 				{
 					"functionName": "initiateDialogue",
 					"functionDescription": "initiate dialogue session",
@@ -653,6 +603,9 @@
 								"     if (dialogue) {",
 								"         const npcId = localVars.trigger; // Get NPC ID from function parameter",
 								"         dialogue.start(npcId, runtime, localVars.triggerUID);",
+								"         if (runtime.globalVars.CurrentDialogueText !== \"\") {",
+								"           runtime.callFunction(\"displayDialogue\");",
+								"        }",
 								"",
 								"         // Bridge automatically sets:",
 								"         // - CurrentCharacter",
@@ -666,26 +619,6 @@
 							"id": "stop-animation",
 							"objectClass": "PlayerSystem",
 							"sid": 715068470845837
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 531743356140464,
-							"disabled": true,
-							"parameters": {
-								"group-name": "\"Player Engine\"",
-								"state": "deactivated"
-							}
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 186976400272583,
-							"disabled": true,
-							"parameters": {
-								"group-name": "\"Enemies\"",
-								"state": "deactivated"
-							}
 						}
 					],
 					"sid": 864020133847971
@@ -723,7 +656,8 @@
 							"sid": 848921240773985
 						}
 					],
-					"sid": 440665687207897
+					"sid": 440665687207897,
+					"disabled": true
 				}
 			],
 			"sid": 388643027528216
@@ -2388,33 +2322,14 @@
 							}
 						},
 						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 844117200587021,
-							"disabled": true,
-							"parameters": {
-								"group-name": "\"Enemies\"",
-								"state": "activated"
-							}
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 693711190802274,
-							"disabled": true,
-							"parameters": {
-								"group-name": "\"Player Engine\"",
-								"state": "activated"
-							}
-						},
-						{
 							"type": "script",
 							"language": "javascript",
 							"script": [
-								"// Hide buttons",
+								"// Hide buttons and cleanup state",
 								"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 								"if (buttonMgr) {",
-								"  buttonMgr.hideAllButtons();",
+								"    buttonMgr.cleanup();",
+								"    console.log(\"DEBUG: DialogueResult after cleanup =\", runtime.globalVars.DialogueResult);",
 								"}",
 								"",
 								"// Deactivate ButtonManager navigation",
