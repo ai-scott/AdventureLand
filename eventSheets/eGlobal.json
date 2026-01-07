@@ -8474,12 +8474,10 @@
 													"language": "javascript",
 													"script": [
 														"console.log(\"🔴 EVENT 141 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
-														"",
 														"const dialogue = globalThis.AdventureLand?.Dialogue;",
 														"if (dialogue) {",
 														"    const selectedIndex = runtime.globalVars.OptionSelection;",
 														"    dialogue.selectResponse(selectedIndex, runtime);",
-														"    ",
 														"    // Reset selection to first option for next time",
 														"    runtime.globalVars.OptionSelection = 0;",
 														"}"
@@ -8496,9 +8494,38 @@
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "else",
+													"objectClass": "System",
+													"sid": 928232547704619
+												}
+											],
+											"actions": [
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"console.log(\"🔵 EVENT 142 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
+														"const dialogue = globalThis.AdventureLand?.Dialogue;",
+														"if (dialogue) {",
+														"    dialogue.advance(runtime);",
+														"    // After advancing, check if options appeared",
+														"    if (runtime.globalVars.OptionsOpen) {",
+														"        console.log(\"📋 Options appeared after advance, displaying them\");",
+														"        runtime.callFunction(\"displayUserOptions\");",
+														"    }",
+														"}"
+													]
+												}
+											],
+											"sid": 486291389442886
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
-													"sid": 979071474683263,
+													"sid": 945178014458103,
 													"parameters": {
 														"variable": "RequiresPlayerInput"
 													},
@@ -8507,7 +8534,7 @@
 												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
-													"sid": 946839469867755,
+													"sid": 447269006309512,
 													"disabled": true,
 													"parameters": {
 														"variable": "DialogueResult",
@@ -8519,7 +8546,7 @@
 												{
 													"id": "compare-eventvar",
 													"objectClass": "System",
-													"sid": 766151310280804,
+													"sid": 550554553825945,
 													"disabled": true,
 													"parameters": {
 														"variable": "DialogueResult",
@@ -8529,27 +8556,9 @@
 													"isInverted": true
 												}
 											],
-											"actions": [
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"console.log(\"🔵 EVENT 142 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
-														"",
-														"const dialogue = globalThis.AdventureLand?.Dialogue;",
-														"if (dialogue) {",
-														"    dialogue.advance(runtime);",
-														"    ",
-														"    // After advancing, check if options appeared",
-														"    if (runtime.globalVars.OptionsOpen) {",
-														"        console.log(\"📋 Options appeared after advance, displaying them\");",
-														"        runtime.callFunction(\"displayUserOptions\");",
-														"    }",
-														"}"
-													]
-												}
-											],
-											"sid": 383054273905688
+											"actions": [],
+											"sid": 833268090386652,
+											"disabled": true
 										}
 									]
 								}
@@ -9579,26 +9588,6 @@
 													],
 													"actions": [
 														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 368647282504469,
-															"disabled": true,
-															"parameters": {
-																"variable": "InDialogue",
-																"value": "false"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 609039754393344,
-															"disabled": true,
-															"parameters": {
-																"variable": "DialogueResult",
-																"value": "\"End\""
-															}
-														},
-														{
 															"callFunction": "OpenClose_Inventory",
 															"sid": 847635339772085
 														},
@@ -9640,26 +9629,6 @@
 														}
 													],
 													"actions": [
-														{
-															"id": "set-boolean-eventvar",
-															"objectClass": "System",
-															"sid": 151601310022375,
-															"disabled": true,
-															"parameters": {
-																"variable": "InDialogue",
-																"value": "false"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 846141162914688,
-															"disabled": true,
-															"parameters": {
-																"variable": "DialogueResult",
-																"value": "\"End\""
-															}
-														},
 														{
 															"type": "script",
 															"language": "javascript",
