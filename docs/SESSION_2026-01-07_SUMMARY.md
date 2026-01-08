@@ -165,34 +165,52 @@ OLD Event Sheets (display UI, C3 picks instances)
 ## Commits Created
 1. `feat(dialogue): Complete options system with arrow key navigation and spacebar selection`
 
-## Next Steps
+## Additional Achievements (Afternoon Session)
 
-### High Priority
-1. **Polish Name Input UI**
-   - Make Go button work with mouse click
-   - Make Enter key submit name
-   - Improve input field visibility/positioning
-   - Hide input UI after submission
+### 5. Pixel-Art Text Input System
+**Problem:** HTML input field broke pixel-art aesthetic with non-pixel font.
 
-### Medium Priority
-2. **Test Other Dialogues**
-   - Test all 12 dialogue files across 3 worlds
-   - Verify quest status tracking
-   - Test unique item spawning
+**Solution:** Complete TypeScript-based keyboard capture system:
+- InputManager captures all alphanumeric keys + backspace
+- DialogueController handlers update SpriteFont_Menu character-by-character
+- getUserTextPixel C3 function creates pixel-art UI (background, instruction, frame, SpriteFont)
+- ButtonManager creates "Enter" button (Btn_Action sprite)
+- Name validation prevents blank submission with visual feedback
 
-3. **Escape Key Support**
-   - Allow Escape to cancel/exit dialogue early
-   - Test with options, input, and regular dialogue
+**Impact:** 100% pixel-art aesthetic maintained, professional input experience!
 
-### Low Priority
-4. **Typewriter Text**
-   - Test spacebar to finish typewriter animation
-   - Ensure it works before advancing dialogue
+### 6. InputManager Context System
+**Problem:** After loading game, spacebar didn't work - Penny dialogue couldn't be re-triggered.
 
-5. **Documentation Updates**
-   - Update dialogue system guide with options pattern
-   - Document hybrid InputManager + DialogueBridge architecture
-   - Add troubleshooting guide for common issues
+**Root Cause:** InputManager started in "menu" context and never switched to "game".
+
+**Solution:**
+- Added InputContext global variable for debugger visibility
+- Added "On start of layout" event to switch to game context
+- InputManager.setActiveContext() now updates global variable
+
+**Impact:** Dialogue works after game loads, context visible in debugger!
+
+### 7. Custom Function Triggers (TypeScript Migration)
+**Problem:** checkYourself mirror function broken after Event 174 disabled.
+
+**Solution:**
+- Updated TriggerManager.triggerCurrent() to handle CurrentAction = "Check"
+- Added function mapping: checkYourself → OpenClose_Inventory
+- Game context handler routes "Check" to TriggerManager
+
+**Impact:** Mirrors work in TypeScript, one less event sheet dependency!
+
+## Final Commits
+1. `feat(dialogue): Complete options system with arrow key navigation`
+2. `docs: Add session summary for 2026-01-07 dialogue options completion`
+3. `feat(input): Complete pixel-art text input with keyboard capture and validation` (pending)
+
+## Next Steps (Future Work)
+- Test remaining 11 dialogue files (11 NPCs across 3 worlds)
+- Add more custom function mappings to TriggerManager
+- Typewriter text skip functionality
+- Escape key to exit dialogue early
 
 ## Lessons Learned
 

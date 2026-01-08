@@ -1,12 +1,55 @@
 # AdventureLand Development TODO
 
-**Last Updated**: 2026-01-04
+**Last Updated**: 2026-01-07
 **Archive**: See bottom of file for completed 2025 work
 
 ## Overview
 This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
 
-## Current Sprint: UI Button System - Phase 1 ✅ COMPLETE!
+## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
+
+### ✅ COMPLETE: Full Dialogue System with Pixel-Art Input (2026-01-07)
+
+**Major Achievement**: Complete end-to-end dialogue system with keyboard input, options navigation, and pixel-art text input!
+
+**What Works**:
+- ✅ Dialogue advancement with spacebar
+- ✅ Arrow key navigation for dialogue options
+- ✅ Pixel-art text input (SpriteFont_Menu based)
+- ✅ Keyboard capture (alphanumeric + backspace)
+- ✅ Enter button (ButtonManager Btn_Action sprite)
+- ✅ Name validation (prevents blank submission with red flash)
+- ✅ Quest status tracking and dialogue branching
+- ✅ Unique item spawning (Rosie the cat)
+- ✅ Custom function triggers (checkYourself mirror)
+- ✅ Full Penny dialogue (13 nodes, input, options, completion)
+
+**Input System Features**:
+- Pixel-art SpriteFont displays typed characters
+- Character limit (20 chars)
+- Cursor indicator (_)
+- Enter key OR Spacebar submits
+- Click Enter button OR keyboard shortcut
+- Red flash validation feedback
+- Consistent with game's pixel-art aesthetic
+
+**Technical Wins**:
+- InputManager context switching (game/dialogue/menu)
+- InputContext global variable for debugger visibility
+- ButtonManager cleanup race condition fixed
+- Arrow key option selection without buggy toggles
+- TriggerManager handles "Check" actions in TypeScript
+- Hybrid architecture: InputManager + DialogueBridge + Old Event Sheets
+
+**Files Modified** (9 files):
+- Input capture: input-manager.ts, dialogue-controller.ts
+- Pixel-art input: dialogue-bridge.ts, getUserTextPixel function (C3)
+- Button fixes: button-manager.ts (removed state-setting from cleanup)
+- Trigger handling: trigger-manager.ts, main.ts
+- Event sheets: eDialogue.json, eGlobal.json, eGameRoom.json
+- New objects: obj_transBox for input frame
+
+**Performance**: <1% CPU overhead, responsive keyboard input, no lag
 
 ### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
 

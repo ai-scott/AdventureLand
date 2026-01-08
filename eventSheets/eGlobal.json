@@ -1914,12 +1914,6 @@
 										"start-index": "0",
 										"end-index": "16"
 									}
-								},
-								{
-									"id": "trigger-once-while-true",
-									"objectClass": "System",
-									"sid": 238542190891566,
-									"disabled": true
 								}
 							],
 							"actions": [
@@ -9581,6 +9575,43 @@
 														}
 													],
 													"sid": 429118892114658
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-touching-object",
+															"objectClass": "Touch",
+															"sid": 100059504139291,
+															"parameters": {
+																"object": "Btn_Action"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "Btn_Action",
+															"sid": 343580099429629,
+															"parameters": {
+																"instance-variable": "Actions",
+																"comparison": 0,
+																"value": "\"SubmitName\""
+															}
+														}
+													],
+													"actions": [
+														{
+															"type": "script",
+															"language": "javascript",
+															"script": [
+																"const dialogue = globalThis.AdventureLand?.Dialogue;",
+																"    if (dialogue) {",
+																"      console.log('🖱️ [C3] Enter button clicked - submitting input');",
+																"      dialogue.submitInput(runtime);",
+																"    }"
+															]
+														}
+													],
+													"sid": 787685558214950
 												},
 												{
 													"eventType": "block",

@@ -541,11 +541,20 @@ runOnStartup(async runtime => {
           } else if (currentAction === 'Enter') {
             runtime.callFunction('enterDoor');
             return true; // We handled it
+          } else if (currentAction === 'Check') {
+            // Handle custom functions (mirrors, etc.) via TriggerManager
+            const triggerMgr = (globalThis as any).AdventureLand?.TriggerManager;
+            if (triggerMgr) {
+              const handled = triggerMgr.triggerCurrent(runtime);
+              console.log(`   Check: TriggerManager handled = ${handled}`);
+              return handled;
+            }
+            return false;
           } else {
-            // For Interact, Check, and other actions - let C3 handle it
+            // For Interact and other actions - let C3 handle it
             // Return false = DON'T call preventDefault
             console.log(`   ${currentAction}: Letting C3 event sheets handle it`);
-            return false; // Don't preventDefault - let C3 Event 196-201, 260-263, 174 fire!
+            return false; // Don't preventDefault - let C3 Event 196-201, 260-263 fire!
           }
         }
       });
@@ -630,6 +639,7 @@ runOnStartup(async runtime => {
         getResponseText: (index: number) => QuestDialogue.DialogueBridge.getResponseText(index),
         selectResponse: (index: number, runtime: any) => QuestDialogue.DialogueBridge.selectResponse(index, runtime),
         endDialogue: (runtime: any) => QuestDialogue.DialogueBridge.endDialogue(runtime),
+        submitInput: (runtime: any) => QuestDialogue.DialogueBridge.submitInput(runtime),
 
         // Unique item spawning helpers
         shouldSpawnUniqueItem: (runtime: any, itemName: string) => QuestDialogue.DialogueBridge.shouldSpawnUniqueItem(runtime, itemName),

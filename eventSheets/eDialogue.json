@@ -173,6 +173,26 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "InputText",
+			"type": "string",
+			"initialValue": "",
+			"comment": "Variable to set from TextInput",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 715888926647853
+		},
+		{
+			"eventType": "variable",
+			"name": "CapturingInput",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "are we actively getting text input from player?",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 362184198895417
+		},
+		{
+			"eventType": "variable",
 			"name": "TextArrayZIndex",
 			"type": "number",
 			"initialValue": "0",
@@ -1562,7 +1582,7 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
-							"functionName": "getUserText",
+							"functionName": "getUserTextPixel",
 							"functionDescription": "",
 							"functionCategory": "",
 							"functionReturnType": "none",
@@ -1600,29 +1620,111 @@
 								{
 									"id": "create-object",
 									"objectClass": "System",
-									"sid": 966772407877898,
+									"sid": 464106242826899,
 									"parameters": {
-										"object-to-create": "obj_textInput",
+										"object-to-create": "obj_TextBlock",
 										"layer": "\"HUD_UI\"",
-										"x": "40",
-										"y": "180",
+										"x": "68",
+										"y": "172",
 										"create-hierarchy": false,
 										"template-name": "\"\""
 									}
 								},
 								{
-									"id": "set-css-style",
-									"objectClass": "obj_textInput",
-									"sid": 553470252477423,
+									"id": "set-font-color",
+									"objectClass": "obj_TextBlock",
+									"sid": 813850008799318,
 									"parameters": {
-										"property-name": "\"font-face\"",
-										"value": "\"Verdana\""
+										"color": "rgbEx(98, 100, 74)"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "obj_TextBlock",
+									"sid": 893790028560933,
+									"parameters": {
+										"text": "\"Type your player name:\""
+									}
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "obj_TextBlock",
+									"sid": 810371119744673
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 282170283743312,
+									"parameters": {
+										"object-to-create": "obj_transBox",
+										"layer": "\"HUD_UI\"",
+										"x": "66",
+										"y": "192",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-size",
+									"objectClass": "obj_transBox",
+									"sid": 419914371364185,
+									"parameters": {
+										"width": "160",
+										"height": "22"
+									}
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "obj_transBox",
+									"sid": 598705430469776
+								},
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 156981323937528,
+									"parameters": {
+										"object-to-create": "SpriteFont_Menu",
+										"layer": "\"HUD_UI\"",
+										"x": "72",
+										"y": "192",
+										"create-hierarchy": false,
+										"template-name": "\"\""
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 947465103832212,
+									"parameters": {
+										"text": "\"_|\""
+									}
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 783339419406849
+								},
+								{
+									"id": "set-horizontal-alignment",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 355908141579762,
+									"parameters": {
+										"horizontal-alignment": "left"
+									}
+								},
+								{
+									"id": "set-default-color",
+									"objectClass": "SpriteFont_Menu",
+									"sid": 427647763501830,
+									"parameters": {
+										"color": "rgbEx(98, 100, 74)"
 									}
 								},
 								{
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 374463795846284,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"background-color\"",
 										"value": "\"rgba(0,0,0,0)\""
@@ -1632,6 +1734,7 @@
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 974980676639862,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"color\"",
 										"value": "\"FFFF00\""
@@ -1641,6 +1744,7 @@
 									"id": "set-placeholder",
 									"objectClass": "obj_textInput",
 									"sid": 488927814726986,
+									"disabled": true,
 									"parameters": {
 										"placeholder": "placeholderText"
 									}
@@ -1649,6 +1753,7 @@
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 269255800508658,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"border-style\"",
 										"value": "\"none\""
@@ -1658,6 +1763,7 @@
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 938451799314034,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"outline-style\"",
 										"value": "\"solid\""
@@ -1667,6 +1773,7 @@
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 996034961128486,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"font\"",
 										"value": "\"Alagard_by_pix3m-11px\""
@@ -1676,6 +1783,7 @@
 									"id": "set-css-style",
 									"objectClass": "obj_textInput",
 									"sid": 462084752787966,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"outline-color\"",
 										"value": "\"#837d2b\""
@@ -1684,12 +1792,14 @@
 								{
 									"id": "set-focused",
 									"objectClass": "obj_textInput",
-									"sid": 419959704769311
+									"sid": 419959704769311,
+									"disabled": true
 								},
 								{
 									"id": "create-object",
 									"objectClass": "System",
 									"sid": 442875713272405,
+									"disabled": true,
 									"parameters": {
 										"object-to-create": "GoButton",
 										"layer": "\"HUD_UI\"",
@@ -1703,6 +1813,7 @@
 									"id": "set-css-style",
 									"objectClass": "GoButton",
 									"sid": 767817506256090,
+									"disabled": true,
 									"parameters": {
 										"property-name": "\"background-color\"",
 										"value": "\"rgba(0,0,0,0)\""
@@ -1749,7 +1860,8 @@
 									}
 								}
 							],
-							"sid": 658656797634996
+							"sid": 658656797634996,
+							"disabled": true
 						},
 						{
 							"eventType": "block",
@@ -1770,6 +1882,7 @@
 							],
 							"actions": [],
 							"sid": 268362951307858,
+							"disabled": true,
 							"children": [
 								{
 									"eventType": "block",
@@ -1787,7 +1900,8 @@
 											"sid": 321686599703945
 										}
 									],
-									"sid": 100056532990666
+									"sid": 100056532990666,
+									"disabled": true
 								},
 								{
 									"eventType": "block",
@@ -1841,7 +1955,8 @@
 											}
 										}
 									],
-									"sid": 477078997299729
+									"sid": 477078997299729,
+									"disabled": true
 								}
 							]
 						},
@@ -1903,7 +2018,8 @@
 									]
 								}
 							],
-							"sid": 782889026671448
+							"sid": 782889026671448,
+							"disabled": true
 						}
 					],
 					"sid": 765262175635742
@@ -2301,6 +2417,11 @@
 							"id": "destroy",
 							"objectClass": "obj_TextItemFrame",
 							"sid": 388223919252149
+						},
+						{
+							"id": "destroy",
+							"objectClass": "obj_transBox",
+							"sid": 673880225253886
 						},
 						{
 							"id": "destroy",

@@ -473,7 +473,8 @@
 							"obj_HeartsFrame",
 							"obj_TriggerFrame",
 							"transCircle",
-							"transArc"
+							"transArc",
+							"obj_transBox"
 						],
 						"subfolders": [],
 						"name": "Dialogue"

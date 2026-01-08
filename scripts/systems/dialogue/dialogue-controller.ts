@@ -53,6 +53,16 @@ export class DialogueController {
     // Register with InputManager for dialogue context
     InputManager.registerHandler('dialogue', {
       onSpace: () => {
+        // If capturing input, treat spacebar as submit (like Enter)
+        if (runtime.globalVars.CapturingInput) {
+          console.log('🎹 [Dialogue Context] Spacebar pressed while capturing input - submitting');
+          const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+          if (dialogue) {
+            dialogue.submitInput(runtime);
+          }
+          return;
+        }
+
         // TEMPORARY: Call old DialogueBridge.advance() if using old system
         // TODO: Remove this once fully migrated to DialogueController
         const dialogue = (globalThis as any).AdventureLand?.Dialogue;
@@ -66,7 +76,9 @@ export class DialogueController {
       onEnter: () => this.handleEnter(),
       onEscape: () => this.handleEscape(),
       onArrowUp: () => this.handleArrowUp(),
-      onArrowDown: () => this.handleArrowDown()
+      onArrowDown: () => this.handleArrowDown(),
+      onTextInput: (char: string) => this.handleTextInput(char),
+      onBackspace: () => this.handleBackspace()
     });
 
     console.log('✅ DialogueController initialized');
@@ -170,12 +182,23 @@ export class DialogueController {
    * Used for text input submission
    */
   private static handleEnter(): void {
-    if (this.state === DialogueState.WAITING_FOR_INPUT) {
-      // Get text from input field
-      const inputField = this.runtime?.objects.obj_textInput?.getFirstInstance();
-      if (inputField) {
-        const text = inputField.text;
-        this.submitInput(text);
+    // Check if we're capturing input (pixel-art input mode)
+    if (this.runtime?.globalVars.CapturingInput) {
+      console.log('⏎ [DialogueController] Enter pressed - submitting pixel-art input');
+      const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+      if (dialogue) {
+        dialogue.submitInput(this.runtime);
+      }
+      return;
+    }
+
+    // TEMPORARY: Check if HTML input field exists (old system fallback)
+    const inputField = this.runtime?.objects.obj_textInput?.getFirstInstance();
+    if (inputField && inputField.isVisible) {
+      console.log('⏎ [DialogueController] Enter pressed - submitting HTML input');
+      const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+      if (dialogue) {
+        dialogue.submitInput(this.runtime);
       }
     }
   }
@@ -551,6 +574,71 @@ export class DialogueController {
     this.currentNode = null;
     this.currentTriggerUID = -1;
     console.log('🔄 DialogueController reset');
+  }
+
+  /**
+   * Handle text input (for name entry, etc.)
+   * Only active when CapturingInput global variable is true
+   */
+  private static handleTextInput(char: string): boolean {
+    if (!this.runtime?.globalVars.CapturingInput) {
+      return false; // Not capturing input, let C3 handle
+    }
+
+    // Get current input text
+    let currentText = this.runtime.globalVars.InputText || '';
+
+    // Add character (limit to 20 characters)
+    if (currentText.length < 20) {
+      currentText += char;
+      this.runtime.globalVars.InputText = currentText;
+
+      // Update display text object - find SpriteFont_Menu on HUD_UI layer
+      const allSpriteFonts = this.runtime.objects.SpriteFont_Menu?.getAllInstances() || [];
+      const textDisplay = allSpriteFonts.find((sf: any) => sf.layer.name === 'HUD_UI');
+
+      if (textDisplay) {
+        textDisplay.text = currentText + '_'; // Add cursor
+      } else {
+        console.warn('⚠️ [Input] No SpriteFont_Menu found on HUD_UI layer');
+      }
+
+      console.log(`⌨️ [Input] Typed: "${char}" → Current text: "${currentText}"`);
+    }
+
+    return true; // Handled
+  }
+
+  /**
+   * Handle backspace (delete last character)
+   */
+  private static handleBackspace(): boolean {
+    if (!this.runtime?.globalVars.CapturingInput) {
+      return false; // Not capturing input, let C3 handle
+    }
+
+    // Get current input text
+    let currentText = this.runtime.globalVars.InputText || '';
+
+    // Remove last character
+    if (currentText.length > 0) {
+      currentText = currentText.slice(0, -1);
+      this.runtime.globalVars.InputText = currentText;
+
+      // Update display text object - find SpriteFont_Menu on HUD_UI layer
+      const allSpriteFonts = this.runtime.objects.SpriteFont_Menu?.getAllInstances() || [];
+      const textDisplay = allSpriteFonts.find((sf: any) => sf.layer.name === 'HUD_UI');
+
+      if (textDisplay) {
+        textDisplay.text = currentText + '_'; // Add cursor
+      } else {
+        console.warn('⚠️ [Input] No SpriteFont_Menu found on HUD_UI layer');
+      }
+
+      console.log(`⌫ [Input] Backspace → Current text: "${currentText}"`);
+    }
+
+    return true; // Handled
   }
 
   /**

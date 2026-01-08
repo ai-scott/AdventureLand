@@ -251,6 +251,9 @@ export class DialogueBridge {
       if (runtime.globalVars.OptionsOpen) {
         console.log(`📋 [ADVANCE] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
         runtime.callFunction("displayUserOptions");
+      } else if (requiresInput) {
+        console.log(`📝 [ADVANCE] Input node - UI created by getUserTextPixel, skipping displayDialogue`);
+        // Don't call displayDialogue - getUserTextPixel already created the UI
       } else {
         console.log(`📢 [ADVANCE] Calling displayDialogue()`);
         runtime.callFunction("displayDialogue");
@@ -658,8 +661,44 @@ export class DialogueBridge {
           if (action.variable) {
             // Store which variable we're getting input for
             runtime.globalVars.InputVar = action.variable;
-            // Call the existing getUserText function to show input UI
-            runtime.callFunction("getUserText", action.variable);
+            runtime.globalVars.InputText = ''; // Clear previous input
+
+            // Call C3 function to create pixel-art input UI
+            // This should create: background, instruction text, input frame, SpriteFont
+            runtime.callFunction("getUserTextPixel", action.variable);
+
+            // Enable keyboard input capture and create Enter button after UI is ready
+            setTimeout(() => {
+              runtime.globalVars.CapturingInput = true;
+
+              // Configure SpriteFont appearance
+              const allSpriteFonts = runtime.objects.SpriteFont_Menu?.getAllInstances() || [];
+              const inputDisplay = allSpriteFonts.find((sf: any) => sf.layer.name === 'HUD_UI');
+              if (inputDisplay) {
+                inputDisplay.moveToTop();
+                inputDisplay.text = '_'; // Set cursor
+                console.log('✅ [Input] SpriteFont_Menu ready for input');
+              }
+
+              // Create Enter button using ButtonManager (aligned with input box)
+              const buttonMgr = (globalThis as any).AdventureLand?.ButtonManager;
+              if (buttonMgr) {
+                const success = buttonMgr.showButton('input-enter', {
+                  text: 'Enter',
+                  layer: 'HUD_UI',
+                  position: { x: 250, y: 190 }, // Moved down to align with input box
+                  action: 'SubmitName', // C3 event will check Btn_Action.Actions = "SubmitName"
+                  linkID: 0 // Make it selectable
+                });
+                console.log('✅ [Input] Enter button created:', success, '- action: SubmitName');
+
+                // Activate ButtonManager so click events fire
+                runtime.globalVars.ButtonMgrActive = true;
+                console.log('✅ [Input] ButtonMgrActive set to true');
+              }
+
+              console.log('✅ [Input] Pixel-art input ready - type name, then press Enter key, Spacebar, or click Enter button');
+            }, 100);
           }
           break;
 
@@ -678,6 +717,91 @@ export class DialogueBridge {
           console.warn(`⚠️ Unknown action type: ${action.type}`);
       }
     });
+  }
+
+  /**
+   * Submit text input and continue dialogue
+   * Called when user clicks Submit button or presses Enter
+   *
+   * @param runtime - Construct 3 runtime
+   */
+  static submitInput(runtime: any): void {
+    // Get text from input (either HTML input field or sprite-based input)
+    let text = '';
+    const variable = runtime.globalVars.InputVar;
+
+    // Try HTML input field first (old system)
+    const inputField = runtime.objects.obj_textInput?.getFirstInstance();
+    if (inputField) {
+      text = inputField.text.trim();
+    } else {
+      // Use InputText global variable (sprite-based input)
+      text = (runtime.globalVars.InputText || '').trim();
+    }
+
+    // Validate: don't allow blank input
+    if (!text || text.length === 0) {
+      console.warn('⚠️ [Input] Cannot submit - name is required!');
+
+      // Flash the instruction text red to indicate error
+      const allTextBlocks = runtime.objects.obj_TextBlock?.getAllInstances() || [];
+      const instructionText = allTextBlocks.find((tb: any) =>
+        tb.layer.name === 'HUD_UI' && tb.text === 'Type your player name:'
+      );
+
+      if (instructionText) {
+        // Store original color and flash red
+        const originalColor = instructionText.colorRgb;
+        instructionText.colorRgb = [1, 0.2, 0.2]; // Red
+
+        setTimeout(() => {
+          instructionText.colorRgb = originalColor; // Restore cream
+        }, 300);
+
+        console.log('🔴 [Input] Flashing instruction text - name required!');
+      }
+      return;
+    }
+
+    console.log(`📝 [Input] Submitting: "${text}" → ${variable}`);
+
+    // Save to dictionary
+    const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
+    if (dict && variable) {
+      dict.getDataMap().set(variable, text);
+      console.log(`✅ [Input] Saved ${variable} = "${text}"`);
+    }
+
+    // Hide input UI - destroy SpriteFont and button
+    const allSpriteFonts = runtime.objects.SpriteFont_Menu?.getAllInstances() || [];
+    const inputDisplay = allSpriteFonts.find((sf: any) => sf.layer.name === 'HUD_UI');
+    if (inputDisplay) {
+      inputDisplay.destroy();
+      console.log('🗑️ [Input] Destroyed SpriteFont_Menu input display');
+    }
+
+    // Try to call hideTextInput if it exists (for old HTML input cleanup)
+    try {
+      runtime.callFunction("hideTextInput");
+    } catch (e) {
+      // Function doesn't exist, that's fine
+    }
+
+    // Hide ButtonManager submit button
+    const buttonMgr = (globalThis as any).AdventureLand?.ButtonManager;
+    if (buttonMgr) {
+      buttonMgr.hideButton('input-enter'); // Match the ID we used when creating it
+      console.log('🗑️ [Input] Hidden Enter button');
+    }
+
+    // Deactivate ButtonManager and clear input state
+    runtime.globalVars.ButtonMgrActive = false;
+    runtime.globalVars.InputText = '';
+    runtime.globalVars.CapturingInput = false;
+    console.log('🔒 [Input] ButtonMgrActive set to false, input capture disabled');
+
+    // Continue dialogue
+    this.advanceDialogue(runtime);
   }
 
   /**

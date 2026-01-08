@@ -1855,8 +1855,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 116.24756169192176,
-						"y": 111.86835277808689,
+						"x": 157.75612836244284,
+						"y": 110.84213359888312,
 						"width": 132.47517294128835,
 						"height": 20.57422849087783,
 						"originX": 0,
@@ -5911,6 +5911,107 @@
 						"height": 48,
 						"originX": 0.5,
 						"originY": 0.791667,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "SpriteFont_Menu",
+					"properties": {
+						"text": "New Game",
+						"enable-bbcode": true,
+						"character-width": 16,
+						"character-height": 17,
+						"character-set": "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[£]{}€!\"#$%&'()*+,-.^0123456789:;<=>?/abcdefghijklmnopqrstuvwxyz",
+						"spacing-data": "",
+						"scale": 0.7,
+						"character-spacing": -1,
+						"line-height": 0,
+						"horizontal-alignment": "left",
+						"vertical-alignment": "center",
+						"wrapping": "word",
+						"initially-visible": true,
+						"origin": "top-left",
+						"read-aloud": false
+					},
+					"uid": 271,
+					"sid": 360081896150052,
+					"tags": "",
+					"instanceVariables": {
+						"Menu": "TitleScreen",
+						"Link_ID": 1
+					},
+					"behaviors": {},
+					"effects": {
+						"Brightness": {
+							"isEnabled": false,
+							"parameters": {
+								"brightness": 1
+							}
+						},
+						"Inverse": {
+							"isEnabled": false,
+							"parameters": {
+								"intensity": 1
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 360081896150052,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": -43.34380340576172,
+						"y": 54.282554626464844,
+						"width": 106.49078629038866,
+						"height": 18.4757422162065,
+						"originX": 0,
+						"originY": 0,
+						"color": [
+							0,
+							0,
+							0,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "obj_transBox",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 279,
+					"sid": 733596314536645,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"instanceFolderItem": {
+						"sid": 733596314536645,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 26.020691145201283,
+						"y": 371.5910463166395,
+						"width": 16.008419556527407,
+						"height": 6.818260368091208,
+						"originX": 0.020833333333333332,
+						"originY": 0.06666666666666667,
 						"color": [
 							1,
 							1,

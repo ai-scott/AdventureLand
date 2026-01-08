@@ -211,30 +211,78 @@ export class TriggerManager {
   }
 
   /**
-   * Trigger the current nearby trigger
-   * Called when player presses spacebar and a trigger is nearby
+   * Trigger the current nearby trigger based on CurrentAction
+   * Called when player presses spacebar
+   * Works with old checkForInteractionHint() system that sets CurrentAction
    */
   static triggerCurrent(runtime: any): boolean {
-    if (!this.currentTrigger) {
-      return false;
-    }
-
     if (this.blockedReasons.size > 0) {
       console.warn(`🚫 Trigger blocked: ${Array.from(this.blockedReasons).join(', ')}`);
       return false;
     }
 
-    // Find the handler for this trigger type
-    const registered = this.triggers.find(t => t.type === this.currentTrigger!.type);
-    if (!registered) {
-      console.error(`❌ No handler found for trigger type: ${this.currentTrigger.type}`);
-      return false;
+    const currentAction = runtime.globalVars.CurrentAction;
+
+    // Handle "Check" action for custom functions (mirrors, etc.)
+    if (currentAction === 'Check') {
+      // Find nearest Trigger_Function
+      const player = runtime.objects.Trigger_Player?.getFirstInstance();
+      if (!player) return false;
+
+      const functionTriggers = runtime.objects.Trigger_Function?.getAllInstances() || [];
+      let nearestTrigger = null;
+      let nearestDist = Infinity;
+
+      for (const trigger of functionTriggers) {
+        const dx = trigger.x - player.x;
+        const dy = trigger.y - player.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 50 && dist < nearestDist) {
+          nearestTrigger = trigger;
+          nearestDist = dist;
+        }
+      }
+
+      if (nearestTrigger) {
+        const functionName = nearestTrigger.instVars.Function;
+        console.log(`⚡ Triggering function: ${functionName}`);
+
+        // Map function names to actual C3 functions
+        // This replicates the TriggerFunctions map from the event sheet
+        const functionMap: Record<string, string> = {
+          'checkYourself': 'OpenClose_Inventory'
+          // Add more mappings as needed
+        };
+
+        const actualFunction = functionMap[functionName];
+        if (actualFunction) {
+          try {
+            runtime.callFunction(actualFunction);
+            console.log(`✅ Called ${actualFunction} for ${functionName}`);
+            return true;
+          } catch (e) {
+            console.error(`❌ Failed to call ${actualFunction}:`, e);
+            return false;
+          }
+        } else {
+          console.error(`❌ No mapping found for function: ${functionName}`);
+          return false;
+        }
+      }
     }
 
-    // Execute trigger
-    console.log(`⚡ Triggering ${this.currentTrigger.type}: ${this.currentTrigger.hintText}`);
-    registered.handler.onTrigger(this.currentTrigger.object, runtime);
-    return true;
+    // Legacy: If currentTrigger was set by checkProximity(), use that
+    if (this.currentTrigger) {
+      const registered = this.triggers.find(t => t.type === this.currentTrigger!.type);
+      if (registered) {
+        console.log(`⚡ Triggering ${this.currentTrigger.type}: ${this.currentTrigger.hintText}`);
+        registered.handler.onTrigger(this.currentTrigger.object, runtime);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

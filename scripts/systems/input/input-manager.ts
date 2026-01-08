@@ -35,6 +35,8 @@ export interface InputHandler {
   onArrowLeft?: () => boolean | void;
   onArrowRight?: () => boolean | void;
   onClick?: (x: number, y: number) => boolean | void;
+  onTextInput?: (char: string) => boolean | void; // For capturing typed characters
+  onBackspace?: () => boolean | void; // For deleting characters
 }
 
 export class InputManager {
@@ -75,10 +77,17 @@ export class InputManager {
   /**
    * Set which context is currently active
    * Only the active context receives input events
+   * Also stores in global variable for debugging visibility
    */
   static setActiveContext(context: InputContext): void {
     const prev = this.activeContext;
     this.activeContext = context;
+
+    // Store in global variable for C3 debugger visibility
+    if ((globalThis as any).runtime?.globalVars) {
+      (globalThis as any).runtime.globalVars.InputContext = context;
+    }
+
     console.log(`🎯 InputManager: Context changed from "${prev}" to "${context}"`);
   }
 
@@ -161,6 +170,22 @@ export class InputManager {
         if (handler.onArrowRight) {
           handler.onArrowRight();
           handled = true;
+        }
+        break;
+
+      case 'Backspace':
+        if (handler.onBackspace) {
+          handler.onBackspace();
+          handled = true;
+        }
+        break;
+
+      default:
+        // Capture alphanumeric and special characters for text input
+        if (handler.onTextInput && e.key.length === 1) {
+          // Only single characters (not Control, Shift, etc.)
+          const result = handler.onTextInput(e.key);
+          handled = result !== false;
         }
         break;
     }
