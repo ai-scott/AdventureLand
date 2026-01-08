@@ -254,7 +254,12 @@
 										"if (ySort) {",
 										"  ySort.initialize(runtime);",
 										"  console.log(\"✅ Y-Sort system initialized\");",
-										"}"
+										"}",
+										"const inputMgr = globalThis.AdventureLand?.InputManager;",
+										"    if (inputMgr) {",
+										"      inputMgr.setContext('game');",
+										"      console.log('🎮 [GameRoom] Switched InputManager to game context');",
+										"    }"
 									]
 								}
 							],

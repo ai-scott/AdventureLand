@@ -60,17 +60,26 @@ export class DialogueController {
           if (dialogue) {
             dialogue.submitInput(runtime);
           }
-          return;
+          return true; // Handled
+        }
+
+        // Check if typewriter was just finished by C3 Event 190
+        // Event 190 sets TypewriterRunning = true when finishing typewriter
+        if (runtime.globalVars.TypewriterRunning) {
+          console.log('⏩ [Dialogue] Typewriter just finished - not advancing yet');
+          runtime.globalVars.TypewriterRunning = false; // Reset flag
+          return true; // Don't advance, just consumed the spacebar press
         }
 
         // TEMPORARY: Call old DialogueBridge.advance() if using old system
-        // TODO: Remove this once fully migrated to DialogueController
         const dialogue = (globalThis as any).AdventureLand?.Dialogue;
         if (dialogue && runtime.globalVars.InDialogue) {
           console.log('🎹 [Dialogue Context] Space pressed - calling old dialogue.advance()');
           dialogue.advance(runtime);
+          return true; // Handled
         } else {
           this.handleSpacePress();
+          return true; // Handled
         }
       },
       onEnter: () => this.handleEnter(),

@@ -51,6 +51,26 @@ This is the single source of truth for all active development tasks. Completed w
 
 **Performance**: <1% CPU overhead, responsive keyboard input, no lag
 
+### 📋 NEXT: Dialogue System Polish (Optional)
+
+- [ ] Test remaining 11 NPC dialogues (11 NPCs across 3 worlds)
+  - World00: Rosie, GeneralStore, Blacksmith, AdventureShop, Welcome, WindmillNick, SeaMonsterKey (7 more)
+  - World01: Pete, ForestSign (2 NPCs)
+  - World10: LakeSign, TreeSign (2 NPCs)
+
+- [ ] Add custom function mappings to TriggerManager
+  - Currently only checkYourself → OpenClose_Inventory
+  - Add others as needed
+
+- [ ] Typewriter text skip with spacebar
+  - Spacebar should finish typewriter animation if still typing
+  - Already implemented in DialogueController.handleSpacePress()
+  - Needs testing
+
+- [ ] Escape key exits dialogue early
+  - Already implemented in DialogueController.handleEscape()
+  - Needs testing with options, input, and regular dialogue
+
 ### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
 
 **Bug #9 RESOLVED!** Item pickup notifications now have interactive buttons.

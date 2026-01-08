@@ -55,12 +55,14 @@ export class InputManager {
       return;
     }
 
-    // Capture keyboard input at document level
-    document.addEventListener('keydown', (e) => this.handleKeyDown(e), true);
-    document.addEventListener('keyup', (e) => this.handleKeyUp(e), true);
+    // Listen for keyboard input at document level (bubble phase, not capture)
+    // This lets C3 event sheets run FIRST (e.g., Event 190 typewriter finish)
+    // Then our handlers run after C3 has processed the event
+    document.addEventListener('keydown', (e) => this.handleKeyDown(e), false);
+    document.addEventListener('keyup', (e) => this.handleKeyUp(e), false);
 
     // Capture mouse clicks
-    document.addEventListener('click', (e) => this.handleClick(e), true);
+    document.addEventListener('click', (e) => this.handleClick(e), false);
 
     this.initialized = true;
     console.log('✅ InputManager initialized');

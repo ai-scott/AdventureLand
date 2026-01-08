@@ -93,6 +93,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "InputContext",
+			"type": "string",
+			"initialValue": "",
+			"comment": " \"game\", \"dialogue\", \"menu\", etc",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 487766052814918
+		},
+		{
+			"eventType": "variable",
 			"name": "Gems",
 			"type": "number",
 			"initialValue": "0",

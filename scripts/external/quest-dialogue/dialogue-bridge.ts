@@ -257,6 +257,11 @@ export class DialogueBridge {
       } else {
         console.log(`📢 [ADVANCE] Calling displayDialogue()`);
         runtime.callFunction("displayDialogue");
+
+        // Set TypewriterRunning flag for skip detection
+        // Will be cleared by Event 190 or "On typewriter finished" event
+        runtime.globalVars.TypewriterRunning = true;
+        console.log('⌨️ [ADVANCE] TypewriterRunning set to true (will be cleared when typing finishes)');
       }
 
       // Don't auto-advance - wait for player input (space/click)
