@@ -87,7 +87,38 @@ export class DialogueController {
       onArrowUp: () => this.handleArrowUp(),
       onArrowDown: () => this.handleArrowDown(),
       onTextInput: (char: string) => this.handleTextInput(char),
-      onBackspace: () => this.handleBackspace()
+      onBackspace: () => this.handleBackspace(),
+      onClick: (_x: number, _y: number) => {
+        // Mobile tap support - treat tap like spacebar for dialogue advancement
+        console.log('👆 [Dialogue Context] Click/tap detected - advancing dialogue');
+
+        // If capturing input, ignore clicks (let C3 handle Enter button)
+        if (runtime.globalVars.CapturingInput) {
+          return false; // Let C3 handle button clicks
+        }
+
+        // Check if typewriter is running - finish it on first tap
+        if (runtime.globalVars.TypewriterRunning) {
+          console.log('⏩ [Dialogue] Typewriter just finished - not advancing yet');
+          runtime.globalVars.TypewriterRunning = false; // Reset flag
+          return true; // Don't advance, just consumed the tap
+        }
+
+        // If options are open, ignore clicks (let C3 handle option selection)
+        if (runtime.globalVars.OptionsOpen) {
+          return false; // Let C3 handle option clicks
+        }
+
+        // Otherwise, advance dialogue (same as spacebar)
+        const dialogue = (globalThis as any).AdventureLand?.Dialogue;
+        if (dialogue && runtime.globalVars.InDialogue) {
+          console.log('👆 [Dialogue Context] Tap - calling old dialogue.advance()');
+          dialogue.advance(runtime);
+          return true; // Handled
+        }
+
+        return false;
+      }
     });
 
     console.log('✅ DialogueController initialized');

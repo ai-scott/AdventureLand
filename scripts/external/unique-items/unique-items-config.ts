@@ -124,6 +124,24 @@ export const UNIQUE_ITEMS_BY_WORLD: Record<string, UniqueItemSpawnConfig[]> = {
   ],
 
   /**
+   * World_00_Home - Leafwood Village (Home Interior)
+   */
+  "World_00_Home": [
+    {
+      itemName: "Birthday Cake!",
+      trigger: {
+        x: 200,
+        y: 113,
+        layer: "Objects",
+        triggerObjectName: "Birthday Cake!",
+        triggerId: 10
+      }
+      // No visual - the cake is already in the layout as a static ItemTrigger object
+      // When unique=true, C3 will handle showing/hiding based on collection status
+    }
+  ],
+
+  /**
    * World10 - The Bottomless Lake
    */
   "World10": [
