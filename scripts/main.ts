@@ -560,7 +560,35 @@ runOnStartup(async runtime => {
 
       InputManager.registerHandler('game', {
         onSpace: () => handleGameAction('space'),
-        onClick: (_x: number, _y: number) => handleGameAction('tap')
+        onClick: (_x: number, _y: number) => {
+          // Check if tap is on UI elements (D-Pad, buttons, inventory X button)
+          // If ButtonMgrActive is true, ignore ALL taps (let button manager handle)
+          if (runtime.globalVars.ButtonMgrActive) {
+            console.log('�� [Game Context] ButtonManager active - ignoring tap');
+            return false; // Let ButtonManager/C3 handle
+          }
+
+          // Check if tap is on D-Pad area (bottom-left corner)
+          const touch = runtime.objects.Touch?.getFirstInstance();
+          if (touch) {
+            // Get touch position
+            const touchX = touch.x;
+            const touchY = touch.y;
+
+            // D-Pad is in bottom-left corner - ignore taps in that area
+            // D-Pad area: < 150px from left edge and < 150px from bottom edge
+            const viewportHeight = runtime.layout.height;
+
+            const isDPadArea = touchX < 150 && touchY > (viewportHeight - 150);
+            if (isDPadArea) {
+              console.log('👆 [Game Context] Tap in D-Pad area - ignoring');
+              return false; // Don't handle, let C3 process
+            }
+          }
+
+          // Otherwise, handle as game action
+          return handleGameAction('tap');
+        }
       });
 
       // Step 5: Register menu context (no handlers - let C3 menus work normally)
