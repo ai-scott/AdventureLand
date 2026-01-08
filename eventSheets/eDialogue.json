@@ -53,6 +53,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "TypewriterRunning",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 472041339065629
+		},
+		{
+			"eventType": "variable",
 			"name": "CharacterQuest",
 			"type": "string",
 			"initialValue": "",
@@ -690,6 +700,85 @@
 			"isActiveOnStart": true,
 			"children": [
 				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-running-typewriter-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 223080056763432,
+							"isInverted": true
+						},
+						{
+							"id": "is-visible",
+							"objectClass": "obj_TextBlock",
+							"sid": 280469294528789
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 829426331421101,
+							"parameters": {
+								"variable": "InDialogue"
+							}
+						},
+						{
+							"id": "every-x-seconds",
+							"objectClass": "System",
+							"sid": 765318791752808,
+							"parameters": {
+								"interval-seconds": "0.1"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 776702224404339,
+							"parameters": {
+								"variable": "TypewriterRunning",
+								"value": "false"
+							}
+						}
+					],
+					"sid": 618208620464303
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-running-typewriter-text",
+							"objectClass": "obj_TextBlock",
+							"sid": 479300927060851
+						},
+						{
+							"id": "is-visible",
+							"objectClass": "obj_TextBlock",
+							"sid": 341142416987346
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 921532253724898,
+							"parameters": {
+								"variable": "InDialogue"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 543112157304589,
+							"parameters": {
+								"variable": "TypewriterRunning",
+								"value": "true"
+							}
+						}
+					],
+					"sid": 226630530314074
+				},
+				{
 					"functionName": "displayDialogue",
 					"functionDescription": "",
 					"functionCategory": "",
@@ -724,6 +813,15 @@
 								"y": "172",
 								"create-hierarchy": false,
 								"template-name": "\"\""
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 324729645621977,
+							"parameters": {
+								"variable": "TypewriterRunning",
+								"value": "true"
 							}
 						},
 						{
@@ -1212,7 +1310,7 @@
 								{
 									"id": "compare-eventvar",
 									"objectClass": "System",
-									"sid": 298164169145900,
+									"sid": 346170149218890,
 									"parameters": {
 										"variable": "DialogueResult",
 										"comparison": 1,
@@ -1224,14 +1322,14 @@
 								{
 									"id": "add-to-eventvar",
 									"objectClass": "System",
-									"sid": 973906838696609,
+									"sid": 728098875439519,
 									"parameters": {
 										"variable": "CurrentDialogueLine",
 										"value": "1"
 									}
 								}
 							],
-							"sid": 140727251164592
+							"sid": 315006112207126
 						}
 					]
 				},

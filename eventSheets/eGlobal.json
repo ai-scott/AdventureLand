@@ -203,6 +203,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "PlayerBaseSpeed",
+			"type": "number",
+			"initialValue": "120",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 795727664928635
+		},
+		{
+			"eventType": "variable",
 			"name": "PlayerSpeed",
 			"type": "number",
 			"initialValue": "120",
@@ -8473,6 +8483,15 @@
 													"id": "typewriter-finish",
 													"objectClass": "obj_TextBlock",
 													"sid": 320523732140596
+												},
+												{
+													"id": "set-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 902282856322419,
+													"parameters": {
+														"variable": "TypewriterRunning",
+														"value": "false"
+													}
 												}
 											],
 											"sid": 948676848954181

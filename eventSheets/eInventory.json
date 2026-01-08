@@ -7459,6 +7459,15 @@
 													}
 												},
 												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 581677653790378,
+													"parameters": {
+														"variable": "PlayerSpeed",
+														"value": "PlayerBaseSpeed + (Speed * 10)"
+													}
+												},
+												{
 													"id": "set-text",
 													"objectClass": "UI_Font",
 													"sid": 866870842685039,
