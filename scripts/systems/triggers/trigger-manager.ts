@@ -225,11 +225,18 @@ export class TriggerManager {
 
     // Handle "Check" action for custom functions (mirrors, etc.)
     if (currentAction === 'Check') {
+      console.log(`🔍 [TriggerManager] Handling Check action`);
+
       // Find nearest Trigger_Function
       const player = runtime.objects.Trigger_Player?.getFirstInstance();
-      if (!player) return false;
+      if (!player) {
+        console.warn('⚠️ [TriggerManager] No Trigger_Player found');
+        return false;
+      }
 
       const functionTriggers = runtime.objects.Trigger_Function?.getAllInstances() || [];
+      console.log(`🔍 [TriggerManager] Found ${functionTriggers.length} Trigger_Function objects`);
+
       let nearestTrigger = null;
       let nearestDist = Infinity;
 
@@ -238,7 +245,9 @@ export class TriggerManager {
         const dy = trigger.y - player.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 50 && dist < nearestDist) {
+        console.log(`   Trigger at (${trigger.x.toFixed(0)}, ${trigger.y.toFixed(0)}), dist: ${dist.toFixed(1)}px, function: ${trigger.instVars.Function}`);
+
+        if (dist < 100 && dist < nearestDist) { // Generous threshold to match checkForInteractionHint overlap detection
           nearestTrigger = trigger;
           nearestDist = dist;
         }
