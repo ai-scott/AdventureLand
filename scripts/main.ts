@@ -524,39 +524,43 @@ runOnStartup(async runtime => {
       DialogueController.initialize(runtime);
 
       // Step 4: Register game context handler with InputManager
-      InputManager.registerHandler('game', {
-        onSpace: () => {
-          // Use OLD CurrentAction system (checkForInteractionHint still running)
-          // Return false for actions we DON'T handle = let C3 events fire
-          const currentAction = runtime.globalVars.CurrentAction;
-          console.log(`🎹 [Game Context] Space pressed - CurrentAction: ${currentAction}`);
+      // Helper function for action handling (used by both spacebar and tap)
+      const handleGameAction = (inputType: string): boolean => {
+        // Use OLD CurrentAction system (checkForInteractionHint still running)
+        // Return false for actions we DON'T handle = let C3 events fire
+        const currentAction = runtime.globalVars.CurrentAction;
+        console.log(`${inputType === 'space' ? '🎹' : '👆'} [Game Context] ${inputType === 'space' ? 'Space pressed' : 'Tap detected'} - CurrentAction: ${currentAction}`);
 
-          // Handle specific actions, let C3 handle the rest
-          if (currentAction === 'Talk') {
-            runtime.callFunction('checkCharacter');
-            return true; // We handled it
-          } else if (currentAction === 'Look') {
-            runtime.callFunction('checkScene');
-            return true; // We handled it
-          } else if (currentAction === 'Enter') {
-            runtime.callFunction('enterDoor');
-            return true; // We handled it
-          } else if (currentAction === 'Check') {
-            // Handle custom functions (mirrors, etc.) via TriggerManager
-            const triggerMgr = (globalThis as any).AdventureLand?.TriggerManager;
-            if (triggerMgr) {
-              const handled = triggerMgr.triggerCurrent(runtime);
-              console.log(`   Check: TriggerManager handled = ${handled}`);
-              return handled;
-            }
-            return false;
-          } else {
-            // For Interact and other actions - let C3 handle it
-            // Return false = DON'T call preventDefault
-            console.log(`   ${currentAction}: Letting C3 event sheets handle it`);
-            return false; // Don't preventDefault - let C3 Event 196-201, 260-263 fire!
+        // Handle specific actions, let C3 handle the rest
+        if (currentAction === 'Talk') {
+          runtime.callFunction('checkCharacter');
+          return true; // We handled it
+        } else if (currentAction === 'Look') {
+          runtime.callFunction('checkScene');
+          return true; // We handled it
+        } else if (currentAction === 'Enter') {
+          runtime.callFunction('enterDoor');
+          return true; // We handled it
+        } else if (currentAction === 'Check') {
+          // Handle custom functions (mirrors, etc.) via TriggerManager
+          const triggerMgr = (globalThis as any).AdventureLand?.TriggerManager;
+          if (triggerMgr) {
+            const handled = triggerMgr.triggerCurrent(runtime);
+            console.log(`   Check: TriggerManager handled = ${handled}`);
+            return handled;
           }
+          return false;
+        } else {
+          // For Interact and other actions - let C3 handle it
+          // Return false = DON'T call preventDefault
+          console.log(`   ${currentAction}: Letting C3 event sheets handle it`);
+          return false; // Don't preventDefault - let C3 Event 196-201, 260-263 fire!
         }
+      };
+
+      InputManager.registerHandler('game', {
+        onSpace: () => handleGameAction('space'),
+        onClick: (_x: number, _y: number) => handleGameAction('tap')
       });
 
       // Step 5: Register menu context (no handlers - let C3 menus work normally)
