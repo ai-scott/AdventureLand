@@ -51,25 +51,22 @@ This is the single source of truth for all active development tasks. Completed w
 
 **Performance**: <1% CPU overhead, responsive keyboard input, no lag
 
-### 📋 NEXT: Dialogue System Polish (Optional)
+### ✅ COMPLETE: Dialogue System Polish (2026-01-08)
 
-- [ ] Test remaining 11 NPC dialogues (11 NPCs across 3 worlds)
-  - World00: Rosie, GeneralStore, Blacksmith, AdventureShop, Welcome, WindmillNick, SeaMonsterKey (7 more)
-  - World01: Pete, ForestSign (2 NPCs)
-  - World10: LakeSign, TreeSign (2 NPCs)
+- [x] Test remaining 11 NPC dialogues ✅ COMPLETE (2026-01-08)
+  - World00: Rosie, GeneralStore, Blacksmith, AdventureShop, Welcome, WindmillNick, SeaMonsterKey
+  - World01: Pete, ForestSign
+  - World10: LakeSign, TreeSign
+  - All 12 NPCs tested and working!
 
-- [ ] Add custom function mappings to TriggerManager
-  - Currently only checkYourself → OpenClose_Inventory
-  - Add others as needed
+- [x] Typewriter text skip with spacebar ✅ COMPLETE (2026-01-07)
+  - Two-press behavior: first press finishes animation, second advances
+  - Implemented in DialogueController.handleSpacePress()
 
-- [ ] Typewriter text skip with spacebar
-  - Spacebar should finish typewriter animation if still typing
-  - Already implemented in DialogueController.handleSpacePress()
-  - Needs testing
+- [x] Escape key exits dialogue early ✅ COMPLETE (2026-01-07)
+  - Works with options, input, and regular dialogue
 
-- [ ] Escape key exits dialogue early
-  - Already implemented in DialogueController.handleEscape()
-  - Needs testing with options, input, and regular dialogue
+**Dialogue system is 100% production-ready!**
 
 ### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
 
@@ -137,13 +134,13 @@ This is the single source of truth for all active development tasks. Completed w
 
 ### 🐛 Bug Fixes
 
-- [ ] **Bug #4**: Sally hotspot blocks interactive objects
+- [x] **Bug #4**: Sally hotspot blocks interactive objects ✅ COMPLETE (2026-01-08)
 
 ### 🎨 Polish Items
 
 - [x] Audio: Fix inconsistent soundtrack loading ✅ COMPLETE (Dec 2025)
 - [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
-- [ ] Quest: Remove legacy quest items from dictionary
+- [ ] Mark birthday cake as unique item (prevents duplicate spawning)
 
 ## Future: TypeScript Modernization (Phase 2-3)
 
