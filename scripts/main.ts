@@ -576,31 +576,43 @@ runOnStartup(async runtime => {
           }
 
           // Check if tap is on D-Pad or UI elements
-          // We need to check actual object positions, not just screen area
+          // Use bounding box checks instead of containsPoint (coordinate system issues)
           const touch = runtime.objects.Touch?.getFirstInstance();
           if (touch) {
-            // Get all D-Pad objects
+            const touchX = touch.x;
+            const touchY = touch.y;
+
+            // Get all D-Pad objects and check bounding boxes
             const dpadArrows = runtime.objects.DPad_Arrow?.getAllInstances() || [];
             const dpadBase = runtime.objects.DPad_Base?.getFirstInstance();
             const transArc = runtime.objects.transArc?.getAllInstances() || [];
 
-            // Check if tap is overlapping any D-Pad arrow
+            // Helper to check if point is in object bounds
+            const isInBounds = (obj: any, x: number, y: number): boolean => {
+              const left = obj.x - obj.width / 2;
+              const right = obj.x + obj.width / 2;
+              const top = obj.y - obj.height / 2;
+              const bottom = obj.y + obj.height / 2;
+              return x >= left && x <= right && y >= top && y <= bottom;
+            };
+
+            // Check D-Pad arrows
             for (const arrow of dpadArrows) {
-              if (arrow && arrow.containsPoint(touch.x, touch.y)) {
+              if (arrow && isInBounds(arrow, touchX, touchY)) {
                 console.log('👆 [Game Context] Tap on D-Pad arrow - ignoring');
                 return false; // Let C3 handle D-Pad
               }
             }
 
-            // Check if tap is on D-Pad base
-            if (dpadBase && dpadBase.containsPoint(touch.x, touch.y)) {
+            // Check D-Pad base
+            if (dpadBase && isInBounds(dpadBase, touchX, touchY)) {
               console.log('👆 [Game Context] Tap on D-Pad base - ignoring');
               return false; // Let C3 handle D-Pad
             }
 
-            // Check if tap is on transArc (transparent button behind D-Pad)
+            // Check transArc
             for (const arc of transArc) {
-              if (arc && arc.containsPoint(touch.x, touch.y)) {
+              if (arc && isInBounds(arc, touchX, touchY)) {
                 console.log('👆 [Game Context] Tap on transArc - ignoring');
                 return false; // Let C3 handle UI
               }
