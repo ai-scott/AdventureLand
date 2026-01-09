@@ -215,10 +215,18 @@ export class InputManager {
   private static handleClick(e: MouseEvent): void {
     const handler = this.handlers.get(this.activeContext);
     if (!handler?.onClick) {
-      return;
+      return; // No handler - let C3 handle
     }
 
-    handler.onClick(e.clientX, e.clientY);
+    // Call handler and check if it wants to prevent default
+    const handled = handler.onClick(e.clientX, e.clientY);
+
+    // Only prevent default if handler returned true (or didn't return anything)
+    // If handler returns false, let C3 event sheets handle it
+    if (handled !== false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
 
   /**
