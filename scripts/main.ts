@@ -568,6 +568,13 @@ runOnStartup(async runtime => {
             return false; // Let ButtonManager/C3 handle
           }
 
+          // If PlayerEngineActive is false, player shouldn't be able to trigger actions
+          // This prevents taps during item notifications, dialogues, etc.
+          if (!runtime.globalVars.PlayerEngineActive) {
+            console.log('👆 [Game Context] Player Engine inactive - ignoring tap');
+            return false; // Don't handle, let C3 handle UI
+          }
+
           // Check if tap is on D-Pad area (bottom-left corner)
           const touch = runtime.objects.Touch?.getFirstInstance();
           if (touch) {
