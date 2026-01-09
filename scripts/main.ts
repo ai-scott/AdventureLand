@@ -575,52 +575,15 @@ runOnStartup(async runtime => {
             return false; // Don't handle, let C3 handle UI
           }
 
-          // Check if tap is on D-Pad or UI elements
-          // Use bounding box checks instead of containsPoint (coordinate system issues)
-          const touch = runtime.objects.Touch?.getFirstInstance();
-          if (touch) {
-            const touchX = touch.x;
-            const touchY = touch.y;
+          // SIMPLER APPROACH: Don't process clicks as game actions AT ALL
+          // Let C3 handle ALL click/tap events via its on-tap conditions
+          // Only process KEYBOARD spacebar as game actions
+          // This prevents any tap interference with Touch-based UI (D-Pad, buttons, etc.)
 
-            // Get all D-Pad objects and check bounding boxes
-            const dpadArrows = runtime.objects.DPad_Arrow?.getAllInstances() || [];
-            const dpadBase = runtime.objects.DPad_Base?.getFirstInstance();
-            const transArc = runtime.objects.transArc?.getAllInstances() || [];
-
-            // Helper to check if point is in object bounds
-            const isInBounds = (obj: any, x: number, y: number): boolean => {
-              const left = obj.x - obj.width / 2;
-              const right = obj.x + obj.width / 2;
-              const top = obj.y - obj.height / 2;
-              const bottom = obj.y + obj.height / 2;
-              return x >= left && x <= right && y >= top && y <= bottom;
-            };
-
-            // Check D-Pad arrows
-            for (const arrow of dpadArrows) {
-              if (arrow && isInBounds(arrow, touchX, touchY)) {
-                console.log('👆 [Game Context] Tap on D-Pad arrow - ignoring');
-                return false; // Let C3 handle D-Pad
-              }
-            }
-
-            // Check D-Pad base
-            if (dpadBase && isInBounds(dpadBase, touchX, touchY)) {
-              console.log('👆 [Game Context] Tap on D-Pad base - ignoring');
-              return false; // Let C3 handle D-Pad
-            }
-
-            // Check transArc
-            for (const arc of transArc) {
-              if (arc && isInBounds(arc, touchX, touchY)) {
-                console.log('👆 [Game Context] Tap on transArc - ignoring');
-                return false; // Let C3 handle UI
-              }
-            }
-          }
-
-          // Otherwise, handle as game action
-          return handleGameAction('tap');
+          // Clicks/taps should NOT trigger game actions - only spacebar should
+          // Return false to let C3 event sheets handle all tap events
+          console.log('👆 [Game Context] Click/tap - letting C3 Touch events handle');
+          return false;
         }
       });
 
