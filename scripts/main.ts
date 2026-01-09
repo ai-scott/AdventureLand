@@ -575,21 +575,35 @@ runOnStartup(async runtime => {
             return false; // Don't handle, let C3 handle UI
           }
 
-          // Check if tap is on D-Pad area (bottom-left corner)
+          // Check if tap is on D-Pad or UI elements
+          // We need to check actual object positions, not just screen area
           const touch = runtime.objects.Touch?.getFirstInstance();
           if (touch) {
-            // Get touch position
-            const touchX = touch.x;
-            const touchY = touch.y;
+            // Get all D-Pad objects
+            const dpadArrows = runtime.objects.DPad_Arrow?.getAllInstances() || [];
+            const dpadBase = runtime.objects.DPad_Base?.getFirstInstance();
+            const transArc = runtime.objects.transArc?.getAllInstances() || [];
 
-            // D-Pad is in bottom-left corner - ignore taps in that area
-            // D-Pad area: < 150px from left edge and < 150px from bottom edge
-            const viewportHeight = runtime.layout.height;
+            // Check if tap is overlapping any D-Pad arrow
+            for (const arrow of dpadArrows) {
+              if (arrow && arrow.containsPoint(touch.x, touch.y)) {
+                console.log('👆 [Game Context] Tap on D-Pad arrow - ignoring');
+                return false; // Let C3 handle D-Pad
+              }
+            }
 
-            const isDPadArea = touchX < 150 && touchY > (viewportHeight - 150);
-            if (isDPadArea) {
-              console.log('👆 [Game Context] Tap in D-Pad area - ignoring');
-              return false; // Don't handle, let C3 process
+            // Check if tap is on D-Pad base
+            if (dpadBase && dpadBase.containsPoint(touch.x, touch.y)) {
+              console.log('👆 [Game Context] Tap on D-Pad base - ignoring');
+              return false; // Let C3 handle D-Pad
+            }
+
+            // Check if tap is on transArc (transparent button behind D-Pad)
+            for (const arc of transArc) {
+              if (arc && arc.containsPoint(touch.x, touch.y)) {
+                console.log('👆 [Game Context] Tap on transArc - ignoring');
+                return false; // Let C3 handle UI
+              }
             }
           }
 
