@@ -693,6 +693,12 @@ export class UIButtonManager {
     // NOTE: Do NOT set InDialogue here - let GameStateManager control it
     // this.runtime.globalVars.InDialogue = false;
 
+    // MOBILE FIX: Ensure PlayerEngineActive is set to true after cleanup
+    // This prevents PlayerEngine from staying disabled after dismissing notifications
+    // Event 40 should handle this, but tap events cause race conditions
+    this.runtime.globalVars.PlayerEngineActive = true;
+    console.log("🔧 [ButtonManager] Set PlayerEngineActive = true (mobile fix)");
+
     // NOTE: Do NOT reset game state here - causes race conditions during dialogue
     // Let the dialogue/menu systems call GameStateManager.setState() explicitly
     // const gameState = (globalThis as any).AdventureLand?.GameState;
