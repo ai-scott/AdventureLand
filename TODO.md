@@ -135,6 +135,15 @@ This is the single source of truth for all active development tasks. Completed w
 ### 🐛 Bug Fixes
 
 - [x] **Bug #4**: Sally hotspot blocks interactive objects ✅ COMPLETE (2026-01-08)
+- [x] **Bug #10**: Inventory opens with phantom hint button for slot 0 ✅ COMPLETE (2026-01-14)
+  - Fixed by resetting CurrentItemSlot to -1 when opening inventory
+  - Also resets SelectedItemUID to -1 for clean state
+  - Prevents ButtonManager from creating hints for unselected items
+
+- [ ] **Bug #11**: Touch/mouse inventory selection has slot offset bug (2026-01-14)
+  - Tapping equipped items selects collection items/empty boxes instead
+  - Tapping collection items spawns hint for previously selected item instead of tapped item
+  - Likely issue: SlotID calculation or touch detection coordinates are off
 
 ### 🎨 Polish Items
 
