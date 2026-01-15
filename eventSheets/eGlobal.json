@@ -123,6 +123,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "PlayerEngineActive",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 268063500320637
+		},
+		{
+			"eventType": "variable",
 			"name": "Current_Menu",
 			"type": "string",
 			"initialValue": "TitleScreen",
@@ -2020,16 +2030,6 @@
 								"layer": "\"Inventory\""
 							},
 							"isInverted": true
-						},
-						{
-							"id": "compare-opacity",
-							"objectClass": "Transition",
-							"sid": 822763906014244,
-							"disabled": true,
-							"parameters": {
-								"comparison": 0,
-								"opacity": "0"
-							}
 						}
 					],
 					"actions": [
@@ -2058,6 +2058,15 @@
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "activated"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 347037931694726,
+							"parameters": {
+								"variable": "PlayerEngineActive",
+								"value": "true"
 							}
 						}
 					],
@@ -2097,16 +2106,6 @@
 							"parameters": {
 								"layer": "\"Inventory\""
 							}
-						},
-						{
-							"id": "compare-opacity",
-							"objectClass": "Transition",
-							"sid": 221702133532987,
-							"disabled": true,
-							"parameters": {
-								"comparison": 5,
-								"opacity": "0"
-							}
 						}
 					],
 					"actions": [
@@ -2135,6 +2134,15 @@
 							"parameters": {
 								"group-name": "\"Enemies\"",
 								"state": "deactivated"
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 676755708125631,
+							"parameters": {
+								"variable": "PlayerEngineActive",
+								"value": "false"
 							}
 						}
 					],
@@ -4811,26 +4819,6 @@
 								{
 									"id": "set-group-active",
 									"objectClass": "System",
-									"sid": 906819367482514,
-									"disabled": true,
-									"parameters": {
-										"group-name": "\"Player Engine\"",
-										"state": "deactivated"
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 817721059329517,
-									"disabled": true,
-									"parameters": {
-										"group-name": "\"Enemies\"",
-										"state": "deactivated"
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
 									"sid": 839621940602027,
 									"parameters": {
 										"group-name": "\"Maps\"",
@@ -4920,6 +4908,24 @@
 									"parameters": [
 										"0"
 									]
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 855254570566146,
+									"parameters": {
+										"variable": "CurrentItemSlot",
+										"value": "-1"
+									}
+								},
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 634958429785161,
+									"parameters": {
+										"variable": "SelectedItemUID",
+										"value": "-1"
+									}
 								}
 							],
 							"sid": 192841212808491,
@@ -4985,24 +4991,6 @@
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "deactivated"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 758755782630891,
-											"parameters": {
-												"variable": "CurrentItemSlot",
-												"value": "0"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 684285976692288,
-											"parameters": {
-												"variable": "SelectedItemUID",
-												"value": "-1"
 											}
 										},
 										{
@@ -5119,16 +5107,6 @@
 													}
 												},
 												{
-													"id": "set-group-active",
-													"objectClass": "System",
-													"sid": 845567280403477,
-													"disabled": true,
-													"parameters": {
-														"group-name": "\"Player Engine\"",
-														"state": "deactivated"
-													}
-												},
-												{
 													"id": "set-position",
 													"objectClass": "PlayerSystem",
 													"sid": 692159191999721,
@@ -5173,9 +5151,24 @@
 									],
 									"actions": [
 										{
+											"callFunction": "displayInteractionHint",
+											"sid": 297076029710712,
+											"parameters": [
+												"\"None\""
+											]
+										},
+										{
 											"id": "move-to-layer",
 											"objectClass": "Player_Base",
 											"sid": 787083514311227,
+											"parameters": {
+												"layer": "\"Objects\""
+											}
+										},
+										{
+											"id": "move-to-layer",
+											"objectClass": "Player_Mask",
+											"sid": 963718807716527,
 											"parameters": {
 												"layer": "\"Objects\""
 											}
@@ -5225,40 +5218,12 @@
 											}
 										},
 										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 204763122818007,
-											"parameters": {
-												"variable": "CurrentItemSlot",
-												"value": "0"
-											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 161682341311004,
-											"parameters": {
-												"variable": "SelectedItemUID",
-												"value": "-1"
-											}
-										},
-										{
 											"id": "set-layer-scale",
 											"objectClass": "System",
 											"sid": 118514942046694,
 											"parameters": {
 												"layer": "\"Inventory\"",
 												"scale": "1"
-											}
-										},
-										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 527298806889168,
-											"disabled": true,
-											"parameters": {
-												"group-name": "\"Player Engine\"",
-												"state": "activated"
 											}
 										},
 										{
@@ -5273,28 +5238,11 @@
 										{
 											"id": "set-group-active",
 											"objectClass": "System",
-											"sid": 813735239121750,
-											"disabled": true,
-											"parameters": {
-												"group-name": "\"Enemies\"",
-												"state": "activated"
-											}
-										},
-										{
-											"id": "set-group-active",
-											"objectClass": "System",
 											"sid": 687672014844044,
 											"parameters": {
 												"group-name": "\"Maps\"",
 												"state": "activated"
 											}
-										},
-										{
-											"callFunction": "displayInteractionHint",
-											"sid": 310729975125097,
-											"parameters": [
-												"\"None\""
-											]
 										}
 									],
 									"sid": 870746260891856
@@ -8671,6 +8619,32 @@
 												{
 													"id": "compare-boolean-eventvar",
 													"objectClass": "System",
+													"sid": 177862703059502,
+													"parameters": {
+														"variable": "PlayerEngineActive"
+													}
+												},
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 686304920038049,
+													"parameters": {
+														"object": "transArc"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "is-touching-object",
+													"objectClass": "Touch",
+													"sid": 227274331150031,
+													"parameters": {
+														"object": "DPad_Arrow"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
 													"sid": 501028047704188,
 													"parameters": {
 														"variable": "InDialogue"
@@ -9006,14 +8980,21 @@
 											"eventType": "block",
 											"conditions": [
 												{
-													"id": "on-object-clicked",
-													"objectClass": "Mouse",
-													"sid": 110426748823919,
+													"id": "on-tap-object",
+													"objectClass": "Touch",
+													"sid": 864925165855961,
 													"parameters": {
-														"mouse-button": "left",
-														"click-type": "clicked",
-														"object-clicked": "ItemSlot"
+														"object": "ItemSlot"
 													}
+												},
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 420200795492763,
+													"parameters": {
+														"variable": "ButtonMgrActive"
+													},
+													"isInverted": true
 												}
 											],
 											"actions": [
@@ -9104,34 +9085,19 @@
 												{
 													"id": "on-key-pressed",
 													"objectClass": "Keyboard",
-													"sid": 191520156841904,
+													"sid": 316093267524568,
 													"parameters": {
 														"key": 32
 													}
 												},
 												{
-													"id": "compare-instance-variable",
-													"objectClass": "ItemSlot",
-													"sid": 388396810874498,
-													"parameters": {
-														"instance-variable": "InventoryWindow",
-														"comparison": 0,
-														"value": "CurrentInvWindow"
-													}
-												},
-												{
-													"id": "compare-instance-variable",
-													"objectClass": "ItemSlot",
-													"sid": 545091577816656,
-													"parameters": {
-														"instance-variable": "SlotID",
-														"comparison": 0,
-														"value": "CurrentItemSlot"
-													}
+													"id": "on-tap",
+													"objectClass": "Touch",
+													"sid": 617595422517441
 												}
 											],
 											"actions": [],
-											"sid": 147134871236421,
+											"sid": 256844208068088,
 											"children": [
 												{
 													"eventType": "block",
@@ -9139,109 +9105,148 @@
 														{
 															"id": "compare-instance-variable",
 															"objectClass": "ItemSlot",
-															"sid": 419441260004359,
-															"parameters": {
-																"instance-variable": "InventoryWindow",
-																"comparison": 1,
-																"value": "\"hair\""
-															}
-														},
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "ItemSlot",
-															"sid": 194020073070863,
-															"parameters": {
-																"instance-variable": "ItemID",
-																"comparison": 1,
-																"value": "0"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "displayItemHint",
-															"sid": 809577233854643,
-															"parameters": [
-																"ItemSlot.UID",
-																"CurrentInvWindow"
-															]
-														}
-													],
-													"sid": 719254541087876
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "ItemSlot",
-															"sid": 468438159222137,
+															"sid": 323383458679172,
 															"parameters": {
 																"instance-variable": "InventoryWindow",
 																"comparison": 0,
-																"value": "\"hair\""
+																"value": "CurrentInvWindow"
 															}
+														},
+														{
+															"id": "compare-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 272244575982926,
+															"parameters": {
+																"variable": "ButtonMgrActive"
+															},
+															"isInverted": true
 														},
 														{
 															"id": "compare-instance-variable",
 															"objectClass": "ItemSlot",
-															"sid": 677140348484376,
+															"sid": 662302317376219,
 															"parameters": {
 																"instance-variable": "SlotID",
 																"comparison": 0,
-																"value": "0"
+																"value": "CurrentItemSlot"
 															}
 														}
 													],
-													"actions": [
+													"actions": [],
+													"sid": 618764750071125,
+													"children": [
 														{
-															"callFunction": "switchSelection",
-															"sid": 226428141285585,
-															"parameters": [
-																"\"hair\"",
-																"\"prev\""
-															]
-														}
-													],
-													"sid": 216943349919338
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-instance-variable",
-															"objectClass": "ItemSlot",
-															"sid": 398203038002369,
-															"parameters": {
-																"instance-variable": "InventoryWindow",
-																"comparison": 0,
-																"value": "\"hair\""
-															}
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 849782592690300,
+																	"parameters": {
+																		"instance-variable": "InventoryWindow",
+																		"comparison": 1,
+																		"value": "\"hair\""
+																	}
+																},
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 878793187681293,
+																	"parameters": {
+																		"instance-variable": "ItemID",
+																		"comparison": 1,
+																		"value": "0"
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"callFunction": "displayItemHint",
+																	"sid": 797211458640473,
+																	"parameters": [
+																		"ItemSlot.UID",
+																		"CurrentInvWindow"
+																	]
+																}
+															],
+															"sid": 945192605405784
 														},
 														{
-															"id": "compare-instance-variable",
-															"objectClass": "ItemSlot",
-															"sid": 409026656034244,
-															"parameters": {
-																"instance-variable": "SlotID",
-																"comparison": 0,
-																"value": "1"
-															}
-														}
-													],
-													"actions": [
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 251843913654071,
+																	"parameters": {
+																		"instance-variable": "InventoryWindow",
+																		"comparison": 0,
+																		"value": "\"hair\""
+																	}
+																},
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 675232910499144,
+																	"parameters": {
+																		"instance-variable": "SlotID",
+																		"comparison": 0,
+																		"value": "0"
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"callFunction": "switchSelection",
+																	"sid": 903496624175775,
+																	"parameters": [
+																		"\"hair\"",
+																		"\"prev\""
+																	]
+																}
+															],
+															"sid": 975890468323407
+														},
 														{
-															"callFunction": "switchSelection",
-															"sid": 410227886106651,
-															"parameters": [
-																"\"hair\"",
-																"\"next\""
-															]
+															"eventType": "block",
+															"conditions": [
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 348950830187065,
+																	"parameters": {
+																		"instance-variable": "InventoryWindow",
+																		"comparison": 0,
+																		"value": "\"hair\""
+																	}
+																},
+																{
+																	"id": "compare-instance-variable",
+																	"objectClass": "ItemSlot",
+																	"sid": 424918139851537,
+																	"parameters": {
+																		"instance-variable": "SlotID",
+																		"comparison": 0,
+																		"value": "1"
+																	}
+																}
+															],
+															"actions": [
+																{
+																	"callFunction": "switchSelection",
+																	"sid": 105664790578512,
+																	"parameters": [
+																		"\"hair\"",
+																		"\"next\""
+																	]
+																}
+															],
+															"sid": 410093053838115
 														}
-													],
-													"sid": 944772405334649
+													]
 												}
-											]
+											],
+											"isOrBlock": true
 										},
 										{
 											"eventType": "block",
@@ -9670,6 +9675,15 @@
 															"sid": 847635339772085
 														},
 														{
+															"id": "set-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 461956141639977,
+															"parameters": {
+																"variable": "InDialogue",
+																"value": "false"
+															}
+														},
+														{
 															"type": "script",
 															"language": "javascript",
 															"script": [
@@ -9707,6 +9721,15 @@
 														}
 													],
 													"actions": [
+														{
+															"id": "set-boolean-eventvar",
+															"objectClass": "System",
+															"sid": 752204232415459,
+															"parameters": {
+																"variable": "InDialogue",
+																"value": "false"
+															}
+														},
 														{
 															"type": "script",
 															"language": "javascript",
