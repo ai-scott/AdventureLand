@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 46600,
+	"savedWithRelease": 46602,
 	"name": "Adventure Land 01.07.26",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -716,13 +716,7 @@
 							}
 						}
 					],
-					"subfolders": [
-						{
-							"items": [],
-							"subfolders": [],
-							"name": "instances"
-						}
-					],
+					"subfolders": [],
 					"name": "types"
 				},
 				{
