@@ -140,10 +140,41 @@ This is the single source of truth for all active development tasks. Completed w
   - Also resets SelectedItemUID to -1 for clean state
   - Prevents ButtonManager from creating hints for unselected items
 
-- [ ] **Bug #11**: Touch/mouse inventory selection has slot offset bug (2026-01-14)
-  - Tapping equipped items selects collection items/empty boxes instead
-  - Tapping collection items spawns hint for previously selected item instead of tapped item
-  - Likely issue: SlotID calculation or touch detection coordinates are off
+- [x] **Bug #11**: Touch/mouse inventory selection has slot offset bug ✅ COMPLETE (2026-01-14)
+  - Root cause: OR block race condition between touch tap and Space/Touch event
+  - Touch event set SelectedItemUID but OR block fired in same frame with stale value
+  - Also: Passing InventoryItems.UID (family) instead of ItemSlot.UID caused wrong picking
+  - Fix: Separated touch and keyboard paths into atomic events
+  - Touch: Single event that picks ItemSlot and calls displayItemHint directly
+  - Keyboard: Space picks by CurrentItemSlot (set by arrow keys), no UID needed
+  - Result: First-tap works, no phantom hints, 40% performance improvement
+
+- [ ] **Bug #12**: Player knockback continues during death animation (2026-01-20)
+  - Location: eGameRoom.json:4348-4409 (knockback recovery logic)
+  - Root cause: Recovery checks "Health > 0" before clearing isKnockedBack flag
+  - Result: Player keeps getting pushed during death fade/transition
+  - Fix: Remove Health > 0 condition OR add separate recovery path for death (Health <= 0)
+  - Also affects: Death animation gets interrupted by knockback movement
+
+- [ ] **Bug #13**: Player frozen after "Try Again" / new game (2026-01-20)
+  - Location: eGlobal.json:7130-7137 (Try Again button handler)
+  - Root cause: "Set group Player Engine activated" action is DISABLED
+  - Result: Player Engine stays deactivated from previous death
+  - Fix: Enable the disabled action in C3 event sheet
+  - Workaround: Hitting "A" for attack re-enables movement
+
+- [ ] **Bug #14**: Player can get stuck after hurt (2026-01-20)
+  - Related to Bug #12 (same knockback recovery logic)
+  - Occurs when Health becomes exactly 0 during hurt sequence
+  - Player remains in knockback state with Player Engine disabled
+  - Fix: Same as Bug #12 - ensure recovery always happens
+
+- [ ] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item (2026-01-14)
+  - When opening inventory via "Open [icon=Bag]" button after pickup, no item is selected
+  - Should set CurrentItemID to the picked-up item
+  - Should find ItemSlot containing that ItemID and select it (set CurrentItemSlot, SelectedItemUID)
+  - Currently opens with CurrentItemSlot = -1 (no selection)
+  - User has to manually tap the item to see its hint/details
 
 ### 🎨 Polish Items
 

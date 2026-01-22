@@ -4894,11 +4894,6 @@
 									]
 								},
 								{
-									"type": "script",
-									"language": "javascript",
-									"script": []
-								},
-								{
 									"callFunction": "populateItemSlots",
 									"sid": 217534238714704
 								},
@@ -5150,13 +5145,6 @@
 										}
 									],
 									"actions": [
-										{
-											"callFunction": "displayInteractionHint",
-											"sid": 297076029710712,
-											"parameters": [
-												"\"None\""
-											]
-										},
 										{
 											"id": "move-to-layer",
 											"objectClass": "Player_Base",
@@ -8800,7 +8788,7 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "Calling the function of Opening/Closing the Inventory"
+									"text": "Calling Inventory functions"
 								},
 								{
 									"eventType": "block",
@@ -8980,6 +8968,75 @@
 											"eventType": "block",
 											"conditions": [
 												{
+													"id": "cursor-is-over-object",
+													"objectClass": "Mouse",
+													"sid": 340674537837649,
+													"parameters": {
+														"object": "CloseX"
+													},
+													"isInverted": true
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 682751029215813,
+													"parameters": {
+														"variable": "CurrentItemSlot",
+														"comparison": 1,
+														"value": "-1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-animation-frame",
+													"objectClass": "CloseX",
+													"sid": 713146519839823,
+													"parameters": {
+														"frame-number": "0"
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "CloseX",
+													"sid": 874903230989279
+												}
+											],
+											"sid": 825783987515894
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "on-key-pressed",
+													"objectClass": "Keyboard",
+													"sid": 446381864314929,
+													"parameters": {
+														"key": 32
+													}
+												},
+												{
+													"id": "compare-animation-frame",
+													"objectClass": "CloseX",
+													"sid": 164194387740066,
+													"parameters": {
+														"comparison": 0,
+														"number": "1"
+													}
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "OpenClose_Inventory",
+													"sid": 200226879670395
+												}
+											],
+											"sid": 691088465214756
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
 													"id": "on-tap-object",
 													"objectClass": "Touch",
 													"sid": 864925165855961,
@@ -9006,78 +9063,27 @@
 														"variable": "CurrentItemSlot",
 														"value": "ItemSlot.SlotID"
 													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 578128158029099,
+													"parameters": {
+														"variable": "CurrentInvWindow",
+														"value": "ItemSlot.InventoryWindow"
+													}
+												},
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 379866166357790,
+													"parameters": {
+														"variable": "SelectedItemUID",
+														"value": "ItemSlot.UID"
+													}
 												}
 											],
 											"sid": 411163067518545
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "on-key-pressed",
-													"objectClass": "Keyboard",
-													"sid": 258210804690584,
-													"parameters": {
-														"key": 32
-													}
-												},
-												{
-													"id": "compare-animation-frame",
-													"objectClass": "CloseX",
-													"sid": 110090253174209,
-													"parameters": {
-														"comparison": 0,
-														"number": "1"
-													}
-												}
-											],
-											"actions": [
-												{
-													"callFunction": "OpenClose_Inventory",
-													"sid": 453367299112007
-												}
-											],
-											"sid": 206604730312143
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "cursor-is-over-object",
-													"objectClass": "Mouse",
-													"sid": 145689279799331,
-													"parameters": {
-														"object": "CloseX"
-													},
-													"isInverted": true
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 674234280962918,
-													"parameters": {
-														"variable": "CurrentItemSlot",
-														"comparison": 1,
-														"value": "-1"
-													}
-												}
-											],
-											"actions": [
-												{
-													"id": "set-animation-frame",
-													"objectClass": "CloseX",
-													"sid": 159624281076610,
-													"parameters": {
-														"frame-number": "0"
-													}
-												},
-												{
-													"id": "stop-animation",
-													"objectClass": "CloseX",
-													"sid": 982903634598766
-												}
-											],
-											"sid": 876163485458592
 										},
 										{
 											"eventType": "block",
@@ -9122,13 +9128,21 @@
 															"isInverted": true
 														},
 														{
-															"id": "compare-instance-variable",
+															"id": "pick-by-unique-id",
 															"objectClass": "ItemSlot",
-															"sid": 662302317376219,
+															"sid": 284256286997130,
 															"parameters": {
-																"instance-variable": "SlotID",
+																"unique-id": "SelectedItemUID"
+															}
+														},
+														{
+															"id": "compare-instance-variable",
+															"objectClass": "InventoryItems",
+															"sid": 682327349079382,
+															"parameters": {
+																"instance-variable": "ItemID",
 																"comparison": 0,
-																"value": "CurrentItemSlot"
+																"value": "ItemSlot.ItemID"
 															}
 														}
 													],
@@ -9162,7 +9176,16 @@
 															"actions": [
 																{
 																	"callFunction": "displayItemHint",
+																	"sid": 539347123816105,
+																	"parameters": [
+																		"InventoryItems.UID",
+																		"CurrentInvWindow"
+																	]
+																},
+																{
+																	"callFunction": "displayItemHint",
 																	"sid": 797211458640473,
+																	"disabled": true,
 																	"parameters": [
 																		"ItemSlot.UID",
 																		"CurrentInvWindow"
