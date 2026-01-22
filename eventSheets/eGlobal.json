@@ -9052,6 +9052,26 @@
 														"variable": "ButtonMgrActive"
 													},
 													"isInverted": true
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 945798235862888,
+													"parameters": {
+														"instance-variable": "InventoryWindow",
+														"comparison": 1,
+														"value": "\"hair\""
+													}
+												},
+												{
+													"id": "compare-instance-variable",
+													"objectClass": "ItemSlot",
+													"sid": 393805964980973,
+													"parameters": {
+														"instance-variable": "ItemID",
+														"comparison": 1,
+														"value": "0"
+													}
 												}
 											],
 											"actions": [
@@ -9081,6 +9101,14 @@
 														"variable": "SelectedItemUID",
 														"value": "ItemSlot.UID"
 													}
+												},
+												{
+													"callFunction": "displayItemHint",
+													"sid": 405469938761444,
+													"parameters": [
+														"ItemSlot.UID",
+														"CurrentInvWindow"
+													]
 												}
 											],
 											"sid": 411163067518545
@@ -9095,11 +9123,6 @@
 													"parameters": {
 														"key": 32
 													}
-												},
-												{
-													"id": "on-tap",
-													"objectClass": "Touch",
-													"sid": 617595422517441
 												}
 											],
 											"actions": [],
@@ -9128,21 +9151,23 @@
 															"isInverted": true
 														},
 														{
-															"id": "pick-by-unique-id",
+															"id": "compare-instance-variable",
 															"objectClass": "ItemSlot",
-															"sid": 284256286997130,
+															"sid": 624552110114093,
 															"parameters": {
-																"unique-id": "SelectedItemUID"
+																"instance-variable": "SlotID",
+																"comparison": 0,
+																"value": "CurrentItemSlot"
 															}
 														},
 														{
-															"id": "compare-instance-variable",
-															"objectClass": "InventoryItems",
-															"sid": 682327349079382,
+															"id": "compare-two-values",
+															"objectClass": "System",
+															"sid": 829213040649334,
 															"parameters": {
-																"instance-variable": "ItemID",
-																"comparison": 0,
-																"value": "ItemSlot.ItemID"
+																"first-value": "CurrentItemSlot",
+																"comparison": 1,
+																"second-value": "-1"
 															}
 														}
 													],
@@ -9165,7 +9190,7 @@
 																{
 																	"id": "compare-instance-variable",
 																	"objectClass": "ItemSlot",
-																	"sid": 878793187681293,
+																	"sid": 914407696183560,
 																	"parameters": {
 																		"instance-variable": "ItemID",
 																		"comparison": 1,
@@ -9176,16 +9201,7 @@
 															"actions": [
 																{
 																	"callFunction": "displayItemHint",
-																	"sid": 539347123816105,
-																	"parameters": [
-																		"InventoryItems.UID",
-																		"CurrentInvWindow"
-																	]
-																},
-																{
-																	"callFunction": "displayItemHint",
 																	"sid": 797211458640473,
-																	"disabled": true,
 																	"parameters": [
 																		"ItemSlot.UID",
 																		"CurrentInvWindow"
@@ -9614,20 +9630,15 @@
 															"script": [
 																"//dismiss dynamic buttons",
 																"const selection = runtime.globalVars.ItemBtnSelection;",
-																"    console.log(\"spacebar pressed or action btn selected\");",
-																"    // Trigger the selected button's action",
-																"    ",
-																"    if (selection === 0) {",
-																"    // Open inventory - but reset item selection first",
-																"    runtime.globalVars.InventorySelection = -1;  // or whatever variable tracks selected item",
-																"    runtime.callFunction(\"OpenClose_Inventory\");",
-																"    runtime.callFunction(\"destroyDialogueUI\");",
-																"    console.log(\"➡️ Opening inventory (no item selected)\");",
-																"    } else if (selection === 1) {",
-																"    // Dismiss",
-																"    runtime.callFunction(\"destroyDialogueUI\");",
-																"    console.log(\"➡️ Dismissing dialogue\");",
-																"    }"
+																"console.log(\"spacebar pressed or action btn selected\");",
+																"// Trigger the selected button's action",
+																"if (selection === 0) {  // 0 = Open button  ",
+																"  const invSelect = globalThis.AdventureLand?.InventorySelection;",
+																"  if (invSelect) {",
+																"    invSelect.selectItemByID(runtime, runtime.globalVars.KeyItem);  // NOW SELECTS ITEM",
+																"  }",
+																"  runtime.callFunction(\"OpenClose_Inventory\");",
+																"}"
 															]
 														}
 													],
@@ -9710,10 +9721,34 @@
 															"type": "script",
 															"language": "javascript",
 															"script": [
-																"console.log(\"➡️ Opening inventory (no item selected)\");",
+																"console.log(\"➡️ Opening inventory with picked-up item:\", runtime.globalVars.KeyItem);",
+																"runtime.globalVars.CurrentItemID = runtime.globalVars.KeyItem;",
+																"",
+																"// Find the ItemSlot that contains this item",
+																"const itemSlots = runtime.objects.ItemSlot.getAllInstances();",
+																"let foundSlot = null;",
+																"",
+																"for (const slot of itemSlots) {",
+																"  if (slot.instVars.ItemID === runtime.globalVars.KeyItem && ",
+																"      slot.instVars.InventoryWindow === runtime.globalVars.CurrentInvWindow) {",
+																"    foundSlot = slot;",
+																"    break;",
+																"  }",
+																"}",
+																"",
+																"if (foundSlot) {",
+																"  runtime.globalVars.CurrentItemSlot = foundSlot.instVars.SlotID;",
+																"  runtime.globalVars.SelectedItemUID = foundSlot.uid;",
+																"  console.log(\"✅ Selected slot\", foundSlot.instVars.SlotID, \"containing item\", runtime.globalVars.KeyItem);",
+																"} else {",
+																"  console.log(\"⚠️ Could not find slot for item\", runtime.globalVars.KeyItem);",
+																"  runtime.globalVars.CurrentItemSlot = -1;",
+																"  runtime.globalVars.SelectedItemUID = -1;",
+																"}",
+																"",
 																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
 																"if (buttonMgr) {",
-																"  runtime.callFunction(\"destroyDialogueUI\");  // Hides all buttons, no need for specific IDs",
+																"  runtime.callFunction(\"destroyDialogueUI\");",
 																"  console.log(\"➡️ Dismissing dialogue\");",
 																"}"
 															]

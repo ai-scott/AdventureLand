@@ -17,6 +17,7 @@ import { registerWithRuntime } from "./imports-for-events.js";
 import { initializeItemSystem } from "./systems/items/item-manager-integration.js";
 import { InventoryUIOptimizer } from "./systems/inventory/inventory-ui-optimization.js";
 import { InventoryUIPool } from "./systems/inventory/inventory-ui-pool.js";
+import { InventorySelection } from "./systems/inventory/inventory-selection.js";
 // Optional: import { InventoryPerformanceTest } from "./systems/inventory/inventory-performance-test.js";
 
 // POTION SYSTEM IMPORT
@@ -249,6 +250,16 @@ runOnStartup(async runtime => {
     cacheUIReferences: (runtime: any) => InventoryUIOptimizer.cacheUIReferences(runtime),
     getStats: () => InventoryUIOptimizer.getPerformanceStats(),
     resetStats: () => InventoryUIOptimizer.resetStats()
+  };
+
+  // NEW: Add InventorySelection namespace for item selection helpers
+  (globalThis as any).AdventureLand.InventorySelection = {
+    selectItemByID: (runtime: any, itemID: number, inventoryWindow?: string) =>
+      InventorySelection.selectItemByID(runtime, itemID, inventoryWindow),
+    clearSelection: (runtime: any) =>
+      InventorySelection.clearSelection(runtime),
+    getSelectedItemID: (runtime: any) =>
+      InventorySelection.getSelectedItemID(runtime)
   };
 
   // Add Transitions namespace (based on your event sheet usage)
