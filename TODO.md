@@ -172,9 +172,16 @@ This is the single source of truth for all active development tasks. Completed w
 - [ ] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item (2026-01-14)
   - When opening inventory via "Open [icon=Bag]" button after pickup, no item is selected
   - Should set CurrentItemID to the picked-up item
-  - Should find ItemSlot containing that ItemID and select it (set CurrentItemSlot, SelectedItemUID)
+  - Should find ItemSlot containing that ItemID and select it (set CurrentItemSlot, SelectedItemSlot, SelectedItemUID)
   - Currently opens with CurrentItemSlot = -1 (no selection)
   - User has to manually tap the item to see its hint/details
+
+- [ ] **Bug #16**: Inventory hint panel issues after item pickup (2026-01-30)
+  - Issue 1: "You got a..." message panel with "Open [icon=Bag]" and "Close" buttons stays visible after closing inventory
+  - Issue 2: Inventory item slots become unclickable after using "Open [icon=Bag]" button from pickup notification
+  - Root cause: ButtonManager cleanup pathway not properly clearing notification state
+  - Need to fix: ButtonManager cleanup when opening inventory, item hint display pathway
+  - Related to: Bug #15 (inventory selection after pickup)
 
 ### 🎨 Polish Items
 
