@@ -5,8 +5,6 @@
  * Handles finding and selecting ItemSlots by ItemID.
  */
 
-import type { IRuntime } from "../../ts-defs/runtime.js";
-
 export class InventorySelection {
     /**
      * Selects an inventory slot containing a specific item ID.
@@ -17,7 +15,7 @@ export class InventorySelection {
      * @param inventoryWindow - Optional: Which inventory window to search (defaults to CurrentInvWindow)
      * @returns true if item was found and selected, false otherwise
      */
-    static selectItemByID(runtime: IRuntime, itemID: number, inventoryWindow?: string): boolean {
+    static selectItemByID(runtime: any, itemID: number, inventoryWindow?: string): boolean {
         const targetWindow = inventoryWindow || runtime.globalVars.CurrentInvWindow as string;
 
         console.log(`🔍 [InventorySelection] Searching for ItemID=${itemID} in window="${targetWindow}"`);
@@ -53,7 +51,7 @@ export class InventorySelection {
      *
      * @param runtime - The Construct 3 runtime
      */
-    static clearSelection(runtime: IRuntime): void {
+    static clearSelection(runtime: any): void {
         runtime.globalVars.CurrentItemSlot = -1;
         runtime.globalVars.SelectedItemUID = -1;
         console.log("🔄 [InventorySelection] Selection cleared");
@@ -65,7 +63,7 @@ export class InventorySelection {
      * @param runtime - The Construct 3 runtime
      * @returns The ItemID of the currently selected slot, or -1 if none selected
      */
-    static getSelectedItemID(runtime: IRuntime): number {
+    static getSelectedItemID(runtime: any): number {
         const selectedUID = runtime.globalVars.SelectedItemUID as number;
 
         if (selectedUID === -1) {
@@ -73,7 +71,7 @@ export class InventorySelection {
         }
 
         const itemSlots = runtime.objects.ItemSlot.getAllInstances();
-        const selectedSlot = itemSlots.find(slot => slot.uid === selectedUID);
+        const selectedSlot = itemSlots.find((slot: any) => slot.uid === selectedUID);
 
         return selectedSlot ? selectedSlot.instVars.ItemID : -1;
     }
