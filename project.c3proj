@@ -717,7 +717,13 @@
 							}
 						}
 					],
-					"subfolders": [],
+					"subfolders": [
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "instances"
+						}
+					],
 					"name": "types"
 				},
 				{

@@ -243,16 +243,6 @@
 		},
 		{
 			"eventType": "variable",
-			"name": "PauseLock",
-			"type": "number",
-			"initialValue": "0",
-			"comment": "",
-			"isStatic": false,
-			"isConstant": false,
-			"sid": 809455210107037
-		},
-		{
-			"eventType": "variable",
 			"name": "AudioLevel",
 			"type": "number",
 			"initialValue": "0",
@@ -2016,6 +2006,15 @@
 						{
 							"id": "compare-boolean-eventvar",
 							"objectClass": "System",
+							"sid": 588980008378259,
+							"parameters": {
+								"variable": "ButtonMgrActive"
+							},
+							"isInverted": true
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
 							"sid": 503037633916598,
 							"parameters": {
 								"variable": "ItemShowing"
@@ -2030,6 +2029,16 @@
 								"layer": "\"Inventory\""
 							},
 							"isInverted": true
+						},
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 742494476170593,
+							"parameters": {
+								"key": "\"Health\"",
+								"comparison": 4,
+								"value": "0"
+							}
 						}
 					],
 					"actions": [
@@ -2086,6 +2095,14 @@
 						{
 							"id": "compare-boolean-eventvar",
 							"objectClass": "System",
+							"sid": 811067009333313,
+							"parameters": {
+								"variable": "ButtonMgrActive"
+							}
+						},
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
 							"sid": 457269997440545,
 							"parameters": {
 								"variable": "ItemShowing"
@@ -2105,6 +2122,16 @@
 							"sid": 441430081926131,
 							"parameters": {
 								"layer": "\"Inventory\""
+							}
+						},
+						{
+							"id": "compare-value",
+							"objectClass": "Dict_SaveGameData",
+							"sid": 112045401389790,
+							"parameters": {
+								"key": "\"Health\"",
+								"comparison": 3,
+								"value": "0"
 							}
 						}
 					],
@@ -2147,61 +2174,6 @@
 						}
 					],
 					"sid": 726774077671023,
-					"isOrBlock": true
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 445721229719172,
-							"parameters": {
-								"variable": "InDialogue"
-							}
-						}
-					],
-					"actions": [
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 429700397660587,
-							"parameters": {
-								"group-name": "\"In Dialogue\"",
-								"state": "activated"
-							}
-						}
-					],
-					"sid": 358336228612346,
-					"disabled": true,
-					"isOrBlock": true
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-boolean-eventvar",
-							"objectClass": "System",
-							"sid": 634548644741967,
-							"parameters": {
-								"variable": "InDialogue"
-							},
-							"isInverted": true
-						}
-					],
-					"actions": [
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 723405060693834,
-							"parameters": {
-								"group-name": "\"In Dialogue\"",
-								"state": "deactivated"
-							}
-						}
-					],
-					"sid": 344424867799616,
-					"disabled": true,
 					"isOrBlock": true
 				}
 			],
@@ -7051,16 +7023,6 @@
 											}
 										},
 										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 389462231105840,
-											"disabled": true,
-											"parameters": {
-												"group-name": "\"Player Engine\"",
-												"state": "activated"
-											}
-										},
-										{
 											"id": "go-to-layout-by-name",
 											"objectClass": "System",
 											"sid": 803607409628433,
@@ -7124,16 +7086,6 @@
 											"sid": 326190589552235,
 											"parameters": {
 												"tag": "\"LayoutChange\""
-											}
-										},
-										{
-											"id": "set-group-active",
-											"objectClass": "System",
-											"sid": 868785798795151,
-											"disabled": true,
-											"parameters": {
-												"group-name": "\"Player Engine\"",
-												"state": "activated"
 											}
 										},
 										{

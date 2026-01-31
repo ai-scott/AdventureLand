@@ -289,15 +289,6 @@
 											"parameters": {
 												"tag": "\"LayoutChange\""
 											}
-										},
-										{
-											"id": "set-eventvar-value",
-											"objectClass": "System",
-											"sid": 306650195879996,
-											"parameters": {
-												"variable": "PauseLock",
-												"value": "0"
-											}
 										}
 									],
 									"sid": 899111434793818
@@ -633,6 +624,56 @@
 					"isActiveOnStart": true,
 					"children": [
 						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-tick",
+									"objectClass": "System",
+									"sid": 900859768164511
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": "Match player items position to base and check for interactions"
+								},
+								{
+									"id": "set-position",
+									"objectClass": "PlayerSystem",
+									"sid": 546638325481319,
+									"parameters": {
+										"x": "Player_Base.X",
+										"y": "Player_Base.Y"
+									}
+								},
+								{
+									"id": "sort-z-order",
+									"objectClass": "System",
+									"sid": 791700989742293,
+									"parameters": {
+										"object": "PlayerSystem",
+										"instance-variable": {
+											"name": "layer",
+											"objectClass": "PlayerSystem"
+										}
+									}
+								},
+								{
+									"callFunction": "checkForInteractionHint",
+									"sid": 708316219663375,
+									"parameters": [
+										"\"\""
+									]
+								},
+								{
+									"id": "move-to-top",
+									"objectClass": "Glimmer",
+									"sid": 512671927840772
+								}
+							],
+							"sid": 191388816917203
+						},
+						{
 							"functionName": "Player_Reset",
 							"functionDescription": "",
 							"functionCategory": "",
@@ -791,63 +832,6 @@
 											"isOrBlock": true
 										}
 									]
-								},
-								{
-									"eventType": "block",
-									"conditions": [
-										{
-											"id": "every-tick",
-											"objectClass": "System",
-											"sid": 281407684637166
-										}
-									],
-									"actions": [
-										{
-											"id": "set-position",
-											"objectClass": "PlayerSystem",
-											"sid": 916531323539000,
-											"parameters": {
-												"x": "Player_Base.X",
-												"y": "Player_Base.Y"
-											}
-										},
-										{
-											"id": "sort-z-order",
-											"objectClass": "System",
-											"sid": 578443584769423,
-											"parameters": {
-												"object": "PlayerSystem",
-												"instance-variable": {
-													"name": "layer",
-													"objectClass": "PlayerSystem"
-												}
-											}
-										},
-										{
-											"callFunction": "checkForInteractionHint",
-											"sid": 822495769714165,
-											"parameters": [
-												"\"\""
-											]
-										},
-										{
-											"id": "move-to-top",
-											"objectClass": "Glimmer",
-											"sid": 423830058622034
-										},
-										{
-											"type": "script",
-											"language": "javascript",
-											"script": [
-												"const triggerMgr = globalThis.AdventureLand?.TriggerManager;",
-												"if (triggerMgr) {",
-												"  triggerMgr.checkProximity(runtime);",
-												"}"
-											],
-											"disabled": true
-										}
-									],
-									"sid": 765619192007108
 								},
 								{
 									"eventType": "comment",
@@ -3919,10 +3903,9 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "Knock back"
+									"text": "Knock back and apply damage"
 								},
 								{
-									"bookmark": true,
 									"eventType": "block",
 									"conditions": [
 										{
@@ -4036,7 +4019,7 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "From an enemy"
+									"text": "Damage from an enemy"
 								},
 								{
 									"eventType": "block",
@@ -4087,26 +4070,11 @@
 											]
 										}
 									],
-									"sid": 123024583343332,
-									"children": [
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "is-enabled",
-													"objectClass": "Player_Base",
-													"sid": 274302021594579,
-													"behaviorType": "8Direction"
-												}
-											],
-											"actions": [],
-											"sid": 533242751051620
-										}
-									]
+									"sid": 123024583343332
 								},
 								{
 									"eventType": "comment",
-									"text": "From a hazard"
+									"text": "Damage from a hazard"
 								},
 								{
 									"eventType": "block",
@@ -4154,11 +4122,22 @@
 								},
 								{
 									"eventType": "comment",
-									"text": "Set animation & timers"
+									"text": "Set animation & timers & FX"
 								},
 								{
 									"eventType": "block",
-									"conditions": [],
+									"conditions": [
+										{
+											"id": "compare-value",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 595893582353042,
+											"parameters": {
+												"key": "\"Health\"",
+												"comparison": 4,
+												"value": "0"
+											}
+										}
+									],
 									"actions": [
 										{
 											"id": "set-instvar-value",
@@ -4207,22 +4186,11 @@
 											"id": "destroy",
 											"objectClass": "Player_Sword",
 											"sid": 758513655560338
-										}
-									],
-									"sid": 381928441541665
-								},
-								{
-									"eventType": "comment",
-									"text": "FX"
-								},
-								{
-									"eventType": "block",
-									"conditions": [],
-									"actions": [
+										},
 										{
 											"id": "set-effect-parameter",
 											"objectClass": "Player_Mask",
-											"sid": 719747020815773,
+											"sid": 257240699393766,
 											"parameters": {
 												"effect": "\"Brightness\"",
 												"parameter-index": "0",
@@ -4232,7 +4200,7 @@
 										{
 											"id": "wait",
 											"objectClass": "System",
-											"sid": 608005111875236,
+											"sid": 302448381653300,
 											"parameters": {
 												"seconds": "0.1",
 												"use-timescale": true
@@ -4241,7 +4209,7 @@
 										{
 											"id": "set-effect-parameter",
 											"objectClass": "Player_Mask",
-											"sid": 368632610776734,
+											"sid": 298582220324643,
 											"parameters": {
 												"effect": "\"Brightness\"",
 												"parameter-index": "0",
@@ -4251,7 +4219,7 @@
 										{
 											"id": "set-group-active",
 											"objectClass": "System",
-											"sid": 677532335117770,
+											"sid": 678007990945267,
 											"parameters": {
 												"group-name": "\"Player Engine\"",
 												"state": "activated"
@@ -4260,14 +4228,360 @@
 										{
 											"id": "set-boolean-instvar",
 											"objectClass": "Player_Mask",
-											"sid": 260996869178394,
+											"sid": 264052412263974,
 											"parameters": {
 												"instance-variable": "Hurt",
 												"value": "true"
 											}
 										}
 									],
-									"sid": 192101629086417
+									"sid": 381928441541665
+								},
+								{
+									"eventType": "comment",
+									"text": "Player Death"
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-value",
+											"objectClass": "Dict_SaveGameData",
+											"sid": 706355428946770,
+											"parameters": {
+												"key": "\"Health\"",
+												"comparison": 3,
+												"value": "0"
+											}
+										}
+									],
+									"actions": [],
+									"sid": 837456888701922,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-value",
+													"objectClass": "Dict_SaveGameData",
+													"sid": 981251155889452,
+													"parameters": {
+														"key": "\"Potion\"",
+														"comparison": 0,
+														"value": "0"
+													}
+												},
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 468892527791522
+												}
+											],
+											"actions": [
+												{
+													"id": "set-ignoring-input",
+													"objectClass": "Player_Base",
+													"sid": 504468731439341,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"input": "start-ignoring"
+													}
+												},
+												{
+													"id": "set-group-active",
+													"objectClass": "System",
+													"sid": 245567270475885,
+													"parameters": {
+														"group-name": "\"Player Engine\"",
+														"state": "deactivated"
+													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "PlayerSystem",
+													"sid": 131047604979866,
+													"parameters": {
+														"frame-number": "179"
+													}
+												},
+												{
+													"id": "wait",
+													"objectClass": "System",
+													"sid": 726246891640087,
+													"parameters": {
+														"seconds": ".1",
+														"use-timescale": false
+													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "PlayerSystem",
+													"sid": 694614065390300,
+													"parameters": {
+														"frame-number": "180"
+													}
+												},
+												{
+													"id": "set-animation-frame",
+													"objectClass": "PlayerSystem",
+													"sid": 927780781437541,
+													"parameters": {
+														"frame-number": "180"
+													}
+												},
+												{
+													"id": "stop-animation",
+													"objectClass": "PlayerSystem",
+													"sid": 704137596379576
+												},
+												{
+													"id": "wait",
+													"objectClass": "System",
+													"sid": 565643954841010,
+													"parameters": {
+														"seconds": "1",
+														"use-timescale": false
+													}
+												},
+												{
+													"callFunction": "Transition",
+													"sid": 428908154522507,
+													"parameters": [
+														"\"Out\"",
+														"\"LayoutChange\"",
+														"\"\""
+													]
+												},
+												{
+													"id": "wait-for-signal",
+													"objectClass": "System",
+													"sid": 326431841902720,
+													"parameters": {
+														"tag": "\"LayoutChange\""
+													}
+												},
+												{
+													"id": "go-to-layout-by-name",
+													"objectClass": "System",
+													"sid": 349820226200332,
+													"parameters": {
+														"layout": "\"GameOver\""
+													}
+												},
+												{
+													"id": "set-group-active",
+													"objectClass": "System",
+													"sid": 280566947178504,
+													"parameters": {
+														"group-name": "\"Player Engine\"",
+														"state": "activated"
+													}
+												},
+												{
+													"id": "stop-all",
+													"objectClass": "Audio",
+													"sid": 495340104964502
+												},
+												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"console.log(\"☠️ Player is dead!\");"
+													]
+												}
+											],
+											"sid": 259492418851543,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 174641771002418
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 358800447533962,
+															"parameters": {
+																"state": "mirrored"
+															}
+														}
+													],
+													"sid": 743930161122388
+												},
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "is-mirrored",
+															"objectClass": "Player_Mask",
+															"sid": 948484833763683,
+															"isInverted": true
+														}
+													],
+													"actions": [
+														{
+															"id": "set-mirrored",
+															"objectClass": "PlayerSystem",
+															"sid": 475675854362462,
+															"parameters": {
+																"state": "not-mirrored"
+															}
+														}
+													],
+													"sid": 453164887821776
+												}
+											]
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-value",
+													"objectClass": "Dict_SaveGameData",
+													"sid": 278999110649529,
+													"parameters": {
+														"key": "\"Potion\"",
+														"comparison": 0,
+														"value": "1"
+													}
+												},
+												{
+													"id": "trigger-once-while-true",
+													"objectClass": "System",
+													"sid": 777991597511650
+												}
+											],
+											"actions": [
+												{
+													"callFunction": "Audio_Play_Sound",
+													"sid": 210913137290286,
+													"parameters": [
+														"\"Potion\"",
+														"0",
+														"\"Potion\""
+													]
+												},
+												{
+													"id": "add-key",
+													"objectClass": "Dict_SaveGameData",
+													"sid": 711686421734222,
+													"parameters": {
+														"key": "\"Potion\"",
+														"value": "0"
+													}
+												},
+												{
+													"id": "add-key",
+													"objectClass": "Dict_SaveGameData",
+													"sid": 128794983985580,
+													"parameters": {
+														"key": "\"Health\"",
+														"value": "Self.Get(\"MaxHealth\")"
+													}
+												},
+												{
+													"id": "set-group-active",
+													"objectClass": "System",
+													"sid": 816557670909569,
+													"parameters": {
+														"group-name": "\"Player Engine\"",
+														"state": "activated"
+													}
+												},
+												{
+													"id": "set-ignoring-input",
+													"objectClass": "Player_Base",
+													"sid": 638025962953760,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"input": "stop-ignoring"
+													}
+												},
+												{
+													"id": "set-max-speed",
+													"objectClass": "Player_Base",
+													"sid": 992023642575877,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"max-speed": "PlayerSpeed"
+													}
+												},
+												{
+													"id": "set-deceleration",
+													"objectClass": "Player_Base",
+													"sid": 278717679033445,
+													"behaviorType": "8Direction",
+													"parameters": {
+														"deceleration": "PlayerSpeed*30"
+													}
+												}
+											],
+											"sid": 723165237961301,
+											"children": [
+												{
+													"eventType": "block",
+													"conditions": [
+														{
+															"id": "repeat",
+															"objectClass": "System",
+															"sid": 138501218203428,
+															"parameters": {
+																"count": "10"
+															}
+														}
+													],
+													"actions": [
+														{
+															"id": "create-object",
+															"objectClass": "System",
+															"sid": 147458089453699,
+															"parameters": {
+																"object-to-create": "Particle",
+																"layer": "\"Objects\"",
+																"x": "Player_Base.X",
+																"y": "Player_Base.Y - 10",
+																"create-hierarchy": false,
+																"template-name": "\"\""
+															}
+														},
+														{
+															"id": "set-animation",
+															"objectClass": "Particle",
+															"sid": 776875201600744,
+															"parameters": {
+																"animation": "\"RedSparkle\"",
+																"from": "beginning"
+															}
+														},
+														{
+															"id": "set-speed",
+															"objectClass": "Particle",
+															"sid": 593429081033583,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"speed": "120"
+															}
+														},
+														{
+															"id": "set-angle-of-motion",
+															"objectClass": "Particle",
+															"sid": 553822056549697,
+															"behaviorType": "Bullet",
+															"parameters": {
+																"angle": "loopindex * (360 / 10)"
+															}
+														}
+													],
+													"sid": 664119526824802
+												}
+											]
+										}
+									]
 								}
 							]
 						},
@@ -4284,6 +4598,16 @@
 									"sid": 296020560484685,
 									"parameters": {
 										"instance-variable": "isKnockedBack"
+									}
+								},
+								{
+									"id": "compare-value",
+									"objectClass": "Dict_SaveGameData",
+									"sid": 801473934949119,
+									"parameters": {
+										"key": "\"Health\"",
+										"comparison": 4,
+										"value": "0"
 									}
 								}
 							],
@@ -4346,19 +4670,7 @@
 									"children": [
 										{
 											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "Dict_SaveGameData",
-													"sid": 684716689659138,
-													"disabled": true,
-													"parameters": {
-														"key": "\"Health\"",
-														"comparison": 4,
-														"value": "0"
-													}
-												}
-											],
+											"conditions": [],
 											"actions": [
 												{
 													"id": "set-boolean-instvar",
@@ -4413,6 +4725,10 @@
 							]
 						},
 						{
+							"eventType": "comment",
+							"text": "Hurt"
+						},
+						{
 							"eventType": "block",
 							"conditions": [
 								{
@@ -4457,358 +4773,7 @@
 										}
 									],
 									"actions": [],
-									"sid": 182841990666189,
-									"children": [
-										{
-											"eventType": "comment",
-											"text": "Hurt"
-										},
-										{
-											"eventType": "comment",
-											"text": "Player Death"
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-value",
-													"objectClass": "Dict_SaveGameData",
-													"sid": 901322877648809,
-													"parameters": {
-														"key": "\"Health\"",
-														"comparison": 3,
-														"value": "0"
-													}
-												}
-											],
-											"actions": [],
-											"sid": 469058466382776,
-											"children": [
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-value",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 610310656831713,
-															"parameters": {
-																"key": "\"Potion\"",
-																"comparison": 0,
-																"value": "0"
-															}
-														}
-													],
-													"actions": [
-														{
-															"id": "set-ignoring-input",
-															"objectClass": "Player_Base",
-															"sid": 149323135408009,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"input": "start-ignoring"
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 728629409905845,
-															"parameters": {
-																"group-name": "\"Player Engine\"",
-																"state": "deactivated"
-															}
-														},
-														{
-															"id": "set-eventvar-value",
-															"objectClass": "System",
-															"sid": 484790551051754,
-															"parameters": {
-																"variable": "PauseLock",
-																"value": "1"
-															}
-														},
-														{
-															"id": "set-animation-frame",
-															"objectClass": "PlayerSystem",
-															"sid": 887118782065588,
-															"parameters": {
-																"frame-number": "179"
-															}
-														},
-														{
-															"id": "wait",
-															"objectClass": "System",
-															"sid": 685005646139020,
-															"parameters": {
-																"seconds": ".1",
-																"use-timescale": true
-															}
-														},
-														{
-															"id": "set-animation-frame",
-															"objectClass": "PlayerSystem",
-															"sid": 743054541163961,
-															"parameters": {
-																"frame-number": "180"
-															}
-														},
-														{
-															"id": "set-animation-frame",
-															"objectClass": "PlayerSystem",
-															"sid": 870288237182240,
-															"parameters": {
-																"frame-number": "180"
-															}
-														},
-														{
-															"id": "stop-animation",
-															"objectClass": "PlayerSystem",
-															"sid": 360116406898000
-														},
-														{
-															"id": "wait",
-															"objectClass": "System",
-															"sid": 744786092319429,
-															"parameters": {
-																"seconds": "1",
-																"use-timescale": true
-															}
-														},
-														{
-															"callFunction": "Transition",
-															"sid": 239049375798118,
-															"parameters": [
-																"\"Out\"",
-																"\"LayoutChange\"",
-																"\"\""
-															]
-														},
-														{
-															"id": "wait-for-signal",
-															"objectClass": "System",
-															"sid": 776343560488092,
-															"parameters": {
-																"tag": "\"LayoutChange\""
-															}
-														},
-														{
-															"id": "go-to-layout-by-name",
-															"objectClass": "System",
-															"sid": 128319059150195,
-															"parameters": {
-																"layout": "\"GameOver\""
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 921238051353205,
-															"parameters": {
-																"group-name": "\"Player Engine\"",
-																"state": "activated"
-															}
-														},
-														{
-															"id": "stop-all",
-															"objectClass": "Audio",
-															"sid": 398766466487187
-														},
-														{
-															"type": "script",
-															"language": "javascript",
-															"script": [
-																"console.log(\"☠️ Player is dead!\");"
-															]
-														}
-													],
-													"sid": 502334177986979,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 903478518714824
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 326811863663856,
-																	"parameters": {
-																		"state": "mirrored"
-																	}
-																}
-															],
-															"sid": 720197731709209
-														},
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "is-mirrored",
-																	"objectClass": "Player_Mask",
-																	"sid": 604354533889266,
-																	"isInverted": true
-																}
-															],
-															"actions": [
-																{
-																	"id": "set-mirrored",
-																	"objectClass": "PlayerSystem",
-																	"sid": 742904724354303,
-																	"parameters": {
-																		"state": "not-mirrored"
-																	}
-																}
-															],
-															"sid": 598640327609461
-														}
-													]
-												},
-												{
-													"eventType": "block",
-													"conditions": [
-														{
-															"id": "compare-value",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 216924614200671,
-															"parameters": {
-																"key": "\"Potion\"",
-																"comparison": 0,
-																"value": "1"
-															}
-														}
-													],
-													"actions": [
-														{
-															"callFunction": "Audio_Play_Sound",
-															"sid": 520687781059110,
-															"parameters": [
-																"\"Potion\"",
-																"0",
-																"\"Potion\""
-															]
-														},
-														{
-															"id": "add-key",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 795573450184921,
-															"parameters": {
-																"key": "\"Potion\"",
-																"value": "0"
-															}
-														},
-														{
-															"id": "add-key",
-															"objectClass": "Dict_SaveGameData",
-															"sid": 803454219485547,
-															"parameters": {
-																"key": "\"Health\"",
-																"value": "Self.Get(\"MaxHealth\")"
-															}
-														},
-														{
-															"id": "set-group-active",
-															"objectClass": "System",
-															"sid": 991375079550987,
-															"parameters": {
-																"group-name": "\"Player Engine\"",
-																"state": "activated"
-															}
-														},
-														{
-															"id": "set-ignoring-input",
-															"objectClass": "Player_Base",
-															"sid": 794411365852872,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"input": "stop-ignoring"
-															}
-														},
-														{
-															"id": "set-max-speed",
-															"objectClass": "Player_Base",
-															"sid": 855907665457444,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"max-speed": "PlayerSpeed"
-															}
-														},
-														{
-															"id": "set-deceleration",
-															"objectClass": "Player_Base",
-															"sid": 546070602481801,
-															"behaviorType": "8Direction",
-															"parameters": {
-																"deceleration": "PlayerSpeed*30"
-															}
-														}
-													],
-													"sid": 786747561401486,
-													"children": [
-														{
-															"eventType": "block",
-															"conditions": [
-																{
-																	"id": "repeat",
-																	"objectClass": "System",
-																	"sid": 739573920514644,
-																	"parameters": {
-																		"count": "10"
-																	}
-																}
-															],
-															"actions": [
-																{
-																	"id": "create-object",
-																	"objectClass": "System",
-																	"sid": 212969260626818,
-																	"parameters": {
-																		"object-to-create": "Particle",
-																		"layer": "\"Objects\"",
-																		"x": "Player_Base.X",
-																		"y": "Player_Base.Y - 10",
-																		"create-hierarchy": false,
-																		"template-name": "\"\""
-																	}
-																},
-																{
-																	"id": "set-animation",
-																	"objectClass": "Particle",
-																	"sid": 651757417515969,
-																	"parameters": {
-																		"animation": "\"RedSparkle\"",
-																		"from": "beginning"
-																	}
-																},
-																{
-																	"id": "set-speed",
-																	"objectClass": "Particle",
-																	"sid": 845426564343400,
-																	"behaviorType": "Bullet",
-																	"parameters": {
-																		"speed": "120"
-																	}
-																},
-																{
-																	"id": "set-angle-of-motion",
-																	"objectClass": "Particle",
-																	"sid": 467424052224485,
-																	"behaviorType": "Bullet",
-																	"parameters": {
-																		"angle": "loopindex * (360 / 10)"
-																	}
-																}
-															],
-															"sid": 588070871153051
-														}
-													]
-												}
-											]
-										}
-									]
+									"sid": 182841990666189
 								},
 								{
 									"eventType": "block",
