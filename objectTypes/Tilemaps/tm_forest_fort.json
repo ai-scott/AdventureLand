@@ -31831,6 +31831,23 @@
 			},
 			"useCollisionPoly": false
 		},
+		"2045": {
+			"collisionPoly": {
+				"points": [
+					0.875,
+					0,
+					1,
+					0,
+					1,
+					1,
+					0.8125,
+					1,
+					0.9955322265625003,
+					0.4640991210937503
+				]
+			},
+			"useCollisionPoly": true
+		},
 		"2049": {
 			"collisionPoly": {
 				"points": [

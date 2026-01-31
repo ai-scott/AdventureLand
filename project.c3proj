@@ -543,7 +543,8 @@
 					"En_Crab_Mask",
 					"En_Bat_Mask",
 					"En_Bat_Base",
-					"En_Shadow"
+					"En_Shadow",
+					"En_Sea_Monster"
 				],
 				"subfolders": [],
 				"name": "Enemies"
@@ -893,6 +894,14 @@
 									"name": "inventory-ui-pool.ts",
 									"type": "application/typescript",
 									"sid": 497726749839317,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "inventory-selection.ts",
+									"type": "application/typescript",
+									"sid": 660863192182430,
 									"script-info": {
 										"purpose": "none"
 									}
