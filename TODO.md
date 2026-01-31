@@ -149,25 +149,25 @@ This is the single source of truth for all active development tasks. Completed w
   - Keyboard: Space picks by CurrentItemSlot (set by arrow keys), no UID needed
   - Result: First-tap works, no phantom hints, 40% performance improvement
 
-- [ ] **Bug #12**: Player knockback continues during death animation (2026-01-20)
-  - Location: eGameRoom.json:4348-4409 (knockback recovery logic)
-  - Root cause: Recovery checks "Health > 0" before clearing isKnockedBack flag
-  - Result: Player keeps getting pushed during death fade/transition
-  - Fix: Remove Health > 0 condition OR add separate recovery path for death (Health <= 0)
-  - Also affects: Death animation gets interrupted by knockback movement
+- [x] **Bug #12**: Player knockback continues during death animation ✅ COMPLETE (2026-01-30)
+  - Root cause: Multiple issues with death sequence and engine state management
+  - Issue 1: Gameplay Status group re-activated Player Engine every tick, overriding death sequence
+  - Issue 2: PlayerSystem positioning was inside Player Engine group, stopped during death
+  - Issue 3: Death sequence triggered multiple times (Hurt timer kept running)
+  - Fix 1: Added Health > 0 checks to Gameplay Status engine activation (lines 40-41)
+  - Fix 2: Moved PlayerSystem positioning to Player Macros group (always active)
+  - Fix 3: Moved death check to top-level with Trigger Once, added Health > 0 to hurt/knockback logic
+  - Result: Clean death animation with proper knockback, smooth transition to GameOver screen
 
-- [ ] **Bug #13**: Player frozen after "Try Again" / new game (2026-01-20)
-  - Location: eGlobal.json:7130-7137 (Try Again button handler)
-  - Root cause: "Set group Player Engine activated" action is DISABLED
-  - Result: Player Engine stays deactivated from previous death
-  - Fix: Enable the disabled action in C3 event sheet
-  - Workaround: Hitting "A" for attack re-enables movement
+- [x] **Bug #13**: Player frozen after "Try Again" / new game ✅ COMPLETE (2026-01-30)
+  - Root cause: "Set group Player Engine activated" action was DISABLED in Try Again handler
+  - Fix: Enabled the disabled action in eGlobal.json Try Again button handler
+  - Result: Player can move immediately after starting new game
 
-- [ ] **Bug #14**: Player can get stuck after hurt (2026-01-20)
-  - Related to Bug #12 (same knockback recovery logic)
-  - Occurs when Health becomes exactly 0 during hurt sequence
-  - Player remains in knockback state with Player Engine disabled
-  - Fix: Same as Bug #12 - ensure recovery always happens
+- [x] **Bug #14**: Player can get stuck after hurt ✅ COMPLETE (2026-01-30)
+  - Fixed by same changes as Bug #12
+  - Added Health > 0 checks to hurt timer and knockback recovery logic
+  - Result: Player always recovers from hurt state properly
 
 - [ ] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item (2026-01-14)
   - When opening inventory via "Open [icon=Bag]" button after pickup, no item is selected

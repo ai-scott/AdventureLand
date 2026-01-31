@@ -4351,6 +4351,7 @@
 													"id": "compare-value",
 													"objectClass": "Dict_SaveGameData",
 													"sid": 684716689659138,
+													"disabled": true,
 													"parameters": {
 														"key": "\"Health\"",
 														"comparison": 4,
