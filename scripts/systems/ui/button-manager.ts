@@ -710,6 +710,128 @@ export class UIButtonManager {
   }
 
   // ============================================================================
+  // ITEM PICKUP NOTIFICATION HELPERS
+  // ============================================================================
+
+  /**
+   * Cleans up item pickup notification UI (dialogue-style panels)
+   * Only destroys objects on HUD_UI layer to avoid destroying inventory/world objects
+   *
+   * @param runtime - C3 runtime instance
+   */
+  static cleanupItemPickupNotification(runtime: any): void {
+    console.log("🧹 [ButtonManager] Cleaning up item pickup notification...");
+
+    // Clean up buttons first
+    this.cleanup();
+
+    // Destroy ONLY dialogue notification objects on HUD_UI layer
+    // Be specific to avoid destroying inventory or world objects!
+    const hudLayer = "HUD_UI";
+
+    // Text blocks - only on HUD_UI
+    const textBlocks = runtime.objects.obj_TextBlock?.getAllInstances() || [];
+    textBlocks.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer) {
+        obj.destroy();
+      }
+    });
+
+    // Background panels - only on HUD_UI
+    const bgPanels = runtime.objects["9p_TextBG"]?.getAllInstances() || [];
+    bgPanels.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer) {
+        obj.destroy();
+      }
+    });
+
+    // Item frames - only on HUD_UI (for notification display)
+    const itemFrames = runtime.objects.obj_TextItemFrame?.getAllInstances() || [];
+    itemFrames.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer) {
+        obj.destroy();
+      }
+    });
+
+    // Cameos - only on HUD_UI (AL portrait in notification)
+    // BUT: Check Y position to distinguish notification cameos from inventory
+    const cameos = runtime.objects.Character_Cameos?.getAllInstances() || [];
+    cameos.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer && obj.y < 300) {
+        // Notification cameos are at y=130, inventory AL logo is lower
+        obj.destroy();
+      }
+    });
+
+    // Text cameos
+    const textCameos = runtime.objects.obj_TextCameo?.getAllInstances() || [];
+    textCameos.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer) {
+        obj.destroy();
+      }
+    });
+
+    // ItemShowcase - ONLY destroy if on HUD_UI and NOT in game world
+    // World items are on "Items" layer, notification showcase is on HUD_UI
+    const showcases = runtime.objects.ItemShowcase?.getAllInstances() || [];
+    showcases.forEach((obj: any) => {
+      if (obj.layer.name === hudLayer) {
+        obj.destroy();
+      }
+    });
+
+    // Reset flags
+    runtime.globalVars.ButtonMgrActive = false;
+    runtime.globalVars.ItemBtnSelection = 0;
+    runtime.globalVars.InDialogue = false;
+
+    console.log("✅ [ButtonManager] Item pickup notification cleanup complete");
+  }
+
+  /**
+   * Handles item pickup button actions (Open/Close)
+   * Call this from button click events instead of duplicating code
+   *
+   * @param runtime - C3 runtime instance
+   * @param buttonIndex - Which button was pressed (0=Open, 1=Close)
+   */
+  static handleItemPickupButton(runtime: any, buttonIndex: number): void {
+    console.log(`🔘 [ButtonManager] Item pickup button pressed: ${buttonIndex === 0 ? 'Open' : 'Close'}`);
+
+    // Save the item ID BEFORE cleanup
+    const itemToSelect = runtime.globalVars.KeyItem || 0;
+
+    if (buttonIndex === 0) {
+      // OPEN BUTTON
+      console.log("📂 Opening inventory with item:", itemToSelect);
+
+      // Clean up notification UI
+      this.cleanupItemPickupNotification(runtime);
+
+      // Store item for selection after inventory opens
+      runtime.globalVars.PendingItemSelection = itemToSelect;
+      runtime.globalVars.KeyItem = 0; // Reset to prevent reuse
+
+      // Open inventory
+      runtime.callFunction("OpenClose_Inventory");
+
+    } else if (buttonIndex === 1) {
+      // CLOSE BUTTON
+      console.log("❌ Dismissing item pickup notification");
+
+      // Clean up notification UI
+      this.cleanupItemPickupNotification(runtime);
+
+      // Reset KeyItem
+      runtime.globalVars.KeyItem = 0;
+      runtime.globalVars.PendingItemSelection = 0;
+
+      // Don't open inventory - just dismiss
+      console.log("✅ Notification dismissed");
+    }
+  }
+
+  // ============================================================================
   // DEBUG
   // ============================================================================
 

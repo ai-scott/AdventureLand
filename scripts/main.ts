@@ -629,6 +629,8 @@ runOnStartup(async runtime => {
         updateButtonHighlights: (currentLink: number, highlightedFrame?: number, normalFrame?: number) =>
           UIButtonManager.updateButtonHighlights(currentLink, highlightedFrame, normalFrame),
         highlightButtonByUID: (buttonUID: number) => UIButtonManager.highlightButtonByUID(buttonUID),
+        cleanupItemPickupNotification: (runtime: any) => UIButtonManager.cleanupItemPickupNotification(runtime),
+        handleItemPickupButton: (runtime: any, buttonIndex: number) => UIButtonManager.handleItemPickupButton(runtime, buttonIndex),
         debugState: () => UIButtonManager.debugState()
       };
 

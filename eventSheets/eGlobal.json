@@ -283,6 +283,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "PendingItemSelection",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 743407887085120
+		},
+		{
+			"eventType": "variable",
 			"name": "RecoveringFromDeath",
 			"type": "boolean",
 			"initialValue": "false",
@@ -4877,22 +4887,31 @@
 									]
 								},
 								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 855254570566146,
-									"parameters": {
-										"variable": "CurrentItemSlot",
-										"value": "-1"
-									}
-								},
-								{
-									"id": "set-eventvar-value",
-									"objectClass": "System",
-									"sid": 634958429785161,
-									"parameters": {
-										"variable": "SelectedItemUID",
-										"value": "-1"
-									}
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"// Check if we have a pending item selection (from pickup)",
+										"const itemToSelect = runtime.globalVars.PendingItemSelection || 0;",
+										"",
+										"if (itemToSelect > 0) {",
+										"  // Select the picked-up item",
+										"  console.log(\"🎯 Selecting picked-up item:\", itemToSelect);",
+										"  const invSelect = globalThis.AdventureLand?.InventorySelection;",
+										"  ",
+										"  if (invSelect) {",
+										"    const success = invSelect.selectItemByID(runtime, itemToSelect);",
+										"    console.log(success ? \"✅ Item selected\" : \"⚠️ Item not found\");",
+										"  }",
+										"  ",
+										"  // Clear the pending selection",
+										"  runtime.globalVars.PendingItemSelection = 0;",
+										"} else {",
+										"  // No pending selection - reset to default",
+										"  console.log(\"📦 Opening inventory with no pre-selection\");",
+										"  runtime.globalVars.CurrentItemSlot = -1;",
+										"  runtime.globalVars.SelectedItemUID = -1;",
+										"}"
+									]
 								}
 							],
 							"sid": 192841212808491,
@@ -9580,16 +9599,13 @@
 															"type": "script",
 															"language": "javascript",
 															"script": [
-																"//dismiss dynamic buttons",
+																"// Use TypeScript helper for proper cleanup and inventory opening",
 																"const selection = runtime.globalVars.ItemBtnSelection;",
-																"console.log(\"spacebar pressed or action btn selected\");",
-																"// Trigger the selected button's action",
-																"if (selection === 0) {  // 0 = Open button  ",
-																"  const invSelect = globalThis.AdventureLand?.InventorySelection;",
-																"  if (invSelect) {",
-																"    invSelect.selectItemByID(runtime, runtime.globalVars.KeyItem);  // NOW SELECTS ITEM",
-																"  }",
-																"  runtime.callFunction(\"OpenClose_Inventory\");",
+																"console.log(\"⌨️ Keyboard: Button selected:\", selection);",
+																"",
+																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+																"if (buttonMgr) {",
+																"  buttonMgr.handleItemPickupButton(runtime, selection); // 0=Open, 1=Close",
 																"}"
 															]
 														}
@@ -9657,35 +9673,34 @@
 													],
 													"actions": [
 														{
+															"type": "script",
+															"language": "javascript",
+															"script": [
+																"// Clean up and prepare for inventory open",
+																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
+																"if (buttonMgr) {",
+																"  buttonMgr.cleanupItemPickupNotification(runtime);",
+																"  ",
+																"  // Store item for selection",
+																"  runtime.globalVars.PendingItemSelection = runtime.globalVars.KeyItem;",
+																"  runtime.globalVars.KeyItem = 0;",
+																"  ",
+																"  console.log(\"✅ Click: Cleanup done, ready to open inventory\");",
+																"}"
+															]
+														},
+														{
 															"callFunction": "OpenClose_Inventory",
-															"sid": 847635339772085
+															"sid": 455929937640687
 														},
 														{
 															"id": "set-boolean-eventvar",
 															"objectClass": "System",
-															"sid": 461956141639977,
+															"sid": 982422114688667,
 															"parameters": {
 																"variable": "InDialogue",
 																"value": "false"
 															}
-														},
-														{
-															"type": "script",
-															"language": "javascript",
-															"script": [
-																"console.log(\"➡️ Opening inventory with picked-up item:\", runtime.globalVars.KeyItem);",
-																"",
-																"const invSelect = globalThis.AdventureLand?.InventorySelection;",
-																"if (invSelect) {",
-																"  invSelect.selectItemByID(runtime, runtime.globalVars.KeyItem);",
-																"}",
-																"",
-																"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
-																"if (buttonMgr) {",
-																"  runtime.callFunction(\"destroyDialogueUI\");",
-																"  console.log(\"➡️ Dismissing dialogue\");",
-																"}"
-															]
 														}
 													],
 													"sid": 672422852961842
