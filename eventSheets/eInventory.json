@@ -3350,6 +3350,45 @@
 					"sid": 787145228832850
 				},
 				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "compare-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 873402471015527,
+							"parameters": {
+								"variable": "InventoryJustOpened"
+							}
+						},
+						{
+							"id": "trigger-once-while-true",
+							"objectClass": "System",
+							"sid": 331106690390001
+						}
+					],
+					"actions": [
+						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 806678718797945,
+							"parameters": {
+								"seconds": "0.5",
+								"use-timescale": true
+							}
+						},
+						{
+							"id": "set-boolean-eventvar",
+							"objectClass": "System",
+							"sid": 524951284849924,
+							"parameters": {
+								"variable": "InventoryJustOpened",
+								"value": "false"
+							}
+						}
+					],
+					"sid": 156672533918153
+				},
+				{
 					"functionName": "changeItemSelection",
 					"functionDescription": "change which item is highlighted in inventory",
 					"functionCategory": "Inventory",

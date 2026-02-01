@@ -243,6 +243,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "InventoryJustOpened",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 286375128942804
+		},
+		{
+			"eventType": "variable",
 			"name": "AudioLevel",
 			"type": "number",
 			"initialValue": "0",
@@ -4906,11 +4916,35 @@
 										"  // Clear the pending selection",
 										"  runtime.globalVars.PendingItemSelection = 0;",
 										"} else {",
-										"  // No pending selection - reset to default",
-										"  console.log(\"📦 Opening inventory with no pre-selection\");",
-										"  runtime.globalVars.CurrentItemSlot = -1;",
-										"  runtime.globalVars.SelectedItemUID = -1;",
-										"}"
+										"  // No pending selection - select slot 0 by default",
+										"  console.log(\"📦 Opening inventory with default selection (slot 0)\");",
+										"  ",
+										"  const invSelect = globalThis.AdventureLand?.InventorySelection;",
+										"  if (invSelect) {",
+										"    // Get the item in slot 0",
+										"    const itemSlots = runtime.objects.ItemSlot?.getAllInstances() || [];",
+										"    const slot0 = itemSlots.find(slot => slot.instVars.SlotID === 0);",
+										"    ",
+										"    if (slot0 && slot0.instVars.ItemID > 0) {",
+										"      // Slot 0 has an item - select it",
+										"      runtime.globalVars.CurrentItemSlot = 0;",
+										"      runtime.globalVars.SelectedItemUID = slot0.uid;",
+										"      console.log(\"✅ Auto-selected slot 0\");",
+										"    } else {",
+										"      // Slot 0 is empty - no selection",
+										"      runtime.globalVars.CurrentItemSlot = -1;",
+										"      runtime.globalVars.SelectedItemUID = -1;",
+										"      console.log(\"📭 Slot 0 empty - no selection\");",
+										"    }",
+										"  } else {",
+										"    runtime.globalVars.CurrentItemSlot = -1;",
+										"    runtime.globalVars.SelectedItemUID = -1;",
+										"  }",
+										"}",
+										"",
+										"// Prevent click bleed-through from notification buttons",
+										"runtime.globalVars.InventoryJustOpened = true;",
+										"console.log(\"🛡️ InventoryJustOpened flag set (prevents click bleed-through)\");"
 									]
 								}
 							],
@@ -9014,6 +9048,15 @@
 													"parameters": {
 														"object": "ItemSlot"
 													}
+												},
+												{
+													"id": "compare-boolean-eventvar",
+													"objectClass": "System",
+													"sid": 557241953822693,
+													"parameters": {
+														"variable": "InventoryJustOpened"
+													},
+													"isInverted": true
 												},
 												{
 													"id": "compare-boolean-eventvar",
