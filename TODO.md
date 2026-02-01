@@ -169,19 +169,24 @@ This is the single source of truth for all active development tasks. Completed w
   - Added Health > 0 checks to hurt timer and knockback recovery logic
   - Result: Player always recovers from hurt state properly
 
-- [ ] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item (2026-01-14)
-  - When opening inventory via "Open [icon=Bag]" button after pickup, no item is selected
-  - Should set CurrentItemID to the picked-up item
-  - Should find ItemSlot containing that ItemID and select it (set CurrentItemSlot, SelectedItemSlot, SelectedItemUID)
-  - Currently opens with CurrentItemSlot = -1 (no selection)
-  - User has to manually tap the item to see its hint/details
+- [x] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item ✅ COMPLETE (2026-01-30)
+  - Root cause: No item selection logic when opening from pickup notification
+  - Fix 1: Added PendingItemSelection variable to track item across function calls
+  - Fix 2: cleanupItemPickupNotification stores KeyItem in PendingItemSelection before cleanup
+  - Fix 3: OpenClose_Inventory checks PendingItemSelection and calls InventorySelection.selectItemByID
+  - Fix 4: Falls back to slot 0 default selection when opening normally (no pending item)
+  - Result: Picked-up items automatically highlighted, inventory always has starting selection
 
-- [ ] **Bug #16**: Inventory hint panel issues after item pickup (2026-01-30)
-  - Issue 1: "You got a..." message panel with "Open [icon=Bag]" and "Close" buttons stays visible after closing inventory
-  - Issue 2: Inventory item slots become unclickable after using "Open [icon=Bag]" button from pickup notification
-  - Root cause: ButtonManager cleanup pathway not properly clearing notification state
-  - Need to fix: ButtonManager cleanup when opening inventory, item hint display pathway
-  - Related to: Bug #15 (inventory selection after pickup)
+- [x] **Bug #16**: Inventory hint panel issues after item pickup ✅ COMPLETE (2026-01-30)
+  - Issue 1: Notification panel staying visible - FIXED
+    Root cause: destroyDialogueUI conditions not met, incomplete cleanup
+    Fix: Created cleanupItemPickupNotification() with layer-specific destruction
+    Only destroys HUD_UI objects, preserves inventory/world items
+  - Issue 2: Inventory slots unclickable - FIXED
+    Root cause: Click bleed-through from "Open" button to inventory slot beneath
+    Fix: Added InventoryJustOpened flag with 0.05s delay, guards inventory click events
+  - TypeScript consolidation: Removed 100+ lines of duplicate C3 code
+  - Both keyboard and touch paths now use unified TypeScript helpers
 
 ### 🎨 Polish Items
 
