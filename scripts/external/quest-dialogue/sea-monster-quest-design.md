@@ -188,7 +188,7 @@ Hostile → (player leaves island) → Retreating → (1s delay) → Hidden
 #### Node: "accept-quest"
 - **NPC Text**: "Thank you, brave adventurer! I sense it's somewhere near the waterfall above. Please return it when you find it!"
 - **Actions**:
-  - `set-quest-status: PerleQuest → 32`
+  - `set-quest-status: PerleQuest → 20`
   - `custom: seaMonsterAcceptQuest`
   - End dialogue, SM retreats peacefully
 
@@ -199,10 +199,10 @@ Hostile → (player leaves island) → Retreating → (1s delay) → Hidden
   - End dialogue, enable enemy mode
 
 #### Node: "return-pearl" (Quest Completion)
-- **Trigger**: Player returns to shell with pearl (PerleQuest = 32, has item 99)
+- **Trigger**: Player returns to shell with pearl (PerleQuest = 20, has item 99)
 - **NPC Text**: "YOU FOUND IT! My precious Perle de la Mer! Thank you, hero! Please, take this Magic Trident as my gift!"
 - **Actions**:
-  - `set-quest-status: PerleQuest → 50`
+  - `set-quest-status: PerleQuest → 30`
   - `give-item: 100` (Magic Trident)
   - `remove-item: 99` (Pearl)
   - `custom: seaMonsterQuestComplete`
@@ -382,7 +382,7 @@ export const SEA_MONSTER_CONFIG: EnemyConfig = {
 Conditions:
 ├─ Player: On collision with Trigger_Shell
 ├─ Keyboard: On Space pressed OR Touch: On tap Trigger_Shell
-├─ Dict_SaveGameData: "PerleQuest" < 50 (not complete)
+├─ Dict_SaveGameData: "PerleQuest" < 30 (not complete)
 └─ System: Trigger once while true
 
 Actions:
@@ -402,8 +402,8 @@ Actions:
 │      setTimeout(() => {
 │        const dialogue = globalThis.AdventureLand?.DialogueBridge;
 │        if (dialogue) {
-│          if (questStatus >= 32 && hasItem(99)) {
-│            // Has pearl - return it
+│          if (questStatus >= 20 && hasItem(99)) {
+│            // Has pearl - return it (quest accepted, now returning)
 │            dialogue.startDialogue("SeaMonster", runtime, "return-pearl");
 │          } else {
 │            // First encounter or quest in progress
@@ -743,10 +743,10 @@ The Perle quest intersects with finding Bill (Nick's brother):
 
 **Solution**:
 - Shell trigger checks quest status + has item
-- If PerleQuest = 32 AND has item 99:
+- If PerleQuest = 20 AND has item 99:
   - Summon SM
   - Start dialogue at "return-pearl" node directly
-- If PerleQuest = 50:
+- If PerleQuest = 30:
   - Don't summon (quest already complete)
 
 ---
@@ -891,14 +891,18 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 
 ```
 "PerleQuest": number
-  - 0 = Not started
-  - 16 = Shell touched (SM summoned at least once)
-  - 32 = Quest accepted (promised to help)
-  - 50 = Complete (returned pearl, got trident)
+  - 0  = Not started (never touched shell)
+  - 10 = First encounter (shell touched, SM summoned)
+  - 20 = Quest accepted (promised to help find pearl)
+  - 30 = Quest complete (returned pearl, received trident)
+
+  Note: Using increments of 10 leaves room for sub-states if needed
+  (e.g., 11 = "SM became hostile", 21 = "Found Bill", etc.)
 
 "SeaMonsterHostile": boolean (optional)
   - Track if player made SM permanently hostile
   - Determines behavior on future encounters
+  - Allows different dialogue on repeat visits
 ```
 
 ---
