@@ -1,7 +1,7 @@
 /**
  * Sea Monster State Controller
  *
- * Manages the hybrid NPC/Enemy behavior for the "Perle de la Mer" quest.
+ * Manages the hybrid NPC/Enemy behavior for the "Pearl Quest" (Perle de la Mer).
  * The Sea Monster can transition between peaceful dialogue mode and hostile attack mode
  * based on player dialogue choices.
  *
@@ -154,8 +154,8 @@ export class SeaMonsterController {
     if (this.runtime) {
       const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
       if (dict) {
-        dict.setDataMap(dict.getDataMap().set("PerleQuest", 20));
-        console.log("✅ PerleQuest set to 20 (quest accepted)");
+        dict.setDataMap(dict.getDataMap().set("PearlQuest", 20));
+        console.log("✅ PearlQuest set to 20 (quest accepted)");
       }
     }
 
@@ -206,13 +206,13 @@ export class SeaMonsterController {
    * @param runtime - C3 runtime instance
    */
   static completeQuest(runtime: any): void {
-    console.log("🎁 Perle de la Mer quest COMPLETE!");
+    console.log("🎁 Pearl Quest COMPLETE!");
 
     // Mark quest as complete
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (dict) {
-      dict.setDataMap(dict.getDataMap().set("PerleQuest", 30));
-      console.log("✅ PerleQuest set to 30 (complete)");
+      dict.setDataMap(dict.getDataMap().set("PearlQuest", 30));
+      console.log("✅ PearlQuest set to 30 (complete)");
     }
 
     // Reset hostility (player redeemed themselves)
@@ -256,7 +256,7 @@ export class SeaMonsterController {
     // If player previously made SM hostile and doesn't have pearl, stay hostile
     if (this.isHostilePermanently) {
       const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
-      const questStatus = dict?.getDataMap().get("PerleQuest") || 0;
+      const questStatus = dict?.getDataMap().get("PearlQuest") || 0;
 
       // If quest complete (30), forgive
       if (questStatus >= 30) {

@@ -1,10 +1,11 @@
-# Sea Monster "Perle de la Mer" Quest Design
+# Sea Monster "Pearl Quest" Design
 
-**Quest ID**: PerleQuest
+**Quest ID**: PearlQuest
+**Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Location**: World_10 (The Bottomless Lake)
 **Type**: Hybrid NPC/Enemy with state transitions
 **Reward**: Magic Trident
-**Status**: Design Phase - Not Implemented
+**Status**: Design Phase - Phase 1 Complete (TypeScript)
 
 ---
 
@@ -76,7 +77,7 @@ ATTACKS!         "Someone stole the jewel of the lake, my precious pearl de la m
 
 ### Quest Progress States
 
-**Dict_SaveGameData: "PerleQuest"**
+**Dict_SaveGameData: "PearlQuest"**
 
 - `0` = Not started (initial state)
 - `16` = Shell touched, Sea Monster summoned, dialogue initiated
@@ -110,7 +111,7 @@ scripts/
 
 eventSheets/
 ├── eScene10.json or eGameRoom.json  [UPDATE - shell trigger, SM events]
-└── eGlobal.json  [UPDATE - add PerleQuest to save data]
+└── eGlobal.json  [UPDATE - add PearlQuest to save data]
 
 objectTypes/
 └── Projectiles/
@@ -188,7 +189,7 @@ Hostile → (player leaves island) → Retreating → (1s delay) → Hidden
 #### Node: "accept-quest"
 - **NPC Text**: "Thank you, brave adventurer! I sense it's somewhere near the waterfall above. Please return it when you find it!"
 - **Actions**:
-  - `set-quest-status: PerleQuest → 20`
+  - `set-quest-status: PearlQuest → 20`
   - `custom: seaMonsterAcceptQuest`
   - End dialogue, SM retreats peacefully
 
@@ -199,10 +200,10 @@ Hostile → (player leaves island) → Retreating → (1s delay) → Hidden
   - End dialogue, enable enemy mode
 
 #### Node: "return-pearl" (Quest Completion)
-- **Trigger**: Player returns to shell with pearl (PerleQuest = 20, has item 99)
+- **Trigger**: Player returns to shell with pearl (PearlQuest = 20, has item 99)
 - **NPC Text**: "YOU FOUND IT! My precious Perle de la Mer! Thank you, hero! Please, take this Magic Trident as my gift!"
 - **Actions**:
-  - `set-quest-status: PerleQuest → 30`
+  - `set-quest-status: PearlQuest → 30`
   - `give-item: 100` (Magic Trident)
   - `remove-item: 99` (Pearl)
   - `custom: seaMonsterQuestComplete`
@@ -382,7 +383,7 @@ export const SEA_MONSTER_CONFIG: EnemyConfig = {
 Conditions:
 ├─ Player: On collision with Trigger_Shell
 ├─ Keyboard: On Space pressed OR Touch: On tap Trigger_Shell
-├─ Dict_SaveGameData: "PerleQuest" < 30 (not complete)
+├─ Dict_SaveGameData: "PearlQuest" < 30 (not complete)
 └─ System: Trigger once while true
 
 Actions:
@@ -397,7 +398,7 @@ Actions:
 │
 │      // Check quest status to determine dialogue node
 │      const questStatus = runtime.objects.Dict_SaveGameData.getFirstInstance()
-│                          .getDataMap().get("PerleQuest") || 0;
+│                          .getDataMap().get("PearlQuest") || 0;
 │
 │      setTimeout(() => {
 │        const dialogue = globalThis.AdventureLand?.DialogueBridge;
@@ -768,10 +769,10 @@ The Perle quest intersects with finding Bill (Nick's brother):
 
 **Solution**:
 - Shell trigger checks quest status + has item
-- If PerleQuest = 20 AND has item 99:
+- If PearlQuest = 20 AND has item 99:
   - Summon SM
   - Start dialogue at "return-pearl" node directly
-- If PerleQuest = 30:
+- If PearlQuest = 30:
   - Don't summon (quest already complete)
 
 ---
@@ -900,7 +901,7 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 ### Edge Cases
 
 - [ ] Player saves game mid-quest, reloads
-- [ ] Player has pearl but PerleQuest = 0 (cheated/debug)
+- [ ] Player has pearl but PearlQuest = 0 (cheated/debug)
 - [ ] Player tries to damage SM (should deal 0 damage, invincible)
 - [ ] Player attacks Sea Monster while in NPC mode (should trigger hostility?)
 - [ ] Multiple shell touches in quick succession
@@ -915,7 +916,7 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 ### New Keys in Dict_SaveGameData
 
 ```
-"PerleQuest": number
+"PearlQuest": number
   - 0  = Not started (never touched shell)
   - 10 = First encounter (shell touched, SM summoned)
   - 20 = Quest accepted (promised to help find pearl)
@@ -983,7 +984,7 @@ AdventureLand.SeaMonsterController.retreat("player-left")
    - **Without Pearl + Previously Hostile**: SM rises hostile again
      If player made SM mad and returns without pearl, SM attacks on sight
    - **Logic**: Pearl = forgiveness, No Pearl = remembered grudge
-   - Implementation: Check both PerleQuest status AND has-item(99) when summoning
+   - Implementation: Check both PearlQuest status AND has-item(99) when summoning
 
 3. **Animation Assets**: ✅ DECIDED
    - **Docile SM (NPC mode)**: Rises through mask with randomized animated water effect

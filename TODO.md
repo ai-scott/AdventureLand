@@ -194,14 +194,16 @@ This is the single source of truth for all active development tasks. Completed w
 - [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
 - [ ] Mark birthday cake as unique item (prevents duplicate spawning)
 
-## 🐉 NEW: Sea Monster "Perle de la Mer" Quest (2026-02-01)
+## 🐉 NEW: Sea Monster "Pearl Quest" (2026-02-01)
 
+**Quest ID**: PearlQuest
+**Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Type**: Hybrid NPC/Enemy quest with state transitions
 **Location**: World_10 (The Bottomless Lake)
-**Status**: Design Phase - Not Started
+**Status**: Phase 1 Complete (TypeScript) - C3 Setup Next
 
 ### Quest Overview
-Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/steal it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
+Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (peaceful) or refuse/lie about stealing it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
 
 ### Implementation Phases
 
