@@ -49,6 +49,9 @@ import { UIButtonManager } from "./systems/ui/button-manager.js";
 // GAME STATE MANAGER IMPORT
 import { GameStateManager } from "./systems/game-state-manager.js";
 
+// NPC CONTROLLER IMPORTS
+import { SeaMonsterController } from "./systems/npc/sea-monster-controller.js";
+
 // World00 dialogue files (Leafwood Village)
 import { WelcomeDialogue } from "./external/quest-dialogue/welcome-dialogue.js";
 import { PennyDialogue } from "./external/quest-dialogue/penny-dialogue.js";
@@ -521,6 +524,31 @@ runOnStartup(async runtime => {
       console.log("✅ Game State Manager initialized!");
     } catch (error) {
       console.error("❌ Failed to initialize game state manager:", error);
+    }
+
+    // Initialize Sea Monster Controller (NPC/Enemy Hybrid)
+    try {
+      SeaMonsterController.initialize(runtime);
+
+      // Set up Sea Monster namespace
+      (globalThis as any).AdventureLand.SeaMonsterController = {
+        summonSeaMonster: (runtime: any, shellX: number, shellY: number) =>
+          SeaMonsterController.summonSeaMonster(runtime, shellX, shellY),
+        makeHostile: (reason?: string) => SeaMonsterController.makeHostile(reason),
+        acceptQuest: () => SeaMonsterController.acceptQuest(),
+        retreat: (reason: "peaceful" | "player-left") => SeaMonsterController.retreat(reason),
+        completeQuest: (runtime: any) => SeaMonsterController.completeQuest(runtime),
+        isPlayerOnIsland: (runtime: any) => SeaMonsterController.isPlayerOnIsland(runtime),
+        shouldBeHostileOnSummon: (runtime: any) => SeaMonsterController.shouldBeHostileOnSummon(runtime),
+        getState: () => SeaMonsterController.getState(),
+        isHostile: () => SeaMonsterController.isHostile(),
+        exists: () => SeaMonsterController.exists(),
+        debugState: () => SeaMonsterController.debugState()
+      };
+
+      console.log("✅ Sea Monster Controller initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize Sea Monster controller:", error);
     }
 
     // Initialize Input/Trigger/Dialogue Systems (NEW!)
