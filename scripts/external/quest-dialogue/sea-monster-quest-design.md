@@ -457,18 +457,24 @@ Actions:
 
 **In SeaMonsterController.isPlayerOnIsland():**
 
-Based on your screenshot, the island appears to be the central area. Adjust these coordinates:
+Simple X-coordinate check - player is on island if X >= 320:
 
 ```typescript
-const islandBounds = {
-  minX: 250,  // Left edge of island
-  maxX: 550,  // Right edge of island
-  minY: 350,  // Top of island
-  maxY: 650   // Bottom of island (water line)
-};
+isPlayerOnIsland(runtime: any): boolean {
+  const player = runtime.objects.Player_Base?.getFirstInstance();
+  if (!player) return false;
+
+  // Island boundary: X < 320 = on bridge (off island)
+  // X >= 320 = on island
+  return player.x >= 320;
+}
 ```
 
-**TODO**: Measure exact coordinates in C3 editor
+**Boundary Logic**:
+- Bridge is to the left (X < 320)
+- Island is to the right (X >= 320)
+- No Y-coordinate check needed (island extends full height)
+- Simple and performant (one comparison)
 
 ### 4.4 Water Ball Projectile Spawning
 
@@ -522,14 +528,24 @@ MaxHealth: number = 9999
 Defense: number = 999    // Immune to player damage
 ```
 
-**Animations**:
-- `idle` - Peaceful floating (NPC mode)
-- `idle-angry` - Agitated state (hostile mode, between attacks)
-- `rise` - Surfacing from water (Hidden → NPC transition)
-- `retreat` - Submerging into water (any state → Hidden)
-- `attack` - Spitting water ball (hostile mode, ranged attack animation)
-- `hurt` - Optional, for visual feedback if hit (doesn't actually take damage)
-- ~~`death`~~ - NOT NEEDED (Sea Monster cannot be defeated)
+**Animations & Visual Effects**:
+
+**Docile SM (NPC mode)**:
+- `rise` - Surfacing through mask with randomized animated water effect (1s)
+- `idle` - Peaceful floating while in dialogue
+- `retreat` - Submerging through mask with water effect (1s, reverse of rise)
+
+**Hostile SM (Enemy mode)**:
+- Sprite swap to hostile version when transitioning to attack mode
+- `idle-angry` - Agitated floating between attacks
+- `attack` - Spitting water ball animation (triggers projectile spawn)
+- `hurt` - Optional visual feedback (doesn't actually take damage)
+- ~~`death`~~ - NOT NEEDED (invincible, always retreats)
+
+**Implementation Note**:
+- Use two separate sprites or animation frames for docile vs hostile
+- Swap between them during state transitions
+- Water mask effect uses particle system or animated sprite overlay
 
 ### 5.2 Trigger_Shell Object
 
@@ -581,17 +597,26 @@ InteractionHint: string = "Check"
 
 #### Perle de la Mer (ID: 99)
 - **Type**: Quest Item
-- **Unique**: Yes
+- **Unique**: Yes (only one in game)
 - **Description**: "A luminous pearl from the depths of the lake"
-- **Location**: Chest above waterfall (locked until Bill quest resolved)
+- **Location (PLACEHOLDER)**: Top of lake area for testing
+  Future: Chest in Bill's cave under waterfall (Bill quest required)
 - **Icon Frame**: Pearl sprite
+- **Cannot be equipped**: Quest item only, no stats
+- **Quest Critical**: Required to complete Perle quest and get trident
 
 #### Magic Trident (ID: 100)
-- **Type**: Weapon
-- **Attack Bonus**: +5
-- **Unique**: Yes
-- **Description**: "A magical trident gifted by the Sea Monster"
+- **Type**: Weapon (equip in weapon slot)
+- **Attack Bonus**: +5 (powerful late-game weapon)
+- **Special Ability**: **Ghost Slayer**
+  Can inflict damage on ghosts/spirits that are otherwise invulnerable
+  Normal weapons cannot hurt spirit enemies
+  Makes trident essential for future ghost encounters
+- **Unique**: Yes (only one in game, quest reward)
+- **Description**: "A magical trident gifted by the Sea Monster. Its ethereal glow can harm spirits."
 - **Icon Frame**: Trident sprite
+- **Reward**: Only obtainable by completing Perle quest peacefully
+  Hostile players cannot get trident (teaches value of peaceful choices)
 
 ---
 
@@ -952,30 +977,51 @@ AdventureLand.SeaMonsterController.retreat("player-left")
    - Only resolution is forced retreat when player leaves island
    - This is a narrative/gameplay design choice (not a balance issue)
 
-2. **Multiple Encounters**:
-   - If player refuses quest, can they change their mind later?
-   - Or is SM permanently hostile after refusal?
-   - Recommendation: Hostile state persists until quest complete
+2. **Multiple Encounters**: ✅ DECIDED
+   - **With Pearl**: SM is always peaceful/grateful regardless of past hostility
+     If player returns with pearl (item 99), SM thanks them and gives trident
+   - **Without Pearl + Previously Hostile**: SM rises hostile again
+     If player made SM mad and returns without pearl, SM attacks on sight
+   - **Logic**: Pearl = forgiveness, No Pearl = remembered grudge
+   - Implementation: Check both PerleQuest status AND has-item(99) when summoning
 
-3. **Animation Assets**:
-   - Do you have rise/retreat animations, or should SM just fade/scale?
-   - Water ball sprite exists?
-   - Recommendation: Start with simple scale/fade, add animations later
+3. **Animation Assets**: ✅ DECIDED
+   - **Docile SM (NPC mode)**: Rises through mask with randomized animated water effect
+     Same animation for retreat (plays in reverse or mirrored)
+   - **Hostile SM**: Separate sprite/animation for attack mode
+     Used when shooting water balls
+   - **Water Ball**: Sprite exists, ready to use
+   - **Implementation**: Two visual states for SM (docile vs hostile sprite swap)
 
-4. **Island Boundaries**:
-   - Exact coordinates for island detection?
-   - Should include dock area or just sand?
-   - Recommendation: Measure in C3 editor, add visual debug overlay
+4. **Island Boundaries**: ✅ DECIDED
+   - **X Boundary**: Player.X < 320 = OFF island (on bridge)
+   - **Retreat Trigger**: When Player.X crosses 320 during hostile mode, SM stops attacking and retreats
+   - **Simple Check**: Only need to check X coordinate (not Y)
+   - **Implementation**:
+     ```typescript
+     isPlayerOnIsland(runtime: any): boolean {
+       const player = runtime.objects.Player_Base?.getFirstInstance();
+       return player ? player.x >= 320 : false;
+     }
+     ```
 
-5. **Pearl Discovery**:
-   - Is Bill's chest already in the game?
-   - Does Bill dialogue exist?
-   - Recommendation: Create placeholder if not ready
+5. **Pearl Discovery**: ✅ DECIDED (PLACEHOLDER)
+   - **Bill's Cave**: NOT built yet - will be under waterfall in future update
+   - **Bill Dialogue**: NOT created yet - part of Windmill Bros quest expansion
+   - **PLACEHOLDER Solution**: Place Perle de la Mer at top of lake for testing
+     Allows testing full quest flow without Bill implementation
+   - **Future**: Move pearl to chest in Bill's cave when that quest is ready
+   - **Current Setup**: Create simple item spawn or chest at waterfall top
 
-6. **Trident Properties**:
-   - Attack bonus? Special abilities?
-   - Visual sprite ready?
-   - Recommendation: Attack +5, can shoot water (future enhancement)
+6. **Trident Properties**: ✅ DECIDED
+   - **Attack Bonus**: +5 (powerful weapon)
+   - **Special Ability**: Can damage ghosts/spirits (otherwise invulnerable enemies)
+     This makes it valuable for future ghost/spirit encounters
+   - **Type**: Weapon (equip in weapon slot)
+   - **Unique**: Yes (only one in game, quest reward)
+   - **No ranged attacks**: Melee only (for now, water shooting in future)
+   - **Visual Sprite**: Ready to use
+   - **Implementation**: Add "CanDamageSpirits" property to weapon system
 
 ---
 
