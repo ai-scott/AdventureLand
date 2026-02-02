@@ -194,6 +194,62 @@ This is the single source of truth for all active development tasks. Completed w
 - [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
 - [ ] Mark birthday cake as unique item (prevents duplicate spawning)
 
+## 🐉 NEW: Sea Monster "Perle de la Mer" Quest (2026-02-01)
+
+**Type**: Hybrid NPC/Enemy quest with state transitions
+**Location**: World_10 (The Bottomless Lake)
+**Status**: Design Phase - Not Started
+
+### Quest Overview
+Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/steal it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
+
+### Implementation Phases
+
+- [ ] **Phase 1: Foundation** (Day 1)
+  - Create SeaMonsterController.ts (state management system)
+  - Add to main.ts namespace
+  - Test basic summon/despawn functionality
+
+- [ ] **Phase 2: Dialogue Integration** (Day 2)
+  - Create seamonster-dialogue.ts (dialogue tree)
+  - Add custom dialogue actions (makeHostile, acceptQuest, etc.)
+  - Load dialogue in main.ts
+  - Test dialogue flow and options
+
+- [ ] **Phase 3: C3 Objects Setup** (Day 3)
+  - Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
+  - Create Trigger_Shell interaction point
+  - Create Projectile_WaterBall with Bullet behavior
+  - Create items: Perle de la Mer (ID: 99), Magic Trident (ID: 100)
+
+- [ ] **Phase 4: Event Sheets** (Day 4)
+  - Pink shell trigger (summons SM, starts dialogue)
+  - Sea Monster state management (every-tick sync)
+  - Island boundary detection and retreat logic
+  - Quest completion trigger (return pearl)
+
+- [ ] **Phase 5: Enemy AI** (Day 5)
+  - Add SEA_MONSTER_CONFIG to enemy-configs.ts (ranged attacks)
+  - Update enemy AI to check AIEnabled flag
+  - Water ball spawn and collision logic
+  - Test hostile mode and retreat
+
+- [ ] **Phase 6: Polish** (Day 6)
+  - Rise/retreat animations
+  - Sound effects
+  - Visual effects
+  - Balance tuning
+
+- [ ] **Phase 7: Testing** (Day 7)
+  - Full peaceful path test
+  - Hostile paths test
+  - Edge cases and save/load
+  - Integration with Windmill Bros quest
+
+**Design Document**: `scripts/external/quest-dialogue/sea-monster-quest-design.md`
+
+**Estimated Time**: 5-7 hours across multiple sessions
+
 ## Future: TypeScript Modernization (Phase 2-3)
 
 ### 📅 Phase 2: Typed Instance Classes (LOW PRIORITY)
