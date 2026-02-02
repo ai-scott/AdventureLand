@@ -16,8 +16,9 @@ A dynamic quest featuring a Sea Monster that can be both an NPC (peaceful dialog
 
 - **The Pearl**: "Perle de la Mer" - a rare pearl that gives the Sea Monster its power
 - **The Thief**: Bill (Nick's missing brother) stole it and hid it in a chest above the waterfall
-- **The Choice**: Player can help find it (peaceful) or refuse/steal it (hostile)
+- **The Choice**: Player can help find it (peaceful) or refuse/lie and say they stole it (hostile)
 - **The Reward**: Magic Trident given when pearl is returned
+- **Combat Mechanic**: Sea Monster is **UNBEATABLE** - shoots water balls, player must flee island to survive
 
 ---
 
@@ -28,19 +29,19 @@ Player touches Pink Shell
          ↓
     Sea Monster RISES (animation)
          ↓
-    DIALOGUE: "Do you have my Perle?"
+    DIALOGUE: "Step away from that shell. Did you steal my pearl?"
          ↓
     ┌────────┴────────┐
     ↓                 ↓
-"Yes, I have it!"   "Don't know"/"No"
+"Sure I do. Come try and take it from me!"   "I have no idea what you're talking about."
     ↓                 ↓
-ATTACKS!         "Will you help find it?"
+ATTACKS!         "Someone stole the jewel of the lake, my precious pearl de la mer. Will you help find it?"
                       ↓
                  ┌────┴────┐
                  ↓         ↓
-            "Yes!"      "No!"
-                 ↓         ↓
-          Quest Accepted  ATTACKS!
+            "Yes! I'll help you find it."      "No, I'll never find some funny little pearl."
+                 ↓                                                                                                  ↓
+          "Thank you! Thank you! Once you have it touch the shell and I'll come up and see you." Quest Accepted  ATTACKS!
                  ↓
         SM RETREATS peacefully
                  ↓
@@ -52,7 +53,7 @@ ATTACKS!         "Will you help find it?"
                  ↓
     SM RISES again
                  ↓
-    DIALOGUE: "You found it!"
+    DIALOGUE: "Wow! My pearl! I've been waiting so long for this moment. I found this magical weapon in the depts of the lake. You may have for being so kind to me."
                  ↓
     Receives Magic Trident
                  ↓
@@ -239,6 +240,66 @@ case "custom":
 
 ---
 
+## Combat Mechanics: Forced Retreat Encounter
+
+### Design Philosophy
+
+The Sea Monster combat is a **forced retreat scenario** - the player CANNOT win through combat. This teaches players that:
+- Not all conflicts can be solved with violence
+- Dialogue choices have real consequences
+- Strategic retreat is sometimes necessary
+- Peaceful solutions yield better rewards
+
+### How It Works
+
+**When Sea Monster Attacks:**
+1. **Water Ball Barrage**: SM shoots water balls at player (ranged attack, 2 damage each)
+2. **Player Cannot Retaliate**:
+   - Player's melee weapons cannot reach the SM (range too short)
+   - SM positioned in deep water, unreachable
+   - Player has no ranged weapons at this stage
+3. **Forced Retreat**:
+   - Player takes damage from water balls
+   - Only option is to flee the island
+   - Once player leaves island bounds → SM automatically retreats
+   - Combat ends, SM submerges
+
+**Invincibility Mechanics:**
+- **Health**: 9999 (effectively invincible)
+- **Defense**: 999 (even if player hit it somehow, no damage)
+- **Cannot be killed**: SM is immortal, always retreats instead of dying
+
+**Why This Design:**
+- Creates tension without player death (can always escape)
+- Emphasizes importance of dialogue choices
+- Rewards peaceful approach (get trident) over hostile (combat, no reward)
+- Narrative coherent (ancient powerful lake guardian)
+
+### Player Experience
+
+**Hostile Encounter Flow:**
+```
+Player triggers hostile dialogue
+         ↓
+Dialogue ends, SM begins attacking
+         ↓
+Water balls shoot toward player (can dodge)
+         ↓
+Player realizes they can't fight back
+         ↓
+Player runs toward island edge
+         ↓
+Crosses island boundary
+         ↓
+SM stops attacking, retreats into lake
+         ↓
+Player survives, lesson learned: "Should have helped!"
+```
+
+**Design Insight**: This creates a memorable "oh no!" moment that encourages players to think before choosing aggressive dialogue options.
+
+---
+
 ## Phase 3: Enemy AI Configuration
 
 ### Sea Monster Combat Behavior
@@ -251,10 +312,10 @@ export const SEA_MONSTER_CONFIG: EnemyConfig = {
   displayName: "Sea Monster",
 
   baseStats: {
-    health: 10,
+    health: 9999,  // UNBEATABLE - player cannot win in combat, must flee
     speed: 0,      // Stationary - doesn't move from spawn point
     damage: 2,     // Per water ball projectile
-    defense: 3     // Tough scales
+    defense: 999   // Invincible - player weapons cannot damage it
   },
 
   behaviors: [
@@ -299,9 +360,14 @@ export const SEA_MONSTER_CONFIG: EnemyConfig = {
 
 **Special Considerations**:
 - **Stationary enemy**: Speed = 0, no movement behaviors
-- **Ranged only**: No melee attacks
-- **Retreat on player exit**: Custom logic, not death-based
-- **Quest-aware**: Death might just trigger retreat if quest is active
+- **Ranged only**: No melee attacks, shoots water ball projectiles
+- **UNBEATABLE ENCOUNTER**: Player CANNOT win in combat
+  - Sea Monster has very high health (or is invincible)
+  - Player's weapons cannot reach the Sea Monster (range limitation)
+  - Only way to survive is to flee the island
+  - Forces player to choose peaceful path or retreat
+- **Retreat on player exit**: Custom logic triggers when player leaves island
+- **No loot on defeat**: If SM is somehow killed, no items drop (quest-based reward only)
 
 ---
 
@@ -451,17 +517,19 @@ IsHostile: boolean = false
 State: string = "hidden"
 AIEnabled: boolean = false
 Strength: number = 2
-Health: number = 10
+Health: number = 9999   // INVINCIBLE - player cannot defeat
+MaxHealth: number = 9999
+Defense: number = 999    // Immune to player damage
 ```
 
 **Animations**:
-- `idle` - Peaceful floating
-- `idle-angry` - Agitated state
-- `rise` - Surfacing from water
-- `retreat` - Submerging into water
-- `attack` - Spitting water ball
-- `hurt` - Taking damage
-- `death` - Defeat (if killed in combat)
+- `idle` - Peaceful floating (NPC mode)
+- `idle-angry` - Agitated state (hostile mode, between attacks)
+- `rise` - Surfacing from water (Hidden → NPC transition)
+- `retreat` - Submerging into water (any state → Hidden)
+- `attack` - Spitting water ball (hostile mode, ranged attack animation)
+- `hurt` - Optional, for visual feedback if hit (doesn't actually take damage)
+- ~~`death`~~ - NOT NEEDED (Sea Monster cannot be defeated)
 
 ### 5.2 Trigger_Shell Object
 
@@ -479,20 +547,35 @@ InteractionHint: string = "Check"
 
 ### 5.3 Projectile_WaterBall Object
 
-**Type**: Sprite
+**Type**: Sprite (Projectile)
+
+**Purpose**: Sea Monster's only attack method - shoots water balls at player during hostile mode
 
 **Behaviors**:
-- **Bullet**: Speed set by enemy config (150)
-- **Destroy outside layout**: Yes
+- **Bullet**: Speed = 150 pixels/second
+- **Destroy outside layout**: Yes (cleanup if misses player)
 
 **Properties**:
-- Collision detection with Player
-- Damage: 2 (from enemy config)
-- Visual: Blue water ball sprite with splash on impact
+- **Collision detection**: With Player_Base only
+- **Damage**: 2 per hit (from enemy config)
+- **Visual**: Blue/cyan water ball sprite with splash effect
+- **Spawn rate**: Every 2 seconds (cooldown in enemy config)
+- **Homing**: Aimed toward player position at spawn time (not tracking)
+
+**Combat Behavior**:
+- SM spawns water ball aimed at player's current position
+- Player can dodge by moving (ball doesn't track)
+- On hit: Player takes 2 damage, knockback effect, ball destroys
+- On miss: Ball continues until off-screen, then destroys
 
 **Animation**:
-- `flying` - Water ball in air
-- `splash` - Impact effect (plays on collision, then destroy)
+- `flying` - Water ball traveling through air
+- `splash` - Impact effect (plays on collision with player or ground, then destroy)
+
+**Critical Mechanic**:
+- These are the ONLY way SM damages player
+- Player cannot damage SM in return (forced retreat scenario)
+- Water balls continue until player leaves island
 
 ### 5.4 Items
 
@@ -772,20 +855,33 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 5. Combat begins
 6. Leave island → SM retreats
 
-**Test Case 4: Combat Victory**
-1. Trigger hostile mode
-2. Defeat Sea Monster in combat
-3. SM death or retreat?
-4. Can player still complete quest later?
+**Test Case 4: Combat Survival (Forced Retreat)**
+1. Trigger hostile mode (refuse quest or claim to have pearl)
+2. SM begins shooting water balls at player
+3. Player tries to attack → weapons can't reach SM
+4. Player takes damage, realizes combat is unwinnable
+5. Player runs to edge of island
+6. SM stops attacking and retreats when player crosses boundary
+7. Player survives with reduced health
+8. Verify: SM cannot be defeated, player must flee to survive
+
+**Test Case 5: Multiple Hostile Encounters**
+1. Make SM hostile (refuse quest)
+2. Flee island → SM retreats
+3. Return to shell → Touch shell again
+4. Verify: Does SM remember hostility or reset to peaceful?
+5. Test quest progression still possible or locked
 
 ### Edge Cases
 
 - [ ] Player saves game mid-quest, reloads
 - [ ] Player has pearl but PerleQuest = 0 (cheated/debug)
-- [ ] Sea Monster killed instead of retreating
-- [ ] Player attacks Sea Monster while in NPC mode
+- [ ] Player tries to damage SM (should deal 0 damage, invincible)
+- [ ] Player attacks Sea Monster while in NPC mode (should trigger hostility?)
 - [ ] Multiple shell touches in quick succession
-- [ ] Player leaves and returns to island multiple times
+- [ ] Player leaves and returns to island multiple times during hostile mode
+- [ ] Player stands at island edge (boundary edge case)
+- [ ] Water ball hits player while leaving island (damage still applies?)
 
 ---
 
@@ -845,10 +941,12 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 
 ## Open Questions / Decisions Needed
 
-1. **Sea Monster Death Behavior**:
-   - If player kills SM in combat, can quest still be completed?
-   - Or should SM be invincible (always retreats instead of dying)?
-   - Recommendation: Make invincible, retreat at low health
+1. **Sea Monster Death Behavior**: ✅ DECIDED
+   - **Sea Monster is INVINCIBLE** - cannot be killed by player
+   - Health: 9999, Defense: 999 (immune to all player damage)
+   - Player weapons cannot reach SM (positioned in deep water)
+   - Only resolution is forced retreat when player leaves island
+   - This is a narrative/gameplay design choice (not a balance issue)
 
 2. **Multiple Encounters**:
    - If player refuses quest, can they change their mind later?
