@@ -508,47 +508,78 @@ Actions:
 
 ## Phase 5: C3 Object Setup
 
-### 5.1 En_Sea_Monster Object
+### 5.1 En_Sea_Monster_Base Object
 
 **Properties**:
 - **Object Type**: Sprite
+- **Family**: EnemyBases (inherits standard enemy instance variables)
 - **Behaviors**:
-  - ~~8Direction~~ (Remove - stationary)
-  - ~~Bullet~~ (Remove - doesn't move)
-  - Solid (enabled only when hostile)
-- **Collision**: Optional, enabled/disabled via events
+  - 8Direction (inherited from EnemyBases)
+    - Set Max Speed: 0 (stationary, doesn't move)
+    - Set Acceleration: 0
+    - Set Deceleration: 0
+  - Solid (optional, enabled only when hostile)
 
-**Instance Variables**:
+**Inherited Instance Variables (from EnemyBases family)**:
 ```
-IsHostile: boolean = false
-State: string = "hidden"
-AIEnabled: boolean = false
-Strength: number = 2
-Health: number = 9999   // INVINCIBLE - player cannot defeat
-MaxHealth: number = 9999
-Defense: number = 999    // Immune to player damage
+Health: number (inherited)
+Strength: number (inherited)
+State: string (inherited)
+Hurt: boolean (inherited)
+Knockback_Timer: number (inherited)
+CanBeKnockedBack: boolean (inherited)
+Direction: number (inherited)
+Player_AngleDiff: number (inherited)
+Default_MaxSpeed: number (inherited)
+Default_Acceleration: number (inherited)
+Default_Deceleration: number (inherited)
+Pair_ID: number (inherited)
+State_Timer: number (inherited)
 ```
 
-**Animations & Visual Effects**:
+**Additional Instance Variables (Sea Monster specific)**:
+```
+IsHostile: boolean = false      // Quest-specific: Is SM in enemy mode?
+AIEnabled: boolean = false      // Quest-specific: Should enemy AI process?
+Defense: number = 999           // If not inherited, add for invincibility
+```
+
+**Setup**:
+- Add En_Sea_Monster_Base to EnemyBases family
+- Set Health default: 9999 (invincible)
+- Set Strength default: 2
+- Configure 8Direction with speed = 0 (stationary)
+
+### 5.2 En_Sea_Monster_Mask Object
+
+**Properties**:
+- **Object Type**: Sprite (visual representation)
+- **Paired with**: En_Sea_Monster_Base (via Container or positioning)
+- **Purpose**: Display docile and hostile animations
+
+**Animations** (Frame-based or animation-based):
 
 **Docile SM (NPC mode)**:
-- `rise` - Surfacing through mask with randomized animated water effect (1s)
 - `idle` - Peaceful floating while in dialogue
-- `retreat` - Submerging through mask with water effect (1s, reverse of rise)
+- `rise` - Surfacing through water with mask/particle effect (1s)
+- `retreat` - Submerging through water (1s)
 
 **Hostile SM (Enemy mode)**:
-- Sprite swap to hostile version when transitioning to attack mode
 - `idle-angry` - Agitated floating between attacks
-- `attack` - Spitting water ball animation (triggers projectile spawn)
-- `hurt` - Optional visual feedback (doesn't actually take damage)
-- ~~`death`~~ - NOT NEEDED (invincible, always retreats)
+- `attack` - Spitting water ball animation
+- `hurt` - Optional visual feedback (plays but no actual damage)
+- ~~`death`~~ - NOT NEEDED (invincible)
 
-**Implementation Note**:
-- Use two separate sprites or animation frames for docile vs hostile
-- Swap between them during state transitions
-- Water mask effect uses particle system or animated sprite overlay
+**Implementation**:
+- Use animation frames or separate animations for docile vs hostile
+- Event sheet swaps animation when makeHostile() is called
+- Base/Mask pattern same as other enemies (Crab, Ooze, Bat)
 
-### 5.2 Trigger_Shell Object
+**Visual Effects**:
+- Water mask/particles for rise/retreat animations
+- Swap to hostile sprite frame when transitioning to attack mode
+
+### 5.3 Trigger_Shell Object
 
 **Type**: Sprite (invisible collision box or pink shell visual)
 
@@ -562,7 +593,7 @@ InteractionHint: string = "Check"
 
 **Location**: Center of small island (based on screenshot)
 
-### 5.3 Projectile_WaterBall Object
+### 5.4 Projectile_WaterBall Object
 
 **Type**: Sprite (Projectile)
 
@@ -594,7 +625,7 @@ InteractionHint: string = "Check"
 - Player cannot damage SM in return (forced retreat scenario)
 - Water balls continue until player leaves island
 
-### 5.4 Items
+### 5.5 Items
 
 #### Perle de la Mer (ID: 99)
 - **Type**: Quest Item

@@ -65,8 +65,8 @@ export class SeaMonsterController {
         return;
       }
 
-      // Spawn Sea Monster near the shell
-      const seaMonster = runtime.objects.En_Sea_Monster.createInstance(
+      // Spawn Sea Monster Base near the shell
+      const seaMonster = runtime.objects.En_Sea_Monster_Base.createInstance(
         layer.index,
         shellX,
         shellY - 50 // Spawn slightly below shell in water
@@ -80,7 +80,11 @@ export class SeaMonsterController {
       seaMonster.instVars.State = SeaMonsterState.Rising;
       seaMonster.instVars.AIEnabled = false;
       seaMonster.instVars.Health = 9999; // Invincible
-      seaMonster.instVars.Defense = 999; // Immune to damage
+
+      // Set Defense if it exists, otherwise SM is just invincible via high health
+      if (seaMonster.instVars.Defense !== undefined) {
+        seaMonster.instVars.Defense = 999;
+      }
 
       // Disable enemy behaviors initially
       this.setEnemyBehaviors(seaMonster, false);
@@ -307,7 +311,7 @@ export class SeaMonsterController {
   private static getSeaMonster(): any {
     if (!this.runtime || this.seaMonsterUID === -1) return null;
 
-    const instances = this.runtime.objects.En_Sea_Monster?.getAllInstances() || [];
+    const instances = this.runtime.objects.En_Sea_Monster_Base?.getAllInstances() || [];
     const sm = instances.find((inst: any) => inst.uid === this.seaMonsterUID);
 
     if (!sm) {
