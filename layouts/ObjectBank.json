@@ -6021,6 +6021,183 @@
 						"angle": 0,
 						"zElevation": 0
 					}
+				},
+				{
+					"type": "En_Sea_Monster_Base",
+					"properties": {
+						"initially-visible": false,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 281,
+					"sid": 318967703252292,
+					"tags": "",
+					"instanceVariables": {
+						"Health": 9999,
+						"Strength": 3,
+						"Pair_ID": 0,
+						"Direction": "",
+						"Player_AngleDiff": 0,
+						"Knockback_Timer": 0,
+						"Default_MaxSpeed": 40,
+						"Default_Acceleration": 20,
+						"Default_Deceleration": 100,
+						"Hurt": false,
+						"CanBeKnockedBack": true,
+						"State": "\"hidden\"",
+						"State_Timer": 0,
+						"IsHostile": false,
+						"AIEnabled": false
+					},
+					"behaviors": {
+						"8Direction": {
+							"properties": {
+								"max-speed": 0,
+								"acceleration": 0,
+								"deceleration": 0,
+								"directions": "dir-8",
+								"set-angle": "no",
+								"allow-sliding": false,
+								"default-controls": false,
+								"enabled": true
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 318967703252292,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 723.7555651335224,
+						"y": -94.27432785623537,
+						"width": 48,
+						"height": 48,
+						"originX": 0.5,
+						"originY": 0.791667,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "En_Sea_Monster_Mask",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "idle",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 282,
+					"sid": 222913393615181,
+					"tags": "",
+					"instanceVariables": {
+						"Hurt_FX": 0,
+						"Active": false,
+						"DontActivate": false,
+						"Pair_ID": 0
+					},
+					"behaviors": {
+						"Flash": {
+							"properties": {}
+						},
+						"Tween": {
+							"properties": {
+								"enabled": true
+							}
+						}
+					},
+					"effects": {
+						"Brightness": {
+							"isEnabled": true,
+							"parameters": {
+								"brightness": 1
+							}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 222913393615181,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 727.6013592920915,
+						"y": -137.10940898678447,
+						"width": 160,
+						"height": 128,
+						"originX": 0.50625,
+						"originY": 0.703125,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
+				},
+				{
+					"type": "Projectile_WaterBall",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "flying",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 286,
+					"sid": 551640680192222,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {
+						"Bullet": {
+							"properties": {
+								"speed": 150,
+								"acceleration": 0,
+								"gravity": 0,
+								"bounce-off-solids": false,
+								"set-angle": false,
+								"step": false,
+								"enabled": true
+							}
+						},
+						"DestroyOutsideLayout": {
+							"properties": {}
+						}
+					},
+					"instanceFolderItem": {
+						"sid": 551640680192222,
+						"expanded": true
+					},
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 611.5340576171875,
+						"y": -109.78076171875,
+						"width": 49,
+						"height": 19,
+						"originX": 0.20408163265306123,
+						"originY": 0.47368421052631576,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"angle": 0,
+						"zElevation": 0
+					}
 				}
 			],
 			"sid": 381827460024951,

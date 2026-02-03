@@ -245,11 +245,11 @@ export class DialogueController {
 
   /**
    * Handle Escape key during dialogue
-   * Cancels dialogue
+   * DISABLED - ESC key no longer cancels dialogue to prevent accidental interruptions
    */
   private static handleEscape(): void {
-    console.log('❌ [DialogueController] Escape pressed - cancelling dialogue');
-    this.end();
+    console.log('⚠️ [DialogueController] Escape pressed - ignoring (ESC disabled during dialogue)');
+    // this.end(); // DISABLED - no longer cancel dialogue on ESC
   }
 
   /**

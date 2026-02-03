@@ -63,9 +63,118 @@
 						"      dialogue.spawnUniqueItemsForWorld(runtime, \"World10\");",
 						"    }"
 					]
+				},
+				{
+					"id": "set-position",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 648540115617992,
+					"parameters": {
+						"x": "560",
+						"y": "320"
+					}
 				}
 			],
 			"sid": 112346424380294
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "compare-instance-variable",
+					"objectClass": "En_Sea_Monster_Base",
+					"sid": 817557274499225,
+					"parameters": {
+						"instance-variable": "State",
+						"comparison": 0,
+						"value": "\"rising\""
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "set-tweens-time",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 942842520854554,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"rising\"",
+						"time": "3"
+					}
+				},
+				{
+					"id": "set-tweens-ease",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 769969410281727,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"rising\"",
+						"ease": "easeoutsine"
+					}
+				},
+				{
+					"id": "set-one-property-tweens-end-value",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 801874047943117,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"rising\"",
+						"property": "offsetY",
+						"end-value": "224"
+					}
+				}
+			],
+			"sid": 739869450316810,
+			"disabled": true
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "compare-instance-variable",
+					"objectClass": "En_Sea_Monster_Base",
+					"sid": 675032021605532,
+					"parameters": {
+						"instance-variable": "State",
+						"comparison": 0,
+						"value": "\"retreating\""
+					}
+				}
+			],
+			"actions": [
+				{
+					"id": "set-tweens-time",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 405126633864243,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"retreating\"",
+						"time": "3"
+					}
+				},
+				{
+					"id": "set-tweens-ease",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 505855495919293,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"retreating\"",
+						"ease": "easeinsine"
+					}
+				},
+				{
+					"id": "set-one-property-tweens-end-value",
+					"objectClass": "En_Sea_Monster_Mask",
+					"sid": 145765198536967,
+					"behaviorType": "Tween",
+					"parameters": {
+						"tags": "\"retreating\"",
+						"property": "offsetY",
+						"end-value": "320"
+					}
+				}
+			],
+			"sid": 645391961971046,
+			"disabled": true
 		}
 	],
 	"sid": 807459101232190

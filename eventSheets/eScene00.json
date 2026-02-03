@@ -245,25 +245,6 @@
 						{
 							"id": "compare-value",
 							"objectClass": "Dict_SaveGameData",
-							"sid": 186535547217932,
-							"parameters": {
-								"key": "\"rescue_cat_quest\"",
-								"comparison": 0,
-								"value": "\"Start_Cat_Quest\" "
-							}
-						}
-					],
-					"actions": [],
-					"sid": 236906520672814,
-					"disabled": true,
-					"isOrBlock": true
-				},
-				{
-					"eventType": "block",
-					"conditions": [
-						{
-							"id": "compare-value",
-							"objectClass": "Dict_SaveGameData",
 							"sid": 425505533231219,
 							"parameters": {
 								"key": "\"Waterfall_BillQuest\"",

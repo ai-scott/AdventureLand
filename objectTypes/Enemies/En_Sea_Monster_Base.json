@@ -1,0 +1,67 @@
+{
+	"name": "En_Sea_Monster_Base",
+	"plugin-id": "Sprite",
+	"sid": 447779751154502,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [
+		{
+			"name": "IsHostile",
+			"type": "boolean",
+			"desc": "Whether SM is in enemy mode",
+			"show": true,
+			"sid": 389434111787960
+		},
+		{
+			"name": "AIEnabled",
+			"type": "boolean",
+			"desc": "Whether enemy AI should be in control of SM",
+			"show": true,
+			"sid": 539250924796387
+		}
+	],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 48,
+						"height": 48,
+						"originX": 0.5,
+						"originY": 0.791667,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 2204924,
+						"collisionPoly": {
+							"points": [
+								0.25,
+								0.708333,
+								0.729167,
+								0.708333,
+								0.729167,
+								0.875,
+								0.25,
+								0.875
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 540661042353091,
+				"name": "Default",
+				"isLooping": true,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 7
+			}
+		],
+		"subfolders": []
+	}
+}

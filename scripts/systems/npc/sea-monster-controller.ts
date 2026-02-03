@@ -44,36 +44,36 @@ export class SeaMonsterController {
    * Called when player interacts with the pink shell
    *
    * @param runtime - C3 runtime instance
-   * @param shellX - X position of shell (for spawn location)
-   * @param shellY - Y position of shell (for spawn location)
+   * @param spawnX - X position for Sea Monster spawn (fixed: 560)
+   * @param spawnY - Y position for Sea Monster spawn (fixed: 320 - underwater)
    */
-  static summonSeaMonster(runtime: any, shellX: number, shellY: number): void {
+  static summonSeaMonster(runtime: any, spawnX: number, spawnY: number): void {
     if (this.currentState !== SeaMonsterState.Hidden) {
       console.log("⚠️ Sea Monster already present, state:", this.currentState);
       return;
     }
 
-    console.log("🌊 Summoning Sea Monster at:", shellX, shellY);
+    console.log("🌊 Summoning Sea Monster at:", spawnX, spawnY);
     this.runtime = runtime;
     this.currentState = SeaMonsterState.Rising;
 
     try {
-      // Get the Objects layer
-      const layer = runtime.layout.getLayer("Objects");
-      if (!layer) {
-        console.error("❌ Objects layer not found!");
+      // Get the Sea Monster layer (required for MaskRectangle to work)
+      const seaMonsterLayer = runtime.layout.getLayer("Sea Monster");
+      if (!seaMonsterLayer) {
+        console.error("❌ Sea Monster layer not found!");
         return;
       }
 
-      // Spawn Sea Monster Base near the shell
+      // Spawn Sea Monster Base at fixed spawn location (underwater, will rise up)
       const seaMonster = runtime.objects.En_Sea_Monster_Base.createInstance(
-        layer.index,
-        shellX,
-        shellY - 50 // Spawn slightly below shell in water
+        seaMonsterLayer.index,
+        spawnX,
+        spawnY
       );
 
       this.seaMonsterUID = seaMonster.uid;
-      console.log("✅ Sea Monster spawned, UID:", this.seaMonsterUID);
+      console.log("✅ Sea Monster Base spawned at:", spawnX, spawnY, "UID:", this.seaMonsterUID);
 
       // Set initial state variables
       seaMonster.instVars.IsHostile = false;
@@ -89,9 +89,62 @@ export class SeaMonsterController {
       // Disable enemy behaviors initially
       this.setEnemyBehaviors(seaMonster, false);
 
-      // TODO: Play rise animation with water effect
-      // For now, just set to visible and play idle
-      seaMonster.isVisible = true;
+      // Spawn Sea Monster Mask at same position on Sea Monster layer (for MaskRectangle)
+      const seaMonsterMask = runtime.objects.En_Sea_Monster_Mask.createInstance(
+        seaMonsterLayer.index,
+        spawnX,
+        spawnY
+      );
+      console.log("✅ Sea Monster Mask spawned at:", spawnX, spawnY);
+
+      // Only Mask is visible (Base is hidden, just used for collision/state tracking)
+      seaMonster.isVisible = false;
+      seaMonsterMask.isVisible = true;
+
+      // CRITICAL: Progressive reveal masking with destination-in
+      // MaskRectangle defines the "above water" visible area
+      // Sea Monster progressively appears as it rises into this area
+      //
+      // Render order for destination-in:
+      // 1. MaskRectangle (destination) - renders FIRST, provides alpha channel
+      // 2. SeaMonsterMask (source with blend mode) - renders SECOND, only shows where destination has alpha
+
+      const maskRect = runtime.objects.MaskRectangle?.getFirstInstance();
+      if (maskRect) {
+        // MaskRectangle must render first (be at top of Z-order)
+        maskRect.moveToTop();
+
+
+        console.log("✅ MaskRectangle found at:", maskRect.x, maskRect.y);
+        console.log("📐 MaskRectangle size:", maskRect.width, "x", maskRect.height);
+        console.log("📏 MaskRectangle coverage: Y=" + (maskRect.y - maskRect.height / 2) + " to Y=" + (maskRect.y + maskRect.height / 2));
+        console.log("💡 MaskRectangle visible - change color in C3 to match water (blue/teal) to hide it");
+      } else {
+        console.warn("⚠️ MaskRectangle not found on Sea Monster layer!");
+      }
+
+      // Sea Monster uses "normal" to show SM pixels only where MaskRectangle has alpha
+      // This should show the colored Sea Monster sprite, not the white rectangle
+      seaMonsterMask.blendMode = "normal";
+      seaMonsterMask.opacity = 1;
+      seaMonsterMask.moveToBottom();
+
+      console.log("🎨 Sea Monster set to source-atop blend mode - will show SM colors where MaskRectangle provides alpha");
+
+      // Set Mask to idle animation (docile state)
+      seaMonsterMask.setAnimation("idle");
+      console.log("🐉 Set Sea Monster Mask to 'idle' animation");
+
+      // Trigger rise animation immediately (tween Mask from Y=320 to Y=224 over 3 seconds)
+      // The progressive reveal happens naturally as SM rises into the MaskRectangle area
+      const maskBehaviors = seaMonsterMask.behaviors;
+      if (maskBehaviors && maskBehaviors.Tween) {
+        // Only tween Y-position - no opacity changes
+        maskBehaviors.Tween.startTween("y", 224, 3, "out-sine", { tags: "rising" });
+        console.log("🌊 Started rise animation - Mask will progressively reveal from Y=" + seaMonsterMask.y + " to Y=224");
+      } else {
+        console.warn("⚠️ Tween behavior not found on Sea Monster Mask!");
+      }
 
       // After rise animation completes, transition to NPC mode
       // Using setTimeout for now - could use C3 signals for animation events
@@ -104,7 +157,7 @@ export class SeaMonsterController {
             console.log("🐉 Sea Monster ready for dialogue (NPC mode)");
           }
         }
-      }, 1000); // 1 second for rise animation
+      }, 3000); // 3 seconds to match tween duration
 
     } catch (error) {
       console.error("❌ Error summoning Sea Monster:", error);
@@ -140,8 +193,16 @@ export class SeaMonsterController {
     // Enable enemy behaviors (collision, AI processing)
     this.setEnemyBehaviors(seaMonster, true);
 
-    // TODO: Swap to hostile sprite/animation
-    // TODO: Play hostile transformation effect
+    // Switch to hostile animation (attack-tagged frames)
+    // Get mask directly from runtime since there's only one instance
+    const allMasks = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
+    if (allMasks.length > 0) {
+      const mask = allMasks[0]; // Only one Sea Monster in the world
+      mask.setAnimation("attack");
+      console.log("😡 Switched Sea Monster Mask to 'attack' animation");
+    } else {
+      console.warn("⚠️ Could not find Sea Monster Mask to switch animation");
+    }
 
     console.log("🔥 Sea Monster is now hostile and will attack!");
   }
@@ -154,14 +215,8 @@ export class SeaMonsterController {
     console.log("🤝 Player accepted Sea Monster quest");
     this.hasPlayerPromisedToHelp = true;
 
-    // Save quest status to Dict_SaveGameData
-    if (this.runtime) {
-      const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
-      if (dict) {
-        dict.setDataMap(dict.getDataMap().set("PearlQuest", 20));
-        console.log("✅ PearlQuest set to 20 (quest accepted)");
-      }
-    }
+    // NOTE: Quest status is already set by dialogue action (set_quest_status)
+    // No need to manually update Dict_SaveGameData here
 
     // Sea Monster will retreat peacefully
     this.retreat("peaceful");
@@ -190,17 +245,48 @@ export class SeaMonsterController {
     seaMonster.instVars.AIEnabled = false;
     seaMonster.instVars.IsHostile = false;
 
-    // TODO: Play retreat animation (submerge with water effect)
+    // Trigger retreat animation (tween Mask back to Y=320 over 3 seconds)
+    // Get mask directly since there's only one instance
+    const allMasks = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
+    console.log(`🔍 Retreat: Found ${allMasks.length} Sea Monster Mask instances`);
+
+    if (allMasks.length > 0) {
+      const mask = allMasks[0];
+      console.log(`🔍 Mask found at Y=${mask.y}, has Tween: ${!!(mask.behaviors && mask.behaviors.Tween)}`);
+
+      if (mask.behaviors && mask.behaviors.Tween) {
+        // Only tween Y position back down to 320 (underwater)
+        // Progressive hide happens naturally as SM sinks below the MaskRectangle area
+        mask.behaviors.Tween.startTween("y", 320, 3, "in-sine", { tags: "retreating" });
+        console.log("🌊 Started retreat animation - Mask will progressively hide from Y=" + mask.y + " to Y=320");
+      } else {
+        console.warn("⚠️ Mask found but no Tween behavior!");
+      }
+    } else {
+      console.warn("⚠️ No Sea Monster Mask found for retreat animation");
+    }
 
     // After retreat animation, destroy and reset
     setTimeout(() => {
+      // Destroy Base
       if (seaMonster && !seaMonster.isDestroyed) {
         seaMonster.destroy();
+        console.log("🗑️ Destroyed Sea Monster Base");
       }
+
+      // Destroy all Mask instances directly
+      const masksToDestroy = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
+      console.log(`🗑️ Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
+      masksToDestroy.forEach((mask: any) => {
+        if (!mask.isDestroyed) {
+          mask.destroy();
+        }
+      });
+
       this.currentState = SeaMonsterState.Hidden;
       this.seaMonsterUID = -1;
-      console.log("🌊 Sea Monster has submerged");
-    }, 1000); // 1 second for retreat animation
+      console.log("🌊 Sea Monster has submerged and been destroyed");
+    }, 3000); // 3 seconds for retreat animation
   }
 
   /**
@@ -212,12 +298,8 @@ export class SeaMonsterController {
   static completeQuest(runtime: any): void {
     console.log("🎁 Pearl Quest COMPLETE!");
 
-    // Mark quest as complete
-    const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
-    if (dict) {
-      dict.setDataMap(dict.getDataMap().set("PearlQuest", 30));
-      console.log("✅ PearlQuest set to 30 (complete)");
-    }
+    // NOTE: Quest status is already set by dialogue action (set_quest_status)
+    // No need to manually update Dict_SaveGameData here
 
     // Reset hostility (player redeemed themselves)
     this.isHostilePermanently = false;
@@ -306,7 +388,7 @@ export class SeaMonsterController {
   // ============================================================================
 
   /**
-   * Gets the Sea Monster instance from C3 runtime
+   * Gets the Sea Monster Base instance from C3 runtime
    */
   private static getSeaMonster(): any {
     if (!this.runtime || this.seaMonsterUID === -1) return null;
@@ -320,6 +402,27 @@ export class SeaMonsterController {
     }
 
     return sm;
+  }
+
+  /**
+   * Gets the Sea Monster Mask instance from C3 runtime
+   */
+  private static getSeaMonsterMask(): any {
+    if (!this.runtime) return null;
+
+    // Get all Mask instances and find the one at the same position as Base
+    const base = this.getSeaMonster();
+    if (!base) return null;
+
+    const masks = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
+    // Find mask closest to base (should be at same position due to every-tick sync)
+    const mask = masks.find((inst: any) => {
+      const dx = Math.abs(inst.x - base.x);
+      const dy = Math.abs(inst.y - base.y);
+      return dx < 5 && dy < 5; // Within 5 pixels
+    });
+
+    return mask || null;
   }
 
   /**

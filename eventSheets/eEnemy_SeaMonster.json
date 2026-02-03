@@ -1,0 +1,28 @@
+{
+	"name": "eEnemy_SeaMonster",
+	"events": [
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "every-tick",
+					"objectClass": "System",
+					"sid": 584821830914831
+				}
+			],
+			"actions": [
+				{
+					"id": "set-position",
+					"objectClass": "En_Sea_Monster_Base",
+					"sid": 880103238653773,
+					"parameters": {
+						"x": "En_Sea_Monster_Mask.X",
+						"y": "En_Sea_Monster_Mask.Y"
+					}
+				}
+			],
+			"sid": 293357636917741
+		}
+	],
+	"sid": 425975541369349
+}

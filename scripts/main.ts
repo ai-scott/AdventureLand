@@ -69,6 +69,7 @@ import { ForestSignDialogue } from "./external/quest-dialogue/forestsign-dialogu
 // World10 dialogue files (The Bottomless Lake)
 import { SeaMonsterKeyDialogue } from "./external/quest-dialogue/seamonsterkey-dialogue.js";
 import { LakeSignDialogue } from "./external/quest-dialogue/lakesign-dialogue.js";
+import { SeaMonsterDialogue } from "./external/quest-dialogue/sea-monster-dialogue.js";
 
 // BATTLE DEBUG UTILITIES
 //import "./utils/battle-debug.js";
@@ -690,7 +691,8 @@ runOnStartup(async runtime => {
       // Load World10 dialogues (The Bottomless Lake)
       QuestDialogue.DialogueManager.loadNPCDialogue(SeaMonsterKeyDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(LakeSignDialogue);
-      console.log("✅ World10 dialogues loaded (2 NPCs)!");
+      QuestDialogue.DialogueManager.loadNPCDialogue(SeaMonsterDialogue);
+      console.log("✅ World10 dialogues loaded (3 NPCs)!");
 
       // Set up dialogue system namespace
       (globalThis as any).AdventureLand.Dialogue = {

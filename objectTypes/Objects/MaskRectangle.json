@@ -1,0 +1,52 @@
+{
+	"name": "MaskRectangle",
+	"plugin-id": "Sprite",
+	"sid": 286577720074800,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 134,
+						"height": 270,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8683618,
+						"collisionPoly": {
+							"points": [
+								0.007462686567164179,
+								0.14814814814814814,
+								1,
+								0.14814814814814814,
+								1,
+								0.5962962962962963,
+								0.007462686567164179,
+								0.5962962962962963
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 193810575485459,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

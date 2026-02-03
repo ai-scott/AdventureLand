@@ -280,6 +280,36 @@
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": "AL"
+					},
+					{
+						"width": 420,
+						"height": 130,
+						"originX": 0,
+						"originY": 0,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 9891097,
+						"collisionPoly": {
+							"points": [
+								0.11666666666666667,
+								0.07692307692307693,
+								0.13095238095238096,
+								0.12307692307692308,
+								0.1261904761904762,
+								0.4153846153846154,
+								0.06190476190476191,
+								0.49230769230769234,
+								0.011904761904761904,
+								0.3,
+								0.02142857142857143,
+								0.2230769230769231
+							]
+						},
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": "SeaMonster"
 					}
 				],
 				"sid": 824608184242087,

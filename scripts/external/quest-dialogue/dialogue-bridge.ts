@@ -109,13 +109,19 @@ export class DialogueBridge {
       runtime.globalVars.enhanced_dialogue_text = node.text;
       runtime.globalVars.use_enhanced_dialogue = true;
 
-      // Call displayDialogue to show UI
-      runtime.callFunction("displayDialogue");
-
       // Execute any auto-actions (actions without requiring a response)
       if (node.actions) {
         console.log(`⚙️ [START] Executing ${node.actions.length} actions for node ${node.id}`);
         this.executeActions(node.actions, runtime);
+      }
+
+      // Call appropriate UI function based on whether options should be shown
+      if (runtime.globalVars.OptionsOpen) {
+        console.log(`📋 [START] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
+        runtime.callFunction("displayUserOptions");
+      } else {
+        console.log(`📢 [START] Calling displayDialogue() - no options`);
+        runtime.callFunction("displayDialogue");
       }
 
       // Don't auto-advance - wait for player input (space/click)
@@ -654,6 +660,60 @@ export class DialogueBridge {
               console.log(`[Dialogue] Triggered spawn for unique item: ${action.itemName}`);
             } else {
               console.error(`❌ [Dialogue] spawnSpecificItem not found`);
+            }
+          }
+          break;
+
+        case 'summon_sea_monster':
+          // Summon Sea Monster at fixed spawn location (not at shell position)
+          {
+            const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+            if (smController) {
+              // Sea Monster spawns at fixed position in the lake (560, 320)
+              smController.summonSeaMonster(runtime, 560, 320);
+              console.log(`[Dialogue] ✅ Sea Monster summoned at lake spawn point`);
+            } else {
+              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+            }
+          }
+          break;
+
+        case 'make_sea_monster_hostile':
+          // Transition Sea Monster to hostile enemy mode
+          {
+            const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+            if (smController) {
+              const reason = (action as any).reason || 'dialogue_choice';
+              smController.makeHostile(reason);
+              console.log(`[Dialogue] ✅ Sea Monster is now hostile: ${reason}`);
+            } else {
+              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+            }
+          }
+          break;
+
+        case 'sea_monster_accept_quest':
+          // Player accepted quest, Sea Monster retreats peacefully
+          {
+            const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+            if (smController) {
+              smController.acceptQuest();
+              console.log(`[Dialogue] ✅ Pearl Quest accepted, Sea Monster retreating`);
+            } else {
+              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+            }
+          }
+          break;
+
+        case 'sea_monster_quest_complete':
+          // Quest completed, Sea Monster gives reward and retreats
+          {
+            const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+            if (smController) {
+              smController.completeQuest(runtime);
+              console.log(`[Dialogue] ✅ Pearl Quest complete, Sea Monster retreating`);
+            } else {
+              console.error(`❌ [Dialogue] SeaMonsterController not found`);
             }
           }
           break;

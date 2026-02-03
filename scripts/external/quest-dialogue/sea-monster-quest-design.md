@@ -54,7 +54,7 @@ ATTACKS!         "Someone stole the jewel of the lake, my precious pearl de la m
                  ↓
     SM RISES again
                  ↓
-    DIALOGUE: "Wow! My pearl! I've been waiting so long for this moment. I found this magical weapon in the depts of the lake. You may have for being so kind to me."
+    DIALOGUE: "Wow! My pearl! I've been waiting so long for this moment. I found this magical weapon in the depts of the lake. You may have it for being so kind to me."
                  ↓
     Receives Magic Trident
                  ↓

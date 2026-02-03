@@ -218,6 +218,13 @@
 		},
 		{
 			"type": "behavior",
+			"id": "destroy",
+			"name": "Destroy outside layout",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
 			"id": "solid",
 			"name": "Solid",
 			"author": "Scirra",
@@ -419,7 +426,9 @@
 					"Destructible",
 					"Trigger_Function",
 					"Ramp",
-					"Bat_Tree_Marker"
+					"Bat_Tree_Marker",
+					"PinkShell",
+					"MaskRectangle"
 				],
 				"subfolders": [],
 				"name": "Objects"
@@ -501,7 +510,8 @@
 					"Lava_Warp",
 					"Light",
 					"Particle",
-					"Glimmer"
+					"Glimmer",
+					"Projectile_WaterBall"
 				],
 				"subfolders": [],
 				"name": "FX"
@@ -544,7 +554,8 @@
 					"En_Bat_Mask",
 					"En_Bat_Base",
 					"En_Shadow",
-					"En_Sea_Monster"
+					"En_Sea_Monster_Mask",
+					"En_Sea_Monster_Base"
 				],
 				"subfolders": [],
 				"name": "Enemies"
@@ -681,7 +692,8 @@
 			"eEnemies",
 			"eEnemy_Ooze",
 			"eEnemy_Crab",
-			"eEnemy_Bat"
+			"eEnemy_Bat",
+			"eEnemy_SeaMonster"
 		],
 		"subfolders": []
 	},
@@ -1048,6 +1060,20 @@
 							],
 							"subfolders": [],
 							"name": "dialogue"
+						},
+						{
+							"items": [
+								{
+									"name": "sea-monster-controller.ts",
+									"type": "application/typescript",
+									"sid": 279759797685748,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "npc"
 						}
 					],
 					"name": "systems"
@@ -1218,6 +1244,14 @@
 									"name": "pete-dialogue.ts",
 									"type": "application/typescript",
 									"sid": 574907748613707,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "sea-monster-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 610292859588627,
 									"script-info": {
 										"purpose": "none"
 									}

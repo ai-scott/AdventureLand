@@ -31,7 +31,7 @@ export interface DialogueCondition {
   questId?: string;                     // Which quest to check
   status?: string;                      // Quest status to match ("Not_Started", "Active", "Completed")
   step?: number;                        // Quest step to match (from :000 format)
-  itemId?: string;                      // Item to check for
+  itemId?: string;                      // Item name/ID to check for
   quantity?: number;                    // How many items needed
   flagKey?: string;                     // World flag to check
   flagValue?: any;                      // Flag value to match
@@ -42,6 +42,7 @@ export interface DialogueCondition {
   questCount?: number;                  // Number of active quests (for multiple_quests type)
   customCheck?: (playerState: PlayerState) => boolean; // Custom condition function
   negate?: boolean;                     // If true, condition is inverted (NOT)
+  inverted?: boolean;                   // Alias for negate (used in some dialogue files)
 }
 
 export interface DialogueResponse {
@@ -53,10 +54,10 @@ export interface DialogueResponse {
 }
 
 export interface DialogueAction {
-  type: 'start_quest' | 'complete_quest' | 'set_quest_status' | 'give_item' | 'remove_item' | 'take_item' | 'set_flag' | 'set_world_flag' | 'set_npc_memory' | 'deploy_npc' | 'play_sound' | 'teleport_player' | 'input' | 'custom' | 'spawn_unique_item';
+  type: 'start_quest' | 'complete_quest' | 'set_quest_status' | 'give_item' | 'remove_item' | 'take_item' | 'set_flag' | 'set_world_flag' | 'set_npc_memory' | 'deploy_npc' | 'play_sound' | 'teleport_player' | 'input' | 'custom' | 'spawn_unique_item' | 'summon_sea_monster' | 'make_sea_monster_hostile' | 'sea_monster_accept_quest' | 'sea_monster_quest_complete';
   questId?: string;                     // Quest to start/complete/update
   status?: string;                      // Quest status to set (for set_quest_status)
-  itemId?: string;                      // Item to give/take/remove
+  itemId?: string;                      // Item name/ID to give/take/remove
   itemName?: string;                    // Item name for spawn_unique_item action
   quantity?: number;                    // How many items
   destroyTrigger?: boolean;             // If true, destroy the trigger object after giving item
@@ -74,6 +75,7 @@ export interface DialogueAction {
   customFunction?: string;              // Custom function to call
   customAction?: (playerState: PlayerState) => void; // Custom action function
   parameters?: Record<string, any>;     // Parameters for custom function
+  reason?: string;                      // Reason for sea monster hostility (for make_sea_monster_hostile)
 }
 
 // NPC dialogue collection
