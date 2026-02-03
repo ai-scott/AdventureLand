@@ -614,6 +614,83 @@ Create multiple quest paths with different outcomes:
 // Different dialogue trees based on player choice
 ```
 
+### Custom Dialogue Actions Calling Controller Methods
+
+For advanced NPCs that need state management (like hybrid NPC/Enemy behavior), you can create custom dialogue actions that call TypeScript controller methods.
+
+**Example: Sea Monster Controller Integration**
+
+The Sea Monster uses custom dialogue actions to control its state transitions:
+
+```typescript
+// In sea-monster-dialogue.ts
+{
+  id: "greeting",
+  speaker: "SeaMonster",
+  text: "Step away from that shell. Did you steal my pearl?",
+  actions: [
+    {
+      type: "summon_sea_monster"  // Custom action
+    },
+    {
+      type: "set_quest_status",
+      questId: "pearl_quest",
+      status: "Met_Sea_Monster"
+    }
+  ],
+  autoAdvance: "greeting_response"
+}
+
+// Making the Sea Monster hostile
+{
+  id: "player_taunts",
+  speaker: "SeaMonster",
+  text: "GIVE ME MY PEARL OR FACE MY WRATH!",
+  endsDialogue: true,
+  actions: [
+    {
+      type: "make_sea_monster_hostile",
+      reason: "player_taunted"
+    }
+  ]
+}
+```
+
+**Registering Custom Actions in dialogue-bridge.ts:**
+
+```typescript
+// In DialogueBridge.executeActions()
+case 'summon_sea_monster':
+  {
+    const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+    if (smController) {
+      smController.summonSeaMonster(runtime, 560, 320);
+      console.log(`[Dialogue] ✅ Sea Monster summoned`);
+    } else {
+      console.error(`❌ SeaMonsterController not found`);
+    }
+  }
+  break;
+
+case 'make_sea_monster_hostile':
+  {
+    const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+    if (smController) {
+      const reason = (action as any).reason || 'dialogue_choice';
+      smController.makeHostile(reason);
+    }
+  }
+  break;
+```
+
+**When to Use Custom Dialogue Actions:**
+- NPC needs complex state transitions (peaceful → hostile)
+- NPC has visual effects or animations to coordinate
+- NPC behavior changes based on dialogue choices
+- Need to call TypeScript controller methods from dialogue
+
+**See Also:** `docs/HOW_TO_ADD_ADVANCED_NPC.md` for complete implementation guide
+
 ### Custom Action Integration
 
 Call C3 functions to unlock areas, spawn enemies, etc.:
@@ -639,14 +716,315 @@ On function "UnlockSecretArea"
 
 ---
 
+## NPC Cameos
+
+Sometimes you want to mention an NPC in dialogue without giving them a full dialogue file. This is called a "cameo."
+
+**What is a Cameo?**
+- An NPC mentioned in another NPC's dialogue
+- No dedicated dialogue file
+- Referenced for world-building or quest context
+
+**Example: Sea Monster Cameo in LakeSign**
+
+The Sea Monster is mentioned in the LakeSign dialogue to foreshadow the quest:
+
+```typescript
+// In lakesign-dialogue.ts
+{
+  id: "node_002",
+  speaker: "AL",
+  text: "Rumor has it there's a Sea Monster in the lake keeping humans away...",
+  autoAdvance: "node_003"
+}
+```
+
+Later, the actual Sea Monster NPC has its own full dialogue file (`sea-monster-dialogue.ts`).
+
+**When to Use Cameos:**
+- Foreshadowing future encounters
+- Building world lore
+- Quest hints and rumors
+- NPCs mentioned but not yet implemented
+
+**When to Create Full NPC:**
+- Player can interact with NPC
+- NPC has dialogue choices
+- NPC gives quests or items
+- NPC has state that changes over time
+
+---
+
+## Common Mistakes and Learnings
+
+Based on Sea Monster and other NPC implementations, here are common issues to avoid:
+
+### Mistake 1: Forgetting to Register Custom Dialogue Actions
+
+**Problem:** Create custom action in dialogue file but forget to add handler in dialogue-bridge.ts
+
+**Symptoms:**
+- Action is silently ignored
+- Console shows "Unknown action type"
+- NPC doesn't respond to dialogue choice
+
+**Fix:**
+```typescript
+// ALWAYS add to dialogue-bridge.ts executeActions()
+case 'your_custom_action':
+  // Handler code here
+  break;
+```
+
+### Mistake 2: Not Importing Controller in main.ts
+
+**Problem:** Create TypeScript controller but don't expose it to event sheets
+
+**Symptoms:**
+- "Controller not found" errors in console
+- Custom actions fail silently
+- Cannot call controller methods from C3
+
+**Fix:**
+```typescript
+// In main.ts - expose controller to global namespace
+import { YourController } from "./systems/npc/your-controller.js";
+
+(globalThis as any).AdventureLand = {
+  YourController: YourController,
+  // ... other systems
+};
+```
+
+### Mistake 3: Quest Status Values Not Matching
+
+**Problem:** Dialogue node expects "Active" but action sets "Quest_Started"
+
+**Symptoms:**
+- Node never displays
+- Dialogue seems stuck
+- Wrong fallback node shown
+
+**Fix:**
+```typescript
+// Ensure status values EXACTLY match
+{
+  conditions: [
+    { type: "quest_status", questId: "quest", status: "Active" }
+  ],
+  actions: [
+    { type: "set_quest_status", questId: "quest", status: "Active" }
+    //                                                    ^^^^^^^^ MUST MATCH
+  ]
+}
+```
+
+### Mistake 4: Item ID Type Confusion
+
+**Problem:** Using numeric itemId instead of string item names
+
+**Symptoms:**
+- TypeScript errors: "Type 'number' is not assignable to type 'string'"
+- has_item conditions fail
+- give_item/remove_item actions don't work
+
+**Context:**
+The dialogue system uses **string item names** (like "Healing Potion"), not numeric IDs. This is different from the internal item manager which uses numeric IDs.
+
+**Fix:**
+```typescript
+// ✅ CORRECT - Use string item names
+{
+  type: "has_item",
+  itemId: "Perle de la Mer"  // String name
+}
+
+// ❌ WRONG - Don't use numeric IDs
+{
+  type: "has_item",
+  itemId: 99  // Number won't work
+}
+```
+
+**Note:** If your items have numeric IDs in the item database, you may need to add a mapping layer. See existing NPCs (Penny, Rosie) for examples.
+
+### Mistake 5: Silent Summon Node Structure
+
+**Problem:** Not understanding how to trigger effects before showing dialogue
+
+**Pattern:**
+When you need to spawn an NPC or trigger visual effects before dialogue starts, use a "silent" System node with `autoAdvance`:
+
+```typescript
+// ✅ CORRECT - Silent node with autoAdvance
+{
+  id: "summon_sea_monster",
+  speaker: "System",          // System speaker for silent nodes
+  text: "",                   // Empty text - no display
+  actions: [
+    { type: "summon_sea_monster" }
+  ],
+  autoAdvance: "greeting"     // Immediately advance to actual dialogue
+}
+
+{
+  id: "greeting",
+  speaker: "Sea Monster",
+  text: "Step away from that shell...",
+  // ... rest of dialogue
+}
+```
+
+**Why This Works:**
+- Silent node executes actions (summon effect)
+- autoAdvance immediately shows the actual dialogue
+- Player sees seamless transition: touch shell → SM appears → dialogue starts
+
+**Common Use Cases:**
+- Spawning NPCs before dialogue
+- Triggering cutscenes
+- Playing sound effects
+- Setting up visual effects
+
+### Mistake 6: Response Node with autoAdvance or endsDialogue
+
+**Problem:** Adding `autoAdvance` or `endsDialogue` to a node with `responses` array
+
+**Symptoms:**
+- Options don't display
+- Dialogue skips player choice
+- Options appear but selecting does nothing
+
+**Fix:**
+```typescript
+// ✅ CORRECT - Response node has NO autoAdvance or endsDialogue
+{
+  id: "greeting_response",
+  speaker: "You",             // Player is responding
+  text: "",                   // Empty for options
+  responses: [
+    { text: "Yes!", leads_to: "accept" },
+    { text: "No!", leads_to: "refuse" }
+  ]
+  // NO autoAdvance!
+  // NO endsDialogue!
+}
+
+// ❌ WRONG - Has autoAdvance which prevents options
+{
+  id: "bad_response",
+  speaker: "You",
+  text: "",
+  responses: [...],
+  autoAdvance: "next_node"    // This breaks options!
+}
+```
+
+### Mistake 7: Not Adding Custom Actions to dialogue-types.ts
+
+**Problem:** Add custom action to dialogue-bridge.ts but forget to update type definitions
+
+**Symptoms:**
+- TypeScript errors: "Type 'summon_sea_monster' is not assignable to type 'DialogueAction'"
+- Action works at runtime but fails type checking
+
+**Fix - Two Files Need Updates:**
+```typescript
+// 1. Add to dialogue-types.ts
+export type DialogueActionType =
+  | 'start_quest'
+  | 'give_item'
+  | 'summon_sea_monster'  // ← Add your custom action
+  | ...
+
+// 2. Add handler to dialogue-bridge.ts
+case 'summon_sea_monster':
+  // Handler code
+  break;
+```
+
+**Remember:** BOTH files must be updated or you'll get type errors!
+
+### Mistake 8: Multiple Nodes with Same Conditions
+
+**Problem:** Creating multiple nodes with identical conditions, expecting different ones to trigger
+
+**Issue:**
+When multiple nodes have the same conditions, **all of them match**, and only priority determines which displays.
+
+**Example Problem:**
+```typescript
+// Both nodes match when pearl_quest = "Met_Sea_Monster"
+{
+  id: "greeting",
+  conditions: [
+    { type: "quest_status", questId: "pearl_quest", status: "Met_Sea_Monster" }
+  ],
+  priority: 999
+}
+
+{
+  id: "explain_pearl",
+  conditions: [
+    { type: "quest_status", questId: "pearl_quest", status: "Met_Sea_Monster" }
+  ],
+  priority: 997  // Lower priority - will NEVER show because greeting always wins!
+}
+```
+
+**Fix:** Use `autoAdvance` to create a flow, or add additional conditions:
+```typescript
+// ✅ CORRECT - Use autoAdvance for sequential flow
+{
+  id: "greeting",
+  conditions: [
+    { type: "quest_status", questId: "pearl_quest", status: "Met_Sea_Monster" }
+  ],
+  priority: 999,
+  responses: [...]  // Player chooses path
+}
+
+// Different node IDs accessed via player choice, not direct conditions
+{
+  id: "explain_pearl",
+  speaker: "Sea Monster",
+  // No conditions needed - accessed via response leads_to
+}
+```
+
+**Key Learning:** Nodes with the same quest_status condition should be part of the same dialogue flow (using autoAdvance and responses), not separate entry points.
+
+### Mistake 9: Missing .js Extension in Imports
+
+**Problem:** Import uses .ts or no extension
+
+**Symptoms:**
+- "Module not found" errors in C3
+- Works in TypeScript compiler but fails in game
+- Runtime errors on startup
+
+**Fix:**
+```typescript
+// ✅ CORRECT - Always .js for C3 compatibility
+import { Controller } from "./controller.js";
+
+// ❌ WRONG - Will fail in C3
+import { Controller } from "./controller.ts";
+import { Controller } from "./controller";
+```
+
+---
+
 ## Related Documentation
 
+- [HOW_TO_ADD_ADVANCED_NPC.md](./HOW_TO_ADD_ADVANCED_NPC.md) - Advanced NPC implementation guide
 - [CURRENT_SYSTEMS.md](./CURRENT_SYSTEMS.md) - System architecture overview
 - [DIALOGUE_AND_QUEST_SYSTEM_GUIDE.md](./DIALOGUE_AND_QUEST_SYSTEM_GUIDE.md) - Complete dialogue reference
 - [SESSION_2026-01-07_SUMMARY.md](./SESSION_2026-01-07_SUMMARY.md) - Testing results
 - `/scripts/external/quest-dialogue/penny-dialogue.ts` - Full example with all features
+- `/scripts/external/quest-dialogue/sea-monster-dialogue.ts` - Advanced example with custom actions
 
 ---
 
-**Last Updated:** 2026-01-07
-**Template Version:** 1.0
+**Last Updated:** 2026-02-03
+**Template Version:** 1.1
