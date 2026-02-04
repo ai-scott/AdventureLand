@@ -167,6 +167,10 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Active"
                         },
                         {
+                              "type": "spawn_unique_item",
+                              "itemName": "Pink Oyster Pearl"  // Spawn pearl at waterfall
+                        },
+                        {
                               "type": "sea_monster_accept_quest"
                         }
                   ]
@@ -213,11 +217,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                         {
                               "type": "quest_status",
                               "questId": "pearl_quest",
-                              "status": "Active"
-                        },
-                        {
-                              "type": "has_item",
-                              "itemId": "Perle_de_la_Mer"
+                              "status": "Pearl_Found"  // Status set when pearl is collected
                         }
                   ],
                   actions: [
@@ -231,28 +231,41 @@ export const SeaMonsterDialogue: NPCDialogue = {
             {
                   id: "return_with_pearl",
                   speaker: "SeaMonster",
-                  text: "Wow! My pearl! I've been waiting so long for this moment. I found this magical weapon in the depths of the lake. You may have it for being so kind to me.",
+                  text: "Wow! My pearl! I've been waiting so long for this moment.",
                   priority: 993,
                   conditions: [
                         {
                               "type": "quest_status",
                               "questId": "pearl_quest",
-                              "status": "Active"
-                        },
+                              "status": "Pearl_Found"  // Status set when pearl is collected
+                        }
+                  ],
+                  actions: [
                         {
-                              "type": "has_item",
-                              "itemId": "Perle_de_la_Mer"
+                              "type": "remove_item",
+                              "itemId": "Pink Oyster Pearl"  // Must match itemsLibrary.json
+                        }
+                  ],
+                  autoAdvance: "give_trident"
+            },
+
+            {
+                  id: "give_trident",
+                  speaker: "SeaMonster",
+                  text: "I found this magical weapon in the lake. Take it for being so kind to me.",
+                  priority: 992,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Pearl_Found"  // Only match during pearl return flow
                         }
                   ],
                   endsDialogue: true,
                   actions: [
                         {
-                              "type": "remove_item",
-                              "itemId": "Perle_de_la_Mer"
-                        },
-                        {
                               "type": "give_item",
-                              "itemId": "Magic_Trident"
+                              "itemId": "Magic Trident"  // Item from itemsLibrary.json
                         },
                         {
                               "type": "set_quest_status",
@@ -320,7 +333,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                         },
                         {
                               "type": "has_item",
-                              "itemId": "Perle_de_la_Mer",
+                              "itemId": "Pink Oyster Pearl",  // Must match itemsLibrary.json ID 123
                               "negate": true  // Player does NOT have pearl
                         }
                   ],

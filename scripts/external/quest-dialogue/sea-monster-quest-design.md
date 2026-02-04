@@ -1084,37 +1084,49 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 - `objectTypes/Projectile_WaterBall.json`
 - `docs/HOW_TO_ADD_ADVANCED_NPC.md` (400+ lines)
 
-### 🔨 Phase 2 In Progress: Quest Items + Battle
+### ✅ Phase 2 Complete: Quest Items
 
-**Current Issue Being Debugged:**
-- 🐛 quest_in_progress_summon node not spawning SM on return visits (state machine issue)
+**Completed (2026-02-03):**
+- ✅ Pink Oyster Pearl item (ID 123) spawns at waterfall when quest = "Active"
+- ✅ Pearl collection dialogue and item tracking
+- ✅ Quest status progression: Not_Started → Met_Sea_Monster → Active → Pearl_Found → Complete
+- ✅ Pearl return flow with split dialogue nodes (excitement → reward)
+- ✅ Magic Trident reward (ID 4) given on quest completion
+- ✅ Silent node auto-advance for seamless NPC spawning
+- ✅ Re-summon logic for return visits (handles retreating state)
+- ✅ Automatic retreat on dialogue end (rising or npc states)
+- ✅ Fixed "inverted" → "negate" condition bug
+- ✅ Fixed empty conditions causing wrong node selection
+
+**Files Created/Updated:**
+- `scripts/external/quest-dialogue/pearl-dialogue.ts` (pearl collection)
+- `scripts/external/unique-items/unique-items-config.ts` (pearl spawn config)
+- `scripts/main.ts` (registered pearl dialogue)
+- `objectTypes/Objects/Perle_de_la_Mer.json` (pearl sprite)
+- `scripts/external/quest-dialogue/dialogue-bridge.ts` (silent node auto-advance)
+- `scripts/systems/npc/sea-monster-controller.ts` (destroySeaMonster method)
+
+### 🔨 Phase 3 Remaining: Battle System + Polish
 
 **Remaining Tasks:**
 
-**Dialogue Flow Fixes:**
-- [ ] Fix re-summon logic (allow summon if state = "retreating" or after timeout)
-- [ ] Test quest_in_progress node (return without pearl)
-- [ ] Test already_complete node (return after quest done)
-- [ ] Test automatic retreat on dialogue end
-
-**Quest Items:**
-- [ ] Create "Perle_de_la_Mer" item (spawn at waterfall/placeholder location)
-- [ ] Create "Magic_Trident" item (quest reward)
-- [ ] Set up item spawning system (similar to Rosie cat)
+**Item Visual Polish:**
+- [ ] Add Magic Trident frames to weapons_effects sprite sheet
 
 **Battle System:**
+- [ ] Trigger danger music when SM goes hostile
 - [ ] Implement SM AI attack pattern in eEnemy_SeaMonster event sheet
 - [ ] Add water ball projectile spawning logic
 - [ ] Test hostile mode combat
 - [ ] Add player-leaves-island retreat detection (peaceful escape)
-- [ ] Handle SM defeated in battle dialogue path (if defeatable)
+- [ ] Handle SM defeated in battle dialogue path
 
-**Visual Polish:**
+**Visual Effects:**
 - [ ] Add water swirl particle effects at SM base during rise/retreat
 - [ ] Test masking effect persistence during battle
 - [ ] Optimize animations for performance
 
-**Estimated Remaining Time**: 3-4 hours
+**Estimated Remaining Time**: 2-3 hours
 
 ---
 

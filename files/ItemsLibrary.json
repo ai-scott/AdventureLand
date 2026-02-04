@@ -30,11 +30,11 @@
 		},
 		{
 			"id": 4,
-			"name": "",
-			"description": "",
+			"name": "Magic Trident",
+			"description": "The three spear tips glow with spectral energy.",
 			"category": "Weapon",
-			"strength": 0,
-			"cost": 0
+			"strength": 5,
+			"cost": 20
 		},
 		{
 			"id": 5,

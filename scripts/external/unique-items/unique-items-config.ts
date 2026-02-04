@@ -162,6 +162,28 @@ export const UNIQUE_ITEMS_BY_WORLD: Record<string, UniqueItemSpawnConfig[]> = {
         animation: "Sparkle",
         tag: "SeaMonsterKey"
       }
+    },
+    {
+      itemName: "Pink Oyster Pearl",  // Must match itemsLibrary.json ID 123
+      // Only spawn when quest is active (player accepted to help find it)
+      questCondition: {
+        questId: "pearl_quest",
+        status: "Active"
+      },
+      trigger: {
+        x: 574,
+        y: 48,
+        layer: "Objects",
+        triggerObjectName: "PinkOysterPearl",
+        triggerId: 3  // LakeSign=0, PinkShell=2, Pearl=3
+      },
+      visual: {
+        objectType: "Perle_de_la_Mer",  // Your C3 object with pearl sprite
+        x: 574,
+        y: 48,
+        layer: "Objects"
+        // No animation needed if object has only one
+      }
     }
   ]
 };

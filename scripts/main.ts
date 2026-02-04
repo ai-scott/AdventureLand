@@ -70,6 +70,7 @@ import { ForestSignDialogue } from "./external/quest-dialogue/forestsign-dialogu
 import { SeaMonsterKeyDialogue } from "./external/quest-dialogue/seamonsterkey-dialogue.js";
 import { LakeSignDialogue } from "./external/quest-dialogue/lakesign-dialogue.js";
 import { SeaMonsterDialogue } from "./external/quest-dialogue/sea-monster-dialogue.js";
+import { PearlDialogue } from "./external/quest-dialogue/pearl-dialogue.js";
 
 // BATTLE DEBUG UTILITIES
 //import "./utils/battle-debug.js";
@@ -692,7 +693,8 @@ runOnStartup(async runtime => {
       QuestDialogue.DialogueManager.loadNPCDialogue(SeaMonsterKeyDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(LakeSignDialogue);
       QuestDialogue.DialogueManager.loadNPCDialogue(SeaMonsterDialogue);
-      console.log("✅ World10 dialogues loaded (3 NPCs)!");
+      QuestDialogue.DialogueManager.loadNPCDialogue(PearlDialogue);
+      console.log("✅ World10 dialogues loaded (4 NPCs)!");
 
       // Set up dialogue system namespace
       (globalThis as any).AdventureLand.Dialogue = {
