@@ -1106,27 +1106,34 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 - `scripts/external/quest-dialogue/dialogue-bridge.ts` (silent node auto-advance)
 - `scripts/systems/npc/sea-monster-controller.ts` (destroySeaMonster method)
 
-### 🔨 Phase 3 Remaining: Battle System + Polish
+### 🔨 Phase 3: Battle System + Polish
+
+**Completed Tasks:**
+- [x] Trigger danger music when SM goes hostile (enemyThreatMusic)
+- [x] Trigger safety music when player escapes (enemyGoneMusic)
+- [x] Add player-leaves-island retreat detection (X < 320)
+- [x] Implement water ball projectile spawning (every 2 seconds from mouth)
+- [x] Water ball collision and damage system (3 damage + knockback)
+- [x] Splash animation on hit
+- [x] Fixed eGameRoom Player_Hurt UID-based picking
+- [x] Pearl spawns in ALL paths (peaceful + hostile) for redemption
+- [x] Hostile re-encounter dialogue path
 
 **Remaining Tasks:**
 
 **Item Visual Polish:**
-- [ ] Add Magic Trident frames to weapons_effects sprite sheet
-
-**Battle System:**
-- [ ] Trigger danger music when SM goes hostile
-- [ ] Implement SM AI attack pattern in eEnemy_SeaMonster event sheet
-- [ ] Add water ball projectile spawning logic
-- [ ] Test hostile mode combat
-- [ ] Add player-leaves-island retreat detection (peaceful escape)
-- [ ] Handle SM defeated in battle dialogue path
+- [ ] Add Magic Trident frames to weapon_effects sprite sheet
+- [ ] Display Magic Trident on screen when received (ItemShowcase)
 
 **Visual Effects:**
 - [ ] Add water swirl particle effects at SM base during rise/retreat
 - [ ] Test masking effect persistence during battle
 - [ ] Optimize animations for performance
 
-**Estimated Remaining Time**: 2-3 hours
+**Not Needed:**
+- ~~Handle SM defeated in battle~~ (SM is unbeatable - 9999 HP, 999 defense)
+
+**Estimated Remaining Time**: 1-2 hours
 
 ---
 
@@ -1140,8 +1147,15 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 
 ---
 
-**Document Status**: Living Document - Phase 1 Complete, Phase 2 In Progress
-**Last Updated**: 2026-02-03
+**Document Status**: Living Document - Phase 1-2 Complete, Phase 3 In Progress
+**Last Updated**: 2026-02-04
 **Author**: Claude Code + Scott
 **Related Quests**: Windmill Bros (Bill's Pearl), Perle de la Mer
-**Commits**: 8dae31c (NPC implementation), e38c0cc (documentation)
+**Commits**:
+- 8dae31c (NPC implementation)
+- e38c0cc (documentation)
+- b5532ce (Pearl Quest complete)
+- 1028d19 (dialogue flow fixes)
+- 54dcee8 (escape detection + music)
+- ef386d7 (C3 project files)
+- a49c354 (water ball projectiles)

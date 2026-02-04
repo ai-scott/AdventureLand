@@ -194,63 +194,55 @@ This is the single source of truth for all active development tasks. Completed w
 - [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
 - [ ] Mark birthday cake as unique item (prevents duplicate spawning)
 
-## 🐉 NEW: Sea Monster "Pearl Quest" (2026-02-01)
+## 🐉 Sea Monster "Pearl Quest" (2026-02-01 - 2026-02-04)
 
-**Quest ID**: PearlQuest
+**Quest ID**: pearl_quest
 **Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Type**: Hybrid NPC/Enemy quest with state transitions
 **Location**: World_10 (The Bottomless Lake)
-**Status**: Phase 1 Complete (TypeScript) - C3 Setup Next
+**Status**: ✅ PHASE 1-3 COMPLETE - Polish Remaining
 
 ### Quest Overview
-Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (peaceful) or refuse/lie about stealing it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
+Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/taunt (hostile combat). Unbeatable enemy forces player to flee or find pearl for redemption. Complete redemption arc with Magic Trident reward.
 
-### Implementation Phases
+### ✅ Completed Phases
 
-- [ ] **Phase 1: Foundation** (Day 1)
-  - Create SeaMonsterController.ts (state management system)
-  - Add to main.ts namespace
-  - Test basic summon/despawn functionality
+- [x] **Phase 1-2: Foundation & Dialogue** (Feb 1-3)
+  - SeaMonsterController.ts with 5-state machine
+  - 14-node branching dialogue tree (peaceful + hostile paths)
+  - Custom dialogue actions (summon, makeHostile, acceptQuest, retreat, complete)
+  - Silent node auto-advance pattern
+  - Hostile re-encounter dialogue
+  - Pearl spawns in ALL paths for redemption
 
-- [ ] **Phase 2: Dialogue Integration** (Day 2)
-  - Create seamonster-dialogue.ts (dialogue tree)
-  - Add custom dialogue actions (makeHostile, acceptQuest, etc.)
-  - Load dialogue in main.ts
-  - Test dialogue flow and options
+- [x] **Phase 3: Battle System** (Feb 4)
+  - Player escape detection (X < 320) with music cues
+  - Danger music (enemyThreatMusic) on hostile
+  - Safety music (enemyGoneMusic) on escape
+  - Water ball projectiles (every 2s, 150 px/s, 3 damage)
+  - Proper UID-based collision detection (fixed eGameRoom)
+  - Splash animation on hit
+  - InDialogue check prevents combat during conversation
+  - Pearl Quest complete with item collection and rewards
 
-- [ ] **Phase 3: C3 Objects Setup** (Day 3)
-  - Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
-  - Create Trigger_Shell interaction point
-  - Create Projectile_WaterBall with Bullet behavior
-  - Create items: Perle de la Mer (ID: 99), Magic Trident (ID: 100)
+### 🎨 Remaining Polish Tasks
 
-- [ ] **Phase 4: Event Sheets** (Day 4)
-  - Pink shell trigger (summons SM, starts dialogue)
-  - Sea Monster state management (every-tick sync)
-  - Island boundary detection and retreat logic
-  - Quest completion trigger (return pearl)
+**Item Visuals:**
+- [ ] Add Magic Trident frames to weapon_effects sprite sheet
+- [ ] Add Magic Trident frame to ItemShowcase (display on receive)
+- [ ] Map showcaseFrame in itemsLibrary.json
 
-- [ ] **Phase 5: Enemy AI** (Day 5)
-  - Add SEA_MONSTER_CONFIG to enemy-configs.ts (ranged attacks)
-  - Update enemy AI to check AIEnabled flag
-  - Water ball spawn and collision logic
-  - Test hostile mode and retreat
-
-- [ ] **Phase 6: Polish** (Day 6)
-  - Rise/retreat animations
-  - Sound effects
-  - Visual effects
-  - Balance tuning
-
-- [ ] **Phase 7: Testing** (Day 7)
-  - Full peaceful path test
-  - Hostile paths test
-  - Edge cases and save/load
-  - Integration with Windmill Bros quest
+**Visual Effects:**
+- [ ] Add water swirl particles at SM base during rise/retreat animations
 
 **Design Document**: `scripts/external/quest-dialogue/sea-monster-quest-design.md`
 
-**Estimated Time**: 5-7 hours across multiple sessions
+**Commits**:
+- 8dae31c (NPC implementation)
+- e38c0cc + 1028d19 (docs + dialogue fixes)
+- b5532ce (Pearl Quest complete)
+- 54dcee8 + ef386d7 (escape detection + music)
+- a49c354 (water ball projectiles)
 
 ## Future: TypeScript Modernization (Phase 2-3)
 
