@@ -1447,6 +1447,10 @@
 		{
 			"eventType": "include",
 			"includeSheet": "eEnemy_Bat"
+		},
+		{
+			"eventType": "include",
+			"includeSheet": "eEnemy_SeaMonster"
 		}
 	],
 	"sid": 512296049886527

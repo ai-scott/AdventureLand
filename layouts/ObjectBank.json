@@ -6100,27 +6100,11 @@
 					"uid": 282,
 					"sid": 222913393615181,
 					"tags": "",
-					"instanceVariables": {
-						"Hurt_FX": 0,
-						"Active": false,
-						"DontActivate": false,
-						"Pair_ID": 0
-					},
+					"instanceVariables": {},
 					"behaviors": {
-						"Flash": {
-							"properties": {}
-						},
 						"Tween": {
 							"properties": {
 								"enabled": true
-							}
-						}
-					},
-					"effects": {
-						"Brightness": {
-							"isEnabled": true,
-							"parameters": {
-								"brightness": 1
 							}
 						}
 					},
