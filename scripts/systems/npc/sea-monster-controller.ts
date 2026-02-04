@@ -48,9 +48,17 @@ export class SeaMonsterController {
    * @param spawnY - Y position for Sea Monster spawn (fixed: 320 - underwater)
    */
   static summonSeaMonster(runtime: any, spawnX: number, spawnY: number): void {
-    if (this.currentState !== SeaMonsterState.Hidden) {
+    // Allow re-summon if SM is currently retreating (player returned quickly)
+    // Or if fully hidden
+    if (this.currentState === SeaMonsterState.Rising || this.currentState === SeaMonsterState.NPC) {
       console.log("⚠️ Sea Monster already present, state:", this.currentState);
       return;
+    }
+
+    // If retreating, destroy current instance before re-summoning
+    if (this.currentState === SeaMonsterState.Retreating) {
+      console.log("🔄 SM still retreating - destroying and re-summoning");
+      this.destroySeaMonster();
     }
 
     console.log("🌊 Summoning Sea Monster at:", spawnX, spawnY);
@@ -444,6 +452,33 @@ export class SeaMonsterController {
     }
 
     console.log(`${enabled ? '🔓' : '🔒'} Sea Monster behaviors ${enabled ? 'enabled' : 'disabled'}`);
+  }
+
+  /**
+   * Immediately destroys the Sea Monster and resets state
+   * Used when re-summoning while retreating
+   */
+  private static destroySeaMonster(): void {
+    // Destroy Base
+    const seaMonster = this.getSeaMonster();
+    if (seaMonster && !seaMonster.isDestroyed) {
+      seaMonster.destroy();
+      console.log("🗑️ Destroyed Sea Monster Base");
+    }
+
+    // Destroy all Mask instances
+    const masksToDestroy = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
+    console.log(`🗑️ Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
+    masksToDestroy.forEach((mask: any) => {
+      if (!mask.isDestroyed) {
+        mask.destroy();
+      }
+    });
+
+    // Reset state
+    this.currentState = SeaMonsterState.Hidden;
+    this.seaMonsterUID = -1;
+    console.log("🔄 Sea Monster destroyed and state reset to Hidden");
   }
 
   // ============================================================================

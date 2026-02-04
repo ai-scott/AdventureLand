@@ -1,11 +1,11 @@
 # Sea Monster "Pearl Quest" Design
 
-**Quest ID**: PearlQuest
+**Quest ID**: pearl_quest
 **Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Location**: World_10 (The Bottomless Lake)
 **Type**: Hybrid NPC/Enemy with state transitions
 **Reward**: Magic Trident
-**Status**: Design Phase - Phase 1 Complete (TypeScript)
+**Status**: Phase 1 Complete (NPC + Dialogue + Masking) | Phase 2 In Progress (Quest Items + Battle)
 
 ---
 
@@ -77,12 +77,13 @@ ATTACKS!         "Someone stole the jewel of the lake, my precious pearl de la m
 
 ### Quest Progress States
 
-**Dict_SaveGameData: "PearlQuest"**
+**Dict_SaveGameData: "pearl_quest"** (string values, not numeric)
 
-- `0` = Not started (initial state)
-- `16` = Shell touched, Sea Monster summoned, dialogue initiated
-- `32` = Quest accepted - player promised to help
-- `50` = Quest complete - pearl returned, trident received
+- `"Not_Started"` = Quest not yet encountered (implicit - key doesn't exist)
+- `"Met_Sea_Monster"` = First encounter dialogue in progress
+- `"Active"` = Quest accepted, player searching for pearl
+- `"Hostile_Encounter"` = Player taunted/refused, SM is hostile
+- `"Complete"` = Pearl returned, trident received
 
 ### Instance Variables (En_Sea_Monster)
 
@@ -1057,20 +1058,63 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 
 ---
 
-## Next Steps
+## Implementation Status
 
-**To start implementation:**
+### ✅ Phase 1 Complete: NPC + Dialogue + Masking
 
-1. Review this design doc
-2. Answer open questions above
-3. Decide on Phase 1 starting point:
-   - Option A: Start with TypeScript controller (recommended)
-   - Option B: Start with dialogue tree
-   - Option C: Start with C3 object setup
+**Completed (2026-02-03):**
+- ✅ SeaMonsterController TypeScript class with state machine
+- ✅ En_Sea_Monster_Base and En_Sea_Monster_Mask objects in C3
+- ✅ Base/Mask sprite pattern (Base hidden for collision, Mask visible for graphics)
+- ✅ Progressive reveal masking effect (rising Y=320→224, retreating Y=224→320)
+- ✅ MaskRectangle Z-order management (removed Mask from Enemies family)
+- ✅ Sea monster dialogue tree with 11 nodes (greeting, quest offer, hostile paths)
+- ✅ Custom dialogue actions (summon_sea_monster, make_sea_monster_hostile, etc.)
+- ✅ Automatic retreat when dialogue ends
+- ✅ PinkShell trigger object for quest initiation
+- ✅ Documentation: HOW_TO_ADD_NPC.md and HOW_TO_ADD_ADVANCED_NPC.md
 
-4. Create GitHub issue or TODO entry for tracking progress
+**Files Created:**
+- `scripts/systems/npc/sea-monster-controller.ts` (452 lines)
+- `scripts/external/quest-dialogue/sea-monster-dialogue.ts` (11 dialogue nodes)
+- `eventSheets/eEnemy_SeaMonster.json` (Base/Mask positioning)
+- `objectTypes/Enemies/En_Sea_Monster_Base.json`
+- `objectTypes/Enemies/En_Sea_Monster_Mask.json`
+- `objectTypes/Objects/PinkShell.json`
+- `objectTypes/Projectile_WaterBall.json`
+- `docs/HOW_TO_ADD_ADVANCED_NPC.md` (400+ lines)
 
-**Estimated Time**: 5-7 hours across multiple sessions
+### 🔨 Phase 2 In Progress: Quest Items + Battle
+
+**Current Issue Being Debugged:**
+- 🐛 quest_in_progress_summon node not spawning SM on return visits (state machine issue)
+
+**Remaining Tasks:**
+
+**Dialogue Flow Fixes:**
+- [ ] Fix re-summon logic (allow summon if state = "retreating" or after timeout)
+- [ ] Test quest_in_progress node (return without pearl)
+- [ ] Test already_complete node (return after quest done)
+- [ ] Test automatic retreat on dialogue end
+
+**Quest Items:**
+- [ ] Create "Perle_de_la_Mer" item (spawn at waterfall/placeholder location)
+- [ ] Create "Magic_Trident" item (quest reward)
+- [ ] Set up item spawning system (similar to Rosie cat)
+
+**Battle System:**
+- [ ] Implement SM AI attack pattern in eEnemy_SeaMonster event sheet
+- [ ] Add water ball projectile spawning logic
+- [ ] Test hostile mode combat
+- [ ] Add player-leaves-island retreat detection (peaceful escape)
+- [ ] Handle SM defeated in battle dialogue path (if defeatable)
+
+**Visual Polish:**
+- [ ] Add water swirl particle effects at SM base during rise/retreat
+- [ ] Test masking effect persistence during battle
+- [ ] Optimize animations for performance
+
+**Estimated Remaining Time**: 3-4 hours
 
 ---
 
@@ -1084,7 +1128,8 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 
 ---
 
-**Document Status**: Draft - Awaiting Review
-**Last Updated**: 2026-02-01
+**Document Status**: Living Document - Phase 1 Complete, Phase 2 In Progress
+**Last Updated**: 2026-02-03
 **Author**: Claude Code + Scott
 **Related Quests**: Windmill Bros (Bill's Pearl), Perle de la Mer
+**Commits**: 8dae31c (NPC implementation), e38c0cc (documentation)

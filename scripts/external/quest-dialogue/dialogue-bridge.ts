@@ -124,9 +124,19 @@ export class DialogueBridge {
         runtime.callFunction("displayDialogue");
       }
 
-      // Don't auto-advance - wait for player input (space/click)
-      // The event sheet will call advanceDialogue() when player presses space
-      console.log(`⏸️ [START] Waiting for player input to advance...`);
+      // Auto-advance ONLY for silent System nodes (empty text, used for actions)
+      // Regular dialogue nodes with autoAdvance wait for player to press Space
+      const isSilentNode = node.speaker === "System" && node.text === "";
+      if (isSilentNode && node.autoAdvance && !requiresInput) {
+        console.log(`⏭️ [START] Silent node detected - auto-advancing to ${node.autoAdvance}...`);
+        // Use setTimeout to allow actions to complete before advancing
+        setTimeout(() => {
+          this.advanceDialogue(runtime);
+        }, 50); // Small delay for action execution (e.g., spawning)
+      } else {
+        // Wait for player input (space/click)
+        console.log(`⏸️ [START] Waiting for player input to advance...`);
+      }
 
       return true;
     } catch (error) {
@@ -417,6 +427,19 @@ export class DialogueBridge {
   static endDialogue(runtime: any): void {
     console.log(`🛑 [END] endDialogue() called. Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}`);
     console.trace("Stack trace:");
+
+    // Special handling for Sea Monster - retreat when dialogue ends
+    if (this.currentNPC === "SeaMonster") {
+      const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
+      if (smController && smController.exists()) {
+        const currentState = smController.getState();
+        // Retreat if SM is rising or in NPC mode (not if already retreating or hidden)
+        if (currentState === "npc" || currentState === "rising") {
+          smController.retreat("peaceful");
+          console.log(`🌊 [END] Sea Monster retreating after dialogue (was in ${currentState} state)`);
+        }
+      }
+    }
 
     // Clean up internal state
     this.currentNPC = "";

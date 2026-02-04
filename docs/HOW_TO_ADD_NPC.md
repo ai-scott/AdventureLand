@@ -994,7 +994,39 @@ When multiple nodes have the same conditions, **all of them match**, and only pr
 
 **Key Learning:** Nodes with the same quest_status condition should be part of the same dialogue flow (using autoAdvance and responses), not separate entry points.
 
-### Mistake 9: Missing .js Extension in Imports
+### Mistake 9: Using "inverted" Instead of "negate" for Conditions
+
+**Problem:** Using `"inverted": true` in condition instead of `"negate": true`
+
+**Symptoms:**
+- Condition never matches
+- has_item with inverted check always fails
+- Dialogue node doesn't trigger
+
+**Context:**
+The dialogue system uses `"negate"` property to invert conditions, not `"inverted"`.
+
+**Fix:**
+```typescript
+// ✅ CORRECT - Use "negate"
+{
+  type: "has_item",
+  itemId: "Perle_de_la_Mer",
+  negate: true  // Player does NOT have item
+}
+
+// ❌ WRONG - "inverted" doesn't exist
+{
+  type: "has_item",
+  itemId: "Perle_de_la_Mer",
+  inverted: true  // This property is ignored!
+}
+```
+
+**Common Use Case:**
+Checking if player does NOT have an item before showing "go find it" dialogue.
+
+### Mistake 10: Missing .js Extension in Imports
 
 **Problem:** Import uses .ts or no extension
 

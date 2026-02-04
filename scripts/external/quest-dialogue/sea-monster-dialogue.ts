@@ -266,12 +266,12 @@ export const SeaMonsterDialogue: NPCDialogue = {
             },
 
             // =====================================================
-            // ALREADY COMPLETE: Post-quest dialogue
+            // ALREADY COMPLETE: Summon node (silent) - post-quest
             // =====================================================
             {
-                  id: "already_complete",
-                  speaker: "SeaMonster",
-                  text: "Thank you again for returning my pearl. The lake is at peace.",
+                  id: "already_complete_summon",
+                  speaker: "System",
+                  text: "", // Silent - just triggers summon
                   priority: 992,
                   conditions: [
                         {
@@ -280,25 +280,64 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Complete"
                         }
                   ],
-                  endsDialogue: true,
                   actions: [
                         {
                               "type": "summon_sea_monster"
-                        },
-                        {
-                              "type": "sea_monster_accept_quest"
                         }
-                  ]
+                  ],
+                  autoAdvance: "already_complete"
+            },
+
+            // Post-quest dialogue text
+            {
+                  id: "already_complete",
+                  speaker: "SeaMonster",
+                  text: "Thank you again for returning my pearl. The lake is at peace.",
+                  priority: 991,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Complete"
+                        }
+                  ],
+                  endsDialogue: true
             },
 
             // =====================================================
-            // IN PROGRESS: Reminder dialogue (no pearl yet)
+            // IN PROGRESS: Summon node (silent) - no pearl yet
             // =====================================================
+            {
+                  id: "quest_in_progress_summon",
+                  speaker: "System",
+                  text: "", // Silent - just triggers summon
+                  priority: 993,  // Higher than "already_complete" to ensure it matches first
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Active"
+                        },
+                        {
+                              "type": "has_item",
+                              "itemId": "Perle_de_la_Mer",
+                              "negate": true  // Player does NOT have pearl
+                        }
+                  ],
+                  actions: [
+                        {
+                              "type": "summon_sea_monster"
+                        }
+                  ],
+                  autoAdvance: "quest_in_progress"
+            },
+
+            // Reminder dialogue text
             {
                   id: "quest_in_progress",
                   speaker: "SeaMonster",
                   text: "Have you found my pearl yet? Remember, touch the shell when you have it.",
-                  priority: 991,
+                  priority: 992,
                   conditions: [
                         {
                               "type": "quest_status",
@@ -306,15 +345,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Active"
                         }
                   ],
-                  endsDialogue: true,
-                  actions: [
-                        {
-                              "type": "summon_sea_monster"
-                        },
-                        {
-                              "type": "sea_monster_accept_quest"
-                        }
-                  ]
+                  endsDialogue: true
             },
 
       ]
