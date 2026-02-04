@@ -22,6 +22,42 @@
 				}
 			],
 			"sid": 293357636917741
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "every-x-seconds",
+					"objectClass": "System",
+					"sid": 235863972374830,
+					"parameters": {
+						"interval-seconds": "0.5"
+					}
+				},
+				{
+					"id": "is-boolean-instance-variable-set",
+					"objectClass": "En_Sea_Monster_Base",
+					"sid": 123672876966199,
+					"parameters": {
+						"instance-variable": "AIEnabled"
+					}
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"console.log(\"🔧 Escape check event IS running, AIEnabled:\", ",
+						"                  runtime.objects.En_Sea_Monster_Base.getFirstInstance()?.instVars.AIEnabled);",
+						"      const smController = globalThis.AdventureLand?.SeaMonsterController;",
+						"      if (smController) {",
+						"        smController.checkPlayerEscape(runtime);",
+						"      }"
+					]
+				}
+			],
+			"sid": 553080476403913
 		}
 	],
 	"sid": 425975541369349

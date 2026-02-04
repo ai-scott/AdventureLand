@@ -206,6 +206,48 @@ export const SeaMonsterDialogue: NPCDialogue = {
             },
 
             // =====================================================
+            // HOSTILE RE-ENCOUNTER: Player returns after making SM hostile (summon as hostile)
+            // =====================================================
+            {
+                  id: "hostile_encounter_summon",
+                  speaker: "System",
+                  text: "", // Silent - triggers hostile summon
+                  priority: 994,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Hostile_Encounter"
+                        }
+                  ],
+                  actions: [
+                        {
+                              "type": "summon_sea_monster"
+                        },
+                        {
+                              "type": "make_sea_monster_hostile",
+                              "reason": "returning_after_hostile"
+                        }
+                  ],
+                  autoAdvance: "hostile_encounter"
+            },
+
+            {
+                  id: "hostile_encounter",
+                  speaker: "SeaMonster",
+                  text: "YOU DARE RETURN WITHOUT MY PEARL?! FACE MY WRATH!",
+                  priority: 993,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Hostile_Encounter"
+                        }
+                  ],
+                  endsDialogue: true
+            },
+
+            // =====================================================
             // RETURN WITH PEARL: Quest completion (summon again)
             // =====================================================
             {

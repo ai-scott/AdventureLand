@@ -212,6 +212,12 @@ export class SeaMonsterController {
       console.warn("⚠️ Could not find Sea Monster Mask to switch animation");
     }
 
+    // Trigger danger music
+    if (this.runtime?.callFunction) {
+      this.runtime.callFunction("enemyThreatMusic");
+      console.log("🎵 Triggered danger music (enemyThreatMusic)");
+    }
+
     console.log("🔥 Sea Monster is now hostile and will attack!");
   }
 
@@ -252,6 +258,16 @@ export class SeaMonsterController {
     this.setEnemyBehaviors(seaMonster, false);
     seaMonster.instVars.AIEnabled = false;
     seaMonster.instVars.IsHostile = false;
+
+    // Trigger appropriate music based on retreat reason
+    if (this.runtime?.callFunction) {
+      if (reason === "player-left") {
+        // Player escaped - play victory/safe music
+        this.runtime.callFunction("enemyGoneMusic");
+        console.log("🎵 Player escaped! Triggered safety music (enemyGoneMusic)");
+      }
+      // For peaceful retreat, music handled by dialogue system
+    }
 
     // Trigger retreat animation (tween Mask back to Y=320 over 3 seconds)
     // Get mask directly since there's only one instance
@@ -334,6 +350,34 @@ export class SeaMonsterController {
     const onIsland = player.x >= 320;
 
     return onIsland;
+  }
+
+  /**
+   * Checks if player escaped and triggers retreat if so
+   * Call this every 0.5 seconds from C3 event sheet when SM is hostile
+   *
+   * @param runtime - C3 runtime instance
+   */
+  static checkPlayerEscape(runtime: any): void {
+    console.log("🔍 checkPlayerEscape() called, currentState:", this.currentState);
+
+    // Only check if SM is currently hostile
+    if (this.currentState !== SeaMonsterState.Hostile) {
+      console.log("⏭️ SM not hostile, skipping escape check");
+      return;
+    }
+
+    // Check if player left the island
+    const player = runtime.objects.Player_Base?.getFirstInstance();
+    const playerX = player?.x || 0;
+    const onIsland = this.isPlayerOnIsland(runtime);
+
+    console.log(`📍 Player position: X=${playerX}, onIsland=${onIsland}`);
+
+    if (!onIsland) {
+      console.log("🏃 Player escaped to bridge! SM retreating...");
+      this.retreat("player-left");
+    }
   }
 
   /**

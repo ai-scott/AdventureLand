@@ -428,7 +428,8 @@
 					"Ramp",
 					"Bat_Tree_Marker",
 					"PinkShell",
-					"MaskRectangle"
+					"MaskRectangle",
+					"Perle_de_la_Mer"
 				],
 				"subfolders": [],
 				"name": "Objects"
@@ -1252,6 +1253,14 @@
 									"name": "sea-monster-dialogue.ts",
 									"type": "application/typescript",
 									"sid": 610292859588627,
+									"script-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "pearl-dialogue.ts",
+									"type": "application/typescript",
+									"sid": 580532082027025,
 									"script-info": {
 										"purpose": "none"
 									}

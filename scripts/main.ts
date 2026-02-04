@@ -542,6 +542,7 @@ runOnStartup(async runtime => {
         completeQuest: (runtime: any) => SeaMonsterController.completeQuest(runtime),
         isPlayerOnIsland: (runtime: any) => SeaMonsterController.isPlayerOnIsland(runtime),
         shouldBeHostileOnSummon: (runtime: any) => SeaMonsterController.shouldBeHostileOnSummon(runtime),
+        checkPlayerEscape: (runtime: any) => SeaMonsterController.checkPlayerEscape(runtime),
         getState: () => SeaMonsterController.getState(),
         isHostile: () => SeaMonsterController.isHostile(),
         exists: () => SeaMonsterController.exists(),
