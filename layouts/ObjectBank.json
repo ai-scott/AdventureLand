@@ -6143,7 +6143,9 @@
 					"uid": 286,
 					"sid": 551640680192222,
 					"tags": "",
-					"instanceVariables": {},
+					"instanceVariables": {
+						"Strength": 5
+					},
 					"behaviors": {
 						"Bullet": {
 							"properties": {
@@ -6151,7 +6153,7 @@
 								"acceleration": 0,
 								"gravity": 0,
 								"bounce-off-solids": false,
-								"set-angle": false,
+								"set-angle": true,
 								"step": false,
 								"enabled": true
 							}
@@ -6171,8 +6173,8 @@
 						"y": -109.78076171875,
 						"width": 49,
 						"height": 19,
-						"originX": 0.20408163265306123,
-						"originY": 0.47368421052631576,
+						"originX": 0.7959183673469388,
+						"originY": 0.5263157894736843,
 						"color": [
 							1,
 							1,

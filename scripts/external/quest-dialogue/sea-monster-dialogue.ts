@@ -88,13 +88,22 @@ export const SeaMonsterDialogue: NPCDialogue = {
                   endsDialogue: true,
                   actions: [
                         {
+                              "type": "set_quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Active"  // Set to Active FIRST so pearl can spawn
+                        },
+                        {
+                              "type": "spawn_unique_item",
+                              "itemName": "Pink Oyster Pearl"  // Spawn pearl
+                        },
+                        {
                               "type": "make_sea_monster_hostile",
                               "reason": "player_taunted"
                         },
                         {
                               "type": "set_quest_status",
                               "questId": "pearl_quest",
-                              "status": "Hostile_Encounter"
+                              "status": "Hostile_Encounter"  // THEN set to Hostile_Encounter
                         }
                   ]
             },
@@ -194,13 +203,22 @@ export const SeaMonsterDialogue: NPCDialogue = {
                   endsDialogue: true,
                   actions: [
                         {
+                              "type": "set_quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Active"  // Set to Active FIRST so pearl can spawn
+                        },
+                        {
+                              "type": "spawn_unique_item",
+                              "itemName": "Pink Oyster Pearl"  // Spawn pearl
+                        },
+                        {
                               "type": "make_sea_monster_hostile",
                               "reason": "player_refused"
                         },
                         {
                               "type": "set_quest_status",
                               "questId": "pearl_quest",
-                              "status": "Hostile_Encounter"
+                              "status": "Hostile_Encounter"  // THEN set to Hostile_Encounter
                         }
                   ]
             },

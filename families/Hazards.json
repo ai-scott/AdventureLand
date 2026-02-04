@@ -20,6 +20,7 @@
 		"Projectile_Golem",
 		"Projectile_Demon_Bat",
 		"Projectile_Demon_Sword",
-		"En_Demon_Sword"
+		"En_Demon_Sword",
+		"Projectile_WaterBall"
 	]
 }
