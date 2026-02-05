@@ -271,18 +271,35 @@ export class DialogueBridge {
         console.log(`📝 [ADVANCE] Input node - UI created by getUserTextPixel, skipping displayDialogue`);
         // Don't call displayDialogue - getUserTextPixel already created the UI
       } else {
-        // Clean up previous speaker's name frame if speaker changed (e.g., SeaMonster → AL)
-        // This prevents the previous speaker's name lingering on the new dialogue
-        const previousSpeaker = runtime.globalVars.CurrentCharacter;
-        if (previousSpeaker && previousSpeaker !== processedNode.speaker) {
-          const nameFrame = runtime.objects.obj_TextNameFrame?.getFirstInstance();
-          const nameText = runtime.objects.obj_TextName?.getFirstInstance();
-          if (nameFrame) {
-            nameFrame.destroy();
-            console.log(`🧹 [ADVANCE] Destroyed previous speaker's name frame: ${previousSpeaker}`);
-          }
-          if (nameText) {
-            nameText.destroy();
+        // Clean up dialogue-specific UI to prevent memory leaks
+        // Only destroy elements that are unique to dialogue system
+        // DO NOT destroy general UI text objects (obj_Text_A, obj_Text_I, obj_TextBlock) - used elsewhere!
+        const dialogueElementsToDestroy = [
+          'obj_TextNameFrame',    // Speaker name frame
+          'obj_TextName',         // Speaker name text
+          'obj_TextCameo',        // Character portrait in dialogue
+          'Character_Cameos',     // Character sprite cameos
+          'obj_TextOption1',      // Dialogue response option 1
+          'obj_TextOption2'       // Dialogue response option 2
+        ];
+
+        for (const elementName of dialogueElementsToDestroy) {
+          const objectClass = runtime.objects[elementName];
+          if (objectClass && typeof objectClass.getAllInstances === 'function') {
+            const instances = objectClass.getAllInstances();
+            let destroyedCount = 0;
+            for (const instance of instances) {
+              // Only destroy if on HUD_UI layer (dialogue layer)
+              // Do NOT destroy Inventory layer instances (e.g., Character_Cameos in inventory)
+              const layerName = instance.layer?.name;
+              if (layerName === 'HUD_UI') {
+                instance.destroy();
+                destroyedCount++;
+              }
+            }
+            if (destroyedCount > 0) {
+              console.log(`🧹 [ADVANCE] Destroyed ${destroyedCount} ${elementName} instance(s) from HUD_UI layer`);
+            }
           }
         }
 

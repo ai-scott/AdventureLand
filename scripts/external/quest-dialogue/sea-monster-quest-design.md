@@ -678,65 +678,69 @@ The Perle quest intersects with finding Bill (Nick's brother):
 
 ## Phase 7: Implementation Checklist
 
-### ✅ Phase 1: Foundation (Day 1)
+### ✅ Phase 1: Foundation (Day 1) - COMPLETE
 
-- [ ] Create `scripts/systems/npc/` directory
-- [ ] Create `sea-monster-controller.ts` with full class
-- [ ] Add SeaMonsterController to main.ts imports
-- [ ] Expose in AdventureLand namespace
-- [ ] Test: Can call `summonSeaMonster()` from browser console
+- [x] Create `scripts/systems/npc/` directory
+- [x] Create `sea-monster-controller.ts` with full class
+- [x] Add SeaMonsterController to main.ts imports
+- [x] Expose in AdventureLand namespace
+- [x] Test: Can call `summonSeaMonster()` from browser console
 
-### ✅ Phase 2: Dialogue (Day 2)
+### ✅ Phase 2: Dialogue (Day 2) - COMPLETE
 
-- [ ] Create `seamonster-dialogue.ts` with all nodes
-- [ ] Add to dialogue-bridge.ts custom action handlers
-- [ ] Load in main.ts (World10 dialogues)
-- [ ] Test: Dialogue tree works, options display correctly
+- [x] Create `seamonster-dialogue.ts` with all nodes (14 nodes total)
+- [x] Add to dialogue-bridge.ts custom action handlers
+- [x] Load in main.ts (World10 dialogues)
+- [x] Test: Dialogue tree works, options display correctly
+- [x] Added hostile re-encounter nodes for return visits
 
-### ✅ Phase 3: C3 Objects (Day 3)
+### ✅ Phase 3: C3 Objects (Day 3) - COMPLETE
 
-- [ ] Configure En_Sea_Monster instance variables
-- [ ] Remove movement behaviors from Sea Monster
-- [ ] Create Trigger_Shell with collision trigger
-- [ ] Create Projectile_WaterBall with Bullet behavior
-- [ ] Create Perle de la Mer item (ID: 99)
-- [ ] Create Magic Trident item (ID: 100)
-- [ ] Test: Objects exist, can be spawned/destroyed
+- [x] Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
+- [x] Remove movement behaviors from Sea Monster (stationary)
+- [x] Create Trigger_Shell (PinkShell) with collision trigger
+- [x] Create Projectile_WaterBall with Bullet behavior
+- [x] Create Pink Oyster Pearl item (ID: 123)
+- [x] Create Magic Trident item (ID: 4)
+- [x] Test: Objects exist, can be spawned/destroyed
 
-### ✅ Phase 4: Event Sheets (Day 4)
+### ✅ Phase 4: Event Sheets (Day 4) - COMPLETE
 
-- [ ] Pink shell trigger event (summons SM)
-- [ ] Sea Monster state sync (every-tick)
-- [ ] Water ball spawn logic (when hostile)
-- [ ] Water ball collision with player
-- [ ] Island boundary check and retreat
-- [ ] Quest completion trigger (return pearl)
-- [ ] Test: Full dialogue → hostile transition works
+- [x] Pink shell trigger event (summons SM via dialogue)
+- [x] Water ball spawn logic (every 2s when hostile, not in dialogue)
+- [x] Water ball collision with player (splash animation, proper damage)
+- [x] Island boundary check and escape (X < 320)
+- [x] Escape detection triggers SM retreat
+- [x] Quest completion trigger (return pearl for trident)
+- [x] Test: Full dialogue → hostile transition works
 
-### ✅ Phase 5: Enemy AI (Day 5)
+### ✅ Phase 5: Battle System (Day 5) - COMPLETE
 
-- [ ] Add SEA_MONSTER_CONFIG to enemy-configs.ts
-- [ ] Update enemy AI to check AIEnabled instance variable
-- [ ] Test ranged attack behavior
-- [ ] Balance damage and cooldowns
-- [ ] Test: SM attacks when hostile, stops when player leaves
+- [x] Custom water ball attack pattern (not using enemy-configs.ts)
+- [x] InDialogue check prevents attacks during conversation
+- [x] Water balls fire from SM mouth position (535, 190)
+- [x] Fixed eGameRoom UID-based picking for correct damage
+- [x] Proper 3 damage + knockback system
+- [x] Test: SM attacks when hostile, retreats when player escapes
 
-### ✅ Phase 6: Animations & Polish (Day 6)
+### ✅ Phase 6: Animations & Polish (Day 6) - MOSTLY COMPLETE
 
-- [ ] Rise animation (surfacing from water)
-- [ ] Retreat animation (submerging)
-- [ ] Water ball projectile visual
-- [ ] Sound effects (rise, attack, retreat)
-- [ ] Test: Visual flow feels smooth
+- [x] Rise animation (tween from Y=320 to Y=224)
+- [x] Retreat animation (tween from Y=224 to Y=320)
+- [x] Water ball projectile visual (flipped sprites)
+- [x] Sound effects: danger music (hostile), safety music (escape)
+- [x] Test: Visual flow feels smooth
+- [ ] Water swirl particle effects (remaining polish)
 
-### ✅ Phase 7: Integration Testing (Day 7)
+### ✅ Phase 7: Integration Testing (Day 7) - COMPLETE
 
-- [ ] Test full peaceful path (help → find pearl → return → get trident)
-- [ ] Test hostile paths (refuse, claim to have pearl)
-- [ ] Test retreat on player exit
-- [ ] Test quest state persistence (save/load)
-- [ ] Test edge cases (kill SM in combat, revisit after death)
-- [ ] Balance testing (difficulty, damage, retreat timing)
+- [x] Test full peaceful path (accept → find pearl → return → get trident)
+- [x] Test hostile paths (refuse, taunt SM)
+- [x] Test retreat on player escape (X < 320)
+- [x] Test pearl spawns in all paths for redemption
+- [x] Quest state persistence (Hostile_Encounter saves)
+- [x] SM is unbeatable (no defeat path needed)
+- [x] Balance: 3 damage water balls, 2s cooldown
 
 ---
 

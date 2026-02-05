@@ -63,6 +63,13 @@ export class DialogueController {
           return true; // Handled
         }
 
+        // Check if ButtonManager is active (item notifications with Open/Close buttons)
+        // Event sheets handle button execution, so just let them handle Space
+        if (runtime.globalVars.ButtonMgrActive) {
+          console.log('🔘 [Button] ButtonMgrActive - deferring to event sheet handlers');
+          return false; // Let event sheets handle it
+        }
+
         // Check if typewriter was just finished by C3 Event 190
         // Event 190 sets TypewriterRunning = true when finishing typewriter
         if (runtime.globalVars.TypewriterRunning) {

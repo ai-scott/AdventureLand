@@ -92,6 +92,13 @@
 		},
 		{
 			"type": "plugin",
+			"id": "Particles",
+			"name": "Particles",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
 			"id": "Sprite",
 			"name": "Sprite",
 			"author": "Scirra",
@@ -512,7 +519,8 @@
 					"Light",
 					"Particle",
 					"Glimmer",
-					"Projectile_WaterBall"
+					"Projectile_WaterBall",
+					"FX_WaterSwirl"
 				],
 				"subfolders": [],
 				"name": "FX"

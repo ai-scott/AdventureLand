@@ -17,7 +17,7 @@ export const PearlDialogue: NPCDialogue = {
     {
       id: "collect_pearl",
       speaker: "AL",
-      text: "You found the Sea Monster's pearl! Better return it to the pink shell.",
+      text: "You found the Perle de la Mer!",
       priority: 100,
       conditions: [],
       endsDialogue: true,

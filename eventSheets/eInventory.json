@@ -6792,6 +6792,111 @@
 								}
 							],
 							"sid": 561180304158408
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 429670372930237,
+									"parameters": {
+										"object": "InventoryItems"
+									}
+								},
+								{
+									"id": "is-on-layer",
+									"objectClass": "InventoryItems",
+									"sid": 293239690559289,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": "// Deselect all items"
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "InventoryItems",
+									"sid": 503997901854518,
+									"parameters": {
+										"frame-number": "0"
+									}
+								}
+							],
+							"sid": 981681604928621
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "for-each",
+									"objectClass": "System",
+									"sid": 733691177126544,
+									"parameters": {
+										"object": "ItemSlot"
+									}
+								},
+								{
+									"id": "is-on-layer",
+									"objectClass": "ItemSlot",
+									"sid": 848776159166551,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-animation-frame",
+									"objectClass": "ItemSlot",
+									"sid": 347445739049128,
+									"parameters": {
+										"frame-number": "0"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "// Select CloseX button for quick keyboard close"
+								}
+							],
+							"sid": 782075028373247
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-on-layer",
+									"objectClass": "CloseX",
+									"sid": 637596235740510,
+									"parameters": {
+										"layer": "\"Inventory\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 229847304081258,
+									"parameters": {
+										"variable": "SelectedItemUID",
+										"value": "CloseX.UID"
+									}
+								},
+								{
+									"id": "set-animation-frame",
+									"objectClass": "CloseX",
+									"sid": 309383464880187,
+									"parameters": {
+										"frame-number": "1"
+									}
+								}
+							],
+							"sid": 260294085645397
 						}
 					]
 				},
