@@ -143,6 +143,18 @@ export class SeaMonsterController {
       seaMonsterMask.setAnimation("idle");
       console.log("🐉 Set Sea Monster Mask to 'idle' animation");
 
+      // Spawn water swirl particle effect at base of Sea Monster
+      const waterSwirlX = 496;
+      const waterSwirlY = 214;
+      const waterSwirl = runtime.objects.FX_WaterSwirl?.createInstance(
+        seaMonsterLayer.index,
+        waterSwirlX,
+        waterSwirlY
+      );
+      if (waterSwirl) {
+        console.log(`💧 Spawned FX_WaterSwirl at (${waterSwirlX}, ${waterSwirlY})`);
+      }
+
       // Trigger rise animation immediately (tween Mask from Y=320 to Y=224 over 3 seconds)
       // The progressive reveal happens naturally as SM rises into the MaskRectangle area
       const maskBehaviors = seaMonsterMask.behaviors;
@@ -154,7 +166,7 @@ export class SeaMonsterController {
         console.warn("⚠️ Tween behavior not found on Sea Monster Mask!");
       }
 
-      // After rise animation completes, transition to NPC mode
+      // After rise animation completes, transition to NPC mode and fade out water swirl
       // Using setTimeout for now - could use C3 signals for animation events
       setTimeout(() => {
         if (this.currentState === SeaMonsterState.Rising) {
@@ -163,6 +175,19 @@ export class SeaMonsterController {
           if (sm) {
             sm.instVars.State = SeaMonsterState.NPC;
             console.log("🐉 Sea Monster ready for dialogue (NPC mode)");
+          }
+        }
+
+        // Fade out and destroy water swirl particle
+        if (waterSwirl && !waterSwirl.isDestroyed) {
+          const fadeParams = { tags: "fadeOut", destroy: true };
+          if (waterSwirl.behaviors?.Fade) {
+            waterSwirl.behaviors.Fade.startFade("out", 1, "linear", fadeParams);
+            console.log("💧 Fading out water swirl particle");
+          } else {
+            // No Fade behavior, just destroy immediately
+            waterSwirl.destroy();
+            console.log("💧 Destroyed water swirl particle (no fade)");
           }
         }
       }, 3000); // 3 seconds to match tween duration
@@ -267,6 +292,35 @@ export class SeaMonsterController {
         console.log("🎵 Player escaped! Triggered safety music (enemyGoneMusic)");
       }
       // For peaceful retreat, music handled by dialogue system
+    }
+
+    // Spawn water swirl particle effect at base of Sea Monster for retreat
+    const seaMonsterLayer = this.runtime.layout.getLayer("Sea Monster");
+    if (seaMonsterLayer) {
+      const waterSwirlX = 496;
+      const waterSwirlY = 214;
+      const waterSwirl = this.runtime.objects.FX_WaterSwirl?.createInstance(
+        seaMonsterLayer.index,
+        waterSwirlX,
+        waterSwirlY
+      );
+      if (waterSwirl) {
+        console.log(`💧 Spawned FX_WaterSwirl for retreat at (${waterSwirlX}, ${waterSwirlY})`);
+
+        // Fade out and destroy after 3 seconds when retreat completes
+        setTimeout(() => {
+          if (waterSwirl && !waterSwirl.isDestroyed) {
+            const fadeParams = { tags: "fadeOut", destroy: true };
+            if (waterSwirl.behaviors?.Fade) {
+              waterSwirl.behaviors.Fade.startFade("out", 1, "linear", fadeParams);
+              console.log("💧 Fading out retreat water swirl particle");
+            } else {
+              waterSwirl.destroy();
+              console.log("💧 Destroyed retreat water swirl particle (no fade)");
+            }
+          }
+        }, 3000);
+      }
     }
 
     // Trigger retreat animation (tween Mask back to Y=320 over 3 seconds)
