@@ -698,6 +698,16 @@ export class DialogueBridge {
                 // Remove from TypeScript inventory
                 adventureLand.Items.removeItem(itemId, action.quantity || 1);
 
+                // Remove unique item flag from SaveGameData if this is a unique item
+                const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
+                if (saveDict) {
+                  const uniqueItemKey = `UniqueItem_${itemName}`;
+                  if (saveDict.getDataMap().has(uniqueItemKey)) {
+                    saveDict.getDataMap().delete(uniqueItemKey);
+                    console.log(`[Dialogue] Removed unique item flag: ${uniqueItemKey}`);
+                  }
+                }
+
                 // Refresh inventory display
                 runtime.callFunction("populateItemSlots");
 
