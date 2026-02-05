@@ -166,7 +166,21 @@ export class SeaMonsterController {
         console.warn("⚠️ Tween behavior not found on Sea Monster Mask!");
       }
 
-      // After rise animation completes, transition to NPC mode and fade out water swirl
+      // Start fading water swirl earlier (1.5s in) so it fades during the animation
+      setTimeout(() => {
+        if (waterSwirl && !waterSwirl.isDestroyed) {
+          const fadeParams = { tags: "fadeOut", destroy: true };
+          if (waterSwirl.behaviors?.Fade) {
+            waterSwirl.behaviors.Fade.startFade("out", 3, "linear", fadeParams);
+            console.log("💧 Starting water swirl fade (3s duration, overlaps with animation)");
+          } else {
+            // No Fade behavior - will destroy after animation completes
+            console.log("💧 No Fade behavior on water swirl");
+          }
+        }
+      }, 1500); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
+
+      // After rise animation completes, transition to NPC mode
       // Using setTimeout for now - could use C3 signals for animation events
       setTimeout(() => {
         if (this.currentState === SeaMonsterState.Rising) {
@@ -178,17 +192,10 @@ export class SeaMonsterController {
           }
         }
 
-        // Fade out and destroy water swirl particle
+        // Cleanup: destroy water swirl if Fade behavior didn't auto-destroy it
         if (waterSwirl && !waterSwirl.isDestroyed) {
-          const fadeParams = { tags: "fadeOut", destroy: true };
-          if (waterSwirl.behaviors?.Fade) {
-            waterSwirl.behaviors.Fade.startFade("out", 2.5, "linear", fadeParams);
-            console.log("💧 Fading out water swirl particle (2.5s)");
-          } else {
-            // No Fade behavior, just destroy immediately
-            waterSwirl.destroy();
-            console.log("💧 Destroyed water swirl particle (no fade)");
-          }
+          waterSwirl.destroy();
+          console.log("💧 Destroyed water swirl particle (cleanup)");
         }
       }, 3000); // 3 seconds to match tween duration
 
@@ -307,19 +314,18 @@ export class SeaMonsterController {
       if (waterSwirl) {
         console.log(`💧 Spawned FX_WaterSwirl for retreat at (${waterSwirlX}, ${waterSwirlY})`);
 
-        // Fade out and destroy after 3 seconds when retreat completes
+        // Start fading water swirl earlier (1.5s in) so it fades during the animation
         setTimeout(() => {
           if (waterSwirl && !waterSwirl.isDestroyed) {
             const fadeParams = { tags: "fadeOut", destroy: true };
             if (waterSwirl.behaviors?.Fade) {
-              waterSwirl.behaviors.Fade.startFade("out", 2.5, "linear", fadeParams);
-              console.log("💧 Fading out retreat water swirl particle (2.5s)");
+              waterSwirl.behaviors.Fade.startFade("out", 3, "linear", fadeParams);
+              console.log("💧 Starting retreat water swirl fade (3s duration, overlaps with animation)");
             } else {
-              waterSwirl.destroy();
-              console.log("💧 Destroyed retreat water swirl particle (no fade)");
+              console.log("💧 No Fade behavior on retreat water swirl");
             }
           }
-        }, 3000);
+        }, 1500); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
       }
     }
 
