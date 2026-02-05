@@ -271,6 +271,21 @@ export class DialogueBridge {
         console.log(`📝 [ADVANCE] Input node - UI created by getUserTextPixel, skipping displayDialogue`);
         // Don't call displayDialogue - getUserTextPixel already created the UI
       } else {
+        // Clean up previous speaker's name frame if speaker changed (e.g., SeaMonster → AL)
+        // This prevents the previous speaker's name lingering on the new dialogue
+        const previousSpeaker = runtime.globalVars.CurrentCharacter;
+        if (previousSpeaker && previousSpeaker !== processedNode.speaker) {
+          const nameFrame = runtime.objects.obj_TextNameFrame?.getFirstInstance();
+          const nameText = runtime.objects.obj_TextName?.getFirstInstance();
+          if (nameFrame) {
+            nameFrame.destroy();
+            console.log(`🧹 [ADVANCE] Destroyed previous speaker's name frame: ${previousSpeaker}`);
+          }
+          if (nameText) {
+            nameText.destroy();
+          }
+        }
+
         console.log(`📢 [ADVANCE] Calling displayDialogue()`);
         runtime.callFunction("displayDialogue");
 
