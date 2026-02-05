@@ -93,6 +93,7 @@ export interface PlayerState {
   activeQuests: Map<string, QuestState>;
   completedQuests: Set<string>;
   inventory: Map<string, number>;
+  uniqueItems: Set<string>;  // Unique quest items from Dict_SaveGameData (UniqueItem_* keys)
   worldFlags: Map<string, any>;
   npcMemory: Map<string, Record<string, any>>;
   playerName: string;

@@ -183,7 +183,10 @@ export class QuestManager {
       case 'quest_completed':
         return playerState.completedQuests.has(prereq.questId!);
       case 'has_item':
-        return (playerState.inventory.get(prereq.itemId!) || 0) > 0;
+        // Check both regular inventory and unique items
+        const hasInInventory = (playerState.inventory.get(prereq.itemId!) || 0) > 0;
+        const hasUniqueItem = playerState.uniqueItems?.has(prereq.itemId!) || false;
+        return hasInInventory || hasUniqueItem;
       case 'level_requirement':
         return true; // Placeholder
       case 'world_flag':
@@ -314,7 +317,10 @@ export class DialogueManager {
           }
           break;
         case 'has_item':
-          result = (playerState.inventory.get(condition.itemId!) || 0) > 0;
+          // Check both regular inventory (stackable items) and unique items
+          const hasInInventory = (playerState.inventory.get(condition.itemId!) || 0) > 0;
+          const hasUniqueItem = playerState.uniqueItems?.has(condition.itemId!) || false;
+          result = hasInInventory || hasUniqueItem;
           break;
         case 'world_flag':
           result = playerState.worldFlags.get(condition.flagKey!) === condition.flagValue;
@@ -643,6 +649,7 @@ export class AdventureLandIntegration {
       activeQuests,
       completedQuests,
       inventory: new Map(),
+      uniqueItems: new Set(),  // Unique items handled in dialogue-bridge.ts
       worldFlags: new Map(),
       npcMemory: new Map(),
       playerName: runtime?.globalVars?.PlayerName || 'Adventurer',

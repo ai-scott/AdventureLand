@@ -557,6 +557,20 @@ export class DialogueBridge {
 
                 runtime.callFunction("UpdateNumbersOnPickup", itemId, action.quantity || 1);
 
+                // Show item pickup notification (ItemShowcase + obj_TextItemFrame)
+                const itemName = adventureLand.Items.getItemName(itemId);
+                const itemCategory = adventureLand.Items.getItemCategory(itemId);
+
+                // Set KeyItem for notification system (triggers obj_TextItemFrame in event sheets)
+                (runtime.globalVars as any).KeyItem = itemId;
+
+                // For unique items, just set the notification - C3 event sheets handle display
+                // This avoids the Open/Close button dialog that breaks player movement
+                console.log(`[Dialogue] ✅ ${itemName} added to inventory (simple notification)`);
+
+                // The event sheets will detect KeyItem change and show the notification
+                // (e.g., "You got a Magic Trident" or "You got a Sea Monster Key")
+
                 // If destroyTrigger is true, destroy the trigger and overlapping objects
                 if (action.destroyTrigger && this.triggerUID >= 0) {
                   const triggerInstance = runtime.getInstanceByUid(this.triggerUID);
@@ -902,15 +916,25 @@ export class DialogueBridge {
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     const activeQuests = new Map();
     const completedQuests = new Set();
+    const uniqueItems = new Set<string>();
 
     // Get all quest IDs from loaded dialogues
     const allQuestIds = DialogueManager.getAllQuestIds();
 
-    // Parse quest data from save game dictionary
+    // Parse quest data and unique items from save game dictionary
     if (dict) {
       const dataMap = dict.getDataMap();
 
-      dataMap.forEach((value: string, key: string) => {
+      dataMap.forEach((value: any, key: string) => {
+        // Check for unique items (format: "UniqueItem_ItemName")
+        if (key.startsWith('UniqueItem_')) {
+          if (value === true || value === 'true' || value === 'True') {
+            const itemName = key.substring('UniqueItem_'.length);
+            uniqueItems.add(itemName);
+          }
+          return;
+        }
+
         // ONLY process keys that are known quest IDs from dialogue files
         if (!allQuestIds.includes(key)) {
           return;
@@ -976,7 +1000,8 @@ export class DialogueBridge {
     return {
       activeQuests,
       completedQuests,
-      inventory: new Map(), // TODO: Parse from inventory if needed
+      inventory: new Map(), // TODO: Parse from inventory if needed (for stackable items)
+      uniqueItems,  // Unique quest items from Dict_SaveGameData
       worldFlags: new Map(),
       npcMemory: new Map(),
       playerName: playerName,
