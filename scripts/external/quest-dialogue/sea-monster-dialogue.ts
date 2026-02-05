@@ -275,9 +275,15 @@ export const SeaMonsterDialogue: NPCDialogue = {
                   priority: 994,
                   conditions: [
                         {
+                              "type": "has_item",
+                              "itemId": "Pink Oyster Pearl",  // Check if player has pearl in inventory
+                              "negate": false
+                        },
+                        {
                               "type": "quest_status",
                               "questId": "pearl_quest",
-                              "status": "Pearl_Found"  // Status set when pearl is collected
+                              "status": "Complete",
+                              "negate": true  // Quest NOT complete yet
                         }
                   ],
                   actions: [
@@ -295,9 +301,15 @@ export const SeaMonsterDialogue: NPCDialogue = {
                   priority: 993,
                   conditions: [
                         {
+                              "type": "has_item",
+                              "itemId": "Pink Oyster Pearl",  // Check if player has pearl
+                              "negate": false
+                        },
+                        {
                               "type": "quest_status",
                               "questId": "pearl_quest",
-                              "status": "Pearl_Found"  // Status set when pearl is collected
+                              "status": "Complete",
+                              "negate": true  // Quest NOT complete yet
                         }
                   ],
                   actions: [
@@ -309,6 +321,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                   autoAdvance: "give_trident"
             },
 
+            // Sea Monster dialogue - talks about giving the trident
             {
                   id: "give_trident",
                   speaker: "SeaMonster",
@@ -321,7 +334,22 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Pearl_Found"  // Only match during pearl return flow
                         }
                   ],
-                  endsDialogue: true,
+                  autoAdvance: "spawn_trident"
+            },
+
+            // Silent action node - spawns the trident and completes quest
+            {
+                  id: "spawn_trident",
+                  speaker: "System",
+                  text: "",  // Silent node
+                  priority: 991,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Pearl_Found"
+                        }
+                  ],
                   actions: [
                         {
                               "type": "give_item",
@@ -335,7 +363,24 @@ export const SeaMonsterDialogue: NPCDialogue = {
                         {
                               "type": "sea_monster_quest_complete"
                         }
-                  ]
+                  ],
+                  autoAdvance: "trident_received"
+            },
+
+            // AL notification - shows "You got a Magic Trident!" with narrow text box
+            {
+                  id: "trident_received",
+                  speaker: "AL",  // AdventureLand logo (game narration) - triggers narrow text box
+                  text: "You got a Magic Trident!",
+                  priority: 990,
+                  conditions: [
+                        {
+                              "type": "quest_status",
+                              "questId": "pearl_quest",
+                              "status": "Complete"
+                        }
+                  ],
+                  endsDialogue: true
             },
 
             // =====================================================
