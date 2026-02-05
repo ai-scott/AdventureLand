@@ -144,8 +144,8 @@ export class SeaMonsterController {
       console.log("🐉 Set Sea Monster Mask to 'idle' animation");
 
       // Spawn water swirl particle effect at base of Sea Monster
-      const waterSwirlX = 596;  // 100 pixels right of original (496 + 100)
-      const waterSwirlY = 246;  // 32 pixels down from original (214 + 32)
+      const waterSwirlX = 576;  // Adjusted: 20px left from 596
+      const waterSwirlY = 236;  // Adjusted: 10px up from 246
       const waterSwirl = runtime.objects.FX_WaterSwirl?.createInstance(
         seaMonsterLayer.index,
         waterSwirlX,
@@ -297,8 +297,8 @@ export class SeaMonsterController {
     // Spawn water swirl particle effect at base of Sea Monster for retreat
     const seaMonsterLayer = this.runtime.layout.getLayer("Sea Monster");
     if (seaMonsterLayer) {
-      const waterSwirlX = 596;  // 100 pixels right of original (496 + 100)
-      const waterSwirlY = 246;  // 32 pixels down from original (214 + 32)
+      const waterSwirlX = 576;  // Adjusted: 20px left from 596
+      const waterSwirlY = 236;  // Adjusted: 10px up from 246
       const waterSwirl = this.runtime.objects.FX_WaterSwirl?.createInstance(
         seaMonsterLayer.index,
         waterSwirlX,
