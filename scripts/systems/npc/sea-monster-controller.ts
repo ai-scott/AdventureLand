@@ -326,6 +326,14 @@ export class SeaMonsterController {
             }
           }
         }, 1500); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
+
+        // Cleanup: ensure water swirl is destroyed after fade completes (4.5s total)
+        setTimeout(() => {
+          if (waterSwirl && !waterSwirl.isDestroyed) {
+            waterSwirl.destroy();
+            console.log("💧 Destroyed retreat water swirl particle (cleanup)");
+          }
+        }, 4500); // 1.5s visible + 3s fade = 4.5s total
       }
     }
 
