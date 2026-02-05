@@ -401,11 +401,39 @@ export const ENEMY_CONFIG: EnemyConfig = {
 
 ### Dictionary access in TypeScript
 - **Pattern**: Use `dict.getDataMap().get('key')` not `dict.get('key')`
-- **Example**: 
+- **Example**:
 ```typescript
 const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();
 const health = dict?.getDataMap().get('Health');
 ```
+
+### C3 Picking Scope Bug (CRITICAL)
+- **Problem**: `For each Object` picks ALL instances globally, including unrelated objects on other layers
+- **Symptom**: Modifying inventory UI accidentally affects world triggers/objects with same type
+- **Solution**: ALWAYS add layer/scope conditions to `For each` loops
+
+**❌ WRONG - Picks everything:**
+```javascript
+// In C3 Event Sheet
+For each InventoryItems
+  → Set animation frame to 0  // Affects inventory UI AND world items!
+```
+
+**✅ CORRECT - Scoped to layer:**
+```javascript
+// In C3 Event Sheet
+For each InventoryItems
+  InventoryItems: Is on layer "Inventory"  // Only affects UI layer
+  → Set animation frame to 0
+```
+
+**Real bug example**: Auto-selecting X button after equipping caused world item triggers to disappear because `For each InventoryItems` was picking world triggers too.
+
+**Best practice**: Always scope `For each` loops with:
+- Layer condition: `Is on layer "LayerName"`
+- Family filter: Pick by family membership
+- Variable check: `InstanceVar = value`
+- Position check: `X > value`, `Is overlapping`, etc.
 
 ## File Extensions and Imports
 - Always use `.js` extensions in imports, even when importing `.ts` files
