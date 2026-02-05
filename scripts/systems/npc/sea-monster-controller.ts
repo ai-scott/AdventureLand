@@ -182,8 +182,8 @@ export class SeaMonsterController {
         if (waterSwirl && !waterSwirl.isDestroyed) {
           const fadeParams = { tags: "fadeOut", destroy: true };
           if (waterSwirl.behaviors?.Fade) {
-            waterSwirl.behaviors.Fade.startFade("out", 1, "linear", fadeParams);
-            console.log("💧 Fading out water swirl particle");
+            waterSwirl.behaviors.Fade.startFade("out", 2.5, "linear", fadeParams);
+            console.log("💧 Fading out water swirl particle (2.5s)");
           } else {
             // No Fade behavior, just destroy immediately
             waterSwirl.destroy();
@@ -312,8 +312,8 @@ export class SeaMonsterController {
           if (waterSwirl && !waterSwirl.isDestroyed) {
             const fadeParams = { tags: "fadeOut", destroy: true };
             if (waterSwirl.behaviors?.Fade) {
-              waterSwirl.behaviors.Fade.startFade("out", 1, "linear", fadeParams);
-              console.log("💧 Fading out retreat water swirl particle");
+              waterSwirl.behaviors.Fade.startFade("out", 2.5, "linear", fadeParams);
+              console.log("💧 Fading out retreat water swirl particle (2.5s)");
             } else {
               waterSwirl.destroy();
               console.log("💧 Destroyed retreat water swirl particle (no fade)");
