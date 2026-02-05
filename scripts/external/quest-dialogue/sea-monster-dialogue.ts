@@ -334,14 +334,15 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Pearl_Found"  // Only match during pearl return flow
                         }
                   ],
-                  autoAdvance: "spawn_trident"
+                  autoAdvance: "trident_received"
             },
 
-            // Silent action node - spawns the trident and completes quest
+            // AL notification - shows "You got a Magic Trident!" with narrow text box
+            // Matches seamonsterkey-dialogue.ts pattern (one node with text + actions)
             {
-                  id: "spawn_trident",
-                  speaker: "System",
-                  text: "",  // Silent node
+                  id: "trident_received",
+                  speaker: "AL",  // AdventureLand logo (game narration) - triggers narrow text box
+                  text: "You got a Magic Trident!",
                   priority: 991,
                   conditions: [
                         {
@@ -350,6 +351,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                               "status": "Pearl_Found"
                         }
                   ],
+                  endsDialogue: true,
                   actions: [
                         {
                               "type": "give_item",
@@ -363,24 +365,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
                         {
                               "type": "sea_monster_quest_complete"
                         }
-                  ],
-                  autoAdvance: "trident_received"
-            },
-
-            // AL notification - shows "You got a Magic Trident!" with narrow text box
-            {
-                  id: "trident_received",
-                  speaker: "AL",  // AdventureLand logo (game narration) - triggers narrow text box
-                  text: "You got a Magic Trident!",
-                  priority: 990,
-                  conditions: [
-                        {
-                              "type": "quest_status",
-                              "questId": "pearl_quest",
-                              "status": "Complete"
-                        }
-                  ],
-                  endsDialogue: true
+                  ]
             },
 
             // =====================================================
