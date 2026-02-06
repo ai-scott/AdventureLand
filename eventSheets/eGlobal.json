@@ -133,6 +133,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "DialogueJustStarted",
+			"type": "boolean",
+			"initialValue": "false",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 479950778648482
+		},
+		{
+			"eventType": "variable",
 			"name": "Current_Menu",
 			"type": "string",
 			"initialValue": "TitleScreen",
@@ -240,6 +250,16 @@
 			"isStatic": false,
 			"isConstant": false,
 			"sid": 981087237768808
+		},
+		{
+			"eventType": "variable",
+			"name": "MusicMode",
+			"type": "string",
+			"initialValue": "",
+			"comment": "tag of music playing in world",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 609874228180364
 		},
 		{
 			"eventType": "variable",
@@ -2152,6 +2172,15 @@
 								"key": "\"Health\"",
 								"comparison": 3,
 								"value": "0"
+							}
+						},
+						{
+							"id": "compare-opacity",
+							"objectClass": "Transition",
+							"sid": 580934540003026,
+							"parameters": {
+								"comparison": 0,
+								"opacity": "100"
 							}
 						}
 					],
@@ -7535,23 +7564,17 @@
 					],
 					"actions": [
 						{
-							"type": "script",
-							"language": "javascript",
-							"script": [
-								"const buttonMgr = globalThis.AdventureLand?.ButtonManager;",
-								"  if (buttonMgr) {",
-								"    // Test creating a button",
-								"    buttonMgr.showButton(\"test-btn\", {",
-								"      text: \"Test!\",",
-								"      position: { x: 100, y: 100 },",
-								"      layer: \"HUD_UI\",",
-								"      action: \"test\"",
-								"    });",
-								"    ",
-								"    // Log state",
-								"    buttonMgr.debugState();",
-								"  }"
-							]
+							"id": "play-by-name",
+							"objectClass": "Audio",
+							"sid": 698883893373887,
+							"parameters": {
+								"folder": "sounds",
+								"audio-file-name": "\"vo/AL/AL__node_000\"",
+								"loop": "not-looping",
+								"volume": "AudioLevel+100",
+								"stereo-pan": "0",
+								"tag-optional": "\"\""
+							}
 						}
 					],
 					"sid": 119070354345818
@@ -8466,81 +8489,6 @@
 												}
 											],
 											"sid": 543915338783702
-										},
-										{
-											"eventType": "comment",
-											"text": "if last Dialogue Result is \"End\" clean up dialogue"
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "else",
-													"objectClass": "System",
-													"sid": 928232547704619
-												}
-											],
-											"actions": [
-												{
-													"type": "script",
-													"language": "javascript",
-													"script": [
-														"console.log(\"🔵 EVENT 142 TRIGGERED - OptionsOpen:\", runtime.globalVars.OptionsOpen, \"InDialogue:\", runtime.globalVars.InDialogue);",
-														"const dialogue = globalThis.AdventureLand?.Dialogue;",
-														"if (dialogue) {",
-														"    dialogue.advance(runtime);",
-														"    // After advancing, check if options appeared",
-														"    if (runtime.globalVars.OptionsOpen) {",
-														"        console.log(\"📋 Options appeared after advance, displaying them\");",
-														"        runtime.callFunction(\"displayUserOptions\");",
-														"    }",
-														"}"
-													]
-												}
-											],
-											"sid": 486291389442886,
-											"disabled": true
-										},
-										{
-											"eventType": "block",
-											"conditions": [
-												{
-													"id": "compare-boolean-eventvar",
-													"objectClass": "System",
-													"sid": 945178014458103,
-													"parameters": {
-														"variable": "RequiresPlayerInput"
-													},
-													"isInverted": true
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 447269006309512,
-													"disabled": true,
-													"parameters": {
-														"variable": "DialogueResult",
-														"comparison": 1,
-														"value": "\"End\""
-													},
-													"isInverted": true
-												},
-												{
-													"id": "compare-eventvar",
-													"objectClass": "System",
-													"sid": 550554553825945,
-													"disabled": true,
-													"parameters": {
-														"variable": "DialogueResult",
-														"comparison": 1,
-														"value": "\"Continue\""
-													},
-													"isInverted": true
-												}
-											],
-											"actions": [],
-											"sid": 833268090386652,
-											"disabled": true
 										}
 									]
 								}

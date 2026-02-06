@@ -2328,6 +2328,342 @@
 				}
 			],
 			"sid": 487433652367603
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "Play Voiceover",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"functionName": "PlayVoiceLine",
+					"functionDescription": "plays a VO clip ",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "speaker",
+							"type": "string",
+							"initialValue": "",
+							"comment": "the NPC speaking",
+							"sid": 344787444368206
+						},
+						{
+							"name": "nodeId",
+							"type": "string",
+							"initialValue": "",
+							"comment": "the node description/action",
+							"sid": 633172487870656
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "stop",
+							"objectClass": "Audio",
+							"sid": 776121633235030,
+							"parameters": {
+								"tag": "\"Voice\""
+							}
+						}
+					],
+					"sid": 257774705815833,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 456130362397074,
+									"parameters": {
+										"variable": "speaker",
+										"comparison": 0,
+										"value": "\"You\""
+									}
+								}
+							],
+							"actions": [],
+							"sid": 922846554565355
+						},
+						{
+							"eventType": "variable",
+							"name": "voiceFile",
+							"type": "string",
+							"initialValue": "",
+							"comment": "filename for VO clip",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 298667446798781
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 747048556818092,
+									"parameters": {
+										"variable": "speaker",
+										"comparison": 1,
+										"value": "\"You\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 369976392746206,
+									"parameters": {
+										"variable": "voiceFile",
+										"value": "\"vo/\" & speaker & \"/\" & speaker & \"__\" & nodeId"
+									}
+								},
+								{
+									"id": "play-by-name",
+									"objectClass": "Audio",
+									"sid": 440824756363180,
+									"parameters": {
+										"folder": "sounds",
+										"audio-file-name": "voiceFile",
+										"loop": "not-looping",
+										"volume": "AudioLevel+100",
+										"stereo-pan": "0",
+										"tag-optional": "\"Voice\""
+									}
+								},
+								{
+									"id": "log",
+									"objectClass": "Browser",
+									"sid": 575003069959205,
+									"parameters": {
+										"type": "log",
+										"message": "\"PlayVoiceLine: speaker=\" & speaker & \" nodeId=\" & nodeId & \" file=\" & voiceFile\n"
+									}
+								}
+							],
+							"sid": 111799215052212,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 502595898287090,
+											"parameters": {
+												"variable": "MusicMode",
+												"comparison": 0,
+												"value": "\"base\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "fade-volume",
+											"objectClass": "Audio",
+											"sid": 765785094916405,
+											"parameters": {
+												"tag": "\"base\"",
+												"db": "-15",
+												"duration": ".1",
+												"ending": "keep-playing"
+											}
+										}
+									],
+									"sid": 243794175126244
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 849186046943020,
+											"parameters": {
+												"variable": "MusicMode",
+												"comparison": 0,
+												"value": "\"mid\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "fade-volume",
+											"objectClass": "Audio",
+											"sid": 998124160850847,
+											"parameters": {
+												"tag": "\"mid\"",
+												"db": "-15",
+												"duration": ".1",
+												"ending": "keep-playing"
+											}
+										}
+									],
+									"sid": 988702839638940
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 475921448289079,
+											"parameters": {
+												"variable": "MusicMode",
+												"comparison": 0,
+												"value": "\"high\""
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "fade-volume",
+											"objectClass": "Audio",
+											"sid": 952644905882489,
+											"parameters": {
+												"tag": "\"high\"",
+												"db": "-15",
+												"duration": ".1",
+												"ending": "keep-playing"
+											}
+										}
+									],
+									"sid": 145726476109530
+								}
+							]
+						}
+					]
+				},
+				{
+					"functionName": "EndOfVoiceLine",
+					"functionDescription": "triggered when VO is over",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 990711041821786,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 614972461280263,
+									"parameters": {
+										"variable": "MusicMode",
+										"comparison": 0,
+										"value": "\"base\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 653811204506076,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "AudioLevel",
+										"duration": ".2",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 867441776463449
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 700166020134058,
+									"parameters": {
+										"variable": "MusicMode",
+										"comparison": 0,
+										"value": "\"mid\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 833082962198609,
+									"parameters": {
+										"tag": "\"mid\"",
+										"db": "AudioLevel",
+										"duration": ".2",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 956800678285590
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 560157524795551,
+									"parameters": {
+										"variable": "MusicMode",
+										"comparison": 0,
+										"value": "\"high\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 972364222547870,
+									"parameters": {
+										"tag": "\"high\"",
+										"db": "AudioLevel",
+										"duration": ".2",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 451959486930305
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-ended",
+							"objectClass": "Audio",
+							"sid": 360210347333441,
+							"parameters": {
+								"tag": "\"Voice\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"callFunction": "EndOfVoiceLine",
+							"sid": 772004686538857
+						}
+					],
+					"sid": 931646130761720
+				}
+			],
+			"sid": 324557186099399
 		}
 	],
 	"sid": 594044861408521

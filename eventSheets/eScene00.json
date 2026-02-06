@@ -187,6 +187,15 @@
 					],
 					"actions": [
 						{
+							"id": "wait",
+							"objectClass": "System",
+							"sid": 999796741321346,
+							"parameters": {
+								"seconds": "1.0",
+								"use-timescale": true
+							}
+						},
+						{
 							"callFunction": "initiateDialogue",
 							"sid": 277140473801482,
 							"parameters": [

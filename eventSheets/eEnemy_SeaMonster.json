@@ -109,7 +109,7 @@
 						"      const player = runtime.objects.Player_Base.getFirstInstance();",
 						"      ",
 						"      if (smBase && player) {",
-						"        const spawnX = 525;",
+						"        const spawnX = 505;",
 						"        const spawnY = 190;",
 						"        ",
 						"        const waterBall = runtime.objects.Projectile_WaterBall.createInstance(",

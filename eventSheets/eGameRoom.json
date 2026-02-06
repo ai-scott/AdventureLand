@@ -5750,17 +5750,6 @@
 								{
 									"id": "compare-two-values",
 									"objectClass": "System",
-									"sid": 382016721749149,
-									"disabled": true,
-									"parameters": {
-										"first-value": "LayoutName",
-										"comparison": 0,
-										"second-value": "\"World_00_Windmill_F0\""
-									}
-								},
-								{
-									"id": "compare-two-values",
-									"objectClass": "System",
 									"sid": 700286428037418,
 									"parameters": {
 										"first-value": "tokenat(LayoutName,2,\"_\")",
@@ -6243,145 +6232,187 @@
 					]
 				},
 				{
-					"functionName": "enemyNearMusic",
-					"functionDescription": "change music when enemy is near",
+					"functionName": "ApplyMusicMode",
+					"functionDescription": "change world music by enemy distance",
 					"functionCategory": "Audio",
 					"functionReturnType": "none",
 					"functionCopyPicked": false,
 					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
+					"functionParameters": [
 						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 290743790437780,
-							"parameters": {
-								"tag": "\"base\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
+							"name": "mode",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 762650076664409
 						},
 						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 573237492551041,
-							"parameters": {
-								"tag": "\"mid\"",
-								"db": "AudioLevel",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 597919327618610,
-							"parameters": {
-								"tag": "\"high\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
+							"name": "duckDb",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 699913848935359
 						}
 					],
-					"sid": 289256551778095
-				},
-				{
-					"functionName": "enemyThreatMusic",
-					"functionDescription": "change music when fighting an enemy ",
-					"functionCategory": "Audio",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
 					"eventType": "function-block",
 					"conditions": [],
-					"actions": [
+					"actions": [],
+					"sid": 357577617109083,
+					"children": [
 						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 663401411271923,
-							"parameters": {
-								"tag": "\"base\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 660072490145119,
+									"parameters": {
+										"variable": "mode",
+										"comparison": 0,
+										"value": "\"base\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 494902072122327,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "AudioLevel + duckDb",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 793255971909108,
+									"parameters": {
+										"tag": "\"mid\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 559472345702480,
+									"parameters": {
+										"tag": "\"high\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 123336749570585
 						},
 						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 830070382260791,
-							"parameters": {
-								"tag": "\"high\"",
-								"db": "AudioLevel",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 319691575818337,
+									"parameters": {
+										"variable": "mode",
+										"comparison": 0,
+										"value": "\"mid\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 337017730445313,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 339131626166601,
+									"parameters": {
+										"tag": "\"mid\"",
+										"db": "AudioLevel + duckDb",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 329614535605828,
+									"parameters": {
+										"tag": "\"high\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 616719112455127
 						},
 						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 950391865016376,
-							"parameters": {
-								"tag": "\"mid\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-eventvar",
+									"objectClass": "System",
+									"sid": 366843813804403,
+									"parameters": {
+										"variable": "mode",
+										"comparison": 0,
+										"value": "\"high\""
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 739695980392958,
+									"parameters": {
+										"tag": "\"base\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 203214236797597,
+									"parameters": {
+										"tag": "\"mid\"",
+										"db": "-100",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								},
+								{
+									"id": "fade-volume",
+									"objectClass": "Audio",
+									"sid": 926074129981967,
+									"parameters": {
+										"tag": "\"high\"",
+										"db": "AudioLevel + duckDb",
+										"duration": ".3",
+										"ending": "keep-playing"
+									}
+								}
+							],
+							"sid": 572726510042285
 						}
-					],
-					"sid": 456188128220590
-				},
-				{
-					"functionName": "enemyGoneMusic",
-					"functionDescription": "change music when enemy is defeated",
-					"functionCategory": "Audio",
-					"functionReturnType": "none",
-					"functionCopyPicked": false,
-					"functionIsAsync": false,
-					"functionParameters": [],
-					"eventType": "function-block",
-					"conditions": [],
-					"actions": [
-						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 151207673900009,
-							"parameters": {
-								"tag": "\"base\"",
-								"db": "AudioLevel",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 184836843812561,
-							"parameters": {
-								"tag": "\"mid\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
-						},
-						{
-							"id": "fade-volume",
-							"objectClass": "Audio",
-							"sid": 222418563225689,
-							"parameters": {
-								"tag": "\"high\"",
-								"db": "-100",
-								"duration": ".5",
-								"ending": "keep-playing"
-							}
-						}
-					],
-					"sid": 434344922181538
+					]
 				}
 			],
 			"sid": 795946120113667

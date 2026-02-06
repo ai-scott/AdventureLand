@@ -1083,6 +1083,20 @@
 							],
 							"subfolders": [],
 							"name": "npc"
+						},
+						{
+							"items": [
+								{
+									"name": "music-controller.ts",
+									"type": "application/typescript",
+									"sid": 780503639424469,
+									"script-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "audio"
 						}
 					],
 					"name": "systems"
@@ -1662,6 +1676,39 @@
 					],
 					"subfolders": [],
 					"name": "Monsters"
+				},
+				{
+					"items": [],
+					"subfolders": [
+						{
+							"items": [],
+							"subfolders": [],
+							"name": "SeaMonster"
+						},
+						{
+							"items": [
+								{
+									"name": "AL__node_000.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 283377700648927,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "AL__node_001.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 815404018824761,
+									"file-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "AL"
+						}
+					],
+					"name": "vo"
 				}
 			]
 		},

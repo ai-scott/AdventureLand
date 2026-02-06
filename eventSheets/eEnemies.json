@@ -96,8 +96,12 @@
 									],
 									"actions": [
 										{
-											"callFunction": "enemyThreatMusic",
-											"sid": 760808654955447
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const music = globalThis.AdventureLand?.MusicController;",
+												"if (music) music.setDesiredMode(\"high\");"
+											]
 										}
 									],
 									"sid": 394085873726444
@@ -142,8 +146,13 @@
 									],
 									"actions": [
 										{
-											"callFunction": "enemyNearMusic",
-											"sid": 572144107688525
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const music = globalThis.AdventureLand?.MusicController;",
+												"if (music) music.setDesiredMode(\"mid\");",
+												""
+											]
 										}
 									],
 									"sid": 542893068735971
@@ -178,8 +187,13 @@
 									],
 									"actions": [
 										{
-											"callFunction": "enemyGoneMusic",
-											"sid": 407011256197670
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const music = globalThis.AdventureLand?.MusicController;",
+												"if (music) music.setDesiredMode(\"base\");",
+												""
+											]
 										}
 									],
 									"sid": 500947998640347
@@ -1175,10 +1189,6 @@
 							"eventType": "function-block",
 							"conditions": [],
 							"actions": [
-								{
-									"callFunction": "enemyGoneMusic",
-									"sid": 210618460497653
-								},
 								{
 									"callFunction": "Audio_Play_Sound",
 									"sid": 739672724617211,
