@@ -326,6 +326,17 @@ This bug has been reported multiple times - TypeScript casting can only be used 
 - **Quest Tracking**: triggerUID tracking prevents duplicate dialogue triggers
 - **Event Sheet Safety**: Uses safe JavaScript pattern with InDialogue checks
 
+### SFX Controller (`scripts/systems/audio/sfx-controller.ts`)
+- Convention-based sound effect system
+- Naming: `{character/object}_{action}` (e.g., `seamonster_rise`, `door_open`, `item_pickup`)
+- Uses C3 Audio resource names (no path, no extension)
+- Optional volume parameter in dB (0 = normal, negative = quieter, positive = louder)
+- Does NOT duck music (unlike VO system)
+- **Usage in TypeScript**: `SFXController.play("seamonster_rise", -5)`
+- **Usage in Event Sheets**: `globalThis.AdventureLand?.SFX?.play("door_open", 0)`
+- **C3 Integration**: Requires `PlaySFX(soundName, volume)` function in event sheets
+- **Convenience methods**: `playBubble(volume)` for common water/bubble effects
+
 ## Testing Structure
 
 ### Test Organization

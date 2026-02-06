@@ -8,6 +8,8 @@
  * Design: See scripts/external/quest-dialogue/sea-monster-quest-design.md
  */
 
+import { SFXController } from "../audio/sfx-controller.js";
+
 export enum SeaMonsterState {
   Hidden = "hidden",        // Not spawned, underwater (initial state)
   Rising = "rising",        // Surfacing animation in progress
@@ -66,6 +68,11 @@ export class SeaMonsterController {
     this.currentState = SeaMonsterState.Rising;
 
     try {
+      const sfx = (globalThis as any).AdventureLand?.SFX;
+      if (sfx?.playBubble) {
+        sfx.playBubble(-6);
+      }
+
       // Get the Sea Monster layer (required for MaskRectangle to work)
       const seaMonsterLayer = runtime.layout.getLayer("Sea Monster");
       if (!seaMonsterLayer) {
@@ -154,6 +161,9 @@ export class SeaMonsterController {
       if (waterSwirl) {
         console.log(`💧 Spawned FX_WaterSwirl at (${waterSwirlX}, ${waterSwirlY})`);
       }
+
+      // Play rise sound effect
+      SFXController.playBubble(-6);  // Quieter bubble SFX
 
       // Trigger rise animation immediately (tween Mask from Y=320 to Y=224 over 3 seconds)
       // The progressive reveal happens naturally as SM rises into the MaskRectangle area
@@ -283,6 +293,11 @@ export class SeaMonsterController {
       return;
     }
 
+    const sfx = (globalThis as any).AdventureLand?.SFX;
+    if (sfx?.playBubble) {
+      sfx.playBubble(-6);
+    }
+
     this.currentState = SeaMonsterState.Retreating;
     seaMonster.instVars.State = SeaMonsterState.Retreating;
 
@@ -313,7 +328,12 @@ export class SeaMonsterController {
       );
       if (waterSwirl) {
         console.log(`💧 Spawned FX_WaterSwirl for retreat at (${waterSwirlX}, ${waterSwirlY})`);
+      }
 
+      // Play retreat sound effect
+      SFXController.playBubble(-6);  // Quieter bubble SFX
+
+      if (waterSwirl) {
         // Start fading water swirl earlier (1.5s in) so it fades during the animation
         setTimeout(() => {
           if (waterSwirl && !waterSwirl.isDestroyed) {

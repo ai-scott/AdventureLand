@@ -1093,6 +1093,14 @@
 									"script-info": {
 										"purpose": "none"
 									}
+								},
+								{
+									"name": "sfx-controller.ts",
+									"type": "application/typescript",
+									"sid": 864469309388813,
+									"script-info": {
+										"purpose": "none"
+									}
 								}
 							],
 							"subfolders": [],
@@ -1709,6 +1717,20 @@
 						}
 					],
 					"name": "vo"
+				},
+				{
+					"items": [
+						{
+							"name": "BubbleBubble.webm",
+							"type": "audio/webm; codecs=opus",
+							"sid": 742823218221987,
+							"file-info": {
+								"purpose": "none"
+							}
+						}
+					],
+					"subfolders": [],
+					"name": "SFX"
 				}
 			]
 		},

@@ -6413,6 +6413,78 @@
 							"sid": 572726510042285
 						}
 					]
+				},
+				{
+					"functionName": "PlaySFX",
+					"functionDescription": "",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "soundName",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 756525579757194
+						},
+						{
+							"name": "volumeDb",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 343422459571183
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "play-by-name",
+							"objectClass": "Audio",
+							"sid": 385901680218030,
+							"parameters": {
+								"folder": "sounds",
+								"audio-file-name": "soundName",
+								"loop": "not-looping",
+								"volume": "volumeDb",
+								"stereo-pan": "0",
+								"tag-optional": "\"SFX\""
+							}
+						}
+					],
+					"sid": 227383962556811
+				},
+				{
+					"functionName": "StopSFX",
+					"functionDescription": "",
+					"functionCategory": "Audio",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "tag",
+							"type": "string",
+							"initialValue": "",
+							"comment": "",
+							"sid": 868629583575135
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [
+						{
+							"id": "stop",
+							"objectClass": "Audio",
+							"sid": 283567529026469,
+							"parameters": {
+								"tag": "tag"
+							}
+						}
+					],
+					"sid": 708369138689810
 				}
 			],
 			"sid": 795946120113667
