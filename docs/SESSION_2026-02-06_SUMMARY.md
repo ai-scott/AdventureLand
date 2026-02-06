@@ -21,6 +21,7 @@ Dialogue Voice-Over (VO) system, music ducking, and Sea Monster polish (water sw
     - Restores music mix via ducking controller.
 - **Debug logs** added:
   - TS logs in DialogueBridge to show VO speaker/nodeId.
+  - C3 logs for PlayVoiceLine to confirm resource name lookups.
 
 ### Music Controller (TypeScript)
 - New `MusicController` in `scripts/systems/audio/music-controller.ts`.
@@ -30,6 +31,7 @@ Dialogue Voice-Over (VO) system, music ducking, and Sea Monster polish (water sw
   - `clearDuck()`
 - Calls C3 function `ApplyMusicMode(mode, duckDb)` to crossfade tags.
 - Removes per-tick music fighting and enables clean ducking.
+  - Enemy proximity now sets `MusicController.setDesiredMode(...)` with a base fallback.
 
 ### C3 Audio Integration
 - `ApplyMusicMode(mode, duckDb)` function added:
@@ -38,11 +40,17 @@ Dialogue Voice-Over (VO) system, music ducking, and Sea Monster polish (water sw
 - Enemy proximity logic updated to call:
   - `MusicController.setDesiredMode("base" | "mid" | "high")`
 - Per-tick calls to `enemyThreatMusic`, `enemyNearMusic`, `enemyGoneMusic` removed.
+  - Added reliable fallback to base when no on-screen enemies.
 
 ### Dialogue Timing Guard
 - `DialogueJustStarted` global boolean added.
 - TS guard added to reduce immediate double-advance on the same input.
 - Note: First-line VO still depends on not instantly advancing; a short wait before initial line helped.
+
+### SFX Controller Updates
+- SFX resource names may include folders (e.g., `SFX/BubbleBubble`).
+- Sea Monster rise/retreat now plays `SFX/BubbleBubble`.
+- Added `PlaySFX` / `StopSFX` C3 functions to support TS playback.
 
 ## Sea Monster Polish
 - **Water swirl particle effect** added at Sea Monster base for rise/retreat.
@@ -59,4 +67,3 @@ Dialogue Voice-Over (VO) system, music ducking, and Sea Monster polish (water sw
 ## Notes
 - Construct 3 audio uses **resource names**, not paths. VO clips must be imported as `Speaker__NodeId` (no folder path in play calls).
 - VO format: `.ogg` may import as `.webm` in C3; always use resource names.
-
