@@ -133,6 +133,16 @@
 		},
 		{
 			"eventType": "variable",
+			"name": "EnemyThreatLevel",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "0=base, 1=mid, 2=high",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 460971460546689
+		},
+		{
+			"eventType": "variable",
 			"name": "DialogueJustStarted",
 			"type": "boolean",
 			"initialValue": "false",
@@ -7566,14 +7576,14 @@
 						{
 							"id": "play-by-name",
 							"objectClass": "Audio",
-							"sid": 698883893373887,
+							"sid": 432560611209187,
 							"parameters": {
 								"folder": "sounds",
-								"audio-file-name": "\"vo/AL/AL__node_000\"",
+								"audio-file-name": "\"SFX/BubbleBubble\"",
 								"loop": "not-looping",
 								"volume": "AudioLevel+100",
 								"stereo-pan": "0",
-								"tag-optional": "\"\""
+								"tag-optional": "\"SFX\""
 							}
 						}
 					],

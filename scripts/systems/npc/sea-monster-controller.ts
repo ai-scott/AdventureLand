@@ -255,9 +255,10 @@ export class SeaMonsterController {
     }
 
     // Trigger danger music
-    if (this.runtime?.callFunction) {
-      this.runtime.callFunction("enemyThreatMusic");
-      console.log("🎵 Triggered danger music (enemyThreatMusic)");
+    const music = (globalThis as any).AdventureLand?.MusicController;
+    if (music?.setDesiredMode) {
+      music.setDesiredMode("high");
+      console.log("🎵 Set music mode to high (MusicController)");
     }
 
     console.log("🔥 Sea Monster is now hostile and will attack!");
@@ -306,15 +307,14 @@ export class SeaMonsterController {
     seaMonster.instVars.AIEnabled = false;
     seaMonster.instVars.IsHostile = false;
 
-    // Trigger appropriate music based on retreat reason
-    if (this.runtime?.callFunction) {
-      if (reason === "player-left") {
-        // Player escaped - play victory/safe music
-        this.runtime.callFunction("enemyGoneMusic");
-        console.log("🎵 Player escaped! Triggered safety music (enemyGoneMusic)");
-      }
-      // For peaceful retreat, music handled by dialogue system
+    // Return to safe music mix
+    const music = (globalThis as any).AdventureLand?.MusicController;
+    if (music?.setDesiredMode) {
+      music.setDesiredMode("base");
+      console.log("🎵 Set music mode to base (MusicController)");
     }
+
+    // Music handled via MusicController (already set to base above)
 
     // Spawn water swirl particle effect at base of Sea Monster for retreat
     const seaMonsterLayer = this.runtime.layout.getLayer("Sea Monster");

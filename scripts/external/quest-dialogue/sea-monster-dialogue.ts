@@ -325,7 +325,7 @@ export const SeaMonsterDialogue: NPCDialogue = {
             {
                   id: "give_trident",
                   speaker: "SeaMonster",
-                  text: "I found this magical weapon in the lake. Take it for being so kind to me.",
+                  text: "I found this magical weapon in the lake. Happy Birthday, dear girl!",
                   priority: 992,
                   conditions: [
                         {

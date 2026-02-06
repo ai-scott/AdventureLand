@@ -65,6 +65,194 @@
 							"sid": 378052520724435
 						},
 						{
+							"eventType": "variable",
+							"name": "dist",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "distance from player",
+							"isStatic": false,
+							"isConstant": false,
+							"sid": 609331525790668
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "every-x-seconds",
+									"objectClass": "System",
+									"sid": 316789604811294,
+									"parameters": {
+										"interval-seconds": ".2"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-eventvar-value",
+									"objectClass": "System",
+									"sid": 128326697723247,
+									"parameters": {
+										"variable": "EnemyThreatLevel",
+										"value": "0"
+									}
+								},
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const music = globalThis.AdventureLand?.MusicController;",
+										"if (music) music.setDesiredMode(\"base\");"
+									]
+								}
+							],
+							"sid": 429326974884704,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "for-each",
+											"objectClass": "System",
+											"sid": 727317661818169,
+											"parameters": {
+												"object": "EnemyMasks"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-eventvar-value",
+											"objectClass": "System",
+											"sid": 480448199747051,
+											"parameters": {
+												"variable": "dist",
+												"value": "distance(Player_Base.X, Player_Base.Y, EnemyMasks.X, EnemyMasks.Y)"
+											}
+										}
+									],
+									"sid": 650956566063818,
+									"children": [
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 453052484605444,
+													"parameters": {
+														"variable": "dist",
+														"comparison": 3,
+														"value": "100"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 358100347872285,
+													"parameters": {
+														"variable": "EnemyThreatLevel",
+														"value": "2"
+													}
+												}
+											],
+											"sid": 922254056593991
+										},
+										{
+											"eventType": "block",
+											"conditions": [
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 458727924940306,
+													"parameters": {
+														"variable": "dist",
+														"comparison": 4,
+														"value": "100"
+													}
+												},
+												{
+													"id": "compare-eventvar",
+													"objectClass": "System",
+													"sid": 560629972629191,
+													"parameters": {
+														"variable": "dist",
+														"comparison": 2,
+														"value": "250"
+													}
+												}
+											],
+											"actions": [
+												{
+													"id": "set-eventvar-value",
+													"objectClass": "System",
+													"sid": 773962951386274,
+													"parameters": {
+														"variable": "EnemyThreatLevel",
+														"value": "1"
+													}
+												}
+											],
+											"sid": 834061667389231
+										}
+									]
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 676313025016764,
+											"parameters": {
+												"variable": "EnemyThreatLevel",
+												"comparison": 0,
+												"value": "2"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const music = globalThis.AdventureLand?.MusicController;",
+												"if (music) music.setDesiredMode(\"high\");"
+											]
+										}
+									],
+									"sid": 543941418174931
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-eventvar",
+											"objectClass": "System",
+											"sid": 643028877471126,
+											"parameters": {
+												"variable": "EnemyThreatLevel",
+												"comparison": 0,
+												"value": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const music = globalThis.AdventureLand?.MusicController;",
+												"if (music) music.setDesiredMode(\"mid\");"
+											]
+										}
+									],
+									"sid": 372744687802771
+								}
+							]
+						},
+						{
 							"eventType": "comment",
 							"text": "Activate"
 						},
@@ -199,6 +387,33 @@
 									"sid": 500947998640347
 								}
 							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-child-count",
+									"objectClass": "EnemyMasks",
+									"sid": 283184683415255,
+									"parameters": {
+										"which": "own",
+										"comparison": 0,
+										"count": "0"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const music = globalThis.AdventureLand?.MusicController;",
+										"   if (music) music.setDesiredMode(\"base\");"
+									]
+								}
+							],
+							"sid": 587305121390150
 						},
 						{
 							"eventType": "comment",

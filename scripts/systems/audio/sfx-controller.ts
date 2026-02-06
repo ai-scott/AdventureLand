@@ -3,7 +3,7 @@
  *
  * Handles sound effect playback throughout the game.
  * Uses convention-based naming: {character/object}_{action}
- * Resource names are extensionless (Construct 3 audio resource names).
+ * Resource names are extensionless and may include folders (Construct 3 audio resource names).
  *
  * Examples:
  *   - seamonster_rise
@@ -30,10 +30,10 @@ export class SFXController {
   /**
    * Play a sound effect
    *
-   * Uses C3 resource names (no path, no extension) with convention:
+   * Uses C3 resource names (no extension) with convention:
    * {character/object}_{action}
    *
-   * @param soundName - Resource name (e.g., "seamonster_rise")
+   * @param soundName - Resource name (e.g., "SFX/seamonster_rise")
    * @param volume - Optional volume in dB (0 = normal, negative = quieter, positive = louder)
    *
    * @example
@@ -56,8 +56,8 @@ export class SFXController {
   /**
    * Convenience: play the Sea Monster bubble SFX
    */
-  static playBubble(volume: number = -6): void {
-    this.play("BubbleBubble", volume);
+  static playBubble(volume: number = 0): void {
+    this.play("SFX/BubbleBubble", volume);
   }
 
   /**

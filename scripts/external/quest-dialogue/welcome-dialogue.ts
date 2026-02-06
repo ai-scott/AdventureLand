@@ -15,7 +15,7 @@ export const WelcomeDialogue: NPCDialogue = {
 
   nodes: [
     {
-      id: "node_000",
+      id: "WelcomeToAdventureLand",
       speaker: "AL",
       text: "Welcome to AdventureLand! Tap[icon=Pointer] or hit spacebar[icon=Spc] to continue",
       priority: 100,
@@ -26,10 +26,10 @@ export const WelcomeDialogue: NPCDialogue = {
           "status": "Not_Started"
         }
       ],
-      autoAdvance: "node_001"
+      autoAdvance: "HaveFun"
     },
     {
-      id: "node_001",
+      id: "HaveFun",
       speaker: "AL",
       text: "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!",
       priority: 99,

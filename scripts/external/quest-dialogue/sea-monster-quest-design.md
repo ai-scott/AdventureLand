@@ -1113,8 +1113,8 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 ### 🔨 Phase 3: Battle System + Polish
 
 **Completed Tasks:**
-- [x] Trigger danger music when SM goes hostile (enemyThreatMusic)
-- [x] Trigger safety music when player escapes (enemyGoneMusic)
+- [x] Trigger danger music when SM goes hostile (MusicController.setDesiredMode("high"))
+- [x] Trigger safety music when player escapes (MusicController.setDesiredMode("base"))
 - [x] Add player-leaves-island retreat detection (X < 320)
 - [x] Implement water ball projectile spawning (every 2 seconds from mouth)
 - [x] Water ball collision and damage system (3 damage + knockback)

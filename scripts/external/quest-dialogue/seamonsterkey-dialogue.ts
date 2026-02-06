@@ -16,7 +16,7 @@ export const SeaMonsterKeyDialogue: NPCDialogue = {
 
       nodes: [
             {
-                  id: "node_000",
+                  id: "SeaMonsterKey_Found",
                   speaker: "AL",
                   text: "You found a Sea Monster Key! ",
                   priority: 100,
