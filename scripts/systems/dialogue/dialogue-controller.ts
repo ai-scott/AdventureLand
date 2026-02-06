@@ -70,6 +70,12 @@ export class DialogueController {
           return false; // Let event sheets handle it
         }
 
+        // Guard: prevent immediate double-advance right after a node is shown
+        if (runtime.globalVars.DialogueJustStarted) {
+          console.log('⏳ [Dialogue] DialogueJustStarted=true - consuming space to avoid double-advance');
+          return true; // Handled, do not advance
+        }
+
         // Check if typewriter was just finished by C3 Event 190
         // Event 190 sets TypewriterRunning = true when finishing typewriter
         if (runtime.globalVars.TypewriterRunning) {
@@ -114,6 +120,12 @@ export class DialogueController {
         // If options are open, ignore clicks (let C3 handle option selection)
         if (runtime.globalVars.OptionsOpen) {
           return false; // Let C3 handle option clicks
+        }
+
+        // Guard: prevent immediate double-advance right after a node is shown
+        if (runtime.globalVars.DialogueJustStarted) {
+          console.log('⏳ [Dialogue] DialogueJustStarted=true - consuming tap to avoid double-advance');
+          return true; // Handled, do not advance
         }
 
         // Otherwise, advance dialogue (same as spacebar)

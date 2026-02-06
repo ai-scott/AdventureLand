@@ -114,6 +114,14 @@ export class InputManager {
     // Track key state
     this.keyStates.set(e.key, true);
 
+    // Prevent key-repeat from auto-advancing dialogue
+    if (e.repeat && this.activeContext === 'dialogue') {
+      if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+        return;
+      }
+    }
+
+
     // Get handler for active context
     const handler = this.handlers.get(this.activeContext);
     if (!handler) {
@@ -207,6 +215,7 @@ export class InputManager {
   private static handleKeyUp(e: KeyboardEvent): void {
     // Track key state
     this.keyStates.set(e.key, false);
+
   }
 
   /**

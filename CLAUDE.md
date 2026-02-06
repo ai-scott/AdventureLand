@@ -76,6 +76,9 @@ AdventureLand is a TypeScript-enhanced Construct 3 game project. It uses a hybri
 
 This project uses **hierarchical documentation** - context-specific `.md` files located near relevant code. **IMPORTANT**: When working on a system, always read the relevant documentation first to understand patterns, gotchas, and current state.
 
+**Recent session notes**:
+- `docs/SESSION_2026-02-06_SUMMARY.md` (VO system + music controller + Sea Monster polish)
+
 ### Documentation Hierarchy
 
 1. **Root Level** (project-wide context)

@@ -233,7 +233,20 @@ Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/
 - [ ] Map showcaseFrame in itemsLibrary.json
 
 **Visual Effects:**
-- [ ] Add water swirl particles at SM base during rise/retreat animations
+- [x] Add water swirl particles at SM base during rise/retreat animations ✅ COMPLETE (2026-02-06)
+
+### 🔊 Dialogue Voice-Over System (2026-02-06)
+
+**Status**: ✅ Core plumbing complete, VO rollout in progress
+
+- [x] DialogueBridge triggers PlayVoiceLine on node display
+- [x] EndOfVoiceLine hook for music restore
+- [x] Speaker-based VO naming: `AL__node_000` etc. (resource names)
+- [x] MusicController (TS) for mode + ducking control
+- [x] C3 ApplyMusicMode function (base/mid/high fade with duckDb)
+- [x] DialogueJustStarted guard to reduce immediate auto-advance
+- [ ] Fill VO files for NPCs (gradual rollout)
+- [ ] Optional: narrator VO (AL/System) as files are added
 
 **Design Document**: `scripts/external/quest-dialogue/sea-monster-quest-design.md`
 

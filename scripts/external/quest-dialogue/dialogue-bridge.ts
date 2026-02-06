@@ -17,6 +17,7 @@ export class DialogueBridge {
   private static currentNode: string = "";
   private static currentResponses: DialogueResponse[] = [];
   private static triggerUID: number = -1;  // Track which trigger object initiated dialogue
+  private static readonly silentSpeakers = new Set(["You"]);
 
   /**
    * Initialize dialogue with an NPC
@@ -109,6 +110,8 @@ export class DialogueBridge {
       runtime.globalVars.enhanced_dialogue_text = node.text;
       runtime.globalVars.use_enhanced_dialogue = true;
 
+      this.playVoiceForNode(node, runtime);
+
       // Execute any auto-actions (actions without requiring a response)
       if (node.actions) {
         console.log(`⚙️ [START] Executing ${node.actions.length} actions for node ${node.id}`);
@@ -123,6 +126,9 @@ export class DialogueBridge {
         console.log(`📢 [START] Calling displayDialogue() - no options`);
         runtime.callFunction("displayDialogue");
       }
+
+      // Prevent immediate double-advance if Space is still held from prior input
+      this.setDialogueJustStarted(runtime, 0.5);
 
       // Auto-advance ONLY for silent System nodes (empty text, used for actions)
       // Regular dialogue nodes with autoAdvance wait for player to press Space
@@ -256,6 +262,7 @@ export class DialogueBridge {
       console.log(`📋 [ADVANCE] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
       console.log(`📊 [ADVANCE] OptionsOpen: ${runtime.globalVars.OptionsOpen}, ResponseCount: ${this.currentResponses.length}`);
 
+      this.playVoiceForNode(processedNode, runtime);
 
       // Execute any actions on the new node (this will call getUserText for input nodes)
       if (nextNode.actions) {
@@ -311,6 +318,9 @@ export class DialogueBridge {
         runtime.globalVars.TypewriterRunning = true;
         console.log('⌨️ [ADVANCE] TypewriterRunning set to true (will be cleared when typing finishes)');
       }
+
+      // Prevent immediate double-advance on the same key press
+      this.setDialogueJustStarted(runtime, 0.25);
 
       // Don't auto-advance - wait for player input (space/click)
       // The event sheet will call advanceDialogue() when player presses space
@@ -429,6 +439,8 @@ export class DialogueBridge {
     console.log(`🔀 autoAdvance: ${processedNode.autoAdvance}, endsDialogue: ${processedNode.endsDialogue}`);
     console.log(`📝 Response texts:`, this.currentResponses.map(r => r.text));
 
+    this.playVoiceForNode(processedNode, runtime);
+
     // Execute any actions on the new node
     if (processedNode.actions) {
       this.executeActions(processedNode.actions, runtime);
@@ -443,6 +455,9 @@ export class DialogueBridge {
       runtime.callFunction("displayDialogue");
       console.log(`⏭️ No options to display (OptionsOpen is false)`);
     }
+
+    // Prevent immediate double-advance on the same key press
+    this.setDialogueJustStarted(runtime, 0.25);
 
     // DON'T end dialogue here even if endsDialogue is true!
     // The player needs to READ the text first, then click
@@ -506,6 +521,50 @@ export class DialogueBridge {
     // The event sheet's endDialogue will handle InDialogue timing properly
     runtime.globalVars.DialogueResult = "";
 
+    // End-of-line handler for VO (restore music, etc.)
+    try {
+      runtime.callFunction("EndOfVoiceLine");
+    } catch (e) {
+      console.warn("⚠️ Could not call EndOfVoiceLine:", e);
+    }
+
+  }
+
+  /**
+   * Play voice line for the current dialogue node (if available).
+   * Skips player lines and silent system nodes.
+   */
+  private static playVoiceForNode(node: { id: string; speaker: string; text: string }, runtime: any): void {
+    if (!runtime?.callFunction) return;
+
+    const speaker = node.speaker || "";
+    if (this.silentSpeakers.has(speaker)) return;
+
+    const isSilentSystem = speaker === "System" && (!node.text || node.text.trim() === "");
+    if (isSilentSystem) return;
+
+    try {
+      console.log(`🔊 [VO] PlayVoiceLine speaker="${speaker}" nodeId="${node.id}"`);
+      runtime.callFunction("PlayVoiceLine", speaker, node.id);
+    } catch (e) {
+      console.warn("⚠️ Could not call PlayVoiceLine:", e);
+    }
+  }
+
+  /**
+   * Sets a short "just started" flag to prevent accidental double-advance.
+   */
+  private static setDialogueJustStarted(runtime: any, durationSeconds: number): void {
+    if (typeof runtime?.globalVars?.DialogueJustStarted === 'undefined') {
+      return;
+    }
+
+    runtime.globalVars.DialogueJustStarted = true;
+    console.log(`⏳ [Dialogue] DialogueJustStarted = true (${durationSeconds}s)`);
+    setTimeout(() => {
+      runtime.globalVars.DialogueJustStarted = false;
+      console.log('✅ [Dialogue] DialogueJustStarted = false');
+    }, Math.max(0, durationSeconds) * 1000);
   }
 
   /**

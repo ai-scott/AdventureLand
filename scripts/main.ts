@@ -49,6 +49,9 @@ import { UIButtonManager } from "./systems/ui/button-manager.js";
 // GAME STATE MANAGER IMPORT
 import { GameStateManager } from "./systems/game-state-manager.js";
 
+// MUSIC CONTROLLER IMPORT
+import { MusicController } from "./systems/audio/music-controller.js";
+
 // NPC CONTROLLER IMPORTS
 import { SeaMonsterController } from "./systems/npc/sea-monster-controller.js";
 
@@ -526,6 +529,21 @@ runOnStartup(async runtime => {
       console.log("✅ Game State Manager initialized!");
     } catch (error) {
       console.error("❌ Failed to initialize game state manager:", error);
+    }
+
+    // Initialize Music Controller
+    try {
+      MusicController.initialize(runtime);
+
+      (globalThis as any).AdventureLand.MusicController = {
+        setDesiredMode: (mode: "base" | "mid" | "high") => MusicController.setDesiredMode(mode),
+        setDuck: (db: number) => MusicController.setDuck(db),
+        clearDuck: () => MusicController.clearDuck()
+      };
+
+      console.log("✅ Music Controller initialized!");
+    } catch (error) {
+      console.error("❌ Failed to initialize music controller:", error);
     }
 
     // Initialize Sea Monster Controller (NPC/Enemy Hybrid)

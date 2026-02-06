@@ -136,7 +136,7 @@ export class DialogueReader {
       if (actionString === 'DeployRosie') {
         actions.push({ 
           type: 'deploy_npc', 
-          npcId: 'rosie' 
+          npcId: 'Rosie' 
         });
       } else if (actionString.startsWith('Start_')) {
         const questId = actionString.replace('Start_', '').replace('_Quest', 'Quest');

@@ -1130,7 +1130,7 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 - [ ] Display Magic Trident on screen when received (ItemShowcase)
 
 **Visual Effects:**
-- [ ] Add water swirl particle effects at SM base during rise/retreat
+- [x] Add water swirl particle effects at SM base during rise/retreat ✅ COMPLETE (2026-02-06)
 - [ ] Test masking effect persistence during battle
 - [ ] Optimize animations for performance
 

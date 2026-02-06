@@ -178,7 +178,7 @@ export class SeaMonsterController {
             console.log("💧 No Fade behavior on water swirl");
           }
         }
-      }, 1500); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
+      }, 1000); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
 
       // After rise animation completes, transition to NPC mode
       // Using setTimeout for now - could use C3 signals for animation events

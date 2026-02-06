@@ -17,7 +17,7 @@ export const WelcomeDialogue: NPCDialogue = {
     {
       id: "node_000",
       speaker: "AL",
-      text: "Welcome to AdventureLand! [icon=Pointer][icon=Spc] to continue",
+      text: "Welcome to AdventureLand! Tap[icon=Pointer] or hit spacebar[icon=Spc] to continue",
       priority: 100,
       conditions: [
         {
@@ -31,7 +31,7 @@ export const WelcomeDialogue: NPCDialogue = {
     {
       id: "node_001",
       speaker: "AL",
-      text: "Get ready to have fun!",
+      text: "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!",
       priority: 99,
       conditions: [
         {
