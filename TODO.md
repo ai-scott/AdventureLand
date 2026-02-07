@@ -234,6 +234,7 @@ Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/
 
 **Visual Effects:**
 - [x] Add water swirl particles at SM base during rise/retreat animations ✅ COMPLETE (2026-02-06)
+- [x] Add BubbleBubble SFX on SM rise/retreat ✅ COMPLETE (2026-02-06)
 
 ### 🔊 Dialogue Voice-Over System (2026-02-06)
 
@@ -241,10 +242,12 @@ Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/
 
 - [x] DialogueBridge triggers PlayVoiceLine on node display
 - [x] EndOfVoiceLine hook for music restore
-- [x] Speaker-based VO naming: `AL__node_000` etc. (resource names)
+- [x] Speaker-based VO naming: resource names (use C3 audio resource names)
 - [x] MusicController (TS) for mode + ducking control
 - [x] C3 ApplyMusicMode function (base/mid/high fade with duckDb)
 - [x] DialogueJustStarted guard to reduce immediate auto-advance
+- [x] Enemy proximity music fallback to base when no on-screen enemies
+- [x] VO uses tag volume control for reliable loudness
 - [ ] Fill VO files for NPCs (gradual rollout)
 - [ ] Optional: narrator VO (AL/System) as files are added
 

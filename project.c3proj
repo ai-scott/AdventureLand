@@ -1689,16 +1689,11 @@
 					"items": [],
 					"subfolders": [
 						{
-							"items": [],
-							"subfolders": [],
-							"name": "SeaMonster"
-						},
-						{
 							"items": [
 								{
 									"name": "AL__WelcomeToAdventureLand.webm",
 									"type": "audio/webm; codecs=opus",
-									"sid": 283377700648927,
+									"sid": 203912963125051,
 									"file-info": {
 										"purpose": "none"
 									}
@@ -1706,7 +1701,7 @@
 								{
 									"name": "AL__HaveFun.webm",
 									"type": "audio/webm; codecs=opus",
-									"sid": 815404018824761,
+									"sid": 435727825228685,
 									"file-info": {
 										"purpose": "none"
 									}
@@ -1714,6 +1709,92 @@
 							],
 							"subfolders": [],
 							"name": "AL"
+						},
+						{
+							"items": [
+								{
+									"name": "SeaMonster__explain_pearl.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 749246906919384,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__quest_in_progress.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 523995182548941,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__return_with_pearl.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 445533932043488,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__player_taunts.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 493687667559591,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__already_complete.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 202209451023979,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__give_trident.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 920502442803951,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__hostile_encounter.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 627220582487435,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__greeting.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 627615217447030,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__accept_quest.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 522770357620235,
+									"file-info": {
+										"purpose": "none"
+									}
+								},
+								{
+									"name": "SeaMonster__refuse_quest.webm",
+									"type": "audio/webm; codecs=opus",
+									"sid": 112531509410851,
+									"file-info": {
+										"purpose": "none"
+									}
+								}
+							],
+							"subfolders": [],
+							"name": "SeaMonster"
 						}
 					],
 					"name": "vo"

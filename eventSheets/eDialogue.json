@@ -2427,12 +2427,12 @@
 								{
 									"id": "play-by-name",
 									"objectClass": "Audio",
-									"sid": 440824756363180,
+									"sid": 267910219051510,
 									"parameters": {
 										"folder": "sounds",
 										"audio-file-name": "voiceFile",
 										"loop": "not-looping",
-										"volume": "AudioLevel+100",
+										"volume": "AudioLevel",
 										"stereo-pan": "0",
 										"tag-optional": "\"Voice\""
 									}
@@ -2444,6 +2444,15 @@
 									"parameters": {
 										"type": "log",
 										"message": "\"PlayVoiceLine: speaker=\" & speaker & \" nodeId=\" & nodeId & \" file=\" & voiceFile\n"
+									}
+								},
+								{
+									"id": "set-volume",
+									"objectClass": "Audio",
+									"sid": 230712789806755,
+									"parameters": {
+										"tag": "\"Voice\"",
+										"db": "50"
 									}
 								}
 							],
@@ -2467,10 +2476,10 @@
 										{
 											"id": "fade-volume",
 											"objectClass": "Audio",
-											"sid": 765785094916405,
+											"sid": 652181022665524,
 											"parameters": {
 												"tag": "\"base\"",
-												"db": "-15",
+												"db": "-20",
 												"duration": ".1",
 												"ending": "keep-playing"
 											}
@@ -2496,10 +2505,10 @@
 										{
 											"id": "fade-volume",
 											"objectClass": "Audio",
-											"sid": 998124160850847,
+											"sid": 853262542496371,
 											"parameters": {
 												"tag": "\"mid\"",
-												"db": "-15",
+												"db": "-20",
 												"duration": ".1",
 												"ending": "keep-playing"
 											}
@@ -2525,10 +2534,10 @@
 										{
 											"id": "fade-volume",
 											"objectClass": "Audio",
-											"sid": 952644905882489,
+											"sid": 436802355431181,
 											"parameters": {
 												"tag": "\"high\"",
-												"db": "-15",
+												"db": "-20",
 												"duration": ".1",
 												"ending": "keep-playing"
 											}

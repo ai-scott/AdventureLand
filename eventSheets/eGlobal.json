@@ -7576,12 +7576,12 @@
 						{
 							"id": "play-by-name",
 							"objectClass": "Audio",
-							"sid": 432560611209187,
+							"sid": 138612798460188,
 							"parameters": {
 								"folder": "sounds",
 								"audio-file-name": "\"SFX/BubbleBubble\"",
 								"loop": "not-looping",
-								"volume": "AudioLevel+100",
+								"volume": "AudioLevel+30",
 								"stereo-pan": "0",
 								"tag-optional": "\"SFX\""
 							}

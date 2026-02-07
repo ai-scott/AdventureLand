@@ -1122,6 +1122,7 @@ AdventureLand.SeaMonsterController.retreat("player-left")
 - [x] Fixed eGameRoom Player_Hurt UID-based picking
 - [x] Pearl spawns in ALL paths (peaceful + hostile) for redemption
 - [x] Hostile re-encounter dialogue path
+- [x] BubbleBubble SFX plays on SM rise/retreat
 
 **Remaining Tasks:**
 
