@@ -11,7 +11,7 @@ export const SeaMonsterKeyDialogue: NPCDialogue = {
       npcId: "Shrine",
       name: "Shrine",
       defaultNode: "node_000",
-      worldId: "World00", // TODO: Update this
+      worldId: "World00",
       questRelations: ["Waterfall_Bill"],
 
       nodes: [

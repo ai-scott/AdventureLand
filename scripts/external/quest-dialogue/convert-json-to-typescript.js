@@ -243,7 +243,7 @@ function generateTypeScript(npcData) {
     ts += `  npcId: "${npcId}",\n`;
     ts += `  name: "${npcName}",\n`;
     ts += `  defaultNode: "node_000",\n`;
-    ts += `  worldId: "World00", // TODO: Update this\n`;
+    ts += `  worldId: "World00",\n`;
     ts += `  questRelations: ["${questId}"],\n\n`;
     ts += `  nodes: [\n`;
 

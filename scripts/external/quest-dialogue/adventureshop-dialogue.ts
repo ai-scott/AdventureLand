@@ -10,7 +10,7 @@ export const AdventureShopDialogue: NPCDialogue = {
   npcId: "Shopkeeper_Sophie",
   name: "Shopkeeper_Sophie",
   defaultNode: "node_000",
-  worldId: "World00", // TODO: Update this
+  worldId: "World00",
   questRelations: ["adventure_shop_intro"],
 
   nodes: [
