@@ -238,7 +238,7 @@ export class CurrencySystem {
     /**
      * Get save data for persistence
      */
-    static getSaveData(): any {
+    static getSaveData(): { gems: number; totalGemsCollected: number; totalGemsSpent: number } {
         return {
             gems: this.state.gems,
             totalGemsCollected: this.state.totalGemsCollected,
@@ -249,7 +249,7 @@ export class CurrencySystem {
     /**
      * Load save data
      */
-    static loadSaveData(data: any): void {
+    static loadSaveData(data: { gems?: number; totalGemsCollected?: number; totalGemsSpent?: number } | null): void {
         if (!data) return;
 
         this.state.gems = data.gems || 0;

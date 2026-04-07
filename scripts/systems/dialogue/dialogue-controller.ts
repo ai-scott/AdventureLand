@@ -327,7 +327,7 @@ export class DialogueController {
       return;
     }
 
-    const currentNodeData = npcDialogue.nodes.find((n: any) => n.id === this.currentNode);
+    const currentNodeData = npcDialogue.nodes.find((n) => n.id === this.currentNode);
     if (!currentNodeData) {
       console.error(`❌ [DialogueController] Current node not found: ${this.currentNode}`);
       this.end();
@@ -350,7 +350,7 @@ export class DialogueController {
 
     // Get next node
     const nextNodeId = currentNodeData.autoAdvance;
-    const nextNode = npcDialogue.nodes.find((n: any) => n.id === nextNodeId);
+    const nextNode = npcDialogue.nodes.find((n) => n.id === nextNodeId);
 
     if (!nextNode) {
       console.error(`❌ [DialogueController] Next node not found: ${nextNodeId}`);
@@ -377,7 +377,7 @@ export class DialogueController {
     }
 
     // Determine next state based on node type
-    const hasInput = nextNode.actions?.some((a: any) => a.type === 'input');
+    const hasInput = nextNode.actions?.some((a) => a.type === 'input');
     const hasOptions = nextNode.responses && nextNode.responses.length > 0;
 
     if (hasInput) {
@@ -412,7 +412,7 @@ export class DialogueController {
     const npcDialogue = QuestDialogue.DialogueManager.getNPCDialogue(this.currentNPC);
     if (!npcDialogue) return;
 
-    const currentNodeData = npcDialogue.nodes.find((n: any) => n.id === this.currentNode);
+    const currentNodeData = npcDialogue.nodes.find((n) => n.id === this.currentNode);
     if (!currentNodeData || !currentNodeData.responses) {
       console.error('❌ [DialogueController] No options on current node');
       return;
@@ -431,7 +431,7 @@ export class DialogueController {
 
     // Navigate to next node
     if (selectedResponse.leads_to) {
-      const nextNode = npcDialogue.nodes.find((n: any) => n.id === selectedResponse.leads_to);
+      const nextNode = npcDialogue.nodes.find((n) => n.id === selectedResponse.leads_to);
       if (nextNode) {
         this.currentNode = nextNode.id;
         this.state = DialogueState.SHOWING_TEXT;

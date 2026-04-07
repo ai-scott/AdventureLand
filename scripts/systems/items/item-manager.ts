@@ -339,7 +339,7 @@ export class ItemManager {
     /**
      * Get items for current page (simplified version)
      */
-    static getPageItems(): any[] {
+    static getPageItems(): { id: number; quantity: number; name: string; category: string; description: string }[] {
         const page = this.getCurrentPage();
         return page.items.filter(item => item !== null).map(item => ({
             id: item!.itemId,
