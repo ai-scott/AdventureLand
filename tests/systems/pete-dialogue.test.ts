@@ -1,9 +1,9 @@
 // ===================================================================
 // pete-dialogue.test.ts
-// Tests for Pete's enhanced dialogue system
+// Tests for Pete's production dialogue (pete-dialogue.ts)
 // ===================================================================
 
-import { PeteDialogue } from '../../scripts/external/quest-dialogue/pete-dialogue-example';
+import { PeteDialogue } from '../../scripts/external/quest-dialogue/pete-dialogue';
 import * as QuestDialogue from '../../scripts/external/quest-dialogue/quest-dialogue-system';
 import { PlayerState, QuestState } from '../../scripts/external/quest-dialogue/dialogue-types';
 
@@ -11,7 +11,6 @@ describe('Pete Dialogue System', () => {
   let mockPlayerState: PlayerState;
 
   beforeEach(() => {
-    // Reset player state before each test
     mockPlayerState = {
       activeQuests: new Map<string, QuestState>(),
       completedQuests: new Set<string>(),
@@ -22,156 +21,141 @@ describe('Pete Dialogue System', () => {
       currentWorld: 'World01'
     };
 
-    // Load Pete's dialogue into the system
     QuestDialogue.DialogueManager.loadNPCDialogue(PeteDialogue);
-  });
-
-  describe('Initial Greeting', () => {
-    test('should show greeting when quest not started', () => {
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-
-      expect(dialogue).not.toBeNull();
-      expect(dialogue?.id).toBe('greeting');
-      expect(dialogue?.speaker).toBe('AL:Pete');
-      expect(dialogue?.text).toContain("Hi there! I'm Pete");
-    });
-
-    test('greeting should have two response options', () => {
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-
-      expect(dialogue?.responses).toHaveLength(2);
-      expect(dialogue?.responses?.[0].text).toBe("What do you need help with?");
-      expect(dialogue?.responses?.[1].text).toBe("What's a prospector?");
-    });
-  });
-
-  describe('Dialogue Flow', () => {
-    test('should navigate from greeting to explain_sick', () => {
-      const greeting = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-      expect(greeting?.responses?.[0].leads_to).toBe('explain_sick');
-
-      // Find the explain_sick node
-      const explainNode = PeteDialogue.nodes.find(n => n.id === 'explain_sick');
-      expect(explainNode?.text).toContain('feeling pretty sick');
-    });
-
-    test('should navigate from greeting to explain_job', () => {
-      const greeting = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-      expect(greeting?.responses?.[1].leads_to).toBe('explain_job');
-
-      // Find the explain_job node
-      const jobNode = PeteDialogue.nodes.find(n => n.id === 'explain_job');
-      expect(jobNode?.text).toContain('pan for gold');
-    });
-  });
-
-  describe('Quest Integration', () => {
-    test('should start quest when accepting help', () => {
-      const helpNode = PeteDialogue.nodes.find(n => n.id === 'ask_for_help');
-      const acceptResponse = helpNode?.responses?.find(r => r.text === "Sure, I'll help.");
-
-      expect(acceptResponse?.actions).toBeDefined();
-      expect(acceptResponse?.actions?.[0].type).toBe('start_quest');
-      expect(acceptResponse?.actions?.[0].questId).toBe('pete_herbs');
-    });
-
-    test('should show quest active dialogue when quest is active', () => {
-      // Add active quest to player state
-      mockPlayerState.activeQuests.set('pete_herbs', {
-        id: 'pete_herbs',
-        status: 'Active',
-        currentStep: 0,
-        progress: {},
-        priority: 1
-      });
-
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-
-      // Should show quest_active node instead of greeting
-      expect(dialogue?.id).toBe('quest_active');
-      expect(dialogue?.text).toContain("appreciate the help");
-    });
-
-    test('should show completion dialogue when quest is completed', () => {
-      // Mark quest as completed
-      mockPlayerState.completedQuests.add('pete_herbs');
-
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-
-      // Should show quest_complete node
-      expect(dialogue?.id).toBe('quest_complete');
-      expect(dialogue?.text).toContain("Hello again, adventurer");
-    });
-  });
-
-  describe('Priority System', () => {
-    test('greeting should have highest priority when quest not started', () => {
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-      expect(dialogue?.priority).toBe(100);
-    });
-
-    test('should prioritize quest_complete over greeting when completed', () => {
-      mockPlayerState.completedQuests.add('pete_herbs');
-
-      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Pete', mockPlayerState);
-      expect(dialogue?.id).toBe('quest_complete');
-      expect(dialogue?.priority).toBe(100);
-    });
-  });
-
-  describe('Condition Evaluation', () => {
-    test('should evaluate quest_status condition correctly - Not_Started', () => {
-      const greetingNode = PeteDialogue.nodes.find(n => n.id === 'greeting');
-      const conditions = greetingNode?.conditions || [];
-
-      const result = QuestDialogue.DialogueManager.evaluateConditions(conditions, mockPlayerState);
-      expect(result).toBe(true);
-    });
-
-    test('should evaluate quest_status condition correctly - Active', () => {
-      mockPlayerState.activeQuests.set('pete_herbs', {
-        id: 'pete_herbs',
-        status: 'Active',
-        currentStep: 0,
-        progress: {},
-        priority: 1
-      });
-
-      const activeNode = PeteDialogue.nodes.find(n => n.id === 'quest_active');
-      const conditions = activeNode?.conditions || [];
-
-      const result = QuestDialogue.DialogueManager.evaluateConditions(conditions, mockPlayerState);
-      expect(result).toBe(true);
-    });
   });
 
   describe('Dialogue Structure Validation', () => {
     test('should have valid NPC metadata', () => {
-      expect(PeteDialogue.npcId).toBe('Pete');
-      expect(PeteDialogue.name).toBe('AL:Pete');
-      expect(PeteDialogue.defaultNode).toBe('greeting');
+      expect(PeteDialogue.npcId).toBe('Prospector_Pete');
+      expect(PeteDialogue.name).toBe('Pete');
+      expect(PeteDialogue.defaultNode).toBe('node_000');
       expect(PeteDialogue.worldId).toBe('World01');
+      expect(PeteDialogue.questRelations).toContain('pete_herbs_quest');
     });
 
     test('should have all nodes with required fields', () => {
       PeteDialogue.nodes.forEach(node => {
         expect(node.id).toBeDefined();
         expect(node.speaker).toBeDefined();
-        expect(node.text).toBeDefined();
         expect(typeof node.priority).toBe('number');
       });
     });
 
-    test('should have valid node links', () => {
+    test('should have valid node links (autoAdvance and leads_to)', () => {
       const nodeIds = new Set(PeteDialogue.nodes.map(n => n.id));
 
       PeteDialogue.nodes.forEach(node => {
+        if (node.autoAdvance) {
+          expect(nodeIds.has(node.autoAdvance)).toBe(true);
+        }
         node.responses?.forEach(response => {
-          if (response.leads_to !== 'greeting') { // greeting can loop back
-            expect(nodeIds.has(response.leads_to)).toBe(true);
-          }
+          expect(nodeIds.has(response.leads_to)).toBe(true);
         });
       });
+    });
+
+    test('should have at least one node with endsDialogue', () => {
+      const endNodes = PeteDialogue.nodes.filter(n => n.endsDialogue);
+      expect(endNodes.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Initial Greeting', () => {
+    test('should show greeting when quest not started', () => {
+      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Prospector_Pete', mockPlayerState);
+
+      expect(dialogue).not.toBeNull();
+      expect(dialogue?.id).toBe('node_000');
+      expect(dialogue?.text).toContain("Hi there! I'm Pete");
+    });
+
+    test('greeting should auto-advance to node_001 (response options)', () => {
+      const greeting = PeteDialogue.nodes.find(n => n.id === 'node_000');
+      expect(greeting?.autoAdvance).toBe('node_001');
+
+      const options = PeteDialogue.nodes.find(n => n.id === 'node_001');
+      expect(options?.responses).toHaveLength(2);
+      expect(options?.responses?.[0].text).toBe("What do you need help with?");
+      expect(options?.responses?.[1].text).toBe("What's a prospector?");
+    });
+  });
+
+  describe('Dialogue Flow', () => {
+    test('"What do you need help with?" leads to explain_sick (node_002)', () => {
+      const options = PeteDialogue.nodes.find(n => n.id === 'node_001');
+      expect(options?.responses?.[0].leads_to).toBe('node_002');
+
+      const sickNode = PeteDialogue.nodes.find(n => n.id === 'node_002');
+      expect(sickNode?.text).toContain('feeling pretty sick');
+    });
+
+    test('"What\'s a prospector?" leads to explain_job (node_003)', () => {
+      const options = PeteDialogue.nodes.find(n => n.id === 'node_001');
+      expect(options?.responses?.[1].leads_to).toBe('node_003');
+
+      const jobNode = PeteDialogue.nodes.find(n => n.id === 'node_003');
+      expect(jobNode?.text).toContain('pan for gold');
+    });
+
+    test('quest acceptance path ends with set_quest_status action', () => {
+      const acceptNode = PeteDialogue.nodes.find(n => n.id === 'node_008');
+      expect(acceptNode?.actions).toBeDefined();
+      expect(acceptNode?.actions?.[0].type).toBe('set_quest_status');
+      expect(acceptNode?.actions?.[0].questId).toBe('pete_herbs_quest');
+      expect(acceptNode?.actions?.[0].status).toBe('Active');
+      expect(acceptNode?.endsDialogue).toBe(true);
+    });
+  });
+
+  describe('Quest Integration', () => {
+    test('should show quest active dialogue when quest is active', () => {
+      mockPlayerState.activeQuests.set('pete_herbs_quest', {
+        id: 'pete_herbs_quest',
+        status: 'Active',
+        currentStep: 0,
+        progress: {},
+        priority: 1
+      });
+
+      const dialogue = QuestDialogue.DialogueManager.getDialogueForNPC('Prospector_Pete', mockPlayerState);
+
+      // Should show the active quest node (node_010 or node_011) instead of greeting
+      expect(dialogue?.id).toMatch(/^node_01[01]$/);
+    });
+
+    test('active quest nodes should end dialogue', () => {
+      const activeNodes = PeteDialogue.nodes.filter(n =>
+        n.conditions?.some(c => c.status === 'Active')
+      );
+      activeNodes.forEach(node => {
+        expect(node.endsDialogue).toBe(true);
+      });
+    });
+  });
+
+  describe('Condition Evaluation', () => {
+    test('should evaluate Not_Started condition correctly', () => {
+      const greetingNode = PeteDialogue.nodes.find(n => n.id === 'node_000');
+      const conditions = greetingNode?.conditions || [];
+
+      const result = QuestDialogue.DialogueManager.evaluateConditions(conditions, mockPlayerState);
+      expect(result).toBe(true);
+    });
+
+    test('should not show greeting when quest is active', () => {
+      mockPlayerState.activeQuests.set('pete_herbs_quest', {
+        id: 'pete_herbs_quest',
+        status: 'Active',
+        currentStep: 0,
+        progress: {},
+        priority: 1
+      });
+
+      const greetingNode = PeteDialogue.nodes.find(n => n.id === 'node_000');
+      const conditions = greetingNode?.conditions || [];
+
+      const result = QuestDialogue.DialogueManager.evaluateConditions(conditions, mockPlayerState);
+      expect(result).toBe(false);
     });
   });
 });

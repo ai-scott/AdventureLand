@@ -401,9 +401,12 @@ export class SeaMonsterController {
         return false;
       }
 
-      // TODO: Check if player has pearl (item 99)
-      // If has pearl, return false (peaceful)
-      // For now, return hostility state
+      // Check if player has pearl (item 99) — if so, SM is peaceful
+      const items = (globalThis as any).AdventureLand?.Items;
+      if (items && items.hasItem(99)) {
+        return false;
+      }
+
       return true;
     }
 
