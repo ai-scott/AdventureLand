@@ -1,5 +1,8 @@
 // enemy-utils.ts - Enhanced utility functions with Runtime Facade
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("EnemyUtils");
+
 import { IC3RuntimeFacade } from "../../types/c3-runtime-facade.js";
 import { BehaviorCondition, EnemyData } from "./enemy-configs.js";
 import type { EnhancedEnemyData } from './enemy-ai.js';
@@ -26,10 +29,10 @@ export function getEnemyInstance(uid: number, runtime: IC3RuntimeFacade | null):
       }
     }
 
-    console.log(`❌ Could not find enemy with UID ${uid}`);
+    log.error(`Could not find enemy with UID ${uid}`);
     return null;
   } catch (error) {
-    console.log(`❌ Error finding enemy with UID ${uid}:`, error);
+    log.error(`Error finding enemy with UID ${uid}:`, error);
     return null;
   }
 }
@@ -40,7 +43,7 @@ export function getPlayerInstance(runtime: IC3RuntimeFacade | null): any {
   try {
     return runtime.getFirstInstance("Player_Base");
   } catch (error) {
-    console.log("❌ Could not find player instance:", error);
+    log.error("Could not find player instance:", error);
     return null;
   }
 }
@@ -68,7 +71,7 @@ export function getMaskInstance(maskUID: number, runtime: IC3RuntimeFacade | nul
 
     return null;
   } catch (error) {
-    console.log(`❌ Error finding mask with UID ${maskUID}:`, error);
+    log.error(`Error finding mask with UID ${maskUID}:`, error);
     return null;
   }
 }
@@ -297,13 +300,13 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
 export function executeAnimation(enemy: any, enemyData: any, animationName: string, runtime: any, forceAnimation: boolean = false): void {
   // CRITICAL: Only execute animations for the specific enemy being updated
   if (!enemy || !enemyData || !enemyData.maskUid) {
-    console.log(`❌ ANIMATION BLOCKED: Invalid enemy or enemyData for animation ${animationName}`);
+    log.error(`ANIMATION BLOCKED: Invalid enemy or enemyData for animation ${animationName}`);
     return;
   }
 
   // Extra debug for retreat animations
   if (animationName.includes('Retreat')) {
-    console.log(`🎬 RETREAT ANIMATION: ${enemyData.type} (base:${enemy.uid}, mask:${enemyData.maskUid}) playing '${animationName}'`);
+    log.debug(`RETREAT ANIMATION: ${enemyData.type} (base:${enemy.uid}, mask:${enemyData.maskUid}) playing '${animationName}'`);
   }
 
   try {
@@ -343,7 +346,7 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
         if (direction === 'Down' || direction === 'Left') {
           const originalDirection = direction;
           direction = 'Right'; // Fallback to Right for Down/Left
-          console.log(`🎭 RETREAT FALLBACK: ${originalDirection} → Right (animation doesn't exist)`);
+          log.debug(`RETREAT FALLBACK: ${originalDirection} → Right (animation doesn't exist)`);
         }
       }
 
@@ -367,8 +370,8 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
 
     // Debug for retreat animations
     if (animationName.includes('Retreat')) {
-      console.log(`🔍 MASK SEARCH: Looking for maskUID ${enemyData.maskUid} among ${allMasks.length} masks`);
-      console.log(`🔍 Available mask UIDs: ${allMasks.map((m: any) => m.uid).join(', ')}`);
+      log.debug(`MASK SEARCH: Looking for maskUID ${enemyData.maskUid} among ${allMasks.length} masks`);
+      log.debug(`Available mask UIDs: ${allMasks.map((m: any) => m.uid).join(', ')}`);
     }
 
     const mask = allMasks.find((m: any) => m.uid === enemyData.maskUid);
@@ -376,7 +379,7 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
     if (mask) {
       // CRITICAL: Double-check we have the RIGHT mask before setting animation
       if (mask.uid !== enemyData.maskUid) {
-        console.log(`❌ MASK MISMATCH: Expected ${enemyData.maskUid}, got ${mask.uid}`);
+        log.error(`MASK MISMATCH: Expected ${enemyData.maskUid}, got ${mask.uid}`);
         return;
       }
 
@@ -391,16 +394,16 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
 
           // Special logging for retreat
           if (finalAnimationName.includes('Retreat')) {
-            console.log(`🎬 RETREAT ANIMATION NOW PLAYING: ${finalAnimationName} on mask ${enemyData.maskUid}${forceMsg}`);
+            log.debug(`RETREAT ANIMATION NOW PLAYING: ${finalAnimationName} on mask ${enemyData.maskUid}${forceMsg}`);
           }
         } else {
           // Animation already playing - don't spam it
           if (finalAnimationName.includes('Retreat')) {
-            console.log(`⏩ Retreat animation '${finalAnimationName}' already playing - not interrupting`);
+            log.debug(`Retreat animation '${finalAnimationName}' already playing - not interrupting`);
           }
         }
       } else {
-        console.log(`❌ No setAnimation method found on mask ${enemyData.maskUid}`);
+        log.error(`No setAnimation method found on mask ${enemyData.maskUid}`);
       }
 
       // Update mirroring every frame for bats
@@ -415,9 +418,9 @@ export function executeAnimation(enemy: any, enemyData: any, animationName: stri
         }
       }
     } else {
-      console.log(`❌ CRITICAL: No mask found with UID ${enemyData.maskUid} among [${allMasks.map((m: any) => m.uid).join(', ')}]`);
+      log.error(`CRITICAL: No mask found with UID ${enemyData.maskUid} among [${allMasks.map((m: any) => m.uid).join(', ')}]`);
     }
   } catch (error) {
-    console.log(`❌ Animation error:`, error);
+    log.error(`Animation error:`, error);
   }
 }

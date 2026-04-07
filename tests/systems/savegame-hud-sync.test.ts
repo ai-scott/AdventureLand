@@ -63,7 +63,8 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
         runtime = createMockRuntime();
         (globalThis as any).runtime = runtime;
 
-        // Initialize Health System
+        // Reset and initialize Health System fresh for each test
+        HealthSystem.reset();
         HealthSystem.initialize(runtime);
     });
 
@@ -151,8 +152,8 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
             expect(afterRefresh).toBe(beforeRefresh);
         });
 
-        test('should call adjustHealth when syncing to C3', () => {
-            const callFunctionSpy = jest.spyOn(runtime, 'callFunction');
+        test('should sync to both globalVars and Dictionary after damage', () => {
+            const dict = runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap();
 
             HealthSystem.takeDamage({
                 amount: 2,
@@ -160,8 +161,10 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
                 type: 'physical'
             });
 
-            // HealthSystem should call adjustHealth to redraw hearts
-            expect(callFunctionSpy).toHaveBeenCalledWith('adjustHealth', 0, '');
+            // HealthSystem syncs directly to globalVars and Dictionary
+            // (adjustHealth is called by event sheets, not by HealthSystem)
+            expect(runtime.globalVars.Health).toBe(8);
+            expect(dict.get('Health')).toBe(8);
         });
     });
 
@@ -170,7 +173,15 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
             const dict = runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap();
             const updates: string[] = [];
 
-            // Spy on the updates
+            // Take damage first so heal has something to do
+            HealthSystem.takeDamage({
+                amount: 5,
+                source: { uid: 1, type: 'enemy' },
+                type: 'physical'
+            });
+
+            // Now set up spies AFTER damage (so we only track heal's sync)
+            updates.length = 0;
             let healthValue = runtime.globalVars.Health;
             Object.defineProperty(runtime.globalVars, 'Health', {
                 set: function(value) {
@@ -191,14 +202,13 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
                 return originalDictSet(key, value);
             };
 
-            // Make a change
+            // Heal (now there's room to heal)
             HealthSystem.heal({
-                amount: 5,
+                amount: 3,
                 source: 'potion'
             });
 
             // Verify order: globalVars should be set BEFORE Dictionary
-            // This ensures adjustHealth reads the correct value
             const globalVarsIndex = updates.indexOf('globalVars');
             const dictIndex = updates.indexOf('Dictionary');
 
@@ -309,17 +319,17 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
     });
 
     describe('Load from SaveData', () => {
-        test('should initialize from Dictionary on startup', () => {
-            const dict = runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap();
-
-            // Set save data
-            dict.set('Health', 7);
-            dict.set('MaxHealth', 12);
+        test('should initialize from globalVars on startup', () => {
+            // HealthSystem loads from globalVars first (source of truth)
+            // Set both globalVars and Dictionary to simulate a proper save state
+            runtime.globalVars.Health = 7;
+            runtime.globalVars.MaxHealth = 12;
 
             // Reinitialize (simulating game load)
+            HealthSystem.reset();
             HealthSystem.initialize(runtime);
 
-            // Should load from Dictionary
+            // Should load from globalVars
             const state = HealthSystem.getState();
             expect(state.current).toBe(7);
             expect(state.max).toBe(12);
@@ -346,14 +356,15 @@ describe('SaveGame/HUD Synchronization - Health System', () => {
         test('should sync back to Dictionary after loading', () => {
             const dict = runtime.objects.Dict_SaveGameData.getFirstInstance().getDataMap();
 
-            // Set save data
-            dict.set('Health', 8);
-            dict.set('MaxHealth', 10);
+            // Set globalVars (source of truth during load)
+            runtime.globalVars.Health = 8;
+            runtime.globalVars.MaxHealth = 10;
 
             // Reinitialize
+            HealthSystem.reset();
             HealthSystem.initialize(runtime);
 
-            // Dictionary should be synced back
+            // Dictionary should be synced back from globalVars
             expect(dict.get('Health')).toBe(8);
             expect(dict.get('MaxHealth')).toBe(10);
             expect(runtime.globalVars.Health).toBe(8);
@@ -513,6 +524,7 @@ describe('SaveGame/HUD Synchronization - Gems/Money (C3 Event Sheets)', () => {
         test('Health System uses proper 3-way sync', () => {
             const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();
 
+            HealthSystem.reset();
             HealthSystem.initialize(runtime);
             HealthSystem.takeDamage({
                 amount: 3,

@@ -1,6 +1,9 @@
 // inventory-performance-test.ts
 // Run these tests to verify both fixes are working
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("InvPerf");
+
 /**
  * Complete performance test suite for inventory optimizations
  */
@@ -10,14 +13,14 @@ export class InventoryPerformanceTest {
      * Test O(1) item lookups vs O(n)
      */
     static async testItemLookupPerformance(runtime: any): Promise<void> {
-        console.log("🧪 TESTING ITEM LOOKUP PERFORMANCE");
-        console.log("==================================");
+        log.info("TESTING ITEM LOOKUP PERFORMANCE");
+        log.info("==================================");
 
         const testIterations = 1000;
         const testItemIds = [1, 50, 100, 127]; // Various positions in array
 
         // Test O(n) performance (old Functions.GetItemName)
-        console.log("\n❌ Testing O(n) lookups (old method):");
+        log.info("\nTesting O(n) lookups (old method):");
         for (const itemId of testItemIds) {
             const startTime = performance.now();
 
@@ -30,11 +33,11 @@ export class InventoryPerformanceTest {
             const totalTime = endTime - startTime;
             const avgTime = totalTime / testIterations;
 
-            console.log(`  Item ${itemId}: ${totalTime.toFixed(2)}ms total, ${avgTime.toFixed(4)}ms average`);
+            log.info(`  Item ${itemId}: ${totalTime.toFixed(2)}ms total, ${avgTime.toFixed(4)}ms average`);
         }
 
         // Test O(1) performance (new TypeScript method)
-        console.log("\n✅ Testing O(1) lookups (new method):");
+        log.info("\nTesting O(1) lookups (new method):");
         for (const itemId of testItemIds) {
             const startTime = performance.now();
 
@@ -46,24 +49,24 @@ export class InventoryPerformanceTest {
             const totalTime = endTime - startTime;
             const avgTime = totalTime / testIterations;
 
-            console.log(`  Item ${itemId}: ${totalTime.toFixed(2)}ms total, ${avgTime.toFixed(4)}ms average`);
+            log.info(`  Item ${itemId}: ${totalTime.toFixed(2)}ms total, ${avgTime.toFixed(4)}ms average`);
         }
 
-        console.log("\n💡 The O(1) method should be 100-1000x faster!");
+        log.info("\nThe O(1) method should be 100-1000x faster!");
     }
 
     /**
      * Test UI update frequency
      */
     static testUIUpdateFrequency(runtime: any): void {
-        console.log("\n🧪 TESTING UI UPDATE FREQUENCY");
-        console.log("==============================");
+        log.info("\nTESTING UI UPDATE FREQUENCY");
+        log.info("==============================");
 
         let updateCount = 0;
         let checkCount = 0;
         const testDuration = 5000; // 5 seconds
 
-        console.log("⏱️ Running 5-second UI update test...");
+        log.info("Running 5-second UI update test...");
 
         const startTime = Date.now();
 
@@ -88,17 +91,17 @@ export class InventoryPerformanceTest {
         const updatesPerSecond = (updates / duration * 1000).toFixed(1);
         const skipRate = ((1 - updates / checks) * 100).toFixed(1);
 
-        console.log("\n📊 UI Update Test Results:");
-        console.log(`  Total checks: ${checks} (${checksPerSecond}/sec)`);
-        console.log(`  Actual updates: ${updates} (${updatesPerSecond}/sec)`);
-        console.log(`  Skip rate: ${skipRate}%`);
+        log.info("\nUI Update Test Results:");
+        log.info(`  Total checks: ${checks} (${checksPerSecond}/sec)`);
+        log.info(`  Actual updates: ${updates} (${updatesPerSecond}/sec)`);
+        log.info(`  Skip rate: ${skipRate}%`);
 
         if (parseFloat(skipRate) > 90) {
-            console.log("  ✅ EXCELLENT: >90% of updates skipped!");
+            log.info("  EXCELLENT: >90% of updates skipped!");
         } else if (parseFloat(skipRate) > 70) {
-            console.log("  ⚠️ GOOD: Updates reduced but could be better");
+            log.warn("  GOOD: Updates reduced but could be better");
         } else {
-            console.log("  ❌ POOR: Too many updates still happening");
+            log.error("  POOR: Too many updates still happening");
         }
     }
 
@@ -106,8 +109,8 @@ export class InventoryPerformanceTest {
      * Test complete inventory operations
      */
     static async testCompleteInventoryFlow(runtime: any): Promise<void> {
-        console.log("\n🧪 TESTING COMPLETE INVENTORY FLOW");
-        console.log("==================================");
+        log.info("\nTESTING COMPLETE INVENTORY FLOW");
+        log.info("==================================");
 
         const operations = [
             { name: "Open Inventory", func: "drawInventoryUI" },
@@ -118,7 +121,7 @@ export class InventoryPerformanceTest {
         ];
 
         for (const op of operations) {
-            console.log(`\n⚡ ${op.name}:`);
+            log.info(`\n${op.name}:`);
 
             const startTime = performance.now();
 
@@ -131,7 +134,7 @@ export class InventoryPerformanceTest {
             const endTime = performance.now();
             const duration = endTime - startTime;
 
-            console.log(`  Duration: ${duration.toFixed(2)}ms`);
+            log.info(`  Duration: ${duration.toFixed(2)}ms`);
 
             // Check UI stats after each operation
             (globalThis as any).AdventureLand.UIOptimizer.getStats();
@@ -142,8 +145,8 @@ export class InventoryPerformanceTest {
      * Run all tests
      */
     static async runAllTests(runtime: any): Promise<void> {
-        console.log("🚀 ADVENTURE LAND INVENTORY PERFORMANCE TEST SUITE");
-        console.log("=================================================\n");
+        log.info("ADVENTURE LAND INVENTORY PERFORMANCE TEST SUITE");
+        log.info("=================================================\n");
 
         // Test 1: Item lookup performance
         await this.testItemLookupPerformance(runtime);
@@ -157,7 +160,7 @@ export class InventoryPerformanceTest {
         // Test 3: Complete flow
         await this.testCompleteInventoryFlow(runtime);
 
-        console.log("\n✅ All tests complete! Check results above.");
+        log.info("\nAll tests complete! Check results above.");
     }
 }
 

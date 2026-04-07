@@ -11,9 +11,17 @@
     "test:configs": "jest tests/configs",
     "test:utils": "jest tests/utils",
     "test:systems": "jest tests/systems",
-    "check-all": "npm run type-check && npm run test",
+    "lint": "eslint scripts/ --ext .ts",
+    "lint:fix": "eslint scripts/ --ext .ts --fix",
+    "format": "prettier --write scripts/**/*.ts",
+    "format:check": "prettier --check scripts/**/*.ts",
+    "check-all": "npm run type-check && npm run lint && npm run test",
+    "validate:items": "node scripts/tools/validate-items.js",
+    "validate:dialogue": "node scripts/tools/validate-dialogue.js",
+    "generate:dialogue-imports": "node scripts/tools/generate-dialogue-imports.js",
     "compile-check": "tsc --noEmit && echo '✅ TypeScript compilation successful!'",
-    "perf-test": "npm run compile-check && echo '🧪 Ready for performance testing in Lake World!'"
+    "perf-test": "npm run compile-check && echo '🧪 Ready for performance testing in Lake World!'",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -26,10 +34,23 @@
     "url": "https://github.com/ai-scott/AdventureLand/issues"
   },
   "homepage": "https://github.com/ai-scott/AdventureLand#readme",
+  "lint-staged": {
+    "scripts/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "construct3": "^1.0.5",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "husky": "^9.1.7",
     "jest": "^29.5.0",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.8.1",
     "ts-jest": "^29.1.2",
     "typescript": "^5.8.3"
   }

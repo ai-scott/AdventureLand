@@ -10,7 +10,7 @@ export const PennyDialogue: NPCDialogue = {
       npcId: "Penny",
       name: "Penny",
       defaultNode: "node_000",
-      worldId: "World00", // TODO: Update this
+      worldId: "World00",
       questRelations: ["rescue_cat_quest"],
 
       nodes: [

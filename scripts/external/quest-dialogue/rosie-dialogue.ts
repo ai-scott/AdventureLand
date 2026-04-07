@@ -10,7 +10,7 @@ export const RosieDialogue: NPCDialogue = {
       npcId: "Rosie",
       name: "Rosie",
       defaultNode: "node_000",
-      worldId: "World00", // TODO: Update this
+      worldId: "World00",
       questRelations: ["befriend_rosie_quest", "rescue_cat_quest"],
 
       nodes: [
