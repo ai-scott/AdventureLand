@@ -347,6 +347,20 @@ This bug has been reported multiple times - TypeScript casting can only be used 
 - Covers `scripts/**/*.ts` excluding main.ts and type definitions
 - Includes mock setup for Construct 3 runtime objects
 
+## Documentation Maintenance
+
+**When adding or modifying systems, keep these docs in sync:**
+
+1. **CLAUDE.md** — Update "Current System Status" and "Production Systems" sections
+2. **scripts/README.md** — Update the namespace table and directory tree
+3. **CONTENT_CREATION_GUIDE.md** — Add to the quick reference table if the new system enables new content types
+4. **TODO.md** — Mark completed items and add new planned work
+5. **System-specific claude.md** — Create `scripts/systems/[name]/claude.md` for any new system
+
+**When adding new npm scripts**, update the "Essential Commands" section in this file.
+
+**When adding new dialogue files**, update the dialogue file counts and world assignments in this file.
+
 ## Development Patterns
 
 ### Adding New Systems

@@ -9,11 +9,20 @@ A TypeScript-enhanced Construct 3 adventure RPG built with a hybrid architecture
 
 AdventureLand is a 2D retro RPG featuring data-driven enemy AI, a quest and dialogue system, and multiple interconnected worlds. The project uses a hybrid architecture where Construct 3 event sheets handle visuals, physics, and UI, while TypeScript manages game logic, data processing, and system orchestration.
 
-### Worlds
+### Worlds (9 Planned)
 
+**Playable:**
 - **World00 -- Leafwood Village**: Starting area and hub town (8 NPCs)
 - **World01 -- Leafwood Forest**: Exploration area (2 NPCs)
 - **World10 -- The Bottomless Lake**: Water-themed area with the Sea Monster encounter (4 NPCs)
+
+**Planned:**
+- **World02 -- Crystal Caverns**: Underground mining area
+- **World03 -- Desert Oasis**: Arid trading post
+- **World04 -- Frozen Tundra**: Snow and ice wilderness
+- **World05 -- Volcanic Isle**: Fire-themed dungeon area
+- **World06 -- Sky Citadel**: Floating fortress
+- **World20 -- The Deep**: Final area
 
 ### Key Metrics
 
