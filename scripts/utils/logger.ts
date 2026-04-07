@@ -19,10 +19,10 @@ export enum LogLevel {
 }
 
 const LEVEL_LABELS: Record<LogLevel, string> = {
-  [LogLevel.DEBUG]: "DEBUG",
-  [LogLevel.INFO]: "INFO",
-  [LogLevel.WARN]: "WARN",
-  [LogLevel.ERROR]: "ERROR",
+  [LogLevel.DEBUG]: "🔍 DEBUG",
+  [LogLevel.INFO]: "✅ INFO",
+  [LogLevel.WARN]: "⚠️ WARN",
+  [LogLevel.ERROR]: "❌ ERROR",
   [LogLevel.SILENT]: "",
 };
 
