@@ -1,10 +1,24 @@
 # AdventureLand Development TODO
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-04-07
 **Archive**: See bottom of file for completed 2025 work
 
 ## Overview
 This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
+
+## Recently Completed (April 2026)
+
+- [x] ESLint + Prettier + lint-staged + Husky pre-commit hooks
+- [x] GitHub Actions CI pipeline (type-check + lint + test)
+- [x] Structured Logger utility — migrated all 22 system files
+- [x] Error handling framework (scripts/utils/errors.ts)
+- [x] 199 new tests (ItemManager, ButtonManager, DialogueController, InputManager, TriggerManager)
+- [x] Fixed 12 pre-existing savegame-hud-sync test failures
+- [x] Content creation guides (9 HOW_TO docs + master guide)
+- [x] Validation scripts (validate:items, validate:dialogue, generate:dialogue-imports)
+- [x] Codebase analysis and documentation audit
+- [x] Type safety improvements (removed any casts, typed return values)
+- [x] Dead code cleanup (removed example files, stale TODOs, disabled tests)
 
 ## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
 
@@ -200,37 +214,37 @@ This is the single source of truth for all active development tasks. Completed w
 **Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Type**: Hybrid NPC/Enemy quest with state transitions
 **Location**: World_10 (The Bottomless Lake)
-**Status**: Phase 1 Complete (TypeScript) - C3 Setup Next
+**Status**: Phases 1-5 Complete - Polish & Testing Remaining
 
 ### Quest Overview
 Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (peaceful) or refuse/lie about stealing it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
 
 ### Implementation Phases
 
-- [ ] **Phase 1: Foundation** (Day 1)
+- [x] **Phase 1: Foundation** (Day 1)
   - Create SeaMonsterController.ts (state management system)
   - Add to main.ts namespace
   - Test basic summon/despawn functionality
 
-- [ ] **Phase 2: Dialogue Integration** (Day 2)
+- [x] **Phase 2: Dialogue Integration** (Day 2)
   - Create seamonster-dialogue.ts (dialogue tree)
   - Add custom dialogue actions (makeHostile, acceptQuest, etc.)
   - Load dialogue in main.ts
   - Test dialogue flow and options
 
-- [ ] **Phase 3: C3 Objects Setup** (Day 3)
+- [x] **Phase 3: C3 Objects Setup** (Day 3)
   - Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
   - Create Trigger_Shell interaction point
   - Create Projectile_WaterBall with Bullet behavior
   - Create items: Perle de la Mer (ID: 99), Magic Trident (ID: 100)
 
-- [ ] **Phase 4: Event Sheets** (Day 4)
+- [x] **Phase 4: Event Sheets** (Day 4)
   - Pink shell trigger (summons SM, starts dialogue)
   - Sea Monster state management (every-tick sync)
   - Island boundary detection and retreat logic
   - Quest completion trigger (return pearl)
 
-- [ ] **Phase 5: Enemy AI** (Day 5)
+- [x] **Phase 5: Enemy AI** (Day 5)
   - Add SEA_MONSTER_CONFIG to enemy-configs.ts (ranged attacks)
   - Update enemy AI to check AIEnabled flag
   - Water ball spawn and collision logic
@@ -290,19 +304,6 @@ Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (
 - [ ] Memory usage analysis
 - [ ] Load time comparison
 
-## Success Metrics
-- [ ] All systems migrated to imports-for-events pattern
-- [ ] Type safety improved (measure TypeScript errors reduced)
-- [ ] Event sheet code reduced by 30%+
-- [ ] Performance maintained or improved
-- [ ] Developer experience survey positive
-
-## Rollback Plan
-- Keep old pattern functional during migration
-- Feature flag for new vs old patterns
-- Git tags at each phase completion
-- Documented rollback procedures
-
 ## Battle System
 
 ### 📅 PLANNED: Player Battle System Enhancements (Future Phase)
@@ -315,21 +316,6 @@ Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (
 - [ ] Performance benchmarks for player damage calculations
 - [ ] Integration tests for complete player vs enemy combat
 - [ ] Edge case testing for player damage scenarios
-
-## TypeScript Modernization
-
-### 🔄 IN PROGRESS: Typed Instance Classes
-- [ ] Create base instance classes
-- [ ] Register with `setInstanceClass()`
-- [ ] Update one system (Enemy AI) as proof of concept
-- [ ] Validate performance vs current pattern
-- [ ] Migrate remaining systems
-
-### 📋 PLANNED: Import Maps & Bare Specifiers
-- [ ] Design namespace structure (@adventure/core, @adventure/enemies, etc.)
-- [ ] Configure import maps
-- [ ] Refactor all imports to use bare specifiers
-- [ ] Update documentation
 
 ---
 
@@ -360,28 +346,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Validated: button creation, pooling, auto-sizing all working
   - Test output: "Total buttons in pool: 1, size: 78x36"
 
-### 🔄 IN PROGRESS: UI Button System - Phase 2
-- [ ] Test buttons with existing notification system
-  - Add buttons to first item pickup notification
-  - Validate button integration with message display
-
-- [ ] Implement MessagePanelManager
-  - Panel with background auto-sizing
-  - Content layout (title, description, stats, buttons)
-  - Icon positioning (left/right/top)
-  - Stat displays ([icon] + number combos)
-
-- [ ] Implement convenience functions (UIHelpers)
-  - showItemPanel() - item interactions
-  - showShopPanel() - shop purchases
-  - showItemPickupNotification() - solves Bug #9!
-
-### 📋 PLANNED: UI Button System - Phase 3-4
-- [ ] Implement ButtonActionRegistry (action routing)
-- [ ] Write comprehensive tests
-- [ ] Create system documentation (claude.md)
-- [ ] Performance benchmarking
-
 ### 📋 NEW: UI/UX Improvements
 - [x] Make Gems visible at all times (2026-01-03)
   - ✅ Added gems display to HUD
@@ -406,12 +370,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Issue: Player continues to animate when holding arrow key at map edge during transition
   - Expected: Player animation should pause during layout load
   - Visual polish issue
-
----
-
-## ✅ Completed Work Archive (2025-2026)
-
-See `docs/TODO-ARCHIVE-2025.md` for full details.
 
 ### Phase 1: Foundation - Imports for Events ✅ COMPLETE (Sep 2025)
 - ✅ Created imports-for-events.ts with all system imports

@@ -220,11 +220,21 @@ npm run test:watch
 # Coverage report
 npm run test:coverage
 
-# Check everything (type-check + tests)
+# Check everything (type-check + lint + tests)
 npm run check-all
 
 # Quick compilation check
 npm run compile-check
+
+# Linting & formatting
+npm run lint            # ESLint check
+npm run lint:fix        # ESLint auto-fix
+npm run format          # Prettier format
+npm run format:check    # Prettier check
+
+# Validation
+npm run validate:items  # Validate ItemsLibrary.json
+npm run validate:dialogue # Validate dialogue files
 ```
 
 ### Specialized Test Commands
@@ -252,6 +262,7 @@ The codebase uses a "nested object pattern" to expose TypeScript functionality t
     EnemyAI: { /* methods */ },
     ItemManager: { /* methods */ },
     TileAnimations: { /* methods */ }
+    // 20+ namespaces registered — see main.ts for full list
 };
 ```
 
@@ -261,7 +272,7 @@ This pattern is **required** - direct function exports cause runtime errors in C
 - **Root Directory**: `scripts/` (configured in tsconfig.json)
 - **Main Entry**: `main.ts` - sets up the global AdventureLand namespace
 - **External Modules**: `scripts/external/` - individual system modules
-- **Type Definitions**: `scripts/ts-defs/` - comprehensive Construct 3 type definitions
+- **Type Definitions**: `scripts/types/` - comprehensive Construct 3 type definitions
 - **Runtime Facade**: `c3-runtime-facade.ts` - bridges TypeScript and C3 runtime
 
 ### Critical Integration Rules
@@ -315,7 +326,7 @@ This bug has been reported multiple times - TypeScript casting can only be used 
 ### Quest & Dialogue System (`scripts/external/quest-dialogue/`)
 - TypeScript dialogue system with bridge pattern for C3 integration
 - Data-driven quest and dialogue management
-- 12 dialogue files across 3 worlds (World00: 8 NPCs, World01: 2, World10: 2)
+- 14 dialogue files across 3 worlds (World00: 8 NPCs, World01: 2, World10: 4)
 - Race condition prevention with immediate InDialogue flag setting
 - Performance: <1% CPU overhead, negligible impact on game performance
 - **Bridge Pattern**: DialogueBridge connects TypeScript logic to C3 event sheets
@@ -335,6 +346,23 @@ This bug has been reported multiple times - TypeScript casting can only be used 
 - Uses ts-jest with custom TypeScript config
 - Covers `scripts/**/*.ts` excluding main.ts and type definitions
 - Includes mock setup for Construct 3 runtime objects
+
+## Documentation Maintenance
+
+**When adding or modifying systems, keep these docs in sync:**
+
+1. **README.md** — Update production systems table, world status (Playable/Planned), and key metrics
+2. **CLAUDE.md** — Update "Current System Status" and "Production Systems" sections
+3. **scripts/README.md** — Update the namespace table and directory tree
+4. **CONTENT_CREATION_GUIDE.md** — Add to the quick reference table if the new system enables new content types
+5. **TODO.md** — Mark completed items and add new planned work
+6. **System-specific claude.md** — Create `scripts/systems/[name]/claude.md` for any new system
+
+**When adding new npm scripts**, update the "Essential Commands" section in this file.
+
+**When adding new dialogue files**, update the dialogue file counts and world assignments in this file and in README.md.
+
+**When a new world becomes playable**, move it from "Planned" to "Playable" in README.md and update NPC counts.
 
 ## Development Patterns
 
@@ -364,6 +392,10 @@ SystemName.initialize({
     method2: () => SystemName.method2()
 };
 ```
+
+### Utility Modules
+- `scripts/utils/logger.ts` — structured logging with `Logger.create("ModuleName")` for consistent, filterable output
+- `scripts/utils/errors.ts` — typed error classes for system-specific error handling
 
 ### Performance Guidelines
 - Migrate heavy calculations to TypeScript
@@ -497,14 +529,14 @@ System: InDialogue = false  // MUST check this first!
 4. **Dialogue ↔ Event Sheets**: Bridge pattern with safe JavaScript access
 
 **Dialogue File Organization by World**:
-- **World00 (Leafwood Village)**: penny, rosie, generalstore, blacksmith, adventureshop, welcome, seamonsterkey, windmillnick (8 NPCs)
+- **World00 (Leafwood Village)**: penny, rosie, generalstore, blacksmith, adventureshop, welcome, treesign, windmillnick (8 NPCs)
 - **World01 (Leafwood Forest)**: pete, forestsign (2 NPCs)
-- **World10 (Bottomless Lake)**: lakesign, treesign (2 NPCs)
+- **World10 (Bottomless Lake)**: seamonsterkey, lakesign, sea-monster, pearl (4 NPCs)
 
 ### Current System Status
-- **Production Ready**: Enemy AI with Battle System, Tile Animations, Quest & Dialogue System
+- **Production Ready**: Enemy AI with Battle System, Tile Animations, Quest & Dialogue System, Health System, Currency System, Potions, Shop State, Input Manager, Trigger Manager, Dialogue Controller, Button Manager, Game State Manager, Sea Monster Controller
 - **In Migration**: Inventory Optimization
-- **Planned**: Player Battle System, World Builder Tools, Advanced Debug System
+- **Planned**: World Builder Tools (debug utilities exist in `scripts/utils/`)
 
 ### Performance Benchmarks
 - **Enemy AI Factory**: 90% development time reduction
@@ -513,17 +545,6 @@ System: InDialogue = false  // MUST check this first!
 - **Dialogue System**: <1% CPU overhead, console.log cleanup reduced debug noise
 - **Target for new systems**: Similar performance gains
 
-### Test Commands for Inventory
-```bash
-# Critical inventory bug tests
-npm run test:inventory:critical
-
-# Watch mode for debugging
-npm run test:inventory:watch
-
-# Full inventory test suite
-npm run test:inventory
-```
 - you cannot change .json files as they are written by the C3 IDE
 - if there's a change you want to make that you see in an event sheet .json, you need to instruct the user on where to make that change in the IDE
 - remember that we need to use JS in our event sheets, so the proper way to instantiate our classes is: const enemyAI = globalThis.AdventureLand?.EnemyAI;
