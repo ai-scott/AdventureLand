@@ -304,19 +304,6 @@ Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (
 - [ ] Memory usage analysis
 - [ ] Load time comparison
 
-## Success Metrics
-- [ ] All systems migrated to imports-for-events pattern
-- [ ] Type safety improved (measure TypeScript errors reduced)
-- [ ] Event sheet code reduced by 30%+
-- [ ] Performance maintained or improved
-- [ ] Developer experience survey positive
-
-## Rollback Plan
-- Keep old pattern functional during migration
-- Feature flag for new vs old patterns
-- Git tags at each phase completion
-- Documented rollback procedures
-
 ## Battle System
 
 ### 📅 PLANNED: Player Battle System Enhancements (Future Phase)
@@ -329,21 +316,6 @@ Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (
 - [ ] Performance benchmarks for player damage calculations
 - [ ] Integration tests for complete player vs enemy combat
 - [ ] Edge case testing for player damage scenarios
-
-## TypeScript Modernization
-
-### 🔄 IN PROGRESS: Typed Instance Classes
-- [ ] Create base instance classes
-- [ ] Register with `setInstanceClass()`
-- [ ] Update one system (Enemy AI) as proof of concept
-- [ ] Validate performance vs current pattern
-- [ ] Migrate remaining systems
-
-### 📋 PLANNED: Import Maps & Bare Specifiers
-- [ ] Design namespace structure (@adventure/core, @adventure/enemies, etc.)
-- [ ] Configure import maps
-- [ ] Refactor all imports to use bare specifiers
-- [ ] Update documentation
 
 ---
 
@@ -374,28 +346,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Validated: button creation, pooling, auto-sizing all working
   - Test output: "Total buttons in pool: 1, size: 78x36"
 
-### 🔄 IN PROGRESS: UI Button System - Phase 2
-- [ ] Test buttons with existing notification system
-  - Add buttons to first item pickup notification
-  - Validate button integration with message display
-
-- [ ] Implement MessagePanelManager
-  - Panel with background auto-sizing
-  - Content layout (title, description, stats, buttons)
-  - Icon positioning (left/right/top)
-  - Stat displays ([icon] + number combos)
-
-- [ ] Implement convenience functions (UIHelpers)
-  - showItemPanel() - item interactions
-  - showShopPanel() - shop purchases
-  - showItemPickupNotification() - solves Bug #9!
-
-### 📋 PLANNED: UI Button System - Phase 3-4
-- [ ] Implement ButtonActionRegistry (action routing)
-- [ ] Write comprehensive tests
-- [ ] Create system documentation (claude.md)
-- [ ] Performance benchmarking
-
 ### 📋 NEW: UI/UX Improvements
 - [x] Make Gems visible at all times (2026-01-03)
   - ✅ Added gems display to HUD
@@ -420,12 +370,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Issue: Player continues to animate when holding arrow key at map edge during transition
   - Expected: Player animation should pause during layout load
   - Visual polish issue
-
----
-
-## ✅ Completed Work Archive (2025-2026)
-
-See `docs/TODO-ARCHIVE-2025.md` for full details.
 
 ### Phase 1: Foundation - Imports for Events ✅ COMPLETE (Sep 2025)
 - ✅ Created imports-for-events.ts with all system imports
