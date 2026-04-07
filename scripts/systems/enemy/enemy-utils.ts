@@ -216,7 +216,7 @@ function updateDirectionFromVector(enemyData: EnemyData, normalizedX: number, no
   }
 }
 
-export function calculateDirection(from: any, to: any): string {
+export function calculateDirection(from: { x: number; y: number }, to: { x: number; y: number }): string {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
 
@@ -297,7 +297,7 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
   }
 }
   */
-export function executeAnimation(enemy: any, enemyData: any, animationName: string, runtime: any, forceAnimation: boolean = false): void {
+export function executeAnimation(enemy: any, enemyData: EnemyData, animationName: string, runtime: any, forceAnimation: boolean = false): void {
   // CRITICAL: Only execute animations for the specific enemy being updated
   if (!enemy || !enemyData || !enemyData.maskUid) {
     log.error(`ANIMATION BLOCKED: Invalid enemy or enemyData for animation ${animationName}`);

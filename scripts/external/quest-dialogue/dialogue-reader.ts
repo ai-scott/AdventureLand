@@ -4,13 +4,15 @@
 // ===================================================================
 
 // Import all required types from dialogue-types.ts
-import { 
-  LegacyDialogueRow, 
-  DialogueNode, 
-  DialogueCondition, 
-  DialogueResponse, 
-  DialogueAction 
+import {
+  LegacyDialogueRow,
+  DialogueNode,
+  DialogueCondition,
+  DialogueResponse,
+  DialogueAction
 } from './dialogue-types.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("DialogueReader");
 
 export class DialogueReader {
   private static dialogueCache = new Map<string, DialogueNode[]>();
@@ -29,11 +31,11 @@ export class DialogueReader {
       const nodes = this.convertTableToNodes(data.dialogue_data);
       this.dialogueCache.set(worldId, nodes);
       
-      console.log(`✅ Loaded ${nodes.length} dialogue nodes for World ${worldId}`);
+      log.info(`Loaded ${nodes.length} dialogue nodes for World ${worldId}`);
       return nodes;
       
     } catch (error) {
-      console.error(`❌ Failed to load dialogue for world ${worldId}:`, error);
+      log.error(`Failed to load dialogue for world ${worldId}:`, error);
       return [];
     }
   }
@@ -41,7 +43,7 @@ export class DialogueReader {
   private static convertTableToNodes(tableData: any[][]): DialogueNode[] {
     const nodes: DialogueNode[] = [];
     
-    console.log(`Converting ${tableData.length} table rows to dialogue nodes...`);
+    log.debug(`Converting ${tableData.length} table rows to dialogue nodes...`);
     
     for (let i = 0; i < tableData.length; i++) {
       const row = tableData[i];
@@ -60,7 +62,7 @@ export class DialogueReader {
       nodes.push(node);
     }
     
-    console.log(`✅ Converted to ${nodes.length} dialogue nodes`);
+    log.info(`Converted to ${nodes.length} dialogue nodes`);
     return nodes;
   }
   
@@ -85,7 +87,7 @@ export class DialogueReader {
       }];
       
     } catch (error) {
-      console.warn(`Failed to parse condition: ${conditionString}`, error);
+      log.warn(`Failed to parse condition: ${conditionString}`, error);
       return [];
     }
   }
@@ -120,7 +122,7 @@ export class DialogueReader {
       }
       
     } catch (error) {
-      console.warn(`Failed to parse responses: ${actionString}`, error);
+      log.warn(`Failed to parse responses: ${actionString}`, error);
     }
     
     return [];
@@ -154,7 +156,7 @@ export class DialogueReader {
       return actions;
       
     } catch (error) {
-      console.warn(`Failed to parse actions: ${actionString}`, error);
+      log.warn(`Failed to parse actions: ${actionString}`, error);
       return [];
     }
   }
@@ -173,15 +175,15 @@ export class DialogueReader {
   
   // Debug method to inspect loaded dialogue
   static async debugWorldDialogue(worldId: string): Promise<void> {
-    console.log(`=== DEBUGGING WORLD ${worldId} DIALOGUE ===`);
-    
+    log.debug(`=== DEBUGGING WORLD ${worldId} DIALOGUE ===`);
+
     const nodes = await this.loadWorldDialogue(worldId);
-    
-    console.log(`Total nodes: ${nodes.length}`);
-    
+
+    log.debug(`Total nodes: ${nodes.length}`);
+
     // Show first few nodes
     nodes.slice(0, 5).forEach((node, index) => {
-      console.log(`Node ${index}:`, {
+      log.debug(`Node ${index}:`, {
         id: node.id,
         speaker: node.speaker,
         text: node.text.slice(0, 50) + '...',
@@ -190,11 +192,11 @@ export class DialogueReader {
         actions: node.actions?.length ?? 0
       });
     });
-    
+
     // Show speakers
     const speakers = [...new Set(nodes.map(n => n.speaker).filter(s => s))];
-    console.log(`Speakers found: ${speakers.join(', ')}`);
-    
-    console.log(`=== END DEBUG ===`);
+    log.debug(`Speakers found: ${speakers.join(', ')}`);
+
+    log.debug(`=== END DEBUG ===`);
   }
 }

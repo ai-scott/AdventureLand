@@ -279,9 +279,8 @@ describe('DialogueController', () => {
       DialogueController.start('TestNPC', mockRuntime);
 
       expect(mockGetDialogueForNPC).toHaveBeenCalledWith('TestNPC', expect.objectContaining({
-        quest_status: 'Not_Started',
-        PlayerName: 'TestHero',
-        Health: 5
+        playerName: 'TestHero',
+        currentWorld: 'World00'
       }));
     });
   });
@@ -319,8 +318,11 @@ describe('DialogueController', () => {
       const result = DialogueController.start('TestNPC', runtimeNoDict);
 
       expect(result).toBe(true);
-      // Should pass empty player state
-      expect(mockGetDialogueForNPC).toHaveBeenCalledWith('TestNPC', {});
+      // Should pass player state with defaults when dict is missing
+      expect(mockGetDialogueForNPC).toHaveBeenCalledWith('TestNPC', expect.objectContaining({
+        playerName: 'Player',
+        currentWorld: 'World00'
+      }));
     });
   });
 

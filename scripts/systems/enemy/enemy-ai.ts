@@ -18,6 +18,7 @@ import {
   moveSideways,
   moveTowardPlayer
 } from "./enemy-utils.js";
+import type { BatFlightPath } from "./bat-movement-utils.js";
 import {
   calculateSwoopToPlayer,
   calculateFleeToTree,
@@ -48,7 +49,7 @@ export interface EnhancedEnemyData extends EnemyData {
 
   // Bat-specific data
   batId?: number; // Unique bat ID (1-3)
-  batFlightPath?: any; // BatFlightPath from bat-movement-utils.ts
+  batFlightPath?: BatFlightPath; // BatFlightPath from bat-movement-utils.ts
   batShadowUID?: number; // UID of the shadow sprite
   batTargetTreeX?: number; // Target tree X position
   batTargetTreeY?: number; // Target tree Y position
@@ -532,18 +533,18 @@ export class EnhancedEnemyAIFactory {
 
   private executeSoundAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {
     try {
-      const params = action.params as any;
+      const { sound, volume } = action.params;
 
-      if (params.sound) {
+      if (sound) {
         // Create a unique key for this sound + behavior combo
-        const soundKey = `${params.sound}_${enemyData.currentBehavior}_${enemyData.behaviorStartTime}`;
+        const soundKey = `${sound}_${enemyData.currentBehavior}_${enemyData.behaviorStartTime}`;
 
         // Only play if we haven't played this exact sound for this behavior instance
         if (enemyData.lastSoundPlayed !== soundKey) {
           const uniqueTag = `${enemyData.type}_${enemy.uid}`;
 
           if (this.runtime?.callFunction) {
-            this.runtime.callFunction("Audio_Play_Sound", params.sound, params.volume || 1.0, uniqueTag);
+            this.runtime.callFunction("Audio_Play_Sound", sound, volume || 1.0, uniqueTag);
 
             // Mark this sound as played for this behavior instance
             enemyData.lastSoundPlayed = soundKey;
@@ -656,7 +657,7 @@ export class EnhancedEnemyAIFactory {
         // Find ABSOLUTE nearest tree across ALL 9 trees (not just bat's territory)
         // This allows bats to chase player through the forest
         const allTrees = batTerritory.getAllTrees();
-        let nearestTree: any = null;
+        let nearestTree: { x: number; y: number } | null = null;
         let nearestDistance = Infinity;
 
         for (const tree of allTrees) {

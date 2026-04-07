@@ -24,6 +24,7 @@ export interface ActionConfig {
 
     // Sound params
     sound?: string;
+    volume?: number;
 
     // Effect params
     effect?: string;
