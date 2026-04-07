@@ -726,6 +726,44 @@ export class HealthSystem {
         console.log('Resistances:', Object.fromEntries(this.resistances));
         console.log('=============================');
     }
+    /**
+     * Reset all state (for testing and re-initialization)
+     */
+    static reset(): void {
+        this.runtime = null;
+        this.initialized = false;
+        this.allowExternalSync = false;
+        this.callbacks = {};
+        this.resistances = new Map();
+        this.state = {
+            current: 10,
+            max: 10,
+            temporary: 0,
+            isHurt: false,
+            isDead: false,
+            isInvincible: false,
+            hurtTimer: 0,
+            knockbackTimer: 0,
+            invincibilityTimer: 0,
+            regenTimer: 0,
+            lastDamageAmount: 0,
+            totalDamageTaken: 0,
+            totalHealing: 0
+        };
+        this.config = {
+            maxHealth: 10,
+            startingHealth: 10,
+            hurtDuration: 0.5,
+            knockbackDuration: 0.3,
+            invincibilityDuration: 1.0
+        };
+        this.performanceStats = {
+            damageProcessed: 0,
+            healingProcessed: 0,
+            updatesPerSecond: 0,
+            lastUpdateTime: 0
+        };
+    }
 }
 
 // Export for use
