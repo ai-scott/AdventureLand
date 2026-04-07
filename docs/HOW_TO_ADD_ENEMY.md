@@ -33,7 +33,7 @@ Adding an enemy involves creating a TypeScript config defining AI behavior, crea
 
 ### What You'll Create
 
-- Enemy config in `scripts/external/enemy-configs.ts`
+- Enemy config in `scripts/systems/enemy/enemy-configs.ts`
 - C3 sprite objects (EnemyBase + EnemyMask)
 - Battle integration in event sheets
 
@@ -43,7 +43,7 @@ Adding an enemy involves creating a TypeScript config defining AI behavior, crea
 
 ### 1.1 Open Enemy Config File
 
-**File:** `scripts/external/enemy-configs.ts`
+**File:** `scripts/systems/enemy/enemy-configs.ts`
 
 ### 1.2 Define Base Stats
 
@@ -53,9 +53,8 @@ export const YOUR_ENEMY_CONFIG: EnemyConfig = {
   baseStats: {
     health: 5,                 // Hit points
     speed: 30,                 // Movement speed (pixels/sec)
-    damage: 1,                 // Damage dealt to player
-    detectionRange: 150,       // Distance to detect player (pixels)
-    attackRange: 50            // Distance to attack (pixels)
+    viewDistance: 150,         // Distance to detect player (pixels)
+    attackDistance: 50         // Distance to attack (pixels)
   },
   behaviors: [
     // ... behavior definitions (see below)
@@ -67,213 +66,314 @@ export const YOUR_ENEMY_CONFIG: EnemyConfig = {
 
 **The weighted behavior system allows flexible AI with multiple states.**
 
-#### Behavior 1: Wander
+Each behavior follows the `BehaviorConfig` interface:
+
+```typescript
+interface BehaviorConfig {
+  name: string;                       // Behavior identifier
+  duration: [number, number];         // [min, max] seconds for this behavior
+  weight: number;                     // Selection priority (higher = more likely)
+  cooldown?: number;                  // Seconds before behavior can repeat
+  conditions?: BehaviorCondition[];   // When this behavior is eligible
+  actions: ActionConfig[];            // What the enemy does during this behavior
+}
+```
+
+**Conditions** use the `BehaviorCondition` interface:
+
+```typescript
+interface BehaviorCondition {
+  type: "distance" | "health" | "timer" | "random" | "hurt" | "invulnerable";
+  operator: "<" | ">" | "<=" | ">=" | "==";
+  value: number;
+}
+```
+
+**Actions** use the `ActionConfig` interface:
+
+```typescript
+interface ActionConfig {
+  type: "move" | "animate" | "sound" | "invulnerable" | "set_effect";
+  params: {
+    pattern?: "toward_player" | "away_from_player" | "random" | "stop"
+             | "sideways_left" | "sideways_right" | "crab_toward_player"
+             | "swoop_to_player" | "flee_to_nearest_tree" | "idle_in_tree";
+    speed?: number;          // Movement speed
+    name?: string;           // Animation name (supports {direction} placeholder)
+    duration?: number;       // Invulnerability duration in seconds
+    sound?: string;          // Sound effect name
+    effect?: string;         // Visual effect name
+    parameter?: string;      // Effect parameter
+    value?: number;          // Effect value
+    enabled?: boolean;       // Effect enabled state
+  };
+}
+```
+
+#### Behavior 1: Patrol (Random Movement)
 
 ```typescript
 {
-  name: "wander",
-  weight: 60,                 // 60% chance when not chasing
-  conditions: {
-    playerInRange: false      // Only when player NOT detected
-  },
-  params: {
-    wanderRadius: 100,        // How far to wander from spawn
-    pauseDuration: 2000,      // Pause between moves (ms)
-    minDistance: 30,          // Minimum wander distance
-    maxDistance: 80           // Maximum wander distance
-  }
+  name: "patrol",
+  duration: [2.0, 4.0],           // Lasts 2-4 seconds
+  weight: 3,                       // Low priority
+  conditions: [
+    { type: 'distance', operator: '>', value: 150 }  // Only when player is far away
+  ],
+  actions: [
+    { type: 'animate', params: { name: 'Walk_{direction}' } },
+    { type: 'move', params: { pattern: 'random', speed: 15 } }
+  ]
 }
 ```
 
 **How it works:**
-- Enemy picks random point within wanderRadius of spawn
-- Moves to that point
-- Pauses for pauseDuration
-- Repeats
+- Enemy walks randomly at low speed
+- Only active when player is beyond viewDistance
+- `{direction}` in animation names is replaced with current facing direction
 
 #### Behavior 2: Chase Player
 
 ```typescript
 {
   name: "chase",
-  weight: 100,                // 100% when player in range
-  conditions: {
-    playerInRange: true,      // Only when player detected
-    healthAbove: 0            // Not dead
-  },
-  params: {
-    chaseSpeed: 35,           // Faster when chasing
-    stopDistance: 40          // Stop this far from player
-  }
+  duration: [1.5, 3.0],           // Lasts 1.5-3 seconds
+  weight: 6,                       // Higher priority than patrol
+  conditions: [
+    { type: 'distance', operator: '<', value: 150 },  // Player within viewDistance
+    { type: 'distance', operator: '>', value: 32 }     // But beyond attackDistance
+  ],
+  actions: [
+    { type: 'animate', params: { name: 'Walk_{direction}' } },
+    { type: 'move', params: { pattern: 'toward_player', speed: 35 } }
+  ]
 }
 ```
 
 **How it works:**
-- Enemy detects player within detectionRange
-- Moves directly toward player at chaseSpeed
-- Stops at stopDistance for attack range
+- Enemy moves directly toward player
+- Multiple distance conditions create a range band
+- Higher weight means this overrides patrol when conditions met
 
-#### Behavior 3: Flee (Low Health)
+#### Behavior 3: Attack (Close Range)
 
 ```typescript
 {
-  name: "flee",
-  weight: 100,                // Override other behaviors
-  conditions: {
-    healthBelow: 2,           // When health drops below 2
-    playerInRange: true       // And player is nearby
-  },
-  params: {
-    fleeSpeed: 50,            // Run away fast
-    fleeDistance: 200         // How far to flee
-  }
+  name: "attack",
+  duration: [0.5, 1.0],           // Quick attack
+  weight: 10,                      // Highest normal priority
+  conditions: [
+    { type: 'distance', operator: '<', value: 32 }  // Within attackDistance
+  ],
+  actions: [
+    { type: 'animate', params: { name: 'Attack_{direction}' } },
+    { type: 'move', params: { pattern: 'toward_player', speed: 50 } }
+  ]
 }
 ```
 
 **How it works:**
-- When health < 2, enemy runs AWAY from player
-- Moves at fleeSpeed
-- Stops when fleeDistance away from player
+- Triggers when player is very close
+- Plays attack animation
+- Highest weight ensures it always fires at close range
 
-#### Behavior 4: Patrol
+#### Behavior 4: Idle (Default Fallback)
 
 ```typescript
 {
-  name: "patrol",
-  weight: 40,                 // 40% when not chasing
-  conditions: {
-    playerInRange: false
-  },
-  params: {
-    patrolPoints: [           // Define patrol path
-      { x: 0, y: 0 },         // Relative to spawn point
-      { x: 100, y: 0 },
-      { x: 100, y: 100 },
-      { x: 0, y: 100 }
-    ],
-    pauseAtPoint: 1500        // Pause at each point (ms)
-  }
+  name: "idle",
+  duration: [1.0, 2.0],
+  weight: 1,                       // Lowest priority - fallback
+  conditions: [],                  // NO CONDITIONS - always available
+  actions: [
+    { type: 'animate', params: { name: 'Idle_{direction}' } },
+    { type: 'move', params: { pattern: 'stop' } }
+  ]
 }
 ```
 
 **How it works:**
-- Enemy moves between patrol points in order
-- Pauses at each point
-- Loops back to start
+- Empty conditions array means always eligible
+- Lowest weight makes it a fallback when nothing else matches
+- Every enemy should have at least one unconditional behavior to prevent empty behavior lists
 
-#### Behavior 5: Guard (Stationary)
+#### Behavior 5: Hurt (REQUIRED - See Section 1.6)
 
-```typescript
-{
-  name: "guard",
-  weight: 100,                // Always guard unless chasing
-  conditions: {
-    playerInRange: false
-  },
-  params: {
-    guardRadius: 50,          // Return to spawn if > 50px away
-    returnSpeed: 20           // Speed returning to spawn
-  }
-}
-```
+Every enemy MUST have a hurt behavior. See section 1.6 below.
 
-**How it works:**
-- Enemy stays near spawn point
-- If moved (knockback), returns to spawn
-- Doesn't wander or patrol
+### 1.4 Complete Example: Aggressive Enemy (Crab)
 
-### 1.4 Complete Example: Aggressive Enemy
+Based on the real `CRAB_CONFIG` from enemy-configs.ts:
 
 ```typescript
-export const WOLF_CONFIG: EnemyConfig = {
-  type: "Wolf",
+export const CRAB_CONFIG: EnemyConfig = {
+  type: "Crab",
   baseStats: {
-    health: 8,
-    speed: 40,
-    damage: 2,
-    detectionRange: 200,      // Detects player from far away
-    attackRange: 60
+    health: 3,
+    speed: 20,
+    viewDistance: 150,
+    attackDistance: 32
   },
   behaviors: [
     {
-      name: "chase",
-      weight: 100,
-      conditions: {
-        playerInRange: true,
-        healthAbove: 3        // Chase while healthy
-      },
-      params: {
-        chaseSpeed: 45,       // Fast chaser
-        stopDistance: 50
-      }
+      name: "patrol",
+      duration: [2.0, 4.0],
+      weight: 3,
+      conditions: [
+        { type: 'distance', operator: '>', value: 150 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Walk_{direction}' } },
+        { type: 'move', params: { pattern: 'random', speed: 15 } }
+      ]
     },
     {
-      name: "flee",
-      weight: 100,
-      conditions: {
-        healthBelow: 3,       // Flee when damaged
-        playerInRange: true
-      },
-      params: {
-        fleeSpeed: 55,        // Runs away fast
-        fleeDistance: 250
-      }
+      name: "cranky_chase",
+      duration: [1.5, 3.0],
+      weight: 6,
+      conditions: [
+        { type: 'distance', operator: '<', value: 150 },
+        { type: 'distance', operator: '>', value: 32 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Cranky_{direction}' } },
+        { type: 'move', params: { pattern: 'crab_toward_player', speed: 35 } }
+      ]
     },
     {
-      name: "wander",
-      weight: 70,             // Wanders often
-      conditions: {
-        playerInRange: false
-      },
-      params: {
-        wanderRadius: 150,
-        pauseDuration: 1500,
-        minDistance: 40,
-        maxDistance: 100
-      }
+      name: "attack",
+      duration: [0.5, 1.0],
+      weight: 10,
+      conditions: [
+        { type: 'distance', operator: '<', value: 32 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Attack_{direction}' } },
+        { type: 'move', params: { pattern: 'toward_player', speed: 50 } }
+      ]
+    },
+    {
+      name: "hurt_flash",
+      duration: [0.2, 0.2],
+      weight: 0,
+      conditions: [
+        { type: 'hurt', operator: '==', value: 1 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Hurt' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'invulnerable', params: { duration: 0.7 } }
+      ]
+    },
+    {
+      name: "retreat",
+      duration: [2.0, 2.0],
+      weight: 99,
+      cooldown: 1.0,
+      conditions: [
+        { type: 'hurt', operator: '==', value: 0 },
+        { type: 'invulnerable', operator: '==', value: 1 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Retreat_{direction}' } },
+        { type: 'move', params: { pattern: 'away_from_player', speed: 100 } },
+        { type: 'sound', params: { sound: 'Crab_Retreat' } }
+      ]
     }
   ]
 };
 ```
 
-### 1.5 Complete Example: Defensive Enemy
+### 1.5 Complete Example: Simple Enemy (Ooze)
+
+Based on the real `OOZE_CONFIG` from enemy-configs.ts:
 
 ```typescript
-export const TURTLE_CONFIG: EnemyConfig = {
-  type: "Turtle",
+export const OOZE_CONFIG: EnemyConfig = {
+  type: "Ooze",
   baseStats: {
-    health: 12,               // Tanky
-    speed: 15,                // Slow
-    damage: 1,
-    detectionRange: 100,      // Short detection range
-    attackRange: 40
+    health: 2,
+    speed: 15,
+    viewDistance: 120,
+    attackDistance: 0
   },
   behaviors: [
     {
-      name: "guard",
-      weight: 100,
-      conditions: {
-        playerInRange: false
-      },
-      params: {
-        guardRadius: 30,      // Stays very close to spawn
-        returnSpeed: 10       // Returns slowly
-      }
+      name: "idle",
+      duration: [1.0, 2.0],
+      weight: 4,
+      actions: [
+        { type: 'animate', params: { name: 'Idle_{direction}' } },
+        { type: 'move', params: { pattern: 'toward_player', speed: 20 } }
+      ]
     },
     {
-      name: "chase",
-      weight: 50,             // Reluctant chaser
-      conditions: {
-        playerInRange: true
-      },
-      params: {
-        chaseSpeed: 20,       // Chases slowly
-        stopDistance: 35
-      }
+      name: "hop",
+      duration: [0.8, 1.2],
+      weight: 2,
+      cooldown: 2.0,
+      conditions: [
+        { type: 'distance', operator: '<', value: 250 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Hop_{direction}' } },
+        { type: 'move', params: { pattern: 'toward_player', speed: 50 } },
+        { type: 'sound', params: { sound: 'Slime_Jump' } }
+      ]
+    },
+    {
+      name: "hurt",
+      duration: [0.5, 0.5],
+      weight: 0,
+      conditions: [
+        { type: 'hurt', operator: '==', value: 1 }
+      ],
+      actions: [
+        { type: 'animate', params: { name: 'Hurt_{direction}' } },
+        { type: 'move', params: { pattern: 'stop' } },
+        { type: 'invulnerable', params: { duration: 1.0 } }
+      ]
     }
   ]
 };
 ```
+
+### 1.6 REQUIRED: Hurt Behavior Pattern
+
+**Every enemy MUST include a hurt behavior.** This is triggered by the battle system when the enemy takes damage. Without it, enemies will not react to being hit.
+
+Key rules for hurt behaviors:
+- **`weight: 0`** — Hurt is never randomly selected; it is force-triggered by `notifyHurt()`
+- **Condition `{ type: 'hurt', operator: '==', value: 1 }`** — Required so the system knows this is the hurt behavior
+- **`pattern: 'stop'`** — Enemy should stop moving during hurt
+- **Include `invulnerable` action** — Prevents damage spam with configurable immunity frames
+- **`duration` should be short** — Typically `[0.1, 0.1]` to `[0.5, 0.5]` seconds
+
+**Minimal hurt behavior:**
+
+```typescript
+{
+  name: "hurt",
+  duration: [0.5, 0.5],
+  weight: 0,                           // NEVER randomly selected
+  conditions: [
+    { type: 'hurt', operator: '==', value: 1 }  // Force-triggered only
+  ],
+  actions: [
+    { type: 'animate', params: { name: 'Hurt_{direction}' } },
+    { type: 'move', params: { pattern: 'stop' } },
+    { type: 'invulnerable', params: { duration: 1.0 } }
+  ]
+}
+```
+
+**Advanced pattern: Hurt + Retreat (Crab style):**
+
+The Crab uses a two-phase hurt response:
+1. `hurt_flash` (weight: 0) — Brief stop + invulnerability
+2. `retreat` (weight: 99) — Runs away while still invulnerable
+
+The retreat behavior uses conditions `hurt == 0` AND `invulnerable == 1` to trigger only in the window after hurt ends but invulnerability remains. This creates a satisfying "stagger then flee" pattern.
 
 ---
 
@@ -425,7 +525,9 @@ Enemy_Hurt Function (Parameter: enemyUid)
             const knockbackX = enemyBase.x - playerBase.x;
             const knockbackY = enemyBase.y - playerBase.y;
 
-            enemyAI.notifyHurt(enemyBase.uid, knockbackX, knockbackY);
+            enemyAI.notifyHurt(enemyBase.uid, knockbackX, knockbackY, damage);
+            // damage parameter is optional (defaults to 1)
+            // Can also omit it: enemyAI.notifyHurt(enemyBase.uid, knockbackX, knockbackY);
             console.log(`🗡️ Enemy ${enemyBase.uid} hit!`);
         }
     }
@@ -575,27 +677,32 @@ baseStats: {
 
 ### Issue 2: Enemy Doesn't Detect Player
 
-**Symptoms:** Enemy never chases, continues wandering
+**Symptoms:** Enemy never chases, continues patrolling
 
 **Causes:**
-1. **detectionRange too small** - Increase in config
+1. **viewDistance too small** - Increase in config
 2. **Player not in range** - Walk closer to enemy
-3. **Behavior conditions wrong** - Check `playerInRange: true`
+3. **Behavior conditions wrong** - Check distance condition values
+4. **Chase weight too low** - Increase weight so it overrides patrol
 
 **Fix:**
 ```typescript
 baseStats: {
-  detectionRange: 150,  // Increase if needed
+  viewDistance: 150,  // Increase if needed
   ...
 }
 
 behaviors: [
   {
     name: "chase",
-    conditions: {
-      playerInRange: true,  // REQUIRED for chase
-      ...
-    }
+    duration: [1.5, 3.0],
+    weight: 6,         // Higher than patrol weight
+    conditions: [
+      { type: 'distance', operator: '<', value: 150 }  // Must match viewDistance
+    ],
+    actions: [
+      { type: 'move', params: { pattern: 'toward_player', speed: 35 } }
+    ]
   }
 ]
 ```
@@ -669,31 +776,52 @@ Ensure 8Direction behavior configured:
 
 ### Behavior Weight Optimization
 
-**Efficient weights:**
+**Efficient weights (based on real Crab config):**
 ```typescript
 behaviors: [
   {
-    name: "chase",
-    weight: 100,  // Always chase when in range
-    conditions: { playerInRange: true }
-  },
-  {
-    name: "wander",
-    weight: 60,   // 60% wander
-    conditions: { playerInRange: false }
-  },
-  {
     name: "patrol",
-    weight: 40,   // 40% patrol (wander takes priority)
-    conditions: { playerInRange: false }
+    duration: [2.0, 4.0],
+    weight: 3,                // Low priority fallback
+    conditions: [
+      { type: 'distance', operator: '>', value: 150 }
+    ],
+    actions: [
+      { type: 'move', params: { pattern: 'random', speed: 15 } }
+    ]
+  },
+  {
+    name: "chase",
+    duration: [1.5, 3.0],
+    weight: 6,                // Higher than patrol
+    conditions: [
+      { type: 'distance', operator: '<', value: 150 },
+      { type: 'distance', operator: '>', value: 32 }
+    ],
+    actions: [
+      { type: 'move', params: { pattern: 'toward_player', speed: 35 } }
+    ]
+  },
+  {
+    name: "attack",
+    duration: [0.5, 1.0],
+    weight: 10,               // Highest normal priority
+    conditions: [
+      { type: 'distance', operator: '<', value: 32 }
+    ],
+    actions: [
+      { type: 'move', params: { pattern: 'toward_player', speed: 50 } }
+    ]
   }
 ]
 ```
 
 **Why this works:**
-- Chase evaluated first (100% weight when player in range)
-- Wander/patrol only when not chasing
-- Total weight = 100% (60 + 40), clean distribution
+- Attack has highest weight (10) and triggers at close range
+- Chase (weight 6) overrides patrol when player is in range
+- Patrol (weight 3) is the fallback when player is far away
+- Distance conditions create non-overlapping range bands
+- Weights are relative, not percentages - higher weight = more likely when multiple behaviors are eligible
 
 ### Memory Management
 
@@ -709,8 +837,9 @@ behaviors: [
 - [CURRENT_SYSTEMS.md](./CURRENT_SYSTEMS.md) - System architecture
 - [battle-system-guide.md](./battle-system-guide.md) - Battle integration details
 - [CLAUDE.md](../CLAUDE.md) - Enemy AI Factory section
-- `/scripts/external/enemy-configs.ts` - All enemy configs
-- `/scripts/systems/enemy/enemy-ai.ts` - Enemy AI implementation
+- `/scripts/systems/enemy/enemy-configs.ts` - All enemy configs (EnemyConfig, BehaviorConfig, ActionConfig interfaces)
+- `/scripts/systems/enemy/enemy-ai.ts` - Enemy AI factory implementation
+- `/scripts/systems/enemy/enemy-utils.ts` - Movement, animation, and condition evaluation helpers
 
 ---
 
