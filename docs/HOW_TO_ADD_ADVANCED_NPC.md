@@ -83,6 +83,13 @@ export enum SeaMonsterState {
 
 ### Controller Class Structure
 
+> **Note:** The codebase now uses a `Logger` utility instead of raw `console.log`. Import it as follows:
+> ```typescript
+> import { Logger } from "../../utils/logger.js";
+> const log = Logger.create("SeaMonsterController");
+> ```
+> Then use `log.info(...)`, `log.warn(...)`, `log.error(...)` instead of `console.log(...)`.
+
 ```typescript
 export class SeaMonsterController {
   // State tracking
@@ -100,7 +107,7 @@ export class SeaMonsterController {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("🐉 Sea Monster Controller initialized");
+    log.info("Sea Monster Controller initialized");
   }
 
   // ============================================================================
@@ -232,18 +239,19 @@ Progressive reveal shows a sprite gradually appearing/disappearing, like rising 
 // Get the MaskRectangle
 const maskRect = runtime.objects.MaskRectangle?.getFirstInstance();
 if (maskRect) {
-  // MaskRectangle renders FIRST (top of Z-order)
+  // MaskRectangle at top of Z-order = renders LAST (on top visually)
   maskRect.moveToTop();
 }
 
-// Sprite uses normal blend mode and renders SECOND (bottom of Z-order)
+// Sprite at bottom of Z-order = renders FIRST (underneath visually)
 seaMonsterMask.blendMode = "normal";
 seaMonsterMask.moveToBottom();
 ```
 
 **Why this works:**
-- MaskRectangle provides the alpha channel (defines visible area)
-- Sprite renders in normal mode, only visible where MaskRectangle has pixels
+- In C3, top of Z-order renders LAST (on top visually). `moveToTop()` means it renders on top.
+- MaskRectangle renders on top and provides the alpha channel (defines visible area)
+- Sprite renders underneath in normal mode, only visible where MaskRectangle has pixels
 - Z-order ensures correct render sequence
 
 ### Tween Animation
@@ -285,8 +293,8 @@ sprite.blendMode = "destination-in";
 **Fix:**
 ```typescript
 // ✅ CORRECT Z-order
-maskRect.moveToTop();      // Mask renders first
-sprite.moveToBottom();     // Sprite renders second
+maskRect.moveToTop();      // Mask renders last (on top visually)
+sprite.moveToBottom();     // Sprite renders first (underneath visually)
 ```
 
 **Problem: Masking not working at all**
@@ -675,7 +683,7 @@ Construct 3 supports multiple blend modes for combining sprite layers.
 
 **Final Solution (normal with Z-order):**
 ```typescript
-// MaskRectangle at TOP (renders first)
+// MaskRectangle at TOP of Z-order (renders last, on top visually)
 maskRect.moveToTop();
 maskRect.blendMode = "normal";
 
@@ -893,12 +901,12 @@ State changes not saved to Dict_SaveGameData
 // In controller, read quest status on summon
 static shouldBeHostileOnSummon(runtime: any): boolean {
   const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
-  const questStatus = dict?.getDataMap().get("pearl_quest") || "Not_Started";
+  const questStatus = dict?.getDataMap().get("PearlQuest") || 0;
 
-  if (questStatus === "Hostile_Encounter") {
-    return true;  // Resume hostility
+  // If quest complete (30), forgive
+  if (questStatus >= 30) {
+    return false;
   }
-  return false;
 }
 ```
 
@@ -1053,7 +1061,7 @@ AdventureLand.YourController.debugState()
 
 - `/scripts/systems/npc/sea-monster-controller.ts` - Full controller example
 - `/scripts/external/quest-dialogue/sea-monster-dialogue.ts` - Dialogue with custom actions
-- `/scripts/external/quest-dialogue/dialogue-bridge.ts` - Action registration (lines 667-719)
+- `/scripts/external/quest-dialogue/dialogue-bridge.ts` - Action registration (lines 690-748)
 - `/objectTypes/Enemies/En_Sea_Monster_Base.json` - Base sprite configuration
 - `/objectTypes/Enemies/En_Sea_Monster_Mask.json` - Mask sprite configuration
 

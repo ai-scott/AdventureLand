@@ -242,9 +242,10 @@ export const YourNPCDialogue: NPCDialogue = {
 3. Selects the FIRST valid node
 
 **Best Practice:**
-- Start at 100 for highest priority (quest complete, special events)
-- Decrease by 1 for each subsequent node
-- Default node has priority 1 or no conditions
+- Start at 100 for the initial/default greeting (e.g., Not_Started state)
+- Decrease by 1 for each subsequent node in the flow
+- Higher priority = checked first, so use 100 for the most common entry point
+- Default fallback node has priority 1 or no conditions
 
 ---
 
@@ -275,6 +276,20 @@ runtime.addEventListener("afterprojectstart", async () => {
   // ... rest of initialization ...
 });
 ```
+
+**NOTE:** In C3 event sheets, use the `Dialogue` namespace (not `QuestDialogue.DialogueBridge`):
+```javascript
+// ✅ CORRECT - In event sheets, use globalThis.AdventureLand.Dialogue
+const dialogue = globalThis.AdventureLand?.Dialogue;
+if (dialogue) {
+  dialogue.start(npcId, runtime, triggerUID);
+}
+
+// ❌ WRONG - QuestDialogue.DialogueBridge is internal, not exposed to event sheets
+QuestDialogue.DialogueBridge.startDialogue(npcId, runtime);
+```
+
+See `main.ts` (~line 701) for the actual namespace setup.
 
 **NOTE:** Remember to use `.js` extension in import even for `.ts` files!
 
@@ -469,16 +484,16 @@ export const YourNPCDialogue: NPCDialogue = {
 
 **Fix:** Higher priority nodes should have MORE SPECIFIC conditions:
 ```typescript
-// Priority 100 - Most specific (quest complete)
+// Priority 100 - Initial greeting (Not_Started state, checked first)
 {
-  id: "complete_node",
+  id: "greeting_node",
   priority: 100,
   conditions: [
-    { type: "quest_status", questId: "quest", status: "Complete" }
+    { type: "quest_status", questId: "quest", status: "Not_Started" }
   ]
 }
 
-// Priority 99 - Less specific (quest active)
+// Priority 99 - Quest active
 {
   id: "active_node",
   priority: 99,
@@ -487,7 +502,16 @@ export const YourNPCDialogue: NPCDialogue = {
   ]
 }
 
-// Priority 1 - Default (no conditions)
+// Priority 98 - Quest complete
+{
+  id: "complete_node",
+  priority: 98,
+  conditions: [
+    { type: "quest_status", questId: "quest", status: "Complete" }
+  ]
+}
+
+// Priority 1 - Default fallback (no conditions)
 {
   id: "default_node",
   priority: 1,
@@ -529,15 +553,15 @@ export const YourNPCDialogue: NPCDialogue = {
 
 **Causes:**
 1. **Variable not saved** - Check Dict_SaveGameData for key
-2. **Wrong syntax** - Use `|varName|` not `{varName}` or `[varName]`
+2. **Wrong syntax** - Use `|varName|` or `[varName]` (both work), not `{varName}`
 3. **Variable undefined** - Player hasn't entered name yet
 
 **Fix:** Always use pipe syntax and ensure variable exists:
 ```typescript
 {
-  text: "Hello |PlayerName|!",  // ✅ CORRECT
+  text: "Hello |PlayerName|!",  // ✅ CORRECT (pipe syntax)
+  // ALSO: "Hello [PlayerName]!"  ✅ (bracket syntax also works)
   // NOT: "Hello {PlayerName}!"  ❌
-  // NOT: "Hello [PlayerName]!"  ❌
 }
 ```
 
@@ -930,18 +954,21 @@ When you need to spawn an NPC or trigger visual effects before dialogue starts, 
 
 **Fix - Two Files Need Updates:**
 ```typescript
-// 1. Add to dialogue-types.ts
-export type DialogueActionType =
-  | 'start_quest'
-  | 'give_item'
-  | 'summon_sea_monster'  // ← Add your custom action
-  | ...
+// 1. Add to the `type` field union on the `DialogueAction` interface in dialogue-types.ts
+export interface DialogueAction {
+  type: 'start_quest' | 'complete_quest' | 'set_quest_status' | 'give_item'
+    | 'summon_sea_monster'  // ← Add your custom action to the union
+    | ...;
+  // ... other fields
+}
 
 // 2. Add handler to dialogue-bridge.ts
 case 'summon_sea_monster':
   // Handler code
   break;
 ```
+
+**Note:** There is no standalone `DialogueActionType` export. The action types are defined as a union on the `type` field of the `DialogueAction` interface in `dialogue-types.ts`.
 
 **Remember:** BOTH files must be updated or you'll get type errors!
 
@@ -1004,22 +1031,22 @@ When multiple nodes have the same conditions, **all of them match**, and only pr
 - Dialogue node doesn't trigger
 
 **Context:**
-The dialogue system uses `"negate"` property to invert conditions, not `"inverted"`.
+The type definition in `dialogue-types.ts` includes both `negate` and `inverted` as optional fields on `DialogueCondition`. However, the **runtime code** in `quest-dialogue-system.ts` (line 334) only checks `condition.negate` -- it does not check `condition.inverted`. So while `inverted` is accepted by the type system, it has no effect at runtime.
 
 **Fix:**
 ```typescript
-// ✅ CORRECT - Use "negate"
+// ✅ CORRECT - Use "negate" (the only field checked at runtime)
 {
   type: "has_item",
   itemId: "Perle_de_la_Mer",
   negate: true  // Player does NOT have item
 }
 
-// ❌ WRONG - "inverted" doesn't exist
+// ❌ WRONG - "inverted" exists in the type definition but is NOT checked at runtime
 {
   type: "has_item",
   itemId: "Perle_de_la_Mer",
-  inverted: true  // This property is ignored!
+  inverted: true  // TypeScript won't error, but this is silently ignored!
 }
 ```
 

@@ -4,13 +4,29 @@ This guide helps you add new content to AdventureLand. Each content type has a d
 
 ## Quick Reference Table
 
-| I want to add...  | Guide                  | Checklist                       | Time Estimate | Difficulty |
-|--------------------|------------------------|---------------------------------|---------------|------------|
-| A new item         | [HOW_TO_ADD_ITEM.md](HOW_TO_ADD_ITEM.md)     | [templates/item-checklist.md](templates/item-checklist.md)   | 10-15 min     | Easy       |
-| A new NPC          | [HOW_TO_ADD_NPC.md](HOW_TO_ADD_NPC.md)       | [templates/npc-checklist.md](templates/npc-checklist.md)     | 30-60 min     | Medium     |
-| A new enemy        | [HOW_TO_ADD_ENEMY.md](HOW_TO_ADD_ENEMY.md)   | [templates/enemy-checklist.md](templates/enemy-checklist.md) | 45-90 min     | Medium     |
-| A new quest        | [HOW_TO_ADD_QUEST.md](HOW_TO_ADD_QUEST.md)   | (covered in NPC checklist)      | Varies        | Medium     |
-| NPC dialogue       | [HOW_TO_ADD_NPC.md](HOW_TO_ADD_NPC.md)       | [templates/npc-checklist.md](templates/npc-checklist.md)     | 30-60 min     | Medium     |
+| I want to add...       | Guide                  | Checklist                       | Time Estimate | Difficulty |
+|------------------------|------------------------|---------------------------------|---------------|------------|
+| A new item             | [HOW_TO_ADD_ITEM.md](HOW_TO_ADD_ITEM.md)     | [templates/item-checklist.md](templates/item-checklist.md)   | 10-15 min     | Easy       |
+| A new potion           | [HOW_TO_ADD_POTION.md](HOW_TO_ADD_POTION.md) | (in item checklist)             | 15-30 min     | Easy       |
+| A new NPC              | [HOW_TO_ADD_NPC.md](HOW_TO_ADD_NPC.md)       | [templates/npc-checklist.md](templates/npc-checklist.md)     | 30-60 min     | Medium     |
+| A new enemy            | [HOW_TO_ADD_ENEMY.md](HOW_TO_ADD_ENEMY.md)   | [templates/enemy-checklist.md](templates/enemy-checklist.md) | 45-90 min     | Medium     |
+| A new quest            | [HOW_TO_ADD_QUEST.md](HOW_TO_ADD_QUEST.md)   | (covered in NPC checklist)      | Varies        | Medium     |
+| A new shop/vendor      | [HOW_TO_ADD_SHOP.md](HOW_TO_ADD_SHOP.md)     | (in NPC checklist)              | 30-60 min     | Medium     |
+| NPC dialogue           | [HOW_TO_ADD_NPC.md](HOW_TO_ADD_NPC.md)       | [templates/npc-checklist.md](templates/npc-checklist.md)     | 30-60 min     | Medium     |
+| An advanced NPC        | [HOW_TO_ADD_ADVANCED_NPC.md](HOW_TO_ADD_ADVANCED_NPC.md) | —                  | 4-8 hours     | Advanced   |
+| A new world/map        | [HOW_TO_ADD_WORLD.md](HOW_TO_ADD_WORLD.md)   | —                               | 2-4 hours     | Advanced   |
+
+## Suggested Learning Path
+
+If you're new to the project, tackle content in this order:
+
+1. **Add an item** (Easy) — JSON only, no C3 work needed, validates with `npm run validate:items`
+2. **Add a potion** (Easy) — Builds on items, introduces the effect system
+3. **Add an NPC with dialogue** (Medium) — Your first TypeScript + C3 integration
+4. **Add a quest** (Medium) — Builds on NPC dialogue with conditions and actions
+5. **Add an enemy** (Medium) — TypeScript config + C3 sprites + battle integration
+6. **Add a shop** (Medium) — Combines NPC dialogue + item system + currency
+7. **Add a world** (Advanced) — Layout design + transitions + populating with content
 
 ## General Workflow
 
