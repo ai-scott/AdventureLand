@@ -17,12 +17,15 @@ AdventureLand is a 2D retro RPG featuring data-driven enemy AI, a quest and dial
 - **World10 -- The Bottomless Lake**: Water-themed area with the Sea Monster encounter (4 NPCs)
 
 **Planned:**
-- **World02 -- Crystal Caverns**: Underground mining area
-- **World03 -- Desert Oasis**: Arid trading post
-- **World04 -- Frozen Tundra**: Snow and ice wilderness
-- **World05 -- Volcanic Isle**: Fire-themed dungeon area
-- **World06 -- Sky Citadel**: Floating fortress
-- **World20 -- The Deep**: Final area
+- **Forest (0:-1)**: Leafwood Forest with broken bridge, Pete's cabin, castle walls
+- **Castle (1:-1)**: Queen Quenby and King Kendrick's castle
+- **Rocky Hills (2:0)**: Mountainous area east of the Lake
+- **Campground (2:-1)**: Royal guard encampment
+- **Snowy Mountain (0:-2)**: Where Pete prospects for gold, caves with healing herbs
+- **Desert (1:-2)**: Arid area south of the Castle
+- **Abandoned Fort (2:-2)**: End-game area with ghost enemies
+
+See [docs/GAME_ROADMAP.md](docs/GAME_ROADMAP.md) for full content plan with quests, NPCs, and items per world.
 
 ### Key Metrics
 
