@@ -1,6 +1,9 @@
 // inventory-ui-optimization.ts
 // Solves the "Every Tick UI Updates" performance issue
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("InvUI");
+
 /**
  * Inventory UI State Manager
  * Prevents unnecessary UI updates and implements smart refresh logic
@@ -59,7 +62,7 @@ export class InventoryUIOptimizer {
      * Instead of recreating entire inventory
      */
     static updateSlot(slotIndex: number, itemId: number, quantity: number): void {
-        console.log(`📦 Updating slot ${slotIndex} only`);
+        log.debug(`Updating slot ${slotIndex} only`);
 
         // Mark only this slot as needing update
         if (!this.updateScheduled) {
@@ -78,7 +81,7 @@ export class InventoryUIOptimizer {
      */
     private static performBatchedUpdates(): void {
         // This would be called from event sheets to update only changed slots
-        console.log("⚡ Performing batched UI updates");
+        log.debug("Performing batched UI updates");
         this.isDirty = false;
     }
 
@@ -86,7 +89,7 @@ export class InventoryUIOptimizer {
      * Cache UI references to avoid lookups
      */
     static cacheUIReferences(runtime: any): void {
-        console.log("🔧 Caching UI references for performance...");
+        log.info("Caching UI references for performance...");
 
         // Cache all ItemSlot instances
         const itemSlots = runtime.objects.ItemSlot.getAllInstances();
@@ -102,8 +105,8 @@ export class InventoryUIOptimizer {
             this.equipSlots.set(category, slot);
         });
 
-        console.log(`✅ Cached ${this.itemSlots.size} item slots`);
-        console.log(`✅ Cached ${this.equipSlots.size} equipment slots`);
+        log.info(`Cached ${this.itemSlots.size} item slots`);
+        log.info(`Cached ${this.equipSlots.size} equipment slots`);
     }
 
     /**
@@ -120,12 +123,12 @@ export class InventoryUIOptimizer {
         const totalChecks = this.updateCount + this.skippedUpdates;
         const skipRate = totalChecks > 0 ? (this.skippedUpdates / totalChecks * 100).toFixed(1) : 0;
 
-        console.log("📊 Inventory UI Performance Stats:");
-        console.log(`- Total update checks: ${totalChecks}`);
-        console.log(`- Actual updates: ${this.updateCount}`);
-        console.log(`- Skipped updates: ${this.skippedUpdates}`);
-        console.log(`- Skip rate: ${skipRate}%`);
-        console.log(`- Efficiency gain: ${skipRate}% CPU saved!`);
+        log.info("Inventory UI Performance Stats:");
+        log.info(`- Total update checks: ${totalChecks}`);
+        log.info(`- Actual updates: ${this.updateCount}`);
+        log.info(`- Skipped updates: ${this.skippedUpdates}`);
+        log.info(`- Skip rate: ${skipRate}%`);
+        log.info(`- Efficiency gain: ${skipRate}% CPU saved!`);
     }
 
     /**
@@ -134,7 +137,7 @@ export class InventoryUIOptimizer {
     static resetStats(): void {
         this.updateCount = 0;
         this.skippedUpdates = 0;
-        console.log("📊 Performance stats reset");
+        log.debug("Performance stats reset");
     }
 }
 

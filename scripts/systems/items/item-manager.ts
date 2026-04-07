@@ -6,6 +6,9 @@
  * Handles both item data lookups and player inventory management
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("ItemManager");
+
 // Item type definitions matching your JSON structure
 export interface Item {
     id: number;
@@ -52,7 +55,7 @@ export class ItemManager {
      */
     static initialize(itemsData: any): boolean {
         try {
-            console.log("🗄️ [ItemManager] Initializing item database...");
+            log.info("Initializing item database...");
 
             this.itemsById.clear();
             this.itemsByName.clear();
@@ -66,7 +69,7 @@ export class ItemManager {
 
             const items = data.items || data;
             if (!Array.isArray(items)) {
-                console.error("[ItemManager] Invalid items data format");
+                log.error("Invalid items data format");
                 return false;
             }
 
@@ -83,7 +86,7 @@ export class ItemManager {
 
                 // Skip invalid IDs
                 if (item.id === undefined || item.id === null) {
-                    console.warn(`[ItemManager] Skipping item with invalid ID:`, item);
+                    log.warn("Skipping item with invalid ID:", item);
                     return;
                 }
 
@@ -108,13 +111,13 @@ export class ItemManager {
             });
 
             this.initialized = true;
-            console.log(`✅ [ItemManager] Initialized with ${validItems} items (${emptySlots} empty slots)`);
-            console.log(`📋 [ItemManager] Categories: ${Array.from(this.itemsByCategory.keys()).join(', ')}`);
+            log.info(`Initialized with ${validItems} items (${emptySlots} empty slots)`);
+            log.info(`Categories: ${Array.from(this.itemsByCategory.keys()).join(', ')}`);
 
             return true;
 
         } catch (error) {
-            console.error("[ItemManager] Initialization error:", error);
+            log.error("Initialization error:", error);
             return false;
         }
     }
@@ -123,7 +126,7 @@ export class ItemManager {
      * Initialize player inventory from save data
      */
     static initializeInventory(inventoryData: any[]): void {
-        console.log("🎒 [ItemManager] Initializing player inventory...");
+        log.info("Initializing player inventory...");
 
         if (!inventoryData || !Array.isArray(inventoryData)) {
             this.inventory = [];
@@ -135,7 +138,7 @@ export class ItemManager {
         }
 
         this.currentPage = 0;
-        console.log(`✅ [ItemManager] Inventory initialized with ${this.inventory.length} stacks`);
+        log.info(`Inventory initialized with ${this.inventory.length} stacks`);
     }
 
     // ===== O(1) ITEM LOOKUPS =====
@@ -405,7 +408,7 @@ export class ItemManager {
     static addToInventory(itemId: number, quantity: number = 1): boolean {
         const item = this.itemsById.get(itemId);
         if (!item) {
-            console.warn(`[ItemManager] Cannot add item ${itemId} - item doesn't exist`);
+            log.warn(`Cannot add item ${itemId} - item doesn't exist`);
             return false;
         }
 
@@ -414,14 +417,14 @@ export class ItemManager {
             const existingIndex = this.inventory.findIndex(stack => stack.itemId === itemId);
             if (existingIndex !== -1) {
                 this.inventory[existingIndex].quantity += quantity;
-                console.log(`[ItemManager] Added ${quantity}x ${item.name} (stacked)`);
+                log.info(`Added ${quantity}x ${item.name} (stacked)`);
                 return true;
             }
         }
 
         // Add as new item
         this.inventory.push({ itemId, quantity });
-        console.log(`[ItemManager] Added ${quantity}x ${item.name} (new stack)`);
+        log.info(`Added ${quantity}x ${item.name} (new stack)`);
         return true;
     }
 
@@ -440,10 +443,10 @@ export class ItemManager {
 
         if (stack.quantity > quantity) {
             stack.quantity -= quantity;
-            console.log(`[ItemManager] Removed ${quantity}x ${item?.name || 'item'} (${stack.quantity} remaining)`);
+            log.info(`Removed ${quantity}x ${item?.name || 'item'} (${stack.quantity} remaining)`);
         } else {
             this.inventory.splice(index, 1);
-            console.log(`[ItemManager] Removed all ${item?.name || 'item'} from inventory`);
+            log.info(`Removed all ${item?.name || 'item'} from inventory`);
 
             // Adjust current page if needed
             const totalPages = this.getTotalPages();
@@ -504,7 +507,7 @@ export class ItemManager {
     static clearInventory(): void {
         this.inventory = [];
         this.currentPage = 0;
-        console.log("🗑️ [ItemManager] Inventory cleared");
+        log.info("Inventory cleared");
     }
     /**
      * Add named item to inventory
@@ -517,7 +520,7 @@ export class ItemManager {
 
         const itemId = this.getItemID(name);
         if (itemId === 0) {
-            console.warn(`[ItemManager] Item not found by name: ${name}`);
+            log.warn(`Item not found by name: ${name}`);
             return false;
         }
 
@@ -538,7 +541,7 @@ export class ItemManager {
 
         const removed = beforeCount - this.inventory.length;
         if (removed > 0) {
-            console.log(`[ItemManager] Removed ${removed} quest items`);
+            log.info(`Removed ${removed} quest items`);
         }
     }
 
@@ -546,14 +549,14 @@ export class ItemManager {
      * Debug function to show current state
      */
     static debug(): void {
-        console.log('=== ItemManager Debug Info ===');
-        console.log(`Initialized: ${this.initialized}`);
-        console.log(`Total items in database: ${this.itemsById.size}`);
-        console.log(`Categories: ${Array.from(this.itemsByCategory.keys()).join(', ')}`);
-        console.log(`Inventory stacks: ${this.inventory.length}`);
-        console.log(`Total items in inventory: ${this.getTotalItemCount()}`);
-        console.log(`Current page: ${this.currentPage + 1}/${this.getTotalPages()}`);
-        console.log('=============================');
+        log.info('=== ItemManager Debug Info ===');
+        log.info(`Initialized: ${this.initialized}`);
+        log.info(`Total items in database: ${this.itemsById.size}`);
+        log.info(`Categories: ${Array.from(this.itemsByCategory.keys()).join(', ')}`);
+        log.info(`Inventory stacks: ${this.inventory.length}`);
+        log.info(`Total items in inventory: ${this.getTotalItemCount()}`);
+        log.info(`Current page: ${this.currentPage + 1}/${this.getTotalPages()}`);
+        log.info('=============================');
     }
 }
 

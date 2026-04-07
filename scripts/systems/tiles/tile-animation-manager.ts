@@ -1,4 +1,7 @@
 // tile-animation-manager.ts
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("TileAnimation");
+
 export interface AnimationConfig {
     name: string;
     tilemap: string;
@@ -20,7 +23,7 @@ export class TileAnimationManager {
 
     static initialize(runtime: any): void {
         this.runtime = runtime;
-        console.log('🌊 TileAnimationManager initialized');
+        log.info('TileAnimationManager initialized');
     }
 
     /**
@@ -35,7 +38,7 @@ export class TileAnimationManager {
     ): void {
         const tilemapObj = this.runtime?.objects[tilemap];
         if (!tilemapObj) {
-            console.error(`Tilemap ${tilemap} not found`);
+            log.error(`Tilemap ${tilemap} not found`);
             return;
         }
 
@@ -57,7 +60,7 @@ export class TileAnimationManager {
             lastUpdate: Date.now()
         });
 
-        console.log(`💧 Added tilemap animation: ${name} (${frameCount} frames, ${frameDelay}ms delay)`);
+        log.info(`Added tilemap animation: ${name} (${frameCount} frames, ${frameDelay}ms delay)`);
     }
 
     /**
@@ -89,7 +92,7 @@ export class TileAnimationManager {
 
         this.isRunning = true;
         this.update();
-        console.log('🌊 Tile animations started');
+        log.info('Tile animations started');
     }
 
     static stop(): void {
@@ -98,7 +101,7 @@ export class TileAnimationManager {
             this.animationFrame = null;
         }
         this.isRunning = false;
-        console.log('🛑 Tile animations stopped');
+        log.info('Tile animations stopped');
     }
 
     private static update(): void {
@@ -126,7 +129,7 @@ export class TileAnimationManager {
     static addWaterfallAnimation(name: string, tilemap: string, frameDelay: number = 150): void {
         const tilemapObj = this.runtime?.objects[tilemap];
         if (!tilemapObj) {
-            console.error(`Tilemap ${tilemap} not found`);
+            log.error(`Tilemap ${tilemap} not found`);
             return;
         }
 
@@ -150,7 +153,7 @@ export class TileAnimationManager {
             lastUpdate: Date.now()
         });
 
-        console.log(`💧 Added waterfall animation: ${name}`);
+        log.info(`Added waterfall animation: ${name}`);
     }
 
     // Update the updateTilemapAnimation method to handle waterfall
@@ -209,7 +212,7 @@ export class TileAnimationManager {
             state.currentFrame++;
 
         } catch (error) {
-            console.error('Error updating tilemap animation:', error);
+            log.error('Error updating tilemap animation:', error);
         }
     }
 
@@ -221,15 +224,15 @@ export class TileAnimationManager {
 
         const tilemapObj = this.runtime.objects[tilemapName];
         if (!tilemapObj) {
-            console.log(`❌ Tilemap ${tilemapName} not found`);
+            log.error(`Tilemap ${tilemapName} not found`);
             return;
         }
 
         const tilemap = tilemapObj.getFirstInstance();
         if (!tilemap) return;
 
-        console.log(`📊 Tilemap Analysis: ${tilemapName}`);
-        console.log(`Dimensions: ${tilemap.mapWidth}x${tilemap.mapHeight}`);
+        log.debug(`Tilemap Analysis: ${tilemapName}`);
+        log.debug(`Dimensions: ${tilemap.mapWidth}x${tilemap.mapHeight}`);
 
         // Find unique tile indices
         const uniqueTiles = new Set<number>();
@@ -240,15 +243,15 @@ export class TileAnimationManager {
             }
         }
 
-        console.log(`Unique tiles used: ${Array.from(uniqueTiles).sort((a, b) => a - b).join(', ')}`);
-        console.log(`Total animated tiles: ${uniqueTiles.size}`);
+        log.debug(`Unique tiles used: ${Array.from(uniqueTiles).sort((a, b) => a - b).join(', ')}`);
+        log.debug(`Total animated tiles: ${uniqueTiles.size}`);
     }
 
     static cleanup(): void {
         this.stop();
         this.animations.clear();
         this.animationStates.clear();
-        console.log('🧹 TileAnimationManager cleaned up');
+        log.info('TileAnimationManager cleaned up');
     }
 
     /**
@@ -263,35 +266,35 @@ export class TileAnimationManager {
 
     static debugTilesetFrames(tilemapName: string, tileX: number, tileY: number): void {
         if (!this.runtime) {
-            console.error('Runtime not initialized');
+            log.error('Runtime not initialized');
             return;
         }
 
         const tilemapObj = this.runtime.objects[tilemapName];
         if (!tilemapObj) {
-            console.error(`Tilemap ${tilemapName} not found`);
+            log.error(`Tilemap ${tilemapName} not found`);
             return;
         }
 
         const tilemap = tilemapObj.getFirstInstance();
         if (!tilemap) {
-            console.error(`No instance of ${tilemapName} found`);
+            log.error(`No instance of ${tilemapName} found`);
             return;
         }
 
         const baseTile = tilemap.getTileAt(tileX, tileY);
-        console.log(`🔍 Tile at (${tileX}, ${tileY}) in ${tilemapName}:`);
-        console.log(`  Current index: ${baseTile}`);
+        log.debug(`Tile at (${tileX}, ${tileY}) in ${tilemapName}:`);
+        log.debug(`  Current index: ${baseTile}`);
 
         if (baseTile === -1) {
-            console.log(`  This is an empty tile`);
+            log.debug(`  This is an empty tile`);
         } else {
             const frameCount = 16; // Full row animation
             const baseIndex = Math.floor(baseTile / frameCount) * frameCount;
-            console.log(`  Base tile index: ${baseIndex}`);
-            console.log(`  Row number: ${Math.floor(baseTile / 16)}`);
-            console.log(`  Animation sequence: ${baseIndex} through ${baseIndex + 15}`);
-            console.log(`  Current frame: ${baseTile - baseIndex}`);
+            log.debug(`  Base tile index: ${baseIndex}`);
+            log.debug(`  Row number: ${Math.floor(baseTile / 16)}`);
+            log.debug(`  Animation sequence: ${baseIndex} through ${baseIndex + 15}`);
+            log.debug(`  Current frame: ${baseTile - baseIndex}`);
         }
     }
 }
@@ -329,17 +332,17 @@ export class TileAnimationManager {
                     TileAnimationManager.addMagicAnimation(animationName, tilemapName);
                     break;
                 default:
-                    console.warn(`Unknown animation type: ${animationType}`);
+                    log.warn(`Unknown animation type: ${animationType}`);
                     return;
             }
 
             // Start animations
             TileAnimationManager.start();
 
-            console.log(`✅ Tile animations setup complete: ${animationName} on ${tilemapName}`);
+            log.info(`Tile animations setup complete: ${animationName} on ${tilemapName}`);
 
         } catch (error) {
-            console.error("Error setting up tile animations:", error);
+            log.error("Error setting up tile animations:", error);
         }
     },
 
@@ -349,9 +352,9 @@ export class TileAnimationManager {
             TileAnimationManager.initialize(runtime);
             TileAnimationManager.addWaterfallAnimation(animationName, tilemapName, frameDelay);
             TileAnimationManager.start();
-            console.log(`✅ Waterfall animation setup complete: ${animationName} on ${tilemapName}`);
+            log.info(`Waterfall animation setup complete: ${animationName} on ${tilemapName}`);
         } catch (error) {
-            console.error("Error setting up waterfall animation:", error);
+            log.error("Error setting up waterfall animation:", error);
         }
     },
 
@@ -359,7 +362,7 @@ export class TileAnimationManager {
         try {
             TileAnimationManager.cleanup();
         } catch (error) {
-            console.error("Error cleaning up tile animations:", error);
+            log.error("Error cleaning up tile animations:", error);
         }
     },
 
@@ -368,7 +371,7 @@ export class TileAnimationManager {
         try {
             TileAnimationManager.analyzeTilemap(tilemapName);
         } catch (error) {
-            console.error("Error debugging tilemap:", error);
+            log.error("Error debugging tilemap:", error);
         }
     },
 
@@ -376,7 +379,7 @@ export class TileAnimationManager {
         try {
             TileAnimationManager.debugTilesetFrames(tilemapName, x, y);
         } catch (error) {
-            console.error("Error debugging tile:", error);
+            log.error("Error debugging tile:", error);
         }
     },
 
@@ -408,4 +411,4 @@ export class TileAnimationManager {
     }
 };
 
-console.log("✅ AdventureLand.TileAnimations namespace created");
+log.info("AdventureLand.TileAnimations namespace created");

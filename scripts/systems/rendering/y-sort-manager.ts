@@ -2,6 +2,8 @@
 // Handles depth sorting for all game objects based on Y position
 
 import { IC3RuntimeFacade } from "../../types/c3-runtime-facade.js";
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("YSortManager");
 
 /**
  * Y-Sort Manager
@@ -17,7 +19,7 @@ class YSortManagerClass {
    */
   public initialize(runtime: IC3RuntimeFacade): void {
     this.runtime = runtime;
-    console.log("🎨 Y-Sort Manager initialized");
+    log.info("Y-Sort Manager initialized");
   }
 
   /**
@@ -28,7 +30,7 @@ class YSortManagerClass {
    */
   public sortAllObjectsByY(): number {
     if (!this.runtime) {
-      console.warn("⚠️ Y-Sort Manager not initialized");
+      log.warn("Y-Sort Manager not initialized");
       return 0;
     }
 

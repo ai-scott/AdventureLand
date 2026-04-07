@@ -1,3 +1,6 @@
+import { Logger } from "../utils/logger.js";
+const log = Logger.create("GameState");
+
 /**
  * Game State Manager - Centralized control of gameplay groups
  *
@@ -68,7 +71,7 @@ export class GameStateManager {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("✅ GameStateManager initialized");
+    log.info("GameStateManager initialized");
   }
 
   /**
@@ -79,7 +82,7 @@ export class GameStateManager {
    */
   static setState(newState: GameStateName): void {
     if (!this.runtime) {
-      console.warn("GameStateManager not initialized");
+      log.warn("GameStateManager not initialized");
       return;
     }
 
@@ -96,7 +99,7 @@ export class GameStateManager {
     // Store state for event sheets to check
     this.runtime.globalVars.GameState = newState;
 
-    console.log(`🎮 Game state: ${oldState} → ${newState}`, {
+    log.info(`Game state: ${oldState} -> ${newState}`, {
       InDialogue: this.runtime.globalVars.InDialogue,
       OptionsOpen: this.runtime.globalVars.OptionsOpen,
       ButtonMgrActive: this.runtime.globalVars.ButtonMgrActive

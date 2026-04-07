@@ -114,7 +114,7 @@ describe("UIButtonManager", () => {
             const warnSpy = jest.spyOn(console, "warn").mockImplementation();
             const result = UIButtonManager.showButton("btn1", makeButtonConfig());
             expect(result).toBe(false);
-            expect(warnSpy).toHaveBeenCalledWith("UIButtonManager not initialized");
+            expect(warnSpy).toHaveBeenCalledWith("[WARN][ButtonManager]", "UIButtonManager not initialized");
             warnSpy.mockRestore();
         });
 
@@ -332,7 +332,7 @@ describe("UIButtonManager", () => {
 
             UIButtonManager.cleanup();
 
-            expect(warnSpy).toHaveBeenCalledWith("ButtonManager not initialized");
+            expect(warnSpy).toHaveBeenCalledWith("[WARN][ButtonManager]", "ButtonManager not initialized");
             warnSpy.mockRestore();
         });
 
@@ -386,7 +386,7 @@ describe("UIButtonManager", () => {
             const result = UIButtonManager.showButton("btn1", makeButtonConfig());
 
             expect(result).toBe(false);
-            expect(warnSpy).toHaveBeenCalledWith('Button "btn1" already visible');
+            expect(warnSpy).toHaveBeenCalledWith("[WARN][ButtonManager]", 'Button "btn1" already visible');
             warnSpy.mockRestore();
         });
 
@@ -396,7 +396,7 @@ describe("UIButtonManager", () => {
             const result = UIButtonManager.hideButton("nonexistent");
 
             expect(result).toBe(false);
-            expect(warnSpy).toHaveBeenCalledWith('Button "nonexistent" not found');
+            expect(warnSpy).toHaveBeenCalledWith("[WARN][ButtonManager]", 'Button "nonexistent" not found');
             warnSpy.mockRestore();
         });
 

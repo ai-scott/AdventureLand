@@ -33,6 +33,9 @@
  * ```
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("TriggerManager");
+
 export type TriggerType = 'character' | 'scene' | 'function' | 'door' | 'item';
 
 export interface TriggerHandler {
@@ -66,7 +69,7 @@ export class TriggerManager {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log('✅ TriggerManager initialized');
+    log.info('TriggerManager initialized');
   }
 
   /**
@@ -89,7 +92,7 @@ export class TriggerManager {
     // Sort by priority (lowest number = highest priority)
     this.triggers.sort((a, b) => a.priority - b.priority);
 
-    console.log(`📝 TriggerManager: Registered "${type}" (priority ${priority})`);
+    log.info(`TriggerManager: Registered "${type}" (priority ${priority})`);
   }
 
   /**
@@ -217,7 +220,7 @@ export class TriggerManager {
    */
   static triggerCurrent(runtime: any): boolean {
     if (this.blockedReasons.size > 0) {
-      console.warn(`🚫 Trigger blocked: ${Array.from(this.blockedReasons).join(', ')}`);
+      log.warn(`Trigger blocked: ${Array.from(this.blockedReasons).join(', ')}`);
       return false;
     }
 
@@ -225,17 +228,17 @@ export class TriggerManager {
 
     // Handle "Check" action for custom functions (mirrors, etc.)
     if (currentAction === 'Check') {
-      console.log(`🔍 [TriggerManager] Handling Check action`);
+      log.info(`[TriggerManager] Handling Check action`);
 
       // Find nearest Trigger_Function
       const player = runtime.objects.Trigger_Player?.getFirstInstance();
       if (!player) {
-        console.warn('⚠️ [TriggerManager] No Trigger_Player found');
+        log.warn('[TriggerManager] No Trigger_Player found');
         return false;
       }
 
       const functionTriggers = runtime.objects.Trigger_Function?.getAllInstances() || [];
-      console.log(`🔍 [TriggerManager] Found ${functionTriggers.length} Trigger_Function objects`);
+      log.info(`[TriggerManager] Found ${functionTriggers.length} Trigger_Function objects`);
 
       let nearestTrigger = null;
       let nearestDist = Infinity;
@@ -245,7 +248,7 @@ export class TriggerManager {
         const dy = trigger.y - player.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        console.log(`   Trigger at (${trigger.x.toFixed(0)}, ${trigger.y.toFixed(0)}), dist: ${dist.toFixed(1)}px, function: ${trigger.instVars.Function}`);
+        log.debug(`   Trigger at (${trigger.x.toFixed(0)}, ${trigger.y.toFixed(0)}), dist: ${dist.toFixed(1)}px, function: ${trigger.instVars.Function}`);
 
         if (dist < 100 && dist < nearestDist) { // Generous threshold to match checkForInteractionHint overlap detection
           nearestTrigger = trigger;
@@ -255,7 +258,7 @@ export class TriggerManager {
 
       if (nearestTrigger) {
         const functionName = nearestTrigger.instVars.Function;
-        console.log(`⚡ Triggering function: ${functionName}`);
+        log.info(`Triggering function: ${functionName}`);
 
         // Map function names to actual C3 functions
         // This replicates the TriggerFunctions map from the event sheet
@@ -268,14 +271,14 @@ export class TriggerManager {
         if (actualFunction) {
           try {
             runtime.callFunction(actualFunction);
-            console.log(`✅ Called ${actualFunction} for ${functionName}`);
+            log.info(`Called ${actualFunction} for ${functionName}`);
             return true;
           } catch (e) {
-            console.error(`❌ Failed to call ${actualFunction}:`, e);
+            log.error(`Failed to call ${actualFunction}:`, e);
             return false;
           }
         } else {
-          console.error(`❌ No mapping found for function: ${functionName}`);
+          log.error(`No mapping found for function: ${functionName}`);
           return false;
         }
       }
@@ -285,7 +288,7 @@ export class TriggerManager {
     if (this.currentTrigger) {
       const registered = this.triggers.find(t => t.type === this.currentTrigger!.type);
       if (registered) {
-        console.log(`⚡ Triggering ${this.currentTrigger.type}: ${this.currentTrigger.hintText}`);
+        log.info(`Triggering ${this.currentTrigger.type}: ${this.currentTrigger.hintText}`);
         registered.handler.onTrigger(this.currentTrigger.object, runtime);
         return true;
       }
@@ -300,7 +303,7 @@ export class TriggerManager {
    */
   static blockTriggers(reason: string): void {
     this.blockedReasons.add(reason);
-    console.log(`🔒 Triggers blocked: ${reason} (total: ${this.blockedReasons.size})`);
+    log.info(`Triggers blocked: ${reason} (total: ${this.blockedReasons.size})`);
   }
 
   /**
@@ -308,7 +311,7 @@ export class TriggerManager {
    */
   static unblockTriggers(reason: string): void {
     this.blockedReasons.delete(reason);
-    console.log(`🔓 Triggers unblocked: ${reason} (remaining: ${this.blockedReasons.size})`);
+    log.info(`Triggers unblocked: ${reason} (remaining: ${this.blockedReasons.size})`);
   }
 
   /**
@@ -332,6 +335,6 @@ export class TriggerManager {
     this.triggers = [];
     this.blockedReasons.clear();
     this.currentTrigger = null;
-    console.log('🔄 TriggerManager reset');
+    log.info('TriggerManager reset');
   }
 }

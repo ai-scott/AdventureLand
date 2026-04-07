@@ -1,5 +1,8 @@
 // inventory-ui-pool.ts
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("InvPool");
+
 /**
  * Adventure Land - Inventory UI Pooling System
  * Solves the 20-40% CPU usage from recreating UI elements
@@ -45,7 +48,7 @@ export class InventoryUIPool {
      * This is called ONCE when the game starts, not when inventory opens
      */
     static initializeUIPool(config: UIPoolConfig): void {
-        console.log("[InventoryUIPool] Pre-creating persistent UI elements...");
+        log.info("Pre-creating persistent UI elements...");
 
         // Note: The actual C3 object creation would happen in event sheets
         // This manages the references and state
@@ -74,8 +77,8 @@ export class InventoryUIPool {
             });
         }
 
-        console.log(`[InventoryUIPool] Created ${config.inventorySlots} inventory slots`);
-        console.log(`[InventoryUIPool] Created ${config.equipmentSlots} equipment slots`);
+        log.info(`Created ${config.inventorySlots} inventory slots`);
+        log.info(`Created ${config.equipmentSlots} equipment slots`);
     }
 
     /**
@@ -199,12 +202,12 @@ export class InventoryUIPool {
      * Debug helper to verify pool state
      */
     static debugPoolState(): void {
-        console.log("[InventoryUIPool] Pool State:");
-        console.log(`- Inventory Visible: ${this._isInventoryVisible}`);
-        console.log(`- Current Layout: ${this.currentLayout}`);
-        console.log(`- Inventory Slots: ${this.inventorySlots.length}`);
-        console.log(`- Equipment Slots: ${this.equipmentSlots.length}`);
-        console.log(`- Active Items: ${this.inventorySlots.filter(s => s.currentItemId !== null).length}`);
+        log.info("Pool State:");
+        log.info(`- Inventory Visible: ${this._isInventoryVisible}`);
+        log.info(`- Current Layout: ${this.currentLayout}`);
+        log.info(`- Inventory Slots: ${this.inventorySlots.length}`);
+        log.info(`- Equipment Slots: ${this.equipmentSlots.length}`);
+        log.info(`- Active Items: ${this.inventorySlots.filter(s => s.currentItemId !== null).length}`);
     }
 }
 

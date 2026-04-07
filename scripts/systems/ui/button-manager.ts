@@ -20,6 +20,8 @@ import type {
   ButtonPosition,
   ButtonGroupConfig
 } from "./ui-types.js";
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("ButtonManager");
 
 export class UIButtonManager {
   // Button pool management
@@ -43,7 +45,7 @@ export class UIButtonManager {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("✅ UIButtonManager initialized");
+    log.info("UIButtonManager initialized");
   }
 
   // ============================================================================
@@ -59,7 +61,7 @@ export class UIButtonManager {
    */
   static measureText(text: string): { width: number; height: number } {
     if (!this.runtime) {
-      console.warn("UIButtonManager not initialized");
+      log.warn("UIButtonManager not initialized");
       return { width: 0, height: 0 };
     }
 
@@ -121,14 +123,14 @@ export class UIButtonManager {
    */
   static showButton(id: string, config: ButtonConfig): boolean {
     if (!this.runtime) {
-      console.warn("UIButtonManager not initialized");
+      log.warn("UIButtonManager not initialized");
       return false;
     }
 
     // Check if button already visible
     const existing = this.buttonPool.get(id);
     if (existing && existing.isVisible) {
-      console.warn(`Button "${id}" already visible`);
+      log.warn(`Button "${id}" already visible`);
       return false;
     }
 
@@ -150,7 +152,7 @@ export class UIButtonManager {
     const result = this.createOrReuseButton(id, config, position);
 
     if (result.buttonUID === -1) {
-      console.error(`Failed to create button "${id}"`);
+      log.error(`Failed to create button "${id}"`);
       return false;
     }
 
@@ -178,7 +180,7 @@ export class UIButtonManager {
   static hideButton(id: string): boolean {
     const button = this.buttonPool.get(id);
     if (!button) {
-      console.warn(`Button "${id}" not found`);
+      log.warn(`Button "${id}" not found`);
       return false;
     }
 
@@ -214,7 +216,7 @@ export class UIButtonManager {
   static updateButton(id: string, updates: Partial<ButtonConfig>): boolean {
     const button = this.buttonPool.get(id);
     if (!button) {
-      console.warn(`Button "${id}" not found`);
+      log.warn(`Button "${id}" not found`);
       return false;
     }
 
@@ -300,7 +302,7 @@ export class UIButtonManager {
     }
 
     // Fallback to (0, 0)
-    console.warn(`Invalid position config for button, using (0, 0)`);
+    log.warn(`Invalid position config for button, using (0, 0)`);
     return { x: 0, y: 0 };
   }
 
@@ -499,7 +501,7 @@ export class UIButtonManager {
       return { buttonUID: buttonInstance.uid, textUID: textUID };
 
     } catch (error) {
-      console.error(`Error creating button "${id}":`, error);
+      log.error(`Error creating button "${id}":`, error);
       return { buttonUID: -1 };
     }
   }
@@ -599,7 +601,7 @@ export class UIButtonManager {
     normalFrame: number = 0
   ): void {
     if (!this.runtime) {
-      console.warn("⚠️ updateButtonHighlights: runtime not initialized");
+      log.warn("updateButtonHighlights: runtime not initialized");
       return;
     }
 
@@ -681,7 +683,7 @@ export class UIButtonManager {
    */
   static cleanup(): void {
     if (!this.runtime) {
-      console.warn("ButtonManager not initialized");
+      log.warn("ButtonManager not initialized");
       return;
     }
 
@@ -697,7 +699,7 @@ export class UIButtonManager {
     // This prevents PlayerEngine from staying disabled after dismissing notifications
     // Event 40 should handle this, but tap events cause race conditions
     this.runtime.globalVars.PlayerEngineActive = true;
-    console.log("🔧 [ButtonManager] Set PlayerEngineActive = true (mobile fix)");
+    log.info("[ButtonManager] Set PlayerEngineActive = true (mobile fix)");
 
     // NOTE: Do NOT reset game state here - causes race conditions during dialogue
     // Let the dialogue/menu systems call GameStateManager.setState() explicitly
@@ -706,7 +708,7 @@ export class UIButtonManager {
     //   gameState.setState('Playing');
     // }
 
-    console.log("🧹 ButtonManager cleanup complete");
+    log.info("ButtonManager cleanup complete");
   }
 
   // ============================================================================
@@ -720,7 +722,7 @@ export class UIButtonManager {
    * @param runtime - C3 runtime instance
    */
   static cleanupItemPickupNotification(runtime: any): void {
-    console.log("🧹 [ButtonManager] Cleaning up item pickup notification...");
+    log.info("[ButtonManager] Cleaning up item pickup notification...");
 
     // Clean up buttons first
     this.cleanup();
@@ -785,7 +787,7 @@ export class UIButtonManager {
     runtime.globalVars.ItemBtnSelection = 0;
     runtime.globalVars.InDialogue = false;
 
-    console.log("✅ [ButtonManager] Item pickup notification cleanup complete");
+    log.info("[ButtonManager] Item pickup notification cleanup complete");
   }
 
   /**
@@ -796,14 +798,14 @@ export class UIButtonManager {
    * @param buttonIndex - Which button was pressed (0=Open, 1=Close)
    */
   static handleItemPickupButton(runtime: any, buttonIndex: number): void {
-    console.log(`🔘 [ButtonManager] Item pickup button pressed: ${buttonIndex === 0 ? 'Open' : 'Close'}`);
+    log.info(`[ButtonManager] Item pickup button pressed: ${buttonIndex === 0 ? 'Open' : 'Close'}`);
 
     // Save the item ID BEFORE cleanup
     const itemToSelect = runtime.globalVars.KeyItem || 0;
 
     if (buttonIndex === 0) {
       // OPEN BUTTON
-      console.log("📂 Opening inventory with item:", itemToSelect);
+      log.info("Opening inventory with item:", itemToSelect);
 
       // Clean up notification UI
       this.cleanupItemPickupNotification(runtime);
@@ -817,7 +819,7 @@ export class UIButtonManager {
 
     } else if (buttonIndex === 1) {
       // CLOSE BUTTON
-      console.log("❌ Dismissing item pickup notification");
+      log.info("Dismissing item pickup notification");
 
       // Clean up notification UI
       this.cleanupItemPickupNotification(runtime);
@@ -827,7 +829,7 @@ export class UIButtonManager {
       runtime.globalVars.PendingItemSelection = 0;
 
       // Don't open inventory - just dismiss
-      console.log("✅ Notification dismissed");
+      log.info("Notification dismissed");
     }
   }
 
@@ -839,15 +841,15 @@ export class UIButtonManager {
    * Debug button pool state
    */
   static debugState(): void {
-    console.log("=== UIButtonManager Debug ===");
-    console.log(`Runtime initialized: ${!!this.runtime}`);
-    console.log(`Total buttons in pool: ${this.buttonPool.size}`);
-    console.log(`Visible buttons: ${this.getActiveButtons().length}`);
-    console.log("\nButton Details:");
+    log.debug("=== UIButtonManager Debug ===");
+    log.debug(`Runtime initialized: ${!!this.runtime}`);
+    log.debug(`Total buttons in pool: ${this.buttonPool.size}`);
+    log.debug(`Visible buttons: ${this.getActiveButtons().length}`);
+    log.debug("Button Details:");
 
     this.buttonPool.forEach((state, id) => {
       const instance = this.getButtonInstance(state.uid);
-      console.log(`  ${id}:`, {
+      log.debug(`  ${id}:`, {
         visible: state.isVisible,
         instanceExists: !!instance,
         instanceVisible: instance?.isVisible ?? "N/A",
@@ -862,7 +864,7 @@ export class UIButtonManager {
       // Check text instance
       if (state.textUID) {
         const textInstance = this.getTextInstance(state.textUID);
-        console.log(`    Text:`, {
+        log.debug(`    Text:`, {
           exists: !!textInstance,
           visible: textInstance?.isVisible ?? "N/A",
           text: textInstance?.text ?? "N/A",
@@ -875,9 +877,9 @@ export class UIButtonManager {
     if (this.runtime?.objects?.Ctrl_Btns) {
       const ctrlBtns = this.runtime.objects.Ctrl_Btns.getFirstInstance();
       if (ctrlBtns) {
-        console.log("\nCtrl_Btns State:");
-        console.log(`  CurrentLink: ${ctrlBtns.instVars.CurrentLink}`);
-        console.log(`  MaxLinks: ${ctrlBtns.instVars.MaxLinks}`);
+        log.debug("Ctrl_Btns State:");
+        log.debug(`  CurrentLink: ${ctrlBtns.instVars.CurrentLink}`);
+        log.debug(`  MaxLinks: ${ctrlBtns.instVars.MaxLinks}`);
       }
     }
   }

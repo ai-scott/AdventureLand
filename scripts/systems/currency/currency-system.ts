@@ -6,6 +6,9 @@
  * Pattern: TypeScript State → runtime.globalVars → Dict_SaveGameData
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("CurrencySystem");
+
 export interface CurrencyConfig {
     startingGems: number;
     maxGems: number;
@@ -64,7 +67,7 @@ export class CurrencySystem {
             }
 
             if (!this.runtime) {
-                console.error('❌ [CurrencySystem] Runtime is not available at initialization!');
+                log.error('Runtime is not available at initialization!');
                 return;
             }
 
@@ -72,10 +75,10 @@ export class CurrencySystem {
             this.loadFromSaveData();
 
             this.initialized = true;
-            console.log('✅ [CurrencySystem] Initialized successfully');
+            log.info('Initialized successfully');
 
         } catch (error) {
-            console.error('❌ [CurrencySystem] Initialization failed:', error);
+            log.error('Initialization failed:', error);
         }
     }
 
@@ -86,7 +89,7 @@ export class CurrencySystem {
         if (!this.runtime) return;
 
         try {
-            console.log('[CurrencySystem] Loading from save data...');
+            log.info('Loading from save data...');
 
             // Check Dictionary first (most reliable for saved games)
             const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
@@ -96,7 +99,7 @@ export class CurrencySystem {
             // Check global variable
             const globalGems = this.runtime.globalVars.Gems;
 
-            console.log('[CurrencySystem] Found:', {
+            log.debug('Found:', {
                 dictGems,
                 globalGems,
                 dictType: typeof dictGems,
@@ -106,23 +109,23 @@ export class CurrencySystem {
             // Use whichever is valid, prefer Dictionary
             if (typeof dictGems === 'number' && !isNaN(dictGems)) {
                 this.state.gems = dictGems;
-                console.log(`[CurrencySystem] Loaded ${dictGems} gems from Dictionary`);
+                log.info(`Loaded ${dictGems} gems from Dictionary`);
             } else if (typeof globalGems === 'number' && !isNaN(globalGems)) {
                 this.state.gems = globalGems;
-                console.log(`[CurrencySystem] Loaded ${globalGems} gems from global var`);
+                log.info(`Loaded ${globalGems} gems from global var`);
             } else {
                 // Default to 0 if both are invalid
                 this.state.gems = 0;
-                console.log('[CurrencySystem] No valid gem data found, defaulting to 0');
+                log.info('No valid gem data found, defaulting to 0');
             }
 
             // Always sync to ensure all three are in sync
             this.syncToC3();
 
-            console.log(`✅ [CurrencySystem] Final state: ${this.state.gems} gems`);
+            log.info(`Final state: ${this.state.gems} gems`);
 
         } catch (error) {
-            console.error('[CurrencySystem] Could not load save data:', error);
+            log.error('Could not load save data:', error);
             this.state.gems = 0;
             this.syncToC3();
         }
@@ -205,7 +208,7 @@ export class CurrencySystem {
         try {
             // Validate state before syncing - NEVER allow NaN!
             if (isNaN(this.state.gems) || typeof this.state.gems !== 'number') {
-                console.error('[CurrencySystem] Invalid gems value detected:', this.state.gems, '- resetting to 0');
+                log.error('Invalid gems value detected:', this.state.gems, '- resetting to 0');
                 this.state.gems = 0;
             }
 
@@ -218,13 +221,13 @@ export class CurrencySystem {
                 dict.getDataMap().set('Gems', this.state.gems);
             }
 
-            console.log(`[CurrencySystem] Synced: gems=${this.state.gems} to globalVars and Dictionary`);
+            log.debug(`Synced: gems=${this.state.gems} to globalVars and Dictionary`);
 
             // UI is updated by C3 event sheets that read from the Gems global variable
             // The Adjust_Gems function in event sheets handles UI updates
 
         } catch (error) {
-            console.warn('[CurrencySystem] Could not sync to C3:', error);
+            log.warn('Could not sync to C3:', error);
         }
     }
 
@@ -281,12 +284,12 @@ export class CurrencySystem {
      * Debug information
      */
     static debug(): void {
-        console.log('=== 💎 Currency System Debug ===');
-        console.log('State:', {
+        log.debug('=== Currency System Debug ===');
+        log.debug('State:', {
             gems: this.state.gems,
             max: this.config.maxGems
         });
-        console.log('Statistics:', {
+        log.debug('Statistics:', {
             totalCollected: this.state.totalGemsCollected,
             totalSpent: this.state.totalGemsSpent,
             netGems: this.state.totalGemsCollected - this.state.totalGemsSpent
@@ -295,7 +298,7 @@ export class CurrencySystem {
         // Check sync status
         if (this.runtime) {
             const dict = this.runtime.objects.Dict_SaveGameData?.getFirstInstance();
-            console.log('Sync Status:', {
+            log.debug('Sync Status:', {
                 tsState: this.state.gems,
                 globalVar: this.runtime.globalVars.Gems,
                 dictionary: dict?.getDataMap().get('Gems'),
@@ -304,7 +307,7 @@ export class CurrencySystem {
             });
         }
 
-        console.log('================================');
+        log.debug('================================');
     }
 }
 

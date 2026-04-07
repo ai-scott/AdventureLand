@@ -8,6 +8,9 @@
  * Design: See scripts/external/quest-dialogue/sea-monster-quest-design.md
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("SeaMonster");
+
 export enum SeaMonsterState {
   Hidden = "hidden",        // Not spawned, underwater (initial state)
   Rising = "rising",        // Surfacing animation in progress
@@ -32,7 +35,7 @@ export class SeaMonsterController {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("🐉 Sea Monster Controller initialized");
+    log.info("Sea Monster Controller initialized");
   }
 
   // ============================================================================
@@ -51,17 +54,17 @@ export class SeaMonsterController {
     // Allow re-summon if SM is currently retreating (player returned quickly)
     // Or if fully hidden
     if (this.currentState === SeaMonsterState.Rising || this.currentState === SeaMonsterState.NPC) {
-      console.log("⚠️ Sea Monster already present, state:", this.currentState);
+      log.warn("Sea Monster already present, state:", this.currentState);
       return;
     }
 
     // If retreating, destroy current instance before re-summoning
     if (this.currentState === SeaMonsterState.Retreating) {
-      console.log("🔄 SM still retreating - destroying and re-summoning");
+      log.info("SM still retreating - destroying and re-summoning");
       this.destroySeaMonster();
     }
 
-    console.log("🌊 Summoning Sea Monster at:", spawnX, spawnY);
+    log.info("Summoning Sea Monster at:", spawnX, spawnY);
     this.runtime = runtime;
     this.currentState = SeaMonsterState.Rising;
 
@@ -69,7 +72,7 @@ export class SeaMonsterController {
       // Get the Sea Monster layer (required for MaskRectangle to work)
       const seaMonsterLayer = runtime.layout.getLayer("Sea Monster");
       if (!seaMonsterLayer) {
-        console.error("❌ Sea Monster layer not found!");
+        log.error("Sea Monster layer not found!");
         return;
       }
 
@@ -81,7 +84,7 @@ export class SeaMonsterController {
       );
 
       this.seaMonsterUID = seaMonster.uid;
-      console.log("✅ Sea Monster Base spawned at:", spawnX, spawnY, "UID:", this.seaMonsterUID);
+      log.info("Sea Monster Base spawned at:", spawnX, spawnY, "UID:", this.seaMonsterUID);
 
       // Set initial state variables
       seaMonster.instVars.IsHostile = false;
@@ -103,7 +106,7 @@ export class SeaMonsterController {
         spawnX,
         spawnY
       );
-      console.log("✅ Sea Monster Mask spawned at:", spawnX, spawnY);
+      log.info("Sea Monster Mask spawned at:", spawnX, spawnY);
 
       // Only Mask is visible (Base is hidden, just used for collision/state tracking)
       seaMonster.isVisible = false;
@@ -123,12 +126,12 @@ export class SeaMonsterController {
         maskRect.moveToTop();
 
 
-        console.log("✅ MaskRectangle found at:", maskRect.x, maskRect.y);
-        console.log("📐 MaskRectangle size:", maskRect.width, "x", maskRect.height);
-        console.log("📏 MaskRectangle coverage: Y=" + (maskRect.y - maskRect.height / 2) + " to Y=" + (maskRect.y + maskRect.height / 2));
-        console.log("💡 MaskRectangle visible - change color in C3 to match water (blue/teal) to hide it");
+        log.debug("MaskRectangle found at:", maskRect.x, maskRect.y);
+        log.debug("MaskRectangle size:", maskRect.width, "x", maskRect.height);
+        log.debug("MaskRectangle coverage: Y=" + (maskRect.y - maskRect.height / 2) + " to Y=" + (maskRect.y + maskRect.height / 2));
+        log.debug("MaskRectangle visible - change color in C3 to match water (blue/teal) to hide it");
       } else {
-        console.warn("⚠️ MaskRectangle not found on Sea Monster layer!");
+        log.warn("MaskRectangle not found on Sea Monster layer!");
       }
 
       // Sea Monster uses "normal" to show SM pixels only where MaskRectangle has alpha
@@ -137,11 +140,11 @@ export class SeaMonsterController {
       seaMonsterMask.opacity = 1;
       seaMonsterMask.moveToBottom();
 
-      console.log("🎨 Sea Monster set to source-atop blend mode - will show SM colors where MaskRectangle provides alpha");
+      log.debug("Sea Monster set to source-atop blend mode - will show SM colors where MaskRectangle provides alpha");
 
       // Set Mask to idle animation (docile state)
       seaMonsterMask.setAnimation("idle");
-      console.log("🐉 Set Sea Monster Mask to 'idle' animation");
+      log.debug("Set Sea Monster Mask to 'idle' animation");
 
       // Trigger rise animation immediately (tween Mask from Y=320 to Y=224 over 3 seconds)
       // The progressive reveal happens naturally as SM rises into the MaskRectangle area
@@ -149,9 +152,9 @@ export class SeaMonsterController {
       if (maskBehaviors && maskBehaviors.Tween) {
         // Only tween Y-position - no opacity changes
         maskBehaviors.Tween.startTween("y", 224, 3, "out-sine", { tags: "rising" });
-        console.log("🌊 Started rise animation - Mask will progressively reveal from Y=" + seaMonsterMask.y + " to Y=224");
+        log.info("Started rise animation - Mask will progressively reveal from Y=" + seaMonsterMask.y + " to Y=224");
       } else {
-        console.warn("⚠️ Tween behavior not found on Sea Monster Mask!");
+        log.warn("Tween behavior not found on Sea Monster Mask!");
       }
 
       // After rise animation completes, transition to NPC mode
@@ -162,13 +165,13 @@ export class SeaMonsterController {
           const sm = this.getSeaMonster();
           if (sm) {
             sm.instVars.State = SeaMonsterState.NPC;
-            console.log("🐉 Sea Monster ready for dialogue (NPC mode)");
+            log.info("Sea Monster ready for dialogue (NPC mode)");
           }
         }
       }, 3000); // 3 seconds to match tween duration
 
     } catch (error) {
-      console.error("❌ Error summoning Sea Monster:", error);
+      log.error("Error summoning Sea Monster:", error);
       this.currentState = SeaMonsterState.Hidden;
       this.seaMonsterUID = -1;
     }
@@ -181,11 +184,11 @@ export class SeaMonsterController {
    * @param reason - Why SM became hostile ("theft", "refusal", etc.)
    */
   static makeHostile(reason: string = "default"): void {
-    console.log(`😡 Sea Monster becomes HOSTILE! Reason: ${reason}`);
+    log.info(`Sea Monster becomes HOSTILE! Reason: ${reason}`);
 
     const seaMonster = this.getSeaMonster();
     if (!seaMonster) {
-      console.warn("⚠️ Cannot make hostile - Sea Monster doesn't exist");
+      log.warn("Cannot make hostile - Sea Monster doesn't exist");
       return;
     }
 
@@ -207,18 +210,18 @@ export class SeaMonsterController {
     if (allMasks.length > 0) {
       const mask = allMasks[0]; // Only one Sea Monster in the world
       mask.setAnimation("attack");
-      console.log("😡 Switched Sea Monster Mask to 'attack' animation");
+      log.info("Switched Sea Monster Mask to 'attack' animation");
     } else {
-      console.warn("⚠️ Could not find Sea Monster Mask to switch animation");
+      log.warn("Could not find Sea Monster Mask to switch animation");
     }
 
     // Trigger danger music
     if (this.runtime?.callFunction) {
       this.runtime.callFunction("enemyThreatMusic");
-      console.log("🎵 Triggered danger music (enemyThreatMusic)");
+      log.debug("Triggered danger music (enemyThreatMusic)");
     }
 
-    console.log("🔥 Sea Monster is now hostile and will attack!");
+    log.info("Sea Monster is now hostile and will attack!");
   }
 
   /**
@@ -226,7 +229,7 @@ export class SeaMonsterController {
    * Called from dialogue action
    */
   static acceptQuest(): void {
-    console.log("🤝 Player accepted Sea Monster quest");
+    log.info("Player accepted Sea Monster quest");
     this.hasPlayerPromisedToHelp = true;
 
     // NOTE: Quest status is already set by dialogue action (set_quest_status)
@@ -243,11 +246,11 @@ export class SeaMonsterController {
    * @param reason - Why SM is retreating
    */
   static retreat(reason: "peaceful" | "player-left"): void {
-    console.log(`🌊 Sea Monster retreating (${reason})`);
+    log.info(`Sea Monster retreating (${reason})`);
 
     const seaMonster = this.getSeaMonster();
     if (!seaMonster) {
-      console.warn("⚠️ Cannot retreat - Sea Monster doesn't exist");
+      log.warn("Cannot retreat - Sea Monster doesn't exist");
       return;
     }
 
@@ -264,7 +267,7 @@ export class SeaMonsterController {
       if (reason === "player-left") {
         // Player escaped - play victory/safe music
         this.runtime.callFunction("enemyGoneMusic");
-        console.log("🎵 Player escaped! Triggered safety music (enemyGoneMusic)");
+        log.debug("Player escaped! Triggered safety music (enemyGoneMusic)");
       }
       // For peaceful retreat, music handled by dialogue system
     }
@@ -272,22 +275,22 @@ export class SeaMonsterController {
     // Trigger retreat animation (tween Mask back to Y=320 over 3 seconds)
     // Get mask directly since there's only one instance
     const allMasks = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
-    console.log(`🔍 Retreat: Found ${allMasks.length} Sea Monster Mask instances`);
+    log.debug(`Retreat: Found ${allMasks.length} Sea Monster Mask instances`);
 
     if (allMasks.length > 0) {
       const mask = allMasks[0];
-      console.log(`🔍 Mask found at Y=${mask.y}, has Tween: ${!!(mask.behaviors && mask.behaviors.Tween)}`);
+      log.debug(`Mask found at Y=${mask.y}, has Tween: ${!!(mask.behaviors && mask.behaviors.Tween)}`);
 
       if (mask.behaviors && mask.behaviors.Tween) {
         // Only tween Y position back down to 320 (underwater)
         // Progressive hide happens naturally as SM sinks below the MaskRectangle area
         mask.behaviors.Tween.startTween("y", 320, 3, "in-sine", { tags: "retreating" });
-        console.log("🌊 Started retreat animation - Mask will progressively hide from Y=" + mask.y + " to Y=320");
+        log.info("Started retreat animation - Mask will progressively hide from Y=" + mask.y + " to Y=320");
       } else {
-        console.warn("⚠️ Mask found but no Tween behavior!");
+        log.warn("Mask found but no Tween behavior!");
       }
     } else {
-      console.warn("⚠️ No Sea Monster Mask found for retreat animation");
+      log.warn("No Sea Monster Mask found for retreat animation");
     }
 
     // After retreat animation, destroy and reset
@@ -295,12 +298,12 @@ export class SeaMonsterController {
       // Destroy Base
       if (seaMonster && !seaMonster.isDestroyed) {
         seaMonster.destroy();
-        console.log("🗑️ Destroyed Sea Monster Base");
+        log.debug("Destroyed Sea Monster Base");
       }
 
       // Destroy all Mask instances directly
       const masksToDestroy = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
-      console.log(`🗑️ Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
+      log.debug(`Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
       masksToDestroy.forEach((mask: any) => {
         if (!mask.isDestroyed) {
           mask.destroy();
@@ -309,7 +312,7 @@ export class SeaMonsterController {
 
       this.currentState = SeaMonsterState.Hidden;
       this.seaMonsterUID = -1;
-      console.log("🌊 Sea Monster has submerged and been destroyed");
+      log.info("Sea Monster has submerged and been destroyed");
     }, 3000); // 3 seconds for retreat animation
   }
 
@@ -320,7 +323,7 @@ export class SeaMonsterController {
    * @param runtime - C3 runtime instance
    */
   static completeQuest(runtime: any): void {
-    console.log("🎁 Pearl Quest COMPLETE!");
+    log.info("Pearl Quest COMPLETE!");
 
     // NOTE: Quest status is already set by dialogue action (set_quest_status)
     // No need to manually update Dict_SaveGameData here
@@ -331,7 +334,7 @@ export class SeaMonsterController {
 
     // Items are given by dialogue actions, not here
     // Retreat handled by dialogue ending
-    console.log("🎁 Magic Trident reward given by dialogue system");
+    log.info("Magic Trident reward given by dialogue system");
   }
 
   /**
@@ -359,11 +362,11 @@ export class SeaMonsterController {
    * @param runtime - C3 runtime instance
    */
   static checkPlayerEscape(runtime: any): void {
-    console.log("🔍 checkPlayerEscape() called, currentState:", this.currentState);
+    log.debug("checkPlayerEscape() called, currentState:", this.currentState);
 
     // Only check if SM is currently hostile
     if (this.currentState !== SeaMonsterState.Hostile) {
-      console.log("⏭️ SM not hostile, skipping escape check");
+      log.debug("SM not hostile, skipping escape check");
       return;
     }
 
@@ -372,10 +375,10 @@ export class SeaMonsterController {
     const playerX = player?.x || 0;
     const onIsland = this.isPlayerOnIsland(runtime);
 
-    console.log(`📍 Player position: X=${playerX}, onIsland=${onIsland}`);
+    log.debug(`Player position: X=${playerX}, onIsland=${onIsland}`);
 
     if (!onIsland) {
-      console.log("🏃 Player escaped to bridge! SM retreating...");
+      log.info("Player escaped to bridge! SM retreating...");
       this.retreat("player-left");
     }
   }
@@ -452,7 +455,7 @@ export class SeaMonsterController {
     const sm = instances.find((inst: any) => inst.uid === this.seaMonsterUID);
 
     if (!sm) {
-      console.warn("⚠️ Sea Monster UID tracked but instance not found");
+      log.warn("Sea Monster UID tracked but instance not found");
       return null;
     }
 
@@ -498,7 +501,7 @@ export class SeaMonsterController {
       seaMonster.behaviors.Solid.setEnabled(enabled);
     }
 
-    console.log(`${enabled ? '🔓' : '🔒'} Sea Monster behaviors ${enabled ? 'enabled' : 'disabled'}`);
+    log.debug(`Sea Monster behaviors ${enabled ? 'enabled' : 'disabled'}`);
   }
 
   /**
@@ -510,12 +513,12 @@ export class SeaMonsterController {
     const seaMonster = this.getSeaMonster();
     if (seaMonster && !seaMonster.isDestroyed) {
       seaMonster.destroy();
-      console.log("🗑️ Destroyed Sea Monster Base");
+      log.debug("Destroyed Sea Monster Base");
     }
 
     // Destroy all Mask instances
     const masksToDestroy = this.runtime.objects.En_Sea_Monster_Mask?.getAllInstances() || [];
-    console.log(`🗑️ Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
+    log.debug(`Destroying ${masksToDestroy.length} Sea Monster Mask instances`);
     masksToDestroy.forEach((mask: any) => {
       if (!mask.isDestroyed) {
         mask.destroy();
@@ -525,7 +528,7 @@ export class SeaMonsterController {
     // Reset state
     this.currentState = SeaMonsterState.Hidden;
     this.seaMonsterUID = -1;
-    console.log("🔄 Sea Monster destroyed and state reset to Hidden");
+    log.info("Sea Monster destroyed and state reset to Hidden");
   }
 
   // ============================================================================
@@ -536,22 +539,22 @@ export class SeaMonsterController {
    * Debug current state
    */
   static debugState(): void {
-    console.log("=== Sea Monster Controller Debug ===");
-    console.log("Current State:", this.currentState);
-    console.log("SM UID:", this.seaMonsterUID);
-    console.log("Is Hostile Permanently:", this.isHostilePermanently);
-    console.log("Player Promised Help:", this.hasPlayerPromisedToHelp);
+    log.debug("=== Sea Monster Controller Debug ===");
+    log.debug("Current State:", this.currentState);
+    log.debug("SM UID:", this.seaMonsterUID);
+    log.debug("Is Hostile Permanently:", this.isHostilePermanently);
+    log.debug("Player Promised Help:", this.hasPlayerPromisedToHelp);
 
     const sm = this.getSeaMonster();
     if (sm) {
-      console.log("Instance exists:", true);
-      console.log("  Position:", sm.x, sm.y);
-      console.log("  IsHostile:", sm.instVars.IsHostile);
-      console.log("  State:", sm.instVars.State);
-      console.log("  AIEnabled:", sm.instVars.AIEnabled);
-      console.log("  Health:", sm.instVars.Health);
+      log.debug("Instance exists:", true);
+      log.debug("  Position:", sm.x, sm.y);
+      log.debug("  IsHostile:", sm.instVars.IsHostile);
+      log.debug("  State:", sm.instVars.State);
+      log.debug("  AIEnabled:", sm.instVars.AIEnabled);
+      log.debug("  Health:", sm.instVars.Health);
     } else {
-      console.log("Instance exists:", false);
+      log.debug("Instance exists:", false);
     }
   }
 }
