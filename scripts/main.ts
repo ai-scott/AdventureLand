@@ -9,6 +9,7 @@ import { BatShadowManager } from "./systems/enemy/bat-shadow-manager.js";
 
 // RENDERING SYSTEM IMPORTS
 import { YSortManager } from "./systems/rendering/y-sort-manager.js";
+import { TileAnimationManager } from "./systems/tiles/tile-animation-manager.js";
 
 // NEW: Import the imports-for-events module
 import { registerWithRuntime } from "./imports-for-events.js";
@@ -861,6 +862,18 @@ runOnStartup(async runtime => {
         end: (runtime: any) => DialogueController.end(),
         isActive: () => DialogueController.isActive(),
         getDebugInfo: () => DialogueController.getDebugInfo()
+      };
+
+      // Tile Animation System
+      (globalThis as any).AdventureLand.TileAnimations = {
+        initialize: (runtime: any) => TileAnimationManager.initialize(runtime),
+        addWaterAnimation: (name: string, tilemap: string) => TileAnimationManager.addWaterAnimation(name, tilemap),
+        addFireAnimation: (name: string, tilemap: string) => TileAnimationManager.addFireAnimation(name, tilemap),
+        addLavaAnimation: (name: string, tilemap: string) => TileAnimationManager.addLavaAnimation(name, tilemap),
+        addWaterfallAnimation: (name: string, tilemap: string, frameDelay?: number) => TileAnimationManager.addWaterfallAnimation(name, tilemap, frameDelay),
+        start: () => TileAnimationManager.start(),
+        stop: () => TileAnimationManager.stop(),
+        cleanup: () => TileAnimationManager.cleanup()
       };
 
       console.log("✅ Trigger types registered and exposed to globalThis!");

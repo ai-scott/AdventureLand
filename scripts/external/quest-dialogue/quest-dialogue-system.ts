@@ -331,7 +331,7 @@ export class DialogueManager {
           break;
       }
       
-      return condition.negate ? !result : result;
+      return (condition.negate || condition.inverted) ? !result : result;
     });
   }
   
