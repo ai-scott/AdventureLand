@@ -293,8 +293,8 @@ sprite.blendMode = "destination-in";
 **Fix:**
 ```typescript
 // ✅ CORRECT Z-order
-maskRect.moveToTop();      // Mask renders first
-sprite.moveToBottom();     // Sprite renders second
+maskRect.moveToTop();      // Mask renders last (on top visually)
+sprite.moveToBottom();     // Sprite renders first (underneath visually)
 ```
 
 **Problem: Masking not working at all**
@@ -683,7 +683,7 @@ Construct 3 supports multiple blend modes for combining sprite layers.
 
 **Final Solution (normal with Z-order):**
 ```typescript
-// MaskRectangle at TOP (renders first)
+// MaskRectangle at TOP of Z-order (renders last, on top visually)
 maskRect.moveToTop();
 maskRect.blendMode = "normal";
 
@@ -1061,7 +1061,7 @@ AdventureLand.YourController.debugState()
 
 - `/scripts/systems/npc/sea-monster-controller.ts` - Full controller example
 - `/scripts/external/quest-dialogue/sea-monster-dialogue.ts` - Dialogue with custom actions
-- `/scripts/external/quest-dialogue/dialogue-bridge.ts` - Action registration (lines 667-719)
+- `/scripts/external/quest-dialogue/dialogue-bridge.ts` - Action registration (lines 690-748)
 - `/objectTypes/Enemies/En_Sea_Monster_Base.json` - Base sprite configuration
 - `/objectTypes/Enemies/En_Sea_Monster_Mask.json` - Mask sprite configuration
 

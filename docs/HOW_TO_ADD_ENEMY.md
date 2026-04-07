@@ -1,6 +1,6 @@
 # How to Add an Enemy with AI
 
-**Current as of:** 2026-01-07
+**Current as of:** 2026-04-07
 **Difficulty:** Intermediate
 **Time Estimate:** 45-90 minutes per enemy type
 
@@ -629,28 +629,24 @@ Open browser console (F12) and check for:
 
 ### 6.4 AI Behavior Testing
 
-**Test wander:**
-- Enemy should move randomly within wanderRadius
-- Pauses between moves
-- Stays near spawn point
+**Test patrol:**
+- Enemy should move randomly when player is far away
+- Behavior changes when duration expires
 
 **Test chase:**
-- Enter detectionRange
+- Enter viewDistance range
 - Enemy should move toward player
-- Stops at stopDistance
+- Higher weight chase overrides patrol
 
-**Test flee:**
-- Damage enemy below healthBelow threshold
-- Enemy should run AWAY from player
+**Test attack:**
+- Get within attackDistance
+- Enemy should play attack animation
+- Highest weight behavior triggers
 
-**Test patrol:**
-- Enemy should visit patrol points in order
-- Pauses at each point
-- Loops back to start
-
-**Test guard:**
-- Knock enemy away from spawn
-- Enemy should return to spawn point
+**Test hurt/retreat:**
+- Hit the enemy
+- Enemy should stop (hurt behavior), then become invulnerable
+- If retreat behavior exists, enemy should flee after hurt ends
 
 ---
 
@@ -843,5 +839,5 @@ behaviors: [
 
 ---
 
-**Last Updated:** 2026-01-07
-**Template Version:** 1.0
+**Last Updated:** 2026-04-07
+**Template Version:** 1.1
