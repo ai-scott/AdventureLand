@@ -77,7 +77,7 @@ export const PeteDialogue: NPCDialogue = {
           "status": "Not_Started"
         }
       ],
-      autoAdvance: "node_008"
+      autoAdvance: "node_005"
     },
     {
       id: "node_003",
@@ -182,13 +182,41 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_010",
       speaker: "Pete",
-      text: "Still no herbs yet? The ones I need grow in the mountains to the south.",
+      text: "Any luck with those herbs? They grow in caves in the snowy mountains to the south. Look for the green leafy ones!",
       priority: 90,
       conditions: [
         {
           "type": "quest_status",
           "questId": "pete_herbs_quest",
           "status": "Active"
+        }
+      ],
+      endsDialogue: true
+    },
+    {
+      id: "node_complete",
+      speaker: "Pete",
+      text: "You found the herbs! I'm feeling better already. Thank ye kindly! Here, take this for your trouble.",
+      priority: 100,
+      conditions: [
+        {
+          "type": "quest_status",
+          "questId": "pete_herbs_quest",
+          "status": "Complete"
+        }
+      ],
+      endsDialogue: true
+    },
+    {
+      id: "node_post_complete",
+      speaker: "Pete",
+      text: "Hello again, adventurer! Thanks to you, I'm feeling right as rain. If you ever need anything, you know where to find me!",
+      priority: 80,
+      conditions: [
+        {
+          "type": "quest_status",
+          "questId": "pete_herbs_quest",
+          "status": "Rewarded"
         }
       ],
       endsDialogue: true

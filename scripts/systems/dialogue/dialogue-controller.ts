@@ -555,6 +555,7 @@ export class DialogueController {
       activeQuests: new Map(),
       completedQuests: new Set(),
       inventory: DialogueController.buildInventoryMap(),
+      uniqueItems: DialogueController.buildUniqueItemsSet(dataMap),
       worldFlags: new Map(),
       npcMemory: new Map(),
       playerName: dataMap?.get('PlayerName') || 'Player',
@@ -585,6 +586,24 @@ export class DialogueController {
       // Silently fail — inventory check is optional for dialogue
     }
     return inventory;
+  }
+
+  /**
+   * Build unique items set from save data (UniqueItem_* keys).
+   */
+  private static buildUniqueItemsSet(dataMap: Map<string, unknown> | undefined): Set<string> {
+    const uniqueItems = new Set<string>();
+    if (!dataMap) return uniqueItems;
+    try {
+      dataMap.forEach((value, key) => {
+        if (key.startsWith('UniqueItem_') && value) {
+          uniqueItems.add(key.replace('UniqueItem_', ''));
+        }
+      });
+    } catch {
+      // Silently fail
+    }
+    return uniqueItems;
   }
 
   /**
