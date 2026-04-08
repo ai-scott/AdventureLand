@@ -25,10 +25,43 @@ This is the single source of truth for all active development tasks. Completed w
 - [ ] Penny just says "thank you" after going into her house (should have more dialogue)
 - [ ] Costume for head and neck go behind the character unless dialogue is on
 - [ ] Pearl and Rosie don't get removed from world after being collected (can pick up again)
+  - **Root cause**: C3 reloads layouts from original state. destroyTrigger works at runtime but doesn't persist.
+  - **Fix (C3)**: On "Start of layout" for World00/World10, check `Dict_SaveGameData.Get("collected_Rosie")` / `"collected_Pink Oyster Pearl"` and destroy trigger + sprite if true
 - [ ] Consider adding a grocery/food shop
 - [ ] "A" for attack is confusing for some kids — add key hint to inventory screen. Consider spacebar or Z for attack
 - [ ] Defense doesn't seem to reduce damage
-- [ ] Pete says "thanks for helping" when quest isn't finished — should hint about herbs instead
+  - **Root cause**: HealthSystem reads `globalVars.Defense` in calculateDamage() but equipping armor may not set it
+  - **Fix (C3)**: Check equipment event sheets — equipping armor must set `globalVars.Defense` to item strength value
+- [x] Pete says "thanks for helping" when quest isn't finished — should hint about herbs instead
+  - **Fixed**: node_002b was skipping to quest-accept node. Now flows through full conversation. Added herb hint, completion node, and post-quest node.
+
+## Next Session: C3 Fixes
+
+### VO Audio Ducking Bug (C3 — eDialogue event sheet)
+- [ ] Music dips even when no VO file exists for a dialogue node
+- **Root cause**: `PlayVoiceLine` function always ducks music (fade to -20dB) regardless of whether the VO file actually plays
+- **Fix**: In eDialogue → `PlayVoiceLine` function → the 3 child music fade-volume blocks (base/mid/high to -20dB) need to be wrapped in `Audio: Is tag "Voice" playing` condition
+- **Also**: `EndOfVoiceLine` restores volume — verify it fires correctly after the condition change
+
+### Content: Lake World Completion
+- [ ] Build waterfall cave interior in C3 (layout/sprites)
+- [ ] Place `Cave_Bill` trigger sprite in cave (npcId must be exactly `"Cave_Bill"`)
+- [ ] Add Telescope to ItemsLibrary.json — ID 125, category "Key", name "Telescope"
+- [ ] Wire up Bill quest completion: when Bill returns to windmill, Nick gives Telescope
+- [ ] Test full Pearl quest → Bill rescue → Telescope reward chain
+
+### Content: Forest World Buildout
+- [ ] Design Silly Platypus sprite
+- [ ] Place `Silly_Platypus` trigger sprite by forest river (npcId must be exactly `"Silly_Platypus"`)
+- [ ] Decide on Platypus trade item (something "fun, shiny, or noisy" from village shops)
+- [ ] Uncomment and wire up trade node in platypus-dialogue.ts
+- [ ] Build broken bridge mechanic (use Platypus Board item to fix)
+- [ ] Add herbs/cave location for Pete's quest in snowy mountains area
+
+### Code: Remaining Cleanup
+- [ ] 466 ESLint `any` warnings remaining (chip away gradually)
+- [ ] dialogue-bridge.ts has a console.log on line 661 that should be log.info
+- [ ] `inverted` alias on DialogueCondition now works — update any dialogue files using it
 
 ## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
 
