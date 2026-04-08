@@ -5,10 +5,15 @@ const log = Logger.create("TileAnimation");
 export interface AnimationConfig {
     name: string;
     tilemap: string;
-    frameCount: number;
     frameDelay: number;
-    increment: number;
-    tileWidth: number;  // Width of tilemap in tiles
+    frameCount?: number;
+    increment?: number;
+    tileWidth?: number;  // Width of tilemap in tiles
+    // Waterfall-specific properties
+    isWaterfall?: boolean;
+    pairedRows?: number;
+    pairedFrameCount?: number;
+    singleFrameCount?: number;
 }
 
 export class TileAnimationManager {
@@ -137,7 +142,7 @@ export class TileAnimationManager {
         if (!instance) return;
 
         // Special config for waterfall with mixed frame counts
-        const config: any = {
+        const config: AnimationConfig = {
             name,
             tilemap,
             frameDelay,
@@ -157,7 +162,7 @@ export class TileAnimationManager {
     }
 
     // Update the updateTilemapAnimation method to handle waterfall
-    private static updateTilemapAnimation(config: any, state: any): void {
+    private static updateTilemapAnimation(config: AnimationConfig, state: { currentFrame: number; lastUpdate: number }): void {
         if (!this.runtime) return;
 
         try {
@@ -182,10 +187,10 @@ export class TileAnimationManager {
                         const tileRow = Math.floor(currentTile / 16);
                         const baseTile = tileRow * 16;
 
-                        if (tileRow < config.pairedRows) {
+                        if (tileRow < (config.pairedRows ?? 0)) {
                             // Paired tile animation (rows 0-6)
                             // Each "frame" moves by 2 tiles
-                            const pairedFrame = state.currentFrame % config.pairedFrameCount;
+                            const pairedFrame = state.currentFrame % (config.pairedFrameCount ?? 8);
                             newTile = baseTile + (pairedFrame * 2);
 
                             // If original tile was odd, keep it odd
@@ -195,7 +200,7 @@ export class TileAnimationManager {
                         } else {
                             // Single tile animation (rows 7+)
                             // Normal 16-frame animation
-                            const singleFrame = state.currentFrame % config.singleFrameCount;
+                            const singleFrame = state.currentFrame % (config.singleFrameCount ?? 16);
                             newTile = baseTile + singleFrame;
                         }
                     } else {
@@ -257,7 +262,10 @@ export class TileAnimationManager {
     /**
      * Get current animation state for debugging
      */
-    static getAnimationState(name: string): any {
+    static getAnimationState(name: string): {
+        config: AnimationConfig | undefined;
+        state: { currentFrame: number; lastUpdate: number } | undefined;
+    } {
         return {
             config: this.animations.get(name),
             state: this.animationStates.get(name)

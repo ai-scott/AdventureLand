@@ -551,7 +551,15 @@ export class PotionSystem {
     /**
      * Get save data for a player's effects
      */
-    static getSaveData(playerUID: number): any {
+    static getSaveData(playerUID: number): {
+        effects: Array<{
+            itemId: number;
+            type: PotionEffectType;
+            value: number;
+            remainingDuration: number;
+            stacks: number;
+        }>;
+    } {
         const effects = this.getActiveEffects(playerUID);
         return {
             effects: effects.map(e => ({
@@ -567,7 +575,15 @@ export class PotionSystem {
     /**
      * Load saved effect data
      */
-    static loadSaveData(playerUID: number, data: any): void {
+    static loadSaveData(playerUID: number, data: {
+        effects?: Array<{
+            itemId: number;
+            type: PotionEffectType;
+            value: number;
+            remainingDuration: number;
+            stacks?: number;
+        }>;
+    } | null): void {
         if (!data || !data.effects) return;
 
         this.clearEffects(playerUID);

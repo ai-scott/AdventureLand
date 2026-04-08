@@ -53,7 +53,7 @@ export class ItemManager {
     /**
      * Initialize the item database from JSON data
      */
-    static initialize(itemsData: any): boolean {
+    static initialize(itemsData: string | { items?: unknown } | unknown[]): boolean {
         try {
             log.info("Initializing item database...");
 
@@ -62,12 +62,13 @@ export class ItemManager {
             this.itemsByCategory.clear();
 
             // Handle both string and object input
-            let data = itemsData;
+            let data: unknown = itemsData;
             if (typeof itemsData === 'string') {
                 data = JSON.parse(itemsData);
             }
 
-            const items = data.items || data;
+            const parsed = data as { items?: unknown } | unknown[];
+            const items = Array.isArray(parsed) ? parsed : ((parsed as { items?: unknown }).items || []);
             if (!Array.isArray(items)) {
                 log.error("Invalid items data format");
                 return false;
@@ -125,14 +126,14 @@ export class ItemManager {
     /**
      * Initialize player inventory from save data
      */
-    static initializeInventory(inventoryData: any[]): void {
+    static initializeInventory(inventoryData: Array<{ id?: number; itemId?: number; quantity?: number }>): void {
         log.info("Initializing player inventory...");
 
         if (!inventoryData || !Array.isArray(inventoryData)) {
             this.inventory = [];
         } else {
             this.inventory = inventoryData.map(item => ({
-                itemId: item.id || item.itemId,
+                itemId: item.id ?? item.itemId ?? 0,
                 quantity: item.quantity || 1
             }));
         }
@@ -566,8 +567,8 @@ export class ItemManager {
 // Replace the Items namespace with the full implementation
 (globalThis as any).AdventureLand.Items = {
     // Initialization
-    initialize: (jsonData: any) => ItemManager.initialize(jsonData),
-    initializeInventory: (data: any[]) => ItemManager.initializeInventory(data),
+    initialize: (jsonData: string | { items?: unknown } | unknown[]) => ItemManager.initialize(jsonData),
+    initializeInventory: (data: Array<{ id?: number; itemId?: number; quantity?: number }>) => ItemManager.initializeInventory(data),
 
     // Item property lookups (O(1))
     getItem: (id: number) => ItemManager.getItem(id),
@@ -627,7 +628,7 @@ export class ItemManager {
 // Also create the Inventory namespace for clearer separation - replace placeholder
 (globalThis as any).AdventureLand.Inventory = {
     // Initialization
-    initialize: (data: any[]) => ItemManager.initializeInventory(data),
+    initialize: (data: Array<{ id?: number; itemId?: number; quantity?: number }>) => ItemManager.initializeInventory(data),
 
     // Item operations
     addItem: (itemId: number, quantity: number = 1) => ItemManager.addToInventory(itemId, quantity),

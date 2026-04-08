@@ -28,6 +28,7 @@ import { InputManager } from '../input/input-manager.js';
 import { TriggerManager } from '../triggers/trigger-manager.js';
 // Import via index to get proper exports
 import * as QuestDialogue from '../../external/quest-dialogue/index.js';
+import type { DialogueAction, DialogueNode, PlayerState } from '../../external/quest-dialogue/dialogue-types.js';
 import { Logger } from "../../utils/logger.js";
 const log = Logger.create("DialogueController");
 
@@ -527,24 +528,50 @@ export class DialogueController {
   /**
    * Get player state for conditional dialogue
    */
-  private static getPlayerState(runtime: any): any {
+  private static getPlayerState(runtime: any): PlayerState {
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
-    if (!dict) {
-      return {};
-    }
+    const dataMap = dict?.getDataMap();
 
-    const dataMap = dict.getDataMap();
     return {
-      quest_status: dataMap.get('quest_status') || 'Not_Started',
-      PlayerName: dataMap.get('PlayerName') || 'Player',
-      Health: dataMap.get('Health') || 5
+      activeQuests: new Map(),
+      completedQuests: new Set(),
+      inventory: DialogueController.buildInventoryMap(),
+      worldFlags: new Map(),
+      npcMemory: new Map(),
+      playerName: dataMap?.get('PlayerName') || 'Player',
+      currentWorld: runtime.globalVars?.CurrentWorld || 'World00'
     };
+  }
+
+  /**
+   * Build inventory map from ItemManager for dialogue condition checks.
+   */
+  private static buildInventoryMap(): Map<string, number> {
+    const inventory = new Map<string, number>();
+    const items = (globalThis as any).AdventureLand?.Items;
+    if (!items) return inventory;
+
+    try {
+      const saveData = items.getInventoryForSave();
+      if (Array.isArray(saveData)) {
+        for (const stack of saveData) {
+          const name = items.getItemName(stack.itemId);
+          if (name) {
+            inventory.set(name, (inventory.get(name) || 0) + stack.quantity);
+          }
+          inventory.set(String(stack.itemId), (inventory.get(String(stack.itemId)) || 0) + stack.quantity);
+        }
+      }
+    } catch {
+      // Silently fail — inventory check is optional for dialogue
+    }
+    return inventory;
   }
 
   /**
    * Process node text for variable replacement
    */
-  private static processNodeText(node: any, runtime: any): any {
+  private static processNodeText(node: DialogueNode, runtime: any): DialogueNode {
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (!dict) {
       return node;
@@ -567,11 +594,11 @@ export class DialogueController {
   /**
    * Execute dialogue actions
    */
-  private static executeActions(actions: any[], runtime: any): void {
+  private static executeActions(actions: DialogueAction[], runtime: any): void {
     for (const action of actions) {
       switch (action.type) {
         case 'set_quest_status':
-          this.setQuestStatus(action.value, runtime);
+          this.setQuestStatus(action.status || '', runtime);
           break;
 
         case 'input':
@@ -686,7 +713,13 @@ export class DialogueController {
   /**
    * Get current state (for debugging)
    */
-  static getDebugInfo(): any {
+  static getDebugInfo(): {
+    state: DialogueState;
+    currentNPC: string | null;
+    currentNode: string | null;
+    triggerUID: number;
+    isActive: boolean;
+  } {
     return {
       state: this.state,
       currentNPC: this.currentNPC,
