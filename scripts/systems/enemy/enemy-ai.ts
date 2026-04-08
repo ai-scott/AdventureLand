@@ -1,5 +1,8 @@
 // enemy-ai.ts - Enhanced Enemy AI with Runtime Facade Integration and Pause System
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("EnemyAI");
+
 import { IC3RuntimeFacade } from "../../types/c3-runtime-facade.js";
 import { ActionConfig, BehaviorCondition, BehaviorConfig, EnemyConfig, EnemyData, getEnemyConfig } from "./enemy-configs.js";
 import {
@@ -15,6 +18,7 @@ import {
   moveSideways,
   moveTowardPlayer
 } from "./enemy-utils.js";
+import type { BatFlightPath } from "./bat-movement-utils.js";
 import {
   calculateSwoopToPlayer,
   calculateFleeToTree,
@@ -45,7 +49,7 @@ export interface EnhancedEnemyData extends EnemyData {
 
   // Bat-specific data
   batId?: number; // Unique bat ID (1-3)
-  batFlightPath?: any; // BatFlightPath from bat-movement-utils.ts
+  batFlightPath?: BatFlightPath; // BatFlightPath from bat-movement-utils.ts
   batShadowUID?: number; // UID of the shadow sprite
   batTargetTreeX?: number; // Target tree X position
   batTargetTreeY?: number; // Target tree Y position
@@ -183,7 +187,7 @@ export class EnhancedEnemyAIFactory {
   private initializeMovementBehavior(baseUID: number, config: EnemyConfig): void {
     const enemy = getEnemyInstance(baseUID, this.runtime);
     if (!enemy) {
-      console.warn(`⚠️ Could not get enemy instance ${baseUID} for movement init`);
+      log.warn(`Could not get enemy instance ${baseUID} for movement init`);
       return;
     }
 
@@ -201,23 +205,22 @@ export class EnhancedEnemyAIFactory {
             // Try to disable solid obstacle checking for this bat's 8Direction
             if (behavior8Dir.setObstacles) {
               behavior8Dir.setObstacles([]); // No obstacles for flying bats
-              console.log(`✅ Disabled solid obstacles for flying bat`);
+              log.info(`Disabled solid obstacles for flying bat`);
             } else if (behavior8Dir.addObstacleClass) {
               // Can't find method to clear obstacles - will need C3 configuration
-              console.log(`⚠️ Can't disable obstacles via script - configure in C3`);
+              log.warn(`Can't disable obstacles via script - configure in C3`);
             }
           } catch (e) {
-            console.log(`⚠️ Obstacle configuration not available for bats`);
+            log.warn(`Obstacle configuration not available for bats`);
           }
         }
 
-        console.log(`✅ ${config.type} movement configured: speed=${config.baseStats.speed}`);
+        log.info(`${config.type} movement configured: speed=${config.baseStats.speed}`);
       } else {
-        console.error(`❌ No 8Direction behavior found for ${config.type}`);
+        log.error(`No 8Direction behavior found for ${config.type}`);
       }
     } catch (error) {
-      console.error(`[EnemyAI] Movement setup error for ${config.type}:`, error);
-      console.error(`   Error details:`, error);
+      log.error(`Movement setup error for ${config.type}:`, error);
     }
   }
 
@@ -243,7 +246,7 @@ export class EnhancedEnemyAIFactory {
 
     // DEBUG for bats - show update status
     if (enemyData.type === "Bat" && Math.random() < 0.02) {
-      console.log(`🦇 Update: behavior=${enemyData.currentBehavior?.name}, timer=${enemyData.stateTimer.toFixed(2)}, dist=${enemyData.lastPlayerDistance.toFixed(1)}`);
+      log.debug(`Bat Update: behavior=${enemyData.currentBehavior?.name}, timer=${enemyData.stateTimer.toFixed(2)}, dist=${enemyData.lastPlayerDistance.toFixed(1)}`);
     }
 
     // Update enhanced timers
@@ -328,7 +331,7 @@ export class EnhancedEnemyAIFactory {
     // Clear flee cooldown BEFORE filtering if we need to force flee
     if (enemyData.justSwooped || wasJustHurt) {
       enemyData.behaviorCooldowns.delete('flee_to_tree');
-      if (enemyData.type === "Bat") console.log(`   🔥 Clearing flee cooldown (justSwooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt})`);
+      if (enemyData.type === "Bat") log.debug(`Clearing flee cooldown (justSwooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt})`);
     }
 
     const availableBehaviors = this.filterBehaviors(enemyData.config.behaviors, enemyData);
@@ -336,9 +339,9 @@ export class EnhancedEnemyAIFactory {
 
     // DEBUG for bats
     if (enemyData.type === "Bat") {
-      console.log(`🦇 Selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
-      console.log(`   Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
-      console.log(`   justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
+      log.debug(`Bat selecting behavior: ${availableBehaviors.map(b => b.name).join(', ')}`);
+      log.debug(`Distance: ${enemyData.lastPlayerDistance.toFixed(1)}, Cooldowns:`, Array.from(enemyData.behaviorCooldowns.entries()));
+      log.debug(`justSwooped: ${enemyData.justSwooped}, invuln: ${enemyData.invulnerableTimer.toFixed(2)}`);
     }
 
     // Force flee when just swooped or recently hurt
@@ -349,15 +352,15 @@ export class EnhancedEnemyAIFactory {
       // If flee was filtered out, get it directly from config (forced behaviors bypass filters)
       if (!fleeBehavior) {
         fleeBehavior = enemyData.config.behaviors.find(b => b.name === "flee_to_tree" || b.name === "retreat");
-        if (enemyData.type === "Bat") console.log(`   🔥 Flee filtered out, forcing from config directly!`);
+        if (enemyData.type === "Bat") log.debug(`Flee filtered out, forcing from config directly!`);
       }
 
       if (fleeBehavior) {
         enemyData.currentBehavior = fleeBehavior;
         enemyData.justSwooped = false;  // Clear flag
-        if (enemyData.type === "Bat") console.log(`   🎯 FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
+        if (enemyData.type === "Bat") log.debug(`FORCED FLEE (swooped=${enemyData.justSwooped}, wasJustHurt=${wasJustHurt}, invuln=${enemyData.invulnerableTimer.toFixed(2)})`);
       } else {
-        if (enemyData.type === "Bat") console.log(`   ⚠️ No flee behavior in config! This should never happen!`);
+        if (enemyData.type === "Bat") log.warn(`No flee behavior in config! This should never happen!`);
         enemyData.currentBehavior = this.selectBehavior(availableBehaviors, enemyData.behaviorCooldowns);
       }
     } else {
@@ -369,7 +372,7 @@ export class EnhancedEnemyAIFactory {
 
     // DEBUG for bats
     if (enemyData.type === "Bat") {
-      console.log(`   → Selected: ${enemyData.currentBehavior.name}`);
+      log.debug(`Selected: ${enemyData.currentBehavior.name}`);
     }
 
     // Reset animation state when changing behaviors to prevent visual glitches
@@ -524,24 +527,24 @@ export class EnhancedEnemyAIFactory {
         }
       }
     } catch (error) {
-      console.error(`[EnemyAI] Effect error:`, error);
+      log.error(`Effect error:`, error);
     }
   }
 
   private executeSoundAction(enemy: any, enemyData: EnhancedEnemyData, action: ActionConfig): void {
     try {
-      const params = action.params as any;
+      const { sound, volume } = action.params;
 
-      if (params.sound) {
+      if (sound) {
         // Create a unique key for this sound + behavior combo
-        const soundKey = `${params.sound}_${enemyData.currentBehavior}_${enemyData.behaviorStartTime}`;
+        const soundKey = `${sound}_${enemyData.currentBehavior}_${enemyData.behaviorStartTime}`;
 
         // Only play if we haven't played this exact sound for this behavior instance
         if (enemyData.lastSoundPlayed !== soundKey) {
           const uniqueTag = `${enemyData.type}_${enemy.uid}`;
 
           if (this.runtime?.callFunction) {
-            this.runtime.callFunction("Audio_Play_Sound", params.sound, params.volume || 1.0, uniqueTag);
+            this.runtime.callFunction("Audio_Play_Sound", sound, volume || 1.0, uniqueTag);
 
             // Mark this sound as played for this behavior instance
             enemyData.lastSoundPlayed = soundKey;
@@ -549,7 +552,7 @@ export class EnhancedEnemyAIFactory {
         }
       }
     } catch (error) {
-      console.error(`[EnemyAI] Sound error:`, error);
+      log.error(`Sound error:`, error);
     }
   }
 
@@ -626,7 +629,7 @@ export class EnhancedEnemyAIFactory {
           break;
       }
     } catch (error) {
-      console.error(`[EnemyAI] Movement error:`, error);
+      log.error(`Movement error:`, error);
     }
   }
 
@@ -654,7 +657,7 @@ export class EnhancedEnemyAIFactory {
         // Find ABSOLUTE nearest tree across ALL 9 trees (not just bat's territory)
         // This allows bats to chase player through the forest
         const allTrees = batTerritory.getAllTrees();
-        let nearestTree: any = null;
+        let nearestTree: { x: number; y: number } | null = null;
         let nearestDistance = Infinity;
 
         for (const tree of allTrees) {
@@ -672,7 +675,7 @@ export class EnhancedEnemyAIFactory {
         if (nearestTree) {
           enemyData.batTargetTreeX = nearestTree.x;
           enemyData.batTargetTreeY = nearestTree.y;
-          console.log(`🎯 Bat ${enemy.uid} fleeing to nearest tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)}) - ${nearestDistance.toFixed(1)}px away`);
+          log.debug(`Bat ${enemy.uid} fleeing to nearest tree at (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)}) - ${nearestDistance.toFixed(1)}px away`);
         } else {
           // No tree available - stop movement
           behavior8Dir.vectorX = 0;
@@ -705,7 +708,7 @@ export class EnhancedEnemyAIFactory {
     // Check if we've reached the tree
     // Threshold: 10px (tighter tolerance for precise tree positioning)
     if (result.distance < 10) {
-      console.log(`✅ Bat reached tree at distance ${result.distance.toFixed(1)}px! Ending flee behavior.`);
+      log.info(`Bat reached tree at distance ${result.distance.toFixed(1)}px! Ending flee behavior.`);
 
       // Update territory manager to mark this tree as current
       const batTerritory = (globalThis as any).AdventureLand?.BatTerritoryManager;
@@ -719,7 +722,7 @@ export class EnhancedEnemyAIFactory {
           );
           if (targetTreeIndex !== -1) {
             batTerritory.updateBatTree(enemy.uid, targetTreeIndex);
-            console.log(`🏠 Bat ${enemy.uid} now at tree ${targetTreeIndex}`);
+            log.debug(`Bat ${enemy.uid} now at tree ${targetTreeIndex}`);
           }
         }
       }
@@ -876,21 +879,21 @@ export class EnhancedEnemyAIFactory {
   public notifyHurt(baseUID: number, knockbackVectorX: number, knockbackVectorY: number, damage: number = 1): void {
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) {
-      console.warn(`⚠️ notifyHurt: Enemy ${baseUID} not found`);
+      log.warn(`notifyHurt: Enemy ${baseUID} not found`);
       return;
     }
 
-    console.log(`⚔️ notifyHurt called for ${enemyData.type} ${baseUID}, invuln=${enemyData.invulnerableTimer.toFixed(2)}`);
+    log.info(`notifyHurt called for ${enemyData.type} ${baseUID}, invuln=${enemyData.invulnerableTimer.toFixed(2)}`);
 
     // Don't process if already dead
     if (enemyData.isDead) {
-      console.log(`   ⏭️ Skipping - enemy already dead`);
+      log.debug(`Skipping - enemy already dead`);
       return;
     }
 
     // Don't process if already in knockback or invulnerable
     if (enemyData.knockbackTimer > 0 || enemyData.invulnerableTimer > 0) {
-      console.log(`   ⏭️ Skipping - enemy invulnerable or in knockback`);
+      log.debug(`Skipping - enemy invulnerable or in knockback`);
       return;
     }
 
@@ -953,7 +956,7 @@ export class EnhancedEnemyAIFactory {
         enemyData.currentAnimation = undefined;
         enemyData.executedActions?.clear();
 
-        console.log(`🦇 Bat hit! Clearing all cooldowns and forcing immediate flee`);
+        log.info(`Bat hit! Clearing all cooldowns and forcing immediate flee`);
       }
     } else {
       // Other enemies show hurt flash
@@ -976,7 +979,7 @@ export class EnhancedEnemyAIFactory {
   public notifyRecovery(baseUID: number): void {
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) {
-      console.warn(`⚠️ notifyRecovery: Enemy ${baseUID} not found`);
+      log.warn(`notifyRecovery: Enemy ${baseUID} not found`);
       return;
     }
 
@@ -1009,7 +1012,7 @@ export class EnhancedEnemyAIFactory {
   public notifyDeath(baseUID: number): void {
     const enemyData = this.enemyData.get(baseUID);
     if (!enemyData) {
-      console.warn(`⚠️ notifyDeath: Enemy ${baseUID} not found`);
+      log.warn(`notifyDeath: Enemy ${baseUID} not found`);
       return;
     }
 
@@ -1038,10 +1041,10 @@ export class EnhancedEnemyAIFactory {
           enemyData.maxHealth = c3Health;
         }
       } else {
-        console.warn(`⚠️ Could not find enemy ${baseUID} for health initialization`);
+        log.warn(`Could not find enemy ${baseUID} for health initialization`);
       }
     } catch (error) {
-      console.warn(`⚠️ Could not read enemy ${baseUID} health from C3:`, error);
+      log.warn(`Could not read enemy ${baseUID} health from C3:`, error);
     }
   }
 
@@ -1054,10 +1057,10 @@ export class EnhancedEnemyAIFactory {
       if (enemyBase && enemyBase.instVars) {
         enemyBase.instVars.Health = health;
       } else {
-        console.warn(`⚠️ Could not find enemy ${baseUID} for health sync`);
+        log.warn(`Could not find enemy ${baseUID} for health sync`);
       }
     } catch (error) {
-      console.warn(`⚠️ Could not sync enemy ${baseUID} health to C3:`, error);
+      log.warn(`Could not sync enemy ${baseUID} health to C3:`, error);
     }
   }
 
@@ -1074,7 +1077,7 @@ export class EnhancedEnemyAIFactory {
       return 1;
 
     } catch (error) {
-      console.warn('⚠️ Could not calculate damage from C3 context, using default:', error);
+      log.warn('Could not calculate damage from C3 context, using default:', error);
       return 1;
     }
   }
@@ -1145,12 +1148,12 @@ export function initializeSystem(runtime: IC3RuntimeFacade): void {
 export function initEnemy(baseUID: number, maskUID: number, enemyType: string): void {
   const config = getEnemyConfig(enemyType);
   if (!config) {
-    console.error(`❌ No config found for enemy type: ${enemyType}`);
+    log.error(`No config found for enemy type: ${enemyType}`);
     return;
   }
 
   factory.initEnemy(baseUID, maskUID, enemyType, config);
-  console.log(`✅ ${enemyType} initialized (UID ${baseUID})`);
+  log.info(`${enemyType} initialized (UID ${baseUID})`);
 }
 
 export function updateEnemy(baseUID: number): void {

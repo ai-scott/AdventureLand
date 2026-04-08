@@ -24,6 +24,9 @@
  * ```
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("InputManager");
+
 export type InputContext = 'game' | 'dialogue' | 'menu' | 'inventory';
 
 export interface InputHandler {
@@ -51,7 +54,7 @@ export class InputManager {
    */
   static initialize(): void {
     if (this.initialized) {
-      console.warn('⚠️ InputManager already initialized');
+      log.warn('InputManager already initialized');
       return;
     }
 
@@ -65,7 +68,7 @@ export class InputManager {
     document.addEventListener('click', (e) => this.handleClick(e), false);
 
     this.initialized = true;
-    console.log('✅ InputManager initialized');
+    log.info('InputManager initialized');
   }
 
   /**
@@ -73,7 +76,7 @@ export class InputManager {
    */
   static registerHandler(context: InputContext, handler: InputHandler): void {
     this.handlers.set(context, handler);
-    console.log(`📝 InputManager: Registered handler for context "${context}"`);
+    log.info(`InputManager: Registered handler for context "${context}"`);
   }
 
   /**
@@ -90,7 +93,7 @@ export class InputManager {
       (globalThis as any).runtime.globalVars.InputContext = context;
     }
 
-    console.log(`🎯 InputManager: Context changed from "${prev}" to "${context}"`);
+    log.info(`InputManager: Context changed from "${prev}" to "${context}"`);
   }
 
   /**
@@ -245,6 +248,6 @@ export class InputManager {
     this.handlers.clear();
     this.activeContext = 'game';
     this.keyStates.clear();
-    console.log('🔄 InputManager reset');
+    log.info('InputManager reset');
   }
 }

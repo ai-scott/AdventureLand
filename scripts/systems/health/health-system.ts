@@ -4,6 +4,8 @@
  */
 
 import PotionSystem from '../potions/potion-system.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("HealthSystem");
 
 // Health system configuration
 export interface HealthConfig {
@@ -148,7 +150,7 @@ export class HealthSystem {
             }
 
             if (!this.runtime) {
-                console.error('❌ [HealthSystem] Runtime is not available at initialization!');
+                log.error('Runtime is not available at initialization!');
                 return;
             }
 
@@ -165,7 +167,7 @@ export class HealthSystem {
             this.allowExternalSync = false;
 
         } catch (error) {
-            console.error('❌ [HealthSystem] Initialization failed:', error);
+            log.error('Initialization failed:', error);
         }
     }
 
@@ -243,7 +245,7 @@ export class HealthSystem {
                 this.runtime.globalVars.MaxHealth = this.state.max;
             }
         } catch (error) {
-            console.warn('[HealthSystem] Could not load save data:', error);
+            log.warn('Could not load save data:', error);
         }
     }
 
@@ -551,7 +553,7 @@ export class HealthSystem {
             // UI updates are handled by the adjustHealth event sheet function
             // which contains the heart sprite loops
         } catch (error) {
-            console.warn('[HealthSystem] Could not sync to C3:', error);
+            log.warn('Could not sync to C3:', error);
         }
     }
 
@@ -701,8 +703,8 @@ export class HealthSystem {
      * Debug information
      */
     static debug(): void {
-        console.log('=== 🏥 Health System Debug ===');
-        console.log('State:', {
+        log.debug('=== Health System Debug ===');
+        log.debug('State:', {
             health: `${this.state.current}/${this.state.max}`,
             shields: this.state.temporary,
             status: {
@@ -716,15 +718,53 @@ export class HealthSystem {
                 invincibility: this.state.invincibilityTimer.toFixed(2)
             }
         });
-        console.log('Statistics:', {
+        log.debug('Statistics:', {
             totalDamage: this.state.totalDamageTaken,
             totalHealing: this.state.totalHealing,
             lastDamage: this.state.lastDamageAmount,
             lastSource: this.state.lastDamageSource
         });
-        console.log('Performance:', this.performanceStats);
-        console.log('Resistances:', Object.fromEntries(this.resistances));
-        console.log('=============================');
+        log.debug('Performance:', this.performanceStats);
+        log.debug('Resistances:', Object.fromEntries(this.resistances));
+        log.debug('=============================');
+    }
+    /**
+     * Reset all state (for testing and re-initialization)
+     */
+    static reset(): void {
+        this.runtime = null;
+        this.initialized = false;
+        this.allowExternalSync = false;
+        this.callbacks = {};
+        this.resistances = new Map();
+        this.state = {
+            current: 10,
+            max: 10,
+            temporary: 0,
+            isHurt: false,
+            isDead: false,
+            isInvincible: false,
+            hurtTimer: 0,
+            knockbackTimer: 0,
+            invincibilityTimer: 0,
+            regenTimer: 0,
+            lastDamageAmount: 0,
+            totalDamageTaken: 0,
+            totalHealing: 0
+        };
+        this.config = {
+            maxHealth: 10,
+            startingHealth: 10,
+            hurtDuration: 0.5,
+            knockbackDuration: 0.3,
+            invincibilityDuration: 1.0
+        };
+        this.performanceStats = {
+            damageProcessed: 0,
+            healingProcessed: 0,
+            updatesPerSecond: 0,
+            lastUpdateTime: 0
+        };
     }
 }
 

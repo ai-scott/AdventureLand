@@ -1,6 +1,9 @@
 // bat-shadow-manager.ts - Shadow Synchronization System for Bat Enemies
 // Manages shadow sprites that follow bat X position but stay at ground level (player Y)
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("BatShadow");
+
 interface ShadowData {
   shadowUID: number;
   batBaseUID: number;
@@ -22,7 +25,7 @@ class BatShadowManagerClass {
    */
   public initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("🦇 Bat Shadow Manager initialized");
+    log.info("Bat Shadow Manager initialized");
   }
 
   /**
@@ -38,7 +41,7 @@ class BatShadowManagerClass {
     };
 
     this.shadows.set(batBaseUID, shadowData);
-    console.log(`🦇 Shadow ${shadowUID} registered for bat ${batBaseUID}`);
+    log.info(`Shadow ${shadowUID} registered for bat ${batBaseUID}`);
   }
 
   /**
@@ -47,13 +50,13 @@ class BatShadowManagerClass {
    */
   public updateShadow(batBaseUID: number): { x: number; y: number } | null {
     if (!this.runtime) {
-      console.warn("⚠️ Shadow manager not initialized with runtime");
+      log.warn("Shadow manager not initialized with runtime");
       return null;
     }
 
     const shadowData = this.shadows.get(batBaseUID);
     if (!shadowData) {
-      console.warn(`⚠️ No shadow registered for bat ${batBaseUID}`);
+      log.warn(`No shadow registered for bat ${batBaseUID}`);
       return null;
     }
 
@@ -61,7 +64,7 @@ class BatShadowManagerClass {
       // Get bat instance using runtime.getInstanceByUid (not objectType.getInstanceByUid)
       const batInstance = this.runtime.getInstanceByUid(batBaseUID);
       if (!batInstance) {
-        console.warn(`⚠️ Bat instance ${batBaseUID} not found`);
+        log.warn(`Bat instance ${batBaseUID} not found`);
         return null;
       }
 
@@ -74,7 +77,7 @@ class BatShadowManagerClass {
       return { x: shadowX, y: shadowY };
 
     } catch (error) {
-      console.error(`❌ Error updating shadow for bat ${batBaseUID}:`, error);
+      log.error(`Error updating shadow for bat ${batBaseUID}:`, error);
       return null;
     }
   }
@@ -181,7 +184,7 @@ class BatShadowManagerClass {
     const shadowData = this.shadows.get(batBaseUID);
     if (shadowData) {
       this.shadows.delete(batBaseUID);
-      console.log(`🦇 Shadow ${shadowData.shadowUID} unregistered for bat ${batBaseUID}`);
+      log.info(`Shadow ${shadowData.shadowUID} unregistered for bat ${batBaseUID}`);
     }
   }
 
@@ -232,7 +235,7 @@ class BatShadowManagerClass {
    */
   public reset(): void {
     this.shadows.clear();
-    console.log("🔄 Shadow manager reset");
+    log.info("Shadow manager reset");
   }
 }
 

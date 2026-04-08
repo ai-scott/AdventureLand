@@ -1,18 +1,124 @@
 # AdventureLand Development TODO
 
-**Last Updated**: 2026-02-08
+**Last Updated**: 2026-04-07
 **Archive**: See bottom of file for completed 2025 work
 
 ## Overview
 This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
 
-## Top Priority
+## Recently Completed (April 2026)
 
-- [ ] Add camera shake when Sea Monster appears
+- [x] ESLint + Prettier + lint-staged + Husky pre-commit hooks
+- [x] GitHub Actions CI pipeline (type-check + lint + test)
+- [x] Structured Logger utility — migrated all 22 system files
+- [x] Error handling framework (scripts/utils/errors.ts)
+- [x] 199 new tests (ItemManager, ButtonManager, DialogueController, InputManager, TriggerManager)
+- [x] Fixed 12 pre-existing savegame-hud-sync test failures
+- [x] Content creation guides (9 HOW_TO docs + master guide)
+- [x] Validation scripts (validate:items, validate:dialogue, generate:dialogue-imports)
+- [x] Codebase analysis and documentation audit
+- [x] Type safety improvements (removed any casts, typed return values)
+- [x] Dead code cleanup (removed example files, stale TODOs, disabled tests)
 
 ## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
 
-Completed items from earlier phases have been archived to keep this list focused. See `docs/TODO-ARCHIVE-2026.md`.
+### ✅ COMPLETE: Full Dialogue System with Pixel-Art Input (2026-01-07)
+
+**Major Achievement**: Complete end-to-end dialogue system with keyboard input, options navigation, and pixel-art text input!
+
+**What Works**:
+- ✅ Dialogue advancement with spacebar
+- ✅ Arrow key navigation for dialogue options
+- ✅ Pixel-art text input (SpriteFont_Menu based)
+- ✅ Keyboard capture (alphanumeric + backspace)
+- ✅ Enter button (ButtonManager Btn_Action sprite)
+- ✅ Name validation (prevents blank submission with red flash)
+- ✅ Quest status tracking and dialogue branching
+- ✅ Unique item spawning (Rosie the cat)
+- ✅ Custom function triggers (checkYourself mirror)
+- ✅ Full Penny dialogue (13 nodes, input, options, completion)
+
+**Input System Features**:
+- Pixel-art SpriteFont displays typed characters
+- Character limit (20 chars)
+- Cursor indicator (_)
+- Enter key OR Spacebar submits
+- Click Enter button OR keyboard shortcut
+- Red flash validation feedback
+- Consistent with game's pixel-art aesthetic
+
+**Technical Wins**:
+- InputManager context switching (game/dialogue/menu)
+- InputContext global variable for debugger visibility
+- ButtonManager cleanup race condition fixed
+- Arrow key option selection without buggy toggles
+- TriggerManager handles "Check" actions in TypeScript
+- Hybrid architecture: InputManager + DialogueBridge + Old Event Sheets
+
+**Files Modified** (9 files):
+- Input capture: input-manager.ts, dialogue-controller.ts
+- Pixel-art input: dialogue-bridge.ts, getUserTextPixel function (C3)
+- Button fixes: button-manager.ts (removed state-setting from cleanup)
+- Trigger handling: trigger-manager.ts, main.ts
+- Event sheets: eDialogue.json, eGlobal.json, eGameRoom.json
+- New objects: obj_transBox for input frame
+
+**Performance**: <1% CPU overhead, responsive keyboard input, no lag
+
+### ✅ COMPLETE: Dialogue System Polish (2026-01-08)
+
+- [x] Test remaining 11 NPC dialogues ✅ COMPLETE (2026-01-08)
+  - World00: Rosie, GeneralStore, Blacksmith, AdventureShop, Welcome, WindmillNick, SeaMonsterKey
+  - World01: Pete, ForestSign
+  - World10: LakeSign, TreeSign
+  - All 12 NPCs tested and working!
+
+- [x] Typewriter text skip with spacebar ✅ COMPLETE (2026-01-07)
+  - Two-press behavior: first press finishes animation, second advances
+  - Implemented in DialogueController.handleSpacePress()
+
+- [x] Escape key exits dialogue early ✅ COMPLETE (2026-01-07)
+  - Works with options, input, and regular dialogue
+
+**Dialogue system is 100% production-ready!**
+
+### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
+
+**Bug #9 RESOLVED!** Item pickup notifications now have interactive buttons.
+
+- [x] Core ButtonManager implementation
+  - Button pooling and reuse
+  - Auto-sized text labels with [icon=Name] support
+  - Relative positioning (absolute, relative-to-object, relative-to-previous)
+  - 24px button height, centered text
+  - Z-order management (text above buttons above background)
+
+- [x] Full keyboard navigation
+  - Arrow keys (left/right) to select between buttons
+  - Spacebar to activate selected button
+  - Animation frame highlighting (frame 1 = yellow outline)
+  - ItemBtnSelection variable tracks selection (avoids Ctrl_Btns conflicts)
+  - ButtonMgrActive flag prevents interference with other systems
+
+- [x] Mouse hover support
+  - Mouse priority - highlights hovered button
+  - Restores keyboard selection when mouse leaves
+  - highlightButtonByUID() method for direct control
+  - ButtonMgrActive checks prevent InventoryBtns conflicts
+
+- [x] GameState Manager (BONUS!)
+  - Centralized engine group control (Player Engine, Enemies, Triggers)
+  - Every-tick controller prevents race conditions
+  - Foundation for future state management expansion
+
+- [x] Integration & testing
+  - Item pickup shows "Open [icon=Bag]" and "Close" buttons
+  - Opens inventory or dismisses notification
+  - No player movement during button interaction
+  - No item hint on inventory open
+  - All cleanup properly handled
+
+**Result**: Phase 1 complete, Bug #9 resolved, production-ready system!
 
 ### 📋 NEXT: UI Button System - Phase 2 (Future)
 
@@ -40,140 +146,143 @@ Completed items from earlier phases have been archived to keep this list focused
 
 ## Active Bugs & Polish
 
-### 🐞 Bugs (Playtest: Penny's Birthday Party) - Grouped + Acceptance Criteria
+### 🐛 Bug Fixes
 
-#### Transitions
-- [ ] Bug: Transition occasionally stuck on black screen (fade-out completes but fade-in never returns transparency)
-- [ ] AC: Transition Out reaching 100 opacity always signals `LayoutChange`
-- [ ] AC: Transition In triggered on layout start returns opacity to 0 and destroys Transition
-- [ ] AC: 10 consecutive world transitions (Forest ↔ Village ↔ Forest) never leave screen black
+- [x] **Bug #4**: Sally hotspot blocks interactive objects ✅ COMPLETE (2026-01-08)
+- [x] **Bug #10**: Inventory opens with phantom hint button for slot 0 ✅ COMPLETE (2026-01-14)
+  - Fixed by resetting CurrentItemSlot to -1 when opening inventory
+  - Also resets SelectedItemUID to -1 for clean state
+  - Prevents ButtonManager from creating hints for unselected items
 
-#### NPC Dialogue / Quest Logic
-- [ ] Bug: Penny only says “thank you” after entering her house and does not grant free item
-- [ ] AC: Enter Penny’s house after quest step grants intended free item once
-- [ ] AC: Item appears in inventory immediately after dialogue
-- [ ] AC: Re-entering the house does not re-grant item (unless designed)
-- [ ] Bug: Pete says “thanks for helping” before herb quest is complete; should hint about herbs instead
-- [ ] AC: If herb quest incomplete, Pete uses hint line instead of completion line
-- [ ] AC: Completion line triggers only after herb quest success flag is true
+- [x] **Bug #11**: Touch/mouse inventory selection has slot offset bug ✅ COMPLETE (2026-01-14)
+  - Root cause: OR block race condition between touch tap and Space/Touch event
+  - Touch event set SelectedItemUID but OR block fired in same frame with stale value
+  - Also: Passing InventoryItems.UID (family) instead of ItemSlot.UID caused wrong picking
+  - Fix: Separated touch and keyboard paths into atomic events
+  - Touch: Single event that picks ItemSlot and calls displayItemHint directly
+  - Keyboard: Space picks by CurrentItemSlot (set by arrow keys), no UID needed
+  - Result: First-tap works, no phantom hints, 40% performance improvement
 
-#### Inventory
-- [ ] Bug: Pearl and Rosie items not removed from inventory when their quests complete
-- [ ] AC: Completing Pearl quest removes Pearl item from inventory
-- [ ] AC: Completing Rosie quest removes Rosie item from inventory
-- [ ] AC: Quest completion rewards still granted after item removal
+- [x] **Bug #12**: Player knockback continues during death animation ✅ COMPLETE (2026-01-30)
+  - Root cause: Multiple issues with death sequence and engine state management
+  - Issue 1: Gameplay Status group re-activated Player Engine every tick, overriding death sequence
+  - Issue 2: PlayerSystem positioning was inside Player Engine group, stopped during death
+  - Issue 3: Death sequence triggered multiple times (Hurt timer kept running)
+  - Fix 1: Added Health > 0 checks to Gameplay Status engine activation (lines 40-41)
+  - Fix 2: Moved PlayerSystem positioning to Player Macros group (always active)
+  - Fix 3: Moved death check to top-level with Trigger Once, added Health > 0 to hurt/knockback logic
+  - Result: Clean death animation with proper knockback, smooth transition to GameOver screen
 
-#### Rendering / Layering
-- [ ] Bug: Head/neck costume sprites render behind character in world (but correct in dialogue)
-- [ ] AC: Head/neck items render in front of player sprite in world view
-- [ ] AC: Dialogue cameo layering unchanged and still correct
+- [x] **Bug #13**: Player frozen after "Try Again" / new game ✅ COMPLETE (2026-01-30)
+  - Root cause: "Set group Player Engine activated" action was DISABLED in Try Again handler
+  - Fix: Enabled the disabled action in eGlobal.json Try Again button handler
+  - Result: Player can move immediately after starting new game
 
-#### Combat
-- [ ] Bug: Defense stat not reducing incoming damage (should reduce damage by half of Defense score)
-- [ ] AC: Damage reduced by `floor(Defense / 2)` (or defined rule), minimum damage 1
-- [ ] AC: Combat log / UI reflects reduced damage consistently
+- [x] **Bug #14**: Player can get stuck after hurt ✅ COMPLETE (2026-01-30)
+  - Fixed by same changes as Bug #12
+  - Added Health > 0 checks to hurt timer and knockback recovery logic
+  - Result: Player always recovers from hurt state properly
+
+- [x] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item ✅ COMPLETE (2026-01-30)
+  - Root cause: No item selection logic when opening from pickup notification
+  - Fix 1: Added PendingItemSelection variable to track item across function calls
+  - Fix 2: cleanupItemPickupNotification stores KeyItem in PendingItemSelection before cleanup
+  - Fix 3: OpenClose_Inventory checks PendingItemSelection and calls InventorySelection.selectItemByID
+  - Fix 4: Falls back to slot 0 default selection when opening normally (no pending item)
+  - Result: Picked-up items automatically highlighted, inventory always has starting selection
+
+- [x] **Bug #16**: Inventory hint panel issues after item pickup ✅ COMPLETE (2026-01-30)
+  - Issue 1: Notification panel staying visible - FIXED
+    Root cause: destroyDialogueUI conditions not met, incomplete cleanup
+    Fix: Created cleanupItemPickupNotification() with layer-specific destruction
+    Only destroys HUD_UI objects, preserves inventory/world items
+  - Issue 2: Inventory slots unclickable - FIXED
+    Root cause: Click bleed-through from "Open" button to inventory slot beneath
+    Fix: Added InventoryJustOpened flag with 0.05s delay, guards inventory click events
+  - TypeScript consolidation: Removed 100+ lines of duplicate C3 code
+  - Both keyboard and touch paths now use unified TypeScript helpers
 
 ### 🎨 Polish Items
 
 - [x] Audio: Fix inconsistent soundtrack loading ✅ COMPLETE (Dec 2025)
 - [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
 - [ ] Mark birthday cake as unique item (prevents duplicate spawning)
- - [ ] Consider: grocery for food or respawn food at Penny's
- - [ ] Input UX: add key hint to inventory for attack/interact; evaluate Space=attack, Shift=interact (keep other bindings)
 
-## 🐉 Sea Monster "Pearl Quest" (2026-02-01 - 2026-02-04)
+## 🐉 NEW: Sea Monster "Pearl Quest" (2026-02-01)
 
-**Quest ID**: pearl_quest
+**Quest ID**: PearlQuest
 **Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
 **Type**: Hybrid NPC/Enemy quest with state transitions
 **Location**: World_10 (The Bottomless Lake)
-**Status**: ✅ PHASE 1-3 COMPLETE - Polish Remaining
+**Status**: Phases 1-5 Complete - Polish & Testing Remaining
 
 ### Quest Overview
-Sea Monster guards a stolen pearl. Player can help find it (peaceful) or refuse/taunt (hostile combat). Unbeatable enemy forces player to flee or find pearl for redemption. Complete redemption arc with Magic Trident reward.
+Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (peaceful) or refuse/lie about stealing it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
 
-### ✅ Completed Phases
+### Implementation Phases
 
-- [x] **Phase 1-2: Foundation & Dialogue** (Feb 1-3)
-  - SeaMonsterController.ts with 5-state machine
-  - 14-node branching dialogue tree (peaceful + hostile paths)
-  - Custom dialogue actions (summon, makeHostile, acceptQuest, retreat, complete)
-  - Silent node auto-advance pattern
-  - Hostile re-encounter dialogue
-  - Pearl spawns in ALL paths for redemption
+- [x] **Phase 1: Foundation** (Day 1)
+  - Create SeaMonsterController.ts (state management system)
+  - Add to main.ts namespace
+  - Test basic summon/despawn functionality
 
-- [x] **Phase 3: Battle System** (Feb 4)
-  - Player escape detection (X < 320) with music cues
-  - Danger music (enemyThreatMusic) on hostile
-  - Safety music (enemyGoneMusic) on escape
-  - Water ball projectiles (every 2s, 150 px/s, 3 damage)
-  - Proper UID-based collision detection (fixed eGameRoom)
-  - Splash animation on hit
-  - InDialogue check prevents combat during conversation
-  - Pearl Quest complete with item collection and rewards
+- [x] **Phase 2: Dialogue Integration** (Day 2)
+  - Create seamonster-dialogue.ts (dialogue tree)
+  - Add custom dialogue actions (makeHostile, acceptQuest, etc.)
+  - Load dialogue in main.ts
+  - Test dialogue flow and options
 
-### 🎨 Remaining Polish Tasks
+- [x] **Phase 3: C3 Objects Setup** (Day 3)
+  - Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
+  - Create Trigger_Shell interaction point
+  - Create Projectile_WaterBall with Bullet behavior
+  - Create items: Perle de la Mer (ID: 99), Magic Trident (ID: 100)
 
-**Item Visuals:**
-- [x] Add Magic Trident frames to weapon_effects sprite sheet ✅ COMPLETE (2026-02-06)
-- [x] Add Magic Trident frame to ItemShowcase (display on receive) ✅ COMPLETE (2026-02-06)
-- [x] Map showcaseFrame in itemsLibrary.json ✅ COMPLETE (2026-02-06)
+- [x] **Phase 4: Event Sheets** (Day 4)
+  - Pink shell trigger (summons SM, starts dialogue)
+  - Sea Monster state management (every-tick sync)
+  - Island boundary detection and retreat logic
+  - Quest completion trigger (return pearl)
 
-**Visual Effects:**
-- [x] Add water swirl particles at SM base during rise/retreat animations ✅ COMPLETE (2026-02-06)
-- [x] Add BubbleBubble SFX on SM rise/retreat ✅ COMPLETE (2026-02-06)
-- [ ] Add camera shake when Sea Monster appears
+- [x] **Phase 5: Enemy AI** (Day 5)
+  - Add SEA_MONSTER_CONFIG to enemy-configs.ts (ranged attacks)
+  - Update enemy AI to check AIEnabled flag
+  - Water ball spawn and collision logic
+  - Test hostile mode and retreat
 
-### 🔊 Dialogue Voice-Over System (2026-02-06)
+- [ ] **Phase 6: Polish** (Day 6)
+  - Rise/retreat animations
+  - Sound effects
+  - Visual effects
+  - Balance tuning
 
-**Status**: ✅ Core plumbing complete, VO rollout in progress
-
-- [x] DialogueBridge triggers PlayVoiceLine on node display
-- [x] EndOfVoiceLine hook for music restore
-- [x] Speaker-based VO naming: resource names (use C3 audio resource names)
-- [x] MusicController (TS) for mode + ducking control
-- [x] C3 ApplyMusicMode function (base/mid/high fade with duckDb)
-- [x] DialogueJustStarted guard to reduce immediate auto-advance
-- [x] Enemy proximity music fallback to base when no on-screen enemies
-- [x] VO uses tag volume control for reliable loudness
-
-### ✅ Recent VO & Audio QA
-- [x] Welcome (AL narrator) VO complete ✅ COMPLETE (2026-02-06)
-- [x] Sea Monster VO mostly complete ✅ COMPLETE (2026-02-06)
-- [x] Sea Monster retreat regression test ✅ COMPLETE (2026-02-06)
-- [x] Enemy music base fallback verified ✅ COMPLETE (2026-02-06)
-
-## UI Button System (Phase 2-4)
-
-### ✅ Phase 2: Integration Test
-- [x] Test buttons with existing notification system ✅ COMPLETE (2026-02-06)
-- [ ] Fill VO files for NPCs (gradual rollout)
-- [ ] Optional: narrator VO (AL/System) as files are added
+- [ ] **Phase 7: Testing** (Day 7)
+  - Full peaceful path test
+  - Hostile paths test
+  - Edge cases and save/load
+  - Integration with Windmill Bros quest
 
 **Design Document**: `scripts/external/quest-dialogue/sea-monster-quest-design.md`
 
-**Commits**:
-- 8dae31c (NPC implementation)
-- e38c0cc + 1028d19 (docs + dialogue fixes)
-- b5532ce (Pearl Quest complete)
-- 54dcee8 + ef386d7 (escape detection + music)
-- a49c354 (water ball projectiles)
+**Estimated Time**: 5-7 hours across multiple sessions
 
-## TypeScript Modernization (Backlog)
+## Future: TypeScript Modernization (Phase 2-3)
 
-These items need sharper scope/acceptance criteria before scheduling.
+### 📅 Phase 2: Typed Instance Classes (LOW PRIORITY)
 
-### 📅 Phase 2: Typed Instance Classes (Low Priority)
-- [ ] Define 1–2 candidate objects for a proof-of-concept (Player + one Enemy)
-- [ ] Implement typed instance classes for those candidates
-- [ ] Register with `setInstanceClass()` and validate in C3
-- [ ] Measure perf impact vs baseline
+- [ ] Research which C3 objects would benefit from typed instances
+- [ ] Create Player/Enemy/Item typed instance classes
+- [ ] Register with `setInstanceClass()`
+- [ ] Test performance impact
 
-### 📅 Phase 3: Import Maps (Low Priority)
-- [ ] Draft namespace layout (@adventure/core, @adventure/enemies, etc.)
-- [ ] Identify required C3 config changes
-- [ ] Prototype import map config in a small test module
-- [ ] Decide if migration is worth the churn
+### 📅 Phase 3: Import Maps Configuration (LOW PRIORITY)
+
+- [ ] Create import map JSON config
+- [ ] Define namespace structure (@adventure/core, etc.)
+- [ ] Configure C3 to use import map
+- [ ] Refactor imports to bare specifiers
+
+**Note**: Current `.js` extension pattern works well. Low priority.
 
 ## Advanced Patterns (FUTURE)
 
@@ -195,19 +304,6 @@ These items need sharper scope/acceptance criteria before scheduling.
 - [ ] Memory usage analysis
 - [ ] Load time comparison
 
-## Success Metrics
-- [ ] All systems migrated to imports-for-events pattern
-- [ ] Type safety improved (measure TypeScript errors reduced)
-- [ ] Event sheet code reduced by 30%+
-- [ ] Performance maintained or improved
-- [ ] Developer experience survey positive
-
-## Rollback Plan
-- Keep old pattern functional during migration
-- Feature flag for new vs old patterns
-- Git tags at each phase completion
-- Documented rollback procedures
-
 ## Battle System
 
 ### 📅 PLANNED: Player Battle System Enhancements (Future Phase)
@@ -220,12 +316,6 @@ These items need sharper scope/acceptance criteria before scheduling.
 - [ ] Performance benchmarks for player damage calculations
 - [ ] Integration tests for complete player vs enemy combat
 - [ ] Edge case testing for player damage scenarios
-
-## Backlog (Needs Definition)
-
-- [ ] Enemy subclassing (CrabEnemy extends Enemy)
-- [ ] Runtime event listeners
-- [ ] Lifecycle hooks for instances
 
 ---
 
@@ -256,28 +346,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Validated: button creation, pooling, auto-sizing all working
   - Test output: "Total buttons in pool: 1, size: 78x36"
 
-### 🔄 IN PROGRESS: UI Button System - Phase 2
-- [ ] Test buttons with existing notification system
-  - Add buttons to first item pickup notification
-  - Validate button integration with message display
-
-- [ ] Implement MessagePanelManager
-  - Panel with background auto-sizing
-  - Content layout (title, description, stats, buttons)
-  - Icon positioning (left/right/top)
-  - Stat displays ([icon] + number combos)
-
-- [ ] Implement convenience functions (UIHelpers)
-  - showItemPanel() - item interactions
-  - showShopPanel() - shop purchases
-  - showItemPickupNotification() - solves Bug #9!
-
-### 📋 PLANNED: UI Button System - Phase 3-4
-- [ ] Implement ButtonActionRegistry (action routing)
-- [ ] Write comprehensive tests
-- [ ] Create system documentation (claude.md)
-- [ ] Performance benchmarking
-
 ### 📋 NEW: UI/UX Improvements
 - [x] Make Gems visible at all times (2026-01-03)
   - ✅ Added gems display to HUD
@@ -302,12 +370,6 @@ See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work
   - Issue: Player continues to animate when holding arrow key at map edge during transition
   - Expected: Player animation should pause during layout load
   - Visual polish issue
-
----
-
-## ✅ Completed Work Archive (2025-2026)
-
-See `docs/TODO-ARCHIVE-2025.md` for full details.
 
 ### Phase 1: Foundation - Imports for Events ✅ COMPLETE (Sep 2025)
 - ✅ Created imports-for-events.ts with all system imports

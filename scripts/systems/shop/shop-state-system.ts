@@ -3,6 +3,9 @@
  * Centralizes shop mode detection to fix state desync issues
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("ShopSystem");
+
 export class ShopStateSystem {
     private static runtime: any = null;
     private static isInShop: boolean = false;
@@ -24,7 +27,7 @@ export class ShopStateSystem {
     static initialize(runtime: any): void {
         this.runtime = runtime;
         this.initialized = true;
-        console.log('✅ [ShopState] System initialized');
+        log.info('System initialized');
     }
 
     /**
@@ -45,7 +48,7 @@ export class ShopStateSystem {
 
         // Log state changes
         if (wasInShop !== this.isInShop) {
-            console.log(`[ShopState] ${this.isInShop ? 'Entered' : 'Exited'} shop: ${layoutName}`);
+            log.info(`${this.isInShop ? 'Entered' : 'Exited'} shop: ${layoutName}`);
         }
     }
 
@@ -57,7 +60,7 @@ export class ShopStateSystem {
         if (this.runtime) {
             this.runtime.globalVars.ShopMode = isShop;
         }
-        console.log(`[ShopState] Shop mode manually set to: ${isShop}`);
+        log.info(`Shop mode manually set to: ${isShop}`);
     }
 
     /**
@@ -80,7 +83,7 @@ export class ShopStateSystem {
     static registerShopLayout(layoutName: string): void {
         if (!this.SHOP_LAYOUTS.includes(layoutName)) {
             this.SHOP_LAYOUTS.push(layoutName);
-            console.log(`[ShopState] Registered new shop: ${layoutName}`);
+            log.info(`Registered new shop: ${layoutName}`);
         }
     }
 
@@ -88,14 +91,14 @@ export class ShopStateSystem {
      * Debug information
      */
     static debug(): void {
-        console.log('=== 🏪 Shop State Debug ===');
-        console.log('In Shop:', this.isInShop);
-        console.log('Current Shop:', this.currentShopLayout || 'N/A');
-        console.log('Registered Shops:', this.SHOP_LAYOUTS);
+        log.debug('=== Shop State Debug ===');
+        log.debug('In Shop:', this.isInShop);
+        log.debug('Current Shop:', this.currentShopLayout || 'N/A');
+        log.debug('Registered Shops:', this.SHOP_LAYOUTS);
         if (this.runtime) {
-            console.log('C3 ShopMode var:', this.runtime.globalVars.ShopMode);
+            log.debug('C3 ShopMode var:', this.runtime.globalVars.ShopMode);
         }
-        console.log('==========================');
+        log.debug('==========================');
     }
 }
 

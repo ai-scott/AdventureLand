@@ -4,6 +4,8 @@
 // ===================================================================
 
 import { UNIQUE_ITEMS_BY_WORLD, UniqueItemSpawnConfig, QuestSpawnCondition } from './unique-items-config.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("UniqueItems");
 
 export class UniqueItemSpawner {
   /**
@@ -17,11 +19,11 @@ export class UniqueItemSpawner {
     const items = UNIQUE_ITEMS_BY_WORLD[worldId] || [];
 
     if (items.length === 0) {
-      console.log(`[UniqueItems] No unique items configured for ${worldId}`);
+      log.info(`No unique items configured for ${worldId}`);
       return;
     }
 
-    console.log(`[UniqueItems] Checking ${items.length} unique item(s) for ${worldId}...`);
+    log.info(`Checking ${items.length} unique item(s) for ${worldId}...`);
 
     items.forEach(config => {
       this.spawnUniqueItem(runtime, config);
@@ -39,7 +41,7 @@ export class UniqueItemSpawner {
     const wasCollected = this.wasItemCollected(runtime, config.itemName);
 
     if (wasCollected) {
-      console.log(`[UniqueItems] ⏭️  ${config.itemName} already collected - skipping spawn`);
+      log.info(`${config.itemName} already collected - skipping spawn`);
       return;
     }
 
@@ -47,7 +49,7 @@ export class UniqueItemSpawner {
     if (config.questCondition) {
       const questMet = this.isQuestConditionMet(runtime, config.questCondition);
       if (!questMet) {
-        console.log(`[UniqueItems] ⏸️  ${config.itemName} quest condition not met (${config.questCondition.questId} != ${config.questCondition.status}) - skipping spawn`);
+        log.info(`${config.itemName} quest condition not met (${config.questCondition.questId} != ${config.questCondition.status}) - skipping spawn`);
         return;
       }
     }
@@ -55,7 +57,7 @@ export class UniqueItemSpawner {
     // Spawn trigger
     const trigger = this.spawnTrigger(runtime, config);
     if (!trigger) {
-      console.error(`[UniqueItems] ❌ Failed to spawn trigger for ${config.itemName}`);
+      log.error(`Failed to spawn trigger for ${config.itemName}`);
       return;
     }
 
@@ -63,11 +65,11 @@ export class UniqueItemSpawner {
     if (config.visual) {
       const visual = this.spawnVisual(runtime, config);
       if (!visual) {
-        console.warn(`[UniqueItems] ⚠️  Failed to spawn visual for ${config.itemName}`);
+        log.warn(`Failed to spawn visual for ${config.itemName}`);
       }
     }
 
-    console.log(`[UniqueItems] ✅ Spawned ${config.itemName} (trigger: ${config.trigger.triggerObjectName})`);
+    log.info(`Spawned ${config.itemName} (trigger: ${config.trigger.triggerObjectName})`);
   }
 
   /**
@@ -80,7 +82,7 @@ export class UniqueItemSpawner {
   private static wasItemCollected(runtime: any, itemName: string): boolean {
     const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (!saveDict) {
-      console.warn(`[UniqueItems] SaveGameData not found - defaulting to spawn ${itemName}`);
+      log.warn(`SaveGameData not found - defaulting to spawn ${itemName}`);
       return false;
     }
 
@@ -98,7 +100,7 @@ export class UniqueItemSpawner {
   private static isQuestConditionMet(runtime: any, condition: QuestSpawnCondition): boolean {
     const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (!saveDict) {
-      console.warn(`[UniqueItems] SaveGameData not found - cannot check quest condition`);
+      log.warn(`SaveGameData not found - cannot check quest condition`);
       return false;
     }
 
@@ -119,7 +121,7 @@ export class UniqueItemSpawner {
   private static spawnTrigger(runtime: any, config: UniqueItemSpawnConfig): any {
     const triggerClass = runtime.objects.Trigger_Scene;
     if (!triggerClass) {
-      console.error(`[UniqueItems] Trigger_Scene object not found in runtime`);
+      log.error(`Trigger_Scene object not found in runtime`);
       return null;
     }
 
@@ -150,7 +152,7 @@ export class UniqueItemSpawner {
 
     const objectClass = runtime.objects[config.visual.objectType];
     if (!objectClass) {
-      console.error(`[UniqueItems] Object type "${config.visual.objectType}" not found in runtime`);
+      log.error(`Object type "${config.visual.objectType}" not found in runtime`);
       return null;
     }
 
@@ -184,13 +186,13 @@ export class UniqueItemSpawner {
     for (const [worldId, items] of Object.entries(UNIQUE_ITEMS_BY_WORLD)) {
       const config = items.find(item => item.itemName === itemName);
       if (config) {
-        console.log(`[UniqueItems] Found ${itemName} in ${worldId}, attempting spawn...`);
+        log.info(`Found ${itemName} in ${worldId}, attempting spawn...`);
         this.spawnUniqueItem(runtime, config);
         return;
       }
     }
 
-    console.warn(`[UniqueItems] Item "${itemName}" not found in any world config`);
+    log.warn(`Item "${itemName}" not found in any world config`);
   }
 
   /**

@@ -1,0 +1,5 @@
+node_modules/
+scripts-compiled/
+scripts/archive/
+*.js
+*.d.ts

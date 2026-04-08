@@ -1,6 +1,9 @@
 // bat-territory-manager.ts - Territory Management System for Bat Enemies
 // Handles tree marker reading, territory assignment, and tree occupation tracking
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("BatTerritory");
+
 export interface TreePosition {
   x: number;
   y: number;
@@ -30,11 +33,11 @@ class BatTerritoryManagerClass {
    * Must be called on layout start in C3 event sheet
    */
   public initialize(runtime: any): void {
-    console.log("🦇 Initializing Bat Territory Manager...");
+    log.info("Initializing Bat Territory Manager...");
 
     // Reset state from previous layout if needed
     if (this.initialized) {
-      console.log("🔄 Resetting territory manager from previous layout");
+      log.info("Resetting territory manager from previous layout");
       this.territories.clear();
       this.nextBatId = 1;
     }
@@ -42,25 +45,25 @@ class BatTerritoryManagerClass {
     // Get all Bat_Tree_Marker instances
     const markerObjectType = runtime.objects.Bat_Tree_Marker;
     if (!markerObjectType) {
-      console.error("❌ Bat_Tree_Marker object type not found!");
-      console.log("   Available object types:", Object.keys(runtime.objects));
+      log.error("Bat_Tree_Marker object type not found!");
+      log.debug("Available object types:", Object.keys(runtime.objects));
       return;
     }
 
     const markers = markerObjectType.getAllInstances();
-    console.log(`🔍 Found ${markers.length} marker instances (raw)`);
+    log.debug(`Found ${markers.length} marker instances (raw)`);
 
     // Filter out any undefined/null markers before processing
     const validMarkers = markers.filter((marker: any) => {
       if (!marker) {
-        console.warn("⚠️ Found undefined marker in array");
+        log.warn("Found undefined marker in array");
         return false;
       }
       return true;
     });
 
     if (validMarkers.length !== 9) {
-      console.warn(`⚠️ Expected 9 tree markers, found ${validMarkers.length} valid markers`);
+      log.warn(`Expected 9 tree markers, found ${validMarkers.length} valid markers`);
     }
 
     // Read all marker positions with defensive null checks
@@ -72,13 +75,13 @@ class BatTerritoryManagerClass {
       occupiedByBatId: undefined
     }));
 
-    console.log(`📍 Found ${this.treePositions.length} tree markers`);
+    log.info(`Found ${this.treePositions.length} tree markers`);
 
     // Sort markers by position for geographic clustering
     this.performGeographicClustering();
 
     this.initialized = true;
-    console.log("✅ Bat Territory Manager initialized!");
+    log.info("Bat Territory Manager initialized!");
   }
 
   /**
@@ -92,9 +95,9 @@ class BatTerritoryManagerClass {
       return xDiff !== 0 ? xDiff : a.y - b.y;
     });
 
-    console.log("🗺️ Tree positions (sorted for clustering):");
+    log.debug("Tree positions (sorted for clustering):");
     this.treePositions.forEach((tree, index) => {
-      console.log(`  Tree ${index}: (${tree.x.toFixed(1)}, ${tree.y.toFixed(1)}) IID=${tree.iid}`);
+      log.debug(`  Tree ${index}: (${tree.x.toFixed(1)}, ${tree.y.toFixed(1)}) IID=${tree.iid}`);
     });
 
     // Simple geographic clustering: divide sorted trees into 3 groups
@@ -105,7 +108,7 @@ class BatTerritoryManagerClass {
       const startIndex = territoryNum * treesPerTerritory;
       const assignedIndices = [startIndex, startIndex + 1, startIndex + 2];
 
-      console.log(`🦇 Territory ${territoryNum + 1} assigned trees:`, assignedIndices.map(i =>
+      log.debug(`Territory ${territoryNum + 1} assigned trees:`, assignedIndices.map(i =>
         `(${this.treePositions[i].x.toFixed(1)}, ${this.treePositions[i].y.toFixed(1)})`
       ).join(", "));
     }
@@ -121,12 +124,12 @@ class BatTerritoryManagerClass {
     startingTreePos: TreePosition
   } | null {
     if (!this.initialized) {
-      console.error("❌ Territory manager not initialized!");
+      log.error("Territory manager not initialized!");
       return null;
     }
 
     if (this.nextBatId > 3) {
-      console.warn("⚠️ Maximum 3 bats supported, registration denied");
+      log.warn("Maximum 3 bats supported, registration denied");
       return null;
     }
 
@@ -151,8 +154,8 @@ class BatTerritoryManagerClass {
     startingTree.occupied = true;
     startingTree.occupiedByBatId = batId;
 
-    console.log(`🦇 Bat ${batId} (UID ${batBaseUID}) registered with territory [${assignedIndices}]`);
-    console.log(`   Starting at tree ${startIndex}: (${startingTree.x.toFixed(1)}, ${startingTree.y.toFixed(1)})`);
+    log.info(`Bat ${batId} (UID ${batBaseUID}) registered with territory [${assignedIndices}]`);
+    log.info(`Starting at tree ${startIndex}: (${startingTree.x.toFixed(1)}, ${startingTree.y.toFixed(1)})`);
 
     return {
       batId,
@@ -175,7 +178,7 @@ class BatTerritoryManagerClass {
   public findNearestUnoccupiedTree(batBaseUID: number, currentX: number, currentY: number): TreePosition | null {
     const territory = this.territories.get(batBaseUID);
     if (!territory) {
-      console.warn(`⚠️ No territory found for bat UID ${batBaseUID}`);
+      log.warn(`No territory found for bat UID ${batBaseUID}`);
       return null;
     }
 
@@ -200,7 +203,7 @@ class BatTerritoryManagerClass {
     }
 
     if (nearestTree) {
-      console.log(`🎯 Nearest tree for bat ${territory.batId}: (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)}) at distance ${nearestDistance.toFixed(1)}`);
+      log.debug(`Nearest tree for bat ${territory.batId}: (${nearestTree.x.toFixed(1)}, ${nearestTree.y.toFixed(1)}) at distance ${nearestDistance.toFixed(1)}`);
     }
 
     return nearestTree;
@@ -227,7 +230,7 @@ class BatTerritoryManagerClass {
     newTree.occupied = true;
     newTree.occupiedByBatId = territory.batId;
 
-    console.log(`🦇 Bat ${territory.batId} moved to tree ${newTreeIndex}`);
+    log.debug(`Bat ${territory.batId} moved to tree ${newTreeIndex}`);
   }
 
   /**
@@ -259,7 +262,7 @@ class BatTerritoryManagerClass {
     }
 
     this.territories.delete(batBaseUID);
-    console.log(`🦇 Bat ${territory.batId} (UID ${batBaseUID}) unregistered`);
+    log.info(`Bat ${territory.batId} (UID ${batBaseUID}) unregistered`);
   }
 
   /**
@@ -270,7 +273,7 @@ class BatTerritoryManagerClass {
     this.territories.clear();
     this.initialized = false;
     this.nextBatId = 1;
-    console.log("🔄 Territory manager reset");
+    log.info("Territory manager reset");
   }
 }
 

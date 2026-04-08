@@ -14,6 +14,8 @@ import {
   QuestState,
   DialogueResult
 } from './dialogue-types.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("QuestDialogue");
 
 // Re-export DialogueResult for backward compatibility
 export type { DialogueResult };
@@ -139,7 +141,7 @@ export class QuestManager {
     const updatedState: QuestState = { ...currentState, ...newState };
     
     if (!this.isValidStateTransition(currentState, updatedState)) {
-      console.warn(`Invalid state transition for quest ${questId}`);
+      log.warn(`Invalid state transition for quest ${questId}`);
       return false;
     }
     
@@ -214,7 +216,7 @@ export class QuestManager {
   }
   
   private static onQuestStateChanged(questId: string, newState: QuestState): void {
-    console.log(`Quest ${questId} changed to ${newState.status}, step ${newState.currentStep}`);
+    log.info(`Quest ${questId} changed to ${newState.status}, step ${newState.currentStep}`);
   }
 }
 
@@ -258,31 +260,31 @@ export class DialogueManager {
   static getDialogueForNPC(npcId: string, playerState: PlayerState): DialogueNode | null {
     const npcDialogue = this.npcDialogues.get(npcId);
     if (!npcDialogue) {
-      console.warn(`No dialogue found for NPC: ${npcId}`);
+      log.warn(`No dialogue found for NPC: ${npcId}`);
       return null;
     }
 
-    console.log(`🔎 Evaluating ${npcDialogue.nodes.length} nodes for ${npcId}`);
+    log.debug(`Evaluating ${npcDialogue.nodes.length} nodes for ${npcId}`);
 
     const validNodes = npcDialogue.nodes.filter(node => {
       const isValid = this.evaluateConditions(node.conditions || [], playerState);
       if (isValid) {
-        console.log(`✅ Node ${node.id} (priority ${node.priority}) is VALID`);
+        log.debug(`Node ${node.id} (priority ${node.priority}) is VALID`);
       }
       return isValid;
     });
 
-    console.log(`📋 Found ${validNodes.length} valid nodes`);
+    log.debug(`Found ${validNodes.length} valid nodes`);
 
     if (validNodes.length === 0) {
-      console.log(`⚠️ No valid nodes, using default: ${npcDialogue.defaultNode}`);
+      log.warn(`No valid nodes, using default: ${npcDialogue.defaultNode}`);
       const defaultNode = npcDialogue.nodes.find(node => node.id === npcDialogue.defaultNode);
       return defaultNode || null;
     }
 
     validNodes.sort((a, b) => b.priority - a.priority);
     const selectedNode = validNodes[0];
-    console.log(`🎯 Selected node ${selectedNode.id} (priority ${selectedNode.priority}): "${selectedNode.text.substring(0, 40)}..."`);
+    log.debug(`Selected node ${selectedNode.id} (priority ${selectedNode.priority}): "${selectedNode.text.substring(0, 40)}..."`);
 
     return this.processVariables(selectedNode, playerState);
   }
@@ -337,7 +339,7 @@ export class DialogueManager {
           break;
       }
       
-      return condition.negate ? !result : result;
+      return (condition.negate || condition.inverted) ? !result : result;
     });
   }
   
@@ -465,7 +467,7 @@ export class AdventureLandIntegration {
   
   // ✅ Enhanced dialogue with immediate return (fixes timing issue)
   static getEnhancedDialogue(npcId: string): DialogueResult {
-    console.log(`Getting enhanced dialogue for: ${npcId}`);
+    log.info(`Getting enhanced dialogue for: ${npcId}`);
     
     try {
       const playerState = this.getCurrentPlayerState();
@@ -485,14 +487,14 @@ export class AdventureLandIntegration {
         return this.getFallbackDialogue(npcId);
       }
     } catch (error) {
-      console.error("Enhanced dialogue error:", error);
+      log.error("Enhanced dialogue error:", error);
       return this.getFallbackDialogue(npcId);
     }
   }
   
   // ✅ Callback-based dialogue (ENHANCED with better global variable setting)
   static initializeEnhancedDialogue(npcId: string, callback?: (result: DialogueResult) => void): void {
-    console.log(`🎭 Initializing enhanced dialogue for: ${npcId}`);
+    log.info(`Initializing enhanced dialogue for: ${npcId}`);
     
     try {
       const result = this.getEnhancedDialogue(npcId);
@@ -509,37 +511,34 @@ export class AdventureLandIntegration {
         runtime.globalVars.CurrentCharacter = result.speaker;
         runtime.globalVars.CurrentDialogueText = result.text;
         
-        console.log(`✅ Enhanced dialogue set successfully:`);
-        console.log(`   - Speaker: "${result.speaker}"`);
-        console.log(`   - Text: "${result.text}"`);
-        console.log(`   - CurrentCharacter: "${runtime.globalVars.CurrentCharacter}"`);
-        console.log(`   - CurrentDialogueText: "${runtime.globalVars.CurrentDialogueText}"`);
+        log.info(`Enhanced dialogue set - Speaker: "${result.speaker}", Text: "${result.text}"`);
+        log.debug(`CurrentCharacter: "${runtime.globalVars.CurrentCharacter}", CurrentDialogueText: "${runtime.globalVars.CurrentDialogueText}"`);
       } else {
-        console.error("❌ Runtime or globalVars not available!");
+        log.error("Runtime or globalVars not available!");
       }
       
       // Execute quest actions if any
       if (result.questActions && result.questActions.length > 0) {
         const playerState = this.getCurrentPlayerState();
         DialogueManager.executeActions(result.questActions, playerState);
-        console.log(`🎯 Executed ${result.questActions.length} quest actions`);
+        log.info(`Executed ${result.questActions.length} quest actions`);
       }
       
       // Call callback if provided
       if (callback) {
         callback(result);
-        console.log(`📞 Callback executed for ${npcId}`);
+        log.debug(`Callback executed for ${npcId}`);
       }
       
     } catch (error) {
-      console.error("❌ Enhanced dialogue initialization error:", error);
+      log.error("Enhanced dialogue initialization error:", error);
       this.handleDialogueError(npcId, error);
     }
   }
   
   // ✅ Initialize the enhanced system
   static initialize(): void {
-    console.log('Adventure Land Enhanced Quest System initialized');
+    log.info('Adventure Land Enhanced Quest System initialized');
     this.loadDefaultDialogues();
   }
   
@@ -580,7 +579,7 @@ export class AdventureLandIntegration {
   }
   
   private static handleDialogueError(npcId: string, error: any): void {
-    console.error(`❌ Dialogue error for ${npcId}:`, error);
+    log.error(`Dialogue error for ${npcId}:`, error);
     
     const runtime = (globalThis as any).runtime;
     if (runtime && runtime.globalVars) {
@@ -595,9 +594,7 @@ export class AdventureLandIntegration {
       runtime.globalVars.CurrentCharacter = fallback.speaker;
       runtime.globalVars.CurrentDialogueText = fallback.text;
       
-      console.log(`🔄 Fallback dialogue set for ${npcId}:`);
-      console.log(`   - Speaker: "${fallback.speaker}"`);
-      console.log(`   - Text: "${fallback.text}"`);
+      log.info(`Fallback dialogue set for ${npcId} - Speaker: "${fallback.speaker}", Text: "${fallback.text}"`);
     }
   }
   
@@ -614,7 +611,7 @@ export class AdventureLandIntegration {
       if (saveData) {
         // Dynamic quest discovery from loaded dialogues
         const allQuestIds = DialogueManager.getAllQuestIds();
-        console.log(`🔍 Quest discovery found ${allQuestIds.length} quests:`, allQuestIds);
+        log.debug(`Quest discovery found ${allQuestIds.length} quests:`, allQuestIds);
 
         allQuestIds.forEach(questId => {
           const questData = saveData.Get?.(questId);
@@ -642,7 +639,7 @@ export class AdventureLandIntegration {
         });
       }
     } catch (error) {
-      console.warn("Could not parse quest data:", error);
+      log.warn("Could not parse quest data:", error);
     }
 
     return {
@@ -658,6 +655,6 @@ export class AdventureLandIntegration {
   }
   
   private static loadDefaultDialogues(): void {
-    console.log('Default dialogues loaded (using fallback system)');
+    log.info('Default dialogues loaded (using fallback system)');
   }
 }

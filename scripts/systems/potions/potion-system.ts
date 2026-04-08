@@ -7,6 +7,8 @@
  */
 
 import { ItemManager } from '../items/item-manager.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("PotionSystem");
 
 // Potion effect types
 export type PotionEffectType = 
@@ -78,13 +80,13 @@ export class PotionSystem {
      * Initialize potion system with configurations
      */
     static initialize(): void {
-        console.log("🧪 [PotionSystem] Initializing potion effect system...");
-        
+        log.info("Initializing potion effect system...");
+
         // Define potion configurations
         this.definePotions();
-        
+
         this.initialized = true;
-        console.log(`✅ [PotionSystem] Initialized with ${this.potionConfigs.size} potion types`);
+        log.info(`Initialized with ${this.potionConfigs.size} potion types`);
     }
 
     /**
@@ -549,7 +551,15 @@ export class PotionSystem {
     /**
      * Get save data for a player's effects
      */
-    static getSaveData(playerUID: number): any {
+    static getSaveData(playerUID: number): {
+        effects: Array<{
+            itemId: number;
+            type: PotionEffectType;
+            value: number;
+            remainingDuration: number;
+            stacks: number;
+        }>;
+    } {
         const effects = this.getActiveEffects(playerUID);
         return {
             effects: effects.map(e => ({
@@ -565,7 +575,15 @@ export class PotionSystem {
     /**
      * Load saved effect data
      */
-    static loadSaveData(playerUID: number, data: any): void {
+    static loadSaveData(playerUID: number, data: {
+        effects?: Array<{
+            itemId: number;
+            type: PotionEffectType;
+            value: number;
+            remainingDuration: number;
+            stacks?: number;
+        }>;
+    } | null): void {
         if (!data || !data.effects) return;
 
         this.clearEffects(playerUID);
@@ -590,19 +608,19 @@ export class PotionSystem {
      * Debug function to show current state
      */
     static debug(playerUID?: number): void {
-        console.log('=== PotionSystem Debug Info ===');
-        console.log(`Initialized: ${this.initialized}`);
-        console.log(`Potion types: ${this.potionConfigs.size}`);
-        
+        log.debug('=== PotionSystem Debug Info ===');
+        log.debug(`Initialized: ${this.initialized}`);
+        log.debug(`Potion types: ${this.potionConfigs.size}`);
+
         if (playerUID !== undefined) {
-            console.log(`\nPlayer ${playerUID}:`);
+            log.debug(`\nPlayer ${playerUID}:`);
             const effects = this.getActiveEffects(playerUID);
-            console.log(`Active effects: ${effects.length}`);
+            log.debug(`Active effects: ${effects.length}`);
             effects.forEach(e => {
-                console.log(`  - ${e.type}: ${e.value}x${e.stacks} (${e.remainingDuration.toFixed(1)}s)`);
+                log.debug(`  - ${e.type}: ${e.value}x${e.stacks} (${e.remainingDuration.toFixed(1)}s)`);
             });
         }
-        console.log('=============================');
+        log.debug('=============================');
     }
 }
 

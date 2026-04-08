@@ -28,6 +28,9 @@ import { InputManager } from '../input/input-manager.js';
 import { TriggerManager } from '../triggers/trigger-manager.js';
 // Import via index to get proper exports
 import * as QuestDialogue from '../../external/quest-dialogue/index.js';
+import type { DialogueAction, DialogueNode, PlayerState } from '../../external/quest-dialogue/dialogue-types.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("DialogueController");
 
 export enum DialogueState {
   IDLE = 'IDLE',
@@ -55,7 +58,7 @@ export class DialogueController {
       onSpace: () => {
         // If capturing input, treat spacebar as submit (like Enter)
         if (runtime.globalVars.CapturingInput) {
-          console.log('🎹 [Dialogue Context] Spacebar pressed while capturing input - submitting');
+          log.info('[Dialogue Context] Spacebar pressed while capturing input - submitting');
           const dialogue = (globalThis as any).AdventureLand?.Dialogue;
           if (dialogue) {
             dialogue.submitInput(runtime);
@@ -79,7 +82,7 @@ export class DialogueController {
         // Check if typewriter was just finished by C3 Event 190
         // Event 190 sets TypewriterRunning = true when finishing typewriter
         if (runtime.globalVars.TypewriterRunning) {
-          console.log('⏩ [Dialogue] Typewriter just finished - not advancing yet');
+          log.info('[Dialogue] Typewriter just finished - not advancing yet');
           runtime.globalVars.TypewriterRunning = false; // Reset flag
           return true; // Don't advance, just consumed the spacebar press
         }
@@ -87,7 +90,7 @@ export class DialogueController {
         // TEMPORARY: Call old DialogueBridge.advance() if using old system
         const dialogue = (globalThis as any).AdventureLand?.Dialogue;
         if (dialogue && runtime.globalVars.InDialogue) {
-          console.log('🎹 [Dialogue Context] Space pressed - calling old dialogue.advance()');
+          log.info('[Dialogue Context] Space pressed - calling old dialogue.advance()');
           dialogue.advance(runtime);
           return true; // Handled
         } else {
@@ -103,7 +106,7 @@ export class DialogueController {
       onBackspace: () => this.handleBackspace(),
       onClick: (_x: number, _y: number) => {
         // Mobile tap support - treat tap like spacebar for dialogue advancement
-        console.log('👆 [Dialogue Context] Click/tap detected - advancing dialogue');
+        log.info('[Dialogue Context] Click/tap detected - advancing dialogue');
 
         // If capturing input, ignore clicks (let C3 handle Enter button)
         if (runtime.globalVars.CapturingInput) {
@@ -112,7 +115,7 @@ export class DialogueController {
 
         // Check if typewriter is running - finish it on first tap
         if (runtime.globalVars.TypewriterRunning) {
-          console.log('⏩ [Dialogue] Typewriter just finished - not advancing yet');
+          log.info('[Dialogue] Typewriter just finished - not advancing yet');
           runtime.globalVars.TypewriterRunning = false; // Reset flag
           return true; // Don't advance, just consumed the tap
         }
@@ -131,7 +134,7 @@ export class DialogueController {
         // Otherwise, advance dialogue (same as spacebar)
         const dialogue = (globalThis as any).AdventureLand?.Dialogue;
         if (dialogue && runtime.globalVars.InDialogue) {
-          console.log('👆 [Dialogue Context] Tap - calling old dialogue.advance()');
+          log.info('[Dialogue Context] Tap - calling old dialogue.advance()');
           dialogue.advance(runtime);
           return true; // Handled
         }
@@ -140,7 +143,7 @@ export class DialogueController {
       }
     });
 
-    console.log('✅ DialogueController initialized');
+    log.info('DialogueController initialized');
   }
 
   /**
@@ -150,11 +153,11 @@ export class DialogueController {
   static start(npcId: string, runtime: any, triggerUID: number = -1): boolean {
     // Prevent re-entry
     if (this.state !== DialogueState.IDLE) {
-      console.warn(`⚠️ [DialogueController] Already in dialogue (state: ${this.state})`);
+      log.warn(`[DialogueController] Already in dialogue (state: ${this.state})`);
       return false;
     }
 
-    console.log(`🎭 [DialogueController] Starting dialogue with ${npcId}`);
+    log.info(`[DialogueController] Starting dialogue with ${npcId}`);
 
     // Block triggers IMMEDIATELY to prevent re-entry
     TriggerManager.blockTriggers('dialogue');
@@ -166,7 +169,7 @@ export class DialogueController {
     const node = QuestDialogue.DialogueManager.getDialogueForNPC(npcId, playerState);
 
     if (!node) {
-      console.error(`❌ [DialogueController] No dialogue found for NPC: ${npcId}`);
+      log.error(`[DialogueController] No dialogue found for NPC: ${npcId}`);
       TriggerManager.unblockTriggers('dialogue');
       return false;
     }
@@ -195,7 +198,7 @@ export class DialogueController {
       playerSystem.stopAnimation();
     }
 
-    console.log(`⏸️ [DialogueController] Waiting for player input...`);
+    log.info(`[DialogueController] Waiting for player input...`);
 
     return true;
   }
@@ -205,12 +208,12 @@ export class DialogueController {
    * TEMPORARY: Not used while using DialogueBridge (called from initialize onSpace handler)
    */
   private static handleSpacePress(): void {
-    console.log(`🎹 [DialogueController] Space pressed (state: ${this.state})`);
+    log.info(`[DialogueController] Space pressed (state: ${this.state})`);
 
     // Check typewriter first - if still typing, finish it
     const textBlock = this.runtime?.objects.obj_TextBlock?.getFirstInstance();
     if (textBlock?.behaviors?.TypewriterText?.isRunning) {
-      console.log('⏩ [DialogueController] Finishing typewriter');
+      log.info('[DialogueController] Finishing typewriter');
       textBlock.behaviors.TypewriterText.finish();
       return;
     }
@@ -218,7 +221,7 @@ export class DialogueController {
     // Handle based on current state
     switch (this.state) {
       case DialogueState.WAITING_FOR_INPUT:
-        console.log('⏸️ [DialogueController] Waiting for text input - ignoring spacebar');
+        log.info('[DialogueController] Waiting for text input - ignoring spacebar');
         return;
 
       case DialogueState.SHOWING_OPTIONS:
@@ -232,7 +235,7 @@ export class DialogueController {
         return;
 
       default:
-        console.warn(`⚠️ [DialogueController] Unexpected state: ${this.state}`);
+        log.warn(`[DialogueController] Unexpected state: ${this.state}`);
     }
   }
 
@@ -243,7 +246,7 @@ export class DialogueController {
   private static handleEnter(): void {
     // Check if we're capturing input (pixel-art input mode)
     if (this.runtime?.globalVars.CapturingInput) {
-      console.log('⏎ [DialogueController] Enter pressed - submitting pixel-art input');
+      log.info('[DialogueController] Enter pressed - submitting pixel-art input');
       const dialogue = (globalThis as any).AdventureLand?.Dialogue;
       if (dialogue) {
         dialogue.submitInput(this.runtime);
@@ -254,7 +257,7 @@ export class DialogueController {
     // TEMPORARY: Check if HTML input field exists (old system fallback)
     const inputField = this.runtime?.objects.obj_textInput?.getFirstInstance();
     if (inputField && inputField.isVisible) {
-      console.log('⏎ [DialogueController] Enter pressed - submitting HTML input');
+      log.info('[DialogueController] Enter pressed - submitting HTML input');
       const dialogue = (globalThis as any).AdventureLand?.Dialogue;
       if (dialogue) {
         dialogue.submitInput(this.runtime);
@@ -267,7 +270,7 @@ export class DialogueController {
    * DISABLED - ESC key no longer cancels dialogue to prevent accidental interruptions
    */
   private static handleEscape(): void {
-    console.log('⚠️ [DialogueController] Escape pressed - ignoring (ESC disabled during dialogue)');
+    log.warn('[DialogueController] Escape pressed - ignoring (ESC disabled during dialogue)');
     // this.end(); // DISABLED - no longer cancel dialogue on ESC
   }
 
@@ -283,7 +286,7 @@ export class DialogueController {
       if (current > 0) {
         this.runtime.globalVars.OptionSelection = current - 1;
         this.updateOptionUI();
-        console.log('⬆️ [DialogueController] Arrow up - selection now:', current - 1);
+        log.info('[DialogueController] Arrow up - selection now:', current - 1);
       }
     }
   }
@@ -301,7 +304,7 @@ export class DialogueController {
       if (current < maxOptions - 1) {
         this.runtime.globalVars.OptionSelection = current + 1;
         this.updateOptionUI();
-        console.log('⬇️ [DialogueController] Arrow down - selection now:', current + 1);
+        log.info('[DialogueController] Arrow down - selection now:', current + 1);
       }
     }
   }
@@ -322,7 +325,7 @@ export class DialogueController {
     if (opt1 && opt2) {
       opt1.text = (selection === 0 ? '[icon=Arrow]' : '[icon=Empty]') + text1;
       opt2.text = (selection === 1 ? '[icon=Arrow]' : '[icon=Empty]') + text2;
-      console.log('🎨 Updated option UI - selection:', selection);
+      log.info('Updated option UI - selection:', selection);
     }
   }
 
@@ -332,52 +335,52 @@ export class DialogueController {
    */
   private static advance(): void {
     if (!this.currentNPC || !this.currentNode) {
-      console.error('❌ [DialogueController] Cannot advance - no active dialogue');
+      log.error('[DialogueController] Cannot advance - no active dialogue');
       return;
     }
 
-    console.log(`➡️ [DialogueController] Advancing from node ${this.currentNode}`);
+    log.info(`[DialogueController] Advancing from node ${this.currentNode}`);
 
     // Get current node data
     const npcDialogue = QuestDialogue.DialogueManager.getNPCDialogue(this.currentNPC);
     if (!npcDialogue) {
-      console.error(`❌ [DialogueController] No dialogue data for ${this.currentNPC}`);
+      log.error(`[DialogueController] No dialogue data for ${this.currentNPC}`);
       this.end();
       return;
     }
 
-    const currentNodeData = npcDialogue.nodes.find((n: any) => n.id === this.currentNode);
+    const currentNodeData = npcDialogue.nodes.find((n) => n.id === this.currentNode);
     if (!currentNodeData) {
-      console.error(`❌ [DialogueController] Current node not found: ${this.currentNode}`);
+      log.error(`[DialogueController] Current node not found: ${this.currentNode}`);
       this.end();
       return;
     }
 
     // Check if this node ends dialogue
     if (currentNodeData.endsDialogue) {
-      console.log('🏁 [DialogueController] Node ends dialogue');
+      log.info('[DialogueController] Node ends dialogue');
       this.end();
       return;
     }
 
     // Check if this node auto-advances
     if (!currentNodeData.autoAdvance) {
-      console.log('🏁 [DialogueController] No auto-advance - ending dialogue');
+      log.info('[DialogueController] No auto-advance - ending dialogue');
       this.end();
       return;
     }
 
     // Get next node
     const nextNodeId = currentNodeData.autoAdvance;
-    const nextNode = npcDialogue.nodes.find((n: any) => n.id === nextNodeId);
+    const nextNode = npcDialogue.nodes.find((n) => n.id === nextNodeId);
 
     if (!nextNode) {
-      console.error(`❌ [DialogueController] Next node not found: ${nextNodeId}`);
+      log.error(`[DialogueController] Next node not found: ${nextNodeId}`);
       this.end();
       return;
     }
 
-    console.log(`📍 [DialogueController] Advanced to node ${nextNode.id}`);
+    log.info(`[DialogueController] Advanced to node ${nextNode.id}`);
 
     // Update state
     this.currentNode = nextNode.id;
@@ -391,20 +394,20 @@ export class DialogueController {
 
     // Execute actions
     if (nextNode.actions && Array.isArray(nextNode.actions)) {
-      console.log(`⚙️ [DialogueController] Executing ${nextNode.actions.length} actions`);
+      log.info(`[DialogueController] Executing ${nextNode.actions.length} actions`);
       this.executeActions(nextNode.actions, this.runtime);
     }
 
     // Determine next state based on node type
-    const hasInput = nextNode.actions?.some((a: any) => a.type === 'input');
+    const hasInput = nextNode.actions?.some((a) => a.type === 'input');
     const hasOptions = nextNode.responses && nextNode.responses.length > 0;
 
     if (hasInput) {
-      console.log('📝 [DialogueController] Node requires input');
+      log.info('[DialogueController] Node requires input');
       this.state = DialogueState.WAITING_FOR_INPUT;
       this.runtime.callFunction("getUserText", "Enter text");
     } else if (hasOptions) {
-      console.log('📋 [DialogueController] Node has options');
+      log.info('[DialogueController] Node has options');
       this.state = DialogueState.SHOWING_OPTIONS;
       this.runtime.globalVars.OptionsOpen = true;
       this.runtime.callFunction("displayUserOptions");
@@ -420,10 +423,10 @@ export class DialogueController {
    * Select dialogue option
    */
   private static selectOption(index: number): void {
-    console.log(`📌 [DialogueController] Selected option ${index}`);
+    log.info(`[DialogueController] Selected option ${index}`);
 
     if (!this.currentNPC || !this.currentNode) {
-      console.error('❌ [DialogueController] Cannot select option - no active dialogue');
+      log.error('[DialogueController] Cannot select option - no active dialogue');
       return;
     }
 
@@ -431,15 +434,15 @@ export class DialogueController {
     const npcDialogue = QuestDialogue.DialogueManager.getNPCDialogue(this.currentNPC);
     if (!npcDialogue) return;
 
-    const currentNodeData = npcDialogue.nodes.find((n: any) => n.id === this.currentNode);
+    const currentNodeData = npcDialogue.nodes.find((n) => n.id === this.currentNode);
     if (!currentNodeData || !currentNodeData.responses) {
-      console.error('❌ [DialogueController] No options on current node');
+      log.error('[DialogueController] No options on current node');
       return;
     }
 
     const selectedResponse = currentNodeData.responses[index];
     if (!selectedResponse) {
-      console.error(`❌ [DialogueController] Invalid option index: ${index}`);
+      log.error(`[DialogueController] Invalid option index: ${index}`);
       return;
     }
 
@@ -450,7 +453,7 @@ export class DialogueController {
 
     // Navigate to next node
     if (selectedResponse.leads_to) {
-      const nextNode = npcDialogue.nodes.find((n: any) => n.id === selectedResponse.leads_to);
+      const nextNode = npcDialogue.nodes.find((n) => n.id === selectedResponse.leads_to);
       if (nextNode) {
         this.currentNode = nextNode.id;
         this.state = DialogueState.SHOWING_TEXT;
@@ -472,7 +475,7 @@ export class DialogueController {
    * Submit text input
    */
   private static submitInput(text: string): void {
-    console.log(`📝 [DialogueController] Input submitted: "${text}"`);
+    log.info(`[DialogueController] Input submitted: "${text}"`);
 
     // Save input to appropriate location (e.g., player name)
     // This will be handled by the action that triggered getUserText
@@ -489,7 +492,7 @@ export class DialogueController {
    * End dialogue and cleanup
    */
   static end(): void {
-    console.log('🛑 [DialogueController] Ending dialogue');
+    log.info('[DialogueController] Ending dialogue');
 
     // Update state
     this.state = DialogueState.ENDING;
@@ -516,7 +519,7 @@ export class DialogueController {
     setTimeout(() => {
       TriggerManager.unblockTriggers('dialogue');
       this.state = DialogueState.IDLE;
-      console.log('✅ [DialogueController] Dialogue ended, triggers unblocked');
+      log.info('[DialogueController] Dialogue ended, triggers unblocked');
     }, 200);
   }
 
@@ -544,24 +547,50 @@ export class DialogueController {
   /**
    * Get player state for conditional dialogue
    */
-  private static getPlayerState(runtime: any): any {
+  private static getPlayerState(runtime: any): PlayerState {
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
-    if (!dict) {
-      return {};
-    }
+    const dataMap = dict?.getDataMap();
 
-    const dataMap = dict.getDataMap();
     return {
-      quest_status: dataMap.get('quest_status') || 'Not_Started',
-      PlayerName: dataMap.get('PlayerName') || 'Player',
-      Health: dataMap.get('Health') || 5
+      activeQuests: new Map(),
+      completedQuests: new Set(),
+      inventory: DialogueController.buildInventoryMap(),
+      worldFlags: new Map(),
+      npcMemory: new Map(),
+      playerName: dataMap?.get('PlayerName') || 'Player',
+      currentWorld: runtime.globalVars?.CurrentWorld || 'World00'
     };
+  }
+
+  /**
+   * Build inventory map from ItemManager for dialogue condition checks.
+   */
+  private static buildInventoryMap(): Map<string, number> {
+    const inventory = new Map<string, number>();
+    const items = (globalThis as any).AdventureLand?.Items;
+    if (!items) return inventory;
+
+    try {
+      const saveData = items.getInventoryForSave();
+      if (Array.isArray(saveData)) {
+        for (const stack of saveData) {
+          const name = items.getItemName(stack.itemId);
+          if (name) {
+            inventory.set(name, (inventory.get(name) || 0) + stack.quantity);
+          }
+          inventory.set(String(stack.itemId), (inventory.get(String(stack.itemId)) || 0) + stack.quantity);
+        }
+      }
+    } catch {
+      // Silently fail — inventory check is optional for dialogue
+    }
+    return inventory;
   }
 
   /**
    * Process node text for variable replacement
    */
-  private static processNodeText(node: any, runtime: any): any {
+  private static processNodeText(node: DialogueNode, runtime: any): DialogueNode {
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (!dict) {
       return node;
@@ -584,11 +613,11 @@ export class DialogueController {
   /**
    * Execute dialogue actions
    */
-  private static executeActions(actions: any[], runtime: any): void {
+  private static executeActions(actions: DialogueAction[], runtime: any): void {
     for (const action of actions) {
       switch (action.type) {
         case 'set_quest_status':
-          this.setQuestStatus(action.value, runtime);
+          this.setQuestStatus(action.status || '', runtime);
           break;
 
         case 'input':
@@ -597,13 +626,13 @@ export class DialogueController {
           break;
 
         case 'give_item':
-          console.log(`🎁 [DialogueController] Give item: ${action.itemId}`);
+          log.info(`[DialogueController] Give item: ${action.itemId}`);
           // Call C3 function to add item
           runtime.callFunction("addItemToInventory", action.itemId);
           break;
 
         default:
-          console.warn(`⚠️ [DialogueController] Unknown action type: ${action.type}`);
+          log.warn(`[DialogueController] Unknown action type: ${action.type}`);
       }
     }
   }
@@ -612,7 +641,7 @@ export class DialogueController {
    * Set quest status
    */
   private static setQuestStatus(status: string, runtime: any): void {
-    console.log(`📋 [DialogueController] Setting quest_status to: ${status}`);
+    log.info(`[DialogueController] Setting quest_status to: ${status}`);
 
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (dict) {
@@ -632,7 +661,7 @@ export class DialogueController {
     this.currentNPC = null;
     this.currentNode = null;
     this.currentTriggerUID = -1;
-    console.log('🔄 DialogueController reset');
+    log.info('DialogueController reset');
   }
 
   /**
@@ -659,10 +688,10 @@ export class DialogueController {
       if (textDisplay) {
         textDisplay.text = currentText + '_'; // Add cursor
       } else {
-        console.warn('⚠️ [Input] No SpriteFont_Menu found on HUD_UI layer');
+        log.warn('[Input] No SpriteFont_Menu found on HUD_UI layer');
       }
 
-      console.log(`⌨️ [Input] Typed: "${char}" → Current text: "${currentText}"`);
+      log.info(`[Input] Typed: "${char}" → Current text: "${currentText}"`);
     }
 
     return true; // Handled
@@ -691,10 +720,10 @@ export class DialogueController {
       if (textDisplay) {
         textDisplay.text = currentText + '_'; // Add cursor
       } else {
-        console.warn('⚠️ [Input] No SpriteFont_Menu found on HUD_UI layer');
+        log.warn('[Input] No SpriteFont_Menu found on HUD_UI layer');
       }
 
-      console.log(`⌫ [Input] Backspace → Current text: "${currentText}"`);
+      log.info(`[Input] Backspace → Current text: "${currentText}"`);
     }
 
     return true; // Handled
@@ -703,7 +732,13 @@ export class DialogueController {
   /**
    * Get current state (for debugging)
    */
-  static getDebugInfo(): any {
+  static getDebugInfo(): {
+    state: DialogueState;
+    currentNPC: string | null;
+    currentNode: string | null;
+    triggerUID: number;
+    isActive: boolean;
+  } {
     return {
       state: this.state,
       currentNPC: this.currentNPC,

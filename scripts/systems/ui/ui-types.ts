@@ -207,7 +207,7 @@ export interface NotificationConfig {
  * Function signature for button action handlers
  */
 export type ButtonActionHandler = (
-  runtime: IRuntime,
+  runtime: any,
   buttonId: string,
   context?: any
 ) => void | Promise<void>;

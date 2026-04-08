@@ -4,7 +4,9 @@
 // ===================================================================
 
 import { DialogueManager } from './quest-dialogue-system.js';
-import { DialogueResult, DialogueResponse } from './dialogue-types.js';
+import { DialogueResult, DialogueResponse, DialogueAction } from './dialogue-types.js';
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("DialogueBridge");
 
 /**
  * DialogueBridge - Makes the new dialogue system compatible with existing event sheets
@@ -34,30 +36,30 @@ export class DialogueBridge {
 
       // Check if already in dialogue (temporarily only checking InDialogue to debug)
       if (runtime.globalVars.InDialogue) {
-        console.warn(`⚠️ [START] Already in dialogue! Rejecting startDialogue("${npcId}"). Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}, InDialogue: ${runtime.globalVars.InDialogue}`);
+        log.warn(`[START] Already in dialogue! Rejecting startDialogue("${npcId}"). Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}, InDialogue: ${runtime.globalVars.InDialogue}`);
         return false;
       }
 
       // Set InDialogue = true IMMEDIATELY to prevent race conditions
       runtime.globalVars.InDialogue = true;
-      console.log(`🎭 [START] Starting dialogue with ${npcId}`);
+      log.info(`[START] Starting dialogue with ${npcId}`);
 
       // Switch InputManager to dialogue context (for new input system)
       const inputMgr = (globalThis as any).AdventureLand?.InputManager;
       if (inputMgr) {
         inputMgr.setContext('dialogue');
-        console.log('🎮 [START] Switched InputManager to dialogue context');
+        log.info('[START] Switched InputManager to dialogue context');
       }
 
       const playerState = this.getPlayerStateFromRuntime(runtime);
       const node = DialogueManager.getDialogueForNPC(npcId, playerState);
 
       if (!node) {
-        console.warn(`⚠️ No dialogue found for NPC: ${npcId}`);
+        log.warn(`No dialogue found for NPC: ${npcId}`);
         return false;
       }
 
-      console.log(`📍 [START] Selected node: ${node.id}, speaker: "${node.speaker}", text: "${node.text.substring(0, 30)}..."`);
+      log.debug(`[START] Selected node: ${node.id}, speaker: "${node.speaker}", text: "${node.text.substring(0, 30)}..."`);
 
       // Store current state
       this.currentNPC = npcId;
@@ -92,7 +94,7 @@ export class DialogueBridge {
       // Check if this node requires player text input FIRST
       const requiresInput = node.actions?.some((action: any) => action.type === 'input') || false;
       runtime.globalVars.RequiresPlayerInput = requiresInput;
-      console.log(`🔍 [START] Node ${node.id} requiresInput: ${requiresInput}, autoAdvance: ${node.autoAdvance}`);
+      log.debug(`[START] Node ${node.id} requiresInput: ${requiresInput}, autoAdvance: ${node.autoAdvance}`);
 
       // Also set DialogueResult for legacy event sheet compatibility
       // DON'T set "Continue" if node requires input - wait for input submission!
@@ -103,7 +105,7 @@ export class DialogueBridge {
       } else {
         runtime.globalVars.DialogueResult = "";
       }
-      console.log(`📋 [START] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
+      log.debug(`[START] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
 
       // Enhanced dialogue variables
       runtime.globalVars.enhanced_dialogue_speaker = node.speaker;
@@ -114,16 +116,16 @@ export class DialogueBridge {
 
       // Execute any auto-actions (actions without requiring a response)
       if (node.actions) {
-        console.log(`⚙️ [START] Executing ${node.actions.length} actions for node ${node.id}`);
+        log.debug(`[START] Executing ${node.actions.length} actions for node ${node.id}`);
         this.executeActions(node.actions, runtime);
       }
 
       // Call appropriate UI function based on whether options should be shown
       if (runtime.globalVars.OptionsOpen) {
-        console.log(`📋 [START] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
+        log.debug(`[START] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
         runtime.callFunction("displayUserOptions");
       } else {
-        console.log(`📢 [START] Calling displayDialogue() - no options`);
+        log.debug(`[START] Calling displayDialogue() - no options`);
         runtime.callFunction("displayDialogue");
       }
 
@@ -134,19 +136,19 @@ export class DialogueBridge {
       // Regular dialogue nodes with autoAdvance wait for player to press Space
       const isSilentNode = node.speaker === "System" && node.text === "";
       if (isSilentNode && node.autoAdvance && !requiresInput) {
-        console.log(`⏭️ [START] Silent node detected - auto-advancing to ${node.autoAdvance}...`);
+        log.debug(`[START] Silent node detected - auto-advancing to ${node.autoAdvance}...`);
         // Use setTimeout to allow actions to complete before advancing
         setTimeout(() => {
           this.advanceDialogue(runtime);
         }, 50); // Small delay for action execution (e.g., spawning)
       } else {
         // Wait for player input (space/click)
-        console.log(`⏸️ [START] Waiting for player input to advance...`);
+        log.debug(`[START] Waiting for player input to advance...`);
       }
 
       return true;
     } catch (error) {
-      console.error("❌ Error starting dialogue:", error);
+      log.error("Error starting dialogue:", error);
       return false;
     }
   }
@@ -189,33 +191,33 @@ export class DialogueBridge {
    * @returns true if dialogue continues, false if it ended
    */
   static advanceDialogue(runtime: any): boolean {
-    console.log(`➡️ [ADVANCE] Called for NPC: ${this.currentNPC}, currentNode: ${this.currentNode}`);
+    log.debug(`[ADVANCE] Called for NPC: ${this.currentNPC}, currentNode: ${this.currentNode}`);
 
     // Get the current node directly by ID (don't re-evaluate conditions)
     const npcDialogue = DialogueManager.getNPCDialogue(this.currentNPC);
     if (!npcDialogue) {
-      console.log(`❌ [ADVANCE] No dialogue found for NPC: ${this.currentNPC}`);
+      log.error(`[ADVANCE] No dialogue found for NPC: ${this.currentNPC}`);
       this.endDialogue(runtime);
       return false;
     }
 
     const currentNodeData = npcDialogue.nodes.find(n => n.id === this.currentNode);
     if (!currentNodeData) {
-      console.error(`❌ [ADVANCE] Current node not found: ${this.currentNode}`);
+      log.error(`[ADVANCE] Current node not found: ${this.currentNode}`);
       this.endDialogue(runtime);
       return false;
     }
 
-    console.log(`📍 [ADVANCE] Current node: ${currentNodeData.id}, autoAdvance: ${currentNodeData.autoAdvance}`);
+    log.debug(`[ADVANCE] Current node: ${currentNodeData.id}, autoAdvance: ${currentNodeData.autoAdvance}`);
 
     // Check if this node auto-advances
     if (currentNodeData.autoAdvance) {
-      console.log(`🔄 [ADVANCE] Auto-advancing from ${currentNodeData.id} to ${currentNodeData.autoAdvance}`);
+      log.debug(`[ADVANCE] Auto-advancing from ${currentNodeData.id} to ${currentNodeData.autoAdvance}`);
 
       // Navigate to the next node by finding the target node
       const nextNode = npcDialogue.nodes.find(n => n.id === currentNodeData.autoAdvance);
       if (!nextNode) {
-        console.error(`❌ Next node not found: ${currentNodeData.autoAdvance}`);
+        log.error(`Next node not found: ${currentNodeData.autoAdvance}`);
         this.endDialogue(runtime);
         return false;
       }
@@ -227,7 +229,7 @@ export class DialogueBridge {
       // Update our internal state
       this.currentNode = processedNode.id;
       this.currentResponses = processedNode.responses || [];
-      console.log(`📍 [ADVANCE] Advanced to node: ${processedNode.id}, speaker: "${processedNode.speaker}"`);
+      log.debug(`[ADVANCE] Advanced to node: ${processedNode.id}, speaker: "${processedNode.speaker}"`);
 
       // Update UI with next node (with variables replaced)
       runtime.globalVars.CurrentCharacter = processedNode.speaker;
@@ -248,7 +250,7 @@ export class DialogueBridge {
       // Check if next node requires player input FIRST (before setting DialogueResult)
       const requiresInput = nextNode.actions?.some(action => action.type === 'input') || false;
       runtime.globalVars.RequiresPlayerInput = requiresInput;
-      console.log(`🔍 [ADVANCE] Node ${nextNode.id} requiresInput: ${requiresInput}, autoAdvance: ${nextNode.autoAdvance}`);
+      log.debug(`[ADVANCE] Node ${nextNode.id} requiresInput: ${requiresInput}, autoAdvance: ${nextNode.autoAdvance}`);
 
       // Also set DialogueResult for legacy event sheet compatibility
       // DON'T set "Continue" if node requires input - wait for input submission!
@@ -259,23 +261,23 @@ export class DialogueBridge {
       } else {
         runtime.globalVars.DialogueResult = "";
       }
-      console.log(`📋 [ADVANCE] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
-      console.log(`📊 [ADVANCE] OptionsOpen: ${runtime.globalVars.OptionsOpen}, ResponseCount: ${this.currentResponses.length}`);
+      log.debug(`[ADVANCE] Set DialogueResult: "${runtime.globalVars.DialogueResult}", RequiresPlayerInput: ${runtime.globalVars.RequiresPlayerInput}`);
+      log.debug(`[ADVANCE] OptionsOpen: ${runtime.globalVars.OptionsOpen}, ResponseCount: ${this.currentResponses.length}`);
 
       this.playVoiceForNode(processedNode, runtime);
 
       // Execute any actions on the new node (this will call getUserText for input nodes)
       if (nextNode.actions) {
-        console.log(`⚙️ [ADVANCE] Executing ${nextNode.actions.length} actions for node ${nextNode.id}`);
+        log.debug(`[ADVANCE] Executing ${nextNode.actions.length} actions for node ${nextNode.id}`);
         this.executeActions(nextNode.actions, runtime);
       }
 
       // Call appropriate UI function based on node type
       if (runtime.globalVars.OptionsOpen) {
-        console.log(`📋 [ADVANCE] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
+        log.debug(`[ADVANCE] Calling displayUserOptions() - showing ${this.currentResponses.length} options`);
         runtime.callFunction("displayUserOptions");
       } else if (requiresInput) {
-        console.log(`📝 [ADVANCE] Input node - UI created by getUserTextPixel, skipping displayDialogue`);
+        log.debug(`[ADVANCE] Input node - UI created by getUserTextPixel, skipping displayDialogue`);
         // Don't call displayDialogue - getUserTextPixel already created the UI
       } else {
         // Clean up dialogue-specific UI to prevent memory leaks
@@ -305,18 +307,18 @@ export class DialogueBridge {
               }
             }
             if (destroyedCount > 0) {
-              console.log(`🧹 [ADVANCE] Destroyed ${destroyedCount} ${elementName} instance(s) from HUD_UI layer`);
+              log.debug(`[ADVANCE] Destroyed ${destroyedCount} ${elementName} instance(s) from HUD_UI layer`);
             }
           }
         }
 
-        console.log(`📢 [ADVANCE] Calling displayDialogue()`);
+        log.debug(`[ADVANCE] Calling displayDialogue()`)
         runtime.callFunction("displayDialogue");
 
         // Set TypewriterRunning flag for skip detection
         // Will be cleared by Event 190 or "On typewriter finished" event
         runtime.globalVars.TypewriterRunning = true;
-        console.log('⌨️ [ADVANCE] TypewriterRunning set to true (will be cleared when typing finishes)');
+        log.debug('[ADVANCE] TypewriterRunning set to true (will be cleared when typing finishes)');
       }
 
       // Prevent immediate double-advance on the same key press
@@ -324,7 +326,7 @@ export class DialogueBridge {
 
       // Don't auto-advance - wait for player input (space/click)
       // The event sheet will call advanceDialogue() when player presses space
-      console.log(`⏸️ [ADVANCE] Waiting for player input to advance...`);
+      log.debug(`[ADVANCE] Waiting for player input to advance...`);
 
       return true;
     }
@@ -336,7 +338,7 @@ export class DialogueBridge {
     }
 
     // If neither, shouldn't be clickable (has response options)
-    console.warn("⚠️ Dialogue box clicked but has response options - shouldn't happen");
+    log.warn("Dialogue box clicked but has response options - shouldn't happen");
     return true;
   }
 
@@ -350,11 +352,11 @@ export class DialogueBridge {
     const response = this.getResponse(index);
 
     if (!response) {
-      console.warn(`⚠️ Invalid response index: ${index}`);
+      log.warn(`Invalid response index: ${index}`);
       return false;
     }
 
-    console.log(`👆 Selected response ${index}: "${response.text}" → leads_to: "${response.leads_to}"`);
+    log.info(`Selected response ${index}: "${response.text}" -> leads_to: "${response.leads_to}"`);
 
     // Execute response actions
     if (response.actions) {
@@ -398,7 +400,7 @@ export class DialogueBridge {
 
     const nextNode = npcDialogue.nodes.find(n => n.id === nodeId);
     if (!nextNode) {
-      console.error(`❌ Target node not found: ${nodeId}`);
+      log.error(`Target node not found: ${nodeId}`);
       this.endDialogue(runtime);
       return false;
     }
@@ -434,10 +436,10 @@ export class DialogueBridge {
       runtime.globalVars.DialogueResult = "";
     }
 
-    console.log(`💬 Navigated to: ${processedNode.text.substring(0, 50)}...`);
-    console.log(`📊 OptionsOpen: ${runtime.globalVars.OptionsOpen}, Responses: ${this.currentResponses.length}`);
-    console.log(`🔀 autoAdvance: ${processedNode.autoAdvance}, endsDialogue: ${processedNode.endsDialogue}`);
-    console.log(`📝 Response texts:`, this.currentResponses.map(r => r.text));
+    log.debug(`Navigated to: ${processedNode.text.substring(0, 50)}...`);
+    log.debug(`OptionsOpen: ${runtime.globalVars.OptionsOpen}, Responses: ${this.currentResponses.length}`);
+    log.debug(`autoAdvance: ${processedNode.autoAdvance}, endsDialogue: ${processedNode.endsDialogue}`);
+    log.debug(`Response texts:`, this.currentResponses.map(r => r.text));
 
     this.playVoiceForNode(processedNode, runtime);
 
@@ -448,12 +450,12 @@ export class DialogueBridge {
 
     // Refresh UI - If options are open, show options UI instead of dialogue UI
     if (runtime.globalVars.OptionsOpen) {
-      console.log(`📋 Calling displayUserOptions() - Response 0: "${this.getResponseText(0)}", Response 1: "${this.getResponseText(1)}"`);
+      log.debug(`Calling displayUserOptions() - Response 0: "${this.getResponseText(0)}", Response 1: "${this.getResponseText(1)}"`);
       runtime.callFunction("displayUserOptions");
     } else {
-      console.log(`📢 Calling displayDialogue()`);
+      log.debug(`Calling displayDialogue()`);
       runtime.callFunction("displayDialogue");
-      console.log(`⏭️ No options to display (OptionsOpen is false)`);
+      log.debug(`No options to display (OptionsOpen is false)`);
     }
 
     // Prevent immediate double-advance on the same key press
@@ -472,8 +474,7 @@ export class DialogueBridge {
    * @param runtime - Construct 3 runtime
    */
   static endDialogue(runtime: any): void {
-    console.log(`🛑 [END] endDialogue() called. Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}`);
-    console.trace("Stack trace:");
+    log.info(`[END] endDialogue() called. Current NPC: ${this.currentNPC}, Current Node: ${this.currentNode}`);
 
     // Special handling for Sea Monster - retreat when dialogue ends
     if (this.currentNPC === "SeaMonster") {
@@ -483,7 +484,7 @@ export class DialogueBridge {
         // Retreat if SM is rising or in NPC mode (not if already retreating or hidden)
         if (currentState === "npc" || currentState === "rising") {
           smController.retreat("peaceful");
-          console.log(`🌊 [END] Sea Monster retreating after dialogue (was in ${currentState} state)`);
+          log.info(`[END] Sea Monster retreating after dialogue (was in ${currentState} state)`);
         }
       }
     }
@@ -506,7 +507,7 @@ export class DialogueBridge {
     const inputMgr = adventureLand?.InputManager;
     if (inputMgr) {
       inputMgr.setContext('game');
-      console.log('🎮 [END] Switched InputManager back to game context');
+      log.info('[END] Switched InputManager back to game context');
     }
 
     // Call the event sheet's endDialogue function
@@ -514,7 +515,7 @@ export class DialogueBridge {
     try {
       runtime.callFunction("endDialogue");
     } catch (e) {
-      console.error("❌ Could not call endDialogue function:", e);
+      log.error("Could not call endDialogue function:", e);
     }
 
     // Reset DialogueResult immediately to prevent blocking subsequent dialogues
@@ -573,7 +574,7 @@ export class DialogueBridge {
    * @param actions - Array of actions to execute
    * @param runtime - Construct 3 runtime
    */
-  private static executeActions(actions: any[], runtime: any): void {
+  private static executeActions(actions: DialogueAction[], runtime: any): void {
     actions.forEach(action => {
       switch (action.type) {
         case 'start_quest':
@@ -595,7 +596,7 @@ export class DialogueBridge {
             if (dict) {
               dict.getDataMap().set(action.questId, action.status);
             } else {
-              console.error(`❌ Dict_SaveGameData not found - cannot save quest status`);
+              log.error(`Dict_SaveGameData not found - cannot save quest status`);
             }
           }
           break;
@@ -625,14 +626,14 @@ export class DialogueBridge {
                   const alreadyCollected = saveDict?.getDataMap().get(collectedKey) === true;
 
                   if (alreadyCollected) {
-                    console.log(`[Dialogue] Unique item already collected: ${action.itemId} - skipping duplicate`);
+                    log.info(`Unique item already collected: ${action.itemId} - skipping duplicate`);
 
                     // Still destroy trigger if requested (prevent re-spawn)
                     if (action.destroyTrigger && this.triggerUID >= 0) {
                       const triggerInstance = runtime.getInstanceByUid(this.triggerUID);
                       if (triggerInstance) {
                         triggerInstance.destroy();
-                        console.log(`[Dialogue] Destroyed trigger to prevent re-spawn`);
+                        log.info(`Destroyed trigger to prevent re-spawn`);
                       }
                     }
 
@@ -642,7 +643,7 @@ export class DialogueBridge {
                   // Mark as collected in SaveGameData
                   if (saveDict) {
                     saveDict.getDataMap().set(collectedKey, true);
-                    console.log(`[Dialogue] Marked ${action.itemId} as collected`);
+                    log.info(`Marked ${action.itemId} as collected`);
                   }
                 }
 
@@ -700,14 +701,14 @@ export class DialogueBridge {
                       }
                     }
                   } else {
-                    console.warn(`⚠️ Could not destroy trigger (UID: ${this.triggerUID})`);
+                    log.warn(`Could not destroy trigger (UID: ${this.triggerUID})`);
                   }
                 }
               } else {
-                console.error(`❌ Item not found: ${action.itemId}`);
+                log.error(`Item not found: ${action.itemId}`);
               }
             } else {
-              console.error(`❌ ItemManager not found`);
+              log.error(`ItemManager not found`);
             }
           }
           break;
@@ -720,7 +721,7 @@ export class DialogueBridge {
               const itemName = action.itemId;
 
               if (itemId > 0) {
-                console.log(`[Dialogue] Removing quest item: ${itemName} (ID: ${itemId})`);
+                log.info(`Removing quest item: ${itemName} (ID: ${itemId})`);
 
                 // Update C3 Dictionary
                 const dict = runtime.objects.Dict_ItemNumbers?.getFirstInstance();
@@ -731,10 +732,10 @@ export class DialogueBridge {
                   if (newCount === 0) {
                     // Remove from dictionary entirely
                     dict.getDataMap().delete(itemName);
-                    console.log(`[Dialogue] Removed ${itemName} from Dict_ItemNumbers`);
+                    log.info(`Removed ${itemName} from Dict_ItemNumbers`);
                   } else {
                     dict.getDataMap().set(itemName, newCount);
-                    console.log(`[Dialogue] Updated ${itemName} count: ${currentCount} → ${newCount}`);
+                    log.info(`Updated ${itemName} count: ${currentCount} -> ${newCount}`);
                   }
                 }
 
@@ -751,7 +752,7 @@ export class DialogueBridge {
                     }
                   }
                 } else {
-                  console.error(`[Dialogue] ❌ Arr_InvCollection not found!`);
+                  log.error(`Arr_InvCollection not found!`);
                 }
 
                 // Remove from TypeScript inventory
@@ -770,12 +771,12 @@ export class DialogueBridge {
                 // Refresh inventory display
                 runtime.callFunction("populateItemSlots");
 
-                console.log(`✅ [Dialogue] Successfully removed quest item: ${itemName}`);
+                log.info(`Successfully removed quest item: ${itemName}`);
               } else {
-                console.error(`❌ Item not found: ${action.itemId}`);
+                log.error(`Item not found: ${action.itemId}`);
               }
             } else {
-              console.error(`❌ ItemManager not found`);
+              log.error(`ItemManager not found`);
             }
           }
           break;
@@ -795,9 +796,9 @@ export class DialogueBridge {
             const adventureLand = (globalThis as any).AdventureLand;
             if (adventureLand?.Dialogue?.spawnSpecificItem) {
               adventureLand.Dialogue.spawnSpecificItem(runtime, action.itemName);
-              console.log(`[Dialogue] Triggered spawn for unique item: ${action.itemName}`);
+              log.info(`Triggered spawn for unique item: ${action.itemName}`);
             } else {
-              console.error(`❌ [Dialogue] spawnSpecificItem not found`);
+              log.error(`spawnSpecificItem not found`);
             }
           }
           break;
@@ -809,9 +810,9 @@ export class DialogueBridge {
             if (smController) {
               // Sea Monster spawns at fixed position in the lake (560, 320)
               smController.summonSeaMonster(runtime, 560, 320);
-              console.log(`[Dialogue] ✅ Sea Monster summoned at lake spawn point`);
+              log.info(`Sea Monster summoned at lake spawn point`);
             } else {
-              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+              log.error(`SeaMonsterController not found`);
             }
           }
           break;
@@ -823,9 +824,9 @@ export class DialogueBridge {
             if (smController) {
               const reason = (action as any).reason || 'dialogue_choice';
               smController.makeHostile(reason);
-              console.log(`[Dialogue] ✅ Sea Monster is now hostile: ${reason}`);
+              log.info(`Sea Monster is now hostile: ${reason}`);
             } else {
-              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+              log.error(`SeaMonsterController not found`);
             }
           }
           break;
@@ -836,9 +837,9 @@ export class DialogueBridge {
             const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
             if (smController) {
               smController.acceptQuest();
-              console.log(`[Dialogue] ✅ Pearl Quest accepted, Sea Monster retreating`);
+              log.info(`Pearl Quest accepted, Sea Monster retreating`);
             } else {
-              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+              log.error(`SeaMonsterController not found`);
             }
           }
           break;
@@ -849,9 +850,9 @@ export class DialogueBridge {
             const smController = (globalThis as any).AdventureLand?.SeaMonsterController;
             if (smController) {
               smController.completeQuest(runtime);
-              console.log(`[Dialogue] ✅ Pearl Quest complete, Sea Monster retreating`);
+              log.info(`Pearl Quest complete, Sea Monster retreating`);
             } else {
-              console.error(`❌ [Dialogue] SeaMonsterController not found`);
+              log.error(`SeaMonsterController not found`);
             }
           }
           break;
@@ -880,7 +881,7 @@ export class DialogueBridge {
               if (inputDisplay) {
                 inputDisplay.moveToTop();
                 inputDisplay.text = '_'; // Set cursor
-                console.log('✅ [Input] SpriteFont_Menu ready for input');
+                log.info('[Input] SpriteFont_Menu ready for input');
               }
 
               // Create Enter button using ButtonManager (aligned with input box)
@@ -893,14 +894,14 @@ export class DialogueBridge {
                   action: 'SubmitName', // C3 event will check Btn_Action.Actions = "SubmitName"
                   linkID: 0 // Make it selectable
                 });
-                console.log('✅ [Input] Enter button created:', success, '- action: SubmitName');
+                log.info('[Input] Enter button created:', success, '- action: SubmitName');
 
                 // Activate ButtonManager so click events fire
                 runtime.globalVars.ButtonMgrActive = true;
-                console.log('✅ [Input] ButtonMgrActive set to true');
+                log.info('[Input] ButtonMgrActive set to true');
               }
 
-              console.log('✅ [Input] Pixel-art input ready - type name, then press Enter key, Spacebar, or click Enter button');
+              log.info('[Input] Pixel-art input ready - type name, then press Enter key, Spacebar, or click Enter button');
             }, 100);
           }
           break;
@@ -911,13 +912,13 @@ export class DialogueBridge {
             try {
               runtime.callFunction(action.customFunction);
             } catch (e) {
-              console.error(`❌ Custom function failed: ${action.customFunction}`, e);
+              log.error(`Custom function failed: ${action.customFunction}`, e);
             }
           }
           break;
 
         default:
-          console.warn(`⚠️ Unknown action type: ${action.type}`);
+          log.warn(`Unknown action type: ${action.type}`);
       }
     });
   }
@@ -944,7 +945,7 @@ export class DialogueBridge {
 
     // Validate: don't allow blank input
     if (!text || text.length === 0) {
-      console.warn('⚠️ [Input] Cannot submit - name is required!');
+      log.warn('[Input] Cannot submit - name is required!');
 
       // Flash the instruction text red to indicate error
       const allTextBlocks = runtime.objects.obj_TextBlock?.getAllInstances() || [];
@@ -961,18 +962,18 @@ export class DialogueBridge {
           instructionText.colorRgb = originalColor; // Restore cream
         }, 300);
 
-        console.log('🔴 [Input] Flashing instruction text - name required!');
+        log.warn('[Input] Flashing instruction text - name required!');
       }
       return;
     }
 
-    console.log(`📝 [Input] Submitting: "${text}" → ${variable}`);
+    log.info(`[Input] Submitting: "${text}" -> ${variable}`);
 
     // Save to dictionary
     const dict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (dict && variable) {
       dict.getDataMap().set(variable, text);
-      console.log(`✅ [Input] Saved ${variable} = "${text}"`);
+      log.info(`[Input] Saved ${variable} = "${text}"`);
     }
 
     // Hide input UI - destroy SpriteFont and button
@@ -980,7 +981,7 @@ export class DialogueBridge {
     const inputDisplay = allSpriteFonts.find((sf: any) => sf.layer.name === 'HUD_UI');
     if (inputDisplay) {
       inputDisplay.destroy();
-      console.log('🗑️ [Input] Destroyed SpriteFont_Menu input display');
+      log.debug('[Input] Destroyed SpriteFont_Menu input display');
     }
 
     // Try to call hideTextInput if it exists (for old HTML input cleanup)
@@ -994,14 +995,14 @@ export class DialogueBridge {
     const buttonMgr = (globalThis as any).AdventureLand?.ButtonManager;
     if (buttonMgr) {
       buttonMgr.hideButton('input-enter'); // Match the ID we used when creating it
-      console.log('🗑️ [Input] Hidden Enter button');
+      log.debug('[Input] Hidden Enter button');
     }
 
     // Deactivate ButtonManager and clear input state
     runtime.globalVars.ButtonMgrActive = false;
     runtime.globalVars.InputText = '';
     runtime.globalVars.CapturingInput = false;
-    console.log('🔒 [Input] ButtonMgrActive set to false, input capture disabled');
+    log.debug('[Input] ButtonMgrActive set to false, input capture disabled');
 
     // Continue dialogue
     this.advanceDialogue(runtime);
@@ -1101,7 +1102,7 @@ export class DialogueBridge {
     return {
       activeQuests,
       completedQuests,
-      inventory: new Map(), // TODO: Parse from inventory if needed (for stackable items)
+      inventory: this.buildInventoryMap(),
       uniqueItems,  // Unique quest items from Dict_SaveGameData
       worldFlags: new Map(),
       npcMemory: new Map(),
@@ -1111,9 +1112,40 @@ export class DialogueBridge {
   }
 
   /**
+   * Build inventory map from ItemManager for dialogue condition checks.
+   * Maps both item names and ID strings to quantities so has_item works with either.
+   */
+  private static buildInventoryMap(): Map<string, number> {
+    const inventory = new Map<string, number>();
+    const items = (globalThis as any).AdventureLand?.Items;
+    if (!items) return inventory;
+
+    try {
+      const saveData = items.getInventoryForSave();
+      if (Array.isArray(saveData)) {
+        for (const stack of saveData) {
+          const name = items.getItemName(stack.itemId);
+          if (name) {
+            inventory.set(name, (inventory.get(name) || 0) + stack.quantity);
+          }
+          inventory.set(String(stack.itemId), (inventory.get(String(stack.itemId)) || 0) + stack.quantity);
+        }
+      }
+    } catch (e) {
+      log.warn("Could not build inventory map:", e);
+    }
+    return inventory;
+  }
+
+  /**
    * Debug helper - get current dialogue state
    */
-  static getDebugInfo(): any {
+  static getDebugInfo(): {
+    currentNPC: string;
+    currentNode: string;
+    responseCount: number;
+    responses: string[];
+  } {
     return {
       currentNPC: this.currentNPC,
       currentNode: this.currentNode,
@@ -1133,12 +1165,12 @@ export class DialogueBridge {
   static shouldSpawnUniqueItem(runtime: any, itemName: string): boolean {
     const saveDict = runtime.objects.Dict_SaveGameData?.getFirstInstance();
     if (!saveDict) {
-      console.warn(`[DialogueBridge] SaveGameData not found - defaulting to spawn ${itemName}`);
+      log.warn(`SaveGameData not found - defaulting to spawn ${itemName}`);
       return true; // Default to spawning if save data not found
     }
 
     const wasCollected = saveDict.getDataMap().get(`UniqueItem_${itemName}`) === true;
-    console.log(`[DialogueBridge] Unique item check: ${itemName} - ${wasCollected ? 'already collected (skip spawn)' : 'not collected (spawn)'}`);
+    log.debug(`Unique item check: ${itemName} - ${wasCollected ? 'already collected (skip spawn)' : 'not collected (spawn)'}`);
     return !wasCollected;
   }
 }

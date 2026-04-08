@@ -10,7 +10,7 @@ export const BlacksmithDialogue: NPCDialogue = {
   npcId: "Shopkeeper_Sally",
   name: "Shopkeeper_Sally",
   defaultNode: "node_000",
-  worldId: "World00", // TODO: Update this
+  worldId: "World00",
   questRelations: ["blacksmith_intro"],
 
   nodes: [

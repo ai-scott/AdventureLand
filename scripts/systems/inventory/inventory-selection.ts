@@ -5,6 +5,9 @@
  * Handles finding and selecting ItemSlots by ItemID.
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("InvSelection");
+
 export class InventorySelection {
     /**
      * Selects an inventory slot containing a specific item ID.
@@ -18,7 +21,7 @@ export class InventorySelection {
     static selectItemByID(runtime: any, itemID: number, inventoryWindow?: string): boolean {
         const targetWindow = inventoryWindow || runtime.globalVars.CurrentInvWindow as string;
 
-        console.log(`🔍 [InventorySelection] Searching for ItemID=${itemID} in window="${targetWindow}"`);
+        log.debug(`Searching for ItemID=${itemID} in window="${targetWindow}"`);
 
         // Get all ItemSlot instances
         const itemSlots = runtime.objects.ItemSlot.getAllInstances();
@@ -33,13 +36,13 @@ export class InventorySelection {
                 runtime.globalVars.CurrentItemSlot = slot.instVars.SlotID;
                 runtime.globalVars.SelectedItemUID = slot.uid;
 
-                console.log(`✅ [InventorySelection] Selected slot ${slot.instVars.SlotID} (UID=${slot.uid}) containing ItemID=${itemID}`);
+                log.info(`Selected slot ${slot.instVars.SlotID} (UID=${slot.uid}) containing ItemID=${itemID}`);
                 return true;
             }
         }
 
         // Item not found
-        console.warn(`⚠️ [InventorySelection] Could not find ItemID=${itemID} in window="${targetWindow}"`);
+        log.warn(`Could not find ItemID=${itemID} in window="${targetWindow}"`);
         runtime.globalVars.CurrentItemSlot = -1;
         runtime.globalVars.SelectedItemUID = -1;
         return false;
@@ -54,7 +57,7 @@ export class InventorySelection {
     static clearSelection(runtime: any): void {
         runtime.globalVars.CurrentItemSlot = -1;
         runtime.globalVars.SelectedItemUID = -1;
-        console.log("🔄 [InventorySelection] Selection cleared");
+        log.debug("Selection cleared");
     }
 
     /**

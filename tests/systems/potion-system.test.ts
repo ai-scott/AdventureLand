@@ -250,7 +250,7 @@ describe("PotionSystem", () => {
                 effects: [
                     {
                         itemId: mockSpeedPotionId,
-                        type: "speed",
+                        type: "speed" as const,
                         value: 50,
                         remainingDuration: 15,
                         stacks: 1
