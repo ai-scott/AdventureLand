@@ -1,6 +1,9 @@
 // scripts/world-transition-manager.ts
 // Critical Fix: Complete enemy cleanup on world transitions
 
+import { Logger } from "./logger.js";
+const log = Logger.create("WorldTransition");
+
 interface EnemyInstance {
     uid: string;
     instance: any;
@@ -19,7 +22,7 @@ class WorldTransitionManager {
     private static ensureInitialized(): void {
         if (!WorldTransitionManager.activeEnemies) {
             WorldTransitionManager.activeEnemies = new Map();
-            console.log("🔧 WorldTransitionManager initialized");
+            log.debug("WorldTransitionManager initialized");
         }
     }
 
@@ -30,14 +33,14 @@ class WorldTransitionManager {
         WorldTransitionManager.ensureInitialized();
 
         if (!enemyInstance) {
-            console.warn("⚠️ Cannot register enemy - invalid instance");
+            log.warn("Cannot register enemy - invalid instance");
             return;
         }
 
         // Handle both uid and UID properties, convert to string
         const rawUid = enemyInstance.uid ?? enemyInstance.UID;
         if (rawUid === undefined || rawUid === null) {
-            console.warn("⚠️ Cannot register enemy - missing uid property");
+            log.warn("Cannot register enemy - missing uid property");
             return;
         }
 
@@ -49,7 +52,7 @@ class WorldTransitionManager {
         };
 
         WorldTransitionManager.activeEnemies!.set(uid, enemyData);
-        console.log(`✅ Registered ${enemyType} enemy (UID: ${uid})`);
+        log.info(`Registered ${enemyType} enemy (UID: ${uid})`);
     }
 
     /**
@@ -59,7 +62,7 @@ class WorldTransitionManager {
         WorldTransitionManager.ensureInitialized();
         if (WorldTransitionManager.activeEnemies!.has(uid)) {
             WorldTransitionManager.activeEnemies!.delete(uid);
-            console.log(`📝 Unregistered enemy (UID: ${uid})`);
+            log.debug(`Unregistered enemy (UID: ${uid})`);
         }
     }
 
@@ -70,12 +73,12 @@ class WorldTransitionManager {
         WorldTransitionManager.ensureInitialized();
 
         if (WorldTransitionManager.isTransitioning) {
-            console.log("🔄 Already transitioning - skipping duplicate cleanup");
+            log.warn("Already transitioning - skipping duplicate cleanup");
             return;
         }
 
         WorldTransitionManager.isTransitioning = true;
-        console.log(`🧹 Starting world cleanup - ${WorldTransitionManager.activeEnemies!.size} enemies to clean...`);
+        log.info(`Starting world cleanup - ${WorldTransitionManager.activeEnemies!.size} enemies to clean...`);
 
         // Step 1: Execute custom cleanup callbacks
         WorldTransitionManager.executeCleanupCallbacks();
@@ -89,7 +92,7 @@ class WorldTransitionManager {
         // Step 4: Clear our tracking
         WorldTransitionManager.activeEnemies!.clear();
 
-        console.log('✅ World cleanup complete - all enemies removed');
+        log.info('World cleanup complete - all enemies removed');
 
         // Reset transition flag after brief delay
         setTimeout(() => {
@@ -102,9 +105,9 @@ class WorldTransitionManager {
             if (enemyData.cleanupCallback) {
                 try {
                     enemyData.cleanupCallback();
-                    console.log(`🔧 Executed cleanup callback for enemy ${uid}`);
+                    log.debug(`Executed cleanup callback for enemy ${uid}`);
                 } catch (error) {
-                    console.warn(`⚠️ Cleanup callback failed for enemy ${uid}:`, error);
+                    log.warn(`Cleanup callback failed for enemy ${uid}:`, error);
                 }
             }
         });
@@ -115,12 +118,12 @@ class WorldTransitionManager {
             try {
                 if (enemyData.instance && enemyData.instance.destroy) {
                     enemyData.instance.destroy();
-                    console.log(`💥 Destroyed enemy instance ${uid}`);
+                    log.debug(`Destroyed enemy instance ${uid}`);
                 } else {
-                    console.warn(`⚠️ Cannot destroy enemy ${uid} - invalid destroy method`);
+                    log.warn(`Cannot destroy enemy ${uid} - invalid destroy method`);
                 }
             } catch (error) {
-                console.error(`❌ Error destroying enemy ${uid}:`, error);
+                log.error(`Error destroying enemy ${uid}:`, error);
             }
         });
     }
@@ -133,20 +136,20 @@ class WorldTransitionManager {
         if (globalThis.enemyInstances) {
             if (typeof globalThis.enemyInstances.clear === 'function') {
                 globalThis.enemyInstances.clear();
-                console.log('🧠 Cleared enemyInstances Map');
+                log.debug('Cleared enemyInstances Map');
             }
         }
 
         // Clear any behavior timers or intervals
         if (globalThis.clearAllEnemyBehaviors) {
             globalThis.clearAllEnemyBehaviors();
-            console.log('⏰ Cleared enemy behavior timers');
+            log.debug('Cleared enemy behavior timers');
         }
 
         // Force garbage collection hint (if available)
         if (globalThis.gc && typeof globalThis.gc === 'function') {
             globalThis.gc();
-            console.log('🗑️ Triggered garbage collection');
+            log.debug('Triggered garbage collection');
         }
     }
 
@@ -154,7 +157,7 @@ class WorldTransitionManager {
      * Safe world transition with guaranteed cleanup
      */
     static transitionToWorld(worldId: string, transitionType: string = "LayoutChange"): void {
-        console.log(`🌍 Starting transition from ${WorldTransitionManager.currentWorldId} to ${worldId}`);
+        log.info(`Starting transition from ${WorldTransitionManager.currentWorldId} to ${worldId}`);
 
         // Always cleanup before transition
         WorldTransitionManager.cleanupCurrentWorld();
@@ -166,10 +169,10 @@ class WorldTransitionManager {
         setTimeout(() => {
             const runtime = (globalThis as any).runtime;
             if (runtime && runtime.callFunction) {
-                console.log(`🚀 Executing C3 transition to ${worldId}`);
+                log.info(`Executing C3 transition to ${worldId}`);
                 runtime.callFunction('Transition', 'Out', transitionType, '');
             } else {
-                console.error('❌ Cannot execute transition - runtime not available');
+                log.error('Cannot execute transition - runtime not available');
             }
         }, 50);
     }
@@ -190,7 +193,7 @@ class WorldTransitionManager {
      * Emergency cleanup - force cleanup even during transition
      */
     static forceCleanup(): void {
-        console.log('🚨 EMERGENCY CLEANUP - Forcing enemy cleanup');
+        log.warn('EMERGENCY CLEANUP - Forcing enemy cleanup');
         WorldTransitionManager.isTransitioning = false; // Reset flag
         WorldTransitionManager.cleanupCurrentWorld();
     }
@@ -200,9 +203,9 @@ class WorldTransitionManager {
      */
     static listActiveEnemies(): void {
         WorldTransitionManager.ensureInitialized();
-        console.log(`📊 Active Enemies (${WorldTransitionManager.activeEnemies!.size}):`);
+        log.debug(`Active Enemies (${WorldTransitionManager.activeEnemies!.size}):`);
         WorldTransitionManager.activeEnemies!.forEach((enemyData, uid) => {
-            console.log(`  - UID: ${uid}, Type: ${enemyData.instance?.constructor?.name || 'Unknown'}`);
+            log.debug(`  - UID: ${uid}, Type: ${enemyData.instance?.constructor?.name || 'Unknown'}`);
         });
     }
 }

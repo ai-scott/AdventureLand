@@ -293,7 +293,7 @@ export function executeAnimation(enemy: any, enemyData: EnemyData, animationName
       enemy.setAnimation(fullAnimationName);
     }
   } catch (error) {
-    console.log(`❌ Animation error for ${animationName}:`, error);
+    log.error(`Animation error for ${animationName}:`, error);
   }
 }
   */

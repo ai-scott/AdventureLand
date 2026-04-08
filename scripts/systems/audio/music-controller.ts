@@ -1,6 +1,9 @@
 // music-controller.ts
 // Centralized music mix + ducking controller for C3 audio tags
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("MusicController");
+
 type MusicMode = "base" | "mid" | "high";
 
 export class MusicController {
@@ -27,7 +30,7 @@ export class MusicController {
 
   static setDesiredMode(mode: MusicMode): void {
     if (mode !== "base" && mode !== "mid" && mode !== "high") {
-      console.warn(`⚠️ [MusicController] Invalid mode: ${mode}`);
+      log.warn(`Invalid mode: ${mode}`);
       return;
     }
 

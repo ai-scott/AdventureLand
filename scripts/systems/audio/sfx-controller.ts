@@ -13,6 +13,9 @@
  *   - player_hurt
  */
 
+import { Logger } from "../../utils/logger.js";
+const log = Logger.create("SFXController");
+
 export class SFXController {
   private static runtime: any = null;
 
@@ -24,7 +27,7 @@ export class SFXController {
    */
   static initialize(runtime: any): void {
     this.runtime = runtime;
-    console.log("🔊 SFX Controller initialized");
+    log.info("SFX Controller initialized");
   }
 
   /**
@@ -43,14 +46,14 @@ export class SFXController {
    */
   static play(soundName: string, volume: number = 0): void {
     if (!this.runtime) {
-      console.warn("⚠️ SFX Controller not initialized!");
+      log.warn("SFX Controller not initialized!");
       return;
     }
 
     // Call C3 function to play the sound
     // C3 will handle the actual audio playback using the Audio plugin
     this.runtime.callFunction("PlaySFX", soundName, volume);
-    console.log(`🔊 Playing SFX: ${soundName} at ${volume > 0 ? '+' : ''}${volume}dB`);
+    log.debug(`Playing SFX: ${soundName} at ${volume > 0 ? '+' : ''}${volume}dB`);
   }
 
   /**
@@ -67,12 +70,12 @@ export class SFXController {
    */
   static stopAll(tag: string = "SFX"): void {
     if (!this.runtime) {
-      console.warn("⚠️ SFX Controller not initialized!");
+      log.warn("SFX Controller not initialized!");
       return;
     }
 
     // Stop all audio with the SFX tag
     this.runtime.callFunction("StopSFX", tag);
-    console.log(`🔇 Stopped all SFX with tag: ${tag}`);
+    log.info(`Stopped all SFX with tag: ${tag}`);
   }
 }

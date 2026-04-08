@@ -69,13 +69,13 @@ export class DialogueController {
         // Check if ButtonManager is active (item notifications with Open/Close buttons)
         // Event sheets handle button execution, so just let them handle Space
         if (runtime.globalVars.ButtonMgrActive) {
-          console.log('🔘 [Button] ButtonMgrActive - deferring to event sheet handlers');
+          log.debug('[Button] ButtonMgrActive - deferring to event sheet handlers');
           return false; // Let event sheets handle it
         }
 
         // Guard: prevent immediate double-advance right after a node is shown
         if (runtime.globalVars.DialogueJustStarted) {
-          console.log('⏳ [Dialogue] DialogueJustStarted=true - consuming space to avoid double-advance');
+          log.debug('[Dialogue] DialogueJustStarted=true - consuming space to avoid double-advance');
           return true; // Handled, do not advance
         }
 
@@ -127,7 +127,7 @@ export class DialogueController {
 
         // Guard: prevent immediate double-advance right after a node is shown
         if (runtime.globalVars.DialogueJustStarted) {
-          console.log('⏳ [Dialogue] DialogueJustStarted=true - consuming tap to avoid double-advance');
+          log.debug('[Dialogue] DialogueJustStarted=true - consuming tap to avoid double-advance');
           return true; // Handled, do not advance
         }
 

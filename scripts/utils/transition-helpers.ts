@@ -2,53 +2,56 @@
 // Adventure Land - Transition and Cleanup Helpers
 // USES NESTED OBJECT PATTERN to avoid IConstructProjectLocalVariables errors
 
+import { Logger } from "./logger.js";
+const log = Logger.create("TransitionHelpers");
+
 export class TransitionHelpers {
     static cleanupAndTransition(): void {
-        console.log("🌊 Starting transition cleanup...");
+        log.info("Starting transition cleanup...");
 
         try {
             // Call existing cleanup function
             if ((globalThis as any).cleanupEnemies) {
                 (globalThis as any).cleanupEnemies();
-                console.log("✅ Enemy cleanup completed");
+                log.info("Enemy cleanup completed");
             } else {
-                console.log("⚠️ cleanupEnemies function not found");
+                log.warn("cleanupEnemies function not found");
             }
 
             // Clean up animations if active
             if ((globalThis as any).AdventureLand?.TileAnimations?.cleanup) {
                 (globalThis as any).AdventureLand.TileAnimations.cleanup();
-                console.log("✅ Animation cleanup completed");
+                log.info("Animation cleanup completed");
             }
 
             // Add any other transition cleanup here
-            console.log("✅ Transition cleanup complete");
+            log.info("Transition cleanup complete");
 
         } catch (error) {
-            console.error("❌ Error during transition cleanup:", error);
+            log.error("Error during transition cleanup:", error);
         }
     }
 
     static initializeWorldSystems(): void {
-        console.log("🌍 Initializing world systems...");
+        log.info("Initializing world systems...");
 
         try {
             // Initialize tile animations
             if ((globalThis as any).AdventureLand?.TileAnimations?.initialize) {
                 (globalThis as any).AdventureLand.TileAnimations.initialize();
-                console.log("✅ Tile animations initialized");
+                log.info("Tile animations initialized");
             }
 
             // Initialize other world systems as needed
-            console.log("✅ World systems initialization complete");
+            log.info("World systems initialization complete");
 
         } catch (error) {
-            console.error("❌ Error initializing world systems:", error);
+            log.error("Error initializing world systems:", error);
         }
     }
 
     static pauseAllSystems(paused: boolean): void {
-        console.log(`${paused ? '⏸️ Pausing' : '▶️ Resuming'} all systems...`);
+        log.info(`${paused ? 'Pausing' : 'Resuming'} all systems...`);
 
         try {
             // Pause/resume animations
@@ -57,10 +60,10 @@ export class TransitionHelpers {
             }
 
             // Add other system pause/resume logic here
-            console.log(`✅ All systems ${paused ? 'paused' : 'resumed'}`);
+            log.info(`All systems ${paused ? 'paused' : 'resumed'}`);
 
         } catch (error) {
-            console.error(`❌ Error ${paused ? 'pausing' : 'resuming'} systems:`, error);
+            log.error(`Error ${paused ? 'pausing' : 'resuming'} systems:`, error);
         }
     }
 }
@@ -77,4 +80,4 @@ export class TransitionHelpers {
 // Legacy compatibility for existing code
 (globalThis as any).cleanupAndTransition = TransitionHelpers.cleanupAndTransition;
 
-console.log("🔄 TransitionHelpers module loaded with nested object pattern");
+log.info("TransitionHelpers module loaded with nested object pattern");

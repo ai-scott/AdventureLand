@@ -526,7 +526,7 @@ export class DialogueBridge {
     try {
       runtime.callFunction("EndOfVoiceLine");
     } catch (e) {
-      console.warn("⚠️ Could not call EndOfVoiceLine:", e);
+      log.warn("Could not call EndOfVoiceLine:", e);
     }
 
   }
@@ -545,10 +545,10 @@ export class DialogueBridge {
     if (isSilentSystem) return;
 
     try {
-      console.log(`🔊 [VO] PlayVoiceLine speaker="${speaker}" nodeId="${node.id}"`);
+      log.info(`[VO] PlayVoiceLine speaker="${speaker}" nodeId="${node.id}"`);
       runtime.callFunction("PlayVoiceLine", speaker, node.id);
     } catch (e) {
-      console.warn("⚠️ Could not call PlayVoiceLine:", e);
+      log.warn("Could not call PlayVoiceLine:", e);
     }
   }
 
@@ -561,10 +561,10 @@ export class DialogueBridge {
     }
 
     runtime.globalVars.DialogueJustStarted = true;
-    console.log(`⏳ [Dialogue] DialogueJustStarted = true (${durationSeconds}s)`);
+    log.debug(`[Dialogue] DialogueJustStarted = true (${durationSeconds}s)`);
     setTimeout(() => {
       runtime.globalVars.DialogueJustStarted = false;
-      console.log('✅ [Dialogue] DialogueJustStarted = false');
+      log.debug('[Dialogue] DialogueJustStarted = false');
     }, Math.max(0, durationSeconds) * 1000);
   }
 
@@ -658,7 +658,7 @@ export class DialogueBridge {
 
                 // For unique items, just set the notification - C3 event sheets handle display
                 // This avoids the Open/Close button dialog that breaks player movement
-                console.log(`[Dialogue] ✅ ${itemName} added to inventory (simple notification)`);
+                log.info(`${itemName} added to inventory (simple notification)`);
 
                 // The event sheets will detect KeyItem change and show the notification
                 // (e.g., "You got a Magic Trident" or "You got a Sea Monster Key")
@@ -764,7 +764,7 @@ export class DialogueBridge {
                   const uniqueItemKey = `UniqueItem_${itemName}`;
                   if (saveDict.getDataMap().has(uniqueItemKey)) {
                     saveDict.getDataMap().delete(uniqueItemKey);
-                    console.log(`[Dialogue] Removed unique item flag: ${uniqueItemKey}`);
+                    log.info(`Removed unique item flag: ${uniqueItemKey}`);
                   }
                 }
 

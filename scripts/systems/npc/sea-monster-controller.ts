@@ -76,7 +76,7 @@ export class SeaMonsterController {
           // durationSeconds, magnitudeX, magnitudeY
           this.runtime.callFunction("CameraShake", 0.35, 8, 6);
         } catch (e) {
-          console.warn("⚠️ CameraShake function not found (C3) - skipping shake");
+          log.warn("CameraShake function not found (C3) - skipping shake");
         }
       }
 
@@ -171,7 +171,7 @@ export class SeaMonsterController {
         waterSwirlY
       );
       if (waterSwirl) {
-        console.log(`💧 Spawned FX_WaterSwirl at (${waterSwirlX}, ${waterSwirlY})`);
+        log.debug(`Spawned FX_WaterSwirl at (${waterSwirlX}, ${waterSwirlY})`);
       }
 
       // Play rise sound effect
@@ -194,10 +194,10 @@ export class SeaMonsterController {
           const fadeParams = { tags: "fadeOut", destroy: true };
           if (waterSwirl.behaviors?.Fade) {
             waterSwirl.behaviors.Fade.startFade("out", 3, "linear", fadeParams);
-            console.log("💧 Starting water swirl fade (3s duration, overlaps with animation)");
+            log.debug("Starting water swirl fade (3s duration, overlaps with animation)");
           } else {
             // No Fade behavior - will destroy after animation completes
-            console.log("💧 No Fade behavior on water swirl");
+            log.debug("No Fade behavior on water swirl");
           }
         }
       }, 1000); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
@@ -217,7 +217,7 @@ export class SeaMonsterController {
         // Cleanup: destroy water swirl if Fade behavior didn't auto-destroy it
         if (waterSwirl && !waterSwirl.isDestroyed) {
           waterSwirl.destroy();
-          console.log("💧 Destroyed water swirl particle (cleanup)");
+          log.debug("Destroyed water swirl particle (cleanup)");
         }
       }, 3000); // 3 seconds to match tween duration
 
@@ -339,7 +339,7 @@ export class SeaMonsterController {
         waterSwirlY
       );
       if (waterSwirl) {
-        console.log(`💧 Spawned FX_WaterSwirl for retreat at (${waterSwirlX}, ${waterSwirlY})`);
+        log.debug(`Spawned FX_WaterSwirl for retreat at (${waterSwirlX}, ${waterSwirlY})`);
       }
 
       // Play retreat sound effect
@@ -352,9 +352,9 @@ export class SeaMonsterController {
             const fadeParams = { tags: "fadeOut", destroy: true };
             if (waterSwirl.behaviors?.Fade) {
               waterSwirl.behaviors.Fade.startFade("out", 3, "linear", fadeParams);
-              console.log("💧 Starting retreat water swirl fade (3s duration, overlaps with animation)");
+              log.debug("Starting retreat water swirl fade (3s duration, overlaps with animation)");
             } else {
-              console.log("💧 No Fade behavior on retreat water swirl");
+              log.debug("No Fade behavior on retreat water swirl");
             }
           }
         }, 1500); // Start fade at 1.5 seconds (overlaps with last 1.5s of animation)
@@ -363,7 +363,7 @@ export class SeaMonsterController {
         setTimeout(() => {
           if (waterSwirl && !waterSwirl.isDestroyed) {
             waterSwirl.destroy();
-            console.log("💧 Destroyed retreat water swirl particle (cleanup)");
+            log.debug("Destroyed retreat water swirl particle (cleanup)");
           }
         }, 4500); // 1.5s visible + 3s fade = 4.5s total
       }

@@ -11,6 +11,9 @@
  */
 
 // Import all existing systems
+import { Logger } from "./utils/logger.js";
+const log = Logger.create("ImportsForEvents");
+
 import * as EnemyAI from "./systems/enemy/enemy-ai.js";
 import { TileAnimationManager } from "./systems/tiles/tile-animation-manager.js";
 import HealthSystemDefault from "./systems/health/health-system.js";
@@ -203,6 +206,6 @@ export function registerWithRuntime(runtime: any): void {
     (globalThis as any).AdventureLand = (globalThis as any).AdventureLand || {};
     (globalThis as any).AdventureLand.TileAnimations = Systems.TileAnimations;
     
-    console.log("✅ Imports for events registered with runtime");
-    console.log("✅ Access systems via: runtime.imports.AdventureLand");
+    log.info("Imports for events registered with runtime");
+    log.info("Access systems via: runtime.imports.AdventureLand");
 }
