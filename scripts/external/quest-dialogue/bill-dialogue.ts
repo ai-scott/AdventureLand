@@ -7,8 +7,8 @@
 import { NPCDialogue } from './dialogue-types.js';
 
 export const BillDialogue: NPCDialogue = {
-  npcId: "Bill",
-  name: "Bill",
+  npcId: "Cave_Bill",
+  name: "Cave_Bill",
   defaultNode: "node_000",
   worldId: "World10",
   questRelations: ["rescue_bill"],
