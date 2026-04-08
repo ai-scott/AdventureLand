@@ -68,6 +68,16 @@ export class SeaMonsterController {
     this.currentState = SeaMonsterState.Rising;
 
     try {
+      // Camera shake when Sea Monster appears (C3 function)
+      if (this.runtime?.callFunction) {
+        try {
+          // durationSeconds, magnitudeX, magnitudeY
+          this.runtime.callFunction("CameraShake", 0.35, 8, 6);
+        } catch (e) {
+          console.warn("⚠️ CameraShake function not found (C3) - skipping shake");
+        }
+      }
+
       const sfx = (globalThis as any).AdventureLand?.SFX;
       if (sfx?.playBubble) {
         sfx.playBubble(-6);

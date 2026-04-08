@@ -10,8 +10,8 @@ export interface QuestSpawnCondition {
   /** Quest ID in SaveGameData */
   questId: string;
 
-  /** Quest status that allows spawning */
-  status: string;
+  /** Quest status that allows spawning (single or list) */
+  status: string | string[];
 }
 
 /**
@@ -165,10 +165,10 @@ export const UNIQUE_ITEMS_BY_WORLD: Record<string, UniqueItemSpawnConfig[]> = {
     },
     {
       itemName: "Pink Oyster Pearl",  // Must match itemsLibrary.json ID 123
-      // Only spawn when quest is active (player accepted to help find it)
+      // Spawn when quest is active or hostile (not complete)
       questCondition: {
         questId: "pearl_quest",
-        status: "Active"
+        status: ["Active", "Hostile_Encounter", "Pearl_Found"]
       },
       trigger: {
         x: 574,

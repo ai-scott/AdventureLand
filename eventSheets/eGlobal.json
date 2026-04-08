@@ -624,6 +624,16 @@
 							}
 						},
 						{
+							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const s = localVars?.state ?? \"<no-state>\";",
+								"const tg = localVars?.tag ?? \"<no-tag>\";",
+								"console.log(`[Transition] create state=${s} tag=${tg} layout=${runtime.layout.name}`);",
+								""
+							]
+						},
+						{
 							"id": "set-position",
 							"objectClass": "Transition",
 							"sid": 679770756392082,
@@ -647,15 +657,6 @@
 							"sid": 538854088704716,
 							"parameters": {
 								"opacity": "Self.State = \"Out\" ? 0 : 100"
-							}
-						},
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 370586864779919,
-							"parameters": {
-								"group-name": "\"Enemies\"",
-								"state": "deactivated"
 							}
 						}
 					],
@@ -704,16 +705,6 @@
 						}
 					],
 					"actions": [
-						{
-							"id": "set-group-active",
-							"objectClass": "System",
-							"sid": 337534451207592,
-							"disabled": true,
-							"parameters": {
-								"group-name": "\"Player Engine\"",
-								"state": "deactivated"
-							}
-						},
 						{
 							"id": "set-group-active",
 							"objectClass": "System",
@@ -771,6 +762,17 @@
 						},
 						{
 							"type": "script",
+							"language": "javascript",
+							"script": [
+								"const t = runtime.objects.Transition?.getFirstPickedInstance?.();",
+								"if (t) {",
+								"  console.log(`[Transition] Out tick opacity=${t.opacity} tag=${t.instVars?.Tag ?? \"<no-tag>\"}`);",
+								"}",
+								""
+							]
+						},
+						{
+							"type": "script",
 							"language": "typescript",
 							"script": [
 								"// In eGlobal Transition function, State = \"Out\"",
@@ -806,7 +808,19 @@
 									"sid": 932981492678656
 								}
 							],
-							"actions": [],
+							"actions": [
+								{
+									"type": "script",
+									"language": "javascript",
+									"script": [
+										"const t = runtime.objects.Transition?.getFirstPickedInstance?.();",
+										"if (t) {",
+										"  console.log(`[Transition] Out reached 100 opacity tag=${t.instVars?.tag ?? \"<no-tag>\"}`);",
+										"}",
+										""
+									]
+								}
+							],
 							"sid": 614872835902693,
 							"children": [
 								{
@@ -841,6 +855,15 @@
 										}
 									],
 									"actions": [
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"const t = runtime.objects.Transition?.getFirstPickedInstance?.();",
+												"console.log(`[Transition] Out complete -> signal (else) tag=${t?.instVars?.tag ?? \"<no-tag>\"}`);",
+												""
+											]
+										},
 										{
 											"id": "wait",
 											"objectClass": "System",
@@ -939,16 +962,6 @@
 								{
 									"id": "set-group-active",
 									"objectClass": "System",
-									"sid": 506912980602774,
-									"disabled": true,
-									"parameters": {
-										"group-name": "\"Player Engine\"",
-										"state": "activated"
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
 									"sid": 231308805879766,
 									"parameters": {
 										"group-name": "\"Triggers\"",
@@ -961,16 +974,6 @@
 									"sid": 392960354410255,
 									"parameters": {
 										"group-name": "\"In Dialogue\"",
-										"state": "activated"
-									}
-								},
-								{
-									"id": "set-group-active",
-									"objectClass": "System",
-									"sid": 847418418162699,
-									"disabled": true,
-									"parameters": {
-										"group-name": "\"Enemies\"",
 										"state": "activated"
 									}
 								}
@@ -1060,15 +1063,6 @@
 							"parameters": {
 								"x": "ViewportLeft(0) + (ViewportWidth(0)/2) - (obj_TextBlock.Width/2)",
 								"y": "ViewportTop(0) + (ViewportHeight(0)/2) - (obj_TextBlock.Height/2)"
-							}
-						},
-						{
-							"id": "set-eventvar-value",
-							"objectClass": "System",
-							"sid": 808195888130163,
-							"parameters": {
-								"variable": "TempVarY",
-								"value": "\"CurrentWorld_\"&CurrentWorld"
 							}
 						},
 						{
@@ -7107,6 +7101,14 @@
 											]
 										},
 										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(`[Transition] waiting for signal LayoutChange (layout=${runtime.layout.name})`);",
+												""
+											]
+										},
+										{
 											"id": "wait-for-signal",
 											"objectClass": "System",
 											"sid": 416381467077502,
@@ -7170,6 +7172,14 @@
 												"\"Out\"",
 												"\"LayoutChange\"",
 												"\"\""
+											]
+										},
+										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(`[Transition] waiting for signal LayoutChange (layout=${runtime.layout.name})`);",
+												""
 											]
 										},
 										{

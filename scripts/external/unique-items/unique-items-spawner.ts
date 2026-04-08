@@ -103,6 +103,9 @@ export class UniqueItemSpawner {
     }
 
     const questStatus = saveDict.getDataMap().get(condition.questId);
+    if (Array.isArray(condition.status)) {
+      return condition.status.includes(questStatus);
+    }
     return questStatus === condition.status;
   }
 

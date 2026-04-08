@@ -110,7 +110,7 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_006",
       speaker: "Pete",
-      text: "And I'm too sick to cross the river. Usually I get herbs from the mountains to",
+      text: "And I'm too sick to cross the river.",
       priority: 95,
       conditions: [
         {
@@ -124,7 +124,7 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_006b",
       speaker: "Pete",
-      text: "the south. Could you help me?",
+      text: "Usually I get herbs from the mountains to the south. Could you help me?",
       priority: 94,
       conditions: [
         {
@@ -168,7 +168,7 @@ export const PeteDialogue: NPCDialogue = {
         {
           "type": "quest_status",
           "questId": "pete_herbs_quest",
-          "status": "Not-Started"
+          "status": "Not_Started"
         }
       ],
       actions: [
@@ -182,22 +182,8 @@ export const PeteDialogue: NPCDialogue = {
     {
       id: "node_010",
       speaker: "Pete",
-      text: "Thank ye kindly for the help!",
+      text: "Still no herbs yet? The ones I need grow in the mountains to the south.",
       priority: 90,
-      conditions: [
-        {
-          "type": "quest_status",
-          "questId": "pete_herbs_quest",
-          "status": "Active"
-        }
-      ],
-      endsDialogue: true
-    },
-    {
-      id: "node_011",
-      speaker: "Pete",
-      text: "Hello again, adventurer!",
-      priority: 89,
       conditions: [
         {
           "type": "quest_status",

@@ -283,6 +283,14 @@
 											]
 										},
 										{
+											"type": "script",
+											"language": "javascript",
+											"script": [
+												"console.log(`[Transition] waiting for signal LayoutChange (layout=${runtime.layout.name})`);",
+												""
+											]
+										},
+										{
 											"id": "wait-for-signal",
 											"objectClass": "System",
 											"sid": 633772537782299,
@@ -4358,6 +4366,14 @@
 													]
 												},
 												{
+													"type": "script",
+													"language": "javascript",
+													"script": [
+														"console.log(`[Transition] waiting for signal LayoutChange (layout=${runtime.layout.name})`);",
+														""
+													]
+												},
+												{
 													"id": "wait-for-signal",
 													"objectClass": "System",
 													"sid": 326431841902720,
@@ -5062,6 +5078,41 @@
 						}
 					],
 					"sid": 734587956436596
+				},
+				{
+					"functionName": "CameraShake",
+					"functionDescription": "shake the camera",
+					"functionCategory": "Movement",
+					"functionReturnType": "none",
+					"functionCopyPicked": false,
+					"functionIsAsync": false,
+					"functionParameters": [
+						{
+							"name": "durationSeconds",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 522694899353996
+						},
+						{
+							"name": "magnitudeX",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 168434976663981
+						},
+						{
+							"name": "magnitudeY",
+							"type": "number",
+							"initialValue": "0",
+							"comment": "",
+							"sid": 492058574740111
+						}
+					],
+					"eventType": "function-block",
+					"conditions": [],
+					"actions": [],
+					"sid": 724079874219616
 				}
 			],
 			"sid": 751831729511322
