@@ -535,12 +535,37 @@ export class DialogueController {
     return {
       activeQuests: new Map(),
       completedQuests: new Set(),
-      inventory: new Map(),
+      inventory: DialogueController.buildInventoryMap(),
       worldFlags: new Map(),
       npcMemory: new Map(),
       playerName: dataMap?.get('PlayerName') || 'Player',
       currentWorld: runtime.globalVars?.CurrentWorld || 'World00'
     };
+  }
+
+  /**
+   * Build inventory map from ItemManager for dialogue condition checks.
+   */
+  private static buildInventoryMap(): Map<string, number> {
+    const inventory = new Map<string, number>();
+    const items = (globalThis as any).AdventureLand?.Items;
+    if (!items) return inventory;
+
+    try {
+      const saveData = items.getInventoryForSave();
+      if (Array.isArray(saveData)) {
+        for (const stack of saveData) {
+          const name = items.getItemName(stack.itemId);
+          if (name) {
+            inventory.set(name, (inventory.get(name) || 0) + stack.quantity);
+          }
+          inventory.set(String(stack.itemId), (inventory.get(String(stack.itemId)) || 0) + stack.quantity);
+        }
+      }
+    } catch {
+      // Silently fail — inventory check is optional for dialogue
+    }
+    return inventory;
   }
 
   /**

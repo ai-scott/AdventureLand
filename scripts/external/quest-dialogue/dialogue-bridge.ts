@@ -977,12 +977,38 @@ export class DialogueBridge {
     return {
       activeQuests,
       completedQuests,
-      inventory: new Map(), // TODO: Parse from inventory if needed
+      inventory: this.buildInventoryMap(),
       worldFlags: new Map(),
       npcMemory: new Map(),
       playerName: playerName,
       currentWorld: runtime.globalVars.CurrentWorld || "World01"
     };
+  }
+
+  /**
+   * Build inventory map from ItemManager for dialogue condition checks.
+   * Maps both item names and ID strings to quantities so has_item works with either.
+   */
+  private static buildInventoryMap(): Map<string, number> {
+    const inventory = new Map<string, number>();
+    const items = (globalThis as any).AdventureLand?.Items;
+    if (!items) return inventory;
+
+    try {
+      const saveData = items.getInventoryForSave();
+      if (Array.isArray(saveData)) {
+        for (const stack of saveData) {
+          const name = items.getItemName(stack.itemId);
+          if (name) {
+            inventory.set(name, (inventory.get(name) || 0) + stack.quantity);
+          }
+          inventory.set(String(stack.itemId), (inventory.get(String(stack.itemId)) || 0) + stack.quantity);
+        }
+      }
+    } catch (e) {
+      log.warn("Could not build inventory map:", e);
+    }
+    return inventory;
   }
 
   /**
