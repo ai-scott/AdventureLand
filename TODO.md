@@ -20,6 +20,16 @@ This is the single source of truth for all active development tasks. Completed w
 - [x] Type safety improvements (removed any casts, typed return values)
 - [x] Dead code cleanup (removed example files, stale TODOs, disabled tests)
 
+## Playtest Bugs (Penny's 10th Birthday - 2026-02-07)
+
+- [ ] Penny just says "thank you" after going into her house (should have more dialogue)
+- [ ] Costume for head and neck go behind the character unless dialogue is on
+- [ ] Pearl and Rosie don't get removed from world after being collected (can pick up again)
+- [ ] Consider adding a grocery/food shop
+- [ ] "A" for attack is confusing for some kids — add key hint to inventory screen. Consider spacebar or Z for attack
+- [ ] Defense doesn't seem to reduce damage
+- [ ] Pete says "thanks for helping" when quest isn't finished — should hint about herbs instead
+
 ## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
 
 ### ✅ COMPLETE: Full Dialogue System with Pixel-Art Input (2026-01-07)
