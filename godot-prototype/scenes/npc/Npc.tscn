@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://p4u51iifm4sd"]
 
-[ext_resource type="Script" path="res://scripts/npc/NpcInteract.cs" id="1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npc/penny.png" id="2"]
-[ext_resource type="Script" path="res://scripts/npc/NpcAnimator.cs" id="3"]
+[ext_resource type="Script" uid="uid://cqhaokr70vjxb" path="res://scripts/npc/NpcInteract.cs" id="1"]
+[ext_resource type="Script" uid="uid://bgot7c7b0rq2g" path="res://scripts/npc/NpcAnimator.cs" id="3"]
+[ext_resource type="Texture2D" uid="uid://bxw3evb4nclue" path="res://assets/sprites/npc/penny.png" id="3_xsig2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(12, 6)
@@ -10,37 +10,34 @@ size = Vector2(12, 6)
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
 radius = 24.0
 
-[node name="Npc" type="Area2D"]
+[node name="Npc" type="Area2D" unique_id=1057141335]
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1708077972]
 z_index = 1
-texture = ExtResource("2")
-region_enabled = true
-region_rect = Rect2(0, 0, 32, 48)
 offset = Vector2(0, -16)
 
-[node name="NpcAnimator" type="Node" parent="."]
+[node name="NpcAnimator" type="Node" parent="." unique_id=2043634748]
 script = ExtResource("3")
+Sheet = ExtResource("3_xsig2")
 
-[node name="Body" type="StaticBody2D" parent="."]
+[node name="Body" type="StaticBody2D" parent="." unique_id=1800571140]
 collision_layer = 2
 
-[node name="BodyShape" type="CollisionShape2D" parent="Body"]
+[node name="BodyShape" type="CollisionShape2D" parent="Body" unique_id=221148716]
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_body")
 
-[node name="InteractZone" type="CollisionShape2D" parent="."]
+[node name="InteractZone" type="CollisionShape2D" parent="." unique_id=2056548990]
 shape = SubResource("CircleShape2D_interact")
 
-[node name="InteractLabel" type="Label" parent="."]
+[node name="InteractLabel" type="Label" parent="." unique_id=678048094]
 visible = false
 offset_left = -12.0
 offset_top = -32.0
 offset_right = 16.0
 offset_bottom = -20.0
+theme_override_font_sizes/font_size = 8
 text = "[E]"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 8
