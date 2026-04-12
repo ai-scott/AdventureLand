@@ -1,6 +1,8 @@
 # Godot 4 gitignore
 .godot/
 *.translation
+*.import
+*.uid
 
 # Mono/C#
 .mono/
