@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/PlayerController.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/fbas_01body_human_00a.png" id="2"]
+[ext_resource type="Script" path="res://scripts/player/ManaSeedAnimator.cs" id="3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(10, 6)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1")
+Speed = 80.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+region_enabled = true
+region_rect = Rect2(0, 0, 64, 64)
+offset = Vector2(0, -16)
+
+[node name="ManaSeedAnimator" type="Node" parent="."]
+script = ExtResource("3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_player")

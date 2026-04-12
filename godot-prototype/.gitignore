@@ -1,0 +1,16 @@
+# Godot 4 gitignore
+.godot/
+*.translation
+
+# Mono/C#
+.mono/
+data_*/
+mono_crash.*.json
+
+# .NET
+bin/
+obj/
+
+# OS
+.DS_Store
+Thumbs.db
