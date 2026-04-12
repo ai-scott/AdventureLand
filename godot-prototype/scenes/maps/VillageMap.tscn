@@ -47,6 +47,19 @@ tile_set = SubResource("TileSet_1")
 
 [node name="Objects" type="TileMapLayer" parent="." unique_id=1340968248]
 tile_set = SubResource("TileSet_1")
+z_index = 0
+
+[node name="Decor1PLevel" type="TileMapLayer" parent="." unique_id=100000001]
+tile_set = SubResource("TileSet_1")
+z_index = 0
+
+[node name="Decor2overP" type="TileMapLayer" parent="." unique_id=100000002]
+tile_set = SubResource("TileSet_1")
+z_index = 1
+
+[node name="Decor3overP" type="TileMapLayer" parent="." unique_id=100000003]
+tile_set = SubResource("TileSet_1")
+z_index = 2
 
 [node name="Buildings" type="Node2D" parent="." unique_id=431031496]
 
