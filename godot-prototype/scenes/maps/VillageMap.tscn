@@ -104,8 +104,8 @@ position_smoothing_enabled = true
 position_smoothing_speed = 5.0
 
 [node name="VillageNpc" parent="." instance=ExtResource("4")]
-position = Vector2(344, 248)
-NpcName = "Elder Bramble"
-DialogueLines = PackedStringArray("Hello, traveler! Welcome to Leafwood Village.", "It's been peaceful here lately... mostly.", "Watch out for the forest to the east!")
+position = Vector2(424, 260)
+NpcName = "Penny"
+DialogueLines = PackedStringArray("Hi there! I'm Penny.", "Welcome to Leafwood Village!", "Feel free to look around.")
 
 [node name="DialogueManager" parent="." instance=ExtResource("5")]

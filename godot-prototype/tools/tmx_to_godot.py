@@ -234,13 +234,13 @@ def write_scene(layers, output_path):
     lines.append('position_smoothing_speed = 5.0')
     lines.append('')
 
-    # NPC instance
-    npc_x = 21 * TILE_SIZE + 8  # Near the buildings in center of map
-    npc_y = 15 * TILE_SIZE + 8
+    # NPC instance - placed in open area to the right of the well
+    npc_x = 26 * TILE_SIZE + 8
+    npc_y = 16 * TILE_SIZE + 4
     lines.append('[node name="VillageNpc" parent="." instance=ExtResource("' + ids['npc_scene'] + '")]')
     lines.append(f'position = Vector2({npc_x}, {npc_y})')
-    lines.append('NpcName = "Elder Bramble"')
-    lines.append('DialogueLines = PackedStringArray("Hello, traveler! Welcome to Leafwood Village.", "It\'s been peaceful here lately... mostly.", "Watch out for the forest to the east!")')
+    lines.append('NpcName = "Penny"')
+    lines.append('DialogueLines = PackedStringArray("Hi there! I\'m Penny.", "Welcome to Leafwood Village!", "Feel free to look around.")')
     lines.append('')
 
     # Dialogue UI
