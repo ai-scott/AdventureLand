@@ -98,4 +98,65 @@ public static class PaletteSwapper
         }
         return colors.ToArray();
     }
+
+    /// <summary>
+    /// Read a single ramp from a packed-ramps sheet. Each row of the sheet is one
+    /// color option; pass the rowIndex to pick which option you want (e.g., row 0 =
+    /// first hair color in the sheet, row 5 = sixth).
+    ///
+    /// Reads left-to-right across the given row, collecting the first `maxColors`
+    /// non-transparent pixels. Stops at transparent gaps (useful if ramps are
+    /// separated by empty pixels within a row).
+    /// </summary>
+    public static Color[] ReadRampRow(Texture2D texture, int rowIndex, int maxColors = MaxColors)
+    {
+        if (texture == null) return System.Array.Empty<Color>();
+        var image = texture.GetImage();
+        if (image == null) return System.Array.Empty<Color>();
+        if (rowIndex < 0 || rowIndex >= image.GetHeight())
+        {
+            GD.PushWarning($"[PaletteSwapper] Row {rowIndex} out of bounds (height {image.GetHeight()})");
+            return System.Array.Empty<Color>();
+        }
+
+        var colors = new System.Collections.Generic.List<Color>(maxColors);
+        bool startedReading = false;
+        for (int x = 0; x < image.GetWidth() && colors.Count < maxColors; x++)
+        {
+            var c = image.GetPixel(x, rowIndex);
+            if (c.A > 0)
+            {
+                colors.Add(c);
+                startedReading = true;
+            }
+            else if (startedReading)
+            {
+                // Hit a gap after finding colors — end of this ramp
+                break;
+            }
+        }
+        return colors.ToArray();
+    }
+
+    /// <summary>
+    /// Debug helper: prints every row of a packed-ramp sheet so you can see which
+    /// index corresponds to which color option. Call from _Ready() while picking
+    /// a ramp, then remove.
+    /// </summary>
+    public static void DumpRampSheet(Texture2D texture, string label = "ramps")
+    {
+        if (texture == null) { GD.Print($"[{label}] null texture"); return; }
+        var image = texture.GetImage();
+        if (image == null) { GD.Print($"[{label}] no image data"); return; }
+
+        GD.Print($"[{label}] {image.GetWidth()}x{image.GetHeight()} — one ramp per row:");
+        for (int y = 0; y < image.GetHeight(); y++)
+        {
+            var row = ReadRampRow(texture, y);
+            if (row.Length == 0) continue;
+            var hex = new string[row.Length];
+            for (int i = 0; i < row.Length; i++) hex[i] = "#" + row[i].ToHtml(false);
+            GD.Print($"  row {y}: [{string.Join(", ", hex)}]");
+        }
+    }
 }
