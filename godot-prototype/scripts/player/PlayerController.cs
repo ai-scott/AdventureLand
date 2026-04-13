@@ -45,8 +45,8 @@ public partial class PlayerController : CharacterBody2D
 	private const string AnimIdle = "Idle";
 	private const string AnimWalk = "Walk";
 
-	private const string HairRampsPath = "res://assets/sprites/player/_supporting files/palettes/mana seed hair ramps.png";
-	private const string HairBaseRampPath = "res://assets/sprites/player/_supporting files/palettes/base ramps/hair color base ramp.png";
+	private const string HairRampsPath = "res://assets/sprites/player/farmer/palettes/mana seed hair ramps.png";
+	private const string HairBaseRampPath = "res://assets/sprites/player/farmer/palettes/base ramps/hair color base ramp.png";
 
 	public override void _Ready()
 	{
