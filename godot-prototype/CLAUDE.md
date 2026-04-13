@@ -29,7 +29,9 @@ VillageMap.tscn (main scene)
 ├── Decor2overP    (TileMapLayer, z=1)  ← 231 tiles
 ├── Decor3overP    (TileMapLayer, z=2)  ← 23 tiles
 ├── Buildings/ (8 Sprite2D children at Tiled offsets)
-├── Player (CharacterBody2D + ManaSeedAnimator)
+├── Player (CharacterBody2D with PlayerController.cs)
+│   ├── SpriteLayers (MSCA-generated: AnimationTree + AnimationPlayer + 20+ layers)
+│   ├── CostumeController (paper-doll layer swap)
 │   └── Camera (Camera2D, 2x zoom, smooth follow)
 ├── VillageNpc (Area2D + StaticBody2D + NpcAnimator)
 └── DialogueManager (CanvasLayer)
@@ -47,37 +49,26 @@ In Godot 4, `TileMapLayer.SetCell(coord, sourceId, atlasCoord)` **silently fails
 
 **If tiles stop rendering:** Check Godot's Output panel for "Map loaded: N tiles across M unique atlas positions". If M is 0, the CreateTile call is broken.
 
-### 2. Mana Seed is non-sequential, per-frame timing
+### 2. Player uses MSCA plugin — AnimationTree, not custom animator
 
-The player uses Seliel's Farmer Base (1024x1024, 16x16 grid of 64x64 cells). Walk animations use **non-sequential cell IDs** read from the animation guide. Standard Godot `AnimatedSprite2D`/`SpriteFrames` is a poor fit — we use `Sprite2D.RegionRect` + `FlipH` driven by `ManaSeedAnimator.cs`.
+The player animation runs entirely through the [MSCA plugin](https://github.com/feendrache/Godot4_msca) (installed at `addons/msca/`). MSCA generates the player scene at editor time: a `CharacterBody2D` with a `SpriteLayers` child that contains `AnimationPlayer`, `AnimationTree` (state machine + BlendSpace2D per state), and 20+ `Sprite2D` paper-doll layers (01body, 13hair, 14head, etc.).
 
-**Verified walk cell IDs (3 directions, confirmed in-game):**
-| Animation | Frames |
-|-----------|--------|
-| walk_down | 48, 49, 50, 48(flip), 49(flip), 50(flip) |
-| walk_up   | 52, 53, 54, 52(flip), 53(flip), 54(flip) |
-| walk_right | 64, 65, 66, 67, 68, 69 |
-| walk_left  | mirrors walk_right via FlipH |
+**Do not hand-roll animation code.** Drive the AnimationTree from C# via `StateMachinePlayback.Travel()` + `blend_position` Vector2 — see `scripts/player/PlayerController.cs` for the pattern.
 
-**Idle cell IDs (match C3 implementation, confirmed in-game):**
-| Animation | Cell |
-|-----------|------|
-| idle_down  | 0  |
-| idle_up    | 16 |
-| idle_right | 32 |
-| idle_left  | mirrors idle_right via FlipH |
+**Full integration notes:** `docs/MSCA_INTEGRATION.md`. Key points:
+- MSCA state names are PascalCase: `Idle`, `Walk`, `Run`, `Jump`, etc.
+- Direction vectors: `(0, 1)`=Down `(1, 0)`=Right `(0, -1)`=Up `(-1, 0)`=Left
+- BlendSpace2D is DISCRETE mode — input should be snapped to cardinals
+- `MSCAFarmerSpriteLayers.gd` stays on the SpriteLayers node (animation keyframes call its signal-emit methods)
+- Combat hitbox timing is already authored into Seliel's animations — subscribe to `animation_set_hitbox` signal when we do combat
 
-**Key insight:** The walk guide shows red-numbered "step-L" frames — these are NOT unique cells. They are FlipH mirrors of the step-R cells. `ManaSeedAnimator.cs` uses per-frame `FlipH` on `AnimFrame` to handle this. Direction-level flip (for left-facing) XORs with per-frame flip in `ApplyFrame()`.
+**Paper-doll costume swap:** `scripts/player/CostumeController.cs` is the Inspector-driven entry point. Layers are named per Mana Seed convention (`13hair`, `14head`, `05shrt`, etc.). `Sprite2D.Visible = false` to hide, `Sprite2D.Texture = ...` to swap.
 
-**What was tried and failed:** 8-direction (diagonal) animations, `AnimatedSprite2D`/`SpriteFrames` approach (non-sequential cells don't fit sequential frame strips), using walk neutral pose as idle (wrong cells).
-
-Left-facing = horizontal flip of right-facing (Mana Seed convention).
-
-**If the user asks for run, jump, carry, or other animations:** read the guide at `assets/sprites/player/docs/farmer base animation guide.png` and extract cells the same way. Each row in the guide corresponds to one direction of one animation.
+**Palette recoloring:** `scripts/player/PaletteSwapper.cs` builds `ShaderMaterial` from 8-color ramps using `addons/msca/shader/simple_ramp_shader.gdshader`. Color ramps come from `_supporting files/palettes/` in Seliel's Farmer Base download.
 
 ### 3. NPC uses AnimatedSprite2D + runtime SpriteFrames
 
-Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rename, NpcAnimator hardcodes the path). `NpcAnimator.cs` builds `SpriteFrames` at runtime from the `[Export] Texture2D Sheet` property set in the Inspector.
+Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rename, NpcAnimator hardcodes the path). `NpcAnimator.cs` builds `SpriteFrames` at runtime from the `[Export] Texture2D Sheet` property set in the Inspector. NPCs don't need the full MSCA layered system because they don't change costume.
 
 **AnimatedSprite2D has no `.Texture` property** — the texture lives in `SpriteFrames`. Always use `[Export] Texture2D Sheet` and pass it into `AtlasTexture.Atlas` during frame construction.
 
@@ -91,8 +82,6 @@ Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rena
 | 4 | idle | **1** | 2 |
 
 **Idle starts at column 1**, not 0 — columns 0 and 3 in the idle row are blank. Getting this wrong causes flickering.
-
-`SpritesheetAnimator.cs` exists in `scripts/player/` but is **unused** — it was an intermediate attempt at a row-based player animator before ManaSeedAnimator was fixed. Leave it in place as a reference for future costume layering.
 
 ### 4. TileSet requires tile_size AND texture_region_size
 
@@ -229,9 +218,8 @@ Defined in `project.godot`:
 
 ## Known Open Issues
 
-- **Idle animations are single-frame** (no breathing/sway). Upgrade path: use Mana Seed's "IMPATIENT" or "IDLE" cells from the guide's bottom-right section.
-- **Player has no costume** — renders as base body mannequin (`fbas_01body_human_00a.png`). Full look requires layering costume sprites (hair, shirt, pants) as additional `Sprite2D` children sharing the same `ManaSeedAnimator`.
-- **Player doesn't face NPC during dialogue** — just locks in current direction. Could snap to face NPC on interact.
+- **Player scene must be regenerated via MSCA plugin** — legacy `Player.tscn` was deleted during the MSCA cutover. See `docs/MSCA_INTEGRATION.md` Phase 2.
+- **Player doesn't face NPC during dialogue** — `PlayerController.FaceTarget()` exists but isn't wired up yet. NpcInteract could call it on trigger.
 - **No collision with buildings** — player walks through walls. Buildings are plain `Sprite2D`, need `StaticBody2D` + `CollisionShape2D` per building if we want collision.
 - **No exit from dialogue via ESC** — only E/Enter/Space advances/closes.
 
