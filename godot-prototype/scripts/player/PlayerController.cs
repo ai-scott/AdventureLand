@@ -41,9 +41,16 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _Ready()
     {
+        var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
         _tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
-        _state = (AnimationNodeStateMachinePlayback)_tree.Get("parameters/playback");
+
+        // Rebind the AnimationTree to the correct AnimationPlayer. MSCA saves
+        // an absolute NodePath that breaks if the scene was re-rooted or moved.
+        // Setting this at runtime works regardless of the saved path.
+        _tree.AnimPlayer = _tree.GetPathTo(animPlayer);
         _tree.Active = true;
+
+        _state = (AnimationNodeStateMachinePlayback)_tree.Get("parameters/playback");
 
         SetBlend(AnimIdle, _facing);
         _state.Travel(AnimIdle);
