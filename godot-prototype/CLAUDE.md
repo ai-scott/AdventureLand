@@ -229,6 +229,13 @@ Defined in `project.godot`:
 - Mana Seed cell reference: user has locally, not in repo (too large / copyrighted)
 - TMX source: `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
 
+## Docs in this folder
+
+- **`docs/GODOT_TRANSITION_PLAN.md`** — the strategic migration roadmap for porting the full C3 Adventure Land to Godot. Phase-by-phase, with risks, stopping points, and system → phase cross-reference. Read once per phase.
+- `docs/EVALUATION_REPORT.md` — initial Godot evaluation outcome; justifies the migrate decision.
+- `docs/MSCA_INTEGRATION.md` — Mana Seed Character Animator plugin integration details.
+- `docs/ASSET_CATALOG.md` — Mana Seed kit inventory and organization reference.
+
 ## Don't Do
 
 - Don't restructure the project without asking — user is evaluating Godot *vs* Construct 3, and simplicity matters for the evaluation.
