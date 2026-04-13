@@ -29,6 +29,12 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float Acceleration = 10f;
     [Export] public float Friction = 10f;
 
+    [ExportGroup("Debug")]
+    /// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>
+    [Export] public bool DebugDumpHairRamps = false;
+    /// <summary>Set to a valid row (-1 = disabled). Recolors hair to that row from the ramps sheet on start.</summary>
+    [Export] public int DebugRecolorHairToRow = -1;
+
     /// <summary>Dialogue sets this to freeze input without affecting facing.</summary>
     public bool InputLocked { get; set; } = false;
 
@@ -38,6 +44,9 @@ public partial class PlayerController : CharacterBody2D
 
     private const string AnimIdle = "Idle";
     private const string AnimWalk = "Walk";
+
+    private const string HairRampsPath = "res://assets/sprites/player/_supporting files/palettes/mana seed hair ramps.png";
+    private const string HairBaseRampPath = "res://assets/sprites/player/_supporting files/palettes/base ramps/3.color base ramp (00a).png";
 
     public override void _Ready()
     {
@@ -54,6 +63,35 @@ public partial class PlayerController : CharacterBody2D
 
         SetBlend(AnimIdle, _facing);
         _state.Travel(AnimIdle);
+
+        // Debug: dump hair ramps so the user can pick a row
+        if (DebugDumpHairRamps)
+        {
+            var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
+            PaletteSwapper.DumpRampSheet(rampsSheet, "hair ramps");
+        }
+
+        // Debug: recolor hair to a chosen row
+        if (DebugRecolorHairToRow >= 0)
+        {
+            RecolorHair(DebugRecolorHairToRow);
+        }
+    }
+
+    private void RecolorHair(int row)
+    {
+        var hair = GetNodeOrNull<Sprite2D>("SpriteLayers/13hair");
+        var baseRamp = GD.Load<Texture2D>(HairBaseRampPath);
+        var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
+        if (hair == null || baseRamp == null || rampsSheet == null)
+        {
+            GD.Print($"[Palette] missing asset: hair={hair != null} base={baseRamp != null} sheet={rampsSheet != null}");
+            return;
+        }
+        var original = PaletteSwapper.ReadRampFromTexture(baseRamp);
+        var replace = PaletteSwapper.ReadRampRow(rampsSheet, row);
+        hair.Material = PaletteSwapper.CreateMaterial(original, replace);
+        GD.Print($"[Palette] hair recolored: row {row}, {replace.Length} colors");
     }
 
     public override void _PhysicsProcess(double delta)
