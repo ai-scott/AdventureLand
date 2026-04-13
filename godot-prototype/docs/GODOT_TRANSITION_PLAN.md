@@ -29,6 +29,12 @@ Adventure Land today is a hybrid: **14 Construct 3 event sheets (~35,300 lines o
 
 Starting position is substantial. Phase 1 begins from a playable-but-featureless World 00.
 
+### Known issues (Phase 0 punch-list — fix alongside Phase 1)
+
+- **Y-sort not working for player vs. buildings** — the player should render behind walls when standing above them, in front when below. Currently broken. Likely cause: Player instance lives outside the Y-sort container, or building `Sprite2D` nodes don't have their visual origin aligned with their collision base. First debug step: confirm Player is a sibling of the building sprites inside an `Entities` container with `y_sort_enabled = true`, and the Y-sort anchor on each visual matches its footprint position (not top-left).
+- **Dialogue UI is POC only** — the current dialogue works *mechanically* (E opens, advances, closes) but has no plumbing for branching, quest state, responses, conditions, or persistence. Treat it as "we proved a text box can render" — everything downstream of that rebuilds in Phase 3.
+- **Enemy `.tres` resources exist but nothing reads them yet** — the three files under `assets/data/enemies/` (ooze, crab, bat) are data only. No `Enemy.tscn` scene, no runtime to consume them. Phase 1 wires this up (see Phase 1 for a primer on what Resources *are* and how to use them).
+
 ## 3. C3 system inventory, by priority
 
 Twenty-plus TypeScript systems to port. Priority tiers determine phase ordering.
@@ -132,16 +138,26 @@ Complexity: completed. Everything in section 2 plus the enemy `.tres` data resou
 ### Phase 1 — Core player loop
 Complexity: **L**. First phase that makes the prototype feel like a game.
 
+**Start with Ooze.** World 00 (Leafwood Village) only spawns oozes — crab and bat are Forest/Lake content and belong to later worlds. Getting Ooze fully wired is the fastest path to "combat works in the world you're actually standing in."
+
+#### Primer: what are the `.tres` files under `assets/data/enemies/`?
+
+A `.tres` is Godot's plain-text Resource file. It's data for the Inspector to read, not code. The three files (`ooze.tres`, `crab.tres`, `bat.tres`) match the `EnemyData` C# class in `scripts/data/EnemyData.cs` — stats (health, speed, viewDistance, attackDistance) plus an array of `EnemyBehavior` sub-resources (weighted behaviors with conditions and actions). Open `ooze.tres` in the Godot Inspector to see what's there.
+
+**How they get used:** in Phase 1 you'll build an `Enemy.tscn` scene (`CharacterBody2D` + `AnimatedSprite2D` + `CollisionShape2D` + `EnemyController.cs` script) with an `[Export] EnemyData` property. Drag `ooze.tres` into that slot in the Inspector, and the controller reads the stats + behaviors at runtime. One `Enemy.tscn`, 3 `.tres` files, 3 enemy types with zero code duplication. Adding a 4th enemy is one new `.tres`, no code change.
+
 Deliverables:
 - `HealthSystem.cs` — HP, damage, heal, invincibility frames, signals (`HealthChanged`, `Died`).
 - Player attack — new player scene node `AttackHitbox` (`Area2D`) triggered by MSCA's `animation_set_hitbox` signal (already emitted by the Mana Seed combat animations).
-- `EnemyController.cs` — runtime port of `enemy-ai.ts` + `enemy-utils.ts`. Consumes the already-built `EnemyData.tres` resources. Handles weighted behavior selection, movement patterns (toward/away/random/crab/swoop), hurt/invuln state machine.
-- One enemy type fully wired (Crab — simplest, no special flight like Bat).
+- `Enemy.tscn` + `EnemyController.cs` — runtime port of `enemy-ai.ts` + `enemy-utils.ts`. Consumes the `EnemyData.tres` resources. Handles weighted behavior selection, movement patterns (toward/away/random/crab/swoop), hurt/invuln state machine.
+- **Ooze** fully wired first. Then Crab and Bat are extensions (Bat needs flight pathing from `bat-movement-utils.ts` — separate follow-up).
 - Damage loop: player sword hits enemy → flash + knockback → enemy attack hits player → HP UI updates.
+- Minimal game-over screen — `GameOver.tscn` (just "You died — press R to restart" for now). Wire up when `HealthSystem.Died` signal fires. Full title/game-over polish is Phase 7.
+- **Fix Y-sort bug** from the Phase 0 punch-list (ensure player renders correctly against buildings/decor).
 
 Prerequisites: EnemyData resources (done). MSCA `animation_set_hitbox` signal wiring proved.
 
-Exit criterion: **World 00 is playable with combat. One crab spawns, takes damage, can damage the player, dies.** Dialogue, inventory, save are all stubbed or absent. This is a legitimate "walk away" point.
+Exit criterion: **World 00 is playable with combat. Oozes spawn, take damage, can damage the player, die. Player death shows a placeholder game-over screen. Player renders correctly in/out of buildings.** Dialogue, inventory, save are all stubbed or absent. This is a legitimate "walk away" point.
 
 ### Phase 2 — Save/load foundation
 Complexity: **M**. The layer everything else stands on.
@@ -158,6 +174,8 @@ Exit criterion: **Play for 5 minutes, save, quit Godot, relaunch, continue, find
 
 ### Phase 3 — Quest + dialogue port
 Complexity: **L**. Single heaviest phase. Preserves 14 NPC files, 250 nodes, branching + quest integration.
+
+**Starting reality check:** the dialogue working in the prototype today is *proof-of-concept only* — Penny says 3 hardcoded lines, E advances, done. None of the real plumbing exists: no branching, no responses/choices, no quest conditions, no actions (give_item / deploy_npc / start_quest / etc.), no variable substitution (`|PlayerName|`), no UI transitions (opening/closing animations, speaker portraits), no input-mode management (disable movement during dialogue, re-enable on close). All of that builds in this phase. Scope this as a full system build, not a "port the existing UI" task.
 
 Deliverables:
 - `DialogueData.cs`, `DialogueNode.cs`, `DialogueCondition.cs`, `DialogueAction.cs` — `[GlobalClass]` Resources mirroring the TypeScript schema.
@@ -194,12 +212,26 @@ Complexity: **M**. Content + wiring. Patterns already established.
 Deliverables:
 - All 8 World 00 NPCs ported (Penny, Rosie, Windmill Nick, Blacksmith shopkeeper, General Store shopkeeper, Adventure Shop shopkeeper, Tree Sign, Welcome NPC).
 - Tiled Object Layer pipeline — `MapLoader.cs` parses `<objectgroup>` from TMX to spawn NPCs/triggers from map data. One-line in Tiled → NPC in world.
-- Building interiors — 6 interior scenes (Penny's House, Blacksmith, Adventure Shop, General Store, Windmill F0/F1). Each a separate `.tscn`. Door triggers (`Area2D`) invoke `SceneTree.ChangeSceneToFile()`.
+
+**Exterior vs interior architecture.** Separate `.tscn` per location:
+  - `scenes/worlds/World00_Village.tscn` — the outdoor village (what we have today)
+  - `scenes/worlds/World00_PennysHouse.tscn`, `Blacksmith.tscn`, `AdventureShop.tscn`, `GeneralStore.tscn`, `WindmillF0.tscn`, `WindmillF1.tscn` — 6 interior scenes
+  - Each interior scene is self-contained: its own tilemap (or hand-built walls), its own NPCs, its own camera bounds, its own entrance/exit doors.
+  - A shared `WorldBase.tscn` is tempting but unnecessary — interiors diverge enough that inheritance bites back. Compose via signals + shared controller scripts instead.
+
+**World transitions — the right pattern for Adventure Land.**
+  - **Door entry (exterior → interior):** `Area2D` door trigger at the building's entrance, `BodyEntered` signal, invokes `WorldManager.GoTo(scenePath, spawnPoint)`.
+  - **`WorldManager` autoload** — holds the transition primitive. Fades the screen (via a `CanvasLayer` with an `AnimationPlayer`), calls `GetTree().ChangeSceneToFile(path)`, then positions the player at the named spawn marker in the new scene. Responsible for saving "where the player was" to `SaveData.CurrentWorld` after each transition so reload works.
+  - **Exit (interior → exterior):** dedicated `ExitDoor.tscn` inside each interior, returns to `World00_Village.tscn` at the door's original outdoor spawn point.
+  - **Spawn markers** — each scene has named `Marker2D` nodes (`SpawnFromVillage`, `SpawnFromBlacksmith`, etc.). The incoming transition names which marker to use.
+  - **Camera snap on transition** — set `Camera2D.ResetSmoothing()` after spawn to avoid a wild pan across the scene.
+  - Pause music/SFX ducking during fade; restore on fade-in.
+
 - Shop system — repurpose `Inventory` + `ItemData.Cost` + `Currency.Gems` (from the `CurrencyManager`).
 - `CurrencyManager.cs` — port of `scripts/systems/currency/` (315 LOC, simple).
 - `PotionSystem.cs` — port of `scripts/systems/potions/` (627 LOC, integrates with HealthSystem).
 
-Exit criterion: **Feature parity with current C3 World 00. Player can explore all interiors, buy/sell, drink potions, complete all 8 NPC quest arcs, save+load.**
+Exit criterion: **Feature parity with current C3 World 00. Player can walk into all 6 interiors and back out, buy/sell at shops, drink potions, complete all 8 NPC quest arcs, save+load mid-interior and return to the same scene.**
 
 ### Phase 6 — Worlds 01 and 10
 Complexity: **M per world**, parallelizable.
@@ -221,12 +253,14 @@ Deliverables:
 - `MusicController.cs` — intensity modes (base/mid/high), ducking on dialogue start. Port of `scripts/systems/audio/music-*`.
 - `SFXController.cs` — convention-based (`{obj}_{action}`) pooled players. Port of `scripts/systems/audio/sfx-controller`.
 - VO system — boss voice-over with automatic music ducking.
-- Title screen scene + `GameOver.tscn`.
+- **Title screen** (`scenes/ui/TitleScreen.tscn`) — logo, "New Game" / "Continue" / "Settings" / "Quit". Continue is enabled only if a save exists. Background music, ambient art. Uses `WorldManager.GoTo()` to launch the game scene. This is the game's new `main_scene` — replaces VillageMap as the boot target.
+- **Game over** (`scenes/ui/GameOver.tscn`) — upgrade from the Phase 1 placeholder. Fade to black on death, "You died" text, options: Continue from last save / Return to Title / Quit. Ties to `SaveManager.LoadLastSave()`.
+- **Intro/credits** — optional intro cutscene at new-game start (`scenes/ui/Intro.tscn` — series of text/image panels, skippable). Credits scene at endgame.
 - Tile animations (`scripts/systems/tiles/`) — water/fire/lava/waterfall. Port the data-driven config; consider using `AnimatedTexture` or a shader instead of per-frame TileMap updates. Aim for the 67% CPU improvement the TS version achieved.
 - UI polish pass on inventory, health bar, currency display, interaction prompts.
-- Tile animations.
+- Performance audit — profile hot paths, verify frame rate holds with full world populated.
 
-Exit criterion: **Shippable build. Feature parity + production-quality audio + UI polish.**
+Exit criterion: **Shippable build. Feature parity + production-quality audio + UI polish + proper title/game-over/intro flow.**
 
 ## 7. Risks & mitigations
 
@@ -282,6 +316,23 @@ Good rule: **never stop mid-phase.** Every phase is designed to end on a coheren
 **Godot plugins considered and not adopted:**
 - [Dialogue Manager by nathanhoad](https://github.com/nathanhoad/godot_dialogue_manager), [Sprouty Dialogs](https://jettelly.com/blog/sprouty-dialogs-a-visual-dialogue-system-for-godot-4-5/), [Dialogue Nodes](https://godotengine.org/asset-library/asset/1197) — all mature Godot dialogue plugins. Rejected because porting the custom TS dialogue system preserves quest integration, custom action types, and the existing 14 NPC files without translating to a foreign DSL. Revisit in Phase 3 only if the port proves genuinely harder than expected.
 - [EventSheet for Godot 4](https://github.com/WladekProd/EventSheet) — a "C3-like visual event editor" for Godot. Interesting curiosity but incomplete and doesn't match how we want to structure the port (C# + signals, not visual events).
+
+**AI assistance — Ziva plugin evaluation:**
+[Ziva](https://ziva.sh/) is an AI agent/copilot that runs **inside the Godot editor** with access to scenes, scripts, debugger output, and the TileMap editor. Uses Claude / GPT / Gemini as backends. MIT-style installer via the Asset Library. Free Hobby tier ($3/month AI credits); paid tiers for heavy use.
+
+**Where Ziva is genuinely useful for this migration:**
+- **In-editor scene edits.** When Claude Code (VS Code side) suggests "add a Node2D container with y_sort_enabled", you currently have to open Godot and do it by hand. Ziva can do it directly. Big win for phases with heavy scene authoring (Phase 5 interiors, Phase 7 title/game over).
+- **Debugger-aware fixes.** Ziva reads the Godot error/output panel directly — "Invalid node path... on AnimationTree" is a single prompt away from a fix. Faster than copy-pasting errors into VS Code.
+- **TileMap painting via natural language.** Low relevance here (we paint in Tiled, not Godot), but useful if we ever author small maps in Godot directly.
+
+**Where Ziva is *not* a replacement:**
+- **C# support.** Ziva defaults to GDScript and optimizes for it; C# generation is possible but less tuned. Our project is C# only. Expect to specify "in C#" in every prompt and review output carefully.
+- **Large cross-file refactors.** Ziva excels at single-file edits and small scenes. Big ports (the enemy AI runtime, the dialogue system) are still better in Claude Code with multi-file context.
+- **Our Mana Seed / MSCA conventions.** Ziva won't know about our custom patterns unless we write a `CLAUDE.md`-style briefing it can read first.
+
+**Recommended workflow:** Keep Claude Code (VS Code) as the main driver for code ports, architecture, and cross-file changes. Add Ziva alongside for editor-native work — scene edits, Inspector tweaks, debugger-driven fixes. The two don't conflict: Claude Code edits files, Ziva edits scenes + debugs. If you only pick one, pick Claude Code. If you use both, the $3/month Hobby tier is plenty to evaluate; upgrade only if Ziva earns its keep in Phase 5.
+
+**Install:** Godot Editor → AssetLib → search "Ziva" → install. Create an account, pick a backend model, done. Docs: https://ziva.sh/docs/
 
 ## 10. Appendix — where each C3 system lives in this plan
 
