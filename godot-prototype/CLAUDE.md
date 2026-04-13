@@ -51,34 +51,77 @@ In Godot 4, `TileMapLayer.SetCell(coord, sourceId, atlasCoord)` **silently fails
 
 The player uses Seliel's Farmer Base (1024x1024, 16x16 grid of 64x64 cells). Walk animations use **non-sequential cell IDs** read from the animation guide. Standard Godot `AnimatedSprite2D`/`SpriteFrames` is a poor fit — we use `Sprite2D.RegionRect` + `FlipH` driven by `ManaSeedAnimator.cs`.
 
-**Walk cell IDs (from `farmer base animation guide.png`):**
-| Direction | Frames (neutral→stepR→extendR→neutral→stepL) |
-|-----------|-----------------------------------------------|
-| Down | 48, 49, 50, 48, 51 |
-| Down-Right | 52, 53, 54, 52, 55 |
-| Right | 64, 65, 66, 64, 67 |
-| Up-Right | 80, 81, 82, 80, 83 |
-| Up | 96, 97, 98, 96, 99 |
+**Verified walk cell IDs (3 directions, confirmed in-game):**
+| Animation | Frames |
+|-----------|--------|
+| walk_down | 48, 49, 50, 48(flip), 49(flip), 50(flip) |
+| walk_up   | 52, 53, 54, 52(flip), 53(flip), 54(flip) |
+| walk_right | 64, 65, 66, 67, 68, 69 |
+| walk_left  | mirrors walk_right via FlipH |
+
+**Idle cell IDs (match C3 implementation, confirmed in-game):**
+| Animation | Cell |
+|-----------|------|
+| idle_down  | 0  |
+| idle_up    | 16 |
+| idle_right | 32 |
+| idle_left  | mirrors idle_right via FlipH |
+
+**Key insight:** The walk guide shows red-numbered "step-L" frames — these are NOT unique cells. They are FlipH mirrors of the step-R cells. `ManaSeedAnimator.cs` uses per-frame `FlipH` on `AnimFrame` to handle this. Direction-level flip (for left-facing) XORs with per-frame flip in `ApplyFrame()`.
+
+**What was tried and failed:** 8-direction (diagonal) animations, `AnimatedSprite2D`/`SpriteFrames` approach (non-sequential cells don't fit sequential frame strips), using walk neutral pose as idle (wrong cells).
 
 Left-facing = horizontal flip of right-facing (Mana Seed convention).
 
 **If the user asks for run, jump, carry, or other animations:** read the guide at `assets/sprites/player/docs/farmer base animation guide.png` and extract cells the same way. Each row in the guide corresponds to one direction of one animation.
 
-### 3. NPC frame layout is different
+### 3. NPC uses AnimatedSprite2D + runtime SpriteFrames
 
-Penny uses a simple row-based sheet (128x256, 32x48 per frame):
-- Row 0 = walk down, Row 1 = right, Row 2 = up, Row 3 = left
-- Row 4 = idle (2 frames)
+Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rename, NpcAnimator hardcodes the path). `NpcAnimator.cs` builds `SpriteFrames` at runtime from the `[Export] Texture2D Sheet` property set in the Inspector.
 
-`NpcAnimator.cs` logs the detected texture size on `_Ready()` and clamps out-of-bounds regions to frame (0,0). All row indices and frame dimensions are `@Export`ed — adjust in the Inspector, not in code.
+**AnimatedSprite2D has no `.Texture` property** — the texture lives in `SpriteFrames`. Always use `[Export] Texture2D Sheet` and pass it into `AtlasTexture.Atlas` during frame construction.
 
-### 4. TMX converter ignores wangsets and rebuilds the scene
+**Penny sheet layout** (128×256, 32×32 frames, 4 columns):
+| Row | Animation | StartCol | FrameCount |
+|-----|-----------|----------|------------|
+| 0 | walk_down | 0 | 4 |
+| 1 | walk_right | 0 | 4 |
+| 2 | walk_up | 0 | 4 |
+| 3 | walk_left | 0 | 4 |
+| 4 | idle | **1** | 2 |
+
+**Idle starts at column 1**, not 0 — columns 0 and 3 in the idle row are blank. Getting this wrong causes flickering.
+
+`SpritesheetAnimator.cs` exists in `scripts/player/` but is **unused** — it was an intermediate attempt at a row-based player animator before ManaSeedAnimator was fixed. Leave it in place as a reference for future costume layering.
+
+### 4. TileSet requires tile_size AND texture_region_size
+
+**Root cause of "jangled" tile rendering:** Without both properties explicitly set in the scene, Godot defaults the atlas region to 64×64 instead of 16×16, causing every tile to sample the wrong part of the tileset.
+
+Both must be present in `VillageMap.tscn`:
+```
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture_region_size = Vector2i(16, 16)   ← REQUIRED
+
+[sub_resource type="TileSet" id="TileSet_1"]
+tile_size = Vector2i(16, 16)             ← REQUIRED
+```
+
+These can be silently stripped during git merges. If tiles look jangled again, check these first.
+
+### 5. TMX converter ignores wangsets and rebuilds the scene
 
 `tools/tmx_to_godot.py` regenerates `scenes/maps/VillageMap.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
 
-It only parses `<layer>` elements; `<wangsets>`, `<imagelayer>`, and `<objectgroup>` are ignored. Building positions are hardcoded in the `BUILDINGS` list to match the TMX offsets.
+**To update tile data without touching the scene**, use instead:
+```bash
+python3 tools/update_tile_csvs.py assets/maps/World_00_Village.tmx
+```
+This writes only the CSV files. MapLoader reads them at runtime — just restart the game.
 
-`tools/add_decor_layers.py` has embedded raw CSV data from the user's full TMX — used once to add the 3 decor layers the initial converter run missed. Safe to leave in place as reference; no need to re-run.
+The TMX is at `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
+
+`tools/add_decor_layers.py` has embedded raw CSV data — used once, safe to leave as reference.
 
 ## Asset Expectations
 
@@ -100,7 +143,9 @@ Defined in `project.godot`:
 
 ## How User Prefers to Work
 
-- **Test-and-iterate over plan-and-execute.** User wants to hit F5 often.
+- **Test-and-iterate over plan-and-execute.** User iterates frequently.
+  - Build: **Ctrl+Cmd+B** (hammer icon) — not F5
+  - Run: **Cmd+B** (reload icon) — not F5
 - **Flag plugin requirements immediately** — user explicitly said this in the opening brief.
 - **Explicit editor instructions** when Godot UI clicks are needed (e.g., "Project → Tools → C# → Create C# Solution").
 - **No scope creep.** If it wasn't in the original brief, confirm before adding.
@@ -109,6 +154,7 @@ Defined in `project.godot`:
 ## Known Open Issues
 
 - **Idle animations are single-frame** (no breathing/sway). Upgrade path: use Mana Seed's "IMPATIENT" or "IDLE" cells from the guide's bottom-right section.
+- **Player has no costume** — renders as base body mannequin (`fbas_01body_human_00a.png`). Full look requires layering costume sprites (hair, shirt, pants) as additional `Sprite2D` children sharing the same `ManaSeedAnimator`.
 - **Player doesn't face NPC during dialogue** — just locks in current direction. Could snap to face NPC on interact.
 - **No collision with buildings** — player walks through walls. Buildings are plain `Sprite2D`, need `StaticBody2D` + `CollisionShape2D` per building if we want collision.
 - **No exit from dialogue via ESC** — only E/Enter/Space advances/closes.
@@ -117,7 +163,7 @@ Defined in `project.godot`:
 
 - Animation guide: `assets/sprites/player/docs/farmer base animation guide.png`
 - Mana Seed cell reference: user has locally, not in repo (too large / copyrighted)
-- TMX source: `World_00_Village.tmx` (simplified to 4 layers; user has full 7-layer version on their Drive)
+- TMX source: `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
 
 ## Don't Do
 
