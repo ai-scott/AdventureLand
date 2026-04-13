@@ -1,0 +1,68 @@
+I've designed these animations with a Seiken Densetsu 3 (Trials of Mana) combat style in mind. Here's how that works:
+	When enemies are present, the characters draw weapons automatically.
+	While in this combat mode, movement is restricted to a relatively slow shuffle (no running or jumping with weapon drawn).
+	Attacks automatically target the nearest enemy.
+	When enemies are defeated, the characters auto sheath their weapons and can resume normal movement.
+	If you want to have your characters run or jump with their weapon drawn, you'll need to add the optional spear sprite layers to page 1 of the base.
+
+
+This asset contains 2 layers (0bas, 6tla) on 3 new pages (pPOL1, pPOL2, and pPOL3).
+Optionally, you may apply the 6tla layer for page 1B (p1B) the polearm alternate for page 1 of the Base, if you want your character to walk around with a spear.
+Layer 6tla contains the spear sprites with proper placement.
+The spear sprites will need to move in front of or behind the player sprite depending on facing/animation.
+Most of it will be obvious, but I've included some reference images to help.
+
+
+Polearm page 1 (pPOL1) contains the following animations:
+
+	Draw/sheath spear. The first 3 columns in the top half of the page.
+	You should transition this animation directly into the spear idle.
+	Run this animation in reverse to stow your weapon.
+	In my sample, I held frames 1 and 2 for a few beats while spinning the spear sprites, but you can replace these with non-spinny sprites if you choose.
+
+	Parry. Column 4, top half.
+	The character holds the spear up to deflect or block an attack while in spear idle.
+	Best if you pair it with some kind of flash or spark effect (not included).
+
+	Evade. Column 5, top half.
+	Used for dodging attacks while in spear idle.
+
+	Get hit. Column 6, top half.
+	Used for getting hit while in spear idle.
+
+	Knockdown. Columns 6 through 8, top half.
+	Repeat 6 and 7 a couple times for a little bounce (see my sample gifs). 
+
+	// The bottom half is intentionally left blank at this point. I may add something there in a future update.
+
+
+Polearm page 2 (pPOL2) contains the following animations:
+
+	Spear idle. Columns 1 through 4, top half.
+	This is a loop. I like 200ms on each frame.
+
+	Spear move. Columns 5 through 6, top half.
+	This is a shuffling combat-ready walk cycle. I like 140ms, 140ms, 200ms, 240ms.
+
+	Spear dash, retreat. Columns 1 and 2, bottom half.
+	Hold column 1 for a beat, then use column 2 to leap backwards, then play column 1 again before returning to idle.
+	This is like a jump back or dodge animation.
+
+	Spear dash, lunge. Columns 1 and 3, bottom half.
+	Just like the retreat above, but use column 3 and make the character leap forward.
+	Both of these dashes can be used in conjunction with the slash or thrust attack animations for cool special skill attacks.
+ 
+	// The rest of page 2 is intentionally left blank at this point. I may add something there in a future update.
+
+Polearm page 2 (pPOL3) contains the following animations:
+	
+	Attack, slash. Columns 4 through 3, top half.
+
+	Attack, thrust. Two types, columns 1-3 and columns 4-6, all bottom half. 
+
+	/ The rest of page 3 is intentionally left blank at this point. I may add something there in a future update.
+
+
+FINAL NOTE: You can find all these animations in the "spear animation demo" gif in the samples folder. They give you a good example of the timing of each one.
+The way Aseprite handles animations would've made it a big hassle to set up the spear sprites on the appropriate layers, though, so just ignore that :-)
+

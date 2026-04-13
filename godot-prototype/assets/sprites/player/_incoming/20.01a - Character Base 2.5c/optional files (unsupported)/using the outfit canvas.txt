@@ -1,0 +1,105 @@
+The "outfit canvas" is a special file I use to draw all the outfits and hairstyles for the Character Base.
+All the animations are preset to run on loops so I can see how my accessories look in action.
+You're welcome to use it in the same way I do, but some basic knowledge of Aseprite is required.
+I'm not going to teach you how to use Aseprite, so you'll first need to look up another tutorial if you've never used it before.
+If you want to use my outfit canvas to make your own outfits, here's what you need to do:
+(I may make a video tutorial of this if there's enough interest, for now this is all you're getting :-))
+
+Step 1: Create a new layer for your add-on.
+	Make sure it's in the folder for the layer type you're making an add-on for.
+		8top (goes on top of everything, a special layer)
+		6tla (tools! I use this folder for layers 6tla AND 7tlb)
+		5hat (hats)
+		4har (hairstyles)
+		3fac (masks or glasses)
+		2clo (cloaks, mantles and shoulder pieces)
+		1out (outfits, main body stuff)
+		0bot (goes under everything, a special layer)
+
+Step 2: Draw your add-on!
+	Make sure the Base layer (char_a) is visible, and you have the new layer selected.
+	Go frame to frame, drawing the outfit on top of the character.
+	Again, make sure you're only drawing on the new layer you created.
+	One layer will be one sprite sheet, so keep that in mind.
+	I use one layer for each outfit, one layer for each hat, etc.
+
+Step 3: Be wary of linked frames.
+	Some frames are linked because they're identical.
+	Select the base layer (char_a) and you will see thick white lines along the timeline. Those are linked frames.
+	Your new layer won't have any linked frames, so make sure you link the same ones I linked in the Base, to save you a lot of work.
+	For example, frame 7 is linked to frame 10. You just need to draw frame 7. Because they're linked, frame 10 will automatically be completed.
+		Side note: You can't link a frame until you draw something in it, so you need to draw 7 first, then link it to 10.
+
+Step 4: Test your animations.
+	Select one of the black-tagged frames in the animation you want to watch (i.e. walk, run, jump, etc)
+		Black-tagged means you can't start the animation in a pink frame.
+		The pink frames with an asterix (frames 6, 10, 17, 18, etc) are redundant frames added only to make the animations took good during testing.
+		Looping animations will run within the lowest tag, so if you start an animation in a pink frame you won't see the whole animation.
+	Once you have a black-tagged frame selected, press Enter to run the animation loop.
+	Does it look good? No? Then press Enter to stop the animation, go back to the frames that don't look good, and keep working on it.
+	When all your animations look good, you're ready for export!
+
+Step 5: Prep your outfit for sprite sheet exporting.
+	1) SAVE YOUR FILE!
+	2) "SAVE AS" YOUR FILE UNDER A DIFFERENT NAME! I like to addend "for export".
+		This is important because you're going to butcher this file to export it, and then delete it afterward.
+	3) Go through and delete all the pink frames.
+		As I mentioned earlier, the pink-tagged frames are redundant, they won't be on the sprite sheet. Delete them all.
+	4) Hide all layers except the one you want on the sprite sheet.
+		You should only see your new outfit, hat, whatever, not the Base, not anything else.
+
+Step 6: Export page 1.
+	Each page is 16 frames long, so page 1 is the first 16 frames, delete ALL the other ones.
+	You should be left with only frames 1 through 16:
+		The untagged frame 1, push (2 frames), pull (2 frames), jump (3 frames), walk (6 frames), and run (2 frames).
+	Go up to File > Export Sprite Sheet (Ctrl+E)
+	In the little sprite sheet export window that pops up, make sure you set it up properly:
+		Sheet Type: By Rows
+		Constraints: Fixed # of Columns, 8
+		Merge Duplicates & Ignore Empty: Unselected, NO checkbox
+		Open Sprite Sheet & Preview: Selected, YES checkbox
+	Then press "Export" and you've got a new sprite sheet for page 1! 
+	This sheet should be 512 by 512 and line up perfectly with the Base page 1.
+	If it doesn't then you screwed up, go back to Step 5 and try again.
+	Give the page a proper name. Let's say it's a tophat. Call it "char_a_p1_5hat_tpht_v01.png"
+
+Step 7: Export page 1B and 1C.
+	First, Ctrl+Z until before you deleted all the unecessary frames for Step 6.
+	Step 7 is similar to Step 6, but you're going to start by deleting the first 16 frames.
+	That was page 1, you're done with it, and don't need it anymore.
+	Then deleted all the frames after the blue-tagged ones.
+	The blue-tagged frames are the alt page 1s. Page 1B and page 1C.
+	But you'll notice that you now have 17 frames, instead of 16 like before.
+	That's because you have both B and C at the front.
+	Page 1B and page 1C are identical but for the one standing frame at the beginning.
+	So to create page 1B from here, delete the one tagged "C", leaving you with the appropriate 16 frames, and export (same as in step 6)!
+	Then Ctrl+Z again, and this time delete the frame tagged "B", again leaving you with 16 frames. Export!
+	You've now completed Pages 1B and 1C.
+
+Step 8: Export page 2 (farming).
+	This one is easy.
+	As with Step 7, "Undo" until you have all your frames back like at the start of Step 6.
+	Page 2 is all the farming animations, the ones tagged till+, seed, water, and reap.
+	Delete all but those 16 frames, and export!
+
+Step 9: Export page 3 (fishing).
+	This one is a bit more complex in the final step, but only because you need to move sprites around AFTER you export it.
+	Isolate the fishing frames (the 16 tagged "fish") by deleting all the others.
+	Export is as usual. But this time, the exported sprite sheet will only be 512x256, rather than 512x512.
+	What you need to do is open up the image "animations, page 3 (fishing only).png" to see how they should be arrayed.
+		Open this file in Aseprite.
+		Create a new layer on top.
+		Copy > paste YOUR exported page 3 into this new layer.
+		Use the selection/move tool to move the frames where they need to go (FOLLOW THE RED ARROWS).
+		Pro-tip:
+			If you double click with the marquee tool in Aseprite, you'll select a full grid tile (16x16 by default I believe).
+			Use this to select the sprites' 4x4 grid tiles with consistency.
+			While moving the selection, hold ALT to snap that selection to the grid.
+			This makes it easy to slide the sprites into their appropriate place.
+	I admit this step is a hassle, but we're kinda stuck with it.
+
+Step 10: Export page 10 (misc).
+	At least the last one is easy!
+	As with Step 7 through 9, "Undo" until you have all your frames back like at the start of Step 6.
+	Delete all the frames except the final 16 (I hope you didn't delete the purple ones, those are intentionally blank).
+	Export, and you're done!

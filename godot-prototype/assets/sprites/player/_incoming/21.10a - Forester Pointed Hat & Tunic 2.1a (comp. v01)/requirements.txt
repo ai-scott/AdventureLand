@@ -1,0 +1,6 @@
+This asset is an outfit or accessory for my Character Base asset pack.
+This asset contains only the specified layers for the addition, and does not include the base.
+You must own the Character Base asset for this to work properly.
+If you do not yet own the Character Base, you can find it here:
+
+https://seliel-the-shaper.itch.io/character-base

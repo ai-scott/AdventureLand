@@ -1,0 +1,74 @@
+I've designed these animations with a Seiken Densetsu 3 (Trials of Mana) combat style in mind. Here's how that works:
+	When enemies are present, the characters draw weapons automatically.
+	While in this combat mode, movement is restricted to a relatively slow shuffle (no running or jumping with weapon drawn).
+	Attacks automatically target the nearest enemy.
+		This is why I prefer shooting up (45 degrees) as opposed to shooting straight in a Zelda 3 style.
+		If bow attacks auto-target the nearest enemy, you can arc the arrow in-engine to hit the nearest enemy.
+		You can use the up-shoot animation for ANY trajectory this way.
+		Otherwise you need to line up your character and can only fire in 4 directions, Zelda 3 style.
+		I find this restrictive and arbitrary: not fun. But hey, it's your game!
+		You can still do the Zelda 3 style archery using these sprites, but that's not TECHNICALLY what they were designed for.
+	When enemies are defeated, the characters auto sheath their weapons and can resume normal movement.
+	If you want to have your characters run or jump with their weapon drawn, you'll need to add the optional bow/quiver layers to page 1 of the base.
+
+
+This asset contains 5 layers (0bas, 1out, 4har, 6tla, 7tlb) on 3 new pages (pBOW1, pBOW2, pBOW3).
+Layer 6tla (bo01) contains the bow sprites with proper placement.
+Layer 7tlb (qv01) contains the quiver sprites with proper placement.
+The bow and quiver sprites will need to move in front of or behind the player sprite depending on facing/animation.
+Most of it will be obvious, but I've included some reference images to help (look for the "layer order" images in the "guides" folder).
+I've included all the individual bow & quiver sprites on a separate sheet so you can use a different system if you don't like what I've done with the layers.
+
+
+Bow page 1 (pBOW1) contains the following animations:
+
+	Draw/sheath bow. The first 3 columns in the top half of the page.
+	You should transition this animation directly into the bow idle.
+	Run this animation in reverse to stow your weapon.
+		Note: For a better quality sheath, use the individual bow sprites as objects, rather than the layer sheet. Then you can apply a reversed motion blur.
+
+	Parry. Column 4, top half.
+	Use for deflecting attacks while in bow idle.
+
+	Evade. Column 5, top half.
+	Used for dodging attacks while in bow idle.
+
+	Get hit. Column 6, top half.
+	Used for getting hit while in bow idle.
+		Note: This looks better if the character shakes a bit and there's an impact special effect (you'll have to buy those elsewhere or make your own).
+
+	Knockdown. Columns 6 through 8, top half.
+	Looks best if you repeat 6 and 7 a couple times for a little bounce. 
+
+	The bottom half of page 1 is intentionally left blank. I may add more animations later.
+
+
+Bow page 2 (pBOW2) contains the following animations:
+
+	Bow idle. Columns 1 through 4, top half.
+	This is a loop. I like 200ms on each frame.
+
+	Bow move. Columns 5 through 6, top half.
+	This is a shuffling combat-ready walk cycle. I like 140ms, 140ms, 200ms, 240ms.
+
+	Retreat & lunge (bow dodge)
+	Column 1 on the bottom half is the crouch frame you use both before and after the lunge or retreat.
+	Column 2 is the retreat frame, used while the character sprite jumps backward.
+	Column 3 is the lunge frame, used while the character sprite jumps forward.
+	To run a retreat animation...
+		Start with the crouch (column 1) for 200ms, then play the retreat frame (column 2) while moving the sprite back, then play clouch for 200ms again upon landing.
+	To run the lunge animation...
+		Start with the crouch (column 1) for 200ms, then play the lunge frame (column 3) while moving the sprite forward, then play clouch for 200ms again upon landing.
+
+
+	// Columns 4 through 8 of page 2 are intentionally left blank for now. I may add something there in a future update.
+
+
+Bow page 3 (pBOW3) contains the following animations:
+
+	Nock and fire arrow.
+	The top half of the page is an 8-frame animation for shooting the arrow at a 45 degree angle up.
+	The bottom half of the page is an 8-frame animation for shooting the arrow straight.
+	In both cases, I recommend the following frame timings (in milliseconds): 180, 100, 100, 100, 400, 50, 50, 100
+	You will need to add the arrow yourself as an object that moves on its own trajectory. See my sample images for an example of how the arrow is nocked.
+

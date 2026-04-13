@@ -1,0 +1,18 @@
+This asset (Cloak & Hood) contains 4 layers (though more may be added in the future), each designated with a 4-digit abbreviation:
+
+mnpl ("mantle, plain")
+lnpl ("long cloak, plain")
+hdpl ("hood, plain")
+hddn ("hood, down")
+
+You are free to use these any way you wish, but they are intended to act as 2 paper doll layers on my Character Base.
+The cloak layer (2clo) may be comprised of the mantle, the cloak, or the mantle ON TOP of the cloak (not the other way around).
+
+  Side note: You can stack the mantle on the cloak in-engine, or using image-editing software, like Aseprite or Photoshop.
+
+The hat layer (5hat) may be comprised of the hood up, or the hood down, not both.
+Furthermore, you should not use either of the hoods without either the mantle or the cloak (or both) beneath it, it won't look right.
+
+Hope that clears up any possible confusion. Enjoy!
+
+-Seliel The Shaper

@@ -16,18 +16,3 @@ obj/
 # OS
 .DS_Store
 Thumbs.db
-
-# Seliel's Mana Seed Farmer Base — download separately per license
-# https://seliel-the-shaper.itch.io/farmer-base
-# Free to use in games; not for redistribution in source repos.
-# See assets/sprites/player/README.md for setup instructions.
-assets/sprites/player/char_a_*/
-assets/sprites/player/farmer_base_sheets/
-assets/sprites/player/farmer_base_effects/
-assets/sprites/player/_supporting files/
-assets/sprites/player/guides/
-assets/sprites/player/*.png
-assets/sprites/player/*.txt
-# Keep committed docs:
-!assets/sprites/player/docs/
-!assets/sprites/player/README.md

@@ -1,0 +1,90 @@
+So you want to create your own Mana Seed Farmer Sprite System compatible outfit or hairstyle and sell it on itch?
+Here are some things you need to do. Unless specifically listed as a recommendation, these are REQUIREMENTS for authorization.
+
+Please read these guidelines thoroughly, then contact me with any questions.
+You should run your idea by me before you get started, I don't want you to do something that will overlap with my plans or what others may be working on.
+You can email me at selieltheshaper@gmail.com, but a DM once you join my Discord server is better: https://selieltheshaper.weebly.com/discord.html
+
+
+Drawing your outfit/hairstyle:
+	~ You must draw the entire asset yourself!
+		Don't copy/paste one of my clothing parts and make edits.
+		Start from scratch and make something interesting!
+	~ Your asset must cover all the animations.
+		Something that only covers the walk animation, for example, will not be approved.
+	~ Use the version 00 color palettes for your element.
+		In the "Mana Seed color ramps.png" image you'll find the base ramps "v00" for hair and outfits.
+		Your outfit can have four color ramp possibilities:
+			One 3-color ramp
+			One 4-color ramp
+			Two 3-color ramps
+			One 4-color ramp AND one 3-color ramp
+		Figure out what your outfit will have, and use the appropriate colors for version 00.
+		You can include more versions (v01, v02, etc.) with different/unique color ramps in your asset, but v00 MUST use the designated base palettes.
+	~ Don't neglect the "black" part of the outfit. Draw it in. Don't rely on the character sprite for this.
+		When you hide the character layer, does all the black disappear too? Then you messed up.
+		If the user wants the player sprite to change color dynamically for some reason, you don't want the black edges of your outfit to also change. Draw them in.
+
+Naming conventions:
+	~ Use full proper naming conventions, there's a text file describing this convention in "Farmer Sprite System readme.txt".
+	~ The unique identifier for each outfit (ID 3) can be any length (no spaces or underscores), but consider editor window readability and don't get carried away.
+	~ Use only 2-digit version numbers, starting at v00 for the base colors, then going up for original palettes.
+	~ On clothing, use the appropriate v00 letter for the color palette you're using:
+			00a - One 3-color ramp
+			00b - One 4-color ramp
+			00c - Two 3-color ramps	
+			00d - One 4-color ramp AND one 3-color ramp
+	~ If you make a hat that can coexist with hair, make sure it's big enough to cover all the available hairstyles in all animations.
+	~ If you make a hairstyle, make sure it stays under all available hats in all animations.
+	~ Use ID 5 "_e" for hats that can't coexist with hair.
+	~ When in doubt, examine the existing asset names!
+
+Organizing your files:
+	~ Mind the layer structure for ID 2:
+		15over (over everything, top-most layer: front wing, magic effects)
+		14head (headwear: hats, hoods, horns)
+		13hair (hair)
+		12face (facewear: glasses, masks)
+		11neck (neckwear: over all the other clothes: cloak, scarf)
+		10outr (outerwear: coats, jackets, vests, suspenders)
+		09hand (handwear: gloves, bracers)
+		08lwr3 (most skirts & dresses)
+		07fot2 (footwear big enough go over pant legs)
+		06lwr2 (pants with upper parts: overalls, shortalls)
+		05shrt (most shirts & blouses)
+		04lwr1 (most pants & shorts)
+		03fot1 (footwear small enough to stay under the pants)
+		02sock (legwear: socks, stockings, hose)
+		01body (the body)
+		00undr (under everything, bottom-most layer: back wing, cloak)
+	~ Include the folders you're using, and put your files in the right folders.
+		This will let users drag and drop your asset into my base folders without having to open each subfolder that your asset uses.
+
+Your product page:
+	~ Don't use my exact page colors or logo, please establish your own branding so people don't confuse your asset for an official Mana Seed product.
+	~ Put the Farmer Sprite System embed and this requirement blurb at the top of the page:
+		"This is a third-party add-on for the Mana Seed Farmer Sprite system. It functions like a paper doll layer, so you must own the Farmer Sprite System in order to use this."
+		On the Farmer Sprite System product page, scroll to the bottom and find "embed," click that, copy/paste it below the quoted text above.
+		The requirement blurb doesn't need to be the very first thing on the page, but buyers should be able to see it without scrolling down.
+	~ Include at least one image of all the color variants included in the asset (if any).
+	Permissions with restrictions:
+		You MAY include "Mana Seed" in the product description and body text, just not the actual title.
+		You MAY include screenshots with my Farmer Sprite wearing your outfit, but not the unclothed sprite.
+			A half dozen non-animated frames should be fine to establish the quality.
+			If you want to preview any animations, only show one direction please (share too much and people can just steal it from your gif).
+	Recommendation:
+		Put multiple frames in one image on a solid color background, rather than a whole image just for one frame.
+		When you create product images of one frame for your seller page, enlarge the image 6-8x so it can be examined without browser bluring.
+		You can charge whatever you want, but I feel like $1-2 per clothing piece or hairstyle is a good price for something like this.
+		You can always increase the price later if you add more content, but keep in mind we want people to be able to buy ALL 3rd party content without breaking the bank.
+
+Ready to publish?
+	~ BEFORE you go live, send me a download key for your product so I can take a look.
+	~ I'll proofread your page and give you feedback, making sure you've done all the stuff I listed above.
+	~ I'll download and test your asset to make sure it's setup to work properly.
+	~ I'm going to look at folder structure and naming conventions, so please don't neglect these things.
+	~ Once you've made any necessary changes, I'll give you the go-ahead to publish.
+	~ Let me know when it's gone live so I can add the embed to my Farmer Sprite System page and boost it to my followers.
+	~ I don't charge any royalties. If there's a lot of compatible content, people will be more likely to buy all of it, and we all win together!
+
+GOOD LUCK! :-D
