@@ -123,6 +123,82 @@ The TMX is at `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 til
 
 `tools/add_decor_layers.py` has embedded raw CSV data — used once, safe to leave as reference.
 
+## Data Resources (GlobalClass pattern)
+
+Game data (enemy stats, items, dialogue) lives in `.tres` files as `[GlobalClass]` Resource subclasses. **Do not hardcode game data in C#.** Edit stats in the Godot Inspector; the files are plain text and diff cleanly in git.
+
+### When to use a Resource
+
+- Anything the user might want to tune without a rebuild (stats, behavior weights, prices)
+- Anything with ≥3 instances sharing a schema (enemies, items, dialogues, quests)
+- Anything currently living as TypeScript `const FOO_CONFIG = {...}` in the C3 codebase — it should become a `.tres`
+
+### File layout
+
+```
+scripts/data/
+├── EnemyData.cs           ← [GlobalClass] Resource, references Array<EnemyBehavior>
+├── EnemyBehavior.cs       ← one weighted behavior slot
+├── EnemyAction.cs         ← Move/Animate/Sound/Invulnerable action
+├── BehaviorCondition.cs   ← distance/hurt/invuln gating
+├── ItemData.cs            ← (future) mirrors ItemsLibrary.json entries
+└── DialogueData.cs        ← (future) mirrors quest-dialogue files
+
+assets/data/
+├── enemies/
+│   ├── ooze.tres
+│   ├── crab.tres
+│   └── bat.tres
+├── items/                 ← (future)
+└── dialogue/              ← (future)
+```
+
+### The pattern
+
+1. **Define the Resource class** in `scripts/data/`:
+   ```csharp
+   [GlobalClass]
+   public partial class EnemyData : Resource
+   {
+       [Export] public string Type { get; set; } = "";
+       [ExportGroup("Base Stats")]
+       [Export] public int Health { get; set; } = 1;
+       [ExportGroup("Behaviors")]
+       [Export] public Array<EnemyBehavior> Behaviors { get; set; } = new();
+   }
+   ```
+
+2. **User builds in Godot** (Ctrl+Cmd+B) — this is what makes the `[GlobalClass]` register in the Inspector. A fresh `.tres` written before build will fail to load.
+
+3. **Create `.tres` by hand or via FileSystem → New Resource** in Godot. Text format is stable, safe to edit directly once you know the schema.
+
+4. **Load at runtime** in enemy spawn code:
+   ```csharp
+   var data = GD.Load<EnemyData>("res://assets/data/enemies/crab.tres");
+   ```
+
+### Gotchas
+
+- **Enums serialize as integers** in `.tres` files based on declaration order. If you reorder enum values, existing `.tres` files silently misdescribe. Add new values at the **end** of the enum; never reorder.
+- **Nested Array<Resource> syntax in .tres**: use `[SubResource("id1"), SubResource("id2")]` — not `Array[Resource]([...])` and not typed arrays. Godot normalizes format on next save.
+- **`[Export] Array<T>` with `= new()` default** avoids null reference errors when the Resource is first loaded from a `.tres` that doesn't set the array.
+- **Resource scripts must be in `scripts/data/`** (convention) — this keeps `scripts/maps/`, `scripts/player/`, etc. free of pure-data types and makes discovery easy.
+
+### Reference implementations
+
+- `scripts/data/EnemyData.cs` + `EnemyBehavior.cs` + `EnemyAction.cs` + `BehaviorCondition.cs`
+- `.tres` files: `assets/data/enemies/ooze.tres`, `crab.tres`, `bat.tres`
+- Source of truth these translate: `../scripts/systems/enemy/enemy-configs.ts` (C3 project)
+
+### Flat vs polymorphic action design
+
+`EnemyAction.cs` uses a **flat parameter layout** (all possible fields on one class, read only what Type needs). The alternative — one subclass per action type (`MoveAction`, `AnimateAction`, etc.) — is cleaner typed but requires more boilerplate and forces `.tres` to pick the concrete subclass. Flat was chosen because:
+1. It mirrors the TypeScript `ActionConfig` union 1:1, making the translation verifiable
+2. Godot Inspector shows all fields under `ExportGroup`s — user sees everything at once
+3. Runtime dispatch is `switch (action.Type)` — easy to port from the TS `switch (action.type)`
+
+If action types diverge significantly later (e.g., compound actions, conditional actions), refactor to subclasses.
+
 ## Asset Expectations
 
 User drops files into `assets/`:
