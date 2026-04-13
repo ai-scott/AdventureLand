@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="AdventureLandPrototype"
-run/main_scene="res://scenes/maps/VillageMap.tscn"
+run/main_scene="uid://br5bymkhd10fi"
 config/features=PackedStringArray("4.6", "C#")
 
 [display]
@@ -25,6 +25,10 @@ window/stretch/mode="viewport"
 [dotnet]
 
 project/assembly_name="AdventureLandPrototype"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/msca/plugin.cfg")
 
 [input]
 
