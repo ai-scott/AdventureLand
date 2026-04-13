@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=17 format=3]
+
+; Ooze config — mirrors OOZE_CONFIG in scripts/systems/enemy/enemy-configs.ts
+; Behavior 1: idle   (weight 4, no conditions) — animate + move toward player slowly
+; Behavior 2: hop    (weight 2, cooldown 2s, distance < 250) — animate + move + sound
+; Behavior 3: hurt   (weight 0, triggered by hurt flag) — animate + stop + invuln 1s
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.cs" id="4"]
+
+; ---------- Actions (enum Type: 0=Move 1=Animate 2=Sound 3=Invulnerable 4=SetEffect) ----------
+; ---------- MovePattern: 0=None 1=TowardPlayer 2=AwayFromPlayer 3=Random 4=Stop 5=SLeft 6=SRight 7=CrabToward 8=SwoopTo 9=FleeTree 10=IdleTree ----------
+
+[sub_resource type="Resource" id="act_idle_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Idle_{direction}"
+
+[sub_resource type="Resource" id="act_idle_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 1
+Speed = 20.0
+
+[sub_resource type="Resource" id="act_hop_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Hop_{direction}"
+
+[sub_resource type="Resource" id="act_hop_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 1
+Speed = 50.0
+
+[sub_resource type="Resource" id="act_hop_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "Slime_Jump"
+
+[sub_resource type="Resource" id="act_hurt_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Hurt_{direction}"
+
+[sub_resource type="Resource" id="act_hurt_stop"]
+script = ExtResource("3")
+Type = 0
+Pattern = 4
+
+[sub_resource type="Resource" id="act_hurt_invuln"]
+script = ExtResource("3")
+Type = 3
+Duration = 1.0
+
+; ---------- Conditions (Type: 0=Distance 1=Health 2=Timer 3=Random 4=Hurt 5=Invulnerable) ----------
+; ---------- Operator: 0=< 1=> 2=<= 3=>= 4== ----------
+
+[sub_resource type="Resource" id="cond_hop_distance"]
+script = ExtResource("4")
+Type = 0
+Operator = 0
+Value = 250.0
+
+[sub_resource type="Resource" id="cond_hurt"]
+script = ExtResource("4")
+Type = 4
+Operator = 4
+Value = 1.0
+
+; ---------- Behaviors ----------
+
+[sub_resource type="Resource" id="beh_idle"]
+script = ExtResource("2")
+Name = "idle"
+DurationMin = 1.0
+DurationMax = 2.0
+Weight = 4.0
+Cooldown = 0.0
+Conditions = []
+Actions = [SubResource("act_idle_animate"), SubResource("act_idle_move")]
+
+[sub_resource type="Resource" id="beh_hop"]
+script = ExtResource("2")
+Name = "hop"
+DurationMin = 0.8
+DurationMax = 1.2
+Weight = 2.0
+Cooldown = 2.0
+Conditions = [SubResource("cond_hop_distance")]
+Actions = [SubResource("act_hop_animate"), SubResource("act_hop_move"), SubResource("act_hop_sound")]
+
+[sub_resource type="Resource" id="beh_hurt"]
+script = ExtResource("2")
+Name = "hurt"
+DurationMin = 0.5
+DurationMax = 0.5
+Weight = 0.0
+Cooldown = 0.0
+Conditions = [SubResource("cond_hurt")]
+Actions = [SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")]
+
+[resource]
+script = ExtResource("1")
+Type = "Ooze"
+Health = 2
+Speed = 15.0
+ViewDistance = 120.0
+AttackDistance = 0.0
+Behaviors = [SubResource("beh_idle"), SubResource("beh_hop"), SubResource("beh_hurt")]

@@ -1,0 +1,181 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=28 format=3]
+
+; Crab config — mirrors CRAB_CONFIG in scripts/systems/enemy/enemy-configs.ts
+; Behaviors: patrol (far), cranky_chase (medium), attack (close), hurt_flash (hurt), retreat (post-hurt invuln)
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.cs" id="4"]
+
+; ---------- Patrol ----------
+[sub_resource type="Resource" id="act_patrol_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Walk_{direction}"
+
+[sub_resource type="Resource" id="act_patrol_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 3
+Speed = 15.0
+
+[sub_resource type="Resource" id="cond_patrol_far"]
+script = ExtResource("4")
+Type = 0
+Operator = 1
+Value = 150.0
+
+; ---------- Cranky Chase ----------
+[sub_resource type="Resource" id="act_cranky_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Cranky_{direction}"
+
+[sub_resource type="Resource" id="act_cranky_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 7
+Speed = 35.0
+
+[sub_resource type="Resource" id="cond_cranky_in_sight"]
+script = ExtResource("4")
+Type = 0
+Operator = 0
+Value = 150.0
+
+[sub_resource type="Resource" id="cond_cranky_not_close"]
+script = ExtResource("4")
+Type = 0
+Operator = 1
+Value = 32.0
+
+; ---------- Attack ----------
+[sub_resource type="Resource" id="act_attack_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Attack_{direction}"
+
+[sub_resource type="Resource" id="act_attack_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 1
+Speed = 50.0
+
+[sub_resource type="Resource" id="cond_attack_close"]
+script = ExtResource("4")
+Type = 0
+Operator = 0
+Value = 32.0
+
+; ---------- Hurt Flash ----------
+[sub_resource type="Resource" id="act_hurt_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Hurt"
+
+[sub_resource type="Resource" id="act_hurt_stop"]
+script = ExtResource("3")
+Type = 0
+Pattern = 4
+
+[sub_resource type="Resource" id="act_hurt_invuln"]
+script = ExtResource("3")
+Type = 3
+Duration = 0.7
+
+[sub_resource type="Resource" id="cond_is_hurt"]
+script = ExtResource("4")
+Type = 4
+Operator = 4
+Value = 1.0
+
+; ---------- Retreat (post-hurt invuln) ----------
+[sub_resource type="Resource" id="act_retreat_animate"]
+script = ExtResource("3")
+Type = 1
+AnimName = "Retreat_{direction}"
+
+[sub_resource type="Resource" id="act_retreat_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 2
+Speed = 100.0
+
+[sub_resource type="Resource" id="act_retreat_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "Crab_Retreat"
+
+[sub_resource type="Resource" id="cond_retreat_not_hurt"]
+script = ExtResource("4")
+Type = 4
+Operator = 4
+Value = 0.0
+
+[sub_resource type="Resource" id="cond_retreat_invuln"]
+script = ExtResource("4")
+Type = 5
+Operator = 4
+Value = 1.0
+
+; ---------- Behaviors ----------
+
+[sub_resource type="Resource" id="beh_patrol"]
+script = ExtResource("2")
+Name = "patrol"
+DurationMin = 2.0
+DurationMax = 4.0
+Weight = 3.0
+Cooldown = 0.0
+Conditions = [SubResource("cond_patrol_far")]
+Actions = [SubResource("act_patrol_animate"), SubResource("act_patrol_move")]
+
+[sub_resource type="Resource" id="beh_cranky"]
+script = ExtResource("2")
+Name = "cranky_chase"
+DurationMin = 1.5
+DurationMax = 3.0
+Weight = 6.0
+Cooldown = 0.0
+Conditions = [SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")]
+Actions = [SubResource("act_cranky_animate"), SubResource("act_cranky_move")]
+
+[sub_resource type="Resource" id="beh_attack"]
+script = ExtResource("2")
+Name = "attack"
+DurationMin = 0.5
+DurationMax = 1.0
+Weight = 10.0
+Cooldown = 0.0
+Conditions = [SubResource("cond_attack_close")]
+Actions = [SubResource("act_attack_animate"), SubResource("act_attack_move")]
+
+[sub_resource type="Resource" id="beh_hurt"]
+script = ExtResource("2")
+Name = "hurt_flash"
+DurationMin = 0.2
+DurationMax = 0.2
+Weight = 0.0
+Cooldown = 0.0
+Conditions = [SubResource("cond_is_hurt")]
+Actions = [SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")]
+
+[sub_resource type="Resource" id="beh_retreat"]
+script = ExtResource("2")
+Name = "retreat"
+DurationMin = 2.0
+DurationMax = 2.0
+Weight = 99.0
+Cooldown = 1.0
+Conditions = [SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")]
+Actions = [SubResource("act_retreat_animate"), SubResource("act_retreat_move"), SubResource("act_retreat_sound")]
+
+[resource]
+script = ExtResource("1")
+Type = "Crab"
+Health = 3
+Speed = 20.0
+ViewDistance = 150.0
+AttackDistance = 32.0
+Behaviors = [SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")]
