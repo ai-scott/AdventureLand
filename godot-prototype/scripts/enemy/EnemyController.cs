@@ -35,7 +35,7 @@ public partial class EnemyController : CharacterBody2D
     /// <summary>Optional override. If null, looked up at runtime via GetTree().GetFirstNodeInGroup("player").</summary>
     [Export] public NodePath PlayerPath;
 
-    private EnemyAnimator _animator;
+    private EnemyAnimatorBase _animator;
     private HealthSystem _health;
     private Area2D _hitbox;
     private Node2D _player;
@@ -60,7 +60,7 @@ public partial class EnemyController : CharacterBody2D
             return;
         }
 
-        _animator = GetNodeOrNull<EnemyAnimator>(AnimatorPath);
+        _animator = GetNodeOrNull<EnemyAnimatorBase>(AnimatorPath);
         _health = GetNodeOrNull<HealthSystem>(HealthSystemPath);
         _hitbox = GetNodeOrNull<Area2D>(HitboxPath);
 

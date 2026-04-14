@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/enemy/EnemyController.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/enemy/EnemySheetAnimator.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/enemy/EnemyFolderAnimator.cs" id="2"]
 [ext_resource type="Script" path="res://scripts/systems/HealthSystem.cs" id="3"]
 
 [sub_resource type="RectangleShape2D" id="BodyShape"]
@@ -35,6 +35,7 @@ shape = SubResource("HurtboxShape")
 
 [node name="EnemyAnimator" type="Node" parent="."]
 script = ExtResource("2")
+FramesFolder = "res://assets/sprites/enemies/ooze/"
 
 [node name="HealthSystem" type="Node" parent="."]
 script = ExtResource("3")

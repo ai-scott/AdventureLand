@@ -20,7 +20,7 @@ namespace AdventureLandPrototype;
 ///   rows 8-11 = hurt_down/up/left/right
 /// If the actual layout differs, override AnimRows in the Inspector per-enemy.
 /// </summary>
-public partial class EnemyAnimator : Node
+public partial class EnemySheetAnimator : EnemyAnimatorBase
 {
     [Export] public Texture2D Sheet;
     [Export] public int FrameWidth = 32;
@@ -111,7 +111,7 @@ public partial class EnemyAnimator : Node
     /// Play a named animation. If the animation doesn't exist, logs and no-ops
     /// (so unhandled animation refs in EnemyData don't crash the game).
     /// </summary>
-    public void Play(string animName)
+    public override void Play(string animName)
     {
         if (_sprite == null || _sprite.SpriteFrames == null) return;
         if (animName == _currentAnim && _sprite.IsPlaying()) return;
@@ -127,7 +127,7 @@ public partial class EnemyAnimator : Node
         _sprite.Play(animName);
     }
 
-    public void Stop()
+    public override void Stop()
     {
         if (_sprite != null) _sprite.Stop();
     }

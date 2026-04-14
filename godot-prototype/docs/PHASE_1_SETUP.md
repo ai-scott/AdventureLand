@@ -17,18 +17,22 @@ Open Godot. **Cmd-B** to build the C# solution. You should see no compile errors
 
 ---
 
-## Step 1 — Drop in the Ooze spritesheet
+## Step 1 — Drop in enemy spritesheets
 
-1. In Finder: move the Ooze spritesheet into `godot-prototype/assets/sprites/enemies/ooze/`. Any PNG name is fine — pick something clean like `ooze.png`.
+**Ooze uses individual per-frame PNGs** (already in `assets/sprites/enemies/ooze/`). The folder-based animator (`EnemyFolderAnimator`) scans that folder automatically — no spritesheet needed. See Step 6 for the Ooze-specific scene.
+
+**Sheet flow applies to future enemies (Crab, Bat, etc.):**
+
+1. In Finder: move the enemy spritesheet into `godot-prototype/assets/sprites/enemies/<name>/`. Any PNG name is fine — pick something clean like `crab.png`.
 2. Back in Godot, the FileSystem panel auto-imports it.
 3. Open the PNG in Preview to note: image width × height, and the grid layout (rows = what? columns = frames per animation?).
 
-The default `EnemyAnimator.cs` config assumes:
+The default `EnemySheetAnimator.cs` config assumes:
 
 - `FrameWidth = 32`, `FrameHeight = 32`
 - **12 rows**, 4 frames of idle per direction (rows 0–3), 4 frames of hop per direction (rows 4–7), 2 frames of hurt per direction (rows 8–11)
 
-If the actual sheet differs, either re-arrange it externally or adjust `DefaultAnimRows` in `scripts/enemy/EnemyAnimator.cs` to match. Tell me the real layout and I can update the code.
+If the actual sheet differs, either re-arrange it externally or adjust `DefaultAnimRows` in `scripts/enemy/EnemySheetAnimator.cs` to match. Tell me the real layout and I can update the code.
 
 ---
 
@@ -94,16 +98,15 @@ Test: no easy way yet, but we'll see this fire after combat is wired.
 ## Step 6 — Drop the Ooze into the world
 
 1. Still in `World_00.tscn`. In the scene tree, find the `Entities` container (should hold Player, buildings, Penny, etc.).
-2. Drag `scenes/enemy/Enemy.tscn` from FileSystem onto `Entities`.
+2. Drag `scenes/enemy/Enemy_Ooze.tscn` from FileSystem onto `Entities`.
 3. With the new Enemy instance selected:
    - **Inspector → Data**: click the circle → Quick Load → `res://assets/data/enemies/ooze.tres`.
    - **Inspector → Transform → Position**: set to something visible near the Player spawn, like `(300, 200)`.
 4. Expand the Enemy instance → click the `EnemyAnimator` child:
-   - **Sheet**: click the folder icon → pick the Ooze PNG you dropped in Step 1.
-   - Leave `FrameWidth / FrameHeight = 32` unless your sheet differs.
+   - **FramesFolder** should already be set to `res://assets/sprites/enemies/ooze/` — verify it points there.
 5. Save the scene.
 
-Run. The Ooze should appear and play `idle_down` (defaulting to that animation since the sheet loads but no behavior has run yet — after a tick, it will start hopping).
+Run. The Ooze should appear and play `idle_down` (defaulting to that animation since frames load but no behavior has run yet — after a tick, it will start hopping).
 
 ---
 
@@ -132,7 +135,7 @@ If no — tell me what you see and send a screenshot. Most likely fix: the `Enti
 
 ## Troubleshooting
 
-**Ooze has no sprite.** EnemyAnimator can't find the sheet or frame dims are wrong. Open the Enemy instance in World_00, click EnemyAnimator child, verify `Sheet` is assigned and `FrameWidth/Height` match the sheet grid.
+**Ooze has no sprite.** EnemyFolderAnimator can't find the frames folder or filenames don't match the expected pattern. Open the Enemy_Ooze instance in World_00, click EnemyAnimator child, verify `FramesFolder` points to `res://assets/sprites/enemies/ooze/`. Check the Output panel for warnings about unrecognized files. For sheet-based enemies, verify `Sheet` is assigned and `FrameWidth/Height` match the sheet grid.
 
 **Attack key does nothing.** Check Input Map has the `attack` action with a key bound. Open Godot's output log; look for warnings about `AttackHitbox` or `HealthSystem` missing.
 
