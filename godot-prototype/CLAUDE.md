@@ -231,7 +231,9 @@ Defined in `project.godot`:
 
 ## Docs in this folder
 
+- **`docs/GODOT_PRIMER.md`** — Godot core concepts (nodes, scenes, signals, `[Export]`, NodePath, collision layers, Resources, running scenes) with concrete examples from our project. Read before first editor session.
 - **`docs/GODOT_TRANSITION_PLAN.md`** — the strategic migration roadmap for porting the full C3 Adventure Land to Godot. Phase-by-phase, with risks, stopping points, and system → phase cross-reference. Read once per phase.
+- **`docs/PHASE_1_SETUP.md`** — current-phase Godot-editor walkthrough (Input Map, scene wiring, Ooze spawn, Y-sort verification).
 - `docs/EVALUATION_REPORT.md` — initial Godot evaluation outcome; justifies the migrate decision.
 - `docs/MSCA_INTEGRATION.md` — Mana Seed Character Animator plugin integration details.
 - `docs/ASSET_CATALOG.md` — Mana Seed kit inventory and organization reference.

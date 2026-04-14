@@ -1,5 +1,7 @@
 # Phase 1 — Godot Editor Setup
 
+> **New to Godot?** Read [`GODOT_PRIMER.md`](./GODOT_PRIMER.md) first. It covers the concepts this doc uses — nodes, scenes, signals, `[Export]`, NodePath, collision layers — with examples from our actual project. About 15 minutes and you'll stop guessing at why each step below is doing what it's doing.
+
 Everything code-side for Phase 1 (HealthSystem, HealthBar, GameOver, EnemyAnimator, EnemyController, Enemy.tscn, PlayerController attack/damage) is committed. The pieces that need the Godot editor — scene wiring, Inspector values, input action binding, and dropping the Ooze sheet — live here.
 
 Work through in order. Each step is testable on its own.
