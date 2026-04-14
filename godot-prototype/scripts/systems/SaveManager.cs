@@ -68,12 +68,14 @@ public partial class SaveManager : Node
     public SaveData GetSlotSummary(int slot)
     {
         if (!SlotExists(slot)) return null;
-        return ResourceLoader.Load<SaveData>(SlotPath(slot));
+        // CacheMode.Replace forces a fresh read — otherwise stale cached data shows.
+        return ResourceLoader.Load<SaveData>(SlotPath(slot), cacheMode: ResourceLoader.CacheMode.Replace);
     }
 
     /// <summary>Start a new game in the given slot.</summary>
     public void NewGame(int slot, string playerName)
     {
+        GD.Print($"[SaveManager] NewGame slot={slot} name={playerName}");
         CurrentData = new SaveData
         {
             PlayerName = playerName,
@@ -84,7 +86,9 @@ public partial class SaveManager : Node
             CurrentWorld = "res://scenes/worlds/World_00.tscn",
         };
         ActiveSlot = slot;
-        Save(slot);
+        // Write directly — don't call Save() which snapshots the live scene (still TitleScreen).
+        var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
+        if (err != Error.Ok) GD.PrintErr($"[SaveManager] NewGame save failed: {err}");
         TransitionToWorld(CurrentData.CurrentWorld);
     }
 
@@ -123,11 +127,13 @@ public partial class SaveManager : Node
     /// <summary>Load a save slot and transition to the saved world.</summary>
     public bool Load(int slot)
     {
+        GD.Print($"[SaveManager] Load slot={slot} exists={SlotExists(slot)}");
         if (!SlotExists(slot)) return false;
 
-        CurrentData = ResourceLoader.Load<SaveData>(SlotPath(slot));
-        if (CurrentData == null) return false;
+        CurrentData = ResourceLoader.Load<SaveData>(SlotPath(slot), cacheMode: ResourceLoader.CacheMode.Replace);
+        if (CurrentData == null) { GD.Print("[SaveManager] Load returned null"); return false; }
 
+        GD.Print($"[SaveManager] Loaded: name={CurrentData.PlayerName} world={CurrentData.CurrentWorld} HP={CurrentData.Health}");
         ActiveSlot = slot;
         TransitionToWorld(CurrentData.CurrentWorld);
         return true;
@@ -146,6 +152,7 @@ public partial class SaveManager : Node
     /// <summary>Change scene and apply saved state to the player.</summary>
     public void TransitionToWorld(string scenePath)
     {
+        GD.Print($"[SaveManager] TransitionToWorld: {scenePath}");
         GetTree().ChangeSceneToFile(scenePath);
         // Deferred so the new scene's _Ready runs first.
         CallDeferred(nameof(ApplySaveToPlayer));
@@ -169,6 +176,10 @@ public partial class SaveManager : Node
         {
             health.RestoreState(CurrentData.Health, CurrentData.MaxHealth);
         }
+
+        // Auto-save on every world entry — die → retry puts you at world start with full HP.
+        Save();
+        GD.Print($"[SaveManager] Auto-saved to slot {ActiveSlot}");
     }
 
     /// <summary>Get a display-friendly world name from a scene path.</summary>

@@ -61,30 +61,19 @@ public partial class GameOverScreen : CanvasLayer
         title.AddThemeFontSizeOverride("font_size", 28);
         vbox.AddChild(title);
 
-        // Retry button — reloads scene from scratch.
-        var retryBtn = new Button();
-        retryBtn.Text = "Retry";
-        retryBtn.CustomMinimumSize = new Vector2(180, 36);
-        retryBtn.Pressed += () =>
-        {
-            GetTree().Paused = false;
-            GetTree().ReloadCurrentScene();
-        };
-        vbox.AddChild(retryBtn);
-
-        // Continue from save — only if a save slot is active.
+        // Retry — loads from the auto-save (restores HP + position on world entry).
         var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
         if (saveManager != null && saveManager.ActiveSlot >= 0)
         {
-            var continueBtn = new Button();
-            continueBtn.Text = "Continue from Save";
-            continueBtn.CustomMinimumSize = new Vector2(180, 36);
-            continueBtn.Pressed += () =>
+            var retryBtn = new Button();
+            retryBtn.Text = "Retry";
+            retryBtn.CustomMinimumSize = new Vector2(180, 36);
+            retryBtn.Pressed += () =>
             {
                 GetTree().Paused = false;
                 saveManager.Load(saveManager.ActiveSlot);
             };
-            vbox.AddChild(continueBtn);
+            vbox.AddChild(retryBtn);
         }
 
         // Title screen button.

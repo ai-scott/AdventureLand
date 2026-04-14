@@ -160,7 +160,7 @@ Prerequisites: EnemyData resources (done). MSCA `animation_set_hitbox` signal wi
 
 Exit criterion: **World 00 is playable with combat. Oozes spawn, take damage, can damage the player, die. Player death shows a placeholder game-over screen. Player renders correctly in/out of buildings.** Dialogue, inventory, save are all stubbed or absent. This is a legitimate "walk away" point.
 
-### Phase 2 — Save/load foundation
+### Phase 2 — Save/load foundation ✅ DONE (2026-04-14)
 Complexity: **M**. The layer everything else stands on.
 
 Deliverables:

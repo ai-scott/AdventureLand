@@ -44,12 +44,22 @@ public partial class HealthBar : CanvasLayer
     {
         if (_health == null) return;
         OnHealthChanged(_health.CurrentHealth, _health.MaxHealth);
+
+        // Show player name from the active save.
+        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
+        if (saveManager?.CurrentData != null && !string.IsNullOrEmpty(saveManager.CurrentData.PlayerName))
+        {
+            _label.Text = $"{saveManager.CurrentData.PlayerName}  {_health.CurrentHealth} / {_health.MaxHealth}";
+        }
     }
 
     private void OnHealthChanged(int current, int max)
     {
         _bar.MaxValue = max;
         _bar.Value = current;
-        _label.Text = $"{current} / {max}";
+
+        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
+        var name = saveManager?.CurrentData?.PlayerName;
+        _label.Text = string.IsNullOrEmpty(name) ? $"{current} / {max}" : $"{name}  {current} / {max}";
     }
 }

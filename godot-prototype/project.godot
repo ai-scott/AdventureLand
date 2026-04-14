@@ -11,8 +11,12 @@ config_version=5
 [application]
 
 config/name="AdventureLandPrototype"
-run/main_scene="uid://br5bymkhd10fi"
+run/main_scene="res://scenes/ui/TitleScreen.tscn"
 config/features=PackedStringArray("4.6", "C#")
+
+[autoload]
+
+SaveManager="*uid://daec4527688be"
 
 [display]
 
