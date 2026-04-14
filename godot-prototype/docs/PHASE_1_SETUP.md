@@ -70,19 +70,19 @@ Open `scenes/player/Player.tscn`.
 
 ## Step 4 — Wire the HealthBar HUD
 
-1. Open `scenes/maps/VillageMap.tscn`.
+1. Open `scenes/worlds/World_00.tscn`.
 2. Drag `scenes/ui/HealthBar.tscn` from the FileSystem panel into the scene tree. Drop it at the root level (top of the tree).
 3. Click the new `HealthBar` node. In the Inspector:
-   - **HealthSystemPath**: click the circle-arrow icon → pick `Entities/Player/HealthSystem` (or whatever the exact path is from VillageMap to the Player's HealthSystem child).
+   - **HealthSystemPath**: click the circle-arrow icon → pick `Entities/Player/HealthSystem` (or whatever the exact path is from World_00 to the Player's HealthSystem child).
 4. Save the scene.
 
-Run the game (**Cmd-B** to run if it's set as your main scene; otherwise F6 on VillageMap). You should see a health bar in the top-left showing `10 / 10`.
+Run the game (**Cmd-B** to run if it's set as your main scene; otherwise F6 on World_00). You should see a health bar in the top-left showing `10 / 10`.
 
 ---
 
 ## Step 5 — Wire the GameOver overlay
 
-1. In VillageMap.tscn: drag `scenes/ui/GameOver.tscn` into the scene tree. Drop at root level.
+1. In World_00.tscn: drag `scenes/ui/GameOver.tscn` into the scene tree. Drop at root level.
 2. Click the new `GameOver` node. In the Inspector:
    - **PlayerHealthPath**: pick `Entities/Player/HealthSystem`.
 3. Save.
@@ -93,7 +93,7 @@ Test: no easy way yet, but we'll see this fire after combat is wired.
 
 ## Step 6 — Drop the Ooze into the world
 
-1. Still in `VillageMap.tscn`. In the scene tree, find the `Entities` container (should hold Player, buildings, Penny, etc.).
+1. Still in `World_00.tscn`. In the scene tree, find the `Entities` container (should hold Player, buildings, Penny, etc.).
 2. Drag `scenes/enemy/Enemy.tscn` from FileSystem onto `Entities`.
 3. With the new Enemy instance selected:
    - **Inspector → Data**: click the circle → Quick Load → `res://assets/data/enemies/ooze.tres`.
@@ -132,7 +132,7 @@ If no — tell me what you see and send a screenshot. Most likely fix: the `Enti
 
 ## Troubleshooting
 
-**Ooze has no sprite.** EnemyAnimator can't find the sheet or frame dims are wrong. Open the Enemy instance in VillageMap, click EnemyAnimator child, verify `Sheet` is assigned and `FrameWidth/Height` match the sheet grid.
+**Ooze has no sprite.** EnemyAnimator can't find the sheet or frame dims are wrong. Open the Enemy instance in World_00, click EnemyAnimator child, verify `Sheet` is assigned and `FrameWidth/Height` match the sheet grid.
 
 **Attack key does nothing.** Check Input Map has the `attack` action with a key bound. Open Godot's output log; look for warnings about `AttackHitbox` or `HealthSystem` missing.
 

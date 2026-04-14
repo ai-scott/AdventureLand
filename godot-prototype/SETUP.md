@@ -74,7 +74,7 @@ Press **F5** (or the play button). You should see:
 ├── project.godot                    # Godot project config + input mappings
 ├── AdventureLandPrototype.csproj    # C# project
 ├── scenes/
-│   ├── maps/VillageMap.tscn         # Main scene (auto-generated from TMX)
+│   ├── worlds/World_00.tscn         # Main scene — Leafwood Village (auto-generated from TMX)
 │   ├── player/Player.tscn           # Player scene (CharacterBody2D)
 │   ├── npc/Npc.tscn                 # NPC scene (Area2D + StaticBody2D)
 │   └── ui/DialogueBox.tscn          # Dialogue overlay (CanvasLayer)

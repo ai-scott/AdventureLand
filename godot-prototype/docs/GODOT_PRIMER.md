@@ -20,14 +20,14 @@ A **scene** is a tree of nodes saved to a `.tscn` file. Every scene has one **ro
 
 | File | Root node type | What it represents |
 |---|---|---|
-| `VillageMap.tscn` | `Node2D` | The whole game world (map + player + NPCs + UI) |
+| `World_00.tscn` | `Node2D` | The whole game world (map + player + NPCs + UI) — named per the `World_XY` grid convention |
 | `Player.tscn` | `CharacterBody2D` | The player character |
 | `Enemy.tscn` | `CharacterBody2D` | Any enemy (Ooze today) |
 | `Npc.tscn` | `Area2D` | An NPC (Penny) |
 | `HealthBar.tscn` | `CanvasLayer` | HUD element |
 | `GameOver.tscn` | `CanvasLayer` | Game over overlay |
 
-**Scenes can contain other scenes.** When you drag `HealthBar.tscn` into `VillageMap.tscn`, you're *instancing* it. The instance shows up as a special blue-highlighted node in the scene tree — you can move it, set its `[Export]` properties, but its internal structure is defined in `HealthBar.tscn` and edits flow from there to every instance.
+**Scenes can contain other scenes.** When you drag `HealthBar.tscn` into `World_00.tscn`, you're *instancing* it. The instance shows up as a special blue-highlighted node in the scene tree — you can move it, set its `[Export]` properties, but its internal structure is defined in `HealthBar.tscn` and edits flow from there to every instance.
 
 **The scene tree at runtime** is what your game really is. When you run the game, Godot starts with the Main Scene (set in Project Settings → Run → Main Scene), instantiates it, and begins processing. Child nodes process in order; signals propagate. That's it.
 
@@ -142,7 +142,7 @@ public override void _Ready() {
 }
 ```
 
-This is how `HealthBar` finds the `HealthSystem` inside the Player — the HealthBar scene doesn't know where the Player lives, but the user wires it in the VillageMap's Inspector.
+This is how `HealthBar` finds the `HealthSystem` inside the Player — the HealthBar scene doesn't know where the Player lives, but the user wires it in the World_00 scene's Inspector.
 
 ### Groups — "find me all the X's"
 
@@ -224,8 +224,8 @@ That line means: "instantiate the scene referenced by ExtResource 4 (which is `N
 
 **Key behaviors:**
 - Instances are **live-linked** to their source `.tscn`. If you edit `Npc.tscn` and save, every instance updates next time the parent scene loads.
-- Instances can **override** properties locally. When you set `Position = Vector2(424, 260)` on a `VillageNpc` instance, that override lives in `VillageMap.tscn`, not in `Npc.tscn`. Other instances remain at the default position.
-- **Changes in the instance don't back-propagate** — editing the Villager's position in VillageMap doesn't move the template.
+- Instances can **override** properties locally. When you set `Position = Vector2(424, 260)` on a `VillageNpc` instance, that override lives in `World_00.tscn`, not in `Npc.tscn`. Other instances remain at the default position.
+- **Changes in the instance don't back-propagate** — editing the Villager's position in World_00 doesn't move the template.
 - To edit the template, double-click the instance (Godot opens the source `.tscn`) or open `Npc.tscn` directly.
 
 This is how we build content without duplication. One `Enemy.tscn`; many instances in different maps with different `Data` resources assigned. One `HealthBar.tscn`; instanced once per world.
@@ -240,7 +240,7 @@ This is how we build content without duplication. One `Enemy.tscn`; many instanc
 | **F7** | Pause a running project |
 | **F8** | Stop a running project |
 
-If F5 does nothing, you haven't set Main Scene — go to **Project → Project Settings → General → Application → Run** and set it to `res://scenes/maps/VillageMap.tscn` (or whatever you want as the game's entry point).
+If F5 does nothing, you haven't set Main Scene — go to **Project → Project Settings → General → Application → Run** and set it to `res://scenes/worlds/World_00.tscn` (or whatever you want as the game's entry point).
 
 While running, the **Output** panel (bottom of Godot) prints `GD.Print()` output, errors, warnings. The **Debugger** panel (tab next to Output) shows live node trees, breakpoints hit, and performance monitors. Both are invaluable for "why isn't this working."
 

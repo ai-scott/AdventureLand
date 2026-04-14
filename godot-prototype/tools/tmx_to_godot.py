@@ -2,7 +2,7 @@
 """
 TMX to Godot 4 TileMap converter for Adventure Land.
 
-Reads the World_00_Village.tmx and generates a VillageMap.tscn with:
+Reads the World_00_Village.tmx and generates World_00.tscn with:
 - A TileMapLayer node per TMX tile layer (Godot 4.3+ uses TileMapLayer, not TileMap)
 - Correct z-ordering for "under player" / "over player" layers
 - Building sprites placed as Sprite2D nodes at their TMX offsets
@@ -17,7 +17,7 @@ import sys
 
 # --- Configuration ---
 TMX_FILE = os.path.join(os.path.dirname(__file__), "..", "World_00_Village.tmx")
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "..", "scenes", "maps", "VillageMap.tscn")
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "..", "scenes", "worlds", "World_00.tscn")
 
 TILE_SIZE = 16
 MAP_WIDTH = 45
@@ -109,7 +109,7 @@ def generate_tilemap_data(tiles, width, height):
 
 
 def write_scene(layers, output_path):
-    """Generate the VillageMap.tscn file."""
+    """Generate the World_00.tscn file."""
 
     # Count resources we need
     # ext_resources: tileset image, grass bg, player scene, npc scene, dialogue scene,
@@ -185,7 +185,7 @@ def write_scene(layers, output_path):
     lines.append('')
 
     # Root node
-    lines.append('[node name="VillageMap" type="Node2D"]')
+    lines.append('[node name="World_00" type="Node2D"]')
     lines.append(f'script = ExtResource("{ids["map_loader"]}")')
     lines.append('')
 

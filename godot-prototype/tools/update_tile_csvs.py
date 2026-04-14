@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Regenerates ONLY the tile CSV files from a TMX — does NOT touch VillageMap.tscn.
+Regenerates ONLY the tile CSV files from a TMX — does NOT touch World_00.tscn.
 
 Safe to run at any time. MapLoader.cs reads these CSVs at runtime.
 

@@ -167,13 +167,13 @@ Color ramps come from `_supporting files/palettes/` in the Farmer Base download.
 4. Open MSCA panel (new tab in Godot top toolbar).
 5. Set "Base Path for Sprites" to `res://assets/sprites/player/farmer_base`.
 6. Check "Use Layered Sprites" (enables palette shader + full 20-layer setup).
-7. Click "Create Player Node" — creates a `CharacterBody2D` in the currently open scene. Move it into the main `Entities` container of `VillageMap.tscn`, or save as a standalone `PlayerMSCA.tscn`.
+7. Click "Create Player Node" — creates a `CharacterBody2D` in the currently open scene. Move it into the main `Entities` container of `World_00.tscn`, or save as a standalone `PlayerMSCA.tscn`.
 
 ### Phase 3 — C# port (code)
 8. Remove the GDScript `MSCAPlayer.gd` attached to the generated CharacterBody2D root. Attach `MscaPlayerController.cs` instead (already written — see `scripts/player/MscaPlayerController.cs`).
 9. **Keep** `MSCAFarmerSpriteLayers.gd` on the `SpriteLayers` node. The generated animations have keyframe function calls into it (signal emitters for hitboxes/sounds). Removing it would require regenerating every animation.
 10. Leave `ManaSeedAnimator.cs` and the original `PlayerController.cs` in place until the new scene is validated. Delete/archive them once the MSCA scene is confirmed working.
-11. Save the generated scene as `scenes/player/PlayerMSCA.tscn`. Update `VillageMap.tscn` to instance `PlayerMSCA.tscn` instead of the current `Player.tscn` only after MSCA is verified.
+11. Save the generated scene as `scenes/player/PlayerMSCA.tscn`. Update `World_00.tscn` to instance `PlayerMSCA.tscn` instead of the current `Player.tscn` only after MSCA is verified.
 
 ### Phase 4 — Costume/palette wiring (code)
 12. Add a `CostumeController` Node child to the MSCA-generated CharacterBody2D (already written — see `scripts/player/CostumeController.cs`). Set hair/hat/shirt/pants/shoes/outerwear textures via the Inspector.

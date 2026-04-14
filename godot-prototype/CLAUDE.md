@@ -19,7 +19,7 @@ A scope-locked Godot 4 prototype evaluating migration from Construct 3. Goal: pr
 ## Architecture Overview
 
 ```
-VillageMap.tscn (main scene)
+World_00.tscn (main scene — Leafwood Village exterior)
 ├── GrassBackground (Sprite2D, repeating, z=-10)
 ├── Ground3underP (TileMapLayer, z=-3)  ← 337 tiles
 ├── Ground2underP (TileMapLayer, z=-2)  ← 252 tiles
@@ -38,6 +38,18 @@ VillageMap.tscn (main scene)
 ```
 
 **Z-index convention matches Tiled layer names:** "under P" = below player (z<0), "P level" = same layer, "over P" = above player (z>0).
+
+### World naming convention (grid)
+
+Worlds follow a `World_XY` grid naming convention inherited from the C3 project, where X = column (east), Y = row (south):
+
+- `World_00.tscn` — Leafwood Village (start, origin of the grid)
+- `World_10.tscn` — tile one step east of origin
+- `World_01.tscn` — tile one step south of origin
+- `World_00_Blacksmith.tscn` — interior of the Blacksmith inside World_00
+- `World_00_Pennys_House.tscn` — interior of Penny's house inside World_00
+
+All world scenes live in `scenes/worlds/`. Interiors use the `World_XY_Name` suffix pattern. When adding a new world, update `scripts/maps/WorldManager.cs` (Phase 5) so scene transitions know where to send the player. The user has existing **numbered door triggers** from C3 (1, 2, 3…) that pair with matching spawn points — reuse the ID scheme when porting interior↔exterior transitions.
 
 ## Critical Gotchas
 
@@ -87,7 +99,7 @@ Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rena
 
 **Root cause of "jangled" tile rendering:** Without both properties explicitly set in the scene, Godot defaults the atlas region to 64×64 instead of 16×16, causing every tile to sample the wrong part of the tileset.
 
-Both must be present in `VillageMap.tscn`:
+Both must be present in `World_00.tscn`:
 ```
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture_region_size = Vector2i(16, 16)   ← REQUIRED
@@ -100,7 +112,7 @@ These can be silently stripped during git merges. If tiles look jangled again, c
 
 ### 5. TMX converter ignores wangsets and rebuilds the scene
 
-`tools/tmx_to_godot.py` regenerates `scenes/maps/VillageMap.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
+`tools/tmx_to_godot.py` regenerates `scenes/worlds/World_00.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
 
 **To update tile data without touching the scene**, use instead:
 ```bash

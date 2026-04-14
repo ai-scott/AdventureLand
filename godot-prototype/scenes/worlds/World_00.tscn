@@ -693,7 +693,7 @@ physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 
-[node name="VillageMap" type="Node2D" unique_id=772777698]
+[node name="World_00" type="Node2D" unique_id=772777698]
 script = ExtResource("7")
 
 [node name="GrassBackground" type="Sprite2D" parent="." unique_id=1788386527]

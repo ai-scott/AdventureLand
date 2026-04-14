@@ -16,7 +16,7 @@ Adventure Land today is a hybrid: **14 Construct 3 event sheets (~35,300 lines o
 |------|--------|-----------|
 | Godot 4.6 .NET project + C# build + input actions | ✅ | `project.godot`, `PlayerController.cs` |
 | Tiled TMX → CSV → runtime `TileMapLayer` pipeline | ✅ | `tools/tmx_to_godot.py`, `MapLoader.cs` |
-| 7-layer tilemap (1,430 tiles) with Y-sort across container | ✅ | `scenes/maps/VillageMap.tscn` |
+| 7-layer tilemap (1,430 tiles) with Y-sort across container | ✅ | `scenes/worlds/World_00.tscn` |
 | Per-tile Objects-layer collision from C3 polygon data | ✅ | `tools/gen_objects_collision.py` |
 | Mana Seed paper-doll player via MSCA plugin | ✅ | `addons/msca/`, `Player.tscn` |
 | `PlayerController.cs` driving `AnimationTree` via Travel + blend | ✅ | `scripts/player/PlayerController.cs` |
@@ -213,17 +213,17 @@ Deliverables:
 - All 8 World 00 NPCs ported (Penny, Rosie, Windmill Nick, Blacksmith shopkeeper, General Store shopkeeper, Adventure Shop shopkeeper, Tree Sign, Welcome NPC).
 - Tiled Object Layer pipeline — `MapLoader.cs` parses `<objectgroup>` from TMX to spawn NPCs/triggers from map data. One-line in Tiled → NPC in world.
 
-**Exterior vs interior architecture.** Separate `.tscn` per location:
-  - `scenes/worlds/World00_Village.tscn` — the outdoor village (what we have today)
-  - `scenes/worlds/World00_PennysHouse.tscn`, `Blacksmith.tscn`, `AdventureShop.tscn`, `GeneralStore.tscn`, `WindmillF0.tscn`, `WindmillF1.tscn` — 6 interior scenes
+**Scene naming follows the C3 `World_XY` grid.** X = column (east), Y = row (south). Interiors use a `World_XY_Name` suffix pattern so every world's interiors sort together in the filesystem and in code.
+  - `scenes/worlds/World_00.tscn` — Leafwood Village exterior (what we have today)
+  - `scenes/worlds/World_00_Pennys_House.tscn`, `World_00_Blacksmith.tscn`, `World_00_Adventure_Shop.tscn`, `World_00_General_Store.tscn`, `World_00_Windmill_F0.tscn`, `World_00_Windmill_F1.tscn` — 6 interior scenes
   - Each interior scene is self-contained: its own tilemap (or hand-built walls), its own NPCs, its own camera bounds, its own entrance/exit doors.
   - A shared `WorldBase.tscn` is tempting but unnecessary — interiors diverge enough that inheritance bites back. Compose via signals + shared controller scripts instead.
 
 **World transitions — the right pattern for Adventure Land.**
-  - **Door entry (exterior → interior):** `Area2D` door trigger at the building's entrance, `BodyEntered` signal, invokes `WorldManager.GoTo(scenePath, spawnPoint)`.
+  - **Door entry (exterior → interior):** `Area2D` door trigger at the building's entrance, `BodyEntered` signal, invokes `WorldManager.GoTo(scenePath, doorId)`.
   - **`WorldManager` autoload** — holds the transition primitive. Fades the screen (via a `CanvasLayer` with an `AnimationPlayer`), calls `GetTree().ChangeSceneToFile(path)`, then positions the player at the named spawn marker in the new scene. Responsible for saving "where the player was" to `SaveData.CurrentWorld` after each transition so reload works.
-  - **Exit (interior → exterior):** dedicated `ExitDoor.tscn` inside each interior, returns to `World00_Village.tscn` at the door's original outdoor spawn point.
-  - **Spawn markers** — each scene has named `Marker2D` nodes (`SpawnFromVillage`, `SpawnFromBlacksmith`, etc.). The incoming transition names which marker to use.
+  - **Exit (interior → exterior):** dedicated `ExitDoor.tscn` inside each interior, returns to `World_00.tscn` at the door's original outdoor spawn point.
+  - **Numbered door triggers (reused from C3).** The user's C3 project already assigns each door a numeric ID — door `1` on the village side matches `SpawnFromDoor_1` on the interior side, etc. Reuse that scheme: `DoorTrigger.tscn` exports `[Export] int DoorId`, and each scene has `Marker2D` nodes named `SpawnFromDoor_{n}`. `WorldManager.GoTo(path, doorId)` looks up the matching marker in the destination scene. Carries the existing C3 numbering forward unchanged — fewer surprises when porting map data.
   - **Camera snap on transition** — set `Camera2D.ResetSmoothing()` after spawn to avoid a wild pan across the scene.
   - Pause music/SFX ducking during fade; restore on fade-in.
 
@@ -253,7 +253,7 @@ Deliverables:
 - `MusicController.cs` — intensity modes (base/mid/high), ducking on dialogue start. Port of `scripts/systems/audio/music-*`.
 - `SFXController.cs` — convention-based (`{obj}_{action}`) pooled players. Port of `scripts/systems/audio/sfx-controller`.
 - VO system — boss voice-over with automatic music ducking.
-- **Title screen** (`scenes/ui/TitleScreen.tscn`) — logo, "New Game" / "Continue" / "Settings" / "Quit". Continue is enabled only if a save exists. Background music, ambient art. Uses `WorldManager.GoTo()` to launch the game scene. This is the game's new `main_scene` — replaces VillageMap as the boot target.
+- **Title screen** (`scenes/ui/TitleScreen.tscn`) — logo, "New Game" / "Continue" / "Settings" / "Quit". Continue is enabled only if a save exists. Background music, ambient art. Uses `WorldManager.GoTo()` to launch the game scene. This is the game's new `main_scene` — replaces World_00 as the boot target.
 - **Game over** (`scenes/ui/GameOver.tscn`) — upgrade from the Phase 1 placeholder. Fade to black on death, "You died" text, options: Continue from last save / Return to Title / Quit. Ties to `SaveManager.LoadLastSave()`.
 - **Intro/credits** — optional intro cutscene at new-game start (`scenes/ui/Intro.tscn` — series of text/image panels, skippable). Credits scene at endgame.
 - Tile animations (`scripts/systems/tiles/`) — water/fire/lava/waterfall. Port the data-driven config; consider using `AnimatedTexture` or a shader instead of per-frame TileMap updates. Aim for the 67% CPU improvement the TS version achieved.
