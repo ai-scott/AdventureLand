@@ -90,4 +90,14 @@ public partial class HealthSystem : Node
         _invulnTimer = 0;
         EmitSignal(SignalName.HealthChanged, CurrentHealth, MaxHealth);
     }
+
+    /// <summary>Restore to exact saved values. Used by SaveManager after scene load.</summary>
+    public void RestoreState(int health, int maxHealth)
+    {
+        MaxHealth = maxHealth;
+        CurrentHealth = Mathf.Clamp(health, 0, maxHealth);
+        Invulnerable = false;
+        _invulnTimer = 0;
+        EmitSignal(SignalName.HealthChanged, CurrentHealth, MaxHealth);
+    }
 }

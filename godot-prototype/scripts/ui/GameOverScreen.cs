@@ -3,16 +3,14 @@ using Godot;
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Placeholder game-over overlay. Shown on the Player's HealthSystem.Died signal.
-/// R reloads the current scene for a quick retry. Phase 7 upgrades this to a proper
-/// "Continue from last save / Return to Title / Quit" menu once Phase 2 (SaveData) lands.
+/// Game-over overlay. Shown when the Player's HealthSystem.Died signal fires.
+/// Offers Retry (reload scene), Continue from save, and Title Screen.
 /// </summary>
 public partial class GameOverScreen : CanvasLayer
 {
     [Export] public NodePath PlayerHealthPath;
 
     private HealthSystem _health;
-    private bool _isDead;
 
     public override void _Ready()
     {
@@ -34,9 +32,6 @@ public partial class GameOverScreen : CanvasLayer
 
     private void OnPlayerDied()
     {
-        _isDead = true;
-
-        // Build overlay on the scene root so it's definitely in the viewport.
         var root = GetTree().CurrentScene;
 
         var canvas = new CanvasLayer();
@@ -44,32 +39,66 @@ public partial class GameOverScreen : CanvasLayer
         canvas.ProcessMode = ProcessModeEnum.Always;
         root.AddChild(canvas);
 
+        // Dim background.
         var dim = new ColorRect();
         dim.Color = new Color(0, 0, 0, 0.75f);
         dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         canvas.AddChild(dim);
 
-        var label = new Label();
-        label.Text = "YOU DIED\nPress R to restart";
-        label.HorizontalAlignment = HorizontalAlignment.Center;
-        label.VerticalAlignment = VerticalAlignment.Center;
-        label.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        label.AddThemeColorOverride("font_color", new Color(1f, 0.4f, 0.4f, 1f));
-        label.AddThemeFontSizeOverride("font_size", 28);
-        canvas.AddChild(label);
+        // Center container for text + buttons.
+        var center = new CenterContainer();
+        center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        canvas.AddChild(center);
 
+        var vbox = new VBoxContainer();
+        vbox.AddThemeConstantOverride("separation", 12);
+        center.AddChild(vbox);
 
-        // Defer pause so the overlay renders before freeze.
-        GetTree().CreateTimer(0.05).Timeout += () => GetTree().Paused = true;
-    }
+        var title = new Label();
+        title.Text = "YOU DIED";
+        title.HorizontalAlignment = HorizontalAlignment.Center;
+        title.AddThemeColorOverride("font_color", new Color(1f, 0.4f, 0.4f, 1f));
+        title.AddThemeFontSizeOverride("font_size", 28);
+        vbox.AddChild(title);
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (!_isDead) return;
-        if (@event is InputEventKey key && key.Pressed && key.Keycode == Key.R)
+        // Retry button — reloads scene from scratch.
+        var retryBtn = new Button();
+        retryBtn.Text = "Retry";
+        retryBtn.CustomMinimumSize = new Vector2(180, 36);
+        retryBtn.Pressed += () =>
         {
             GetTree().Paused = false;
             GetTree().ReloadCurrentScene();
+        };
+        vbox.AddChild(retryBtn);
+
+        // Continue from save — only if a save slot is active.
+        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
+        if (saveManager != null && saveManager.ActiveSlot >= 0)
+        {
+            var continueBtn = new Button();
+            continueBtn.Text = "Continue from Save";
+            continueBtn.CustomMinimumSize = new Vector2(180, 36);
+            continueBtn.Pressed += () =>
+            {
+                GetTree().Paused = false;
+                saveManager.Load(saveManager.ActiveSlot);
+            };
+            vbox.AddChild(continueBtn);
         }
+
+        // Title screen button.
+        var titleBtn = new Button();
+        titleBtn.Text = "Title Screen";
+        titleBtn.CustomMinimumSize = new Vector2(180, 36);
+        titleBtn.Pressed += () =>
+        {
+            GetTree().Paused = false;
+            GetTree().ChangeSceneToFile("res://scenes/ui/TitleScreen.tscn");
+        };
+        vbox.AddChild(titleBtn);
+
+        // Defer pause so the overlay renders.
+        GetTree().CreateTimer(0.05).Timeout += () => GetTree().Paused = true;
     }
 }
