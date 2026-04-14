@@ -28,259 +28,308 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class PlayerController : CharacterBody2D
 {
-    [Export] public float Speed = 80f;
-    [Export] public float Acceleration = 10f;
-    [Export] public float Friction = 10f;
+	[Export] public float Speed = 80f;
+	[Export] public float Acceleration = 10f;
+	[Export] public float Friction = 10f;
 
-    [ExportGroup("Combat")]
-    /// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
-    [Export] public string AttackAnimName = "OverhandStrike";
-    /// <summary>How far in front of the player to position the hitbox, in pixels.</summary>
-    [Export] public float HitboxOffset = 14f;
+	[ExportGroup("Combat")]
+	/// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
+	[Export] public string AttackAnimName = "StrikeForehandOneHandWeapon";
+	/// <summary>How far in front of the player to position the hitbox, in pixels.</summary>
+	[Export] public float HitboxOffset = 14f;
 
-    [ExportGroup("Debug")]
-    /// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>
-    [Export] public bool DebugDumpHairRamps = false;
-    /// <summary>Set to a valid row (-1 = disabled). Recolors hair to that row from the ramps sheet on start.</summary>
-    [Export] public int DebugRecolorHairToRow = -1;
+	[ExportGroup("Debug")]
+	/// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>
+	[Export] public bool DebugDumpHairRamps = false;
+	/// <summary>Set to a valid row (-1 = disabled). Recolors hair to that row from the ramps sheet on start.</summary>
+	[Export] public int DebugRecolorHairToRow = -1;
 
-    /// <summary>Dialogue sets this to freeze input without affecting facing.</summary>
-    public bool InputLocked { get; set; } = false;
+	/// <summary>Dialogue sets this to freeze input without affecting facing.</summary>
+	public bool InputLocked { get; set; } = false;
 
-    /// <summary>True while mid-attack — blocks movement input, gates re-press.</summary>
-    public bool Attacking { get; private set; } = false;
+	/// <summary>True while mid-attack — blocks movement input, gates re-press.</summary>
+	public bool Attacking { get; private set; } = false;
 
-    private AnimationTree _tree;
-    private AnimationNodeStateMachinePlayback _state;
-    private Node _spriteLayers;
-    private Area2D _attackHitbox;
-    private HealthSystem _health;
-    private Vector2 _facing = Vector2.Down;
+	private AnimationTree _tree;
+	private AnimationNodeStateMachinePlayback _state;
+	private Node _spriteLayers;
+	private Area2D _attackHitbox;
+	private HealthSystem _health;
+	private Sprite2D _weaponSprite;
+	private Vector2 _facing = Vector2.Down;
 
-    private const string AnimIdle = "Idle";
-    private const string AnimWalk = "Walk";
+	// Knockback stun — blocks input while > 0, velocity decays.
+	private double _knockbackTimer;
+	private Vector2 _knockbackVelocity;
+	private const double KnockbackDuration = 0.25;
 
-    private const string HairRampsPath = "res://assets/sprites/player/farmer/palettes/mana seed hair ramps.png";
-    private const string HairBaseRampPath = "res://assets/sprites/player/farmer/palettes/base ramps/hair color base ramp.png";
+	private const string AnimIdle = "Idle";
+	private const string AnimWalk = "Walk";
 
-    public override void _Ready()
-    {
-        AddToGroup("player");
+	private const string HairRampsPath = "res://assets/sprites/player/farmer/palettes/mana seed hair ramps.png";
+	private const string HairBaseRampPath = "res://assets/sprites/player/farmer/palettes/base ramps/hair color base ramp.png";
 
-        var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
-        _tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
-        _spriteLayers = GetNode<Node>("SpriteLayers");
+	public override void _Ready()
+	{
+		AddToGroup("player");
 
-        // Rebind the AnimationTree to the correct AnimationPlayer. MSCA saves
-        // an absolute NodePath that breaks if the scene was re-rooted or moved.
-        // Setting this at runtime works regardless of the saved path.
-        _tree.AnimPlayer = _tree.GetPathTo(animPlayer);
-        _tree.Active = true;
+		var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
+		_tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
+		_spriteLayers = GetNode<Node>("SpriteLayers");
 
-        _state = (AnimationNodeStateMachinePlayback)_tree.Get("parameters/playback");
+		// Rebind the AnimationTree to the correct AnimationPlayer. MSCA saves
+		// an absolute NodePath that breaks if the scene was re-rooted or moved.
+		// Setting this at runtime works regardless of the saved path.
+		_tree.AnimPlayer = _tree.GetPathTo(animPlayer);
+		_tree.Active = true;
 
-        SetBlend(AnimIdle, _facing);
-        _state.Travel(AnimIdle);
+		_state = (AnimationNodeStateMachinePlayback)_tree.Get("parameters/playback");
 
-        // Combat wiring — best-effort; missing nodes log a warning but don't crash.
-        _attackHitbox = GetNodeOrNull<Area2D>("AttackHitbox");
-        if (_attackHitbox != null)
-        {
-            _attackHitbox.Monitoring = false;
-            _attackHitbox.AreaEntered += OnAttackHitboxAreaEntered;
-        }
-        else
-        {
-            GD.PushWarning("[PlayerController] No AttackHitbox Area2D found — attacks will not deal damage.");
-        }
+		SetBlend(AnimIdle, _facing);
+		_state.Travel(AnimIdle);
 
-        _health = GetNodeOrNull<HealthSystem>("HealthSystem");
-        if (_health == null)
-        {
-            GD.PushWarning("[PlayerController] No HealthSystem found — player cannot take damage.");
-        }
+		// Weapon sprite — hidden until attack.
+		_weaponSprite = GetNodeOrNull<Sprite2D>("SpriteLayers/farmer_1h_weapon");
+		if (_weaponSprite != null) _weaponSprite.Visible = false;
 
-        // Subscribe to MSCA's animation_set_hitbox signal. This is a GDScript signal on the
-        // SpriteLayers node (MSCAFarmerSpriteLayers.gd). Signal args from the plugin source:
-        //   (counter, track, timer_value, direction)
-        // We gate the hitbox Monitoring for timer_value seconds.
-        if (_spriteLayers != null)
-        {
-            var err = _spriteLayers.Connect("animation_set_hitbox",
-                new Callable(this, nameof(OnAnimationSetHitbox)));
-            if (err != Error.Ok)
-            {
-                GD.PushWarning($"[PlayerController] Could not connect animation_set_hitbox: {err}");
-            }
-        }
+		// Combat wiring — best-effort; missing nodes log a warning but don't crash.
+		_attackHitbox = GetNodeOrNull<Area2D>("AttackHitbox");
+		if (_attackHitbox != null)
+		{
+			_attackHitbox.Monitoring = false;
+			_attackHitbox.AreaEntered += OnAttackHitboxAreaEntered;
+		}
+		else
+		{
+			GD.PushWarning("[PlayerController] No AttackHitbox Area2D found — attacks will not deal damage.");
+		}
 
-        // MSCA animation signals to detect attack start/end for the Attacking gate.
-        if (_spriteLayers != null)
-        {
-            _spriteLayers.Connect("animation_state_started", new Callable(this, nameof(OnAnimStateStarted)));
-            _spriteLayers.Connect("animation_state_finished", new Callable(this, nameof(OnAnimStateFinished)));
-        }
+		_health = GetNodeOrNull<HealthSystem>("HealthSystem");
+		if (_health == null)
+		{
+			GD.PushWarning("[PlayerController] No HealthSystem found — player cannot take damage.");
+		}
 
-        // Debug: dump hair ramps so the user can pick a row
-        if (DebugDumpHairRamps)
-        {
-            var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
-            PaletteSwapper.DumpRampSheet(rampsSheet, "hair ramps");
-        }
+		// Subscribe to MSCA's animation_set_hitbox signal. This is a GDScript signal on the
+		// SpriteLayers node (MSCAFarmerSpriteLayers.gd). Signal args from the plugin source:
+		//   (counter, track, timer_value, direction)
+		// We gate the hitbox Monitoring for timer_value seconds.
+		if (_spriteLayers != null)
+		{
+			var err = _spriteLayers.Connect("animation_set_hitbox",
+				new Callable(this, nameof(OnAnimationSetHitbox)));
+			if (err != Error.Ok)
+			{
+				GD.PushWarning($"[PlayerController] Could not connect animation_set_hitbox: {err}");
+			}
+		}
 
-        // Debug: recolor hair to a chosen row
-        if (DebugRecolorHairToRow >= 0)
-        {
-            RecolorHair(DebugRecolorHairToRow);
-        }
-    }
+		// MSCA animation signals to detect attack start/end for the Attacking gate.
+		if (_spriteLayers != null)
+		{
+			_spriteLayers.Connect("animation_state_started", new Callable(this, nameof(OnAnimStateStarted)));
+			_spriteLayers.Connect("animation_state_finished", new Callable(this, nameof(OnAnimStateFinished)));
+		}
 
-    private void RecolorHair(int row)
-    {
-        var hair = GetNodeOrNull<Sprite2D>("SpriteLayers/13hair");
-        var baseRamp = GD.Load<Texture2D>(HairBaseRampPath);
-        var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
-        if (hair == null || baseRamp == null || rampsSheet == null)
-        {
-            GD.Print($"[Palette] missing asset: hair={hair != null} base={baseRamp != null} sheet={rampsSheet != null}");
-            return;
-        }
-        var original = PaletteSwapper.ReadRampFromTexture(baseRamp);
-        var replace = PaletteSwapper.ReadRampRow(rampsSheet, row);
-        hair.Material = PaletteSwapper.CreateMaterial(original, replace);
-        GD.Print($"[Palette] hair recolored: row {row}, {replace.Length} colors");
-    }
+		// Debug: dump hair ramps (uncomment the body to use, then re-comment)
+		// if (DebugDumpHairRamps)
+		// {
+		// 	var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
+		// 	PaletteSwapper.DumpRampSheet(rampsSheet, "hair ramps");
+		// }
 
-    public override void _PhysicsProcess(double delta)
-    {
-        // Input: always zero when locked or mid-attack, else read the action axis.
-        var input = (InputLocked || Attacking)
-            ? Vector2.Zero
-            : Input.GetVector("move_left", "move_right", "move_up", "move_down");
+		// Debug: recolor hair to a chosen row
+		if (DebugRecolorHairToRow >= 0)
+		{
+			RecolorHair(DebugRecolorHairToRow);
+		}
+	}
 
-        if (input != Vector2.Zero)
-        {
-            input = input.Normalized();
-            _facing = SnapToCardinal(input);
+	private void RecolorHair(int row)
+	{
+		var hair = GetNodeOrNull<Sprite2D>("SpriteLayers/13hair");
+		var baseRamp = GD.Load<Texture2D>(HairBaseRampPath);
+		var rampsSheet = GD.Load<Texture2D>(HairRampsPath);
+		if (hair == null || baseRamp == null || rampsSheet == null)
+		{
+			GD.Print($"[Palette] missing asset: hair={hair != null} base={baseRamp != null} sheet={rampsSheet != null}");
+			return;
+		}
+		var original = PaletteSwapper.ReadRampFromTexture(baseRamp);
+		var replace = PaletteSwapper.ReadRampRow(rampsSheet, row);
+		hair.Material = PaletteSwapper.CreateMaterial(original, replace);
+		GD.Print($"[Palette] hair recolored: row {row}, {replace.Length} colors");
+	}
 
-            SetBlend(AnimWalk, _facing);
-            _state.Travel(AnimWalk);
+	public override void _PhysicsProcess(double delta)
+	{
+		if (_health != null && _health.IsDead) return;
 
-            var target = input * Speed;
-            Velocity = Velocity.MoveToward(target, Acceleration * Speed * (float)delta);
-        }
-        else
-        {
-            // Only return to Idle if not attacking (attack state is handled via Travel from _Input).
-            if (!Attacking)
-            {
-                SetBlend(AnimIdle, _facing);
-                _state.Travel(AnimIdle);
-            }
+		// Knockback stun — skip input, decay velocity.
+		if (_knockbackTimer > 0)
+		{
+			_knockbackTimer -= delta;
+			Velocity = _knockbackVelocity * (float)(_knockbackTimer / KnockbackDuration);
+			MoveAndSlide();
+			return;
+		}
 
-            Velocity = Velocity.MoveToward(Vector2.Zero, Friction * Speed * (float)delta);
-        }
+		// Input: always zero when locked or mid-attack, else read the action axis.
+		var input = (InputLocked || Attacking)
+			? Vector2.Zero
+			: Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-        MoveAndSlide();
-    }
+		if (input != Vector2.Zero)
+		{
+			input = input.Normalized();
+			_facing = SnapToCardinal(input);
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (InputLocked || Attacking) return;
-        if (!@event.IsActionPressed("attack")) return;
+			SetBlend(AnimWalk, _facing);
+			_state.Travel(AnimWalk);
 
-        StartAttack();
-    }
+			var target = input * Speed;
+			Velocity = Velocity.MoveToward(target, Acceleration * Speed * (float)delta);
+		}
+		else
+		{
+			// Only return to Idle if not attacking (attack state is handled via Travel from _Input).
+			if (!Attacking)
+			{
+				SetBlend(AnimIdle, _facing);
+				_state.Travel(AnimIdle);
+			}
 
-    private void StartAttack()
-    {
-        // MSCA BlendSpace2D uses facing direction for the strike variant.
-        SetBlend(AttackAnimName, _facing);
-        _state.Travel(AttackAnimName);
-        Attacking = true;
-        // Position the hitbox in front of the player for the duration of the strike.
-        if (_attackHitbox != null)
-        {
-            _attackHitbox.Position = _facing * HitboxOffset;
-        }
-    }
+			Velocity = Velocity.MoveToward(Vector2.Zero, Friction * Speed * (float)delta);
+		}
 
-    /// <summary>Receives damage from an enemy's Hitbox. Routes to the HealthSystem.</summary>
-    public void TakeDamage(int amount)
-    {
-        _health?.TakeDamage(amount);
-    }
+		MoveAndSlide();
+	}
 
-    /// <summary>Turn player to face a world-space target (e.g., NPC during dialogue).</summary>
-    public void FaceTarget(Vector2 globalTargetPos)
-    {
-        var delta = globalTargetPos - GlobalPosition;
-        if (delta == Vector2.Zero) return;
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (InputLocked || Attacking) return;
+		if (!@event.IsActionPressed("attack")) return;
 
-        _facing = SnapToCardinal(delta.Normalized());
-        SetBlend(AnimIdle, _facing);
-    }
+		StartAttack();
+	}
 
-    // ----- MSCA signal handlers (SpriteLayers emits these from GDScript) -----
+	private void StartAttack()
+	{
+		// MSCA BlendSpace2D uses facing direction for the strike variant.
+		SetBlend(AttackAnimName, _facing);
+		_state.Travel(AttackAnimName);
+		Attacking = true;
+		// Position the hitbox in front of the player for the duration of the strike.
+		if (_attackHitbox != null)
+		{
+			_attackHitbox.Position = _facing * HitboxOffset;
+		}
+	}
 
-    private void OnAnimationSetHitbox(int counter, int track, float timerValue, int direction)
-    {
-        // Turn on the hitbox for `timerValue` seconds during an attack animation.
-        if (_attackHitbox == null) return;
-        _attackHitbox.Monitoring = true;
+	/// <summary>Receives damage from an enemy's Hitbox. Routes to the HealthSystem.</summary>
+	public void TakeDamage(int amount)
+	{
+		if (_health == null || _health.Invulnerable || _health.IsDead) return;
+		_health.TakeDamage(amount);
+		if (!_health.IsDead) PlayHurtFlash();
+	}
 
-        var timer = GetTree().CreateTimer(Mathf.Max(0.05f, timerValue));
-        timer.Timeout += () =>
-        {
-            if (_attackHitbox != null) _attackHitbox.Monitoring = false;
-        };
-    }
+	private void PlayHurtFlash()
+	{
+		var sprite = GetNodeOrNull<Node>("SpriteLayers");
+		if (sprite is not CanvasItem ci) return;
 
-    private void OnAnimStateStarted(string stateName)
-    {
-        if (stateName == AttackAnimName) Attacking = true;
-    }
+		// Flash white → normal, 3 blinks over ~0.4s.
+		var tween = CreateTween();
+		for (int i = 0; i < 3; i++)
+		{
+			tween.TweenProperty(ci, "modulate", new Color(3f, 3f, 3f, 1f), 0.05);
+			tween.TweenProperty(ci, "modulate", new Color(1f, 1f, 1f, 1f), 0.08);
+		}
+	}
 
-    private void OnAnimStateFinished(string stateName, float duration)
-    {
-        if (stateName == AttackAnimName)
-        {
-            Attacking = false;
-            if (_attackHitbox != null) _attackHitbox.Monitoring = false;
-        }
-    }
+	/// <summary>Apply a knockback impulse. Stuns input for KnockbackDuration while velocity decays.</summary>
+	public void ApplyKnockback(Vector2 force)
+	{
+		_knockbackVelocity = force;
+		_knockbackTimer = KnockbackDuration;
+	}
 
-    private void OnAttackHitboxAreaEntered(Area2D other)
-    {
-        // The other area should be an enemy's Hitbox (layer=8). We use the parent chain to
-        // reach the EnemyController + its HealthSystem.
-        var enemyRoot = other.GetParent() as Node;
-        var enemyHealth = enemyRoot?.GetNodeOrNull<HealthSystem>("HealthSystem");
-        if (enemyHealth == null) return;
+	/// <summary>Turn player to face a world-space target (e.g., NPC during dialogue).</summary>
+	public void FaceTarget(Vector2 globalTargetPos)
+	{
+		var delta = globalTargetPos - GlobalPosition;
+		if (delta == Vector2.Zero) return;
 
-        enemyHealth.TakeDamage(1);
+		_facing = SnapToCardinal(delta.Normalized());
+		SetBlend(AnimIdle, _facing);
+	}
 
-        // Knockback: push enemy away from player for ~0.2s.
-        if (enemyRoot is CharacterBody2D enemyBody)
-        {
-            var dir = (enemyBody.GlobalPosition - GlobalPosition).Normalized();
-            if (dir == Vector2.Zero) dir = _facing;
-            enemyBody.Velocity = dir * 200f;
-        }
-    }
+	// ----- MSCA signal handlers (SpriteLayers emits these from GDScript) -----
 
-    // ----- helpers -----
+	private void OnAnimationSetHitbox(int counter, int track, float timerValue, int direction)
+	{
+		// Turn on the hitbox for `timerValue` seconds during an attack animation.
+		if (_attackHitbox == null) return;
+		_attackHitbox.Monitoring = true;
 
-    private void SetBlend(string animName, Vector2 direction)
-    {
-        _tree.Set($"parameters/{animName}/blend_position", direction);
-    }
+		var timer = GetTree().CreateTimer(Mathf.Max(0.05f, timerValue));
+		timer.Timeout += () =>
+		{
+			if (_attackHitbox != null) _attackHitbox.Monitoring = false;
+		};
+	}
 
-    private static Vector2 SnapToCardinal(Vector2 input)
-    {
-        // Horizontal dominates ties so east/west reads first for diagonal input.
-        if (Mathf.Abs(input.X) >= Mathf.Abs(input.Y))
-            return new Vector2(Mathf.Sign(input.X), 0);
-        return new Vector2(0, Mathf.Sign(input.Y));
-    }
+	private void OnAnimStateStarted(string stateName)
+	{
+		if (stateName == AttackAnimName)
+		{
+			Attacking = true;
+			if (_weaponSprite != null) _weaponSprite.Visible = true;
+		}
+	}
+
+	private void OnAnimStateFinished(string stateName, float duration)
+	{
+		if (stateName == AttackAnimName)
+		{
+			Attacking = false;
+			if (_attackHitbox != null) _attackHitbox.Monitoring = false;
+			if (_weaponSprite != null) _weaponSprite.Visible = false;
+		}
+	}
+
+	private void OnAttackHitboxAreaEntered(Area2D other)
+	{
+		// The other area should be an enemy's Hitbox (layer=8). We use the parent chain to
+		// reach the EnemyController + its HealthSystem.
+		var enemyRoot = other.GetParent() as Node;
+		var enemyHealth = enemyRoot?.GetNodeOrNull<HealthSystem>("HealthSystem");
+		if (enemyHealth == null) return;
+
+		enemyHealth.TakeDamage(1);
+
+		// Knockback: push enemy away from player via their stun timer.
+		if (enemyRoot is EnemyController enemy)
+		{
+			var dir = (enemy.GlobalPosition - GlobalPosition).Normalized();
+			if (dir == Vector2.Zero) dir = _facing;
+			enemy.ApplyKnockback(dir * 200f);
+		}
+	}
+
+	// ----- helpers -----
+
+	private void SetBlend(string animName, Vector2 direction)
+	{
+		_tree.Set($"parameters/{animName}/blend_position", direction);
+	}
+
+	private static Vector2 SnapToCardinal(Vector2 input)
+	{
+		// Horizontal dominates ties so east/west reads first for diagonal input.
+		if (Mathf.Abs(input.X) >= Mathf.Abs(input.Y))
+			return new Vector2(Mathf.Sign(input.X), 0);
+		return new Vector2(0, Mathf.Sign(input.Y));
+	}
 }

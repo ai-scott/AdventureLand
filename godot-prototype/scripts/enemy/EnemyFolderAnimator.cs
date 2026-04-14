@@ -119,7 +119,7 @@ public partial class EnemyFolderAnimator : EnemyAnimatorBase
         GD.Print($"[EnemyFolderAnimator] Built {groups.Count} animations from {FramesFolder}");
     }
 
-    // TODO: confirm pattern — currently matches real Ooze filenames like
+    // Confirmed pattern (Ooze):
     //   en_ooze_mask-idle_down-000.png → animName="idle_down", frameIndex=0
     //   en_ooze_mask-hop_left-002.png  → animName="hop_left",  frameIndex=2
     // Pattern: {prefix}-{animName}-{frameIndex:NNN}.png

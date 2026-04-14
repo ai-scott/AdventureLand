@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/GameOverScreen.cs" id="1"]
 
 [node name="GameOver" type="CanvasLayer"]
-layer = 20
+layer = 100
 process_mode = 3
 script = ExtResource("1")
 

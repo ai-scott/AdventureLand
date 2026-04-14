@@ -135,7 +135,7 @@ Each phase has a deliverable, a prerequisite set, a rough complexity (S/M/L), an
 ### Phase 0 — Foundation (DONE / in progress)
 Complexity: completed. Everything in section 2 plus the enemy `.tres` data resources (Phase 0b from the evaluation report).
 
-### Phase 1 — Core player loop
+### Phase 1 — Core player loop ✅ DONE (2026-04-14)
 Complexity: **L**. First phase that makes the prototype feel like a game.
 
 **Start with Ooze.** World 00 (Leafwood Village) only spawns oozes — crab and bat are Forest/Lake content and belong to later worlds. Getting Ooze fully wired is the fastest path to "combat works in the world you're actually standing in."
@@ -154,6 +154,7 @@ Deliverables:
 - Damage loop: player sword hits enemy → flash + knockback → enemy attack hits player → HP UI updates.
 - Minimal game-over screen — `GameOver.tscn` (just "You died — press R to restart" for now). Wire up when `HealthSystem.Died` signal fires. Full title/game-over polish is Phase 7.
 - **Fix Y-sort bug** from the Phase 0 punch-list (ensure player renders correctly against buildings/decor).
+- **Input overlap note:** `attack` and `dialogue_advance` both share Space. This is safe because `PlayerController.InputLocked` gates attack input — the dialogue system must set `InputLocked = true` on open and `false` on close (Phase 3 wiring).
 
 Prerequisites: EnemyData resources (done). MSCA `animation_set_hitbox` signal wiring proved.
 
@@ -201,6 +202,7 @@ Deliverables:
 - `InventoryUI.tscn` — CanvasLayer with grid, tooltips, drag-drop. This is the hard part. Consider deferring UI polish until Phase 5 so the rest of the game can use inventory functionally.
 - Equipment integration: equipping an item updates `CostumeController` layer textures (already wired in the prototype).
 - `ItemTrigger.tscn` — world-placed item pickup Area2D that reads its `[Export] ItemData` and adds to inventory on collision.
+- **Heart containers** — Zelda-style max-health upgrades. `HeartContainer.tscn` (extends `ItemTrigger`) calls `HealthSystem.IncreaseMaxHealth(amount)` on pickup. `HealthSystem` needs an `IncreaseMaxHealth(int)` method that raises `MaxHealth` and emits `HealthChanged`. Player starts at `MaxHealth = 10`; containers found in the world increase the cap. Persists via `SaveData.MaxHealth`.
 
 Prerequisites: Phase 2 (inventory persists in save), Phase 3 (dialogue actions give items).
 

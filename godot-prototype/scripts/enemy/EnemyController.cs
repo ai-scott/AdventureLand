@@ -32,6 +32,9 @@ public partial class EnemyController : CharacterBody2D
     /// <summary>Damage dealt to the player on body contact (per hit, gated by player's invuln frames).</summary>
     [Export] public int ContactDamage = 1;
 
+    /// <summary>Knockback force applied to both player and enemy on contact.</summary>
+    [Export] public float ContactKnockbackForce = 300f;
+
     /// <summary>Optional override. If null, looked up at runtime via GetTree().GetFirstNodeInGroup("player").</summary>
     [Export] public NodePath PlayerPath;
 
@@ -51,6 +54,16 @@ public partial class EnemyController : CharacterBody2D
 
     // Set by player sword on hit. Consumed by the `hurt` behavior's condition.
     private bool _isHurt;
+
+    // Knockback stun — while > 0, AI doesn't run and velocity decays naturally.
+    private double _knockbackTimer;
+    private Vector2 _knockbackVelocity;
+    private const double KnockbackDuration = 0.25;
+
+    // Contact damage tracking — distance-based polling for reliable re-hit.
+    private double _contactDamageTimer;
+    private const double ContactDamageCooldown = 0.6; // slightly longer than player invuln (0.5s) so damage lands
+    private const float ContactRange = 16f; // px — slightly larger than hitbox shape
 
     public override void _Ready()
     {
@@ -91,29 +104,62 @@ public partial class EnemyController : CharacterBody2D
     {
         if (_health != null && _health.IsDead) return;
 
-        // Cooldowns tick regardless of current behavior.
-        foreach (var key in new List<string>(_cooldowns.Keys))
+        // Knockback stun — skip AI, let velocity decay.
+        if (_knockbackTimer > 0)
         {
-            _cooldowns[key] -= delta;
-            if (_cooldowns[key] <= 0) _cooldowns.Remove(key);
+            _knockbackTimer -= delta;
+            Velocity = _knockbackVelocity * (float)Mathf.Max(_knockbackTimer / KnockbackDuration, 0);
+        }
+        else
+        {
+            // Cooldowns tick regardless of current behavior.
+            foreach (var key in new List<string>(_cooldowns.Keys))
+            {
+                _cooldowns[key] -= delta;
+                if (_cooldowns[key] <= 0) _cooldowns.Remove(key);
+            }
+
+            // Behavior timer.
+            _behaviorTimer -= delta;
+            if (_behaviorTimer <= 0 || _currentBehavior == null)
+            {
+                if (_currentBehavior != null)
+                {
+                    if (_currentBehavior.Cooldown > 0)
+                    {
+                        _cooldowns[_currentBehavior.Name] = _currentBehavior.Cooldown;
+                    }
+                }
+                SelectNextBehavior();
+            }
+
+            ExecuteActions();
         }
 
-        // Behavior timer.
-        _behaviorTimer -= delta;
-        if (_behaviorTimer <= 0 || _currentBehavior == null)
+        // Continuous contact damage — distance-based check each tick.
+        // GetOverlappingBodies was unreliable (Godot defers physics state updates).
+        if (_player != null)
         {
-            if (_currentBehavior != null)
+            float dist = GlobalPosition.DistanceTo(_player.GlobalPosition);
+            bool inContact = dist < ContactRange;
+
+            if (inContact)
             {
-                // Record cooldown on behavior exit.
-                if (_currentBehavior.Cooldown > 0)
+                _contactDamageTimer -= delta;
+                if (_contactDamageTimer <= 0)
                 {
-                    _cooldowns[_currentBehavior.Name] = _currentBehavior.Cooldown;
+                    var pc = _player as PlayerController;
+                    if (pc != null) ApplyContactKnockback(pc);
+                    pc?.TakeDamage(ContactDamage);
+                    _contactDamageTimer = ContactDamageCooldown;
                 }
             }
-            SelectNextBehavior();
+            else
+            {
+                _contactDamageTimer = 0;
+            }
         }
 
-        ExecuteActions();
         MoveAndSlide();
     }
 
@@ -381,15 +427,32 @@ public partial class EnemyController : CharacterBody2D
 
     private void OnHitboxBodyEntered(Node2D body)
     {
-        // Hitbox mask=1 means this only triggers for bodies on layer 1 (the Player).
-        // Still verify via the group in case we later repurpose layer 1.
         if (!body.IsInGroup("player")) return;
         if (_health != null && _health.IsDead) return;
 
         if (body is PlayerController pc)
         {
+            // Knockback always applies (even during player invuln) to separate them.
+            ApplyContactKnockback(pc);
             pc.TakeDamage(ContactDamage);
+            _contactDamageTimer = ContactDamageCooldown;
         }
+    }
+
+    /// <summary>Apply a knockback impulse. Stuns the AI for KnockbackDuration.</summary>
+    public void ApplyKnockback(Vector2 force)
+    {
+        _knockbackVelocity = force;
+        _knockbackTimer = KnockbackDuration;
+    }
+
+    private void ApplyContactKnockback(PlayerController pc)
+    {
+        var dir = (pc.GlobalPosition - GlobalPosition).Normalized();
+        if (dir == Vector2.Zero) dir = Vector2.Down;
+
+        // Only push the player away — enemy doesn't get knocked back from its own attack.
+        pc.ApplyKnockback(dir * ContactKnockbackForce);
     }
 
     private void OnDied()

@@ -14,7 +14,11 @@
 [ext_resource type="Texture2D" uid="uid://cu4sltyhfmtee" path="res://assets/buildings/Windmill.png" id="13"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="13_tvimm"]
 [ext_resource type="Texture2D" uid="uid://bi8u1hdy8ou8x" path="res://assets/buildings/Well.png" id="14"]
+[ext_resource type="PackedScene" uid="uid://c6fiy1d6g8ct0" path="res://scenes/enemy/Enemy_Ooze.tscn" id="14_dy4xb"]
 [ext_resource type="Texture2D" uid="uid://bvkj4keoc4b8q" path="res://assets/buildings/AL_TreeSign.png" id="15"]
+[ext_resource type="Resource" uid="uid://dfirehwbf0ak0" path="res://assets/data/enemies/ooze.tres" id="15_w41w8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -743,46 +747,55 @@ tile_set = SubResource("TileSet_1")
 y_sort_enabled = true
 
 [node name="Buildings" type="Node2D" parent="Entities" unique_id=431031496]
+y_sort_enabled = true
 
 [node name="Blacksmith" type="Sprite2D" parent="Entities/Buildings" unique_id=364904890]
-position = Vector2(213.077, 235.893)
+position = Vector2(214, 336)
 texture = ExtResource("8")
 centered = false
+offset = Vector2(0, -100)
 
 [node name="Cabin1" type="Sprite2D" parent="Entities/Buildings" unique_id=1664284355]
-position = Vector2(35.983, 274.895)
+position = Vector2(36, 336)
 texture = ExtResource("9")
 centered = false
+offset = Vector2(0, -68)
 
 [node name="Cabin2" type="Sprite2D" parent="Entities/Buildings" unique_id=639401401]
-position = Vector2(122.176, 65.69)
+position = Vector2(122, 134)
 texture = ExtResource("10")
 centered = false
+offset = Vector2(0, -68)
 
 [node name="Shop" type="Sprite2D" parent="Entities/Buildings" unique_id=1618987874]
-position = Vector2(468.769, 110.484)
+position = Vector2(468, 210)
 texture = ExtResource("11")
 centered = false
+offset = Vector2(0, -100)
 
 [node name="WeaponShop" type="Sprite2D" parent="Entities/Buildings" unique_id=345739181]
-position = Vector2(343.953, 74.242)
+position = Vector2(344, 174)
 texture = ExtResource("12")
 centered = false
+offset = Vector2(0, -100)
 
 [node name="Windmill" type="Sprite2D" parent="Entities/Buildings" unique_id=954837703]
-position = Vector2(228.961, 77.124)
+position = Vector2(228, 177)
 texture = ExtResource("13")
 centered = false
+offset = Vector2(0, -100)
 
 [node name="Well" type="Sprite2D" parent="Entities/Buildings" unique_id=2016374602]
-position = Vector2(369.743, 301.073)
+position = Vector2(370, 342)
 texture = ExtResource("14")
 centered = false
+offset = Vector2(0, -42)
 
 [node name="TreeSign" type="Sprite2D" parent="Entities/Buildings" unique_id=511879496]
-position = Vector2(459.53, 251.027)
+position = Vector2(460, 284)
 texture = ExtResource("15")
 centered = false
+offset = Vector2(0, -42)
 
 [node name="VillageNpc" parent="Entities" unique_id=402195804 instance=ExtResource("4")]
 position = Vector2(122, 357)
@@ -792,9 +805,20 @@ DialogueLines = PackedStringArray("Hi there! I\'m Penny.", "Welcome to Leafwood 
 [node name="Player" parent="Entities" unique_id=1472698308 instance=ExtResource("13_tvimm")]
 position = Vector2(149, 164)
 
+[node name="Enemy" parent="Entities" unique_id=276892166 instance=ExtResource("14_dy4xb")]
+position = Vector2(300, 200)
+Data = ExtResource("15_w41w8")
+
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 script = ExtResource("6")
 
 [node name="DialogueManager" parent="." unique_id=1659791479 instance=ExtResource("5")]
+
+[node name="HealthBar" parent="." unique_id=2028836414 instance=ExtResource("18_w41w8")]
+HealthSystemPath = NodePath("../Entities/Player/HealthSystem")
+
+[node name="GameOver" parent="." unique_id=1366688518 instance=ExtResource("19_ujiax")]
+visible = false
+PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
