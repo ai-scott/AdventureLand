@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy/EnemyController.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/enemy/EnemyAnimator.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/systems/HealthSystem.cs" id="3"]
+
+[sub_resource type="RectangleShape2D" id="BodyShape"]
+size = Vector2(10, 8)
+
+[sub_resource type="RectangleShape2D" id="HurtboxShape"]
+size = Vector2(14, 10)
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 1
+script = ExtResource("1")
+AnimatorPath = NodePath("EnemyAnimator")
+HealthSystemPath = NodePath("HealthSystem")
+HitboxPath = NodePath("Hitbox")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("BodyShape")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 1
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -2)
+shape = SubResource("HurtboxShape")
+
+[node name="EnemyAnimator" type="Node" parent="."]
+script = ExtResource("2")
+
+[node name="HealthSystem" type="Node" parent="."]
+script = ExtResource("3")
+MaxHealth = 2
+InvulnerabilityDuration = 0.7
