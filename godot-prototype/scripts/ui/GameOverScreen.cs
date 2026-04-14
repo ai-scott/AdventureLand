@@ -16,10 +16,6 @@ public partial class GameOverScreen : CanvasLayer
 
     public override void _Ready()
     {
-        // Hide the scene-authored Panel (we build our own on death).
-        var panel = GetNodeOrNull<Control>("Panel");
-        if (panel != null) panel.Visible = false;
-
         if (PlayerHealthPath == null || PlayerHealthPath.IsEmpty)
         {
             GD.PrintErr("[GameOverScreen] PlayerHealthPath not set in Inspector");
