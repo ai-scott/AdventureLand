@@ -37,6 +37,12 @@ public partial class DialogueManager : CanvasLayer
     private PlayerController _player;
     private bool _waitingForInput;
     private string _inputVariable;
+    private bool _justStarted; // prevent E from advancing on the same frame it opened
+
+    // Keyboard-driven response selection.
+    private int _selectedResponseIndex = -1;
+    private const float DialogueBoxDefaultTop = -100f; // normal offset_top
+    private const float DialogueBoxExpandedTop = -200f; // taller when showing responses/input
 
     public override void _Ready()
     {
@@ -44,6 +50,10 @@ public partial class DialogueManager : CanvasLayer
         _nameLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/NameLabel");
         _textLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/TextLabel");
         _continueHint = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/ContinueHint");
+
+        // Let the box grow upward to fit content (responses, input fields).
+        _dialogueBox.ClipContents = false;
+        _dialogueBox.GrowVertical = Control.GrowDirection.Begin;
 
         // Add a response container for choices.
         var vbox = _textLabel.GetParent() as VBoxContainer;
@@ -61,8 +71,34 @@ public partial class DialogueManager : CanvasLayer
     {
         if (!IsActive || _waitingForInput) return;
 
-        // Only advance on E/Enter/Space if there are NO response buttons showing.
-        if (_currentResponses == null || _currentResponses.Count == 0)
+        // Skip the frame that opened dialogue — E is still held/pressed.
+        if (_justStarted)
+        {
+            _justStarted = false;
+            return;
+        }
+
+        if (_currentResponses != null && _currentResponses.Count > 0)
+        {
+            // Arrow-key navigation through response buttons.
+            if (Input.IsActionJustPressed("move_up"))
+            {
+                SelectResponse(_selectedResponseIndex - 1);
+            }
+            else if (Input.IsActionJustPressed("move_down"))
+            {
+                SelectResponse(_selectedResponseIndex + 1);
+            }
+            else if (Input.IsActionJustPressed("dialogue_advance"))
+            {
+                // E/Enter/Space confirms the highlighted choice.
+                if (_selectedResponseIndex >= 0 && _selectedResponseIndex < _currentResponses.Count)
+                {
+                    OnResponseChosen(_selectedResponseIndex);
+                }
+            }
+        }
+        else
         {
             if (Input.IsActionJustPressed("dialogue_advance"))
             {
@@ -76,6 +112,7 @@ public partial class DialogueManager : CanvasLayer
     /// <summary>Start a dialogue with an NPC. Returns false if already in dialogue.</summary>
     public bool StartDialogue(DialogueData data)
     {
+        GD.Print($"[Dialogue] StartDialogue called for '{data?.NpcId}' | IsActive={IsActive} | Paused={GetTree().Paused}");
         if (IsActive || data == null) return false;
 
         _npcData = data;
@@ -93,11 +130,22 @@ public partial class DialogueManager : CanvasLayer
         var startNode = FindBestNode();
         if (startNode == null)
         {
-            GD.PushWarning($"[Dialogue] No valid node for NPC '{data.NpcId}'");
+            GD.Print($"[Dialogue] No valid node for '{data.NpcId}'. Dumping node conditions:");
+            foreach (var n in data.Nodes)
+            {
+                if (n == null) continue;
+                bool met = QuestSystem.AllConditionsMet(n.Conditions);
+                var condDesc = n.Conditions.Count > 0
+                    ? string.Join(" & ", n.Conditions.Select(c => $"{c.Type}:{c.QuestId}={c.Status}"))
+                    : "(none)";
+                GD.Print($"  [{(met ? "PASS" : "FAIL")}] {n.Id} (pri={n.Priority}) conditions: {condDesc}");
+            }
             EndDialogue();
             return false;
         }
+        GD.Print($"[Dialogue] Selected node '{startNode.Id}' (pri={startNode.Priority})");
 
+        _justStarted = true;
         NavigateToNode(startNode);
         _dialogueBox.Visible = true;
         return true;
@@ -183,8 +231,14 @@ public partial class DialogueManager : CanvasLayer
                 btn.Text = SubstituteVariables(resp.Text);
                 btn.Pressed += () => OnResponseChosen(idx);
                 btn.ProcessMode = ProcessModeEnum.Always;
+                btn.FocusMode = Control.FocusModeEnum.None; // we handle focus manually
                 _responseContainer.AddChild(btn);
             }
+
+            // Auto-select first response and expand the box.
+            _selectedResponseIndex = 0;
+            HighlightSelectedResponse();
+            _dialogueBox.OffsetTop = DialogueBoxExpandedTop;
         }
         else
         {
@@ -192,6 +246,8 @@ public partial class DialogueManager : CanvasLayer
             _continueHint.Visible = true;
             _continueHint.Text = _currentNode.EndsDialogue ? "[E] Close" :
                 !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[E] Continue" : "[E] Close";
+            _selectedResponseIndex = -1;
+            _dialogueBox.OffsetTop = DialogueBoxDefaultTop;
         }
     }
 
@@ -300,7 +356,14 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.GiveItem:
-                    GD.Print($"[Dialogue] Give item: {a.ItemId} x{a.Quantity} (Phase 4)");
+                    // For now, unique items are tracked as world flags.
+                    // Phase 4 adds real inventory.
+                    var giveId = a.ItemId ?? a.ItemName;
+                    if (!string.IsNullOrEmpty(giveId))
+                    {
+                        QuestSystem.GrantUniqueItem(giveId);
+                        if (a.DestroyTrigger) DestroyCurrentNpcTrigger();
+                    }
                     break;
 
                 case DialogueAction.ActionType.RemoveItem:
@@ -308,7 +371,11 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SpawnUniqueItem:
-                    QuestSystem.GrantUniqueItem(a.ItemName ?? a.ItemId);
+                    // In C3 this deploys an NPC into the world.
+                    // For now, show/unhide the NPC node if it exists in the scene.
+                    var spawnName = a.ItemName ?? a.ItemId;
+                    GD.Print($"[Dialogue] Deploy NPC: {spawnName}");
+                    ShowNpcInScene(spawnName);
                     break;
 
                 case DialogueAction.ActionType.SetFlag:
@@ -350,6 +417,39 @@ public partial class DialogueManager : CanvasLayer
         }
     }
 
+    // ---- World Interaction ----
+
+    /// <summary>Find and show a hidden NPC node in the current scene by name.</summary>
+    private void ShowNpcInScene(string npcName)
+    {
+        var scene = GetTree().CurrentScene;
+        var node = scene.FindChild(npcName, true, false) as Node2D;
+        if (node != null)
+        {
+            node.Visible = true;
+            node.ProcessMode = ProcessModeEnum.Inherit;
+            GD.Print($"[Dialogue] Showed NPC '{npcName}' in scene");
+        }
+        else
+        {
+            GD.PushWarning($"[Dialogue] NPC '{npcName}' not found in scene to show");
+        }
+    }
+
+    /// <summary>Remove the NPC we're currently talking to from the scene.</summary>
+    private void DestroyCurrentNpcTrigger()
+    {
+        if (_npcData == null) return;
+        var scene = GetTree().CurrentScene;
+        var node = scene.FindChild(_npcData.NpcId, true, false);
+        if (node != null)
+        {
+            GD.Print($"[Dialogue] Destroying trigger '{_npcData.NpcId}'");
+            // Defer so we don't remove mid-dialogue.
+            node.CallDeferred("queue_free");
+        }
+    }
+
     // ---- Input Handling ----
 
     private void HandleInput(string variable)
@@ -358,6 +458,9 @@ public partial class DialogueManager : CanvasLayer
         _inputVariable = variable;
         _continueHint.Visible = false;
         _responseContainer.Visible = false;
+
+        // Expand the box so the input fields don't overflow off-screen.
+        _dialogueBox.OffsetTop = DialogueBoxExpandedTop;
 
         // Show a LineEdit for text input.
         var vbox = _textLabel.GetParent() as VBoxContainer;
@@ -397,7 +500,8 @@ public partial class DialogueManager : CanvasLayer
 
         GD.Print($"[Dialogue] Input '{_inputVariable}' = '{text}'");
 
-        // Remove input UI.
+        // Remove input UI and restore box size.
+        _dialogueBox.OffsetTop = DialogueBoxDefaultTop;
         var vbox = _textLabel.GetParent() as VBoxContainer;
         var input = vbox.GetNodeOrNull("DialogueInput");
         var ok = vbox.GetNodeOrNull("DialogueInputOk");
@@ -429,10 +533,34 @@ public partial class DialogueManager : CanvasLayer
 
     // ---- UI Helpers ----
 
+    private void SelectResponse(int index)
+    {
+        int count = _responseContainer.GetChildCount();
+        if (count == 0) return;
+        // Wrap around.
+        _selectedResponseIndex = ((index % count) + count) % count;
+        HighlightSelectedResponse();
+    }
+
+    private void HighlightSelectedResponse()
+    {
+        for (int i = 0; i < _responseContainer.GetChildCount(); i++)
+        {
+            if (_responseContainer.GetChild(i) is Button btn)
+            {
+                bool selected = i == _selectedResponseIndex;
+                btn.Text = (_currentResponses != null && i < _currentResponses.Count)
+                    ? (selected ? "> " : "  ") + SubstituteVariables(_currentResponses[i].Text)
+                    : btn.Text;
+            }
+        }
+    }
+
     private void ClearResponses()
     {
         foreach (var child in _responseContainer.GetChildren())
             child.QueueFree();
         _responseContainer.Visible = false;
+        _selectedResponseIndex = -1;
     }
 }

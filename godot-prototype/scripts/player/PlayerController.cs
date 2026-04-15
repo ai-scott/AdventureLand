@@ -36,7 +36,7 @@ public partial class PlayerController : CharacterBody2D
 	/// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
 	[Export] public string AttackAnimName = "StrikeForehandOneHandWeapon";
 	/// <summary>How far in front of the player to position the hitbox, in pixels.</summary>
-	[Export] public float HitboxOffset = 14f;
+	[Export] public float HitboxOffset = 20f;
 
 	[ExportGroup("Debug")]
 	/// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>

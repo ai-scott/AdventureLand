@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/NpcInteract.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/npc/RosieAnimator.cs" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/rosie_cat.png" id="3"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/rosie.tres" id="4"]
+
+[sub_resource type="CircleShape2D" id="InteractShape"]
+radius = 20.0
+
+[node name="Rosie" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1")
+NpcName = "Rosie"
+Dialogue = ExtResource("4")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
+offset = Vector2(0, -16)
+
+[node name="RosieAnimator" type="Node" parent="."]
+script = ExtResource("2")
+Sheet = ExtResource("3")
+
+[node name="InteractZone" type="CollisionShape2D" parent="."]
+shape = SubResource("InteractShape")
+
+[node name="InteractLabel" type="Label" parent="."]
+visible = false
+offset_left = -12.0
+offset_top = -32.0
+offset_right = 16.0
+offset_bottom = -20.0
+theme_override_font_sizes/font_size = 8
+text = "[E]"
+horizontal_alignment = 1

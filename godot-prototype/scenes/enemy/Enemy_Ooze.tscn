@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b13h6i2aa2pll" path="res://scripts/enemy/EnemyController.cs" id="1"]
 [ext_resource type="Script" uid="uid://gmxkev1xd6fq" path="res://scripts/enemy/EnemyFolderAnimator.cs" id="2"]
+[ext_resource type="Resource" uid="uid://dfirehwbf0ak0" path="res://assets/data/enemies/ooze.tres" id="2_pskue"]
 [ext_resource type="Script" uid="uid://dtmt3uegoc48l" path="res://scripts/systems/HealthSystem.cs" id="3"]
 
 [sub_resource type="RectangleShape2D" id="BodyShape"]
@@ -13,6 +14,7 @@ size = Vector2(14, 10)
 [node name="Enemy" type="CharacterBody2D" unique_id=1190379225]
 collision_layer = 16
 script = ExtResource("1")
+Data = ExtResource("2_pskue")
 AnimatorPath = NodePath("EnemyAnimator")
 HealthSystemPath = NodePath("HealthSystem")
 HitboxPath = NodePath("Hitbox")

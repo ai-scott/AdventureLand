@@ -495393,7 +495393,7 @@ libraries/ = SubResource("AnimationLibrary_cqwyb")
 
 [node name="AnimationTree" type="AnimationTree" parent="SpriteLayers" unique_id=2090951062]
 tree_root = SubResource("AnimationNodeStateMachine_l5kh4")
-anim_player = NodePath("/root/@EditorNode@18102/@Panel@14/@VBoxContainer@15/DockHSplitMain/@VBoxContainer@28/DockVSplitCenter/@VSplitContainer@70/@VBoxContainer@71/@EditorMainScreen@125/MainScreen/@CanvasItemEditor@9327/@VSplitContainer@9110/@HSplitContainer@9112/@HSplitContainer@9114/@Control@9115/@SubViewportContainer@9116/@SubViewport@9117/Node2D/Player/SpriteLayers/AnimationPlayer")
+anim_player = NodePath("../AnimationPlayer")
 parameters/BowShot/blend_position = Vector2(0, 0)
 parameters/CastSpell1/blend_position = Vector2(0, 0)
 parameters/Climb/blend_position = Vector2(0, 0)

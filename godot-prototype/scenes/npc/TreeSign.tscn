@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/NpcInteract.cs" id="1"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/treesign.tres" id="2"]
+
+[sub_resource type="CircleShape2D" id="InteractShape"]
+radius = 18.0
+
+[node name="TreeSign" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1")
+NpcName = "Tree Sign"
+Dialogue = ExtResource("2")
+
+[node name="InteractZone" type="CollisionShape2D" parent="."]
+shape = SubResource("InteractShape")
+
+[node name="InteractLabel" type="Label" parent="."]
+visible = false
+offset_left = -12.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 8
+text = "[E]"
+horizontal_alignment = 1

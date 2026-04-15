@@ -10,12 +10,12 @@ namespace AdventureLandPrototype;
 /// </summary>
 public abstract partial class EnemyAnimatorBase : Node
 {
-    /// <summary>
-    /// Play a named animation (e.g. "idle_down", "hop_left").
-    /// Implementations should no-op gracefully for unknown names.
-    /// </summary>
-    public abstract void Play(string animName);
+	/// <summary>
+	/// Play a named animation (e.g. "idle_down", "hop_left").
+	/// Implementations should no-op gracefully for unknown names.
+	/// </summary>
+	public abstract void Play(string animName);
 
-    /// <summary>Stop the current animation.</summary>
-    public abstract void Stop();
+	/// <summary>Stop the current animation.</summary>
+	public abstract void Stop();
 }

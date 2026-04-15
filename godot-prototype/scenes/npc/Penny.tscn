@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://dvb5r6dfsrg7b"]
+[gd_scene format=3 uid="uid://p4u51iifm4sd"]
 
 [ext_resource type="Script" uid="uid://cqhaokr70vjxb" path="res://scripts/npc/NpcInteract.cs" id="1"]
 [ext_resource type="Script" uid="uid://bgot7c7b0rq2g" path="res://scripts/npc/NpcAnimator.cs" id="3"]
@@ -10,7 +10,7 @@ size = Vector2(12, 6)
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
 radius = 24.0
 
-[node name="Npc" type="Area2D" unique_id=1057141335]
+[node name="Penny" type="Area2D" unique_id=1057141335]
 collision_layer = 2
 script = ExtResource("1")
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://de21fwjrhtoqo" path="res://assets/tilesets/FantasyForest_Combo.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://bah0qqu0v6l50" path="res://assets/tilesets/Light_Grass_BG.png" id="2"]
-[ext_resource type="PackedScene" uid="uid://p4u51iifm4sd" path="res://scenes/npc/Npc.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="4_46npq"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="5"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="6"]
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="7"]
@@ -12,13 +12,15 @@
 [ext_resource type="Texture2D" uid="uid://rdtfyk4whkef" path="res://assets/buildings/Shop.png" id="11"]
 [ext_resource type="Texture2D" uid="uid://dtmgomdyiyy5k" path="res://assets/buildings/Weapon Shop.png" id="12"]
 [ext_resource type="Texture2D" uid="uid://cu4sltyhfmtee" path="res://assets/buildings/Windmill.png" id="13"]
+[ext_resource type="Resource" uid="uid://btcjgotpmsqup" path="res://assets/data/dialogue/penny.tres" id="13_8fufv"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="13_tvimm"]
 [ext_resource type="Texture2D" uid="uid://bi8u1hdy8ou8x" path="res://assets/buildings/Well.png" id="14"]
 [ext_resource type="PackedScene" uid="uid://c6fiy1d6g8ct0" path="res://scenes/enemy/Enemy_Ooze.tscn" id="14_dy4xb"]
 [ext_resource type="Texture2D" uid="uid://bvkj4keoc4b8q" path="res://assets/buildings/AL_TreeSign.png" id="15"]
-[ext_resource type="Resource" uid="uid://dfirehwbf0ak0" path="res://assets/data/enemies/ooze.tres" id="15_w41w8"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="17_46npq"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="18_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
-[ext_resource type="PackedScene" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
+[ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -750,7 +752,7 @@ y_sort_enabled = true
 y_sort_enabled = true
 
 [node name="Blacksmith" type="Sprite2D" parent="Entities/Buildings" unique_id=364904890]
-position = Vector2(214, 336)
+position = Vector2(215, 336)
 texture = ExtResource("8")
 centered = false
 offset = Vector2(0, -100)
@@ -797,17 +799,23 @@ texture = ExtResource("15")
 centered = false
 offset = Vector2(0, -42)
 
-[node name="VillageNpc" parent="Entities" unique_id=402195804 instance=ExtResource("4")]
-position = Vector2(122, 357)
-NpcName = "Penny"
-DialogueLines = PackedStringArray("Hi there! I\'m Penny.", "Welcome to Leafwood Village!", "Feel free to look around.")
-
 [node name="Player" parent="Entities" unique_id=1472698308 instance=ExtResource("13_tvimm")]
 position = Vector2(149, 164)
 
-[node name="Enemy" parent="Entities" unique_id=276892166 instance=ExtResource("14_dy4xb")]
-position = Vector2(300, 200)
-Data = ExtResource("15_w41w8")
+[node name="Penny" parent="Entities" unique_id=1057141335 instance=ExtResource("18_b8jan")]
+position = Vector2(62, 355)
+NpcName = "Penny"
+Dialogue = ExtResource("13_8fufv")
+
+[node name="Rosie" parent="Entities" unique_id=2001897635 instance=ExtResource("17_46npq")]
+visible = false
+position = Vector2(280, 398)
+
+[node name="TreeSignTrigger" parent="Entities" unique_id=1858068204 instance=ExtResource("4_46npq")]
+position = Vector2(486, 284)
+
+[node name="Enemy" parent="Entities" unique_id=1190379225 instance=ExtResource("14_dy4xb")]
+position = Vector2(267, 217)
 
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
