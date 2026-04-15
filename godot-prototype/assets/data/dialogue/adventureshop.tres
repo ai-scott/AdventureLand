@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "adventure_shop_intro"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "node_000"
+Text = "Welcome to the Adventure shop. "
+Speaker = "Shopkeeper_Sophie"
+Priority = 100
+AutoAdvance = "node_001"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+Type = 0
+QuestId = "adventure_shop_intro"
+Status = "Complete"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+Id = "node_001"
+Text = "The slimy goos keep coming, but there are worse things outside our village. "
+Speaker = "Shopkeeper_Sophie"
+Priority = 99
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Shopkeeper_Sophie"
+DisplayName = "Shopkeeper_Sophie"
+DefaultNode = "node_000"
+WorldId = "World00"
+QuestRelations = PackedStringArray("adventure_shop_intro")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])

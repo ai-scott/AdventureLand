@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "welcome_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "WelcomeToAdventureLand"
+Text = "Welcome to AdventureLand! Tap[icon=Pointer] or hit spacebar[icon=Spc] to continue"
+Speaker = "AL"
+Priority = 100
+AutoAdvance = "HaveFun"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+Type = 0
+QuestId = "welcome_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_5"]
+script = ExtResource("4")
+Type = 2
+QuestId = "welcome_quest"
+Status = "Complete"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+Id = "HaveFun"
+Text = "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!"
+Speaker = "AL"
+Priority = 99
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+Actions = Array[ExtResource("4")]([SubResource("act_5")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Welcome"
+DisplayName = "AdventureLand"
+DefaultNode = "node_000"
+WorldId = "World00"
+QuestRelations = PackedStringArray("welcome_quest")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])

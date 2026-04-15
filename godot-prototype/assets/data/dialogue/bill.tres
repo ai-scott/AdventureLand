@@ -1,0 +1,251 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "node_000"
+Text = "Wh-who's there?! Oh, you're not the sea monster... Thank goodness!"
+Speaker = "Bill"
+Priority = 100
+AutoAdvance = "node_001"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+Id = "node_001"
+Text = "I'm Bill. I live at the windmill with my brother Nick. I came down here looking for treasure and... well, things went sideways."
+Speaker = "Bill"
+Priority = 99
+AutoAdvance = "node_002"
+Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+
+[sub_resource type="Resource" id="cond_6"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_5"]
+script = ExtResource("2")
+Id = "node_002"
+Text = "I found this amazing pink shell on the island, and inside was the most beautiful pearl I've ever seen. So I... took it."
+Speaker = "Bill"
+Priority = 98
+AutoAdvance = "node_003"
+Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
+
+[sub_resource type="Resource" id="cond_8"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_7"]
+script = ExtResource("2")
+Id = "node_003"
+Text = "Then this HUGE sea monster came up out of the water! It was NOT happy. Started spitting water balls at me!"
+Speaker = "Bill"
+Priority = 97
+AutoAdvance = "node_004"
+Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+
+[sub_resource type="Resource" id="cond_10"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_9"]
+script = ExtResource("2")
+Id = "node_004"
+Text = "I ran and hid in this cave behind the waterfall. I locked the pearl in a chest up above, but... I lost the key while running."
+Speaker = "Bill"
+Priority = 96
+AutoAdvance = "node_005"
+Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
+
+[sub_resource type="Resource" id="cond_12"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="resp_13"]
+script = ExtResource("5")
+Text = "I'll try to calm the sea monster for you."
+LeadsTo = "node_accept"
+
+[sub_resource type="Resource" id="resp_14"]
+script = ExtResource("5")
+Text = "Do you know where the key went?"
+LeadsTo = "node_key_hint"
+
+[sub_resource type="Resource" id="node_11"]
+script = ExtResource("2")
+Id = "node_005"
+Text = "I'm too scared to leave. That sea monster is still out there! Nick must be so worried..."
+Speaker = "Bill"
+Priority = 95
+Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+Responses = Array[ExtResource("5")]([SubResource("resp_13"), SubResource("resp_14")])
+
+[sub_resource type="Resource" id="cond_16"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="resp_17"]
+script = ExtResource("5")
+Text = "I'll deal with the sea monster. Hang tight!"
+LeadsTo = "node_accept"
+
+[sub_resource type="Resource" id="node_15"]
+script = ExtResource("2")
+Id = "node_key_hint"
+Text = "I think I dropped it near the shrine fountain on the island. But the sea monster is between here and there!"
+Speaker = "Bill"
+Priority = 94
+Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
+Responses = Array[ExtResource("5")]([SubResource("resp_17")])
+
+[sub_resource type="Resource" id="cond_19"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_20"]
+script = ExtResource("4")
+Type = 2
+QuestId = "rescue_bill"
+Status = "Active"
+
+[sub_resource type="Resource" id="node_18"]
+script = ExtResource("2")
+Id = "node_accept"
+Text = "You'd really do that? Be careful out there! If you can get the sea monster to calm down, come back and tell me. I'll head straight home to Nick!"
+Speaker = "Bill"
+Priority = 93
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_19")])
+Actions = Array[ExtResource("4")]([SubResource("act_20")])
+
+[sub_resource type="Resource" id="cond_22"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Active"
+
+[sub_resource type="Resource" id="cond_23"]
+script = ExtResource("3")
+Type = 0
+Negate = true
+QuestId = "pearl_quest"
+Status = "Active"
+
+[sub_resource type="Resource" id="node_21"]
+script = ExtResource("2")
+Id = "node_waiting"
+Text = "Is it safe to leave yet? That sea monster still scares me!"
+Speaker = "Bill"
+Priority = 80
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_22"), SubResource("cond_23")])
+
+[sub_resource type="Resource" id="cond_25"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Active"
+
+[sub_resource type="Resource" id="cond_26"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pearl_quest"
+Status = "Active"
+
+[sub_resource type="Resource" id="act_27"]
+script = ExtResource("4")
+Type = 2
+QuestId = "rescue_bill"
+Status = "Bill_Returning"
+
+[sub_resource type="Resource" id="node_24"]
+script = ExtResource("2")
+Id = "node_safe"
+Text = "The sea monster's calmed down? Oh, what a relief! I'm heading back to the windmill right now. Nick's going to be so happy!"
+Speaker = "Bill"
+Priority = 90
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_25"), SubResource("cond_26")])
+Actions = Array[ExtResource("4")]([SubResource("act_27")])
+
+[sub_resource type="Resource" id="cond_29"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Active"
+
+[sub_resource type="Resource" id="cond_30"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pearl_quest"
+Status = "Complete"
+
+[sub_resource type="Resource" id="act_31"]
+script = ExtResource("4")
+Type = 2
+QuestId = "rescue_bill"
+Status = "Bill_Returning"
+
+[sub_resource type="Resource" id="node_28"]
+script = ExtResource("2")
+Id = "node_safe_complete"
+Text = "You returned the pearl AND calmed the monster? You're amazing! I'm going home to Nick right now!"
+Speaker = "Bill"
+Priority = 91
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_29"), SubResource("cond_30")])
+Actions = Array[ExtResource("4")]([SubResource("act_31")])
+
+[sub_resource type="Resource" id="cond_33"]
+script = ExtResource("3")
+Type = 0
+QuestId = "rescue_bill"
+Status = "Bill_Returning"
+
+[sub_resource type="Resource" id="node_32"]
+script = ExtResource("2")
+Id = "node_gone"
+Text = "(Bill has left the cave and gone back to the windmill.)"
+Speaker = "Bill"
+Priority = 70
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_33")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Cave_Bill"
+DisplayName = "Cave_Bill"
+DefaultNode = "node_000"
+WorldId = "World10"
+QuestRelations = PackedStringArray("rescue_bill")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_15"), SubResource("node_18"), SubResource("node_21"), SubResource("node_24"), SubResource("node_28"), SubResource("node_32")])

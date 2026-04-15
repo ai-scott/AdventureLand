@@ -17,6 +17,9 @@ public partial class SaveManager : Node
     public const int CurrentSchemaVersion = 1;
     private const string SaveDir = "user://saves";
 
+    /// <summary>Static accessor for use from QuestSystem etc.</summary>
+    public static SaveManager Instance { get; private set; }
+
     /// <summary>The live save data for the current play session.</summary>
     public SaveData CurrentData { get; private set; }
 
@@ -27,6 +30,7 @@ public partial class SaveManager : Node
 
     public override void _Ready()
     {
+        Instance = this;
         // Ensure save directory exists.
         DirAccess.MakeDirRecursiveAbsolute(SaveDir);
     }

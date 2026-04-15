@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "blacksmith_intro"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_3"]
+script = ExtResource("4")
+Type = 12
+CustomFunction = "grantFreeItem"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "node_000"
+Text = "Welcome to the Blacksmith shop."
+Speaker = "Shopkeeper_Sally"
+Priority = 100
+AutoAdvance = "node_001"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+Actions = Array[ExtResource("4")]([SubResource("act_3")])
+
+[sub_resource type="Resource" id="cond_5"]
+script = ExtResource("3")
+Type = 0
+QuestId = "blacksmith_intro"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_6"]
+script = ExtResource("4")
+Type = 2
+QuestId = "blacksmith_intro"
+Status = "Complete"
+
+[sub_resource type="Resource" id="node_4"]
+script = ExtResource("2")
+Id = "node_001"
+Text = "If you'll protect our town, you may choose a weapon from the table."
+Speaker = "Shopkeeper_Sally"
+Priority = 99
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_5")])
+Actions = Array[ExtResource("4")]([SubResource("act_6")])
+
+[sub_resource type="Resource" id="cond_8"]
+script = ExtResource("3")
+Type = 0
+QuestId = "blacksmith_intro"
+Status = "Complete"
+
+[sub_resource type="Resource" id="node_7"]
+script = ExtResource("2")
+Id = "node_002"
+Text = "I hope that weapon serves you well in protecting our town."
+Speaker = "Shopkeeper_Sally"
+Priority = 98
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Shopkeeper_Sally"
+DisplayName = "Shopkeeper_Sally"
+DefaultNode = "node_000"
+WorldId = "World00"
+QuestRelations = PackedStringArray("blacksmith_intro")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_4"), SubResource("node_7")])

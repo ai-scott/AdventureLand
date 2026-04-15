@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "forest_blight_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "node_000"
+Text = "Welcome to Leafwood Forest."
+Speaker = "AL"
+Priority = 100
+AutoAdvance = "node_001"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+Type = 0
+QuestId = "forest_blight_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+Id = "node_001"
+Text = "A dark blight has taken over much of these ancient woods."
+Speaker = "AL"
+Priority = 99
+AutoAdvance = "node_002"
+Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+
+[sub_resource type="Resource" id="cond_6"]
+script = ExtResource("3")
+Type = 0
+QuestId = "forest_blight_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_5"]
+script = ExtResource("2")
+Id = "node_002"
+Text = "Poisoned creatures now patrol the blighted areas."
+Speaker = "AL"
+Priority = 98
+AutoAdvance = "node_003"
+Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
+
+[sub_resource type="Resource" id="cond_8"]
+script = ExtResource("3")
+Type = 0
+QuestId = "forest_blight_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_9"]
+script = ExtResource("4")
+Type = 2
+QuestId = "forest_blight_quest"
+Status = "Read"
+
+[sub_resource type="Resource" id="node_7"]
+script = ExtResource("2")
+Id = "node_003"
+Text = "Tread carefully, brave adventurer."
+Speaker = "AL"
+Priority = 97
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+Actions = Array[ExtResource("4")]([SubResource("act_9")])
+
+[sub_resource type="Resource" id="cond_11"]
+script = ExtResource("3")
+Type = 0
+QuestId = "forest_blight_quest"
+Status = "Read"
+
+[sub_resource type="Resource" id="node_10"]
+script = ExtResource("2")
+Id = "node_004"
+Text = "The blight spreads through Leafwood Forest. Be careful."
+Speaker = "AL"
+Priority = 96
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_11")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "ForestSign"
+DisplayName = "ForestSign"
+DefaultNode = "node_000"
+WorldId = "World01"
+QuestRelations = PackedStringArray("forest_blight_quest")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_7"), SubResource("node_10")])

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace AdventureLandPrototype;
 
@@ -10,7 +11,7 @@ namespace AdventureLandPrototype;
 [GlobalClass]
 public partial class SaveData : Resource
 {
-    [Export] public int SchemaVersion { get; set; } = 1;
+    [Export] public int SchemaVersion { get; set; } = 2;
 
     [ExportGroup("Player")]
     [Export] public string PlayerName { get; set; } = "";
@@ -21,4 +22,9 @@ public partial class SaveData : Resource
 
     [ExportGroup("World")]
     [Export] public string CurrentWorld { get; set; } = "res://scenes/worlds/World_00.tscn";
+
+    [ExportGroup("Quest State")]
+    [Export] public Dictionary<string, string> QuestStatuses { get; set; } = new();
+    [Export] public Dictionary<string, string> WorldFlags { get; set; } = new();
+    [Export] public Dictionary<string, string> NpcMemory { get; set; } = new();
 }

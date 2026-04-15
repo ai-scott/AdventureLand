@@ -1,0 +1,238 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "node_000"
+Text = "Hi there! I'm Pete, the prospector. I could use a little help."
+Speaker = "Pete"
+Priority = 100
+AutoAdvance = "node_001"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="resp_5"]
+script = ExtResource("5")
+Text = "What do you need help with?"
+LeadsTo = "node_002"
+
+[sub_resource type="Resource" id="resp_6"]
+script = ExtResource("5")
+Text = "What's a prospector?"
+LeadsTo = "node_003"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+Id = "node_001"
+Text = ""
+Speaker = "Pete"
+Priority = 99
+Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+Responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6")])
+
+[sub_resource type="Resource" id="cond_8"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_7"]
+script = ExtResource("2")
+Id = "node_002"
+Text = "I've been feeling pretty sick lately. Usually I get herbs from the mountains to"
+Speaker = "Pete"
+Priority = 99
+AutoAdvance = "node_002b"
+Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+
+[sub_resource type="Resource" id="cond_10"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_9"]
+script = ExtResource("2")
+Id = "node_002b"
+Text = "the south, but the bridge broke!"
+Speaker = "Pete"
+Priority = 98
+AutoAdvance = "node_005"
+Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
+
+[sub_resource type="Resource" id="cond_12"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_11"]
+script = ExtResource("2")
+Id = "node_003"
+Text = "Oh, I pan for gold in the rivers and streams. Been pretty lucky over the years."
+Speaker = "Pete"
+Priority = 97
+AutoAdvance = "node_005"
+Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+
+[sub_resource type="Resource" id="cond_14"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_13"]
+script = ExtResource("2")
+Id = "node_005"
+Text = "It's a living, except I can't get to my house because the bridge broke."
+Speaker = "Pete"
+Priority = 96
+AutoAdvance = "node_006"
+Conditions = Array[ExtResource("3")]([SubResource("cond_14")])
+
+[sub_resource type="Resource" id="cond_16"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_15"]
+script = ExtResource("2")
+Id = "node_006"
+Text = "And I'm too sick to cross the river."
+Speaker = "Pete"
+Priority = 95
+AutoAdvance = "node_006b"
+Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
+
+[sub_resource type="Resource" id="cond_18"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="node_17"]
+script = ExtResource("2")
+Id = "node_006b"
+Text = "Usually I get herbs from the mountains to the south. Could you help me?"
+Speaker = "Pete"
+Priority = 94
+AutoAdvance = "node_007"
+Conditions = Array[ExtResource("3")]([SubResource("cond_18")])
+
+[sub_resource type="Resource" id="cond_20"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="resp_21"]
+script = ExtResource("5")
+Text = "Sure, I'll help."
+LeadsTo = "node_008"
+
+[sub_resource type="Resource" id="resp_22"]
+script = ExtResource("5")
+Text = "Only if you give me some of that gold!"
+LeadsTo = "node_008"
+
+[sub_resource type="Resource" id="node_19"]
+script = ExtResource("2")
+Id = "node_007"
+Text = ""
+Speaker = "Pete"
+Priority = 93
+Conditions = Array[ExtResource("3")]([SubResource("cond_20")])
+Responses = Array[ExtResource("5")]([SubResource("resp_21"), SubResource("resp_22")])
+
+[sub_resource type="Resource" id="cond_24"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_25"]
+script = ExtResource("4")
+Type = 2
+QuestId = "pete_herbs_quest"
+Status = "Active"
+
+[sub_resource type="Resource" id="node_23"]
+script = ExtResource("2")
+Id = "node_008"
+Text = "I really appreciate the help! I'll have a reward for you after I can get back home."
+Speaker = "Pete"
+Priority = 92
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_24")])
+Actions = Array[ExtResource("4")]([SubResource("act_25")])
+
+[sub_resource type="Resource" id="cond_27"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Active"
+
+[sub_resource type="Resource" id="node_26"]
+script = ExtResource("2")
+Id = "node_010"
+Text = "Any luck with those herbs? They grow in caves in the snowy mountains to the south. Look for the green leafy ones!"
+Speaker = "Pete"
+Priority = 90
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
+
+[sub_resource type="Resource" id="cond_29"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Complete"
+
+[sub_resource type="Resource" id="node_28"]
+script = ExtResource("2")
+Id = "node_complete"
+Text = "You found the herbs! I'm feeling better already. Thank ye kindly! Here, take this for your trouble."
+Speaker = "Pete"
+Priority = 100
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_29")])
+
+[sub_resource type="Resource" id="cond_31"]
+script = ExtResource("3")
+Type = 0
+QuestId = "pete_herbs_quest"
+Status = "Rewarded"
+
+[sub_resource type="Resource" id="node_30"]
+script = ExtResource("2")
+Id = "node_post_complete"
+Text = "Hello again, adventurer! Thanks to you, I'm feeling right. If you ever need anything, you know where to find me!"
+Speaker = "Pete"
+Priority = 80
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_31")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Prospector_Pete"
+DisplayName = "Pete"
+DefaultNode = "node_000"
+WorldId = "World01"
+QuestRelations = PackedStringArray("pete_herbs_quest")
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_28"), SubResource("node_30")])
