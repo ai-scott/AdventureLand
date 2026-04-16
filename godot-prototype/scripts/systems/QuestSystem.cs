@@ -80,20 +80,37 @@ public static class QuestSystem
     }
 
     // ---- Unique Items ----
+    // Phase 4: route through real Inventory when available, fall back to world flags.
 
     public static bool HasUniqueItem(string itemName)
     {
+        var inv = Inventory.Instance;
+        if (inv != null && inv.HasItemByName(itemName)) return true;
+        // Fallback for pre-Phase 4 saves.
         return HasWorldFlag($"UniqueItem_{itemName}");
     }
 
     public static void GrantUniqueItem(string itemName)
     {
+        var inv = Inventory.Instance;
+        if (inv != null && inv.AddItemByName(itemName))
+        {
+            GD.Print($"[Quest] Unique item granted via inventory: {itemName}");
+            return;
+        }
+        // Fallback: store as world flag.
         SetWorldFlag($"UniqueItem_{itemName}", "true");
-        GD.Print($"[Quest] Unique item granted: {itemName}");
+        GD.Print($"[Quest] Unique item granted via flag: {itemName}");
     }
 
     public static void RemoveUniqueItem(string itemName)
     {
+        var inv = Inventory.Instance;
+        if (inv != null)
+        {
+            inv.RemoveItemByName(itemName);
+        }
+        // Also clean up the flag if it exists.
         var data = Mgr?.CurrentData;
         if (data == null) return;
         var key = $"UniqueItem_{itemName}";

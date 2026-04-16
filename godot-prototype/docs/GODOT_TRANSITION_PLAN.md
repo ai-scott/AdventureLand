@@ -173,7 +173,7 @@ Prerequisites: Phase 1 (so we have meaningful state to persist — HP, position)
 
 Exit criterion: **Play for 5 minutes, save, quit Godot, relaunch, continue, find yourself in the same spot with the same HP/position.**
 
-### Phase 3 — Quest + dialogue port
+### Phase 3 — Quest + dialogue port ✅ DONE (2026-04-15)
 Complexity: **L**. Single heaviest phase. Preserves 14 NPC files, 250 nodes, branching + quest integration.
 
 **Starting reality check:** the dialogue working in the prototype today is *proof-of-concept only* — Penny says 3 hardcoded lines, E advances, done. None of the real plumbing exists: no branching, no responses/choices, no quest conditions, no actions (give_item / deploy_npc / start_quest / etc.), no variable substitution (`|PlayerName|`), no UI transitions (opening/closing animations, speaker portraits), no input-mode management (disable movement during dialogue, re-enable on close). All of that builds in this phase. Scope this as a full system build, not a "port the existing UI" task.

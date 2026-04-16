@@ -20,7 +20,14 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="17_46npq"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="18_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
+[ext_resource type="Resource" uid="uid://bmt7h7dpxhs12" path="res://assets/data/items/051_yellow_boater_hat.tres" id="19_atc2r"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
+[ext_resource type="Resource" uid="uid://ccrldgeui58vu" path="res://assets/data/items/001_axe.tres" id="20_j0aqj"]
+[ext_resource type="Resource" path="res://assets/data/items/002_sword.tres" id="21_pi473"]
+[ext_resource type="Resource" path="res://assets/data/items/003_pike.tres" id="22_1pfkt"]
+[ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="22_b8jan"]
+[ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="23_0vlwf"]
+[ext_resource type="Resource" path="res://assets/data/items/054_the_wrangler.tres" id="23_1pfkt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -817,6 +824,31 @@ position = Vector2(486, 284)
 [node name="Enemy" parent="Entities" unique_id=1190379225 instance=ExtResource("14_dy4xb")]
 position = Vector2(267, 217)
 
+[node name="HatTrigger" parent="Entities" unique_id=782429550 instance=ExtResource("23_0vlwf")]
+position = Vector2(99, 357)
+Data = ExtResource("19_atc2r")
+TriggerID = 1
+
+[node name="AxeTrigger" parent="Entities" unique_id=671796420 instance=ExtResource("23_0vlwf")]
+position = Vector2(131, 240)
+Data = ExtResource("20_j0aqj")
+TriggerID = 2
+
+[node name="SwordTrigger" parent="Entities" unique_id=2066007609 instance=ExtResource("23_0vlwf")]
+position = Vector2(181, 286)
+Data = ExtResource("21_pi473")
+TriggerID = 3
+
+[node name="PikeTrigger" parent="Entities" unique_id=117939734 instance=ExtResource("23_0vlwf")]
+position = Vector2(120, 290)
+Data = ExtResource("22_1pfkt")
+TriggerID = 4
+
+[node name="WranglerTrigger" parent="Entities" unique_id=1219453569 instance=ExtResource("23_0vlwf")]
+position = Vector2(150, 200)
+Data = ExtResource("23_1pfkt")
+TriggerID = 8
+
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
@@ -830,3 +862,5 @@ HealthSystemPath = NodePath("../Entities/Player/HealthSystem")
 [node name="GameOver" parent="." unique_id=1366688518 instance=ExtResource("19_ujiax")]
 visible = false
 PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
+
+[node name="InventoryUI" parent="." unique_id=577267304 instance=ExtResource("22_b8jan")]

@@ -119,6 +119,9 @@ public partial class SaveManager : Node
 
         CurrentData.CurrentWorld = GetTree().CurrentScene.SceneFilePath;
 
+        // Snapshot inventory state.
+        Inventory.Instance?.SaveTo(CurrentData);
+
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok)
         {
@@ -158,8 +161,19 @@ public partial class SaveManager : Node
     {
         GD.Print($"[SaveManager] TransitionToWorld: {scenePath}");
         GetTree().ChangeSceneToFile(scenePath);
-        // Deferred so the new scene's _Ready runs first.
-        CallDeferred(nameof(ApplySaveToPlayer));
+        // Wait for the new scene's _Ready callbacks to run before applying state.
+        _ = ApplySaveWhenReady();
+    }
+
+    private async System.Threading.Tasks.Task ApplySaveWhenReady()
+    {
+        // Wait a few frames for the new scene tree + Player._Ready to complete.
+        for (int i = 0; i < 10; i++)
+        {
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            if (GetTree().GetFirstNodeInGroup("player") != null) break;
+        }
+        ApplySaveToPlayer();
     }
 
     private void ApplySaveToPlayer()
@@ -179,6 +193,16 @@ public partial class SaveManager : Node
         if (health != null)
         {
             health.RestoreState(CurrentData.Health, CurrentData.MaxHealth);
+        }
+
+        // Restore inventory state.
+        Inventory.Instance?.LoadFrom(CurrentData);
+
+        // Restore equipped costume visuals.
+        var costume = player.GetNodeOrNull<CostumeController>("CostumeController");
+        if (costume != null && Inventory.Instance != null)
+        {
+            costume.RestoreEquipment();
         }
 
         // Auto-save on every world entry — die → retry puts you at world start with full HP.

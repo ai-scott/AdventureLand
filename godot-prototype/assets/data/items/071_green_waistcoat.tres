@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-071.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 71
+Name = "Green Waistcoat"
+Description = "Dignified with too many buttons."
+Category = 5
+Strength = 2
+Cost = 8
+Icon = ExtResource("2")
+CostumeId = "71_fbas_05shrt_tanktop_00a_green_gold_waistcoat"
+CostumeLayer = "05shrt"

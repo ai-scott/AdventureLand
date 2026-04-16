@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-095.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 95
+Name = "Brown Shorts"
+Description = "Pretty standard legwear."
+Category = 7
+Strength = 1
+Cost = 4
+Icon = ExtResource("2")
+CostumeId = "95_fbas_04lwr1_shorts_00a_brown"
+CostumeLayer = "04lwr1"

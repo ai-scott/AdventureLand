@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bmt7h7dpxhs12"]
+
+[ext_resource type="Script" uid="uid://cjqsgn7vhsiem" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://j6xolj14ogcj" path="res://assets/sprites/items/itemshowcase-animation 1-051.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 51
+Name = "Yellow Boater Hat"
+Description = "Stylish and light, but not too protective."
+Category = 3
+Strength = 2
+Cost = 5
+Icon = ExtResource("2")
+CostumeId = "51_fbas_14head_boaterhat_00d_straw_boat"
+CostumeLayer = "14head"

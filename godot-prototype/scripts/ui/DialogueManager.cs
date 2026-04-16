@@ -17,7 +17,7 @@ namespace AdventureLandPrototype;
 ///               ├── NameLabel (speaker)
 ///               ├── TextLabel (dialogue text, auto-wrap)
 ///               ├── ResponseContainer (VBox of Buttons, hidden unless choices)
-///               └── ContinueHint ("[E] Continue" / "[E] Close")
+///               └── ContinueHint ("[Space] Continue" / "[Space] Close")
 /// </summary>
 public partial class DialogueManager : CanvasLayer
 {
@@ -244,8 +244,8 @@ public partial class DialogueManager : CanvasLayer
         {
             _responseContainer.Visible = false;
             _continueHint.Visible = true;
-            _continueHint.Text = _currentNode.EndsDialogue ? "[E] Close" :
-                !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[E] Continue" : "[E] Close";
+            _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
+                !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
             _selectedResponseIndex = -1;
             _dialogueBox.OffsetTop = DialogueBoxDefaultTop;
         }

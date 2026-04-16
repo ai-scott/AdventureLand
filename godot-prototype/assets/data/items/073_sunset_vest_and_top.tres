@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-073.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 73
+Name = "Sunset Vest and Top"
+Description = "A comfy life-presever. Matches perfectly with the Sunset Scarf."
+Category = 5
+Strength = 3
+Cost = 10
+Icon = ExtResource("2")
+CostumeId = "73_fbas_05shrt_tanktop_00a_orange_red_vest"
+CostumeLayer = "05shrt"

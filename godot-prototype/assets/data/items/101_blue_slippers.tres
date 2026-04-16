@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-101.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 101
+Name = "Blue Slippers"
+Description = "Really more for inside the cabin."
+Category = 8
+Strength = 1
+Cost = 3
+Icon = ExtResource("2")
+CostumeId = "101_fbas_03fot1_shoes_00a_blue"
+CostumeLayer = "03fot1"

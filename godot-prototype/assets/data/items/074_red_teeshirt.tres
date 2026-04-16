@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-074.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 74
+Name = "Red Tee-Shirt"
+Description = "As red as an apple. May keep the doctor away."
+Category = 5
+Strength = 1
+Cost = 5
+Icon = ExtResource("2")
+CostumeId = "74_fbas_05shrt_shortshirt_00a_red_tee"
+CostumeLayer = "05shrt"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-053.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 53
+Name = "Standard Boater"
+Description = "A great hat with a touch of green."
+Category = 3
+Strength = 2
+Cost = 6
+Icon = ExtResource("2")
+CostumeId = "53_fbas_14head_boaterhat_00d_beige_green"
+CostumeLayer = "14head"

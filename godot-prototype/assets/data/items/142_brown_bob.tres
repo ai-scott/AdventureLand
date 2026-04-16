@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = 142
+Name = "Brown Bob"
+Description = ""
+Category = 11
+Strength = 0
+Cost = 0
+CostumeId = "fbas_13hair_bob1_00_brown_bob"
+CostumeLayer = "13hair"
