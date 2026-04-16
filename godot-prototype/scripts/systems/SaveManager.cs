@@ -90,6 +90,11 @@ public partial class SaveManager : Node
             CurrentWorld = "res://scenes/worlds/World_00.tscn",
         };
         ActiveSlot = slot;
+
+        // Grant starter equipment and snapshot it into the save data.
+        Inventory.Instance?.GrantStarterEquipment();
+        Inventory.Instance?.SaveTo(CurrentData);
+
         // Write directly — don't call Save() which snapshots the live scene (still TitleScreen).
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok) GD.PrintErr($"[SaveManager] NewGame save failed: {err}");

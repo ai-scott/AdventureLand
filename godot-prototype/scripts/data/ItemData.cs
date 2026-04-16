@@ -50,6 +50,8 @@ public partial class ItemData : Resource
     [Export] public string CostumeId { get; set; } = "";
     /// <summary>Extracted MSCA layer code (e.g., "14head", "05shrt", "04lwr1").</summary>
     [Export] public string CostumeLayer { get; set; } = "";
+    /// <summary>For Weapon category: MSCA 1h weapon sheet number (1-7). Maps to farmer_1h_weapon sprite texture.</summary>
+    [Export] public int WeaponSheet { get; set; }
 
     [ExportGroup("Flags")]
     [Export] public bool Stackable { get; set; }

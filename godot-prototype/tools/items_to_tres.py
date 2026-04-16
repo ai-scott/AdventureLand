@@ -39,6 +39,15 @@ CATEGORY_MAP = {
 STACKABLE_CATEGORIES = {"Food", "Money"}
 QUEST_CATEGORIES = {"Key"}
 
+# Weapon name → MSCA 1h weapon sheet number (sheets 1-7 in assets/.../effects/)
+# Sheet 1: swords/blades, 2: axes/hammers, 6: wands, 7: spears/tridents
+WEAPON_SHEET_MAP = {
+    "axe": 2,
+    "sword": 1,
+    "pike": 7,
+    "magic trident": 7,
+}
+
 
 def escape(text):
     """Escape for .tres string values."""
@@ -112,6 +121,9 @@ def write_tres(item, output_path):
         lines.append(f'CostumeId = "{escape(costume)}"')
     if layer:
         lines.append(f'CostumeLayer = "{layer}"')
+    weapon_sheet = WEAPON_SHEET_MAP.get(item["name"].lower())
+    if weapon_sheet:
+        lines.append(f'WeaponSheet = {weapon_sheet}')
     if stackable:
         lines.append('Stackable = true')
     if quest_item:

@@ -19,6 +19,7 @@ public partial class ItemPickupToast : CanvasLayer
     private ItemData _newItem;
     private ItemData _oldItem;
     private bool _waitingForChoice;
+    private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
 
     // Arrow textures for strength comparison.
@@ -38,15 +39,16 @@ public partial class ItemPickupToast : CanvasLayer
     {
         if (_waitingForChoice)
         {
+            // Space/Enter always takes the recommended action (upgrade = equip, not-upgrade = keep).
+            // Z/Esc always takes the opposite action.
             if (Input.IsActionJustPressed("dialogue_advance"))
             {
-                // Space/Enter = equip the new item.
-                DoEquip(_newItem);
+                if (_isUpgrade) DoEquip(_newItem);
                 Close();
             }
             else if (Input.IsActionJustPressed("cancel"))
             {
-                // Z/Esc = keep current, just add to inventory.
+                if (!_isUpgrade) DoEquip(_newItem);
                 Close();
             }
         }
@@ -78,6 +80,7 @@ public partial class ItemPickupToast : CanvasLayer
             else
             {
                 // Slot occupied — show compare prompt.
+                _isUpgrade = item.Strength > _oldItem.Strength;
                 BuildCompareToast(item, _oldItem);
                 _waitingForChoice = true;
                 GetTree().Paused = true;
@@ -169,10 +172,12 @@ public partial class ItemPickupToast : CanvasLayer
             AddLabel(compareRow, "Same strength", 12, new Color(0.8f, 0.8f, 0.5f, 1));
         }
 
-        // Choice prompt.
+        // Choice prompt — Space is always the "recommended" action.
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
-        AddLabel(_content, "[Space] Equip new    [Z] Keep current", 10,
-            new Color(0.6f, 0.6f, 0.6f, 0.8f));
+        string prompt = _isUpgrade
+            ? "[Space] Equip new    [Z] Keep current"
+            : "[Space] Keep current    [Z] Equip anyway";
+        AddLabel(_content, prompt, 10, new Color(0.6f, 0.6f, 0.6f, 0.8f));
     }
 
     private void BuildSimpleToast(ItemData item, string message)

@@ -39,11 +39,50 @@ public partial class Inventory : Node
     [Signal] public delegate void ItemEquippedEventHandler(int itemId, string category);
     [Signal] public delegate void ItemUnequippedEventHandler(string category);
 
+    // Starter equipment IDs from the C3 SaveGameData.json defaults.
+    private static readonly int[] StarterItemIds =
+    {
+        75,  // Body: Golden Tee-Shirt
+        95,  // Legs: Brown Shorts
+        101, // Boot: Blue Slippers
+        149, // Hair: Purple Rain
+    };
+
     public override void _Ready()
     {
         Instance = this;
         LoadDatabase();
         GD.Print($"[Inventory] Database loaded: {_db.Count} items");
+    }
+
+    /// <summary>
+    /// Grant starter equipment for a new game. Adds each starter item to
+    /// inventory and auto-equips it in its category slot.
+    /// </summary>
+    public void GrantStarterEquipment()
+    {
+        // Clear current state so a fresh run doesn't keep stale gear.
+        for (int i = 0; i < SlotCount; i++)
+        {
+            _slotItemIds[i] = 0;
+            _slotQuantities[i] = 0;
+        }
+        _equipped.Clear();
+
+        foreach (int id in StarterItemIds)
+        {
+            var item = GetItem(id);
+            if (item == null)
+            {
+                GD.PushWarning($"[Inventory] Starter item ID {id} not found in database");
+                continue;
+            }
+
+            AddItem(id, 1);
+            _equipped[item.Category.ToString()] = id;
+        }
+        GD.Print($"[Inventory] Starter equipment granted: {_equipped.Count} items equipped");
+        EmitSignal(SignalName.InventoryChanged);
     }
 
     // ---- Database ----

@@ -192,7 +192,7 @@ Exit criterion: **Penny's rescue-cat quest plays end-to-end. Pete's herbs quest 
 
 Mechanical effort breakdown: schema port is ~1 day. DialogueManager implementation is ~2-3 days. The Python converter is ~1 day. Per-NPC conversion is automatic once the converter is right; verifying each of the 14 files runs in-game is ~3–4 days of testing and edge-case fixing (Penny alone has 363 lines).
 
-### Phase 4 — Inventory + items
+### Phase 4 — Inventory + items ✅ DONE (2026-04-15)
 Complexity: **L**. User flagged this as complex in C3. Data layer first, UI second.
 
 Deliverables:

@@ -126,9 +126,18 @@ public partial class CostumeController : Node
     /// </summary>
     public void EquipItem(ItemData item)
     {
-        if (item == null || string.IsNullOrEmpty(item.CostumeLayer))
+        if (item == null) return;
+
+        // Weapons use a separate layer (farmer_1h_weapon) and the MSCA weapon sheets.
+        if (item.Category == ItemData.ItemCategory.Weapon)
         {
-            GD.Print($"[Costume] Item '{item?.Name}' has no costume layer — stats-only equip");
+            EquipWeapon(item);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(item.CostumeLayer))
+        {
+            GD.Print($"[Costume] Item '{item.Name}' has no costume layer — stats-only equip");
             return;
         }
 
@@ -155,6 +164,39 @@ public partial class CostumeController : Node
                 if (hair != null) hair.Visible = false;
             }
         }
+    }
+
+    /// <summary>
+    /// Equip a weapon by swapping the farmer_1h_weapon sprite's texture to the
+    /// MSCA weapon sheet indicated by item.WeaponSheet (1-7).
+    /// </summary>
+    private void EquipWeapon(ItemData item)
+    {
+        if (_spriteLayers == null) return;
+
+        var weaponSprite = _spriteLayers.GetNodeOrNull<Sprite2D>("farmer_1h_weapon");
+        if (weaponSprite == null)
+        {
+            GD.PushWarning("[Costume] farmer_1h_weapon sprite not found");
+            return;
+        }
+
+        if (item.WeaponSheet <= 0)
+        {
+            GD.Print($"[Costume] Weapon '{item.Name}' has no WeaponSheet — keeping default");
+            return;
+        }
+
+        // Weapon sheet filenames: "farmer 1hwpn 00N 32x32 v00.png"
+        string path = $"res://assets/sprites/player/farmer/effects/farmer 1hwpn 00{item.WeaponSheet} 32x32 v00.png";
+        if (!ResourceLoader.Exists(path))
+        {
+            GD.PushWarning($"[Costume] Weapon sheet not found: {path}");
+            return;
+        }
+
+        weaponSprite.Texture = GD.Load<Texture2D>(path);
+        GD.Print($"[Costume] Equipped weapon '{item.Name}' (sheet {item.WeaponSheet})");
     }
 
     /// <summary>Unequip the visual for a given layer.</summary>
@@ -247,22 +289,16 @@ public partial class CostumeController : Node
     }
 
     /// <summary>
-    /// When equipping a leg-type layer, hide the conflicting layers.
-    /// 08lwr3 (dress/skirt) hides 04lwr1 (pants) and 06lwr2 (overalls).
-    /// 06lwr2 (overalls) hides 04lwr1 (pants).
-    /// 04lwr1 (pants) is the base — doesn't hide others.
+    /// When equipping any leg-type layer, clear ALL other leg layers so only
+    /// one is visible at a time. Layers: 04lwr1 (pants/shorts), 06lwr2 (overalls),
+    /// 08lwr3 (dresses/skirts). All three are in the "Legs" category.
     /// </summary>
     private void HandleLegExclusion(string layerName)
     {
-        switch (layerName)
+        string[] legLayers = { "04lwr1", "06lwr2", "08lwr3" };
+        foreach (var layer in legLayers)
         {
-            case "08lwr3": // dress — hide pants and overalls
-                SetLayer("04lwr1", null);
-                SetLayer("06lwr2", null);
-                break;
-            case "06lwr2": // overalls — hide pants
-                SetLayer("04lwr1", null);
-                break;
+            if (layer != layerName) SetLayer(layer, null);
         }
     }
 }

@@ -20,14 +20,17 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="17_46npq"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="18_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
-[ext_resource type="Resource" uid="uid://bmt7h7dpxhs12" path="res://assets/data/items/051_yellow_boater_hat.tres" id="19_atc2r"]
+[ext_resource type="Resource" uid="uid://27j3kpq8mdcl" path="res://assets/data/items/051_yellow_boater_hat.tres" id="19_atc2r"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
-[ext_resource type="Resource" uid="uid://ccrldgeui58vu" path="res://assets/data/items/001_axe.tres" id="20_j0aqj"]
-[ext_resource type="Resource" path="res://assets/data/items/002_sword.tres" id="21_pi473"]
-[ext_resource type="Resource" path="res://assets/data/items/003_pike.tres" id="22_1pfkt"]
+[ext_resource type="Resource" uid="uid://dbw8nk3ag56sb" path="res://assets/data/items/001_axe.tres" id="20_j0aqj"]
+[ext_resource type="Resource" uid="uid://bbm4bib251e2" path="res://assets/data/items/002_sword.tres" id="21_pi473"]
+[ext_resource type="Resource" uid="uid://xhw83grc0frr" path="res://assets/data/items/003_pike.tres" id="22_1pfkt"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="22_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="23_0vlwf"]
-[ext_resource type="Resource" path="res://assets/data/items/054_the_wrangler.tres" id="23_1pfkt"]
+[ext_resource type="Resource" uid="uid://dfpfp13ve0g8k" path="res://assets/data/items/054_the_wrangler.tres" id="23_1pfkt"]
+[ext_resource type="Resource" path="res://assets/data/items/072_emerald_tunic.tres" id="24_1e3vk"]
+[ext_resource type="Resource" path="res://assets/data/items/106_red_curlytoed_shoes.tres" id="25_20hat"]
+[ext_resource type="Resource" path="res://assets/data/items/094_frilly_rose_dress.tres" id="26_20hat"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -848,6 +851,18 @@ TriggerID = 4
 position = Vector2(150, 200)
 Data = ExtResource("23_1pfkt")
 TriggerID = 8
+
+[node name="GreenTunicTrigger" parent="Entities" unique_id=16029048 instance=ExtResource("23_0vlwf")]
+position = Vector2(90, 176)
+Data = ExtResource("24_1e3vk")
+
+[node name="RedSlippersTrigger" parent="Entities" unique_id=1302102900 instance=ExtResource("23_0vlwf")]
+position = Vector2(200, 180)
+Data = ExtResource("25_20hat")
+
+[node name="RoseDressTrigger" parent="Entities" unique_id=1193586573 instance=ExtResource("23_0vlwf")]
+position = Vector2(300, 200)
+Data = ExtResource("26_20hat")
 
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
