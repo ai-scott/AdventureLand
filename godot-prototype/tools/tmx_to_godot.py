@@ -2,31 +2,53 @@
 """
 TMX to Godot 4 TileMap converter for Adventure Land.
 
-Reads the World_00_Village.tmx and generates World_00.tscn with:
+Reads a Tiled TMX file and generates a matching Godot .tscn with:
 - A TileMapLayer node per TMX tile layer (Godot 4.3+ uses TileMapLayer, not TileMap)
 - Correct z-ordering for "under player" / "over player" layers
 - Building sprites placed as Sprite2D nodes at their TMX offsets
 - A repeating grass background via a TextureRect
+- MAP_WIDTH/HEIGHT + tileset image read from the TMX itself
 
-Usage: python3 tools/tmx_to_godot.py
+Usage:
+    python3 tools/tmx_to_godot.py                         # default: World_00
+    python3 tools/tmx_to_godot.py <input.tmx> <output.tscn>
 """
 
 import xml.etree.ElementTree as ET
 import os
 import sys
 
-# --- Configuration ---
-TMX_FILE = os.path.join(os.path.dirname(__file__), "..", "World_00_Village.tmx")
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "..", "scenes", "worlds", "World_00.tscn")
+# --- Defaults (can be overridden via CLI args) ---
+SCRIPT_DIR = os.path.dirname(__file__)
+DEFAULT_TMX = os.path.join(SCRIPT_DIR, "..", "assets", "tiles", "tilemaps", "World_00_Village.tmx")
+DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "scenes", "worlds", "World_00.tscn")
 
 TILE_SIZE = 16
+TILESET_COLUMNS = 100  # FantasyForest_Combo.png is 100 tiles wide
+GRASS_BG_IMAGE = "res://assets/tiles/spritesheets/Light_Grass_BG.png"
+
+# Tiled encodes flip/rotation flags in the top 3 bits of the GID. The bottom
+# 29 bits are the actual tile ID. See https://doc.mapeditor.org/en/stable/reference/global-tile-ids/#tile-flipping
+FLIP_H_FLAG  = 0x80000000
+FLIP_V_FLAG  = 0x40000000
+FLIP_D_FLAG  = 0x20000000
+TILE_ID_MASK = 0x1FFFFFFF
+
+
+def decode_tile(raw_gid):
+    """Strip flip bits. Returns (actual_gid, flip_h, flip_v, flip_d)."""
+    if raw_gid == 0:
+        return 0, False, False, False
+    flip_h = bool(raw_gid & FLIP_H_FLAG)
+    flip_v = bool(raw_gid & FLIP_V_FLAG)
+    flip_d = bool(raw_gid & FLIP_D_FLAG)
+    actual = raw_gid & TILE_ID_MASK
+    return actual, flip_h, flip_v, flip_d
+
+# These are set by parse_tmx_header() from the TMX file.
 MAP_WIDTH = 45
 MAP_HEIGHT = 30
-TILESET_COLUMNS = 100
-TILESET_IMAGE = "res://assets/tilesets/FantasyForest_Combo.png"
-TILESET_IMAGE_SIZE = (1600, 1472)
-TILESET_TILE_COUNT = 9200
-GRASS_BG_IMAGE = "res://assets/tilesets/Light_Grass_BG.png"
+TILESET_IMAGE = "res://assets/tiles/spritesheets/FantasyForest_Combo.png"
 
 # Layer name -> z-index mapping (player is at z=0)
 LAYER_Z_INDEX = {
@@ -53,9 +75,16 @@ BUILDINGS = [
 
 
 def parse_tmx(tmx_path):
-    """Parse TMX and extract tile layers with their CSV data."""
+    """Parse TMX and extract tile layers with their CSV data. Also updates
+    the module-level MAP_WIDTH/MAP_HEIGHT from the TMX header."""
+    global MAP_WIDTH, MAP_HEIGHT
+
     tree = ET.parse(tmx_path)
     root = tree.getroot()
+
+    # Read map dimensions from the <map> root element.
+    MAP_WIDTH = int(root.get("width", MAP_WIDTH))
+    MAP_HEIGHT = int(root.get("height", MAP_HEIGHT))
 
     layers = []
     for layer in root.findall("layer"):
@@ -83,7 +112,7 @@ def parse_tmx(tmx_path):
     return layers
 
 
-def generate_tilemap_data(tiles, width, height):
+def generate_tilemap_data(tiles, width, tileset_columns=TILESET_COLUMNS):
     """
     Convert flat tile array to Godot 4 TileMapLayer tile_map_data format.
 
@@ -91,18 +120,22 @@ def generate_tilemap_data(tiles, width, height):
     PackedByteArray. However, it's easier to set tiles via code at runtime.
 
     Instead, we'll generate a CSV-like format and load it via a helper script.
+
+    Flip bits are currently stripped — the tile renders un-flipped. Godot's
+    TileSetAtlasSource alternatives would be needed for correct flipping; that
+    is a follow-up.
     """
-    # We'll store the tile data as a resource file that gets loaded at runtime
     non_empty = []
-    for i, tile_id in enumerate(tiles):
-        if tile_id == 0:
+    for i, raw_gid in enumerate(tiles):
+        actual = decode_tile(raw_gid)[0]
+        if actual == 0:
             continue
         x = i % width
         y = i // width
         # TMX tile IDs are 1-based (firstgid=1), Godot atlas coords are 0-based
-        atlas_id = tile_id - 1  # Convert to 0-based
-        atlas_x = atlas_id % TILESET_COLUMNS
-        atlas_y = atlas_id // TILESET_COLUMNS
+        atlas_id = actual - 1
+        atlas_x = atlas_id % tileset_columns
+        atlas_y = atlas_id // tileset_columns
         non_empty.append((x, y, atlas_x, atlas_y))
 
     return non_empty
@@ -264,7 +297,6 @@ def write_tile_data(layers, output_dir):
         tile_data = generate_tilemap_data(
             layer_info["tiles"],
             layer_info["width"],
-            layer_info["height"]
         )
 
         filepath = os.path.join(output_dir, f"{name_safe}.csv")
@@ -276,26 +308,35 @@ def write_tile_data(layers, output_dir):
 
 
 def main():
-    # Check for TMX file
-    tmx_path = TMX_FILE
+    # CLI args: <input.tmx> <output.tscn>
+    # Both are REQUIRED to prevent accidentally overwriting hand-edited scenes.
+    # For World_00, use update_tile_csvs.py instead — it writes only the CSV tile data.
+    if len(sys.argv) < 3:
+        print("Usage: python3 tools/tmx_to_godot.py <input.tmx> <output.tscn>")
+        print()
+        print("  <input.tmx>   — path to Tiled TMX file (e.g., assets/tiles/tilemaps/World_01_Forest.tmx)")
+        print("  <output.tscn> — path for generated Godot scene (e.g., scenes/worlds/World_01.tscn)")
+        print()
+        print("WARNING: This tool REGENERATES the output .tscn from scratch,")
+        print("wiping any hand-placed nodes. For already-populated scenes like")
+        print("World_00.tscn, use update_tile_csvs.py instead.")
+        sys.exit(1)
+
+    tmx_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    # Safety guard: refuse to overwrite World_00.tscn since it has hand-placed content.
+    if os.path.basename(output_path) == "World_00.tscn":
+        print("ERROR: Refusing to overwrite World_00.tscn — it contains hand-placed NPCs/items/triggers.")
+        print("Use `python3 tools/update_tile_csvs.py` to regenerate just the tile CSVs instead.")
+        sys.exit(1)
+
     if not os.path.exists(tmx_path):
-        # Try from command line arg
-        if len(sys.argv) > 1:
-            tmx_path = sys.argv[1]
-        else:
-            print(f"TMX file not found at: {tmx_path}")
-            print("Usage: python3 tools/tmx_to_godot.py [path/to/World_00_Village.tmx]")
-            print("")
-            print("Using embedded TMX data instead...")
-            tmx_path = None
+        print(f"ERROR: TMX file not found: {tmx_path}")
+        sys.exit(1)
 
-    if tmx_path and os.path.exists(tmx_path):
-        print(f"Parsing TMX: {tmx_path}")
-        layers = parse_tmx(tmx_path)
-    else:
-        print("Using embedded layer data...")
-        layers = parse_embedded_tmx()
-
+    print(f"Parsing TMX: {tmx_path}")
+    layers = parse_tmx(tmx_path)
     print(f"Found {len(layers)} tile layers")
 
     # Write tile data CSVs
@@ -303,19 +344,18 @@ def main():
     write_tile_data(layers, tile_data_dir)
 
     # Generate scene
-    print(f"\nGenerating scene: {OUTPUT_FILE}")
-    write_scene(layers, OUTPUT_FILE)
+    print(f"\nGenerating scene: {output_path}")
+    write_scene(layers, output_path)
     print("Done!")
 
 
 def parse_embedded_tmx():
-    """Parse the TMX data embedded directly (from the user's paste)."""
-    # The TMX XML is stored in a separate file we'll create
-    tmx_path = os.path.join(os.path.dirname(__file__), "..", "World_00_Village.tmx")
+    """Legacy fallback — kept for backward compatibility. Prefer passing the TMX path via CLI."""
+    tmx_path = DEFAULT_TMX
     if os.path.exists(tmx_path):
         return parse_tmx(tmx_path)
 
-    print("ERROR: No TMX file found. Please place World_00_Village.tmx in the project root.")
+    print(f"ERROR: No TMX file found at {DEFAULT_TMX}.")
     sys.exit(1)
 
 

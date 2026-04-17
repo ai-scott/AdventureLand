@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="25">
  <tileset firstgid="1" name="Forest Combo" tilewidth="16" tileheight="16" tilecount="9200" columns="100" tilerendersize="grid">
-  <image source="../Assets/FantasyForest_Combo.png" width="1600" height="1472"/>
+  <image source="../spritesheets/FantasyForest_Combo.png" width="1600" height="1472"/>
   <tile id="701">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0.0909091" y="0.204545" width="15.9091" height="15.6364"/>
@@ -324,7 +324,7 @@
   </wangsets>
  </tileset>
  <imagelayer id="37" name="Ground" locked="1" repeatx="1" repeaty="1">
-  <image source="../../../../Coding/00_Assets/Tilesets &amp; Environments/EraOfFantasy_Grasslands_v2/Light_Grass_BG.png" width="16" height="16"/>
+  <image source="../spritesheets/Light_Grass_BG.png" width="16" height="16"/>
  </imagelayer>
  <layer id="34" name="Ground 3 - under P" width="45" height="30">
   <data encoding="csv">
@@ -564,31 +564,131 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="19" name="Object Layer 1" locked="1"/>
+ <objectgroup id="19" name="Triggers">
+  <object id="9" name="EnterBlacksmith_1" type="door" x="235.627" y="297.405" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="1"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn"/>
+   </properties>
+  </object>
+  <object id="10" name="SpawnFromDoor_1" type="spawn" x="244.752" y="313.421" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="7" name="EnterBlacksmith_2" type="door" x="278.86" y="315.383" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="2"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn"/>
+   </properties>
+  </object>
+  <object id="8" name="SpawnFromDoor_2" type="spawn" x="286.547" y="332.685" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="11" name="EnterHome_3" type="door" x="132.559" y="124.041" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="3"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Home.tscn"/>
+   </properties>
+  </object>
+  <object id="12" name="SpawnFromDoor_3" type="spawn" x="139.694" y="144.843" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="13" name="EnterPennysHouse_4" type="door" x="44.1888" y="333.21" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="4"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_PennysHouse.tscn"/>
+   </properties>
+  </object>
+  <object id="14" name="SpawnFromDoor_4" type="spawn" x="52" y="354" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="15" name="EnterGeneralStore_5" type="door" x="403.802" y="156.903" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn"/>
+   </properties>
+  </object>
+  <object id="16" name="SpawnFromDoor_5" type="spawn" x="411.375" y="174.625" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="17" name="EnterAdventureShop_6" type="door" x="531.361" y="190.198" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="6"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn"/>
+   </properties>
+  </object>
+  <object id="18" name="SpawnFromDoor_6" type="spawn" x="539.503" y="208.781" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="19" name="EnterWindmill_7" type="door" x="264.851" y="155.917" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="7"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Windmill_GroundFloor.tscn"/>
+   </properties>
+  </object>
+  <object id="20" name="SpawnFromDoor_7" type="spawn" x="271.569" y="174.639" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="7"/>
+   </properties>
+  </object>
+  <object id="21" name="EnterGeneralStorePorch_9" type="door" x="360.627" y="136.95" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="9"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn"/>
+   </properties>
+  </object>
+  <object id="22" name="SpawnFromDoor_9" type="spawn" x="368.783" y="153.323" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="9"/>
+   </properties>
+  </object>
+  <object id="23" name="EnterAdventureShopPorch_10" type="door" x="489.976" y="170.793" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="10"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn"/>
+   </properties>
+  </object>
+  <object id="24" name="SpawnFromDoor_10" type="spawn" x="497.506" y="187.636" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
  <group id="20" name="Buildings" locked="1">
   <imagelayer id="40" name="Sign" offsetx="459.53" offsety="251.027">
-   <image source="../Assets/Structure Sprites/AL_TreeSign.png" width="52" height="45"/>
+   <image source="../../buildings/AL_TreeSign.png" width="52" height="45"/>
   </imagelayer>
-  <imagelayer id="28" name="Weapon Shop" offsetx="343.953" offsety="74.242">
-   <image source="../Assets/Structure Sprites/Weapon Shop.png" width="120" height="112"/>
+  <imagelayer id="28" name="General Store" offsetx="343.953" offsety="74.242">
+   <image source="../../buildings/Weapon Shop.png" width="120" height="112"/>
   </imagelayer>
   <imagelayer id="27" name="Windmill" offsetx="228.961" offsety="77.1241">
-   <image source="../Assets/Structure Sprites/Windmill.png" width="102" height="112"/>
+   <image source="../../buildings/Windmill.png" width="102" height="112"/>
   </imagelayer>
   <imagelayer id="26" name="Well" offsetx="369.743" offsety="301.073">
-   <image source="../Assets/Structure Sprites/Well.png" width="44" height="52"/>
+   <image source="../../buildings/Well.png" width="44" height="52"/>
   </imagelayer>
-  <imagelayer id="24" name="Shop" offsetx="468.769" offsety="110.484">
-   <image source="../Assets/Structure Sprites/Shop.png" width="120" height="112"/>
+  <imagelayer id="24" name="Adventure Shop" offsetx="468.769" offsety="110.484">
+   <image source="../../buildings/Shop.png" width="120" height="112"/>
   </imagelayer>
   <imagelayer id="22" name="Cabin 1" offsetx="35.9833" offsety="274.895">
-   <image source="../Assets/Structure Sprites/Cabin1.png" width="48" height="80"/>
+   <image source="../../buildings/Cabin1.png" width="48" height="80"/>
   </imagelayer>
   <imagelayer id="23" name="Cabin 2" offsetx="122.176" offsety="65.6904">
-   <image source="../Assets/Structure Sprites/Cabin2.png" width="48" height="80"/>
+   <image source="../../buildings/Cabin2.png" width="48" height="80"/>
   </imagelayer>
   <imagelayer id="21" name="Blacksmith" offsetx="213.077" offsety="235.893">
-   <image source="../Assets/Structure Sprites/Blacksmith.png" width="120" height="112"/>
+   <image source="../../buildings/Blacksmith.png" width="120" height="112"/>
   </imagelayer>
  </group>
 </map>

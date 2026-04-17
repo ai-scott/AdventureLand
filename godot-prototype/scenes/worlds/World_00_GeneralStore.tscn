@@ -1,0 +1,59 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
+[ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
+[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
+[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
+[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_GeneralStore.tres" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("1")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSet" id="TileSet_1"]
+tile_size = Vector2i(16, 16)
+sources/0 = SubResource("TileSetAtlasSource_1")
+
+[node name="World_00_GeneralStore" type="Node2D"]
+script = ExtResource("5")
+SpawnVillageBuildings = false
+
+[node name="WorldMeta" type="Node" parent="."]
+script = ExtResource("6")
+MapSize = Vector2i(240, 192)
+WorldDisplayName = "General Store"
+
+[node name="World_00_GeneralStore_GroundWalls" type="TileMapLayer" parent="."]
+z_index = -1
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_GeneralStore_FurnitureDecor" type="TileMapLayer" parent="."]
+z_index = 0
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_GeneralStore_Items" type="TileMapLayer" parent="."]
+z_index = 1
+tile_set = SubResource("TileSet_1")
+
+[node name="DialogueManager" parent="." instance=ExtResource("3")]
+
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" instance=ExtResource("2")]
+position = Vector2(176, 160)
+
+[node name="Camera" type="Camera2D" parent="Entities/Player"]
+zoom = Vector2(3, 3)
+script = ExtResource("4")
+
+[node name="Triggers" type="Node2D" parent="."]
+script = ExtResource("7")
+TriggersResource = ExtResource("8")
+DoorScene = ExtResource("9")
+EdgeScene = ExtResource("10")

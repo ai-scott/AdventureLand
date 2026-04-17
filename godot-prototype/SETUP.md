@@ -99,7 +99,7 @@ Press **F5** (or the play button). You should see:
 │   └── EVALUATION_REPORT.md         # Migration eval write-up
 ├── tools/
 │   └── tmx_to_godot.py              # TMX → Godot converter
-└── assets/maps/World_00_Village.tmx # Tiled source (7 layers, 1430 tiles)
+└── assets/tiles/tilemaps/World_00_Village.tmx # Tiled source (7 layers, 1430 tiles)
 ```
 
 ## Player Animation

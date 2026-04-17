@@ -271,6 +271,7 @@ public partial class DialogueManager : CanvasLayer
 
     public void EndDialogue()
     {
+        GD.Print("[Dialogue] EndDialogue called");
         _dialogueBox.Visible = false;
         ClearResponses();
         _currentNode = null;

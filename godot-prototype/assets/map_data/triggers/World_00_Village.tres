@@ -1,0 +1,144 @@
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(235.627, 297.405)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_Blacksmith.tscn"
+DoorId = 1
+
+[sub_resource type="Resource" id="trig_1"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(244.752, 313.421)
+Size = Vector2(16.0, 16.0)
+DoorId = 1
+
+[sub_resource type="Resource" id="trig_2"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(278.86, 315.383)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_Blacksmith.tscn"
+DoorId = 2
+
+[sub_resource type="Resource" id="trig_3"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(286.547, 332.685)
+Size = Vector2(16.0, 16.0)
+DoorId = 2
+
+[sub_resource type="Resource" id="trig_4"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(132.559, 124.041)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_Home.tscn"
+DoorId = 3
+
+[sub_resource type="Resource" id="trig_5"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(139.694, 144.843)
+Size = Vector2(16.0, 16.0)
+DoorId = 3
+
+[sub_resource type="Resource" id="trig_6"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(44.1888, 333.21)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_PennysHouse.tscn"
+DoorId = 4
+
+[sub_resource type="Resource" id="trig_7"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(52.0, 354.0)
+Size = Vector2(16.0, 16.0)
+DoorId = 4
+
+[sub_resource type="Resource" id="trig_8"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(403.802, 156.903)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_GeneralStore.tscn"
+DoorId = 5
+
+[sub_resource type="Resource" id="trig_9"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(411.375, 174.625)
+Size = Vector2(16.0, 16.0)
+DoorId = 5
+
+[sub_resource type="Resource" id="trig_10"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(531.361, 190.198)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_AdventureShop.tscn"
+DoorId = 6
+
+[sub_resource type="Resource" id="trig_11"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(539.503, 208.781)
+Size = Vector2(16.0, 16.0)
+DoorId = 6
+
+[sub_resource type="Resource" id="trig_12"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(264.851, 155.917)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_Windmill_GroundFloor.tscn"
+DoorId = 7
+
+[sub_resource type="Resource" id="trig_13"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(271.569, 174.639)
+Size = Vector2(16.0, 16.0)
+DoorId = 7
+
+[sub_resource type="Resource" id="trig_14"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(360.627, 136.95)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_GeneralStore.tscn"
+DoorId = 9
+
+[sub_resource type="Resource" id="trig_15"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(368.783, 153.323)
+Size = Vector2(16.0, 16.0)
+DoorId = 9
+
+[sub_resource type="Resource" id="trig_16"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(489.976, 170.793)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00_AdventureShop.tscn"
+DoorId = 10
+
+[sub_resource type="Resource" id="trig_17"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(497.506, 187.636)
+Size = Vector2(16.0, 16.0)
+DoorId = 10
+
+[resource]
+script = ExtResource("1")
+SourceTmx = "assets/tiles/tilemaps/World_00_Village.tmx"
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17")])

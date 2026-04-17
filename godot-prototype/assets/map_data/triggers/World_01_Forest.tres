@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+
+[resource]
+script = ExtResource("1")
+SourceTmx = "assets/tiles/tilemaps/World_01_Forest.tmx"
+Triggers = Array[ExtResource("2")]([])

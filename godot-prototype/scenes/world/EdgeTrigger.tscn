@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bi0tewyto6sm3"]
+
+[ext_resource type="Script" uid="uid://bid3udrfbpmcf" path="res://scripts/world/EdgeTrigger.cs" id="1"]
+
+[sub_resource type="RectangleShape2D" id="EdgeShape"]
+size = Vector2(720, 32)
+
+[node name="EdgeTrigger" type="Area2D" unique_id=917702192]
+collision_layer = 0
+script = ExtResource("1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2003402486]
+shape = SubResource("EdgeShape")

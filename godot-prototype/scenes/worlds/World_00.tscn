@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://br5bymkhd10fi"]
 
-[ext_resource type="Texture2D" uid="uid://de21fwjrhtoqo" path="res://assets/tilesets/FantasyForest_Combo.png" id="1"]
-[ext_resource type="Texture2D" uid="uid://bah0qqu0v6l50" path="res://assets/tilesets/Light_Grass_BG.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://de21fwjrhtoqo" path="res://assets/tiles/spritesheets/FantasyForest_Combo.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://bah0qqu0v6l50" path="res://assets/tiles/spritesheets/Light_Grass_BG.png" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="4_46npq"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="5"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="6"]
@@ -31,6 +31,11 @@
 [ext_resource type="Resource" path="res://assets/data/items/072_emerald_tunic.tres" id="24_1e3vk"]
 [ext_resource type="Resource" path="res://assets/data/items/106_red_curlytoed_shoes.tres" id="25_20hat"]
 [ext_resource type="Resource" path="res://assets/data/items/094_frilly_rose_dress.tres" id="26_20hat"]
+[ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="27_b4gdq"]
+[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
+[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -864,6 +869,17 @@ Data = ExtResource("25_20hat")
 position = Vector2(300, 200)
 Data = ExtResource("26_20hat")
 
+[node name="EdgeSouth" parent="Entities" unique_id=1170496001 instance=ExtResource("27_b4gdq")]
+position = Vector2(360, 496)
+TargetScene = "uid://cqj4q3ql7meqi"
+ExitEdge = 3
+
+[node name="Triggers" type="Node2D" parent="."]
+script = ExtResource("34_tspwn")
+TriggersResource = ExtResource("35_trres")
+DoorScene = ExtResource("33_door")
+EdgeScene = ExtResource("27_b4gdq")
+
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
@@ -879,3 +895,7 @@ visible = false
 PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
 
 [node name="InventoryUI" parent="." unique_id=577267304 instance=ExtResource("22_b8jan")]
+
+[node name="WorldMeta" type="Node" parent="." unique_id=1195734101]
+script = ExtResource("32_6xkt4")
+WorldDisplayName = "Leafwood Village"

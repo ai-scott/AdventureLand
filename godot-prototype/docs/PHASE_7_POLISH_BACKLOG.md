@@ -4,6 +4,14 @@ Running list of polish items deferred from earlier phases. Most target the final
 
 ## Visual polish
 
+### TMX pipeline
+- [ ] **Multi-tileset TMX support** — C3 couldn't import TMX files with multiple `<tileset>` entries; Godot handles this natively. Extend `tools/tmx_to_godot.py` to parse all tilesets in a TMX, register each as a distinct `source_id` in the Godot TileSet, and map tile GIDs to the correct source at conversion time. This unlocks interior scenes that blend Mana_Seed_Interiors + FantasyForest_Combo + Collectibles in one map.
+
+### Global 16-bit aesthetic
+- [ ] **Pixel-art font** — Replace Godot's default Open Sans in all UI with a 16-bit font from `assets/fonts/`. Apply globally via Theme resource so every Label/Button inherits without per-node overrides.
+- [ ] **16-bit UI pass** — Ensure all text, buttons, panels, and borders render at a consistent pixel resolution. No anti-aliased text, no smoothed curves. Turn on `TextureFilter = Nearest` everywhere (project setting or per-scene).
+- [ ] **Integer UI scaling** — Set viewport stretch mode to `viewport` + `keep` with integer scale so UI snaps to pixel grid regardless of window size.
+
 ### UI art pass (all screens → pixel art from C3)
 - [ ] **Inventory UI** — Replace placeholder dark panel with C3 pixel-art frame (`images/itemslot-animation 1-000.png`, `squareequip-animation 1-000.png`, `obj_textitemframe-animation 1-000.png`). Match the ornate yellow/green parchment look from the C3 inventory screenshot.
 - [ ] **Item pickup toast** — Replace programmatic box with C3 pixel-art `obj_transbox-animation 1-000.png` (transparent green dialogue-style box). Match the "Take / Cancel" prompt style.
@@ -31,6 +39,7 @@ Running list of polish items deferred from earlier phases. Most target the final
 
 ## Gameplay polish
 
+- [ ] **Shop item purchase gate** — Items placed inside shop interiors (Blacksmith, Adventure Shop, General Store) must require payment before pickup. Current `ItemTrigger` grants items on collision. Add either (a) a `RequiresPurchase` bool on `ItemTrigger` that routes pickup through the shop purchase flow instead of `Inventory.Add`, or (b) a separate `ShopItemTrigger` scene that extends `ItemTrigger` with price + "can you afford it?" check + gem deduction. C3 reference: in the shop interiors, the red item-trigger squares trigger a "buy for X gems" prompt rather than free pickup.
 - [ ] **Heart containers** — `HealthSystem.IncreaseMaxHealth(int)` method + special ItemTrigger variant that ups max HP on pickup. Tied to world-design: where do the hearts live?
 - [ ] **Food use feedback** — Brief "+N HP" floating text when food is consumed.
 - [ ] **Weapon strength → attack damage** — Currently equipped weapon strength isn't applied to attack damage. Wire `AttackHitbox` damage to equipped weapon.

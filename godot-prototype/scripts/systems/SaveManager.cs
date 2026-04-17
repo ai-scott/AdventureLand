@@ -26,6 +26,12 @@ public partial class SaveManager : Node
     /// <summary>Which slot is active (-1 = none).</summary>
     public int ActiveSlot { get; private set; } = -1;
 
+    /// <summary>If set, overrides the saved position on the next scene load.
+    /// Used by WorldManager for door/edge transitions so the player arrives
+    /// at the correct spawn point instead of their previous saved position.
+    /// Cleared after use.</summary>
+    public Vector2? PendingSpawnPosition { get; set; }
+
     private static string SlotPath(int slot) => $"{SaveDir}/slot_{slot}.tres";
 
     public override void _Ready()
@@ -77,7 +83,7 @@ public partial class SaveManager : Node
     }
 
     /// <summary>Start a new game in the given slot.</summary>
-    public void NewGame(int slot, string playerName)
+    public async void NewGame(int slot, string playerName)
     {
         GD.Print($"[SaveManager] NewGame slot={slot} name={playerName}");
         CurrentData = new SaveData
@@ -85,8 +91,10 @@ public partial class SaveManager : Node
             PlayerName = playerName,
             Health = 10,
             MaxHealth = 10,
-            PositionX = 149f,
-            PositionY = 164f,
+            // Matches the center of Village's SpawnFromDoor_3 — i.e.,
+            // the spot where the player steps out of their Home (Cabin 2).
+            PositionX = 148f,
+            PositionY = 153f,
             CurrentWorld = "res://scenes/worlds/World_00.tscn",
         };
         ActiveSlot = slot;
@@ -98,7 +106,18 @@ public partial class SaveManager : Node
         // Write directly — don't call Save() which snapshots the live scene (still TitleScreen).
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok) GD.PrintErr($"[SaveManager] NewGame save failed: {err}");
+
+        // Fade to black immediately so the user sees feedback while the scene loads.
+        if (FadeOverlay.Instance != null)
+        {
+            await FadeOverlay.Instance.FadeOut(0.3);
+        }
+
         TransitionToWorld(CurrentData.CurrentWorld);
+
+        // Show the first-world banner ("Leafwood Village") over the black fade,
+        // then fade in the new scene. Fire-and-forget — don't block NewGame's caller.
+        _ = WorldManager.Instance?.ShowFirstWorldBanner(CurrentData.CurrentWorld);
     }
 
     /// <summary>Save current game state. Reads live data from the scene.</summary>
@@ -192,7 +211,19 @@ public partial class SaveManager : Node
             return;
         }
 
-        player.GlobalPosition = new Vector2(CurrentData.PositionX, CurrentData.PositionY);
+        // WorldManager may set a spawn override for door/edge transitions.
+        // Otherwise use the saved position.
+        if (PendingSpawnPosition.HasValue)
+        {
+            player.GlobalPosition = PendingSpawnPosition.Value;
+            CurrentData.PositionX = PendingSpawnPosition.Value.X;
+            CurrentData.PositionY = PendingSpawnPosition.Value.Y;
+            PendingSpawnPosition = null;
+        }
+        else
+        {
+            player.GlobalPosition = new Vector2(CurrentData.PositionX, CurrentData.PositionY);
+        }
 
         var health = player.GetNodeOrNull<HealthSystem>("HealthSystem");
         if (health != null)

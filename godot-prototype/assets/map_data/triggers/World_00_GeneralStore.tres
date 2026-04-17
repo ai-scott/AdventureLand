@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(168.226, 156.737)
+Size = Vector2(16.0, 16.0)
+DoorId = 5
+
+[sub_resource type="Resource" id="trig_1"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(160.0, 176.0)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00.tscn"
+DoorId = 5
+
+[sub_resource type="Resource" id="trig_2"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(56.0, 125.413)
+Size = Vector2(16.0, 16.0)
+DoorId = 9
+
+[sub_resource type="Resource" id="trig_3"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(48.0, 144.0)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00.tscn"
+DoorId = 9
+
+[resource]
+script = ExtResource("1")
+SourceTmx = "assets/tiles/tilemaps/World_00_GeneralStore.tmx"
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3")])

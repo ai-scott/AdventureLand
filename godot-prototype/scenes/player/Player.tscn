@@ -495218,100 +495218,116 @@ frame = 63
 
 [node name="00undr" type="Sprite2D" parent="SpriteLayers" unique_id=2025979211]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="01body" type="Sprite2D" parent="SpriteLayers" unique_id=1169450034]
 texture = ExtResource("5_8qjgm")
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="02sock" type="Sprite2D" parent="SpriteLayers" unique_id=1399917459]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="03fot1" type="Sprite2D" parent="SpriteLayers" unique_id=1659257931]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="04lwr1" type="Sprite2D" parent="SpriteLayers" unique_id=1521861767]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="05shrt" type="Sprite2D" parent="SpriteLayers" unique_id=1426881218]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="06lwr2" type="Sprite2D" parent="SpriteLayers" unique_id=1479034669]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="07fot2" type="Sprite2D" parent="SpriteLayers" unique_id=1111058315]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="08lwr3" type="Sprite2D" parent="SpriteLayers" unique_id=2071282891]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="09hand" type="Sprite2D" parent="SpriteLayers" unique_id=650335398]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="10outr" type="Sprite2D" parent="SpriteLayers" unique_id=817398202]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="11neck" type="Sprite2D" parent="SpriteLayers" unique_id=1086823715]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="12face" type="Sprite2D" parent="SpriteLayers" unique_id=1836349186]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="13hair" type="Sprite2D" parent="SpriteLayers" unique_id=676537148]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="14head" type="Sprite2D" parent="SpriteLayers" unique_id=580542860]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="15over" type="Sprite2D" parent="SpriteLayers" unique_id=526713488]
 offset = Vector2(0, -10)
+flip_h = true
 hframes = 16
 vframes = 16
-frame = 133
+frame = 32
 
 [node name="farmer_tools" type="Sprite2D" parent="SpriteLayers" unique_id=1946554874]
 visible = false
@@ -495336,10 +495352,10 @@ frame = 7
 
 [node name="farmer_bow" type="Sprite2D" parent="SpriteLayers" unique_id=761560932]
 visible = false
-rotation = 1.5707964
 texture = ExtResource("7_2xrq6")
-offset = Vector2(-2, 0)
+offset = Vector2(0, -10)
 hframes = 4
+frame = 3
 
 [node name="fishing_right_left" type="Sprite2D" parent="SpriteLayers" unique_id=2065687503]
 visible = false
@@ -495360,7 +495376,7 @@ frame = 31
 [node name="32x32_anims" type="Sprite2D" parent="SpriteLayers" unique_id=843833137]
 visible = false
 texture = ExtResource("10_v5i4m")
-offset = Vector2(0, -2)
+offset = Vector2(-8, -10)
 hframes = 6
 vframes = 16
 frame = 95
@@ -495368,7 +495384,7 @@ frame = 95
 [node name="64x64_anims" type="Sprite2D" parent="SpriteLayers" unique_id=1210084380]
 visible = false
 texture = ExtResource("11_p1lr0")
-offset = Vector2(0, -2)
+offset = Vector2(-8, -10)
 hframes = 8
 vframes = 8
 frame = 63
@@ -495464,10 +495480,6 @@ parameters/WaterGround/blend_position = Vector2(0, 0)
 parameters/Wave/blend_position = Vector2(0, 0)
 parameters/WorkAtDesk1/blend_position = Vector2(0, 0)
 parameters/WorkAtDesk2/blend_position = Vector2(0, 0)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=710967144]
-zoom = Vector2(2, 2)
-position_smoothing_enabled = true
 
 [node name="HealthSystem" type="Node" parent="." unique_id=1747417668]
 script = ExtResource("19_pi3ps")

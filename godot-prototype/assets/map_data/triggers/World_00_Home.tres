@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+Kind = 1
+Position = Vector2(72.0, 123.099)
+Size = Vector2(16.0, 16.0)
+DoorId = 3
+
+[sub_resource type="Resource" id="trig_1"]
+script = ExtResource("2")
+Kind = 0
+Position = Vector2(64.0, 144.0)
+Size = Vector2(32.0, 16.0)
+TargetScene = "res://scenes/worlds/World_00.tscn"
+DoorId = 3
+
+[resource]
+script = ExtResource("1")
+SourceTmx = "assets/tiles/tilemaps/World_00_Home.tmx"
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1")])

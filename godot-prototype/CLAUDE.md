@@ -116,13 +116,45 @@ These can be silently stripped during git merges. If tiles look jangled again, c
 
 **To update tile data without touching the scene**, use instead:
 ```bash
-python3 tools/update_tile_csvs.py assets/maps/World_00_Village.tmx
+python3 tools/update_tile_csvs.py assets/tiles/tilemaps/World_00_Village.tmx
 ```
 This writes only the CSV files. MapLoader reads them at runtime — just restart the game.
 
-The TMX is at `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
+The TMX is at `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
 
 `tools/add_decor_layers.py` has embedded raw CSV data — used once, safe to leave as reference.
+
+### 6. TMX trigger data must be baked — do not parse at runtime
+
+Triggers (doors, spawn markers, edge transitions, NPCs, items) are authored
+in Tiled's Object Layer, then baked into `.tres` files by
+`tools/tmx_triggers_to_tres.py`. The Godot runtime (`TriggerSpawner.cs`) loads
+the `.tres`, never the TMX. This keeps shipped builds free of XML parsing and
+Python dependencies.
+
+**Tile authoring → `.tres` flow:**
+1. User edits TMX in Tiled → saves.
+2. Tiled's `autobake.js` extension (installed per `tools/README.md`) runs
+   `tools/bake_all.py` automatically on save.
+3. `bake_all.py` calls `tmx_triggers_to_tres.py` for every TMX → regenerates
+   `assets/map_data/triggers/{TMX_name}.tres`.
+4. Godot reads the `.tres` at play time via `TriggerSpawner`.
+
+**When working on maps/triggers/interiors:**
+- **Before recommending the user hit Play, verify the auto-bake is live.** Ask
+  them whether `AutoBake: armed.` shows up in Tiled's console on startup, or
+  whether the extension is installed. If not, run `python3 tools/bake_all.py`
+  yourself so the `.tres` matches the TMX.
+- **If you edit a TMX directly (rare — user usually edits in Tiled)**, run
+  `python3 tools/bake_all.py` yourself immediately. The staleness check in
+  `TriggerSpawner.CheckStaleness()` will warn at runtime, but the bake is what
+  actually fixes things.
+- **Never add runtime TMX parsing to shipped code.** If you need TMX data at
+  runtime, extend the baker to emit a new `.tres` type.
+
+**Debug-build safety net:** `TriggerSpawner` compares mtimes of the source TMX
+and the baked `.tres`, and pushes a warning if the TMX is newer. If you see a
+`[TriggerSpawner] STALE:` warning in the Output panel, rebake.
 
 ## Data Resources (GlobalClass pattern)
 
@@ -142,16 +174,21 @@ scripts/data/
 ├── EnemyBehavior.cs       ← one weighted behavior slot
 ├── EnemyAction.cs         ← Move/Animate/Sound/Invulnerable action
 ├── BehaviorCondition.cs   ← distance/hurt/invuln gating
-├── ItemData.cs            ← (future) mirrors ItemsLibrary.json entries
-└── DialogueData.cs        ← (future) mirrors quest-dialogue files
+├── ItemData.cs            ← mirrors ItemsLibrary.json entries
+├── DialogueData.cs        ← mirrors quest-dialogue files
+├── TriggerData.cs         ← one TMX object: Door/Spawn/Edge/Npc/Item
+└── WorldTriggers.cs       ← array of TriggerData baked from one TMX
 
 assets/data/
 ├── enemies/
-│   ├── ooze.tres
-│   ├── crab.tres
-│   └── bat.tres
-├── items/                 ← (future)
-└── dialogue/              ← (future)
+│   ├── ooze.tres, crab.tres, bat.tres
+├── items/                 ← from items_to_tres.py
+└── dialogue/              ← from dialogue_to_tres.py
+
+assets/map_data/triggers/  ← baked from TMX ObjectLayer by tmx_triggers_to_tres.py
+├── World_00_Village.tres
+├── World_00_Blacksmith.tres
+└── ...
 ```
 
 ### The pattern
@@ -239,7 +276,7 @@ Defined in `project.godot`:
 
 - Animation guide: `assets/sprites/player/docs/farmer base animation guide.png`
 - Mana Seed cell reference: user has locally, not in repo (too large / copyrighted)
-- TMX source: `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
+- TMX source: `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
 
 ## Docs in this folder
 

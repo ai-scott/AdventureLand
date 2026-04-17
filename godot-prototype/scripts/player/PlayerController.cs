@@ -224,6 +224,20 @@ public partial class PlayerController : CharacterBody2D
 		{
 			_attackHitbox.Position = _facing * HitboxOffset;
 		}
+
+		// Safety net: some MSCA weapon-variant animations are missing the
+		// emit_animation_state_finished keyframe, which leaves Attacking=true
+		// and freezes the player mid-strike. Force-clear after a generous max
+		// duration. Typical strike runs ~0.4s.
+		var safety = GetTree().CreateTimer(1.0);
+		safety.Timeout += () =>
+		{
+			if (!Attacking) return;
+			GD.PushWarning("[PlayerController] Attack safety-timeout fired — MSCA animation_state_finished did not emit. Check the keyframe on the active weapon's strike animation.");
+			Attacking = false;
+			if (_attackHitbox != null) _attackHitbox.Monitoring = false;
+			if (_weaponSprite != null) _weaponSprite.Visible = false;
+		};
 	}
 
 	/// <summary>Receives damage from an enemy's Hitbox. Routes to the HealthSystem.</summary>

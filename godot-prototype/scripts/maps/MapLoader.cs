@@ -32,6 +32,13 @@ public partial class MapLoader : Node2D
 {
 	[Export] public bool AutoLoad = true;
 
+	/// <summary>
+	/// Village-only: spawn the hardcoded building-footprint colliders (Blacksmith,
+	/// Windmill, etc.) listed in <see cref="Buildings"/>. Interior scenes must set
+	/// this false — otherwise the village footprints spawn in every world.
+	/// </summary>
+	[Export] public bool SpawnVillageBuildings = true;
+
 	private const int TileSourceId = 0;
 	private const int PhysicsLayerId = 0; // matches physics_layer_0 in TileSet
 
@@ -233,7 +240,7 @@ public partial class MapLoader : Node2D
 	{
 		if (AutoLoad)
 			LoadAllLayers();
-		if (!Engine.IsEditorHint())
+		if (!Engine.IsEditorHint() && SpawnVillageBuildings)
 			SpawnBuildingColliders();
 	}
 

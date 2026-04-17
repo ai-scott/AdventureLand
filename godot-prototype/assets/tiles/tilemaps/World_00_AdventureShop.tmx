@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="5">
+ <tileset firstgid="1" name="Mana_Interiors" tilewidth="16" tileheight="16" tilecount="6784" columns="128">
+  <image source="../spritesheets/Mana_Seed_Interiors.png" width="2048" height="848"/>
+ </tileset>
+ <layer id="1" name="Ground &amp; Walls" width="15" height="12">
+  <data encoding="csv">
+356,357,357,357,357,357,357,357,357,357,357,357,357,358,359,
+452,847,973,974,972,847,974,973,972,847,972,973,974,842,487,
+580,1103,1100,1102,1101,1103,1100,727,728,1103,1102,1100,1100,1098,615,
+708,1231,1229,1230,1229,1231,1228,855,856,1231,1230,1229,1229,1226,743,
+452,2010,319,320,449,450,446,983,984,449,450,319,319,322,871,
+580,446,447,577,449,450,448,449,319,320,447,448,449,450,999,
+708,574,575,576,577,578,576,577,447,448,575,576,577,578,871,
+836,702,703,704,705,706,704,705,319,320,448,449,450,450,999,
+1092,830,831,832,833,834,832,833,447,448,576,577,578,578,871,
+1220,1254,1254,0,0,1254,1254,586,702,703,704,705,706,706,999,
+0,0,0,0,0,0,0,1124,830,831,832,833,834,834,1127,
+0,0,0,0,0,0,0,1252,1254,1254,0,0,1254,1254,1255
+</data>
+ </layer>
+ <layer id="2" name="Furniture &amp; Decor" width="15" height="12">
+  <data encoding="csv">
+0,2349,2349,2349,0,0,0,0,0,0,0,0,0,0,0,
+0,3357,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,3485,2051,2052,2214,0,1843,0,0,0,1840,2055,2056,0,0,
+0,0,2179,2180,2342,0,0,0,0,0,0,2183,2184,0,0,
+0,0,3262,3262,3262,3263,3264,3265,3262,3263,3264,3265,0,0,0,
+0,1575,2478,2479,2480,3391,2478,2479,2480,3391,2478,2479,2480,0,0,
+0,1575,2606,2607,2608,3519,2606,2607,2608,3519,2606,2607,2608,0,0,
+0,1575,2734,2735,2736,3647,2734,2735,2736,3647,2734,2735,2736,0,0,
+0,0,3774,3774,3774,3775,3776,3777,3774,3775,3776,3777,0,1434,0,
+0,0,0,3287,3288,0,0,0,2846,2847,0,0,0,1562,0,
+0,0,0,0,0,0,0,0,2974,2975,0,0,0,1690,0,
+0,0,0,0,0,0,0,0,0,0,3287,3288,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="Items" width="15" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,3985,3986,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1433,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1561,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1689,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,3494,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="Triggers">
+  <object id="1" name="SpawnFromDoor_6" type="spawn" x="168" y="152" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="2" name="ExitToVillage_6" type="door" x="160" y="176" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="6"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00.tscn"/>
+   </properties>
+  </object>
+  <object id="3" name="SpawnFromDoor_10" type="spawn" x="56" y="120" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="10"/>
+   </properties>
+  </object>
+  <object id="4" name="ExitToVillage_10" type="door" x="48" y="144" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="10"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00.tscn"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

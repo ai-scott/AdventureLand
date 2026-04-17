@@ -1,11 +1,16 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Minimal title screen — "New Game" and "Continue" buttons.
-/// New Game → slot select → name entry → start.
-/// Continue → slot select (occupied only) → load.
+/// Title screen — "New Game" and "Continue".
+/// Keyboard navigation mirrors dialogue options:
+///   move_up/move_down  (WASD + arrow keys) to change selection
+///   dialogue_advance   (Space / Enter)     to confirm
+///
+/// Continue only appears when at least one save slot exists, and is placed
+/// above New Game so the "common case" (returning player) sits at the top.
 /// </summary>
 public partial class TitleScreen : Control
 {
@@ -13,13 +18,12 @@ public partial class TitleScreen : Control
     private State _state = State.Main;
 
     private VBoxContainer _mainMenu;
-    private Button _newGameBtn;
-    private Button _continueBtn;
+    private VBoxContainer _mainOptions;
 
     // Slot selection
     private PanelContainer _slotPanel;
     private VBoxContainer _slotList;
-    private bool _slotModeNewGame; // true = new game, false = continue
+    private bool _slotModeNewGame;
     private int _selectedSlot = -1;
 
     // Name entry
@@ -37,7 +41,6 @@ public partial class TitleScreen : Control
 
     private void BuildUI()
     {
-        // Full-screen background.
         var bg = new ColorRect();
         bg.Color = new Color(0.05f, 0.08f, 0.12f, 1f);
         bg.SetAnchorsPreset(LayoutPreset.FullRect);
@@ -62,25 +65,10 @@ public partial class TitleScreen : Control
         spacer.CustomMinimumSize = new Vector2(0, 20);
         _mainMenu.AddChild(spacer);
 
-        _newGameBtn = new Button();
-        _newGameBtn.Text = "New Game";
-        _newGameBtn.CustomMinimumSize = new Vector2(200, 40);
-        _newGameBtn.Pressed += OnNewGamePressed;
-        _mainMenu.AddChild(_newGameBtn);
-
-        _continueBtn = new Button();
-        _continueBtn.Text = "Continue";
-        _continueBtn.CustomMinimumSize = new Vector2(200, 40);
-        _continueBtn.Pressed += OnContinuePressed;
-        _mainMenu.AddChild(_continueBtn);
-
-        // Gray out Continue if no saves exist.
-        bool anySaves = false;
-        for (int i = 0; i < SaveManager.SlotCount; i++)
-        {
-            if (_saveManager.SlotExists(i)) { anySaves = true; break; }
-        }
-        _continueBtn.Disabled = !anySaves;
+        // Options container — rebuilt per-show based on save state.
+        _mainOptions = new VBoxContainer();
+        _mainOptions.AddThemeConstantOverride("separation", 8);
+        _mainMenu.AddChild(_mainOptions);
 
         // --- Slot selection panel (hidden) ---
         _slotPanel = new PanelContainer();
@@ -141,6 +129,98 @@ public partial class TitleScreen : Control
         _mainMenu.Visible = true;
         _slotPanel.Visible = false;
         _namePanel.Visible = false;
+
+        // Rebuild options so ordering reflects current save state.
+        foreach (var child in _mainOptions.GetChildren()) child.QueueFree();
+
+        bool anySaves = HasAnySave();
+        if (anySaves)
+        {
+            AddMainOption("Continue", OnContinuePressed);
+        }
+        AddMainOption("New Game", OnNewGamePressed);
+
+        // Auto-focus the top option. Deferred so the freed children finish unparenting.
+        CallDeferred(nameof(FocusFirstMainOption));
+    }
+
+    private void AddMainOption(string text, System.Action onPressed)
+    {
+        var btn = new Button();
+        btn.Text = text;
+        btn.CustomMinimumSize = new Vector2(200, 40);
+        btn.Pressed += () => onPressed();
+        _mainOptions.AddChild(btn);
+    }
+
+    private void FocusFirstMainOption()
+    {
+        foreach (var child in _mainOptions.GetChildren())
+        {
+            if (child is Button btn) { btn.GrabFocus(); return; }
+        }
+    }
+
+    private bool HasAnySave()
+    {
+        for (int i = 0; i < SaveManager.SlotCount; i++)
+        {
+            if (_saveManager.SlotExists(i)) return true;
+        }
+        return false;
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (!@event.IsPressed() || @event.IsEcho()) return;
+
+        // Route nav to whichever options list is currently visible.
+        VBoxContainer active = _state switch
+        {
+            State.Main => _mainOptions,
+            State.SlotSelect => _slotList,
+            _ => null,
+        };
+        if (active == null) return;
+
+        if (@event.IsAction("move_up"))
+        {
+            MoveFocus(active, -1);
+            GetViewport().SetInputAsHandled();
+        }
+        else if (@event.IsAction("move_down"))
+        {
+            MoveFocus(active, +1);
+            GetViewport().SetInputAsHandled();
+        }
+        else if (@event.IsAction("dialogue_advance"))
+        {
+            if (GetViewport().GuiGetFocusOwner() is BaseButton focused && !focused.Disabled)
+            {
+                focused.EmitSignal(BaseButton.SignalName.Pressed);
+                GetViewport().SetInputAsHandled();
+            }
+        }
+    }
+
+    private void MoveFocus(VBoxContainer container, int delta)
+    {
+        var buttons = new List<Button>();
+        foreach (var child in container.GetChildren())
+        {
+            if (child is Button b && !b.Disabled) buttons.Add(b);
+        }
+        if (buttons.Count == 0) return;
+
+        int currentIdx = -1;
+        var focused = GetViewport().GuiGetFocusOwner();
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i] == focused) { currentIdx = i; break; }
+        }
+
+        int next = ((currentIdx == -1 ? 0 : currentIdx + delta) + buttons.Count) % buttons.Count;
+        buttons[next].GrabFocus();
     }
 
     private void ShowSlotSelect(bool newGame)
@@ -150,7 +230,6 @@ public partial class TitleScreen : Control
         _mainMenu.Visible = false;
         _namePanel.Visible = false;
 
-        // Rebuild slot buttons.
         foreach (var child in _slotList.GetChildren())
             child.QueueFree();
 
@@ -161,7 +240,7 @@ public partial class TitleScreen : Control
 
         for (int i = 0; i < SaveManager.SlotCount; i++)
         {
-            int slot = i; // capture for lambda
+            int slot = i;
             var data = _saveManager.GetSlotSummary(slot);
             var btn = new Button();
             btn.CustomMinimumSize = new Vector2(280, 36);
@@ -174,7 +253,6 @@ public partial class TitleScreen : Control
 
                 if (newGame)
                 {
-                    // Overwrite existing save — confirm first.
                     btn.Pressed += () => ConfirmOverwrite(slot, data.PlayerName);
                 }
                 else
@@ -185,7 +263,7 @@ public partial class TitleScreen : Control
             else
             {
                 btn.Text = $"Slot {slot + 1}:  - Empty -";
-                btn.Disabled = !newGame; // only selectable for new game
+                btn.Disabled = !newGame;
                 if (newGame) btn.Pressed += () => OnSlotChosen(slot);
             }
 
@@ -199,11 +277,19 @@ public partial class TitleScreen : Control
         _slotList.AddChild(backBtn);
 
         _slotPanel.Visible = true;
+        CallDeferred(nameof(FocusFirstSlotOption));
+    }
+
+    private void FocusFirstSlotOption()
+    {
+        foreach (var child in _slotList.GetChildren())
+        {
+            if (child is Button btn && !btn.Disabled) { btn.GrabFocus(); return; }
+        }
     }
 
     private void ConfirmOverwrite(int slot, string existingName)
     {
-        // Simple confirm — replace the slot buttons with a yes/no prompt.
         foreach (var child in _slotList.GetChildren())
             child.QueueFree();
 
@@ -232,6 +318,24 @@ public partial class TitleScreen : Control
         no.CustomMinimumSize = new Vector2(80, 32);
         no.Pressed += () => ShowSlotSelect(true);
         hbox.AddChild(no);
+
+        // Auto-focus No (safer default when overwriting).
+        CallDeferred(nameof(FocusFirstOverwriteOption));
+    }
+
+    private void FocusFirstOverwriteOption()
+    {
+        // Find the No button in the HBox and focus it.
+        foreach (var row in _slotList.GetChildren())
+        {
+            if (row is HBoxContainer hbox)
+            {
+                foreach (var child in hbox.GetChildren())
+                {
+                    if (child is Button b && b.Text == "No") { b.GrabFocus(); return; }
+                }
+            }
+        }
     }
 
     private void OnSlotChosen(int slot)
