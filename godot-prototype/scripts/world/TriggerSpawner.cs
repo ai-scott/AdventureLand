@@ -106,10 +106,52 @@ public partial class TriggerSpawner : Node2D
             case TriggerData.TriggerKind.Item:
                 GD.Print($"[TriggerSpawner] Item spawning not yet wired — skipping item id={t.ItemId}");
                 return null;
+            case TriggerData.TriggerKind.Wall:
+                return MakeWall(t);
             default:
                 GD.PushWarning($"[TriggerSpawner] Unknown kind {t.Kind}");
                 return null;
         }
+    }
+
+    /// <summary>
+    /// Spawn a StaticBody2D at the wall object's position. If PolygonPoints is
+    /// empty, the body gets a RectangleShape2D matching Size. Otherwise it
+    /// gets a CollisionPolygon2D with the provided points (Tiled local coords).
+    /// CollisionLayer=2 to match the rest of the world-obstacle physics layer.
+    /// </summary>
+    private Node MakeWall(TriggerData t)
+    {
+        var body = new StaticBody2D
+        {
+            Name = $"Wall_{t.Position.X:F0}_{t.Position.Y:F0}",
+            CollisionLayer = 2,
+            CollisionMask = 0,
+        };
+
+        if (t.PolygonPoints != null && t.PolygonPoints.Count >= 3)
+        {
+            // Polygon wall — Tiled polygon points are offsets from the object's
+            // top-left anchor. Position the body at the anchor; polygon points
+            // are used as-is.
+            body.Position = t.Position;
+            var pts = new Vector2[t.PolygonPoints.Count];
+            for (int i = 0; i < pts.Length; i++) pts[i] = t.PolygonPoints[i];
+            var poly = new CollisionPolygon2D { Polygon = pts };
+            body.AddChild(poly);
+        }
+        else
+        {
+            // Rectangle wall — Tiled rect anchored at top-left, CollisionShape
+            // is centered, so offset body to the rect's center.
+            body.Position = t.Position + t.Size / 2f;
+            var shape = new CollisionShape2D
+            {
+                Shape = new RectangleShape2D { Size = t.Size },
+            };
+            body.AddChild(shape);
+        }
+        return body;
     }
 
     private Node MakeDoor(TriggerData t, Vector2 center)
@@ -124,6 +166,8 @@ public partial class TriggerSpawner : Node2D
         instance.Position = center;
         instance.TargetScene = t.TargetScene;
         instance.DoorId = t.DoorId;
+        instance.RequiredQuestId = t.RequiredQuestId;
+        instance.RequiredQuestStatus = t.RequiredQuestStatus;
         ResizeCollision(instance, t.Size);
         return instance;
     }

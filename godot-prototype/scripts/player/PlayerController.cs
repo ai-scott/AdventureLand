@@ -35,8 +35,9 @@ public partial class PlayerController : CharacterBody2D
 	[ExportGroup("Combat")]
 	/// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
 	[Export] public string AttackAnimName = "StrikeForehandOneHandWeapon";
-	/// <summary>How far in front of the player to position the hitbox, in pixels.</summary>
-	[Export] public float HitboxOffset = 20f;
+	/// <summary>Extra reach past the weapon's visual center, in the facing direction. 0 =
+	/// hitbox tracks the sprite exactly. Raise for a longer-reach feel.</summary>
+	[Export] public float HitboxOffset = 0f;
 
 	[ExportGroup("Debug")]
 	/// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>
@@ -52,7 +53,7 @@ public partial class PlayerController : CharacterBody2D
 
 	private AnimationTree _tree;
 	private AnimationNodeStateMachinePlayback _state;
-	private Node _spriteLayers;
+	private Node2D _spriteLayers;
 	private Area2D _attackHitbox;
 	private HealthSystem _health;
 	private Sprite2D _weaponSprite;
@@ -75,7 +76,7 @@ public partial class PlayerController : CharacterBody2D
 
 		var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
 		_tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
-		_spriteLayers = GetNode<Node>("SpriteLayers");
+		_spriteLayers = GetNode<Node2D>("SpriteLayers");
 
 		// Rebind the AnimationTree to the correct AnimationPlayer. MSCA saves
 		// an absolute NodePath that breaks if the scene was re-rooted or moved.
@@ -203,12 +204,38 @@ public partial class PlayerController : CharacterBody2D
 		}
 
 		MoveAndSlide();
+
+		// Keep the attack hitbox pinned to the weapon sprite's live drawing position
+		// while a swing is in progress. MSCA animates farmer_1h_weapon.offset and
+		// .rotation through each strike, so reading them each physics tick makes the
+		// hitbox sweep with the visible blade instead of sitting in one fixed spot.
+		if (Attacking) UpdateAttackHitbox();
+	}
+
+	/// <summary>Position the AttackHitbox at the weapon sprite's current visual
+	/// location. Must run after AnimationPlayer has updated the sprite's
+	/// offset/rotation for the frame (i.e. from _PhysicsProcess or later).</summary>
+	private void UpdateAttackHitbox()
+	{
+		if (_attackHitbox == null || _weaponSprite == null || _spriteLayers == null) return;
+
+		// Weapon's visible drawing position in SpriteLayers-local space:
+		//   weapon node Position (≈0) + Sprite2D.offset (animated by MSCA each frame)
+		// Promote into Player-local space by adding SpriteLayers' own Position.
+		var weaponVisual = _weaponSprite.Position + _weaponSprite.Offset;
+		_attackHitbox.Position = _spriteLayers.Position + weaponVisual + _facing * HitboxOffset;
+		_attackHitbox.Rotation = _weaponSprite.Rotation;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (InputLocked || Attacking) return;
 		if (!@event.IsActionPressed("attack")) return;
+
+		// Gate attack on equipped weapon — no weapon, no swing. Avoids phantom
+		// attacks when the player has never picked up a weapon.
+		if (Inventory.Instance?.GetEquippedId(ItemData.ItemCategory.Weapon) is not > 0)
+			return;
 
 		StartAttack();
 	}
@@ -219,11 +246,9 @@ public partial class PlayerController : CharacterBody2D
 		SetBlend(AttackAnimName, _facing);
 		_state.Travel(AttackAnimName);
 		Attacking = true;
-		// Position the hitbox in front of the player for the duration of the strike.
-		if (_attackHitbox != null)
-		{
-			_attackHitbox.Position = _facing * HitboxOffset;
-		}
+		// Sync hitbox to the weapon sprite immediately; _PhysicsProcess will keep
+		// it in sync each tick while the swing animation runs.
+		UpdateAttackHitbox();
 
 		// Safety net: some MSCA weapon-variant animations are missing the
 		// emit_animation_state_finished keyframe, which leaves Attacking=true

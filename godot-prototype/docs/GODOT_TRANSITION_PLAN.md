@@ -235,7 +235,7 @@ Deliverables:
 
 Exit criterion: **Feature parity with current C3 World 00. Player can walk into all 6 interiors and back out, buy/sell at shops, drink potions, complete all 8 NPC quest arcs, save+load mid-interior and return to the same scene.**
 
-### Phase 6 — Worlds 01 and 10
+### Phase 6 — Worlds 01, 10, and 03
 Complexity: **M per world**, parallelizable.
 
 Deliverables per world:
@@ -245,8 +245,9 @@ Deliverables per world:
 - World-specific content:
   - **World 01 (Leafwood Forest):** 2 NPCs (Pete, Forest Sign), enemy spawns, new tileset integration.
   - **World 10 (Bottomless Lake):** 4 NPCs (Sea Monster Key, Lake Sign, Sea Monster boss, Pearl), Sea Monster boss controller port (`scripts/systems/npc/sea-monster-*`, 657 LOC — biggest unique-per-world work), water tile animations.
+  - **World 03 (Gray Mist Mountain):** new area south of Leafwood Forest. Snowy foothills biome with a rocky cliff wall (passable only on the east edge), mid-map stone plateaus with barren trees, a dark-rock mountainside on the west edge hosting the goal **cave entrance**. Enemy types: Ice Wolf pack (plateau gauntlet), Frost Bat (aerial patrols), Snow Crab (cave approach). TMX at `assets/tiles/tilemaps/World_03_GrayMistMountain.tmx`; full spec in `docs/WORLD_03_GRAY_MIST_MOUNTAIN.md`. **Blocker:** the map uses 8 stacked tilesets (FantasyForest_Combo + Winter Forest family) — `tmx_interior_to_csvs.py` / `update_tile_csvs.py` only handle one tileset per TMX today. Either extend the baker to track per-tile atlas index or merge the Winter Forest sheets into a combined PNG before this world bakes.
 
-Exit criterion: **All three worlds ported. Main questline playable start to finish. Sea Monster boss fight works. This is the "game is playable" milestone.**
+Exit criterion: **All four worlds ported. Main questline playable start to finish. Sea Monster boss fight works. Gray Mist Mountain cave entrance reachable. This is the "game is playable" milestone.**
 
 ### Phase 7 — Polish
 Complexity: **M**. Everything that didn't block earlier phases.

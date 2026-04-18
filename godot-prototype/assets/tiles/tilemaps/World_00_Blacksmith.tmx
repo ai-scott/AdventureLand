@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="6">
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="240">
  <tileset firstgid="1" source="../Tilesets/Mana_Interiors.tsx"/>
  <layer id="1" name="Ground &amp; Walls" width="15" height="12">
   <data encoding="csv">
@@ -71,6 +71,260 @@
    <properties>
     <property name="door_id" type="int" value="2"/>
    </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Walls">
+  <object id="154" class="wall" x="32" y="128" width="16" height="16"/>
+  <object id="155" class="wall" x="128" y="144" width="16" height="16"/>
+  <object id="156" class="wall" x="208" y="144" width="16" height="16"/>
+  <object id="157" class="wall" x="0" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="158" class="wall" x="16" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="159" class="wall" x="32" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="160" class="wall" x="48" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="161" class="wall" x="64" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="162" class="wall" x="80" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="163" class="wall" x="96" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="164" class="wall" x="112" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="165" class="wall" x="128" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="166" class="wall" x="144" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="167" class="wall" x="160" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="168" class="wall" x="176" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="169" class="wall" x="192" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="170" class="wall" x="208" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="171" class="wall" x="224" y="0" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="172" class="wall" x="0" y="16" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="173" class="wall" x="224" y="16" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="174" class="wall" x="0" y="32" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="175" class="wall" x="224" y="32" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="176" class="wall" x="0" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="177" class="wall" x="16" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="178" class="wall" x="32" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="179" class="wall" x="48" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="180" class="wall" x="64" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="181" class="wall" x="80" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="182" class="wall" x="96" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="183" class="wall" x="112" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="184" class="wall" x="128" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="185" class="wall" x="144" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="186" class="wall" x="160" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="187" class="wall" x="176" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="188" class="wall" x="192" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="189" class="wall" x="208" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="190" class="wall" x="224" y="48" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="191" class="wall" x="0" y="64" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="192" class="wall" x="16" y="64" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="193" class="wall" x="48" y="64" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="194" class="wall" x="160" y="64" width="16" height="16">
+   <polygon points="0,0 16,0 16,5 13,9 9,13 5,16 0,16"/>
+  </object>
+  <object id="195" class="wall" x="208" y="64" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="196" class="wall" x="224" y="64" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="197" class="wall" x="0" y="80" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="198" class="wall" x="96" y="80" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="199" class="wall" x="112" y="80" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="200" class="wall" x="128" y="80" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="201" class="wall" x="224" y="80" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="202" class="wall" x="0" y="96" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="203" class="wall" x="96" y="96" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 0,16"/>
+  </object>
+  <object id="204" class="wall" x="112" y="96" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 0,16"/>
+  </object>
+  <object id="205" class="wall" x="128" y="96" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 0,16"/>
+  </object>
+  <object id="206" class="wall" x="208" y="96" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="207" class="wall" x="224" y="96" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="208" class="wall" x="0" y="112" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="209" class="wall" x="16" y="112" width="16" height="16">
+   <polygon points="13,0 16,0 16,16 0,16 0,13"/>
+  </object>
+  <object id="210" class="wall" x="208" y="112" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="211" class="wall" x="224" y="112" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="212" class="wall" x="0" y="128" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="213" class="wall" x="16" y="128" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="214" class="wall" x="224" y="128" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="215" class="wall" x="0" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="216" class="wall" x="16" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="217" class="wall" x="32" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="218" class="wall" x="80" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="219" class="wall" x="96" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="220" class="wall" x="112" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="221" class="wall" x="192" y="144" width="16" height="16">
+   <polygon points="0,0 3,0 8,12 8,16 0,16"/>
+  </object>
+  <object id="222" class="wall" x="224" y="144" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="223" class="wall" x="32" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="224" class="wall" x="48" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="225" class="wall" x="64" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="226" class="wall" x="80" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="227" class="wall" x="112" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="228" class="wall" x="128" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="229" class="wall" x="192" y="160" width="16" height="16">
+   <polygon points="0,0 5,0 9,3 13,7 16,11 16,16 0,16"/>
+  </object>
+  <object id="230" class="wall" x="208" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="231" class="wall" x="224" y="160" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="232" class="wall" x="112" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="233" class="wall" x="128" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="234" class="wall" x="144" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="235" class="wall" x="160" y="176" width="16" height="16">
+   <polygon points="13,0 16,0 16,16 0,16 0,13"/>
+  </object>
+  <object id="236" class="wall" x="176" y="176" width="16" height="16">
+   <polygon points="13,0 16,0 16,16 0,16 0,13"/>
+  </object>
+  <object id="237" class="wall" x="192" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="238" class="wall" x="208" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
+  </object>
+  <object id="239" class="wall" x="224" y="176" width="16" height="16">
+   <polygon points="7,0 9,0 9.119,7.002 16,7 16,9 8.926,9.027 9,16 7,16 6.845,9.003 0,9 0,7 6.942,6.864"/>
   </object>
  </objectgroup>
 </map>

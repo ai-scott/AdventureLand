@@ -204,6 +204,12 @@ public partial class SaveManager : Node
     {
         if (CurrentData == null) return;
 
+        // Clear any stale tree-paused state from the previous scene. If a dialogue
+        // was active when a transition fired (race condition — door trigger races
+        // NPC interact on the same input frame), the new scene inherits Paused=true
+        // and no physics runs → player can't move. This is our last-line defense.
+        GetTree().Paused = false;
+
         var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
         if (player == null)
         {

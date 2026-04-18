@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace AdventureLandPrototype;
 
@@ -28,6 +29,7 @@ public partial class TriggerData : Resource
         Edge,
         Npc,
         Item,
+        Wall,
     }
 
     [Export] public TriggerKind Kind { get; set; } = TriggerKind.Door;
@@ -41,10 +43,21 @@ public partial class TriggerData : Resource
     [Export] public int DoorId { get; set; } = 0;
     [Export] public string ExitEdge { get; set; } = ""; // "north" / "south" / "east" / "west"
 
+    [ExportGroup("Quest Gating")]
+    /// <summary>If set, Door/Edge only fires when QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus.</summary>
+    [Export] public string RequiredQuestId { get; set; } = "";
+    [Export] public string RequiredQuestStatus { get; set; } = "";
+
     [ExportGroup("NPC")]
     [Export] public string NpcName { get; set; } = "";
 
     [ExportGroup("Item")]
     [Export] public int ItemId { get; set; } = 0;
     [Export] public bool RequiresPurchase { get; set; } = false;
+
+    [ExportGroup("Wall")]
+    /// <summary>Optional polygon points for non-rectangle wall shapes. Points
+    /// are in the object's local space (0..Size); if empty, Position+Size is
+    /// used as an axis-aligned rectangle.</summary>
+    [Export] public Array<Vector2> PolygonPoints { get; set; } = new();
 }

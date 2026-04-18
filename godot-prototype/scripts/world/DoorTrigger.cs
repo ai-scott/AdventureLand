@@ -29,6 +29,11 @@ public partial class DoorTrigger : Area2D
 	/// <summary>Prompt text shown while the player is standing in the door's area.</summary>
 	[Export] public string PromptText = "↵ Enter";
 
+	/// <summary>If set, the door only fires when QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus.
+	/// Used for quest-gated entries (e.g., Penny's House only opens after the cat quest).</summary>
+	[Export] public string RequiredQuestId = "";
+	[Export] public string RequiredQuestStatus = "";
+
 	private bool _playerInRange;
 	private Label _prompt;
 
@@ -60,7 +65,9 @@ public partial class DoorTrigger : Area2D
 	{
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = true;
-		if (_prompt != null) _prompt.Visible = true;
+		// Hide the prompt when the door is quest-gated and not yet unlocked.
+		// Player doesn't even see there's a door here until the story calls for it.
+		if (_prompt != null) _prompt.Visible = IsUnlocked();
 	}
 
 	private void OnBodyExited(Node2D body)
@@ -68,6 +75,12 @@ public partial class DoorTrigger : Area2D
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = false;
 		if (_prompt != null) _prompt.Visible = false;
+	}
+
+	private bool IsUnlocked()
+	{
+		if (string.IsNullOrEmpty(RequiredQuestId)) return true;
+		return QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -81,6 +94,8 @@ public partial class DoorTrigger : Area2D
 			GD.PushWarning($"[DoorTrigger] TargetScene not set on door {DoorId}");
 			return;
 		}
+
+		if (!IsUnlocked()) return;
 
 		var wm = WorldManager.Instance;
 		if (wm == null || wm.IsTransitioning) return;

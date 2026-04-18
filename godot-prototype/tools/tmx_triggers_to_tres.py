@@ -36,7 +36,6 @@ If output is omitted, derives it from the TMX filename:
     → assets/map_data/triggers/World_00_Blacksmith.tres
 """
 
-import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -53,6 +52,7 @@ KIND_MAP = {
     "edge": 2,
     "npc": 3,
     "item": 4,
+    "wall": 5,
 }
 
 
@@ -127,10 +127,22 @@ def parse_tmx_objects(tmx_path):
             h = float(obj.get("height", 16))
             props = parse_object_properties(obj)
 
+            # Walls may carry a <polygon points="..."> child for non-rect shapes.
+            polygon = None
+            poly_elem = obj.find("polygon")
+            if poly_elem is not None:
+                pts_raw = poly_elem.get("points", "").strip()
+                if pts_raw:
+                    polygon = []
+                    for pair in pts_raw.split():
+                        xs, ys = pair.split(",")
+                        polygon.append((float(xs), float(ys)))
+
             triggers.append({
                 "kind": kind_str,
                 "x": x, "y": y, "w": w, "h": h,
                 "props": props,
+                "polygon": polygon,
                 "name": obj.get("name", ""),
                 "id": obj.get("id"),
             })
@@ -180,6 +192,14 @@ def write_tres(triggers, source_tmx_relpath, output_path):
             exit_edge = str(props.get("exit_edge", ""))
             if exit_edge:
                 lines.append(f'ExitEdge = "{escape_tres_string(exit_edge)}"')
+        # Quest gating — optional on doors (and edges, for future use).
+        if t["kind"] in ("door", "edge"):
+            rq_id = str(props.get("required_quest_id", ""))
+            rq_status = str(props.get("required_quest_status", ""))
+            if rq_id:
+                lines.append(f'RequiredQuestId = "{escape_tres_string(rq_id)}"')
+            if rq_status:
+                lines.append(f'RequiredQuestStatus = "{escape_tres_string(rq_status)}"')
         # NPC
         if t["kind"] == "npc":
             npc_name = str(props.get("npc_name", "") or t["name"])
@@ -192,6 +212,12 @@ def write_tres(triggers, source_tmx_relpath, output_path):
                 lines.append(f'ItemId = {item_id}')
             if bool(props.get("requires_purchase", False)):
                 lines.append('RequiresPurchase = true')
+        # Wall — emit polygon points if present; otherwise Position/Size is a rect.
+        if t["kind"] == "wall" and t.get("polygon"):
+            pts_str = ", ".join(
+                f"Vector2({px:g}, {py:g})" for (px, py) in t["polygon"]
+            )
+            lines.append(f'PolygonPoints = Array[Vector2]([{pts_str}])')
 
         lines.append('')
 

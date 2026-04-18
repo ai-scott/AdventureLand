@@ -1,0 +1,119 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Texture2D" uid="uid://de21fwjrhtoqo" path="res://assets/tiles/spritesheets/FantasyForest_Combo.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter forest (clean).png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter forest (snowy).png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter (clean) 32x32.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter forest wang tiles (snowy).png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter water sparkles B 16x16.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/winter waterfall B 16x16.png" id="7"]
+[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/WinterSheets/bonus bridge.png" id="8"]
+[ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="10"]
+[ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="11"]
+[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="12"]
+[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="13"]
+[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="14"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_03_GrayMistMountain.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="16"]
+[ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="17"]
+
+[sub_resource type="TileSetAtlasSource" id="TSA_0"]
+texture = ExtResource("1")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_1"]
+texture = ExtResource("2")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_2"]
+texture = ExtResource("3")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_3"]
+texture = ExtResource("4")
+texture_region_size = Vector2i(32, 32)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_4"]
+texture = ExtResource("5")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_5"]
+texture = ExtResource("6")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_6"]
+texture = ExtResource("7")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TSA_7"]
+texture = ExtResource("8")
+texture_region_size = Vector2i(16, 16)
+
+[sub_resource type="TileSet" id="TileSet_1"]
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+tile_size = Vector2i(16, 16)
+sources/0 = SubResource("TSA_0")
+sources/1 = SubResource("TSA_1")
+sources/2 = SubResource("TSA_2")
+sources/3 = SubResource("TSA_3")
+sources/4 = SubResource("TSA_4")
+sources/5 = SubResource("TSA_5")
+sources/6 = SubResource("TSA_6")
+sources/7 = SubResource("TSA_7")
+
+[node name="World_03" type="Node2D"]
+script = ExtResource("12")
+SpawnVillageBuildings = false
+
+[node name="WorldMeta" type="Node" parent="."]
+script = ExtResource("13")
+MapSize = Vector2i(720, 480)
+WorldDisplayName = "Gray Mist Mountain"
+
+[node name="World_03_GrayMistMountain_Ground3underP" type="TileMapLayer" parent="."]
+z_index = -3
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_Ground2underP" type="TileMapLayer" parent="."]
+z_index = -2
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_Ground1underP" type="TileMapLayer" parent="."]
+z_index = -1
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_ObjectsPlayerlevel" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_Decorations1OverP" type="TileMapLayer" parent="."]
+z_index = 1
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_Decorations2OverP" type="TileMapLayer" parent="."]
+z_index = 2
+tile_set = SubResource("TileSet_1")
+
+[node name="World_03_GrayMistMountain_Decorations3OverP" type="TileMapLayer" parent="."]
+z_index = 3
+tile_set = SubResource("TileSet_1")
+
+[node name="DialogueManager" parent="." instance=ExtResource("10")]
+
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" instance=ExtResource("9")]
+position = Vector2(352, 40)
+
+[node name="Camera" type="Camera2D" parent="Entities/Player"]
+zoom = Vector2(2, 2)
+script = ExtResource("11")
+
+[node name="Triggers" type="Node2D" parent="."]
+script = ExtResource("14")
+TriggersResource = ExtResource("15")
+DoorScene = ExtResource("16")
+EdgeScene = ExtResource("17")

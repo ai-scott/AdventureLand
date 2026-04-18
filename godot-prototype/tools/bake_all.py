@@ -39,11 +39,17 @@ except ImportError:
 
 
 def classify_tmx(tmx_path):
-    """Return 'interior' or 'village' based on the TMX's tileset.
-    Handles both external TSX refs and embedded tilesets (matched by image filename)."""
+    """Return 'interior', 'multi', or 'village' based on the TMX's tileset count
+    and flavor. 'multi' = more than one tileset referenced (Gray Mist Mountain
+    and friends), which requires the multi-tileset baker. 'interior' = single
+    Mana_Interiors tileset. 'village' = single FantasyForest tileset.
+    Both 'interior' and 'multi' get the full tile-CSV bake."""
     try:
         root = ET.parse(tmx_path).getroot()
-        for ts in root.findall("tileset"):
+        tilesets = root.findall("tileset")
+        if len(tilesets) > 1:
+            return "multi"
+        for ts in tilesets:
             source = ts.get("source", "")
             if source:
                 tsx_name = source.rsplit("/", 1)[-1]
@@ -93,7 +99,7 @@ def bake_triggers(tmx_path):
 
 def bake_tile_csvs(tmx_path, flavor):
     """Run the CSV emitter appropriate for the TMX flavor."""
-    if flavor == "interior":
+    if flavor in ("interior", "multi"):
         return _run("tmx_interior_to_csvs.py", tmx_path)
     # Village flavor: update_tile_csvs.py. Historically skipped in bake_all
     # because it overwrites World_00.tscn's CSVs that are already hand-tuned.

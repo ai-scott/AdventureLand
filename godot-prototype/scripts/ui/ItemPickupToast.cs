@@ -118,6 +118,24 @@ public partial class ItemPickupToast : CanvasLayer
         if (item.Strength > 0)
             AddLabel(textVbox, $"Str: {item.Strength}", 11, new Color(0.7f, 0.85f, 1f, 1));
         AddLabel(textVbox, "Equipped!", 12, new Color(0.5f, 1f, 0.5f, 1));
+
+        MaybeAddAttackTutorial(item);
+    }
+
+    /// <summary>First time the player equips a weapon, add a tutorial line
+    /// explaining how to attack. Flag is stored in SaveData.WorldFlags so the
+    /// hint only ever fires once per save.</summary>
+    private void MaybeAddAttackTutorial(ItemData item)
+    {
+        if (item.Category != ItemData.ItemCategory.Weapon) return;
+        var save = SaveManager.Instance?.CurrentData;
+        if (save == null) return;
+        if (save.WorldFlags.ContainsKey("seen_attack_tutorial")) return;
+
+        save.WorldFlags["seen_attack_tutorial"] = "true";
+        _autoCloseTimer = 4.0; // give the player a beat to read the hint
+        _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
+        AddLabel(_content, "Press SPACE to attack!", 12, new Color(1f, 0.9f, 0.4f, 1));
     }
 
     private void BuildCompareToast(ItemData newItem, ItemData oldItem)
