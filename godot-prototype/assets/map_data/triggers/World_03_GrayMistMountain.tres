@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" format=3 uid="uid://chs5qyf1c351e"]
+[gd_resource type="Resource" script_class="WorldTriggers" format=3 uid="uid://dycgja2cho3gh"]
 
 [ext_resource type="Script" uid="uid://un2dpvnmnvyr" path="res://scripts/data/WorldTriggers.cs" id="1"]
 [ext_resource type="Script" uid="uid://rx5fndisersa" path="res://scripts/data/TriggerData.cs" id="2"]
