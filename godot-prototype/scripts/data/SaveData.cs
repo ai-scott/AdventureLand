@@ -35,6 +35,11 @@ public partial class SaveData : Resource
     [ExportGroup("Equipment")]
     [Export] public Dictionary<string, int> EquippedItems { get; set; } = new();
 
+    [ExportGroup("Currency")]
+    /// <summary>Gems — the game's single currency. Earned from pickups/sales,
+    /// spent in shops. CurrencySystem reads/writes this through SaveManager.</summary>
+    [Export] public int Gems { get; set; } = 0;
+
     [ExportGroup("Worlds")]
     /// <summary>Scene paths of worlds the player has visited. Used to show
     /// the world-name banner only on first visit.</summary>

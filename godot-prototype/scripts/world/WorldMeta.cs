@@ -20,4 +20,14 @@ public partial class WorldMeta : Node
 
     /// <summary>Display name shown on the first-visit banner (e.g., "Leafwood Forest").</summary>
     [Export] public string WorldDisplayName { get; set; } = "";
+
+    /// <summary>True for shop layouts (Blacksmith, Adventure Shop, General Store,
+    /// Penny's House). Flips ShopState.IsActive on load so ItemTrigger routes
+    /// item pickups through the purchase flow instead of collecting them free.</summary>
+    [Export] public bool IsShop { get; set; } = false;
+
+    public override void _Ready()
+    {
+        ShopState.SetActive(IsShop);
+    }
 }

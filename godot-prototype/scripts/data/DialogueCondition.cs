@@ -16,7 +16,8 @@ public partial class DialogueCondition : Resource
         WorldFlag,
         NpcMemory,
         PlayerLevel,
-        Custom
+        Custom,
+        EquippedCategory,
     }
 
     [Export] public ConditionType Type { get; set; } = ConditionType.QuestStatus;
@@ -29,6 +30,10 @@ public partial class DialogueCondition : Resource
     [ExportGroup("Item")]
     [Export] public string ItemId { get; set; } = "";
     [Export] public int Quantity { get; set; } = 1;
+    /// <summary>For EquippedCategory: ItemData.ItemCategory name,
+    /// e.g. "Weapon", "Hat", "Body". True if the player has any item of
+    /// that category currently equipped.</summary>
+    [Export] public string Category { get; set; } = "";
 
     [ExportGroup("Flag")]
     [Export] public string FlagKey { get; set; } = "";

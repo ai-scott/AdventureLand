@@ -55,6 +55,17 @@ Type = 0
 QuestId = "blacksmith_intro"
 Status = "Complete"
 
+[sub_resource type="Resource" id="cond_weapon_yes"]
+script = ExtResource("3")
+Type = 6
+Category = "Weapon"
+
+[sub_resource type="Resource" id="cond_weapon_no"]
+script = ExtResource("3")
+Type = 6
+Negate = true
+Category = "Weapon"
+
 [sub_resource type="Resource" id="node_7"]
 script = ExtResource("2")
 Id = "node_002"
@@ -62,7 +73,16 @@ Text = "I hope that weapon serves you well in protecting our town."
 Speaker = "Shopkeeper_Sally"
 Priority = 98
 EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+Conditions = Array[ExtResource("3")]([SubResource("cond_8"), SubResource("cond_weapon_yes")])
+
+[sub_resource type="Resource" id="node_10"]
+script = ExtResource("2")
+Id = "node_003"
+Text = "Take a weapon from the table. It's yours, free of charge."
+Speaker = "Shopkeeper_Sally"
+Priority = 97
+EndsDialogue = true
+Conditions = Array[ExtResource("3")]([SubResource("cond_8"), SubResource("cond_weapon_no")])
 
 [resource]
 script = ExtResource("1")
@@ -71,4 +91,4 @@ DisplayName = "Shopkeeper_Sally"
 DefaultNode = "node_000"
 WorldId = "World00"
 QuestRelations = PackedStringArray("blacksmith_intro")
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_4"), SubResource("node_7")])
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_4"), SubResource("node_7"), SubResource("node_10")])

@@ -104,8 +104,7 @@ public partial class TriggerSpawner : Node2D
                 GD.Print($"[TriggerSpawner] NPC spawning not yet wired — skipping '{t.NpcName}'");
                 return null;
             case TriggerData.TriggerKind.Item:
-                GD.Print($"[TriggerSpawner] Item spawning not yet wired — skipping item id={t.ItemId}");
-                return null;
+                return MakeItem(t, center);
             case TriggerData.TriggerKind.Wall:
                 return MakeWall(t);
             default:
@@ -182,6 +181,57 @@ public partial class TriggerSpawner : Node2D
             Position = center,
         };
         return marker;
+    }
+
+    /// <summary>
+    /// Spawn an ItemTrigger at the item object's center. Looks up ItemData by
+    /// item_id from Inventory's database and sets it on the instance. Each
+    /// placement gets a TriggerID derived from its position so the "already
+    /// collected" flag is stable across loads without requiring manual IDs
+    /// in Tiled.
+    ///
+    /// Purchase-gated items are skipped until the shop flow is implemented —
+    /// authors can drop RequiresPurchase items in Tiled without them leaking
+    /// into the world as free pickups.
+    /// </summary>
+    private Node MakeItem(TriggerData t, Vector2 center)
+    {
+        if (t.ItemId <= 0)
+        {
+            GD.PushWarning($"[TriggerSpawner] Item trigger at {t.Position} has no item_id");
+            return null;
+        }
+        if (t.RequiresPurchase)
+        {
+            GD.Print($"[TriggerSpawner] Skipping shop item {t.ItemId} at {t.Position} (RequiresPurchase; shop UI not wired yet)");
+            return null;
+        }
+
+        var data = Inventory.GetItem(t.ItemId);
+        if (data == null)
+        {
+            GD.PushWarning($"[TriggerSpawner] Item id {t.ItemId} not found in database");
+            return null;
+        }
+
+        var scene = ItemScene ?? GD.Load<PackedScene>("res://scenes/items/ItemTrigger.tscn");
+        if (scene == null)
+        {
+            GD.PushWarning("[TriggerSpawner] ItemTrigger scene unavailable");
+            return null;
+        }
+
+        var instance = scene.Instantiate<ItemTrigger>();
+        instance.Name = $"Item_{t.ItemId}_{(int)t.Position.X}_{(int)t.Position.Y}";
+        instance.Position = center;
+        instance.Data = data;
+        // Pack (x, y) into a stable unique-per-placement TriggerID. Worlds are
+        // ≤720×480 so 16 bits per axis is plenty. Moving an item in Tiled
+        // effectively resets its collected state — same invariant as creating
+        // a new placement.
+        instance.TriggerID = ((int)t.Position.X << 16) | ((int)t.Position.Y & 0xFFFF);
+        instance.Unique = true;
+        return instance;
     }
 
     private Node MakeEdge(TriggerData t, Vector2 center)

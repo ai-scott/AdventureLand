@@ -118,6 +118,21 @@ public static class QuestSystem
             data.WorldFlags.Remove(key);
     }
 
+    // ---- Inventory-backed condition helper ----
+
+    /// <summary>True if the player has any item of the named ItemCategory
+    /// currently equipped. Parses the string against ItemData.ItemCategory;
+    /// returns false on invalid category name so bad authoring just fails
+    /// the condition instead of crashing.</summary>
+    private static bool HasEquippedCategory(string categoryName)
+    {
+        if (string.IsNullOrEmpty(categoryName)) return false;
+        if (Inventory.Instance == null) return false;
+        if (!System.Enum.TryParse<ItemData.ItemCategory>(categoryName, ignoreCase: true, out var cat))
+            return false;
+        return Inventory.Instance.GetEquippedId(cat) > 0;
+    }
+
     // ---- Condition Evaluation ----
 
     public static bool EvaluateCondition(DialogueCondition c)
@@ -141,6 +156,9 @@ public static class QuestSystem
 
             DialogueCondition.ConditionType.Custom =>
                 false, // Custom checks stubbed
+
+            DialogueCondition.ConditionType.EquippedCategory =>
+                HasEquippedCategory(c.Category),
 
             _ => false
         };
