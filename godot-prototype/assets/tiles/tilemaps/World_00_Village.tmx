@@ -1,331 +1,331 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="43" nextobjectid="242">
+<?xml version='1.0' encoding='utf-8'?>
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="43" nextobjectid="243">
  <tileset firstgid="1" name="Forest Combo" tilewidth="16" tileheight="16" tilecount="9200" columns="100" tilerendersize="grid">
-  <image source="../spritesheets/FantasyForest_Combo.png" width="1600" height="1472"/>
+  <image source="../spritesheets/FantasyForest_Combo.png" width="1600" height="1472" />
   <tile id="701">
    <objectgroup draworder="index" id="2">
-    <object id="1" x="0.0909091" y="0.204545" width="15.9091" height="15.6364"/>
-   </objectgroup>
-  </tile>
+    <object id="1" x="0.0909091" y="0.204545" width="15.9091" height="15.6364" />
+    </objectgroup>
+   </tile>
   <tile id="808">
    <objectgroup draworder="index" id="2">
-    <object id="1" x="0.181818" y="0.181818" width="15.4545" height="15.8182"/>
-   </objectgroup>
-  </tile>
+    <object id="1" x="0.181818" y="0.181818" width="15.4545" height="15.8182" />
+    </objectgroup>
+   </tile>
   <tile id="915">
    <objectgroup draworder="index" id="2">
-    <object id="1" x="-1.77636e-15" y="-0.0909091" width="15.7273" height="11.5455"/>
-   </objectgroup>
-  </tile>
+    <object id="1" x="-1.77636e-15" y="-0.0909091" width="15.7273" height="11.5455" />
+    </objectgroup>
+   </tile>
   <tile id="921">
    <objectgroup draworder="index" id="2">
-    <object id="1" x="9.34211" y="4.60526"/>
-    <object id="2" x="-0.0197368" y="0.125" width="16.0329" height="10.0658"/>
+    <object id="1" x="9.34211" y="4.60526" />
+    <object id="2" x="-0.0197368" y="0.125" width="16.0329" height="10.0658" />
     <object id="3" x="9.86842" y="-0.592105">
-     <polygon points="0,0 0,0 0,0 0,0"/>
-    </object>
-   </objectgroup>
-  </tile>
+     <polygon points="0,0 0,0 0,0 0,0" />
+     </object>
+    </objectgroup>
+   </tile>
   <wangsets>
    <wangset name="Paths and Layers" type="corner" tile="-1">
-    <wangcolor name="Light Dirt on Light Grass" color="#ff0000" tile="-1" probability="1"/>
-    <wangcolor name="Light Dirt on Dark Grass" color="#00ff00" tile="-1" probability="1"/>
-    <wangcolor name="Sand on Light Grass" color="#0000ff" tile="-1" probability="1"/>
-    <wangcolor name="Light Dirt on Sand" color="#ff7700" tile="-1" probability="1"/>
-    <wangcolor name="Light Grass on Light Dirt" color="#00e9ff" tile="-1" probability="1"/>
-    <wangcolor name="Light Grass on Sand" color="#ff00d8" tile="-1" probability="1"/>
-    <wangcolor name="Sand on Light Dirt" color="#ffff00" tile="-1" probability="1"/>
-    <wangcolor name="Dark Grass on Dark Dirt" color="#a000ff" tile="-1" probability="1"/>
-    <wangcolor name="Dark Grass on Light Grass" color="#00ffa1" tile="-1" probability="1"/>
-    <wangcolor name="Mud on Dark Grass" color="#ffa8a8" tile="-1" probability="1"/>
-    <wangcolor name="Dark Grass on Empty" color="#b4a8ff" tile="-1" probability="1"/>
-    <wangcolor name="Mud on Empty" color="#96ffa7" tile="-1" probability="1"/>
-    <wangcolor name="Light Grass under Dark Grass" color="#8e7848" tile="-1" probability="1"/>
-    <wangcolor name="Red Dirt on Empty" color="#5a5a5a" tile="-1" probability="1"/>
-    <wangcolor name="Red Dirt on Dark Dirt" color="#0e7a46" tile="-1" probability="1"/>
-    <wangcolor name="Sand over Water" color="#00000000" tile="-1" probability="1"/>
-    <wangcolor name="Water over Dark Water" color="#8184b8" tile="-1" probability="1"/>
-    <wangcolor name="Light grass on Empty" color="#fd3650" tile="-1" probability="1"/>
-    <wangtile tileid="3701" wangid="0,0,0,1,0,0,0,0"/>
-    <wangtile tileid="3702" wangid="0,0,0,1,0,1,0,0"/>
-    <wangtile tileid="3703" wangid="0,0,0,0,0,1,0,0"/>
-    <wangtile tileid="3704" wangid="0,1,0,1,0,1,0,0"/>
-    <wangtile tileid="3705" wangid="0,0,0,1,0,1,0,1"/>
-    <wangtile tileid="3707" wangid="0,0,0,3,0,0,0,0"/>
-    <wangtile tileid="3708" wangid="0,0,0,3,0,3,0,0"/>
-    <wangtile tileid="3709" wangid="0,0,0,0,0,3,0,0"/>
-    <wangtile tileid="3710" wangid="0,3,0,3,0,3,0,0"/>
-    <wangtile tileid="3711" wangid="0,0,0,3,0,3,0,3"/>
-    <wangtile tileid="3713" wangid="0,0,0,4,0,0,0,0"/>
-    <wangtile tileid="3714" wangid="0,0,0,4,0,4,0,0"/>
-    <wangtile tileid="3715" wangid="0,0,0,0,0,4,0,0"/>
-    <wangtile tileid="3716" wangid="0,4,0,4,0,4,0,0"/>
-    <wangtile tileid="3717" wangid="0,0,0,4,0,4,0,4"/>
-    <wangtile tileid="3719" wangid="0,0,0,2,0,0,0,0"/>
-    <wangtile tileid="3720" wangid="0,0,0,2,0,2,0,0"/>
-    <wangtile tileid="3721" wangid="0,0,0,0,0,2,0,0"/>
-    <wangtile tileid="3722" wangid="0,2,0,2,0,2,0,0"/>
-    <wangtile tileid="3723" wangid="0,0,0,2,0,2,0,2"/>
-    <wangtile tileid="3725" wangid="0,9,0,0,0,9,0,9"/>
-    <wangtile tileid="3726" wangid="0,9,0,0,0,0,0,9"/>
-    <wangtile tileid="3727" wangid="0,9,0,9,0,0,0,9"/>
-    <wangtile tileid="3728" wangid="0,0,0,0,0,0,0,9"/>
-    <wangtile tileid="3729" wangid="0,9,0,0,0,0,0,0"/>
-    <wangtile tileid="3731" wangid="0,10,0,0,0,10,0,10"/>
-    <wangtile tileid="3732" wangid="0,10,0,0,0,0,0,10"/>
-    <wangtile tileid="3733" wangid="0,10,0,10,0,0,0,10"/>
-    <wangtile tileid="3734" wangid="0,0,0,0,0,0,0,10"/>
-    <wangtile tileid="3735" wangid="0,10,0,0,0,0,0,0"/>
-    <wangtile tileid="3737" wangid="0,15,0,0,0,15,0,15"/>
-    <wangtile tileid="3738" wangid="0,15,0,0,0,0,0,15"/>
-    <wangtile tileid="3739" wangid="0,15,0,15,0,0,0,15"/>
-    <wangtile tileid="3740" wangid="0,0,0,0,0,0,0,15"/>
-    <wangtile tileid="3741" wangid="0,15,0,0,0,0,0,0"/>
-    <wangtile tileid="3801" wangid="0,1,0,1,0,0,0,0"/>
-    <wangtile tileid="3802" wangid="0,14,0,14,0,14,0,14"/>
-    <wangtile tileid="3803" wangid="0,0,0,0,0,1,0,1"/>
-    <wangtile tileid="3804" wangid="0,1,0,1,0,0,0,1"/>
-    <wangtile tileid="3805" wangid="0,1,0,0,0,1,0,1"/>
-    <wangtile tileid="3807" wangid="0,3,0,3,0,0,0,0"/>
-    <wangtile tileid="3808" wangid="0,3,0,3,0,3,0,3"/>
-    <wangtile tileid="3809" wangid="0,0,0,0,0,3,0,3"/>
-    <wangtile tileid="3810" wangid="0,3,0,3,0,0,0,3"/>
-    <wangtile tileid="3811" wangid="0,3,0,0,0,3,0,3"/>
-    <wangtile tileid="3813" wangid="0,4,0,4,0,0,0,0"/>
-    <wangtile tileid="3814" wangid="0,4,0,4,0,4,0,4"/>
-    <wangtile tileid="3815" wangid="0,0,0,0,0,4,0,4"/>
-    <wangtile tileid="3816" wangid="0,4,0,4,0,0,0,4"/>
-    <wangtile tileid="3817" wangid="0,4,0,0,0,4,0,4"/>
-    <wangtile tileid="3819" wangid="0,2,0,2,0,0,0,0"/>
-    <wangtile tileid="3820" wangid="0,2,0,2,0,2,0,2"/>
-    <wangtile tileid="3821" wangid="0,0,0,0,0,2,0,2"/>
-    <wangtile tileid="3822" wangid="0,2,0,2,0,0,0,2"/>
-    <wangtile tileid="3823" wangid="0,2,0,0,0,2,0,2"/>
-    <wangtile tileid="3825" wangid="0,0,0,0,0,9,0,9"/>
-    <wangtile tileid="3827" wangid="0,9,0,9,0,0,0,0"/>
-    <wangtile tileid="3828" wangid="0,0,0,0,0,9,0,0"/>
-    <wangtile tileid="3829" wangid="0,0,0,9,0,0,0,0"/>
-    <wangtile tileid="3831" wangid="0,0,0,0,0,10,0,10"/>
-    <wangtile tileid="3833" wangid="0,10,0,10,0,0,0,0"/>
-    <wangtile tileid="3834" wangid="0,0,0,0,0,10,0,0"/>
-    <wangtile tileid="3835" wangid="0,0,0,10,0,0,0,0"/>
-    <wangtile tileid="3837" wangid="0,0,0,0,0,15,0,15"/>
-    <wangtile tileid="3839" wangid="0,15,0,15,0,0,0,0"/>
-    <wangtile tileid="3840" wangid="0,0,0,0,0,15,0,0"/>
-    <wangtile tileid="3841" wangid="0,0,0,15,0,0,0,0"/>
-    <wangtile tileid="3901" wangid="0,1,0,0,0,0,0,0"/>
-    <wangtile tileid="3902" wangid="0,1,0,0,0,0,0,1"/>
-    <wangtile tileid="3903" wangid="0,0,0,0,0,0,0,1"/>
-    <wangtile tileid="3904" wangid="0,1,0,0,0,1,0,0"/>
-    <wangtile tileid="3905" wangid="0,0,0,1,0,0,0,1"/>
-    <wangtile tileid="3907" wangid="0,3,0,0,0,0,0,0"/>
-    <wangtile tileid="3908" wangid="0,3,0,0,0,0,0,3"/>
-    <wangtile tileid="3909" wangid="0,0,0,0,0,0,0,3"/>
-    <wangtile tileid="3910" wangid="0,3,0,0,0,3,0,0"/>
-    <wangtile tileid="3911" wangid="0,0,0,3,0,0,0,3"/>
-    <wangtile tileid="3913" wangid="0,4,0,0,0,0,0,0"/>
-    <wangtile tileid="3914" wangid="0,4,0,0,0,0,0,4"/>
-    <wangtile tileid="3915" wangid="0,0,0,0,0,0,0,4"/>
-    <wangtile tileid="3916" wangid="0,4,0,0,0,4,0,0"/>
-    <wangtile tileid="3917" wangid="0,0,0,4,0,0,0,4"/>
-    <wangtile tileid="3919" wangid="0,2,0,0,0,0,0,0"/>
-    <wangtile tileid="3920" wangid="0,2,0,0,0,0,0,2"/>
-    <wangtile tileid="3921" wangid="0,0,0,0,0,0,0,2"/>
-    <wangtile tileid="3922" wangid="0,2,0,0,0,2,0,0"/>
-    <wangtile tileid="3923" wangid="0,0,0,2,0,0,0,2"/>
-    <wangtile tileid="3925" wangid="0,0,0,9,0,9,0,9"/>
-    <wangtile tileid="3926" wangid="0,0,0,9,0,9,0,0"/>
-    <wangtile tileid="3927" wangid="0,9,0,9,0,9,0,0"/>
-    <wangtile tileid="3928" wangid="0,0,0,9,0,0,0,9"/>
-    <wangtile tileid="3929" wangid="0,9,0,0,0,9,0,0"/>
-    <wangtile tileid="3931" wangid="0,0,0,10,0,10,0,10"/>
-    <wangtile tileid="3932" wangid="0,0,0,10,0,10,0,0"/>
-    <wangtile tileid="3933" wangid="0,10,0,10,0,10,0,0"/>
-    <wangtile tileid="3934" wangid="0,0,0,10,0,0,0,10"/>
-    <wangtile tileid="3935" wangid="0,10,0,0,0,10,0,0"/>
-    <wangtile tileid="3937" wangid="0,0,0,15,0,15,0,15"/>
-    <wangtile tileid="3938" wangid="0,0,0,15,0,15,0,0"/>
-    <wangtile tileid="3939" wangid="0,15,0,15,0,15,0,0"/>
-    <wangtile tileid="3940" wangid="0,0,0,15,0,0,0,15"/>
-    <wangtile tileid="3941" wangid="0,15,0,0,0,15,0,0"/>
-    <wangtile tileid="4101" wangid="0,5,0,0,0,5,0,5"/>
-    <wangtile tileid="4102" wangid="0,5,0,0,0,0,0,5"/>
-    <wangtile tileid="4103" wangid="0,5,0,5,0,0,0,5"/>
-    <wangtile tileid="4104" wangid="0,0,0,0,0,0,0,5"/>
-    <wangtile tileid="4105" wangid="0,5,0,0,0,0,0,0"/>
-    <wangtile tileid="4107" wangid="0,6,0,0,0,6,0,6"/>
-    <wangtile tileid="4108" wangid="0,6,0,0,0,0,0,6"/>
-    <wangtile tileid="4109" wangid="0,6,0,6,0,0,0,6"/>
-    <wangtile tileid="4110" wangid="0,0,0,0,0,0,0,6"/>
-    <wangtile tileid="4111" wangid="0,6,0,0,0,0,0,0"/>
-    <wangtile tileid="4113" wangid="0,7,0,0,0,7,0,7"/>
-    <wangtile tileid="4114" wangid="0,7,0,0,0,0,0,7"/>
-    <wangtile tileid="4115" wangid="0,7,0,7,0,0,0,7"/>
-    <wangtile tileid="4116" wangid="0,0,0,0,0,0,0,7"/>
-    <wangtile tileid="4117" wangid="0,7,0,0,0,0,0,0"/>
-    <wangtile tileid="4119" wangid="0,8,0,0,0,8,0,8"/>
-    <wangtile tileid="4120" wangid="0,8,0,0,0,0,0,8"/>
-    <wangtile tileid="4121" wangid="0,8,0,8,0,0,0,8"/>
-    <wangtile tileid="4122" wangid="0,0,0,0,0,0,0,8"/>
-    <wangtile tileid="4123" wangid="0,8,0,0,0,0,0,0"/>
-    <wangtile tileid="4125" wangid="0,11,0,0,0,11,0,11"/>
-    <wangtile tileid="4126" wangid="0,11,0,0,0,0,0,11"/>
-    <wangtile tileid="4127" wangid="0,11,0,11,0,0,0,11"/>
-    <wangtile tileid="4128" wangid="0,0,0,0,0,0,0,11"/>
-    <wangtile tileid="4129" wangid="0,11,0,0,0,0,0,0"/>
-    <wangtile tileid="4131" wangid="0,12,0,0,0,12,0,12"/>
-    <wangtile tileid="4132" wangid="0,12,0,0,0,0,0,12"/>
-    <wangtile tileid="4133" wangid="0,12,0,12,0,0,0,12"/>
-    <wangtile tileid="4134" wangid="0,0,0,0,0,0,0,12"/>
-    <wangtile tileid="4135" wangid="0,12,0,0,0,0,0,0"/>
-    <wangtile tileid="4137" wangid="0,14,0,0,0,14,0,14"/>
-    <wangtile tileid="4138" wangid="0,14,0,0,0,0,0,14"/>
-    <wangtile tileid="4139" wangid="0,14,0,14,0,0,0,14"/>
-    <wangtile tileid="4140" wangid="0,0,0,0,0,0,0,14"/>
-    <wangtile tileid="4141" wangid="0,14,0,0,0,0,0,0"/>
-    <wangtile tileid="4201" wangid="0,0,0,0,0,5,0,5"/>
-    <wangtile tileid="4203" wangid="0,5,0,5,0,0,0,0"/>
-    <wangtile tileid="4204" wangid="0,0,0,0,0,5,0,0"/>
-    <wangtile tileid="4205" wangid="0,0,0,5,0,0,0,0"/>
-    <wangtile tileid="4207" wangid="0,0,0,0,0,6,0,6"/>
-    <wangtile tileid="4209" wangid="0,6,0,6,0,0,0,0"/>
-    <wangtile tileid="4210" wangid="0,0,0,0,0,6,0,0"/>
-    <wangtile tileid="4211" wangid="0,0,0,6,0,0,0,0"/>
-    <wangtile tileid="4213" wangid="0,0,0,0,0,7,0,7"/>
-    <wangtile tileid="4215" wangid="0,7,0,7,0,0,0,0"/>
-    <wangtile tileid="4216" wangid="0,0,0,0,0,7,0,0"/>
-    <wangtile tileid="4217" wangid="0,0,0,7,0,0,0,0"/>
-    <wangtile tileid="4219" wangid="0,0,0,0,0,8,0,8"/>
-    <wangtile tileid="4221" wangid="0,8,0,8,0,0,0,0"/>
-    <wangtile tileid="4222" wangid="0,0,0,0,0,8,0,0"/>
-    <wangtile tileid="4223" wangid="0,0,0,8,0,0,0,0"/>
-    <wangtile tileid="4225" wangid="0,0,0,0,0,11,0,11"/>
-    <wangtile tileid="4227" wangid="0,11,0,11,0,0,0,0"/>
-    <wangtile tileid="4228" wangid="0,0,0,0,0,11,0,0"/>
-    <wangtile tileid="4229" wangid="0,0,0,11,0,0,0,0"/>
-    <wangtile tileid="4231" wangid="0,0,0,0,0,12,0,12"/>
-    <wangtile tileid="4233" wangid="0,12,0,12,0,0,0,0"/>
-    <wangtile tileid="4234" wangid="0,0,0,0,0,12,0,0"/>
-    <wangtile tileid="4235" wangid="0,0,0,12,0,0,0,0"/>
-    <wangtile tileid="4237" wangid="0,0,0,0,0,14,0,14"/>
-    <wangtile tileid="4239" wangid="0,14,0,14,0,0,0,0"/>
-    <wangtile tileid="4240" wangid="0,0,0,0,0,14,0,0"/>
-    <wangtile tileid="4241" wangid="0,0,0,14,0,0,0,0"/>
-    <wangtile tileid="4301" wangid="0,0,0,5,0,5,0,5"/>
-    <wangtile tileid="4302" wangid="0,0,0,5,0,5,0,0"/>
-    <wangtile tileid="4303" wangid="0,5,0,5,0,5,0,0"/>
-    <wangtile tileid="4304" wangid="0,0,0,5,0,0,0,5"/>
-    <wangtile tileid="4305" wangid="0,5,0,0,0,5,0,0"/>
-    <wangtile tileid="4307" wangid="0,0,0,6,0,6,0,6"/>
-    <wangtile tileid="4308" wangid="0,0,0,6,0,6,0,0"/>
-    <wangtile tileid="4309" wangid="0,6,0,6,0,6,0,0"/>
-    <wangtile tileid="4310" wangid="0,0,0,6,0,0,0,6"/>
-    <wangtile tileid="4311" wangid="0,6,0,0,0,6,0,0"/>
-    <wangtile tileid="4313" wangid="0,0,0,7,0,7,0,7"/>
-    <wangtile tileid="4314" wangid="0,0,0,7,0,7,0,0"/>
-    <wangtile tileid="4315" wangid="0,7,0,7,0,7,0,0"/>
-    <wangtile tileid="4316" wangid="0,0,0,7,0,0,0,7"/>
-    <wangtile tileid="4317" wangid="0,7,0,0,0,7,0,0"/>
-    <wangtile tileid="4319" wangid="0,0,0,8,0,8,0,8"/>
-    <wangtile tileid="4320" wangid="0,0,0,8,0,8,0,0"/>
-    <wangtile tileid="4321" wangid="0,8,0,8,0,8,0,0"/>
-    <wangtile tileid="4322" wangid="0,0,0,8,0,0,0,8"/>
-    <wangtile tileid="4323" wangid="0,8,0,0,0,8,0,0"/>
-    <wangtile tileid="4325" wangid="0,0,0,11,0,11,0,11"/>
-    <wangtile tileid="4326" wangid="0,0,0,11,0,11,0,0"/>
-    <wangtile tileid="4327" wangid="0,11,0,11,0,11,0,0"/>
-    <wangtile tileid="4328" wangid="0,0,0,11,0,0,0,11"/>
-    <wangtile tileid="4329" wangid="0,11,0,0,0,11,0,0"/>
-    <wangtile tileid="4331" wangid="0,0,0,12,0,12,0,12"/>
-    <wangtile tileid="4332" wangid="0,0,0,12,0,12,0,0"/>
-    <wangtile tileid="4333" wangid="0,12,0,12,0,12,0,0"/>
-    <wangtile tileid="4334" wangid="0,0,0,12,0,0,0,12"/>
-    <wangtile tileid="4335" wangid="0,12,0,0,0,12,0,0"/>
-    <wangtile tileid="4337" wangid="0,0,0,14,0,14,0,14"/>
-    <wangtile tileid="4338" wangid="0,0,0,14,0,14,0,0"/>
-    <wangtile tileid="4339" wangid="0,14,0,14,0,14,0,0"/>
-    <wangtile tileid="4340" wangid="0,0,0,14,0,0,0,14"/>
-    <wangtile tileid="4341" wangid="0,14,0,0,0,14,0,0"/>
-    <wangtile tileid="4501" wangid="0,16,0,0,0,16,0,16"/>
-    <wangtile tileid="4502" wangid="0,16,0,0,0,0,0,16"/>
-    <wangtile tileid="4503" wangid="0,16,0,16,0,0,0,16"/>
-    <wangtile tileid="4505" wangid="0,0,0,0,0,0,0,16"/>
-    <wangtile tileid="4506" wangid="0,16,0,0,0,0,0,0"/>
-    <wangtile tileid="4517" wangid="0,17,0,0,0,17,0,17"/>
-    <wangtile tileid="4518" wangid="0,17,0,0,0,0,0,17"/>
-    <wangtile tileid="4519" wangid="0,17,0,17,0,0,0,17"/>
-    <wangtile tileid="4520" wangid="0,0,0,0,0,0,0,17"/>
-    <wangtile tileid="4521" wangid="0,17,0,0,0,0,0,0"/>
-    <wangtile tileid="4523" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4524" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4538" wangid="0,18,0,0,0,18,0,18"/>
-    <wangtile tileid="4539" wangid="0,18,0,0,0,0,0,18"/>
-    <wangtile tileid="4540" wangid="0,18,0,18,0,0,0,18"/>
-    <wangtile tileid="4541" wangid="0,0,0,0,0,0,0,18"/>
-    <wangtile tileid="4542" wangid="0,18,0,0,0,0,0,0"/>
-    <wangtile tileid="4601" wangid="0,0,0,0,0,16,0,16"/>
-    <wangtile tileid="4603" wangid="0,16,0,16,0,0,0,0"/>
-    <wangtile tileid="4605" wangid="0,0,0,0,0,16,0,0"/>
-    <wangtile tileid="4606" wangid="0,0,0,16,0,0,0,0"/>
-    <wangtile tileid="4617" wangid="0,0,0,0,0,17,0,17"/>
-    <wangtile tileid="4619" wangid="0,17,0,17,0,0,0,0"/>
-    <wangtile tileid="4620" wangid="0,0,0,0,0,17,0,17"/>
-    <wangtile tileid="4621" wangid="0,17,0,17,0,0,0,0"/>
-    <wangtile tileid="4623" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4624" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4638" wangid="0,0,0,0,0,18,0,18"/>
-    <wangtile tileid="4640" wangid="0,18,0,18,0,0,0,0"/>
-    <wangtile tileid="4641" wangid="0,0,0,0,0,18,0,0"/>
-    <wangtile tileid="4642" wangid="0,0,0,18,0,0,0,0"/>
-    <wangtile tileid="4701" wangid="0,0,0,16,0,16,0,16"/>
-    <wangtile tileid="4702" wangid="0,0,0,16,0,16,0,0"/>
-    <wangtile tileid="4703" wangid="0,16,0,16,0,16,0,0"/>
-    <wangtile tileid="4705" wangid="0,0,0,16,0,0,0,16"/>
-    <wangtile tileid="4706" wangid="0,16,0,0,0,16,0,0"/>
-    <wangtile tileid="4717" wangid="0,0,0,17,0,17,0,17"/>
-    <wangtile tileid="4718" wangid="0,0,0,17,0,17,0,0"/>
-    <wangtile tileid="4719" wangid="0,17,0,17,0,17,0,0"/>
-    <wangtile tileid="4720" wangid="0,0,0,17,0,0,0,17"/>
-    <wangtile tileid="4721" wangid="0,0,0,0,0,17,0,0"/>
-    <wangtile tileid="4723" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4724" wangid="0,17,0,17,0,17,0,17"/>
-    <wangtile tileid="4738" wangid="0,0,0,18,0,18,0,18"/>
-    <wangtile tileid="4739" wangid="0,0,0,18,0,18,0,0"/>
-    <wangtile tileid="4740" wangid="0,18,0,18,0,18,0,0"/>
-    <wangtile tileid="4741" wangid="0,0,0,18,0,0,0,18"/>
-    <wangtile tileid="4742" wangid="0,18,0,0,0,18,0,0"/>
-    <wangtile tileid="4901" wangid="0,18,0,18,0,18,0,18"/>
-    <wangtile tileid="4903" wangid="0,11,0,11,0,11,0,11"/>
-    <wangtile tileid="4905" wangid="0,12,0,12,0,12,0,12"/>
-    <wangtile tileid="4907" wangid="0,1,0,1,0,1,0,1"/>
-    <wangtile tileid="4909" wangid="0,1,0,1,0,1,0,1"/>
-    <wangtile tileid="4911" wangid="0,15,0,15,0,15,0,15"/>
-    <wangtile tileid="4913" wangid="0,2,0,2,0,2,0,2"/>
-    <wangtile tileid="4915" wangid="0,7,0,7,0,7,0,7"/>
-   </wangset>
+    <wangcolor name="Light Dirt on Light Grass" color="#ff0000" tile="-1" probability="1" />
+    <wangcolor name="Light Dirt on Dark Grass" color="#00ff00" tile="-1" probability="1" />
+    <wangcolor name="Sand on Light Grass" color="#0000ff" tile="-1" probability="1" />
+    <wangcolor name="Light Dirt on Sand" color="#ff7700" tile="-1" probability="1" />
+    <wangcolor name="Light Grass on Light Dirt" color="#00e9ff" tile="-1" probability="1" />
+    <wangcolor name="Light Grass on Sand" color="#ff00d8" tile="-1" probability="1" />
+    <wangcolor name="Sand on Light Dirt" color="#ffff00" tile="-1" probability="1" />
+    <wangcolor name="Dark Grass on Dark Dirt" color="#a000ff" tile="-1" probability="1" />
+    <wangcolor name="Dark Grass on Light Grass" color="#00ffa1" tile="-1" probability="1" />
+    <wangcolor name="Mud on Dark Grass" color="#ffa8a8" tile="-1" probability="1" />
+    <wangcolor name="Dark Grass on Empty" color="#b4a8ff" tile="-1" probability="1" />
+    <wangcolor name="Mud on Empty" color="#96ffa7" tile="-1" probability="1" />
+    <wangcolor name="Light Grass under Dark Grass" color="#8e7848" tile="-1" probability="1" />
+    <wangcolor name="Red Dirt on Empty" color="#5a5a5a" tile="-1" probability="1" />
+    <wangcolor name="Red Dirt on Dark Dirt" color="#0e7a46" tile="-1" probability="1" />
+    <wangcolor name="Sand over Water" color="#00000000" tile="-1" probability="1" />
+    <wangcolor name="Water over Dark Water" color="#8184b8" tile="-1" probability="1" />
+    <wangcolor name="Light grass on Empty" color="#fd3650" tile="-1" probability="1" />
+    <wangtile tileid="3701" wangid="0,0,0,1,0,0,0,0" />
+    <wangtile tileid="3702" wangid="0,0,0,1,0,1,0,0" />
+    <wangtile tileid="3703" wangid="0,0,0,0,0,1,0,0" />
+    <wangtile tileid="3704" wangid="0,1,0,1,0,1,0,0" />
+    <wangtile tileid="3705" wangid="0,0,0,1,0,1,0,1" />
+    <wangtile tileid="3707" wangid="0,0,0,3,0,0,0,0" />
+    <wangtile tileid="3708" wangid="0,0,0,3,0,3,0,0" />
+    <wangtile tileid="3709" wangid="0,0,0,0,0,3,0,0" />
+    <wangtile tileid="3710" wangid="0,3,0,3,0,3,0,0" />
+    <wangtile tileid="3711" wangid="0,0,0,3,0,3,0,3" />
+    <wangtile tileid="3713" wangid="0,0,0,4,0,0,0,0" />
+    <wangtile tileid="3714" wangid="0,0,0,4,0,4,0,0" />
+    <wangtile tileid="3715" wangid="0,0,0,0,0,4,0,0" />
+    <wangtile tileid="3716" wangid="0,4,0,4,0,4,0,0" />
+    <wangtile tileid="3717" wangid="0,0,0,4,0,4,0,4" />
+    <wangtile tileid="3719" wangid="0,0,0,2,0,0,0,0" />
+    <wangtile tileid="3720" wangid="0,0,0,2,0,2,0,0" />
+    <wangtile tileid="3721" wangid="0,0,0,0,0,2,0,0" />
+    <wangtile tileid="3722" wangid="0,2,0,2,0,2,0,0" />
+    <wangtile tileid="3723" wangid="0,0,0,2,0,2,0,2" />
+    <wangtile tileid="3725" wangid="0,9,0,0,0,9,0,9" />
+    <wangtile tileid="3726" wangid="0,9,0,0,0,0,0,9" />
+    <wangtile tileid="3727" wangid="0,9,0,9,0,0,0,9" />
+    <wangtile tileid="3728" wangid="0,0,0,0,0,0,0,9" />
+    <wangtile tileid="3729" wangid="0,9,0,0,0,0,0,0" />
+    <wangtile tileid="3731" wangid="0,10,0,0,0,10,0,10" />
+    <wangtile tileid="3732" wangid="0,10,0,0,0,0,0,10" />
+    <wangtile tileid="3733" wangid="0,10,0,10,0,0,0,10" />
+    <wangtile tileid="3734" wangid="0,0,0,0,0,0,0,10" />
+    <wangtile tileid="3735" wangid="0,10,0,0,0,0,0,0" />
+    <wangtile tileid="3737" wangid="0,15,0,0,0,15,0,15" />
+    <wangtile tileid="3738" wangid="0,15,0,0,0,0,0,15" />
+    <wangtile tileid="3739" wangid="0,15,0,15,0,0,0,15" />
+    <wangtile tileid="3740" wangid="0,0,0,0,0,0,0,15" />
+    <wangtile tileid="3741" wangid="0,15,0,0,0,0,0,0" />
+    <wangtile tileid="3801" wangid="0,1,0,1,0,0,0,0" />
+    <wangtile tileid="3802" wangid="0,14,0,14,0,14,0,14" />
+    <wangtile tileid="3803" wangid="0,0,0,0,0,1,0,1" />
+    <wangtile tileid="3804" wangid="0,1,0,1,0,0,0,1" />
+    <wangtile tileid="3805" wangid="0,1,0,0,0,1,0,1" />
+    <wangtile tileid="3807" wangid="0,3,0,3,0,0,0,0" />
+    <wangtile tileid="3808" wangid="0,3,0,3,0,3,0,3" />
+    <wangtile tileid="3809" wangid="0,0,0,0,0,3,0,3" />
+    <wangtile tileid="3810" wangid="0,3,0,3,0,0,0,3" />
+    <wangtile tileid="3811" wangid="0,3,0,0,0,3,0,3" />
+    <wangtile tileid="3813" wangid="0,4,0,4,0,0,0,0" />
+    <wangtile tileid="3814" wangid="0,4,0,4,0,4,0,4" />
+    <wangtile tileid="3815" wangid="0,0,0,0,0,4,0,4" />
+    <wangtile tileid="3816" wangid="0,4,0,4,0,0,0,4" />
+    <wangtile tileid="3817" wangid="0,4,0,0,0,4,0,4" />
+    <wangtile tileid="3819" wangid="0,2,0,2,0,0,0,0" />
+    <wangtile tileid="3820" wangid="0,2,0,2,0,2,0,2" />
+    <wangtile tileid="3821" wangid="0,0,0,0,0,2,0,2" />
+    <wangtile tileid="3822" wangid="0,2,0,2,0,0,0,2" />
+    <wangtile tileid="3823" wangid="0,2,0,0,0,2,0,2" />
+    <wangtile tileid="3825" wangid="0,0,0,0,0,9,0,9" />
+    <wangtile tileid="3827" wangid="0,9,0,9,0,0,0,0" />
+    <wangtile tileid="3828" wangid="0,0,0,0,0,9,0,0" />
+    <wangtile tileid="3829" wangid="0,0,0,9,0,0,0,0" />
+    <wangtile tileid="3831" wangid="0,0,0,0,0,10,0,10" />
+    <wangtile tileid="3833" wangid="0,10,0,10,0,0,0,0" />
+    <wangtile tileid="3834" wangid="0,0,0,0,0,10,0,0" />
+    <wangtile tileid="3835" wangid="0,0,0,10,0,0,0,0" />
+    <wangtile tileid="3837" wangid="0,0,0,0,0,15,0,15" />
+    <wangtile tileid="3839" wangid="0,15,0,15,0,0,0,0" />
+    <wangtile tileid="3840" wangid="0,0,0,0,0,15,0,0" />
+    <wangtile tileid="3841" wangid="0,0,0,15,0,0,0,0" />
+    <wangtile tileid="3901" wangid="0,1,0,0,0,0,0,0" />
+    <wangtile tileid="3902" wangid="0,1,0,0,0,0,0,1" />
+    <wangtile tileid="3903" wangid="0,0,0,0,0,0,0,1" />
+    <wangtile tileid="3904" wangid="0,1,0,0,0,1,0,0" />
+    <wangtile tileid="3905" wangid="0,0,0,1,0,0,0,1" />
+    <wangtile tileid="3907" wangid="0,3,0,0,0,0,0,0" />
+    <wangtile tileid="3908" wangid="0,3,0,0,0,0,0,3" />
+    <wangtile tileid="3909" wangid="0,0,0,0,0,0,0,3" />
+    <wangtile tileid="3910" wangid="0,3,0,0,0,3,0,0" />
+    <wangtile tileid="3911" wangid="0,0,0,3,0,0,0,3" />
+    <wangtile tileid="3913" wangid="0,4,0,0,0,0,0,0" />
+    <wangtile tileid="3914" wangid="0,4,0,0,0,0,0,4" />
+    <wangtile tileid="3915" wangid="0,0,0,0,0,0,0,4" />
+    <wangtile tileid="3916" wangid="0,4,0,0,0,4,0,0" />
+    <wangtile tileid="3917" wangid="0,0,0,4,0,0,0,4" />
+    <wangtile tileid="3919" wangid="0,2,0,0,0,0,0,0" />
+    <wangtile tileid="3920" wangid="0,2,0,0,0,0,0,2" />
+    <wangtile tileid="3921" wangid="0,0,0,0,0,0,0,2" />
+    <wangtile tileid="3922" wangid="0,2,0,0,0,2,0,0" />
+    <wangtile tileid="3923" wangid="0,0,0,2,0,0,0,2" />
+    <wangtile tileid="3925" wangid="0,0,0,9,0,9,0,9" />
+    <wangtile tileid="3926" wangid="0,0,0,9,0,9,0,0" />
+    <wangtile tileid="3927" wangid="0,9,0,9,0,9,0,0" />
+    <wangtile tileid="3928" wangid="0,0,0,9,0,0,0,9" />
+    <wangtile tileid="3929" wangid="0,9,0,0,0,9,0,0" />
+    <wangtile tileid="3931" wangid="0,0,0,10,0,10,0,10" />
+    <wangtile tileid="3932" wangid="0,0,0,10,0,10,0,0" />
+    <wangtile tileid="3933" wangid="0,10,0,10,0,10,0,0" />
+    <wangtile tileid="3934" wangid="0,0,0,10,0,0,0,10" />
+    <wangtile tileid="3935" wangid="0,10,0,0,0,10,0,0" />
+    <wangtile tileid="3937" wangid="0,0,0,15,0,15,0,15" />
+    <wangtile tileid="3938" wangid="0,0,0,15,0,15,0,0" />
+    <wangtile tileid="3939" wangid="0,15,0,15,0,15,0,0" />
+    <wangtile tileid="3940" wangid="0,0,0,15,0,0,0,15" />
+    <wangtile tileid="3941" wangid="0,15,0,0,0,15,0,0" />
+    <wangtile tileid="4101" wangid="0,5,0,0,0,5,0,5" />
+    <wangtile tileid="4102" wangid="0,5,0,0,0,0,0,5" />
+    <wangtile tileid="4103" wangid="0,5,0,5,0,0,0,5" />
+    <wangtile tileid="4104" wangid="0,0,0,0,0,0,0,5" />
+    <wangtile tileid="4105" wangid="0,5,0,0,0,0,0,0" />
+    <wangtile tileid="4107" wangid="0,6,0,0,0,6,0,6" />
+    <wangtile tileid="4108" wangid="0,6,0,0,0,0,0,6" />
+    <wangtile tileid="4109" wangid="0,6,0,6,0,0,0,6" />
+    <wangtile tileid="4110" wangid="0,0,0,0,0,0,0,6" />
+    <wangtile tileid="4111" wangid="0,6,0,0,0,0,0,0" />
+    <wangtile tileid="4113" wangid="0,7,0,0,0,7,0,7" />
+    <wangtile tileid="4114" wangid="0,7,0,0,0,0,0,7" />
+    <wangtile tileid="4115" wangid="0,7,0,7,0,0,0,7" />
+    <wangtile tileid="4116" wangid="0,0,0,0,0,0,0,7" />
+    <wangtile tileid="4117" wangid="0,7,0,0,0,0,0,0" />
+    <wangtile tileid="4119" wangid="0,8,0,0,0,8,0,8" />
+    <wangtile tileid="4120" wangid="0,8,0,0,0,0,0,8" />
+    <wangtile tileid="4121" wangid="0,8,0,8,0,0,0,8" />
+    <wangtile tileid="4122" wangid="0,0,0,0,0,0,0,8" />
+    <wangtile tileid="4123" wangid="0,8,0,0,0,0,0,0" />
+    <wangtile tileid="4125" wangid="0,11,0,0,0,11,0,11" />
+    <wangtile tileid="4126" wangid="0,11,0,0,0,0,0,11" />
+    <wangtile tileid="4127" wangid="0,11,0,11,0,0,0,11" />
+    <wangtile tileid="4128" wangid="0,0,0,0,0,0,0,11" />
+    <wangtile tileid="4129" wangid="0,11,0,0,0,0,0,0" />
+    <wangtile tileid="4131" wangid="0,12,0,0,0,12,0,12" />
+    <wangtile tileid="4132" wangid="0,12,0,0,0,0,0,12" />
+    <wangtile tileid="4133" wangid="0,12,0,12,0,0,0,12" />
+    <wangtile tileid="4134" wangid="0,0,0,0,0,0,0,12" />
+    <wangtile tileid="4135" wangid="0,12,0,0,0,0,0,0" />
+    <wangtile tileid="4137" wangid="0,14,0,0,0,14,0,14" />
+    <wangtile tileid="4138" wangid="0,14,0,0,0,0,0,14" />
+    <wangtile tileid="4139" wangid="0,14,0,14,0,0,0,14" />
+    <wangtile tileid="4140" wangid="0,0,0,0,0,0,0,14" />
+    <wangtile tileid="4141" wangid="0,14,0,0,0,0,0,0" />
+    <wangtile tileid="4201" wangid="0,0,0,0,0,5,0,5" />
+    <wangtile tileid="4203" wangid="0,5,0,5,0,0,0,0" />
+    <wangtile tileid="4204" wangid="0,0,0,0,0,5,0,0" />
+    <wangtile tileid="4205" wangid="0,0,0,5,0,0,0,0" />
+    <wangtile tileid="4207" wangid="0,0,0,0,0,6,0,6" />
+    <wangtile tileid="4209" wangid="0,6,0,6,0,0,0,0" />
+    <wangtile tileid="4210" wangid="0,0,0,0,0,6,0,0" />
+    <wangtile tileid="4211" wangid="0,0,0,6,0,0,0,0" />
+    <wangtile tileid="4213" wangid="0,0,0,0,0,7,0,7" />
+    <wangtile tileid="4215" wangid="0,7,0,7,0,0,0,0" />
+    <wangtile tileid="4216" wangid="0,0,0,0,0,7,0,0" />
+    <wangtile tileid="4217" wangid="0,0,0,7,0,0,0,0" />
+    <wangtile tileid="4219" wangid="0,0,0,0,0,8,0,8" />
+    <wangtile tileid="4221" wangid="0,8,0,8,0,0,0,0" />
+    <wangtile tileid="4222" wangid="0,0,0,0,0,8,0,0" />
+    <wangtile tileid="4223" wangid="0,0,0,8,0,0,0,0" />
+    <wangtile tileid="4225" wangid="0,0,0,0,0,11,0,11" />
+    <wangtile tileid="4227" wangid="0,11,0,11,0,0,0,0" />
+    <wangtile tileid="4228" wangid="0,0,0,0,0,11,0,0" />
+    <wangtile tileid="4229" wangid="0,0,0,11,0,0,0,0" />
+    <wangtile tileid="4231" wangid="0,0,0,0,0,12,0,12" />
+    <wangtile tileid="4233" wangid="0,12,0,12,0,0,0,0" />
+    <wangtile tileid="4234" wangid="0,0,0,0,0,12,0,0" />
+    <wangtile tileid="4235" wangid="0,0,0,12,0,0,0,0" />
+    <wangtile tileid="4237" wangid="0,0,0,0,0,14,0,14" />
+    <wangtile tileid="4239" wangid="0,14,0,14,0,0,0,0" />
+    <wangtile tileid="4240" wangid="0,0,0,0,0,14,0,0" />
+    <wangtile tileid="4241" wangid="0,0,0,14,0,0,0,0" />
+    <wangtile tileid="4301" wangid="0,0,0,5,0,5,0,5" />
+    <wangtile tileid="4302" wangid="0,0,0,5,0,5,0,0" />
+    <wangtile tileid="4303" wangid="0,5,0,5,0,5,0,0" />
+    <wangtile tileid="4304" wangid="0,0,0,5,0,0,0,5" />
+    <wangtile tileid="4305" wangid="0,5,0,0,0,5,0,0" />
+    <wangtile tileid="4307" wangid="0,0,0,6,0,6,0,6" />
+    <wangtile tileid="4308" wangid="0,0,0,6,0,6,0,0" />
+    <wangtile tileid="4309" wangid="0,6,0,6,0,6,0,0" />
+    <wangtile tileid="4310" wangid="0,0,0,6,0,0,0,6" />
+    <wangtile tileid="4311" wangid="0,6,0,0,0,6,0,0" />
+    <wangtile tileid="4313" wangid="0,0,0,7,0,7,0,7" />
+    <wangtile tileid="4314" wangid="0,0,0,7,0,7,0,0" />
+    <wangtile tileid="4315" wangid="0,7,0,7,0,7,0,0" />
+    <wangtile tileid="4316" wangid="0,0,0,7,0,0,0,7" />
+    <wangtile tileid="4317" wangid="0,7,0,0,0,7,0,0" />
+    <wangtile tileid="4319" wangid="0,0,0,8,0,8,0,8" />
+    <wangtile tileid="4320" wangid="0,0,0,8,0,8,0,0" />
+    <wangtile tileid="4321" wangid="0,8,0,8,0,8,0,0" />
+    <wangtile tileid="4322" wangid="0,0,0,8,0,0,0,8" />
+    <wangtile tileid="4323" wangid="0,8,0,0,0,8,0,0" />
+    <wangtile tileid="4325" wangid="0,0,0,11,0,11,0,11" />
+    <wangtile tileid="4326" wangid="0,0,0,11,0,11,0,0" />
+    <wangtile tileid="4327" wangid="0,11,0,11,0,11,0,0" />
+    <wangtile tileid="4328" wangid="0,0,0,11,0,0,0,11" />
+    <wangtile tileid="4329" wangid="0,11,0,0,0,11,0,0" />
+    <wangtile tileid="4331" wangid="0,0,0,12,0,12,0,12" />
+    <wangtile tileid="4332" wangid="0,0,0,12,0,12,0,0" />
+    <wangtile tileid="4333" wangid="0,12,0,12,0,12,0,0" />
+    <wangtile tileid="4334" wangid="0,0,0,12,0,0,0,12" />
+    <wangtile tileid="4335" wangid="0,12,0,0,0,12,0,0" />
+    <wangtile tileid="4337" wangid="0,0,0,14,0,14,0,14" />
+    <wangtile tileid="4338" wangid="0,0,0,14,0,14,0,0" />
+    <wangtile tileid="4339" wangid="0,14,0,14,0,14,0,0" />
+    <wangtile tileid="4340" wangid="0,0,0,14,0,0,0,14" />
+    <wangtile tileid="4341" wangid="0,14,0,0,0,14,0,0" />
+    <wangtile tileid="4501" wangid="0,16,0,0,0,16,0,16" />
+    <wangtile tileid="4502" wangid="0,16,0,0,0,0,0,16" />
+    <wangtile tileid="4503" wangid="0,16,0,16,0,0,0,16" />
+    <wangtile tileid="4505" wangid="0,0,0,0,0,0,0,16" />
+    <wangtile tileid="4506" wangid="0,16,0,0,0,0,0,0" />
+    <wangtile tileid="4517" wangid="0,17,0,0,0,17,0,17" />
+    <wangtile tileid="4518" wangid="0,17,0,0,0,0,0,17" />
+    <wangtile tileid="4519" wangid="0,17,0,17,0,0,0,17" />
+    <wangtile tileid="4520" wangid="0,0,0,0,0,0,0,17" />
+    <wangtile tileid="4521" wangid="0,17,0,0,0,0,0,0" />
+    <wangtile tileid="4523" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4524" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4538" wangid="0,18,0,0,0,18,0,18" />
+    <wangtile tileid="4539" wangid="0,18,0,0,0,0,0,18" />
+    <wangtile tileid="4540" wangid="0,18,0,18,0,0,0,18" />
+    <wangtile tileid="4541" wangid="0,0,0,0,0,0,0,18" />
+    <wangtile tileid="4542" wangid="0,18,0,0,0,0,0,0" />
+    <wangtile tileid="4601" wangid="0,0,0,0,0,16,0,16" />
+    <wangtile tileid="4603" wangid="0,16,0,16,0,0,0,0" />
+    <wangtile tileid="4605" wangid="0,0,0,0,0,16,0,0" />
+    <wangtile tileid="4606" wangid="0,0,0,16,0,0,0,0" />
+    <wangtile tileid="4617" wangid="0,0,0,0,0,17,0,17" />
+    <wangtile tileid="4619" wangid="0,17,0,17,0,0,0,0" />
+    <wangtile tileid="4620" wangid="0,0,0,0,0,17,0,17" />
+    <wangtile tileid="4621" wangid="0,17,0,17,0,0,0,0" />
+    <wangtile tileid="4623" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4624" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4638" wangid="0,0,0,0,0,18,0,18" />
+    <wangtile tileid="4640" wangid="0,18,0,18,0,0,0,0" />
+    <wangtile tileid="4641" wangid="0,0,0,0,0,18,0,0" />
+    <wangtile tileid="4642" wangid="0,0,0,18,0,0,0,0" />
+    <wangtile tileid="4701" wangid="0,0,0,16,0,16,0,16" />
+    <wangtile tileid="4702" wangid="0,0,0,16,0,16,0,0" />
+    <wangtile tileid="4703" wangid="0,16,0,16,0,16,0,0" />
+    <wangtile tileid="4705" wangid="0,0,0,16,0,0,0,16" />
+    <wangtile tileid="4706" wangid="0,16,0,0,0,16,0,0" />
+    <wangtile tileid="4717" wangid="0,0,0,17,0,17,0,17" />
+    <wangtile tileid="4718" wangid="0,0,0,17,0,17,0,0" />
+    <wangtile tileid="4719" wangid="0,17,0,17,0,17,0,0" />
+    <wangtile tileid="4720" wangid="0,0,0,17,0,0,0,17" />
+    <wangtile tileid="4721" wangid="0,0,0,0,0,17,0,0" />
+    <wangtile tileid="4723" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4724" wangid="0,17,0,17,0,17,0,17" />
+    <wangtile tileid="4738" wangid="0,0,0,18,0,18,0,18" />
+    <wangtile tileid="4739" wangid="0,0,0,18,0,18,0,0" />
+    <wangtile tileid="4740" wangid="0,18,0,18,0,18,0,0" />
+    <wangtile tileid="4741" wangid="0,0,0,18,0,0,0,18" />
+    <wangtile tileid="4742" wangid="0,18,0,0,0,18,0,0" />
+    <wangtile tileid="4901" wangid="0,18,0,18,0,18,0,18" />
+    <wangtile tileid="4903" wangid="0,11,0,11,0,11,0,11" />
+    <wangtile tileid="4905" wangid="0,12,0,12,0,12,0,12" />
+    <wangtile tileid="4907" wangid="0,1,0,1,0,1,0,1" />
+    <wangtile tileid="4909" wangid="0,1,0,1,0,1,0,1" />
+    <wangtile tileid="4911" wangid="0,15,0,15,0,15,0,15" />
+    <wangtile tileid="4913" wangid="0,2,0,2,0,2,0,2" />
+    <wangtile tileid="4915" wangid="0,7,0,7,0,7,0,7" />
+    </wangset>
    <wangset name="Mixed attempt" type="mixed" tile="-1">
-    <wangcolor name="Sand over water" color="#ff0000" tile="-1" probability="1"/>
-    <wangcolor name="" color="#00ff00" tile="-1" probability="1"/>
-    <wangtile tileid="4501" wangid="1,1,1,0,1,1,1,1"/>
-    <wangtile tileid="4502" wangid="1,1,1,0,0,0,1,1"/>
-    <wangtile tileid="4503" wangid="1,1,1,1,1,0,1,1"/>
-    <wangtile tileid="4505" wangid="0,0,0,0,0,0,0,1"/>
-    <wangtile tileid="4506" wangid="0,1,0,0,0,0,0,0"/>
-    <wangtile tileid="4601" wangid="1,0,0,0,1,1,1,1"/>
-    <wangtile tileid="4603" wangid="1,1,1,1,1,0,0,0"/>
-    <wangtile tileid="4605" wangid="0,0,0,0,0,1,0,0"/>
-    <wangtile tileid="4606" wangid="0,0,0,1,0,0,0,0"/>
-    <wangtile tileid="4701" wangid="1,0,1,1,1,1,1,1"/>
-    <wangtile tileid="4702" wangid="0,0,1,1,1,1,1,0"/>
-    <wangtile tileid="4703" wangid="1,1,1,1,1,1,1,0"/>
-    <wangtile tileid="4705" wangid="0,0,0,1,0,0,0,1"/>
-    <wangtile tileid="4706" wangid="0,1,0,0,0,1,0,0"/>
-   </wangset>
-  </wangsets>
- </tileset>
+    <wangcolor name="Sand over water" color="#ff0000" tile="-1" probability="1" />
+    <wangcolor name="" color="#00ff00" tile="-1" probability="1" />
+    <wangtile tileid="4501" wangid="1,1,1,0,1,1,1,1" />
+    <wangtile tileid="4502" wangid="1,1,1,0,0,0,1,1" />
+    <wangtile tileid="4503" wangid="1,1,1,1,1,0,1,1" />
+    <wangtile tileid="4505" wangid="0,0,0,0,0,0,0,1" />
+    <wangtile tileid="4506" wangid="0,1,0,0,0,0,0,0" />
+    <wangtile tileid="4601" wangid="1,0,0,0,1,1,1,1" />
+    <wangtile tileid="4603" wangid="1,1,1,1,1,0,0,0" />
+    <wangtile tileid="4605" wangid="0,0,0,0,0,1,0,0" />
+    <wangtile tileid="4606" wangid="0,0,0,1,0,0,0,0" />
+    <wangtile tileid="4701" wangid="1,0,1,1,1,1,1,1" />
+    <wangtile tileid="4702" wangid="0,0,1,1,1,1,1,0" />
+    <wangtile tileid="4703" wangid="1,1,1,1,1,1,1,0" />
+    <wangtile tileid="4705" wangid="0,0,0,1,0,0,0,1" />
+    <wangtile tileid="4706" wangid="0,1,0,0,0,1,0,0" />
+    </wangset>
+   </wangsets>
+  </tileset>
  <imagelayer id="37" name="Ground" locked="1" repeatx="1" repeaty="1">
-  <image source="../spritesheets/Light_Grass_BG.png" width="16" height="16"/>
- </imagelayer>
+  <image source="../spritesheets/Light_Grass_BG.png" width="16" height="16" />
+  </imagelayer>
  <layer id="34" name="Ground 3 - under P" width="45" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -359,7 +359,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3802,4908,3804,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3802,4910,3804,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="36" name="Ground 2 - under P" width="45" height="30" locked="1">
   <data encoding="csv">
 1037,1038,1039,0,0,5707,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,5512,5513,5511,
@@ -393,7 +393,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="31" name="Ground 1 - under P" width="45" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -427,7 +427,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1433,1434,0,0,0,0,0,0,0,0,0,0,0,0,1142,1143,0,0,0,0,0,0,0,0,0,1534,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1929,0,0,0,0,0,0,0,0,0,0,0,1929,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="32" name="Objects" width="45" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -461,7 +461,7 @@
 811,812,1539,1540,0,1541,1542,1541,1542,0,819,820,821,715,716,717,719,720,721,0,0,703,704,705,706,0,0,0,0,719,720,721,0,0,0,0,3127,3128,3129,3130,3131,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,815,816,817,819,820,821,0,0,803,804,805,806,0,0,0,0,819,820,821,0,0,0,0,3227,3228,3229,3230,3231,0,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="29" name="Decor 1 - P level" width="45" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,1331,1332,0,0,0,1421,1422,0,0,0,0,0,0,0,1325,1326,0,0,0,0,1323,0,0,0,1331,1332,0,0,1324,0,0,0,0,0,0,0,1421,1422,
@@ -495,7 +495,7 @@
 0,0,813,0,0,0,0,0,0,0,0,0,714,0,0,0,718,0,0,0,0,0,0,0,0,707,708,0,0,0,0,0,0,0,0,3126,0,0,0,0,0,3132,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,814,0,0,0,818,0,0,0,802,0,0,0,0,807,808,0,0,0,0,0,0,0,0,3226,0,0,0,0,0,3232,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="30" name="Decor 2 - over P" width="45" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,214,0,0,0,218,0,0,0,0,0,0,0,102,103,104,105,106,107,108,0,0,0,
@@ -529,7 +529,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
  <layer id="33" name="Decor 3 - over P" width="45" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -563,300 +563,321 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
  <objectgroup id="19" name="Triggers">
   <object id="9" name="EnterBlacksmith_1" type="door" x="235.627" y="297.405" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="1"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="1" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn" />
+    </properties>
+   </object>
   <object id="10" name="SpawnFromDoor_1" type="spawn" x="244.752" y="313.421" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="1"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="1" />
+    </properties>
+   </object>
   <object id="7" name="EnterBlacksmith_2" type="door" x="278.86" y="315.383" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="2"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="2" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Blacksmith.tscn" />
+    </properties>
+   </object>
   <object id="8" name="SpawnFromDoor_2" type="spawn" x="286.547" y="332.685" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="2"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="2" />
+    </properties>
+   </object>
   <object id="11" name="EnterHome_3" type="door" x="132.559" y="129.041" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="3"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Home.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="3" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Home.tscn" />
+    </properties>
+   </object>
   <object id="12" name="SpawnFromDoor_3" type="spawn" x="139.694" y="145.843" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="3"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="3" />
+    </properties>
+   </object>
   <object id="13" name="EnterPennysHouse_4" type="door" x="44.1888" y="333.21" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="4"/>
-    <property name="required_quest_id" value="rescue_cat_quest"/>
-    <property name="required_quest_status" value="End_Cat_Quest"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_PennysHouse.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="4" />
+    <property name="required_quest_id" value="rescue_cat_quest" />
+    <property name="required_quest_status" value="End_Cat_Quest" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_PennysHouse.tscn" />
+    </properties>
+   </object>
   <object id="14" name="SpawnFromDoor_4" type="spawn" x="52" y="354" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="4"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="4" />
+    </properties>
+   </object>
   <object id="15" name="EnterGeneralStore_5" type="door" x="403.802" y="156.903" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="5"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="5" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn" />
+    </properties>
+   </object>
   <object id="16" name="SpawnFromDoor_5" type="spawn" x="411.375" y="174.625" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="5"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="5" />
+    </properties>
+   </object>
   <object id="17" name="EnterAdventureShop_6" type="door" x="531.361" y="190.198" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="6"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="6" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn" />
+    </properties>
+   </object>
   <object id="18" name="SpawnFromDoor_6" type="spawn" x="539.503" y="208.781" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="6"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="6" />
+    </properties>
+   </object>
   <object id="19" name="EnterWindmill_7" type="door" x="264.851" y="155.917" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="7"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Windmill_GroundFloor.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="7" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_Windmill_GroundFloor.tscn" />
+    </properties>
+   </object>
   <object id="20" name="SpawnFromDoor_7" type="spawn" x="271.569" y="174.639" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="7"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="7" />
+    </properties>
+   </object>
   <object id="21" name="EnterGeneralStorePorch_9" type="door" x="360.627" y="136.95" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="9"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="9" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_GeneralStore.tscn" />
+    </properties>
+   </object>
   <object id="22" name="SpawnFromDoor_9" type="spawn" x="368.783" y="153.323" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="9"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="9" />
+    </properties>
+   </object>
   <object id="23" name="EnterAdventureShopPorch_10" type="door" x="489.976" y="170.793" width="32" height="16">
    <properties>
-    <property name="door_id" type="int" value="10"/>
-    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn"/>
-   </properties>
-  </object>
+    <property name="door_id" type="int" value="10" />
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_AdventureShop.tscn" />
+    </properties>
+   </object>
   <object id="24" name="SpawnFromDoor_10" type="spawn" x="497.506" y="187.636" width="16" height="16">
    <properties>
-    <property name="door_id" type="int" value="10"/>
-   </properties>
-  </object>
- </objectgroup>
+    <property name="door_id" type="int" value="10" />
+    </properties>
+   </object>
+  <object id="243" name="Item_Axe" class="item" x="104" y="232" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="1" />
+    <property name="unique" type="bool" value="false" />
+    </properties>
+   </object>
+  <object id="244" name="Item_Red_Apple" class="item" x="72" y="174" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="22" />
+    <property name="unique" type="bool" value="false" />
+    </properties>
+   </object>
+  <object id="245" name="Item_Fresh_Strawberry" class="item" x="696" y="408" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="23" />
+    <property name="unique" type="bool" value="false" />
+    </properties>
+   </object>
+  </objectgroup>
  <group id="20" name="Buildings" locked="1">
   <imagelayer id="40" name="Sign" offsetx="459.53" offsety="251.027">
-   <image source="../../buildings/AL_TreeSign.png" width="52" height="45"/>
-  </imagelayer>
+   <image source="../../buildings/AL_TreeSign.png" width="52" height="45" />
+   </imagelayer>
   <imagelayer id="28" name="General Store" offsetx="343.953" offsety="74.242">
-   <image source="../../buildings/Weapon Shop.png" width="120" height="112"/>
-  </imagelayer>
+   <image source="../../buildings/Weapon Shop.png" width="120" height="112" />
+   </imagelayer>
   <imagelayer id="27" name="Windmill" offsetx="228.961" offsety="77.1241">
-   <image source="../../buildings/Windmill.png" width="102" height="112"/>
-  </imagelayer>
+   <image source="../../buildings/Windmill.png" width="102" height="112" />
+   </imagelayer>
   <imagelayer id="26" name="Well" offsetx="369.743" offsety="301.073">
-   <image source="../../buildings/Well.png" width="44" height="52"/>
-  </imagelayer>
+   <image source="../../buildings/Well.png" width="44" height="52" />
+   </imagelayer>
   <imagelayer id="24" name="Adventure Shop" offsetx="468.769" offsety="110.484">
-   <image source="../../buildings/Shop.png" width="120" height="112"/>
-  </imagelayer>
+   <image source="../../buildings/Shop.png" width="120" height="112" />
+   </imagelayer>
   <imagelayer id="22" name="Cabin 1" offsetx="35.9833" offsety="274.895">
-   <image source="../../buildings/Cabin1.png" width="48" height="80"/>
-  </imagelayer>
+   <image source="../../buildings/Cabin1.png" width="48" height="80" />
+   </imagelayer>
   <imagelayer id="23" name="Cabin 2" offsetx="122.176" offsety="65.6904">
-   <image source="../../buildings/Cabin2.png" width="48" height="80"/>
-  </imagelayer>
+   <image source="../../buildings/Cabin2.png" width="48" height="80" />
+   </imagelayer>
   <imagelayer id="21" name="Blacksmith" offsetx="213.077" offsety="235.893">
-   <image source="../../buildings/Blacksmith.png" width="120" height="112"/>
-  </imagelayer>
- </group>
+   <image source="../../buildings/Blacksmith.png" width="120" height="112" />
+   </imagelayer>
+  </group>
  <objectgroup id="42" name="Walls">
-  <object id="161" type="wall" x="0" y="96.956" width="6.75903" height="383.044"/>
-  <object id="163" type="wall" x="672" y="96" width="8.67096" height="135.715"/>
-  <object id="170" type="wall" x="672" y="278.459" width="47.4344" height="9.54089"/>
-  <object id="173" type="wall" x="656" y="304" width="16" height="16"/>
-  <object id="174" type="wall" x="704" y="320" width="16" height="16"/>
+  <object id="161" type="wall" x="0" y="96.956" width="6.75903" height="383.044" />
+  <object id="163" type="wall" x="672" y="96" width="8.67096" height="135.715" />
+  <object id="170" type="wall" x="672" y="278.459" width="47.4344" height="9.54089" />
+  <object id="173" type="wall" x="656" y="304" width="16" height="16" />
+  <object id="174" type="wall" x="704" y="320" width="16" height="16" />
   <object id="176" type="wall" x="96" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="177" type="wall" x="112" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="178" type="wall" x="128" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="179" type="wall" x="144" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="180" type="wall" x="160" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="181" type="wall" x="176" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="182" type="wall" x="192" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="183" type="wall" x="208" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="184" type="wall" x="224" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="185" type="wall" x="240" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="186" type="wall" x="256" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="187" type="wall" x="272" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="188" type="wall" x="288" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="189" type="wall" x="304" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="190" type="wall" x="320" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="191" type="wall" x="336" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="192" type="wall" x="352" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="193" type="wall" x="368" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="194" type="wall" x="384" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="195" type="wall" x="400" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="196" type="wall" x="416" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="197" type="wall" x="432" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="198" type="wall" x="448" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="199" type="wall" x="464" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="200" type="wall" x="480" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="201" type="wall" x="496" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="202" type="wall" x="512" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="203" type="wall" x="528" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="204" type="wall" x="544" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="205" type="wall" x="560" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="206" type="wall" x="576" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="207" type="wall" x="592" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="208" type="wall" x="608" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="209" type="wall" x="624" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="210" type="wall" x="640" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="211" type="wall" x="656" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="212" type="wall" x="672" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="213" type="wall" x="688" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="214" type="wall" x="704" y="48" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="219" type="wall" x="672" y="80" width="16" height="16">
-   <polygon points="6.69173,7.96635 17.5933,1.27462 16.956,7.77981 8.1425,15.0104 -0.318654,14.6917"/>
-  </object>
+   <polygon points="6.69173,7.96635 17.5933,1.27462 16.956,7.77981 8.1425,15.0104 -0.318654,14.6917" />
+   </object>
   <object id="220" type="wall" x="688" y="80" width="16" height="16">
-   <polygon points="1.27462,1.62692 32.2514,0.0336499 31.9327,6.75903 0.955962,8.3523"/>
-  </object>
+   <polygon points="1.27462,1.62692 32.2514,0.0336499 31.9327,6.75903 0.955962,8.3523" />
+   </object>
   <object id="224" type="wall" x="7.21229" y="96" width="56.7877" height="16">
-   <polygon points="0,8 56.7877,8 56.7877,16 0,16"/>
-  </object>
+   <polygon points="0,8 56.7877,8 56.7877,16 0,16" />
+   </object>
   <object id="231" type="wall" x="672" y="320" width="16" height="16">
-   <polygon points="0,0 16,0 16,16 13,16 0,9"/>
-  </object>
+   <polygon points="0,0 16,0 16,16 13,16 0,9" />
+   </object>
   <object id="232" type="wall" x="688" y="320" width="16" height="16">
-   <polygon points="0,8 16,8 16,16 0,16"/>
-  </object>
+   <polygon points="0,8 16,8 16,16 0,16" />
+   </object>
   <object id="233" name="Structure_Well_0" type="wall" x="369" y="290" width="44" height="52">
-   <polygon points="8.13964,15.6221 38.0635,14.8428 39.5996,21.3789 38.5184,38.0478 36.2169,43.0846 35.772,49.6029 29.386,56.158 16.8309,55.5073 10.6618,49.1691 8.69854,39.1802 7.63967,27.8787 4.38601,21.625 6.80468,19.3945"/>
-  </object>
+   <polygon points="8.13964,15.6221 38.0635,14.8428 39.5996,21.3789 38.5184,38.0478 36.2169,43.0846 35.772,49.6029 29.386,56.158 16.8309,55.5073 10.6618,49.1691 8.69854,39.1802 7.63967,27.8787 4.38601,21.625 6.80468,19.3945" />
+   </object>
   <object id="234" name="Structure_Blacksmith_1" type="wall" x="213" y="227" width="120" height="112">
-   <polygon points="107.631,38.7555 108.509,88.7471 105.494,92.8605 105.549,114.967 98.2757,114.355 90.0509,95.7576 72.1427,95.4525 61.6054,115.41 48.3953,76.0509 26.3678,76.5162 30.25,113.264 0.142421,113.715 0.543215,67.2774 17.921,66.9262 18.5712,37.2318"/>
-  </object>
+   <polygon points="107.631,38.7555 108.509,88.7471 105.494,92.8605 105.549,114.967 98.2757,114.355 90.0509,95.7576 72.1427,95.4525 61.6054,115.41 48.3953,76.0509 26.3678,76.5162 30.25,113.264 0.142421,113.715 0.543215,67.2774 17.921,66.9262 18.5712,37.2318" />
+   </object>
   <object id="235" name="Structure_Shop_2" type="wall" x="465" y="100" width="120" height="112">
-   <polygon points="108.104,48.9021 108.811,85.8744 106,92.8707 104.78,114.801 97.2194,113.675 91.0713,102.944 65.32,102.72 65.3805,114.822 48.7011,115.272 48.0555,104.729 58.2226,103.833 53.6021,85.6321 26.4227,85.4509 17.2446,103.641 31.3093,104.605 31.7584,114.268 10.7921,113.664 11.1746,69.3875 18.7174,68.3927 18.5826,51.1544"/>
-  </object>
+   <polygon points="108.104,48.9021 108.811,85.8744 106,92.8707 104.78,114.801 97.2194,113.675 91.0713,102.944 65.32,102.72 65.3805,114.822 48.7011,115.272 48.0555,104.729 58.2226,103.833 53.6021,85.6321 26.4227,85.4509 17.2446,103.641 31.3093,104.605 31.7584,114.268 10.7921,113.664 11.1746,69.3875 18.7174,68.3927 18.5826,51.1544" />
+   </object>
   <object id="236" name="Structure_Windmill_3" type="wall" x="228" y="61" width="102" height="112">
-   <polygon points="72.8556,54.5504 73.4075,117.137 28.4841,118.159 28.8297,55.6188"/>
-  </object>
+   <polygon points="72.8556,54.5504 73.4075,117.137 28.4841,118.159 28.8297,55.6188" />
+   </object>
   <object id="237" name="Structure_MagicShop_4" type="wall" x="342" y="67" width="120" height="112">
-   <polygon points="103.316,48.7736 102.686,86.9909 100.459,93.9847 100.498,113.11 93.0842,113.38 91.652,100.52 62.0186,102.947 60.0001,113.198 53.7497,113.808 44.6299,112.917 44.3509,103.655 54.32,103.497 49.1204,82.89 18.6731,82.792 11.0608,102.888 27.0544,103.528 26.4638,111.328 6.50917,112.821 6.2152,67.3149 14.907,66.4907 13.7635,51.424"/>
-  </object>
-  <object id="238" name="Structure_CabinDark_5" type="wall" x="39" y="261" width="48" height="80">
-   <polygon points="44.6833,49.1583 44.9909,75.518 3.60788,75.8461 0,49"/>
-  </object>
+   <polygon points="103.316,48.7736 102.686,86.9909 100.459,93.9847 100.498,113.11 93.0842,113.38 91.652,100.52 62.0186,102.947 60.0001,113.198 53.7497,113.808 44.6299,112.917 44.3509,103.655 54.32,103.497 49.1204,82.89 18.6731,82.792 11.0608,102.888 27.0544,103.528 26.4638,111.328 6.50917,112.821 6.2152,67.3149 14.907,66.4907 13.7635,51.424" />
+   </object>
+  <object id="238" name="Structure_CabinDark_5" type="wall" x="39" y="240.626" width="48" height="107.372">
+   <polygon points="44.6833,65.9779 44.9909,101.357 3.60788,101.797 0,65.7654" />
+   </object>
   <object id="239" name="Structure_CabinLight_6" type="wall" x="119" y="54" width="48" height="80">
-   <polygon points="48.8075,47.8165 47.1154,86.3502 6.41893,86.2698 4.3533,47.8883"/>
-  </object>
+   <polygon points="48.8075,47.8165 47.1154,86.3502 6.41893,86.2698 4.3533,47.8883" />
+   </object>
   <object id="240" name="Structure_TreeSign_7" type="wall" x="459.598" y="235.653" width="52" height="45">
-   <polygon points="51.7227,22.9219 50,33 45,43 43,45 7,44 2,33 0.27636,23.169"/>
-  </object>
+   <polygon points="51.7227,22.9219 50,33 45,43 43,45 7,44 2,33 0.27636,23.169" />
+   </object>
   <object id="241" type="wall" x="79.6635" y="72.3345">
-   <polygon points="0,0 -1.27462,-0.955962 8.285,10.8342 16.2514,-7.6477 21.9871,-7.01039 13.7021,16.8887 1.27462,20.7125 -2.86789,32.8214 -14.6581,39.1944 -16.57,15.9327"/>
-  </object>
- </objectgroup>
-</map>
+   <polygon points="0,0 -1.27462,-0.955962 8.285,10.8342 16.2514,-7.6477 21.9871,-7.01039 13.7021,16.8887 1.27462,20.7125 -2.86789,32.8214 -14.6581,39.1944 -16.57,15.9327" />
+   </object>
+  <object id="242" name="Windmill blades" type="wall" x="232.261" y="157.793">
+   <polygon points="0,0 47.8955,-28.5405 95.7911,4.26467 82.669,17.7148 14.1062,19.6831 0,5.57688" />
+   </object>
+  </objectgroup>
+ </map>

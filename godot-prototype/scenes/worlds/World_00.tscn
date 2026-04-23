@@ -20,22 +20,14 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="17_46npq"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="18_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
-[ext_resource type="Resource" uid="uid://27j3kpq8mdcl" path="res://assets/data/items/051_yellow_boater_hat.tres" id="19_atc2r"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
-[ext_resource type="Resource" uid="uid://dbw8nk3ag56sb" path="res://assets/data/items/001_axe.tres" id="20_j0aqj"]
-[ext_resource type="Resource" uid="uid://bbm4bib251e2" path="res://assets/data/items/002_sword.tres" id="21_pi473"]
-[ext_resource type="Resource" uid="uid://xhw83grc0frr" path="res://assets/data/items/003_pike.tres" id="22_1pfkt"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="22_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="23_0vlwf"]
-[ext_resource type="Resource" uid="uid://dfpfp13ve0g8k" path="res://assets/data/items/054_the_wrangler.tres" id="23_1pfkt"]
-[ext_resource type="Resource" path="res://assets/data/items/072_emerald_tunic.tres" id="24_1e3vk"]
-[ext_resource type="Resource" path="res://assets/data/items/106_red_curlytoed_shoes.tres" id="25_20hat"]
-[ext_resource type="Resource" path="res://assets/data/items/094_frilly_rose_dress.tres" id="26_20hat"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="27_b4gdq"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
-[ext_resource type="Resource" uid="uid://dkuym8yprhp74" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1344,52 +1336,52 @@ y_sort_enabled = true
 y_sort_enabled = true
 
 [node name="Blacksmith" type="Sprite2D" parent="Entities/Buildings" unique_id=364904890]
-position = Vector2(215, 336)
+position = Vector2(215, 292)
 texture = ExtResource("8")
 centered = false
-offset = Vector2(0, -100)
+offset = Vector2(0, -56)
 
 [node name="Cabin1" type="Sprite2D" parent="Entities/Buildings" unique_id=1664284355]
-position = Vector2(36, 336)
+position = Vector2(36, 308)
 texture = ExtResource("9")
 centered = false
-offset = Vector2(0, -68)
+offset = Vector2(0, -40)
 
 [node name="Cabin2" type="Sprite2D" parent="Entities/Buildings" unique_id=639401401]
-position = Vector2(122, 134)
+position = Vector2(122, 106)
 texture = ExtResource("10")
 centered = false
-offset = Vector2(0, -68)
+offset = Vector2(0, -40)
 
 [node name="Shop" type="Sprite2D" parent="Entities/Buildings" unique_id=1618987874]
-position = Vector2(468, 210)
+position = Vector2(468, 166)
 texture = ExtResource("11")
 centered = false
-offset = Vector2(0, -100)
+offset = Vector2(0, -56)
 
 [node name="WeaponShop" type="Sprite2D" parent="Entities/Buildings" unique_id=345739181]
-position = Vector2(344, 174)
+position = Vector2(344, 130)
 texture = ExtResource("12")
 centered = false
-offset = Vector2(0, -100)
+offset = Vector2(0, -56)
 
 [node name="Windmill" type="Sprite2D" parent="Entities/Buildings" unique_id=954837703]
-position = Vector2(228, 177)
+position = Vector2(228, 157)
 texture = ExtResource("13")
 centered = false
-offset = Vector2(0, -100)
+offset = Vector2(0, -80)
 
 [node name="Well" type="Sprite2D" parent="Entities/Buildings" unique_id=2016374602]
-position = Vector2(370, 342)
+position = Vector2(370, 326)
 texture = ExtResource("14")
 centered = false
-offset = Vector2(0, -42)
+offset = Vector2(0, -26)
 
 [node name="TreeSign" type="Sprite2D" parent="Entities/Buildings" unique_id=511879496]
-position = Vector2(460, 284)
+position = Vector2(460, 264)
 texture = ExtResource("15")
 centered = false
-offset = Vector2(0, -42)
+offset = Vector2(0, -22)
 
 [node name="Player" parent="Entities" unique_id=1472698308 instance=ExtResource("13_tvimm")]
 position = Vector2(149, 164)
@@ -1399,53 +1391,19 @@ Speed = 100.0
 position = Vector2(62, 355)
 NpcName = "Penny"
 Dialogue = ExtResource("13_8fufv")
+HideWhenWorldFlag = "penny_home"
 
 [node name="Rosie" parent="Entities" unique_id=2001897635 instance=ExtResource("17_46npq")]
-visible = false
 position = Vector2(280, 398)
+RequiredQuestId = "rescue_cat_quest"
+RequiredQuestStatus = "Rosie_Found"
+HideWhenWorldFlag = "penny_home"
 
 [node name="TreeSignTrigger" parent="Entities" unique_id=1858068204 instance=ExtResource("4_46npq")]
 position = Vector2(486, 284)
 
 [node name="Enemy" parent="Entities" unique_id=1190379225 instance=ExtResource("14_dy4xb")]
 position = Vector2(267, 217)
-
-[node name="HatTrigger" parent="Entities" unique_id=782429550 instance=ExtResource("23_0vlwf")]
-position = Vector2(99, 357)
-Data = ExtResource("19_atc2r")
-TriggerID = 1
-
-[node name="AxeTrigger" parent="Entities" unique_id=671796420 instance=ExtResource("23_0vlwf")]
-position = Vector2(131, 240)
-Data = ExtResource("20_j0aqj")
-TriggerID = 2
-
-[node name="SwordTrigger" parent="Entities" unique_id=2066007609 instance=ExtResource("23_0vlwf")]
-position = Vector2(181, 286)
-Data = ExtResource("21_pi473")
-TriggerID = 3
-
-[node name="PikeTrigger" parent="Entities" unique_id=117939734 instance=ExtResource("23_0vlwf")]
-position = Vector2(120, 290)
-Data = ExtResource("22_1pfkt")
-TriggerID = 4
-
-[node name="WranglerTrigger" parent="Entities" unique_id=1219453569 instance=ExtResource("23_0vlwf")]
-position = Vector2(150, 200)
-Data = ExtResource("23_1pfkt")
-TriggerID = 8
-
-[node name="GreenTunicTrigger" parent="Entities" unique_id=16029048 instance=ExtResource("23_0vlwf")]
-position = Vector2(90, 176)
-Data = ExtResource("24_1e3vk")
-
-[node name="RedSlippersTrigger" parent="Entities" unique_id=1302102900 instance=ExtResource("23_0vlwf")]
-position = Vector2(200, 180)
-Data = ExtResource("25_20hat")
-
-[node name="RoseDressTrigger" parent="Entities" unique_id=1193586573 instance=ExtResource("23_0vlwf")]
-position = Vector2(300, 200)
-Data = ExtResource("26_20hat")
 
 [node name="EdgeSouth" parent="Entities" unique_id=1170496001 instance=ExtResource("27_b4gdq")]
 position = Vector2(360, 496)
@@ -1463,6 +1421,7 @@ script = ExtResource("34_tspwn")
 TriggersResource = ExtResource("35_trres")
 DoorScene = ExtResource("33_door")
 EdgeScene = ExtResource("27_b4gdq")
+ItemScene = ExtResource("23_0vlwf")
 
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)

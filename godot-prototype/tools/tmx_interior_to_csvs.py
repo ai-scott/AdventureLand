@@ -9,11 +9,18 @@ source at runtime.
 
 OUTPUT FORMAT (per-layer CSV)
 -----------------------------
-    map_x,map_y,atlas_x,atlas_y,tileset_index
+    map_x,map_y,atlas_x,atlas_y,tileset_index,flip_mask
 
 `tileset_index` is a 0-based index into the per-TMX `tilesets` array in the
 manifest. Single-tileset TMXs always emit `tileset_index=0`. Backward-compat:
 MapLoader treats the 5th column as optional and defaults to 0.
+
+`flip_mask` encodes Tiled's per-cell H/V/diagonal flip flags — 1=flip_h,
+2=flip_v, 4=transpose (the diagonal flip in Tiled). OR'd together. MapLoader
+translates this to Godot's TileSetAtlasSource transform constants and passes
+the combination as the `alternative_tile` argument to SetCell, so a flipped
+tile renders with the correct orientation without needing a separate
+registered alternative tile.
 
 MANIFEST (per-TMX JSON)
 -----------------------
@@ -54,6 +61,11 @@ FLIP_H_FLAG  = 0x80000000
 FLIP_V_FLAG  = 0x40000000
 FLIP_D_FLAG  = 0x20000000
 TILE_ID_MASK = 0x1FFFFFFF
+
+# Flip-mask bits that land in the 6th CSV column (Godot-facing convention).
+CSV_FLIP_H = 1
+CSV_FLIP_V = 2
+CSV_FLIP_D = 4
 
 # Re-exported for tools/bake_all.py's classifier.
 TILESET_MAP = {
@@ -157,16 +169,19 @@ def main():
             resolved = resolve_gid(raw, tilesets)
             if resolved is None:
                 continue
-            if raw & (FLIP_H_FLAG | FLIP_V_FLAG | FLIP_D_FLAG):
-                flipped += 1
+            flip = 0
+            if raw & FLIP_H_FLAG: flip |= CSV_FLIP_H
+            if raw & FLIP_V_FLAG: flip |= CSV_FLIP_V
+            if raw & FLIP_D_FLAG: flip |= CSV_FLIP_D
+            if flip: flipped += 1
             ts_idx, ax, ay = resolved
             per_ts_counts[ts_idx] += 1
             x, y = i % width, i // width
-            rows.append(f"{x},{y},{ax},{ay},{ts_idx}")
+            rows.append(f"{x},{y},{ax},{ay},{ts_idx},{flip}")
 
         out_path.write_text("\n".join(rows) + ("\n" if rows else ""))
 
-        flip_note = f" ({flipped} flipped — rendered un-flipped)" if flipped else ""
+        flip_note = f" ({flipped} flipped — rendered via alt-tile transform)" if flipped else ""
         breakdown = ", ".join(
             f"ts{idx}={cnt}" for idx, cnt in enumerate(per_ts_counts) if cnt
         )

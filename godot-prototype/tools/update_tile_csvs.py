@@ -72,14 +72,17 @@ def write_csvs(layers, tileset_columns=TILESET_COLUMNS):
             actual, fh, fv, fd = decode_tile(raw_gid)
             if actual == 0:
                 continue
-            if fh or fv or fd:
-                flipped += 1  # TODO: record flip info once MapLoader supports TileSetAtlasSource alternatives
+            flip_mask = (1 if fh else 0) | (2 if fv else 0) | (4 if fd else 0)
+            if flip_mask: flipped += 1
             x = i % layer["width"]
             y = i // layer["width"]
             atlas_id = actual - 1  # TMX is 1-based
             atlas_x = atlas_id % tileset_columns
             atlas_y = atlas_id // tileset_columns
-            rows.append(f"{x},{y},{atlas_x},{atlas_y}")
+            # 6-column format: map_x,map_y,atlas_x,atlas_y,tileset_idx,flip_mask
+            # tileset_idx is always 0 for village (single-tileset); MapLoader
+            # honors the flip bits to orient the tile correctly.
+            rows.append(f"{x},{y},{atlas_x},{atlas_y},0,{flip_mask}")
         with open(filepath, "w") as f:
             f.write("\n".join(rows))
             if rows:
