@@ -495188,6 +495188,7 @@ DebugDumpHairRamps = true
 DebugRecolorHairToRow = 82
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=491845693]
+position = Vector2(0, 5)
 rotation = -1.5707964
 shape = SubResource("CapsuleShape2D_cl4cn")
 

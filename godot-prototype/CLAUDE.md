@@ -252,8 +252,22 @@ All are referenced via `res://assets/...` paths in the scene files.
 
 Defined in `project.godot`:
 - `move_up/down/left/right` → WASD + arrows
-- `interact` → E or Enter
-- `dialogue_advance` → E, Enter, or Space
+- `interact` → Space and Enter (opens dialogue, picks up items, opens doors)
+- `dialogue_advance` → Space and Enter (advances/closes dialogue)
+- `attack` → Space (fires a weapon swing; only active when a weapon is equipped)
+- `cancel` → Z and Escape (closes prompts, declines purchases)
+- `inventory_toggle` → I and Tab
+- Debug: backtick (`` ` ``) toggles collision-shape visualization at runtime.
+
+### UI/prompt text convention
+
+**Never use "[E]" or "Press E" in prompts or docs.** The project sticks to:
+- **Space / Enter (↵)** — "confirm / forward / interact / advance"
+- **Z** — "cancel / back / close / skip"
+
+Prompts render the `↵` glyph (not the letter `E`). When authoring dialogue
+buttons or floating prompts, use `↵ <verb>` (e.g. `↵ Take`, `↵ Buy`). For
+two-option prompts use `[Space] <primary>    [Z] <cancel>`.
 
 ## How User Prefers to Work
 
