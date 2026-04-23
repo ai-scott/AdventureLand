@@ -4,6 +4,12 @@
 *.import
 *.uid
 
+# Exception: font .import files carry pixel-rendering settings (antialiasing,
+# hinting, subpixel, oversampling) that must propagate across checkouts —
+# without them, fresh clones re-import TTFs with defaults and all pixel
+# fonts render blurry. Track the .import alongside the .ttf.
+!assets/fonts/*.import
+
 # Mono/C#
 .mono/
 data_*/
