@@ -10,6 +10,8 @@
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_PennysHouse.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="11_npc"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="12_npc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -22,6 +24,7 @@ tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [node name="World_00_PennysHouse" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("5")
 SpawnVillageBuildings = false
 
@@ -29,6 +32,7 @@ SpawnVillageBuildings = false
 script = ExtResource("6")
 MapSize = Vector2i(240, 192)
 WorldDisplayName = "Penny's House"
+IsShop = true
 
 [node name="World_00_PennysHouse_GroundWalls" type="TileMapLayer" parent="."]
 z_index = -1
@@ -59,7 +63,16 @@ zoom = Vector2(3, 3)
 script = ExtResource("4")
 
 [node name="Triggers" type="Node2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
+
+[node name="Penny" parent="." instance=ExtResource("11_npc")]
+position = Vector2(74, 77)
+RequiredWorldFlag = "penny_home"
+
+[node name="Rosie" parent="." instance=ExtResource("12_npc")]
+position = Vector2(129, 39)
+RequiredWorldFlag = "penny_home"

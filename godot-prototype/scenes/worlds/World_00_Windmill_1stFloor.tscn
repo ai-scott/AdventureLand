@@ -10,6 +10,9 @@
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Windmill_1stFloor.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Npc.tscn" id="11_npc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -22,6 +25,7 @@ tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [node name="World_00_Windmill_1stFloor" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("5")
 SpawnVillageBuildings = false
 
@@ -59,7 +63,15 @@ zoom = Vector2(3, 3)
 script = ExtResource("4")
 
 [node name="Triggers" type="Node2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
+
+[node name="Nick" parent="." instance=ExtResource("11_npc")]
+position = Vector2(200, 76)
+NpcName = "Nick"
+Dialogue = ExtResource("13_dlg")
+[node name="NpcAnimator" parent="Nick" index="1"]
+Sheet = ExtResource("12_sheet")

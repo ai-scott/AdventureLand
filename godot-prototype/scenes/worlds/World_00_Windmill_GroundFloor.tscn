@@ -22,6 +22,7 @@ tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [node name="World_00_Windmill_GroundFloor" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("5")
 SpawnVillageBuildings = false
 
@@ -59,6 +60,7 @@ zoom = Vector2(3, 3)
 script = ExtResource("4")
 
 [node name="Triggers" type="Node2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
