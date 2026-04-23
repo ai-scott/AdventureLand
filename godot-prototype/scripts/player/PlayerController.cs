@@ -444,7 +444,12 @@ public partial class PlayerController : CharacterBody2D
 		var enemyHealth = enemyRoot?.GetNodeOrNull<HealthSystem>("HealthSystem");
 		if (enemyHealth == null) return;
 
-		enemyHealth.TakeDamage(1);
+		// Damage = equipped weapon's Strength, min 1. Attack input is gated on
+		// having a weapon equipped, so in practice the fallback only triggers
+		// if a weapon somehow has Strength=0 in its ItemData (authoring bug).
+		var weapon = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon);
+		int damage = weapon != null && weapon.Strength > 0 ? weapon.Strength : 1;
+		enemyHealth.TakeDamage(damage);
 
 		// Knockback: push enemy away from player via their stun timer.
 		if (enemyRoot is EnemyController enemy)
