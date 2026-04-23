@@ -22,6 +22,11 @@ public partial class ItemPickupToast : CanvasLayer
     private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
 
+    // Purchase-mode callbacks — invoked by the shop prompt variant. Null in
+    // the pickup-toast variants.
+    private System.Action _onPurchaseAccept;
+    private bool _purchaseAffordable;
+
     // Arrow textures for strength comparison.
     private static Texture2D _arrowUp;
     private static Texture2D _arrowDown;
@@ -39,17 +44,32 @@ public partial class ItemPickupToast : CanvasLayer
     {
         if (_waitingForChoice)
         {
-            // Space/Enter always takes the recommended action (upgrade = equip, not-upgrade = keep).
-            // Z/Esc always takes the opposite action.
-            if (Input.IsActionJustPressed("dialogue_advance"))
+            if (_onPurchaseAccept != null)
             {
-                if (_isUpgrade) DoEquip(_newItem);
-                Close();
+                // Purchase prompt: Space = buy (if affordable), Z = cancel.
+                if (Input.IsActionJustPressed("dialogue_advance"))
+                {
+                    if (_purchaseAffordable) _onPurchaseAccept();
+                    Close();
+                }
+                else if (Input.IsActionJustPressed("cancel"))
+                {
+                    Close();
+                }
             }
-            else if (Input.IsActionJustPressed("cancel"))
+            else
             {
-                if (!_isUpgrade) DoEquip(_newItem);
-                Close();
+                // Equip compare: Space/Enter takes the recommended action, Z/Esc the opposite.
+                if (Input.IsActionJustPressed("dialogue_advance"))
+                {
+                    if (_isUpgrade) DoEquip(_newItem);
+                    Close();
+                }
+                else if (Input.IsActionJustPressed("cancel"))
+                {
+                    if (!_isUpgrade) DoEquip(_newItem);
+                    Close();
+                }
             }
         }
         else if (_autoCloseTimer > 0)
@@ -57,6 +77,35 @@ public partial class ItemPickupToast : CanvasLayer
             _autoCloseTimer -= delta;
             if (_autoCloseTimer <= 0) Close();
         }
+    }
+
+    /// <summary>Show a shop purchase prompt — "Buy {name} for N gems?". Pauses
+    /// the game tree while open. `onAccept` is invoked on [Space] *only if* the
+    /// player can afford; otherwise the prompt closes quietly on [Z] / [Space]
+    /// without calling the callback. No mutation happens inside the toast — the
+    /// caller (ItemTrigger) deducts gems and adds the item after accept.</summary>
+    public void ShowPurchase(ItemData item, int cost, System.Action onAccept)
+    {
+        _newItem = item;
+        _onPurchaseAccept = onAccept;
+        _purchaseAffordable = CurrencySystem.GetGems() >= cost;
+        BuildPurchaseToast(item, cost);
+        _waitingForChoice = true;
+        GetTree().Paused = true;
+    }
+
+    /// <summary>Same confirm/cancel flow as ShowPurchase but for free pickups.
+    /// Used for world items and for shop items that the player has a pending
+    /// free-grant on (grantFreeItem from a dialogue action). Lets the player
+    /// examine each item's description and strength before committing.</summary>
+    public void ShowTake(ItemData item, System.Action onAccept)
+    {
+        _newItem = item;
+        _onPurchaseAccept = onAccept;
+        _purchaseAffordable = true; // always, no cost
+        BuildTakeToast(item);
+        _waitingForChoice = true;
+        GetTree().Paused = true;
     }
 
     /// <summary>Show the pickup toast for the given item. Call after adding to inventory.</summary>
@@ -114,10 +163,10 @@ public partial class ItemPickupToast : CanvasLayer
         textVbox.AddThemeConstantOverride("separation", 2);
         row.AddChild(textVbox);
 
-        AddLabel(textVbox, item.Name, 14, new Color(1, 0.9f, 0.5f, 1));
+        AddTitleLabel(textVbox, item.Name, 16, new Color(1, 0.9f, 0.5f, 1));
         if (item.Strength > 0)
-            AddLabel(textVbox, $"Str: {item.Strength}", 11, new Color(0.7f, 0.85f, 1f, 1));
-        AddLabel(textVbox, "Equipped!", 12, new Color(0.5f, 1f, 0.5f, 1));
+            AddBodyLabel(textVbox, $"Str: {item.Strength}", 16, new Color(0.7f, 0.85f, 1f, 1));
+        AddBodyLabel(textVbox, "Equipped!", 16, new Color(0.5f, 1f, 0.5f, 1));
 
         MaybeAddAttackTutorial(item);
     }
@@ -135,7 +184,7 @@ public partial class ItemPickupToast : CanvasLayer
         save.WorldFlags["seen_attack_tutorial"] = "true";
         _autoCloseTimer = 4.0; // give the player a beat to read the hint
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
-        AddLabel(_content, "Press SPACE to attack!", 12, new Color(1f, 0.9f, 0.4f, 1));
+        AddBodyLabel(_content, "Press SPACE to attack!", 16, new Color(1f, 0.9f, 0.4f, 1));
     }
 
     private void BuildCompareToast(ItemData newItem, ItemData oldItem)
@@ -153,8 +202,8 @@ public partial class ItemPickupToast : CanvasLayer
         newText.AddThemeConstantOverride("separation", 1);
         newRow.AddChild(newText);
 
-        AddLabel(newText, newItem.Name, 14, new Color(1, 0.9f, 0.5f, 1));
-        AddLabel(newText, $"Str: {newItem.Strength}", 11, new Color(0.7f, 0.85f, 1f, 1));
+        AddTitleLabel(newText, newItem.Name, 16, new Color(1, 0.9f, 0.5f, 1));
+        AddBodyLabel(newText, $"Str: {newItem.Strength}", 16, new Color(0.7f, 0.85f, 1f, 1));
 
         // Separator.
         var sep = new HSeparator();
@@ -162,7 +211,7 @@ public partial class ItemPickupToast : CanvasLayer
         _content.AddChild(sep);
 
         // Current item.
-        AddLabel(_content, $"Replaces: {oldItem.Name}  (Str: {oldItem.Strength})", 11,
+        AddBodyLabel(_content, $"Replaces: {oldItem.Name}  (Str: {oldItem.Strength})", 11,
             new Color(0.8f, 0.8f, 0.8f, 0.9f));
 
         // Strength comparison with arrow.
@@ -183,11 +232,11 @@ public partial class ItemPickupToast : CanvasLayer
 
             string word = diff > 0 ? "Stronger" : "Weaker";
             var color = diff > 0 ? new Color(0.4f, 1f, 0.4f, 1) : new Color(1f, 0.4f, 0.4f, 1);
-            AddLabel(compareRow, $"{word}  ({(diff > 0 ? "+" : "")}{diff} Str)", 12, color);
+            AddBodyLabel(compareRow, $"{word}  ({(diff > 0 ? "+" : "")}{diff} Str)", 12, color);
         }
         else
         {
-            AddLabel(compareRow, "Same strength", 12, new Color(0.8f, 0.8f, 0.5f, 1));
+            AddBodyLabel(compareRow, "Same strength", 16, new Color(0.8f, 0.8f, 0.5f, 1));
         }
 
         // Choice prompt — Space is always the "recommended" action.
@@ -195,7 +244,63 @@ public partial class ItemPickupToast : CanvasLayer
         string prompt = _isUpgrade
             ? "[Space] Equip new    [Z] Keep current"
             : "[Space] Keep current    [Z] Equip anyway";
-        AddLabel(_content, prompt, 10, new Color(0.6f, 0.6f, 0.6f, 0.8f));
+        AddBodyLabel(_content, prompt, 16, new Color(0.6f, 0.6f, 0.6f, 0.8f));
+    }
+
+    private void BuildTakeToast(ItemData item)
+    {
+        InitPanel();
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", 10);
+        _content.AddChild(row);
+
+        AddIcon(row, item);
+
+        var textVbox = new VBoxContainer();
+        textVbox.AddThemeConstantOverride("separation", 2);
+        row.AddChild(textVbox);
+
+        AddTitleLabel(textVbox, item.Name, 16, new Color(1, 0.9f, 0.5f, 1));
+        if (item.Strength > 0)
+            AddBodyLabel(textVbox, $"Str: {item.Strength}", 16, new Color(0.7f, 0.85f, 1f, 1));
+        if (!string.IsNullOrEmpty(item.Description))
+            AddBodyLabel(textVbox, item.Description, 16, new Color(0.75f, 0.75f, 0.75f, 0.95f));
+
+        _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
+        AddBodyLabel(_content, "[Space] Take    [Z] Leave it", 16,
+            new Color(0.6f, 0.6f, 0.6f, 0.8f));
+    }
+
+    private void BuildPurchaseToast(ItemData item, int cost)
+    {
+        InitPanel();
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", 10);
+        _content.AddChild(row);
+
+        AddIcon(row, item);
+
+        var textVbox = new VBoxContainer();
+        textVbox.AddThemeConstantOverride("separation", 2);
+        row.AddChild(textVbox);
+
+        AddTitleLabel(textVbox, item.Name, 16, new Color(1, 0.9f, 0.5f, 1));
+        if (item.Strength > 0)
+            AddBodyLabel(textVbox, $"Str: {item.Strength}", 16, new Color(0.7f, 0.85f, 1f, 1));
+
+        int gems = CurrencySystem.GetGems();
+        var priceColor = _purchaseAffordable
+            ? new Color(1f, 0.85f, 0.35f, 1)  // gold
+            : new Color(1f, 0.4f, 0.4f, 1);   // red, can't afford
+        AddBodyLabel(textVbox, $"{cost} gems  (you have {gems})", 11, priceColor);
+
+        _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
+        string prompt = _purchaseAffordable
+            ? "[Space] Buy    [Z] Leave it"
+            : "Not enough gems    [Z] Leave it";
+        AddBodyLabel(_content, prompt, 16, new Color(0.6f, 0.6f, 0.6f, 0.8f));
     }
 
     private void BuildSimpleToast(ItemData item, string message)
@@ -212,8 +317,8 @@ public partial class ItemPickupToast : CanvasLayer
         textVbox.AddThemeConstantOverride("separation", 2);
         row.AddChild(textVbox);
 
-        AddLabel(textVbox, item.Name, 14, new Color(1, 0.9f, 0.5f, 1));
-        AddLabel(textVbox, message, 11, new Color(0.7f, 0.7f, 0.7f, 0.9f));
+        AddTitleLabel(textVbox, item.Name, 16, new Color(1, 0.9f, 0.5f, 1));
+        AddBodyLabel(textVbox, message, 16, new Color(0.7f, 0.7f, 0.7f, 0.9f));
     }
 
     // ---- Helpers ----
@@ -261,12 +366,26 @@ public partial class ItemPickupToast : CanvasLayer
         parent.AddChild(icon);
     }
 
-    private static void AddLabel(Control parent, string text, int fontSize, Color color)
+    /// <summary>Title/name labels use the theme default (alagard). Best at 16.</summary>
+    private static void AddTitleLabel(Control parent, string text, int fontSize, Color color)
     {
         var label = new Label();
         label.Text = text;
         label.AddThemeFontSizeOverride("font_size", fontSize);
         label.AddThemeColorOverride("font_color", color);
+        parent.AddChild(label);
+    }
+
+    /// <summary>Body/stat/hint labels use romulus. Pick <b>16</b> (2× native)
+    /// for crisp pixels; avoid 10–14 since those are fractional scales of the
+    /// font's 8px design size and render mushy.</summary>
+    private static void AddBodyLabel(Control parent, string text, int fontSize, Color color)
+    {
+        var label = new Label();
+        label.Text = text;
+        label.AddThemeFontSizeOverride("font_size", fontSize);
+        label.AddThemeColorOverride("font_color", color);
+        label.AddThemeFontOverride("font", UiFonts.Body);
         parent.AddChild(label);
     }
 
@@ -299,6 +418,7 @@ public partial class ItemPickupToast : CanvasLayer
             GetTree().Paused = false;
         }
         _waitingForChoice = false;
+        _onPurchaseAccept = null;
         QueueFree();
     }
 }

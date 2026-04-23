@@ -256,7 +256,8 @@ public partial class InventoryUI : CanvasLayer
 
             var label = new Label();
             label.HorizontalAlignment = HorizontalAlignment.Center;
-            label.AddThemeFontSizeOverride("font_size", 8);
+            label.AddThemeFontSizeOverride("font_size", 16);
+            label.AddThemeFontOverride("font", UiFonts.Body);
             label.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f, 0.9f));
             vbox.AddChild(label);
 
@@ -289,22 +290,25 @@ public partial class InventoryUI : CanvasLayer
 
         _tooltipName = new Label();
         _tooltipName.AddThemeColorOverride("font_color", new Color(1, 0.9f, 0.5f, 1));
-        _tooltipName.AddThemeFontSizeOverride("font_size", 13);
+        _tooltipName.AddThemeFontSizeOverride("font_size", 16);
         tooltipVbox.AddChild(_tooltipName);
 
         _tooltipDesc = new Label();
         _tooltipDesc.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-        _tooltipDesc.AddThemeFontSizeOverride("font_size", 11);
+        _tooltipDesc.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipDesc.AddThemeFontOverride("font", UiFonts.Body);
         tooltipVbox.AddChild(_tooltipDesc);
 
         _tooltipStats = new Label();
         _tooltipStats.AddThemeColorOverride("font_color", new Color(0.7f, 0.85f, 1f, 1));
-        _tooltipStats.AddThemeFontSizeOverride("font_size", 11);
+        _tooltipStats.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipStats.AddThemeFontOverride("font", UiFonts.Body);
         tooltipVbox.AddChild(_tooltipStats);
 
         _tooltipAction = new Label();
         _tooltipAction.AddThemeColorOverride("font_color", new Color(0.6f, 0.6f, 0.6f, 0.8f));
-        _tooltipAction.AddThemeFontSizeOverride("font_size", 10);
+        _tooltipAction.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipAction.AddThemeFontOverride("font", UiFonts.Body);
         tooltipVbox.AddChild(_tooltipAction);
 
         // ---- Right: Equipment Panel ----
@@ -322,7 +326,8 @@ public partial class InventoryUI : CanvasLayer
         for (int i = 0; i < EquipCategories.Length; i++)
         {
             var label = new Label();
-            label.AddThemeFontSizeOverride("font_size", 11);
+            label.AddThemeFontSizeOverride("font_size", 16);
+            label.AddThemeFontOverride("font", UiFonts.Body);
             rightVbox.AddChild(label);
             _equipLabels[i] = label;
         }
@@ -331,7 +336,8 @@ public partial class InventoryUI : CanvasLayer
         var helpLabel = new Label();
         helpLabel.Text = "[Arrows] Navigate  [Space] Equip/Use  [Z] Unequip  [I/Esc] Close";
         helpLabel.AddThemeColorOverride("font_color", new Color(0.5f, 0.5f, 0.5f, 0.7f));
-        helpLabel.AddThemeFontSizeOverride("font_size", 10);
+        helpLabel.AddThemeFontSizeOverride("font_size", 16);
+        helpLabel.AddThemeFontOverride("font", UiFonts.Body);
         helpLabel.HorizontalAlignment = HorizontalAlignment.Center;
         rightVbox.AddChild(helpLabel);
 

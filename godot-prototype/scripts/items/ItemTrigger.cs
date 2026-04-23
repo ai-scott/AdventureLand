@@ -19,13 +19,15 @@ public partial class ItemTrigger : Area2D
     [Export] public bool Unique = true;
 
     private bool _collected;
+    private bool _playerInRange;
     private Sprite2D _sprite;
-
-    // Bob animation state.
-    private double _bobTime;
-    private float _bobBaseY;
-    private const float BobAmplitude = 2.5f;
-    private const float BobSpeed = 2.5f;
+    private Label _prompt;
+    // Shine material applied to the item sprite while the player is in range.
+    // Loaded lazily & shared across all ItemTriggers (per-instance Material
+    // is still needed because Sprite2D can't share a material across nodes
+    // with different TEXTUREs without quirks, so we duplicate per trigger).
+    private static Shader _shineShader;
+    private ShaderMaterial _shineMaterial;
 
     public override void _Ready()
     {
@@ -49,22 +51,53 @@ public partial class ItemTrigger : Area2D
             _sprite.Texture = Data.Icon;
             _sprite.Visible = true;
             _sprite.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
-            _bobBaseY = _sprite.Position.Y;
         }
 
+        BuildPromptLabel();
+        BuildShineMaterial();
         BodyEntered += OnBodyEntered;
+        BodyExited  += OnBodyExited;
+    }
+
+    /// <summary>Prepare a ShaderMaterial that makes the item's own sprite
+    /// glint with a diagonal bright band when the player is in range. The
+    /// shader reads TIME internally, so enabling the material is a single
+    /// assignment — no per-frame parameter pumping needed.</summary>
+    private void BuildShineMaterial()
+    {
+        _shineShader ??= GD.Load<Shader>("res://assets/shaders/item_shine.gdshader");
+        if (_shineShader == null) return;
+        _shineMaterial = new ShaderMaterial { Shader = _shineShader };
+    }
+
+    /// <summary>Tiny floating label above the item that shows "↵ Take" or
+    /// "↵ Buy" while the player stands inside the pickup radius. Gives the
+    /// player a chance to walk away without grabbing/paying — without this,
+    /// bumping an item in a shop immediately opened the purchase prompt.</summary>
+    private void BuildPromptLabel()
+    {
+        _prompt = new Label
+        {
+            Visible = false,
+            ZIndex = 10,
+            OffsetLeft = -16, OffsetRight = 16,
+            OffsetTop = -26,  OffsetBottom = -14,
+            HorizontalAlignment = HorizontalAlignment.Center,
+        };
+        _prompt.AddThemeFontSizeOverride("font_size", 16);
+        _prompt.AddThemeFontOverride("font", UiFonts.Body);
+        AddChild(_prompt);
     }
 
     public override void _Process(double delta)
     {
-        // Gentle bob animation on the sprite.
-        if (_sprite != null && !_collected)
+        // Opt-in pickup: the player must be in range AND press interact.
+        // This replaces the old "bump = pickup" behavior so the player can
+        // browse a shop's items without burning gems on the first one they
+        // brush against.
+        if (_playerInRange && !_collected && Input.IsActionJustPressed("interact"))
         {
-            _bobTime += delta * BobSpeed;
-            _sprite.Position = new Vector2(
-                _sprite.Position.X,
-                _bobBaseY + Mathf.Sin((float)_bobTime) * BobAmplitude
-            );
+            TryTake();
         }
     }
 
@@ -72,7 +105,63 @@ public partial class ItemTrigger : Area2D
     {
         if (_collected) return;
         if (!body.IsInGroup("player")) return;
+        _playerInRange = true;
+        UpdatePrompt();
+        if (_sprite != null && _shineMaterial != null) _sprite.Material = _shineMaterial;
+    }
 
+    private void OnBodyExited(Node2D body)
+    {
+        if (!body.IsInGroup("player")) return;
+        _playerInRange = false;
+        if (_prompt != null) _prompt.Visible = false;
+        if (_sprite != null) _sprite.Material = null;
+    }
+
+    /// <summary>Refresh the hover prompt text based on current state —
+    /// shop items show price, grant items show "Take".</summary>
+    private void UpdatePrompt()
+    {
+        if (_prompt == null) return;
+        bool freeGrant = ShopState.NextItemFree;
+        bool paidShop  = ShopState.IsActive && !freeGrant && Data.Cost > 0;
+        _prompt.Text = paidShop
+            ? $"↵ Buy ({Data.Cost}g)"
+            : "↵ Take";
+        _prompt.Visible = true;
+    }
+
+    private void TryTake()
+    {
+        bool freeGrant = ShopState.NextItemFree;
+        bool paidShop  = ShopState.IsActive && !freeGrant && Data.Cost > 0;
+
+        if (paidShop)
+        {
+            ShowPurchasePrompt();
+            return;
+        }
+        // Free — but still show a confirm toast so the player can examine
+        // the item's description/stats before committing. grantFreeItem
+        // is consumed only on confirm, not on bump.
+        ShowTakePrompt(consumesFreeGrant: freeGrant);
+    }
+
+    private void ShowTakePrompt(bool consumesFreeGrant)
+    {
+        var toast = new ItemPickupToast();
+        GetTree().CurrentScene.AddChild(toast);
+        toast.ShowTake(Data, onAccept: () =>
+        {
+            if (consumesFreeGrant) ShopState.NextItemFree = false;
+            CompletePickup();
+        });
+    }
+
+    /// <summary>Run the normal "take the item" sequence: add to inventory,
+    /// flag collected, save, toast, sparkle, and fade out. No payment.</summary>
+    private void CompletePickup()
+    {
         var inv = Inventory.Instance;
         if (inv == null) return;
 
@@ -94,16 +183,31 @@ public partial class ItemTrigger : Area2D
         // Auto-save so items persist if the player quits.
         SaveManager.Instance?.Save();
 
-        // Show the pickup toast (handles auto-equip or compare).
         ShowPickupToast();
-
-        // Sparkle effect at pickup position.
         SpawnSparkles();
 
         // Scale down and remove.
         var tween = CreateTween();
         tween.TweenProperty(this, "scale", Vector2.Zero, 0.2);
         tween.TweenCallback(Callable.From(() => QueueFree()));
+    }
+
+    private void ShowPurchasePrompt()
+    {
+        var toast = new ItemPickupToast();
+        GetTree().CurrentScene.AddChild(toast);
+        toast.ShowPurchase(Data, Data.Cost, onAccept: () =>
+        {
+            // Double-check gems at confirm time (toast caches affordability
+            // at Show time, but be defensive in case state changed). Only
+            // proceed to CompletePickup if payment succeeded.
+            if (!CurrencySystem.RemoveGems(Data.Cost))
+            {
+                GD.Print($"[ItemTrigger] Payment failed for {Data.Name}");
+                return;
+            }
+            CompletePickup();
+        });
     }
 
     private void ShowPickupToast()

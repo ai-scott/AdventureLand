@@ -13,6 +13,7 @@ size = Vector2(14, 10)
 
 [node name="Enemy" type="CharacterBody2D" unique_id=1190379225]
 collision_layer = 16
+collision_mask = 2
 script = ExtResource("1")
 Data = ExtResource("2_pskue")
 AnimatorPath = NodePath("EnemyAnimator")

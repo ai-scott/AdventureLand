@@ -21,6 +21,7 @@ public partial class HealthBar : CanvasLayer
     {
         _bar = GetNode<ProgressBar>("MarginContainer/HBoxContainer/ProgressBar");
         _label = GetNode<Label>("MarginContainer/HBoxContainer/Label");
+        _label.AddThemeFontOverride("font", UiFonts.Body);
 
         if (HealthSystemPath == null || HealthSystemPath.IsEmpty)
         {

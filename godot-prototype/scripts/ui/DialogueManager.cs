@@ -50,6 +50,8 @@ public partial class DialogueManager : CanvasLayer
         _nameLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/NameLabel");
         _textLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/TextLabel");
         _continueHint = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/ContinueHint");
+        // ContinueHint uses the body font (romulus) — keep titles/body in alagard.
+        _continueHint.AddThemeFontOverride("font", UiFonts.Body);
 
         // Let the box grow upward to fit content (responses, input fields).
         _dialogueBox.ClipContents = false;
@@ -177,6 +179,39 @@ public partial class DialogueManager : CanvasLayer
         StartDialogue(data);
     }
 
+    /// <summary>
+    /// Same as the lines-based legacy API but applies a one-off font override
+    /// to the speaker, body, and continue-hint labels for the duration of this
+    /// dialogue. The override is cleared in EndDialogue so subsequent dialogues
+    /// fall back to the global Theme font.
+    /// </summary>
+    public void StartDialogueWithFont(string speakerName, string[] lines, Font font)
+    {
+        if (IsActive) return;
+        ApplyFontOverride(font);
+        StartDialogue(speakerName, lines);
+    }
+
+    private Font _fontOverride;
+
+    private void ApplyFontOverride(Font font)
+    {
+        _fontOverride = font;
+        if (font == null) return;
+        _nameLabel?.AddThemeFontOverride("font", font);
+        _textLabel?.AddThemeFontOverride("font", font);
+        _continueHint?.AddThemeFontOverride("font", font);
+    }
+
+    private void RemoveFontOverride()
+    {
+        if (_fontOverride == null) return;
+        _nameLabel?.RemoveThemeFontOverride("font");
+        _textLabel?.RemoveThemeFontOverride("font");
+        _continueHint?.RemoveThemeFontOverride("font");
+        _fontOverride = null;
+    }
+
     // ---- Navigation ----
 
     private void Advance()
@@ -274,6 +309,7 @@ public partial class DialogueManager : CanvasLayer
         GD.Print("[Dialogue] EndDialogue called");
         _dialogueBox.Visible = false;
         ClearResponses();
+        RemoveFontOverride();
         _currentNode = null;
         _currentResponses = null;
         _npcData = null;
@@ -401,7 +437,7 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.Custom:
-                    GD.Print($"[Dialogue] Custom action: {a.CustomFunction} (stub)");
+                    HandleCustomAction(a);
                     break;
 
                 case DialogueAction.ActionType.DeployNpc:
@@ -416,6 +452,93 @@ public partial class DialogueManager : CanvasLayer
                     break;
             }
         }
+    }
+
+    // ---- Custom dialogue actions ----
+
+    /// <summary>Dispatcher for DialogueAction.ActionType.Custom — handles
+    /// named functions the C3 side invokes via `customFunction: "name"`.
+    /// Unknown function names log a warning so authors spot typos quickly.</summary>
+    private void HandleCustomAction(DialogueAction a)
+    {
+        switch ((a.CustomFunction ?? "").Trim())
+        {
+            case "grantFreeItem":
+                // Mirrors C3's eGlobal.grantFreeItem: the next item the player
+                // bumps into in a shop is free. One-shot, consumed on pickup.
+                ShopState.NextItemFree = true;
+                GD.Print("[Dialogue] grantFreeItem — next shop pickup is free");
+                break;
+            case "PennyOpensHome":
+                // Fire-and-forget the cutscene task; the dialogue node that
+                // triggered this has already set EndsDialogue=true so the UI
+                // closes before the cutscene begins.
+                _ = RunPennyOpensHomeCutscene();
+                break;
+            default:
+                GD.PushWarning($"[Dialogue] Unknown custom action: '{a.CustomFunction}'");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Post-cat-quest handoff: Penny walks into her house, the screen fades,
+    /// and the player lands inside the house with Penny and Rosie present.
+    /// Fires from penny.tres node_014 after SetQuestStatus(End_Cat_Quest).
+    ///
+    /// Visibility after the cutscene is driven by the world flag `penny_home`,
+    /// which this method sets. Village Penny+Rosie carry `HideWhenWorldFlag`
+    /// and PennysHouse Penny+Rosie carry `RequiredWorldFlag`, so both
+    /// scenes pick up the new state on next _Process tick.
+    /// </summary>
+    private async System.Threading.Tasks.Task RunPennyOpensHomeCutscene()
+    {
+        var tree = GetTree();
+        var scene = tree?.CurrentScene;
+        var penny = scene?.FindChild("Penny", true, false) as Node2D;
+        var player = tree?.GetFirstNodeInGroup("player") as PlayerController;
+
+        if (penny == null)
+        {
+            GD.PushWarning("[PennyOpensHome] Penny not found in scene — skipping walk, still transitioning");
+        }
+
+        // Lock the player for the duration — otherwise they can wander off
+        // mid-tween and fall out of the narrative beat.
+        if (player != null) player.InputLocked = true;
+
+        // Walk animation (NpcAnimator plays walk_up). If the penny node doesn't
+        // have an animator we silently continue with the position tween.
+        if (penny != null)
+        {
+            var animator = penny.GetNodeOrNull<NpcAnimator>("NpcAnimator");
+            animator?.PlayWalk("up");
+
+            var tween = penny.CreateTween();
+            var target = penny.GlobalPosition + new Vector2(0, -48);
+            tween.TweenProperty(penny, "global_position", target, 1.2f)
+                 .SetTrans(Tween.TransitionType.Linear);
+            await ToSignal(tween, Tween.SignalName.Finished);
+        }
+
+        // Flip the "Penny is home" flag before the scene swap. PennysHouse
+        // Penny+Rosie check this on _Process and reveal themselves when
+        // the new scene loads.
+        QuestSystem.SetWorldFlag("penny_home", "true");
+
+        // WorldManager handles fade out/in, scene swap, spawn marker lookup.
+        // DoorId 4 matches the quest-gated door to Penny's House in
+        // World_00_Village.tres (also gated on End_Cat_Quest).
+        var wm = WorldManager.Instance;
+        if (wm != null)
+        {
+            await wm.GoToDoor("res://scenes/worlds/World_00_PennysHouse.tscn", 4);
+        }
+
+        // Unlock the post-transition player. The scene swap may have recreated
+        // the player node, so re-fetch.
+        var newPlayer = GetTree()?.GetFirstNodeInGroup("player") as PlayerController;
+        if (newPlayer != null) newPlayer.InputLocked = false;
     }
 
     // ---- World Interaction ----

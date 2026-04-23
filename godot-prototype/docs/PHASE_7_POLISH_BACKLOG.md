@@ -5,7 +5,7 @@ Running list of polish items deferred from earlier phases. Most target the final
 ## Visual polish
 
 ### TMX pipeline
-- [ ] **Multi-tileset TMX support** — C3 couldn't import TMX files with multiple `<tileset>` entries; Godot handles this natively. Extend `tools/tmx_to_godot.py` to parse all tilesets in a TMX, register each as a distinct `source_id` in the Godot TileSet, and map tile GIDs to the correct source at conversion time. This unlocks interior scenes that blend Mana_Seed_Interiors + FantasyForest_Combo + Collectibles in one map.
+- [x] **Multi-tileset TMX support** — Done via `tools/tmx_interior_to_csvs.py` + `tools/tileset_registry.py`. Baker iterates every `<tileset>` in the TMX and emits one atlas `source_id` per tileset in the output `.tscn`. Proven on `World_03.tscn` (Gray Mist Mountain), which ships 8 distinct sources for the Winter Forest sheet family.
 
 ### Global 16-bit aesthetic
 - [ ] **Pixel-art font** — Replace Godot's default Open Sans in all UI with a 16-bit font from `assets/fonts/`. Apply globally via Theme resource so every Label/Button inherits without per-node overrides.
@@ -29,7 +29,7 @@ Running list of polish items deferred from earlier phases. Most target the final
 - [ ] **Palette color variants** — Integrate `PaletteSwapper` with costume equip so "Yellow Boater Hat" and "Blue Boater Hat" actually render different colors. Requires parsing C3 color suffixes (`_straw_boat`, `_cornflower_blue`) into palette ramp indices.
 - [ ] **Hair color picker** — Character creator UI with palette swatch selection for 13hair layer.
 - [ ] **Skin tone picker** — Character creator UI with skin palette ramps. Applied to 01body layer.
-- [ ] **Weapon visuals** — Wire `farmer_1h_weapon` MSCA sprite layer to equipped weapon. (Moved to Phase 4.5 — do this before Phase 5.)
+- [x] **Weapon visuals** — Done in Phase 4.5. `farmer_1h_weapon` MSCA sprite layer is driven by the equipped weapon; blade appears on swing, hides on attack end.
 - [ ] **Shirt / pants / boot / hair equipment** — Verify visually; currently only hats tested.
 
 ### World items
@@ -44,6 +44,8 @@ Running list of polish items deferred from earlier phases. Most target the final
 - [ ] **Food use feedback** — Brief "+N HP" floating text when food is consumed.
 - [ ] **Weapon strength → attack damage** — Currently equipped weapon strength isn't applied to attack damage. Wire `AttackHitbox` damage to equipped weapon.
 - [ ] **Damage numbers** — Floating damage numbers on enemy hit (common JRPG polish).
+- [x] **Attack hitbox sweep tracks the blade** — `PlayerController.UpdateAttackHitbox` uses an analytical arc (facing ± `HitboxSweepDegrees`/2, driven by animation progress with a `HitboxSweepSpeed` multiplier) instead of reading `farmer_1h_weapon.offset`, which MSCA only keyframes for the Down strike. Now sweeps correctly in all four directions; per-direction flip handles MSCA's mirrored strike animations. Inspector knobs: `HitboxReach`, `HitboxSize`, `HitboxSweepDegrees`, `HitboxSweepSpeed`, `HitboxPivotOffset`.
+- [x] **Attack hitbox debug overlay** — Backtick (`` ` ``) toggle moved from `MapLoader` to `WorldManager` (autoload, works everywhere). `PlayerController._Draw` outlines the live AttackHitbox rect during swings when the toggle is on, so we can verify tracking without relying on Godot's flaky `DebugCollisionsHint` repaint.
 
 ## Audio (Phase 7 proper)
 

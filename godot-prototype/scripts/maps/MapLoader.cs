@@ -38,16 +38,18 @@ public partial class MapLoader : Node2D
 
 	public override void _Ready()
 	{
-		if (!Engine.IsEditorHint() && OS.IsDebugBuild())
-		{
-			// Force collision-shape visualization in dev builds (same effect as
-			// Debug → Visible Collision Shapes in the editor menu).
-			GetTree().DebugCollisionsHint = true;
-		}
+		// Collision-shape visualization starts OFF. Toggle at runtime with
+		// Shift+D (see _UnhandledInput below). D alone is bound to move_right,
+		// hence the Shift chord to avoid stealing movement input.
+		if (!Engine.IsEditorHint())
+			GetTree().DebugCollisionsHint = false;
 
 		if (AutoLoad)
 			LoadAllLayers();
 	}
+
+	// Backtick-toggle collision debug moved to WorldManager (autoload) so it
+	// fires in every scene, not just worlds that host MapLoader.
 
 	private void LoadAllLayers()
 	{
@@ -92,6 +94,9 @@ public partial class MapLoader : Node2D
 			// Column 5: tileset index for multi-tileset TMXs (Gray Mist Mountain).
 			// Single-tileset TMXs emit no 5th column → default to source id 0.
 			int sourceId = parts.Length >= 5 && int.TryParse(parts[4], out int si) ? si : 0;
+			// Column 6: Tiled flip mask (1=H, 2=V, 4=diagonal/transpose). Older
+			// CSVs without this column default to 0 (un-flipped).
+			int flipMask = parts.Length >= 6 && int.TryParse(parts[5], out int fm) ? fm : 0;
 
 			var atlasCoord = new Vector2I(atlasX, atlasY);
 			var key = (sourceId, atlasCoord);
@@ -112,7 +117,17 @@ public partial class MapLoader : Node2D
 				_createdTiles.Add(key);
 			}
 
-			layer.SetCell(new Vector2I(x, y), sourceId, atlasCoord);
+			// Translate the Tiled flip mask to Godot's atlas transform bits
+			// that ride in the alternative_tile int: a virtual alt tile
+			// identified by a combination of TRANSFORM_FLIP_* flags will
+			// render the base tile with those flips applied, without needing
+			// a separately-registered alternative.
+			int altId = 0;
+			if ((flipMask & 1) != 0) altId |= (int)TileSetAtlasSource.TransformFlipH;
+			if ((flipMask & 2) != 0) altId |= (int)TileSetAtlasSource.TransformFlipV;
+			if ((flipMask & 4) != 0) altId |= (int)TileSetAtlasSource.TransformTranspose;
+
+			layer.SetCell(new Vector2I(x, y), sourceId, atlasCoord, altId);
 			tileCount++;
 		}
 

@@ -17,19 +17,64 @@ public partial class NpcInteract : Area2D
 	/// <summary>Legacy plain-text lines. Used if Dialogue is null.</summary>
 	[Export] public string[] DialogueLines = System.Array.Empty<string>();
 
+	[ExportGroup("Quest Gating")]
+	/// <summary>If set, the NPC is invisible and non-interactable until
+	/// QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus.
+	/// Used for NPCs who "deploy" mid-quest (e.g., Rosie only appears after
+	/// Penny's cat quest reaches "Rosie_Found"). Empty = always present.</summary>
+	[Export] public string RequiredQuestId = "";
+	[Export] public string RequiredQuestStatus = "";
+
+	/// <summary>If set, the NPC is hidden once this world flag exists/is
+	/// truthy. Used for one-way "NPC moved out" states — e.g., Village Penny
+	/// vanishes once `penny_home` is set after the PennyOpensHome cutscene.</summary>
+	[Export] public string HideWhenWorldFlag = "";
+
+	/// <summary>If set, the NPC is hidden until this world flag exists/is
+	/// truthy. Inverse of HideWhenWorldFlag — e.g., PennysHouse Penny appears
+	/// only after `penny_home` is set.</summary>
+	[Export] public string RequiredWorldFlag = "";
+
 	private bool _playerInRange = false;
+	/// <summary>Latched true once the player opens dialogue with this NPC.
+	/// Stays true until they walk out of the Area2D, blocking a rapid-fire
+	/// retrigger where every E press re-opens the just-closed dialogue.
+	/// (Otherwise the player gets soft-stuck in a talk/close/talk loop while
+	/// standing on the NPC.)</summary>
+	private bool _suppressUntilExit = false;
 	private Label _interactLabel;
+	private StaticBody2D _body;
+	private uint _bodyDefaultLayer;
+	private bool? _lastUnlocked;
 
 	public override void _Ready()
 	{
 		BodyEntered += OnBodyEntered;
 		BodyExited += OnBodyExited;
 		_interactLabel = GetNodeOrNull<Label>("InteractLabel");
+		// "↵" prompt uses the body font (romulus) — alagard distorts at
+		// non-native sizes.
+		_interactLabel?.AddThemeFontOverride("font", UiFonts.Body);
+
+		// Optional blocking body for NPCs that should stop the player (Penny,
+		// Rosie). Stored so we can disable its collision layer while the quest
+		// gate is locked — flipping only Visible would still let the player
+		// bump into an invisible body.
+		_body = GetNodeOrNull<StaticBody2D>("Body");
+		if (_body != null) _bodyDefaultLayer = _body.CollisionLayer;
+
+		ApplyQuestGate();
 	}
 
 	public override void _Process(double delta)
 	{
-		if (_playerInRange && Input.IsActionJustPressed("interact"))
+		// Re-evaluate the gate each tick — dialogue actions flip quest state
+		// at runtime without reloading the scene, so a one-shot check in
+		// _Ready would leave Rosie frozen in her locked state even after
+		// Penny's cat quest advances to Rosie_Found.
+		if (_lastUnlocked != IsUnlocked()) ApplyQuestGate();
+
+		if (_playerInRange && !_suppressUntilExit && Input.IsActionJustPressed("interact"))
 		{
 			var dialogueManager = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
 			if (dialogueManager == null || dialogueManager.IsActive) return;
@@ -37,12 +82,42 @@ public partial class NpcInteract : Area2D
 			if (Dialogue != null)
 			{
 				dialogueManager.StartDialogue(Dialogue);
+				_suppressUntilExit = true;
 			}
 			else if (DialogueLines.Length > 0)
 			{
 				dialogueManager.StartDialogue(NpcName, DialogueLines);
+				_suppressUntilExit = true;
 			}
 		}
+	}
+
+	private void ApplyQuestGate()
+	{
+		bool unlocked = IsUnlocked();
+		Visible = unlocked;
+		Monitoring = unlocked;
+		if (_body != null) _body.CollisionLayer = unlocked ? _bodyDefaultLayer : 0u;
+		_lastUnlocked = unlocked;
+	}
+
+	private bool IsUnlocked()
+	{
+		// Hide if any forbidding flag is set.
+		if (!string.IsNullOrEmpty(HideWhenWorldFlag) && IsFlagTruthy(HideWhenWorldFlag))
+			return false;
+		// Must-have flag — hide until set.
+		if (!string.IsNullOrEmpty(RequiredWorldFlag) && !IsFlagTruthy(RequiredWorldFlag))
+			return false;
+		// Quest-status gate (exact match). If no quest gate configured, we pass.
+		if (string.IsNullOrEmpty(RequiredQuestId)) return true;
+		return QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus;
+	}
+
+	private static bool IsFlagTruthy(string key)
+	{
+		var v = QuestSystem.GetWorldFlag(key);
+		return !string.IsNullOrEmpty(v) && v != "false" && v != "0";
 	}
 
 	private void OnBodyEntered(Node2D body)
@@ -59,6 +134,7 @@ public partial class NpcInteract : Area2D
 		if (body is PlayerController)
 		{
 			_playerInRange = false;
+			_suppressUntilExit = false;
 			if (_interactLabel != null) _interactLabel.Visible = false;
 		}
 	}

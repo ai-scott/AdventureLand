@@ -65,6 +65,14 @@ public partial class EnemyController : CharacterBody2D
 	private const double ContactDamageCooldown = 0.6; // slightly longer than player invuln (0.5s) so damage lands
 	private const float ContactRange = 16f; // px — slightly larger than hitbox shape
 
+	// Wall-avoidance steering — when the chosen side commits for a short window
+	// to prevent corner oscillation (rapid left/right flipping at concave walls).
+	private Vector2 _avoidanceBias = Vector2.Zero;
+	private double _avoidanceTimer;
+	private const double AvoidanceCommitTime = 0.35;
+	private const float WallProbeLength = 14f;      // px ahead to look for walls
+	private const uint WallCollisionMask = 2;       // layer 2 = walls/obstacles (matches CollisionMask)
+
 	public override void _Ready()
 	{
 		if (Data == null)
@@ -137,7 +145,7 @@ public partial class EnemyController : CharacterBody2D
 				SelectNextBehavior();
 			}
 
-			ExecuteActions();
+			ExecuteActions(delta);
 		}
 
 		// Continuous contact damage — distance-based check each tick.
@@ -304,7 +312,7 @@ public partial class EnemyController : CharacterBody2D
 		if (b.Name == "hurt" || b.Name == "hurt_flash") _isHurt = false;
 	}
 
-	private void ExecuteActions()
+	private void ExecuteActions(double delta)
 	{
 		if (_currentBehavior == null || _currentBehavior.Actions == null) return;
 
@@ -352,7 +360,80 @@ public partial class EnemyController : CharacterBody2D
 			}
 		}
 
+		desired = ApplyWallAvoidance(desired, delta);
 		ApplyMove(desired, desiredSpeed);
+	}
+
+	/// <summary>
+	/// Ray-probe-based steering so enemies slide around walls instead of smashing into them.
+	/// When the forward probe hits a wall, picks the clearer ±90° side (biased toward the
+	/// player if both are clear) and commits to it briefly to avoid corner oscillation.
+	/// </summary>
+	private Vector2 ApplyWallAvoidance(Vector2 desired, double delta)
+	{
+		if (desired == Vector2.Zero)
+		{
+			_avoidanceBias = Vector2.Zero;
+			_avoidanceTimer = 0;
+			return desired;
+		}
+
+		_avoidanceTimer -= delta;
+
+		// Still committed to a recent sidestep — keep using it, blended with desired.
+		if (_avoidanceTimer > 0 && _avoidanceBias != Vector2.Zero)
+		{
+			return (desired + _avoidanceBias * 1.5f).Normalized();
+		}
+
+		var space = GetWorld2D().DirectSpaceState;
+		var from = GlobalPosition;
+		var exclude = new Godot.Collections.Array<Rid> { GetRid() };
+
+		// Forward probe — is a wall in our path?
+		var qFwd = PhysicsRayQueryParameters2D.Create(from, from + desired * WallProbeLength, WallCollisionMask, exclude);
+		if (space.IntersectRay(qFwd).Count == 0)
+		{
+			_avoidanceBias = Vector2.Zero;
+			return desired;
+		}
+
+		// Wall ahead — probe ±90° perpendiculars.
+		var left  = new Vector2(-desired.Y,  desired.X);
+		var right = new Vector2( desired.Y, -desired.X);
+
+		var qLeft  = PhysicsRayQueryParameters2D.Create(from, from + left  * WallProbeLength, WallCollisionMask, exclude);
+		var qRight = PhysicsRayQueryParameters2D.Create(from, from + right * WallProbeLength, WallCollisionMask, exclude);
+
+		bool leftClear  = space.IntersectRay(qLeft).Count  == 0;
+		bool rightClear = space.IntersectRay(qRight).Count == 0;
+
+		Vector2 bias = Vector2.Zero;
+		if (leftClear && !rightClear)      bias = left;
+		else if (rightClear && !leftClear) bias = right;
+		else if (leftClear && rightClear)
+		{
+			// Both sides clear — pick the one whose direction projects closer to the player.
+			if (_player != null)
+			{
+				var toPlayer = (_player.GlobalPosition - from).Normalized();
+				bias = toPlayer.Dot(left) > toPlayer.Dot(right) ? left : right;
+			}
+			else
+			{
+				bias = GD.Randf() < 0.5f ? left : right;
+			}
+		}
+		// else: pinned in a corner — let MoveAndSlide handle it this frame.
+
+		if (bias != Vector2.Zero)
+		{
+			_avoidanceBias = bias;
+			_avoidanceTimer = AvoidanceCommitTime;
+			return (desired + bias * 1.5f).Normalized();
+		}
+
+		return desired;
 	}
 
 	private Vector2 ComputeMove(EnemyAction.MovePattern pattern)

@@ -35,9 +35,26 @@ public partial class PlayerController : CharacterBody2D
 	[ExportGroup("Combat")]
 	/// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
 	[Export] public string AttackAnimName = "StrikeForehandOneHandWeapon";
-	/// <summary>Extra reach past the weapon's visual center, in the facing direction. 0 =
-	/// hitbox tracks the sprite exactly. Raise for a longer-reach feel.</summary>
-	[Export] public float HitboxOffset = 0f;
+	/// <summary>Distance from the shoulder-pivot to the hitbox center along the current
+	/// swing direction. Tune this for reach feel.</summary>
+	[Export] public float HitboxReach = 18f;
+	/// <summary>Blade-shaped hitbox size (width × height). 22×12 approximates
+	/// a one-hand sword's reach on a 32px sprite; tune in the Inspector.</summary>
+	[Export] public Vector2 HitboxSize = new Vector2(22, 12);
+	/// <summary>Total sweep arc in degrees. The hitbox rotates from +Half° to
+	/// −Half° around the facing direction over the course of the swing, so the
+	/// blade passes through the facing line at mid-progress. 90° = quarter
+	/// circle sweep; raise for a wider arc.</summary>
+	[Export] public float HitboxSweepDegrees = 90f;
+	/// <summary>How fast the arc traverses relative to the animation length.
+	/// 1.0 = arc finishes exactly when the animation ends; 1.2 = sweep finishes
+	/// 20% sooner (and holds the end position for the follow-through), which
+	/// matches how MSCA strikes peak mid-anim. Clamped internally to 1.0.</summary>
+	[Export] public float HitboxSweepSpeed = 1.2f;
+	/// <summary>Pivot offset from the player origin (feet) to the shoulder the
+	/// sword rotates around. Negative Y is "up the body". −12 lands roughly at
+	/// mid-chest for a 32px Mana Seed sprite.</summary>
+	[Export] public Vector2 HitboxPivotOffset = new Vector2(0, -12);
 
 	[ExportGroup("Debug")]
 	/// <summary>Tick on, run once, inspect Output panel for row-by-row color dump, then tick off.</summary>
@@ -63,6 +80,11 @@ public partial class PlayerController : CharacterBody2D
 	private double _knockbackTimer;
 	private Vector2 _knockbackVelocity;
 	private const double KnockbackDuration = 0.25;
+
+	// Attack sequence counter — incremented per StartAttack so that the
+	// one-shot safety timer scheduled for a prior attack knows it's stale
+	// and won't stomp a fresh swing already in progress.
+	private int _attackSeq;
 
 	private const string AnimIdle = "Idle";
 	private const string AnimWalk = "Walk";
@@ -99,6 +121,15 @@ public partial class PlayerController : CharacterBody2D
 		{
 			_attackHitbox.Monitoring = false;
 			_attackHitbox.AreaEntered += OnAttackHitboxAreaEntered;
+
+			// Resize the CollisionShape2D rect to a blade footprint. The scene
+			// ships with a 10×10 placeholder — too small to overlap the weapon
+			// sprite, so hits usually miss even when the blade visually connects.
+			var cs = _attackHitbox.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
+			if (cs?.Shape is RectangleShape2D rect)
+			{
+				rect.Size = HitboxSize;
+			}
 		}
 		else
 		{
@@ -209,22 +240,74 @@ public partial class PlayerController : CharacterBody2D
 		// while a swing is in progress. MSCA animates farmer_1h_weapon.offset and
 		// .rotation through each strike, so reading them each physics tick makes the
 		// hitbox sweep with the visible blade instead of sitting in one fixed spot.
-		if (Attacking) UpdateAttackHitbox();
+		if (Attacking)
+		{
+			UpdateAttackHitbox();
+			QueueRedraw(); // drive _Draw so the debug rect tracks the swing
+		}
 	}
 
-	/// <summary>Position the AttackHitbox at the weapon sprite's current visual
-	/// location. Must run after AnimationPlayer has updated the sprite's
-	/// offset/rotation for the frame (i.e. from _PhysicsProcess or later).</summary>
+	/// <summary>
+	/// Debug overlay: outlines the AttackHitbox during swings so we can verify
+	/// it's actually tracking the weapon sprite. Shown only when the global
+	/// <c>WorldManager.DebugVisible</c> flag is on (toggle with backtick).
+	/// </summary>
+	public override void _Draw()
+	{
+		if (!Attacking || !WorldManager.DebugVisible || _attackHitbox == null) return;
+
+		var cs = _attackHitbox.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
+		if (cs?.Shape is not RectangleShape2D rect) return;
+
+		// Draw in PlayerController-local space, matching the hitbox's live
+		// position + rotation so the outline sweeps with the blade.
+		DrawSetTransform(_attackHitbox.Position, _attackHitbox.Rotation, Vector2.One);
+		DrawRect(new Rect2(-rect.Size * 0.5f, rect.Size), new Color(1f, 0.3f, 0.3f, 1f),
+			filled: false, width: 1.5f);
+		DrawSetTransform(Vector2.Zero, 0f, Vector2.One);
+	}
+
+	/// <summary>
+	/// Position the AttackHitbox along an analytical swing arc rather than
+	/// tracking <c>farmer_1h_weapon.offset</c>. Reason: MSCA only animates the
+	/// weapon sprite's offset for the Down strike — for Up/Left/Right the
+	/// apparent blade motion comes from frame-index changes in the spritesheet,
+	/// not from transform keyframes. An analytical arc (facing-direction ±
+	/// <see cref="HitboxSweepDegrees"/>/2 over animation progress) sweeps the
+	/// hitbox consistently in all four directions and lines up with the visual
+	/// blade during the swing.
+	/// </summary>
 	private void UpdateAttackHitbox()
 	{
-		if (_attackHitbox == null || _weaponSprite == null || _spriteLayers == null) return;
+		if (_attackHitbox == null || _spriteLayers == null) return;
 
-		// Weapon's visible drawing position in SpriteLayers-local space:
-		//   weapon node Position (≈0) + Sprite2D.offset (animated by MSCA each frame)
-		// Promote into Player-local space by adding SpriteLayers' own Position.
-		var weaponVisual = _weaponSprite.Position + _weaponSprite.Offset;
-		_attackHitbox.Position = _spriteLayers.Position + weaponVisual + _facing * HitboxOffset;
-		_attackHitbox.Rotation = _weaponSprite.Rotation;
+		float progress = GetAttackProgress();
+		// Speed-up: finish the arc before the animation ends so the blade holds
+		// the follow-through position while the sprite is still recovering.
+		float t = Mathf.Clamp(progress * HitboxSweepSpeed, 0f, 1f);
+
+		// Right-facing strike sweeps in the "correct" direction by default
+		// (Mana Seed authors forehand strikes that way). Up/Down/Left strikes
+		// are authored mirrored, so their analytical arc needs to sweep the
+		// opposite way to match the visual blade path.
+		float halfRad = Mathf.DegToRad(HitboxSweepDegrees * 0.5f);
+		float start = _facing.X > 0.5f ? halfRad : -halfRad;
+		float angleNow = Mathf.Lerp(start, -start, t);
+		Vector2 swingDir = _facing.Rotated(angleNow);
+
+		Vector2 pivot = _spriteLayers.Position + HitboxPivotOffset;
+		_attackHitbox.Position = pivot + swingDir * HitboxReach;
+		_attackHitbox.Rotation = swingDir.Angle();
+	}
+
+	/// <summary>Current attack animation progress, 0 (windup) → 1 (follow-through).</summary>
+	private float GetAttackProgress()
+	{
+		if (_state == null) return 0.5f;
+		double pos = _state.GetCurrentPlayPosition();
+		double len = _state.GetCurrentLength();
+		if (len <= 0) return 0.5f;
+		return Mathf.Clamp((float)(pos / len), 0f, 1f);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -242,10 +325,20 @@ public partial class PlayerController : CharacterBody2D
 
 	private void StartAttack()
 	{
+		_attackSeq++;
+		int thisAttack = _attackSeq;
+
 		// MSCA BlendSpace2D uses facing direction for the strike variant.
 		SetBlend(AttackAnimName, _facing);
 		_state.Travel(AttackAnimName);
 		Attacking = true;
+
+		// Show the weapon immediately. Don't wait on animation_state_started
+		// from MSCA — on rapid re-presses the state machine is mid-exit from
+		// the previous attack and the "started" signal can skip-fire, leaving
+		// the weapon invisible for the whole second swing.
+		if (_weaponSprite != null) _weaponSprite.Visible = true;
+
 		// Sync hitbox to the weapon sprite immediately; _PhysicsProcess will keep
 		// it in sync each tick while the swing animation runs.
 		UpdateAttackHitbox();
@@ -257,6 +350,11 @@ public partial class PlayerController : CharacterBody2D
 		var safety = GetTree().CreateTimer(1.0);
 		safety.Timeout += () =>
 		{
+			// Stale timer check: if a newer attack started, this callback is
+			// from a previous attack that already ended cleanly, so don't
+			// clobber the live one (otherwise rapid spacebar presses would
+			// hide the weapon mid-swing).
+			if (thisAttack != _attackSeq) return;
 			if (!Attacking) return;
 			GD.PushWarning("[PlayerController] Attack safety-timeout fired — MSCA animation_state_finished did not emit. Check the keyframe on the active weapon's strike animation.");
 			Attacking = false;

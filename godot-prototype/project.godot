@@ -93,6 +93,10 @@ inventory_toggle={
 ]
 }
 
+[gui]
+
+theme/custom="res://assets/fonts/UiTheme.tres"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

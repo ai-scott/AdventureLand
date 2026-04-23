@@ -30,6 +30,46 @@ public partial class WorldManager : Node
     public override void _Ready()
     {
         Instance = this;
+        // Process inputs even when the tree is paused (dialogue, prompts) so
+        // the debug toggle still works from any game state.
+        ProcessMode = ProcessModeEnum.Always;
+    }
+
+    /// <summary>
+    /// Global debug-visualization flag. Backtick (`) toggles this on/off.
+    /// Drives both Godot's built-in <c>DebugCollisionsHint</c> and any
+    /// custom debug draws (e.g., <see cref="PlayerController"/>'s attack
+    /// hitbox overlay, which draws itself only when this is true).
+    /// Lives here (autoload) instead of MapLoader because MapLoader only
+    /// exists in world scenes — the toggle should work everywhere.
+    /// </summary>
+    public static bool DebugVisible { get; private set; }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is not InputEventKey key || !key.Pressed || key.Echo) return;
+        if (key.Keycode != Key.Quoteleft) return;
+
+        DebugVisible = !DebugVisible;
+        var tree = GetTree();
+        if (tree != null) tree.DebugCollisionsHint = DebugVisible;
+
+        // Force every CollisionShape2D / CollisionPolygon2D to repaint so the
+        // toggle also affects shapes that existed before the flag flipped.
+        // Without this, already-drawn shapes sometimes stay hidden.
+        if (tree?.CurrentScene != null) RepaintShapes(tree.CurrentScene);
+
+        GD.Print($"[Debug] Collision shapes {(DebugVisible ? "ON" : "OFF")}");
+    }
+
+    private static void RepaintShapes(Node root)
+    {
+        foreach (var child in root.GetChildren())
+        {
+            if (child is CanvasItem ci && (child is CollisionShape2D or CollisionPolygon2D))
+                ci.QueueRedraw();
+            RepaintShapes(child);
+        }
     }
 
     /// <summary>
@@ -291,5 +331,40 @@ public partial class WorldManager : Node
         }
 
         await ShowBannerAndFadeIn(true);
+        await ShowWelcomeDialogueIfNeeded();
+    }
+
+    /// <summary>
+    /// Ported from C3's welcome_quest (welcome-dialogue.ts) — the first-time
+    /// player gets a two-line prompt explaining movement + confirm key. Gated
+    /// on the world flag "welcome_shown" so it only ever runs once per save.
+    /// Uses Font_Fantasy.ttf as a per-dialogue font override to test the
+    /// DialogueManager font-override path.
+    /// </summary>
+    private async Task ShowWelcomeDialogueIfNeeded()
+    {
+        if (QuestSystem.HasWorldFlag("welcome_shown")) return;
+
+        var scene = GetTree().CurrentScene;
+        var dm = scene?.FindChild("DialogueManager", true, false) as DialogueManager;
+        if (dm == null)
+        {
+            GD.PushWarning("[Welcome] No DialogueManager in current scene; skipping welcome");
+            return;
+        }
+
+        // Short beat after banner fade-in so the player sees the world before the prompt.
+        await ToSignal(GetTree().CreateTimer(0.3), Timer.SignalName.Timeout);
+
+        var font = GD.Load<Font>("res://assets/fonts/Font_Fantasy.ttf");
+        var lines = new[]
+        {
+            "Welcome to AdventureLand! Press [Space] to continue.",
+            "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
+        };
+        dm.StartDialogueWithFont("AdventureLand", lines, font);
+
+        QuestSystem.SetWorldFlag("welcome_shown", "true");
+        SaveManager.Instance?.Save();
     }
 }
