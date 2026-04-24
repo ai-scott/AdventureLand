@@ -42,7 +42,6 @@ public partial class NpcInteract : Area2D
 	/// (Otherwise the player gets soft-stuck in a talk/close/talk loop while
 	/// standing on the NPC.)</summary>
 	private bool _suppressUntilExit = false;
-	private Label _interactLabel;
 	private StaticBody2D _body;
 	private uint _bodyDefaultLayer;
 	private bool? _lastUnlocked;
@@ -51,10 +50,6 @@ public partial class NpcInteract : Area2D
 	{
 		BodyEntered += OnBodyEntered;
 		BodyExited += OnBodyExited;
-		_interactLabel = GetNodeOrNull<Label>("InteractLabel");
-		// "↵" prompt uses the body font (romulus) — alagard distorts at
-		// non-native sizes.
-		_interactLabel?.AddThemeFontOverride("font", UiFonts.Body);
 
 		// Optional blocking body for NPCs that should stop the player (Penny,
 		// Rosie). Stored so we can disable its collision layer while the quest
@@ -125,7 +120,7 @@ public partial class NpcInteract : Area2D
 		if (body is PlayerController)
 		{
 			_playerInRange = true;
-			if (_interactLabel != null) _interactLabel.Visible = true;
+			InteractHintManager.Instance?.Register(this, GetHintText);
 		}
 	}
 
@@ -135,7 +130,20 @@ public partial class NpcInteract : Area2D
 		{
 			_playerInRange = false;
 			_suppressUntilExit = false;
-			if (_interactLabel != null) _interactLabel.Visible = false;
+			InteractHintManager.Instance?.Unregister(this);
 		}
+	}
+
+	public override void _ExitTree()
+	{
+		InteractHintManager.Instance?.Unregister(this);
+	}
+
+	/// <summary>Provider for the shared InteractHintManager. Suppressed while
+	/// dialogue is already on-screen with this NPC so we don't stack a hint
+	/// on top of the dialogue box.</summary>
+	private string GetHintText()
+	{
+		return _suppressUntilExit ? "" : "↵ Talk";
 	}
 }

@@ -19,10 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bvkj4keoc4b8q" path="res://assets/buildings/AL_TreeSign.png" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="17_46npq"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="18_b8jan"]
-[ext_resource type="PackedScene" path="res://scenes/ui/HealthBar.tscn" id="18_w41w8"]
-[ext_resource type="PackedScene" path="res://scenes/ui/CurrencyHUD.tscn" id="18_curhd"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
-[ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="22_b8jan"]
 [ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="23_0vlwf"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="27_b4gdq"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
@@ -1431,16 +1428,10 @@ script = ExtResource("6")
 
 [node name="DialogueManager" parent="." unique_id=1659791479 instance=ExtResource("5")]
 
-[node name="HealthBar" parent="." unique_id=2028836414 instance=ExtResource("18_w41w8")]
-HealthSystemPath = NodePath("../Entities/Player/HealthSystem")
-
-[node name="CurrencyHUD" parent="." instance=ExtResource("18_curhd")]
 
 [node name="GameOver" parent="." unique_id=1366688518 instance=ExtResource("19_ujiax")]
 visible = false
 PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
-
-[node name="InventoryUI" parent="." unique_id=577267304 instance=ExtResource("22_b8jan")]
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1195734101]
 script = ExtResource("32_6xkt4")

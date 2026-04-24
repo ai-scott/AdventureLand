@@ -211,33 +211,10 @@ public partial class ItemPickupToast : CanvasLayer
         _content.AddChild(sep);
 
         // Current item.
-        AddBodyLabel(_content, $"Replaces: {oldItem.Name}  (Str: {oldItem.Strength})", 11,
+        AddBodyLabel(_content, $"Replaces: {oldItem.Name}  (Str: {oldItem.Strength})", 16,
             new Color(0.8f, 0.8f, 0.8f, 0.9f));
 
-        // Strength comparison with arrow.
-        int diff = newItem.Strength - oldItem.Strength;
-        var compareRow = new HBoxContainer();
-        compareRow.AddThemeConstantOverride("separation", 6);
-        _content.AddChild(compareRow);
-
-        if (diff != 0)
-        {
-            var arrow = new TextureRect();
-            arrow.Texture = diff > 0 ? _arrowUp : _arrowDown;
-            arrow.CustomMinimumSize = new Vector2(16, 16);
-            arrow.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
-            arrow.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
-            arrow.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
-            compareRow.AddChild(arrow);
-
-            string word = diff > 0 ? "Stronger" : "Weaker";
-            var color = diff > 0 ? new Color(0.4f, 1f, 0.4f, 1) : new Color(1f, 0.4f, 0.4f, 1);
-            AddBodyLabel(compareRow, $"{word}  ({(diff > 0 ? "+" : "")}{diff} Str)", 12, color);
-        }
-        else
-        {
-            AddBodyLabel(compareRow, "Same strength", 16, new Color(0.8f, 0.8f, 0.5f, 1));
-        }
+        AddComparisonRow(newItem.Strength - oldItem.Strength);
 
         // Choice prompt — Space is always the "recommended" action.
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
@@ -267,6 +244,22 @@ public partial class ItemPickupToast : CanvasLayer
         if (!string.IsNullOrEmpty(item.Description))
             AddBodyLabel(textVbox, item.Description, 16, new Color(0.75f, 0.75f, 0.75f, 0.95f));
 
+        // Strength comparison against currently equipped item in this category.
+        if (item.IsEquippable)
+        {
+            var equipped = Inventory.Instance?.GetEquipped(item.Category);
+            if (equipped != null && equipped.Id != item.Id)
+            {
+                var sep = new HSeparator();
+                sep.AddThemeConstantOverride("separation", 4);
+                _content.AddChild(sep);
+
+                AddBodyLabel(_content, $"Replaces: {equipped.Name}  (Str: {equipped.Strength})", 16,
+                    new Color(0.8f, 0.8f, 0.8f, 0.9f));
+                AddComparisonRow(item.Strength - equipped.Strength);
+            }
+        }
+
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
         AddBodyLabel(_content, "[Space] Take    [Z] Leave it", 16,
             new Color(0.6f, 0.6f, 0.6f, 0.8f));
@@ -294,13 +287,56 @@ public partial class ItemPickupToast : CanvasLayer
         var priceColor = _purchaseAffordable
             ? new Color(1f, 0.85f, 0.35f, 1)  // gold
             : new Color(1f, 0.4f, 0.4f, 1);   // red, can't afford
-        AddBodyLabel(textVbox, $"{cost} gems  (you have {gems})", 11, priceColor);
+        AddBodyLabel(textVbox, $"{cost} gems  (you have {gems})", 16, priceColor);
+
+        // Strength comparison against currently equipped item in this category.
+        if (item.IsEquippable)
+        {
+            var equipped = Inventory.Instance?.GetEquipped(item.Category);
+            if (equipped != null && equipped.Id != item.Id)
+            {
+                var sep = new HSeparator();
+                sep.AddThemeConstantOverride("separation", 4);
+                _content.AddChild(sep);
+
+                AddBodyLabel(_content, $"Replaces: {equipped.Name}  (Str: {equipped.Strength})", 16,
+                    new Color(0.8f, 0.8f, 0.8f, 0.9f));
+                AddComparisonRow(item.Strength - equipped.Strength);
+            }
+        }
 
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, 4) });
         string prompt = _purchaseAffordable
             ? "[Space] Buy    [Z] Leave it"
             : "Not enough gems    [Z] Leave it";
         AddBodyLabel(_content, prompt, 16, new Color(0.6f, 0.6f, 0.6f, 0.8f));
+    }
+
+    /// <summary>Shared arrow + "Stronger/Weaker/Same" row. Used by both the
+    /// equip-compare prompt and the purchase prompt.</summary>
+    private void AddComparisonRow(int diff)
+    {
+        var compareRow = new HBoxContainer();
+        compareRow.AddThemeConstantOverride("separation", 6);
+        _content.AddChild(compareRow);
+
+        if (diff == 0)
+        {
+            AddBodyLabel(compareRow, "Same strength", 16, new Color(0.8f, 0.8f, 0.5f, 1));
+            return;
+        }
+
+        var arrow = new TextureRect();
+        arrow.Texture = diff > 0 ? _arrowUp : _arrowDown;
+        arrow.CustomMinimumSize = new Vector2(16, 16);
+        arrow.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+        arrow.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+        arrow.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+        compareRow.AddChild(arrow);
+
+        string word = diff > 0 ? "Stronger" : "Weaker";
+        var color = diff > 0 ? new Color(0.4f, 1f, 0.4f, 1) : new Color(1f, 0.4f, 0.4f, 1);
+        AddBodyLabel(compareRow, $"{word}  ({(diff > 0 ? "+" : "")}{diff} Str)", 16, color);
     }
 
     private void BuildSimpleToast(ItemData item, string message)

@@ -35,47 +35,36 @@ public partial class DoorTrigger : Area2D
 	[Export] public string RequiredQuestStatus = "";
 
 	private bool _playerInRange;
-	private Label _prompt;
 
 	public override void _Ready()
 	{
 		BodyEntered += OnBodyEntered;
 		BodyExited += OnBodyExited;
-		BuildPrompt();
 	}
 
-	private void BuildPrompt()
+	public override void _ExitTree()
 	{
-		_prompt = new Label
-		{
-			Text = PromptText,
-			Size = new Vector2(80, 16),
-			Position = new Vector2(-40, -26),
-			HorizontalAlignment = HorizontalAlignment.Center,
-			Visible = false,
-			ZIndex = 100,
-		};
-		_prompt.AddThemeColorOverride("font_color", Colors.White);
-		_prompt.AddThemeColorOverride("font_outline_color", Colors.Black);
-		_prompt.AddThemeConstantOverride("outline_size", 3);
-		AddChild(_prompt);
+		InteractHintManager.Instance?.Unregister(this);
 	}
 
 	private void OnBodyEntered(Node2D body)
 	{
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = true;
-		// Hide the prompt when the door is quest-gated and not yet unlocked.
-		// Player doesn't even see there's a door here until the story calls for it.
-		if (_prompt != null) _prompt.Visible = IsUnlocked();
+		InteractHintManager.Instance?.Register(this, GetHintText);
 	}
 
 	private void OnBodyExited(Node2D body)
 	{
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = false;
-		if (_prompt != null) _prompt.Visible = false;
+		InteractHintManager.Instance?.Unregister(this);
 	}
+
+	/// <summary>Hint text — returns empty while the door is quest-gated so the
+	/// player sees no prompt at all (the door is effectively invisible until
+	/// the story calls for it).</summary>
+	private string GetHintText() => IsUnlocked() ? PromptText : "";
 
 	private bool IsUnlocked()
 	{
@@ -103,7 +92,7 @@ public partial class DoorTrigger : Area2D
 		var dialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
 		if (dialogue != null && dialogue.IsActive) return;
 
-		if (_prompt != null) _prompt.Visible = false;
+		InteractHintManager.Instance?.Unregister(this);
 		GetViewport().SetInputAsHandled();
 		_ = wm.GoToDoor(TargetScene, DoorId);
 	}

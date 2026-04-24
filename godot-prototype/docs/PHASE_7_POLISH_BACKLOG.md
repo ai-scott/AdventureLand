@@ -23,7 +23,8 @@ Running list of polish items deferred from earlier phases. Most target the final
 - [ ] **Name entry screen** — Replace programmatic LineEdit with pixel-art text entry, possibly letter-by-letter picker.
 - [ ] **Starting instructions / tutorial overlay** — First-time player prompts for movement, attack, interact, inventory. Needs pixel-art hint boxes with inline button icons.
 - [ ] **HP display** — Already have heart sprites; add polished heart container frame (`obj_heartsframe-animation 1-000.png`).
-- [ ] **Currency display** — Add gems icon + counter to HUD.
+- [x] **Currency display** — Gem icon + counter (CurrencyHUD.tscn, polls CurrencySystem.GetGems). Will be folded into the unified HUD once the hud_bg frame lands.
+- [ ] **Mobile on-screen action buttons** — Desktop HUD shows the inventory + attack buttons (with `i` / attack-key letter hints) in the top-left alongside hearts + gems. On mobile we reposition these to thumb-reachable corners (bottom-left for action, bottom-right for inventory or similar). Same button sprites, different anchors — driven by a runtime DisplayServer check or an export toggle. Needs a decision on touch-input routing (InputEventScreenTouch vs synthesizing Input.ActionPress).
 
 ### Costume system
 - [ ] **Palette color variants** — Integrate `PaletteSwapper` with costume equip so "Yellow Boater Hat" and "Blue Boater Hat" actually render different colors. Requires parsing C3 color suffixes (`_straw_boat`, `_cornflower_blue`) into palette ramp indices.

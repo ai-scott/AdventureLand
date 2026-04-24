@@ -245,7 +245,9 @@ public partial class DialogueManager : CanvasLayer
         var text = SubstituteVariables(node.Text);
         var speaker = node.Speaker;
 
-        _nameLabel.Text = speaker;
+        // Underscores are used in speaker IDs to keep them identifier-safe
+        // in .tres files (e.g., "Shopkeeper_Sally"). Render as spaces.
+        _nameLabel.Text = speaker?.Replace('_', ' ') ?? "";
         _textLabel.Text = text;
 
         // Build response buttons if any.

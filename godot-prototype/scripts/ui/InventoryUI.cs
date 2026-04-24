@@ -78,7 +78,7 @@ public partial class InventoryUI : CanvasLayer
         if (Input.IsActionJustPressed("inventory_toggle"))
         {
             if (_isOpen) Close();
-            else Open();
+            else if (GetTree()?.GetFirstNodeInGroup("player") != null) Open();
             return;
         }
 

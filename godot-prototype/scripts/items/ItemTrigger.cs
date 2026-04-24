@@ -21,7 +21,6 @@ public partial class ItemTrigger : Area2D
     private bool _collected;
     private bool _playerInRange;
     private Sprite2D _sprite;
-    private Label _prompt;
     // Shine material applied to the item sprite while the player is in range.
     // Loaded lazily & shared across all ItemTriggers (per-instance Material
     // is still needed because Sprite2D can't share a material across nodes
@@ -53,10 +52,14 @@ public partial class ItemTrigger : Area2D
             _sprite.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         }
 
-        BuildPromptLabel();
         BuildShineMaterial();
         BodyEntered += OnBodyEntered;
         BodyExited  += OnBodyExited;
+    }
+
+    public override void _ExitTree()
+    {
+        InteractHintManager.Instance?.Unregister(this);
     }
 
     /// <summary>Prepare a ShaderMaterial that makes the item's own sprite
@@ -68,25 +71,6 @@ public partial class ItemTrigger : Area2D
         _shineShader ??= GD.Load<Shader>("res://assets/shaders/item_shine.gdshader");
         if (_shineShader == null) return;
         _shineMaterial = new ShaderMaterial { Shader = _shineShader };
-    }
-
-    /// <summary>Tiny floating label above the item that shows "↵ Take" or
-    /// "↵ Buy" while the player stands inside the pickup radius. Gives the
-    /// player a chance to walk away without grabbing/paying — without this,
-    /// bumping an item in a shop immediately opened the purchase prompt.</summary>
-    private void BuildPromptLabel()
-    {
-        _prompt = new Label
-        {
-            Visible = false,
-            ZIndex = 10,
-            OffsetLeft = -16, OffsetRight = 16,
-            OffsetTop = -26,  OffsetBottom = -14,
-            HorizontalAlignment = HorizontalAlignment.Center,
-        };
-        _prompt.AddThemeFontSizeOverride("font_size", 16);
-        _prompt.AddThemeFontOverride("font", UiFonts.Body);
-        AddChild(_prompt);
     }
 
     public override void _Process(double delta)
@@ -106,7 +90,7 @@ public partial class ItemTrigger : Area2D
         if (_collected) return;
         if (!body.IsInGroup("player")) return;
         _playerInRange = true;
-        UpdatePrompt();
+        InteractHintManager.Instance?.Register(this, GetHintText);
         if (_sprite != null && _shineMaterial != null) _sprite.Material = _shineMaterial;
     }
 
@@ -114,21 +98,17 @@ public partial class ItemTrigger : Area2D
     {
         if (!body.IsInGroup("player")) return;
         _playerInRange = false;
-        if (_prompt != null) _prompt.Visible = false;
+        InteractHintManager.Instance?.Unregister(this);
         if (_sprite != null) _sprite.Material = null;
     }
 
-    /// <summary>Refresh the hover prompt text based on current state —
-    /// shop items show price, grant items show "Take".</summary>
-    private void UpdatePrompt()
+    /// <summary>Hint text provider — reads live shop state so "Take" vs
+    /// "Buy (Ng)" flips without re-registering on state change.</summary>
+    private string GetHintText()
     {
-        if (_prompt == null) return;
         bool freeGrant = ShopState.NextItemFree;
         bool paidShop  = ShopState.IsActive && !freeGrant && Data.Cost > 0;
-        _prompt.Text = paidShop
-            ? $"↵ Buy ({Data.Cost}g)"
-            : "↵ Take";
-        _prompt.Visible = true;
+        return paidShop ? $"↵ Buy ({Data.Cost}g)" : "↵ Take";
     }
 
     private void TryTake()

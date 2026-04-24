@@ -96,9 +96,9 @@ public partial class SaveManager : Node
             PositionX = 148f,
             PositionY = 153f,
             CurrentWorld = "res://scenes/worlds/World_00.tscn",
-            // Starter gems so prototype shop purchases are testable. Enough
-            // to buy the cheapest Blacksmith weapon (Axe: 6 gems).
-            Gems = 10,
+            // Starter gems so prototype shop purchases are testable. Bumped
+            // to 50 so testers can try multiple shop flows without grinding.
+            Gems = 50,
         };
         ActiveSlot = slot;
 
