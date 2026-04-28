@@ -31,6 +31,13 @@ ffmpeg -y -loglevel error -i input.webm -vn -c:a libvorbis -q:a 5 output.ogg
 The slight re-encode hit is invisible for game SFX. The `.ogg` then
 imports cleanly to `AudioStreamOggVorbis`.
 
+**Manual reimport may be needed** when overwriting an existing `.ogg`
+in place. Godot caches imported audio by path; if the file content
+changes but the path doesn't, the editor keeps serving the old cached
+import (loaded as null when codec was wrong) until you right-click
+`assets/audio/` in the FileSystem dock → **Reimport**. After a fresh
+clone this isn't an issue — only when iterating on transcoding.
+
 **Estimated effort:** ~half-day for controllers + asset copy, ~half-day
 for the wirings + sea-monster music plumbing.
 
