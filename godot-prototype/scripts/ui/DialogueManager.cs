@@ -5,19 +5,19 @@ using System.Linq;
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Full dialogue engine — replaces the Phase 0 hardcoded prototype.
-/// Drives a priority-based node evaluation, branching responses,
-/// variable substitution, condition gating, and action dispatch.
+/// Full dialogue engine — drives priority-based node evaluation, branching
+/// responses, variable substitution, condition gating, and action dispatch.
 ///
-/// Scene structure (built at runtime):
+/// Scene structure (authored in DialogueBox.tscn):
 ///   CanvasLayer (layer=10, ProcessMode=Always)
-///   └── DialogueBox (PanelContainer, bottom-center)
-///       └── MarginContainer
-///           └── VBox
-///               ├── NameLabel (speaker)
-///               ├── TextLabel (dialogue text, auto-wrap)
-///               ├── ResponseContainer (VBox of Buttons, hidden unless choices)
-///               └── ContinueHint ("[Space] Continue" / "[Space] Close")
+///   └── DialogueBox (Control, 420x130, bottom-center)
+///       ├── FrameBg (TextureRect — frame_bg_name for speakers, frame_bg for narrator)
+///       ├── Cameo   (TextureRect — cameo_<speaker>.png overlay)
+///       ├── NameLabel (speaker, positioned above cameo circle)
+///       └── TextArea / VBoxContainer
+///           ├── TextLabel (dialogue body, autowrap)
+///           ├── ResponseContainer (branching choices)
+///           └── ContinueHint ("[Space] Continue")
 /// </summary>
 public partial class DialogueManager : CanvasLayer
 {
@@ -27,8 +27,10 @@ public partial class DialogueManager : CanvasLayer
     private DialogueNode _currentNode;
     private Array<DialogueResponse> _currentResponses;
 
-    // UI nodes — built in _Ready from the existing DialogueBox scene.
-    private PanelContainer _dialogueBox;
+    // UI nodes — bound in _Ready from DialogueBox.tscn.
+    private Control _dialogueBox;
+    private TextureRect _frameBg;
+    private TextureRect _cameo;
     private Label _nameLabel;
     private Label _textLabel;
     private Label _continueHint;
@@ -41,30 +43,32 @@ public partial class DialogueManager : CanvasLayer
 
     // Keyboard-driven response selection.
     private int _selectedResponseIndex = -1;
-    private const float DialogueBoxDefaultTop = -100f; // normal offset_top
-    private const float DialogueBoxExpandedTop = -200f; // taller when showing responses/input
+
+    // Pixel-art frame textures (cached once).
+    private static Texture2D _texFrameBg;
+    private static Texture2D _texFrameBgName;
+    // speaker_id (lowercased) → cameo texture.
+    private static readonly System.Collections.Generic.Dictionary<string, Texture2D> _cameoCache = new();
 
     public override void _Ready()
     {
-        _dialogueBox = GetNode<PanelContainer>("DialogueBox");
-        _nameLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/NameLabel");
-        _textLabel = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/TextLabel");
-        _continueHint = GetNode<Label>("DialogueBox/MarginContainer/VBoxContainer/ContinueHint");
-        // ContinueHint uses the body font (romulus) — keep titles/body in alagard.
-        _continueHint.AddThemeFontOverride("font", UiFonts.Body);
+        _dialogueBox = GetNode<Control>("DialogueBox");
+        _frameBg = GetNode<TextureRect>("DialogueBox/FrameBg");
+        _cameo = GetNode<TextureRect>("DialogueBox/Cameo");
+        _nameLabel = GetNode<Label>("DialogueBox/NameLabel");
+        _textLabel = GetNode<Label>("DialogueBox/TextArea/VBoxContainer/TextLabel");
+        // ContinueHint lives as a direct child of DialogueBox so it can be
+        // pinned to the bottom-right of the frame instead of riding the
+        // VBoxContainer — otherwise tall wrapped body text pushes it offscreen.
+        _continueHint = GetNode<Label>("DialogueBox/ContinueHint");
+        _responseContainer = GetNode<VBoxContainer>("DialogueBox/TextArea/VBoxContainer/ResponseContainer");
 
-        // Let the box grow upward to fit content (responses, input fields).
-        _dialogueBox.ClipContents = false;
-        _dialogueBox.GrowVertical = Control.GrowDirection.Begin;
+        // All three labels have Font_Fantasy baked in as a theme override on the
+        // scene — every dialogue uses the same pixel font by default. Per-speaker
+        // overrides still flow through StartDialogueWithFont / ApplyFontOverride.
 
-        // Add a response container for choices.
-        var vbox = _textLabel.GetParent() as VBoxContainer;
-        _responseContainer = new VBoxContainer();
-        _responseContainer.AddThemeConstantOverride("separation", 4);
-        _responseContainer.Visible = false;
-        vbox.AddChild(_responseContainer);
-        // Move ContinueHint to the end.
-        vbox.MoveChild(_continueHint, -1);
+        _texFrameBg ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg.png");
+        _texFrameBgName ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg_name.png");
 
         _dialogueBox.Visible = false;
     }
@@ -149,8 +153,29 @@ public partial class DialogueManager : CanvasLayer
 
         _justStarted = true;
         NavigateToNode(startNode);
-        _dialogueBox.Visible = true;
+        FadeIn();
         return true;
+    }
+
+    private void FadeIn()
+    {
+        _dialogueBox.Modulate = new Color(1, 1, 1, 0);
+        _dialogueBox.Visible = true;
+        var tween = CreateTween();
+        tween.SetProcessMode(Tween.TweenProcessMode.Idle); // runs during pause
+        tween.TweenProperty(_dialogueBox, "modulate:a", 1.0f, 0.25);
+    }
+
+    private void FadeOut(System.Action onDone)
+    {
+        var tween = CreateTween();
+        tween.SetProcessMode(Tween.TweenProcessMode.Idle);
+        tween.TweenProperty(_dialogueBox, "modulate:a", 0.0f, 0.2);
+        tween.TweenCallback(Callable.From(() =>
+        {
+            _dialogueBox.Visible = false;
+            onDone?.Invoke();
+        }));
     }
 
     /// <summary>Legacy API — starts dialogue from an array of plain lines (no branching).</summary>
@@ -206,6 +231,8 @@ public partial class DialogueManager : CanvasLayer
     private void RemoveFontOverride()
     {
         if (_fontOverride == null) return;
+        // Scene labels carry no font override, so clearing falls back to the
+        // global theme (alagard) — exactly what we want for NPC dialogue.
         _nameLabel?.RemoveThemeFontOverride("font");
         _textLabel?.RemoveThemeFontOverride("font");
         _continueHint?.RemoveThemeFontOverride("font");
@@ -245,10 +272,15 @@ public partial class DialogueManager : CanvasLayer
         var text = SubstituteVariables(node.Text);
         var speaker = node.Speaker;
 
+        UpdateSpeakerVisuals(speaker);
+
         // Underscores are used in speaker IDs to keep them identifier-safe
         // in .tres files (e.g., "Shopkeeper_Sally"). Render as spaces.
-        _nameLabel.Text = speaker?.Replace('_', ' ') ?? "";
+        _nameLabel.Text = PrettifySpeaker(speaker);
         _textLabel.Text = text;
+        // Hide the body label when the node has no text (response-only nodes)
+        // so the ResponseContainer flows up to the top of the text area.
+        _textLabel.Visible = !string.IsNullOrEmpty(text);
 
         // Build response buttons if any.
         ClearResponses();
@@ -257,6 +289,8 @@ public partial class DialogueManager : CanvasLayer
 
         if (validResponses.Count > 0)
         {
+            // Player choice — drop the cameo / name strip.
+            SetPlayerSpeakingVisuals();
             _responseContainer.Visible = true;
             _continueHint.Visible = false;
 
@@ -264,18 +298,51 @@ public partial class DialogueManager : CanvasLayer
             {
                 int idx = i; // capture
                 var resp = validResponses[i];
+
+                // Each response is a row: [Pointer Label] [Response Button].
+                // The pointer lives in a fixed 24px column to the left of the
+                // text so toggling its visibility doesn't shift the response
+                // text horizontally.
+                var row = new HBoxContainer();
+                row.Name = $"Row{i}";
+                row.AddThemeConstantOverride("separation", 4);
+                row.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
+
+                // Pointing-hand icon from the C3 TextIcons sheet (Arrow tag).
+                // 18x18 pixel-art sprite, lives in a fixed 24px column so toggling
+                // its visibility doesn't shift the response text.
+                var pointer = new TextureRect();
+                pointer.Name = "Pointer";
+                pointer.Texture = UiStyles.Arrow;
+                pointer.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+                pointer.StretchMode = TextureRect.StretchModeEnum.Keep;
+                pointer.CustomMinimumSize = new Vector2(24, 0);
+                pointer.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+                pointer.Modulate = new Color(1, 1, 1, 0); // hidden; shown on selection
+                row.AddChild(pointer);
+
                 var btn = new Button();
                 btn.Text = SubstituteVariables(resp.Text);
                 btn.Pressed += () => OnResponseChosen(idx);
                 btn.ProcessMode = ProcessModeEnum.Always;
                 btn.FocusMode = Control.FocusModeEnum.None; // we handle focus manually
-                _responseContainer.AddChild(btn);
+                // Match the body TextLabel: 24px, cream, no shadow.
+                btn.AddThemeFontSizeOverride("font_size", 24);
+                btn.AddThemeConstantOverride("shadow_offset_x", 0);
+                btn.AddThemeConstantOverride("shadow_offset_y", 0);
+                btn.Flat = true;
+                btn.Alignment = HorizontalAlignment.Left;
+                btn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+                btn.AddThemeColorOverride("font_color", new Color(0.99f, 0.94f, 0.78f, 1));
+                btn.AddThemeColorOverride("font_focus_color", new Color(0.99f, 0.94f, 0.78f, 1));
+                btn.AddThemeColorOverride("font_hover_color", new Color(1f, 1f, 0.9f, 1));
+                row.AddChild(btn);
+
+                _responseContainer.AddChild(row);
             }
 
-            // Auto-select first response and expand the box.
             _selectedResponseIndex = 0;
             HighlightSelectedResponse();
-            _dialogueBox.OffsetTop = DialogueBoxExpandedTop;
         }
         else
         {
@@ -284,8 +351,67 @@ public partial class DialogueManager : CanvasLayer
             _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
                 !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
             _selectedResponseIndex = -1;
-            _dialogueBox.OffsetTop = DialogueBoxDefaultTop;
         }
+    }
+
+    /// <summary>Swap the frame + cameo textures for the current speaker.
+    /// Empty/null speaker = narrator (no cameo, use the bare frame).</summary>
+    private void UpdateSpeakerVisuals(string speaker)
+    {
+        bool hasSpeaker = !string.IsNullOrEmpty(speaker);
+        _frameBg.Texture = hasSpeaker ? _texFrameBgName : _texFrameBg;
+        // Reset name label visibility — gets hidden again by SetPlayerSpeakingVisuals
+        // for response/input nodes, but every NPC turn should restore it.
+        _nameLabel.Visible = hasSpeaker;
+
+        if (!hasSpeaker)
+        {
+            _cameo.Visible = false;
+            return;
+        }
+
+        var tex = LoadCameo(speaker);
+        if (tex != null)
+        {
+            _cameo.Texture = tex;
+            _cameo.Visible = true;
+        }
+        else
+        {
+            // Fall back to AL (narrator mask) so the circle isn't empty.
+            _cameo.Texture = LoadCameo("AL");
+            _cameo.Visible = _cameo.Texture != null;
+        }
+    }
+
+    /// <summary>Switch to the simple (cameo-less, name-less) frame for moments
+    /// when the player is acting — choosing a response or typing input. Same
+    /// frame dimensions as the speaker frame, so layout doesn't shift.</summary>
+    private void SetPlayerSpeakingVisuals()
+    {
+        _frameBg.Texture = _texFrameBg;
+        _cameo.Visible = false;
+        _nameLabel.Visible = false;
+    }
+
+
+    private static Texture2D LoadCameo(string speaker)
+    {
+        if (string.IsNullOrEmpty(speaker)) return null;
+        var key = speaker.ToLowerInvariant();
+        if (_cameoCache.TryGetValue(key, out var cached)) return cached;
+        var path = $"res://assets/sprites/ui/dialogue/cameo_{key}.png";
+        var tex = ResourceLoader.Exists(path) ? GD.Load<Texture2D>(path) : null;
+        _cameoCache[key] = tex; // cache even nulls — avoid re-probing for misses
+        return tex;
+    }
+
+    private static string PrettifySpeaker(string speaker)
+    {
+        if (string.IsNullOrEmpty(speaker)) return "";
+        // "Shopkeeper_Sally" → "Shopkeeper Sally". Speaker IDs keep
+        // underscores in .tres files to stay identifier-safe.
+        return speaker.Replace('_', ' ');
     }
 
     private void OnResponseChosen(int index)
@@ -309,7 +435,7 @@ public partial class DialogueManager : CanvasLayer
     public void EndDialogue()
     {
         GD.Print("[Dialogue] EndDialogue called");
-        _dialogueBox.Visible = false;
+
         ClearResponses();
         RemoveFontOverride();
         _currentNode = null;
@@ -318,9 +444,14 @@ public partial class DialogueManager : CanvasLayer
         _waitingForInput = false;
         IsActive = false;
 
-        // Unpause.
+        // Unpause immediately so gameplay resumes during the fade-out.
+        // Input stays locked until the fade completes so the player can't
+        // bump an NPC and retrigger dialogue mid-fade.
         GetTree().Paused = false;
-        if (_player != null) _player.InputLocked = false;
+        FadeOut(() =>
+        {
+            if (_player != null) _player.InputLocked = false;
+        });
 
         // Auto-save quest state.
         SaveManager.Instance?.Save();
@@ -584,26 +715,60 @@ public partial class DialogueManager : CanvasLayer
         _inputVariable = variable;
         _continueHint.Visible = false;
         _responseContainer.Visible = false;
+        // Hide the body text — the "What's your name?" node already showed
+        // on the previous beat, and the input row replaces the dialogue body.
+        _textLabel.Visible = false;
+        // Player is typing — drop the cameo / name strip too.
+        SetPlayerSpeakingVisuals();
 
-        // Expand the box so the input fields don't overflow off-screen.
-        _dialogueBox.OffsetTop = DialogueBoxExpandedTop;
-
-        // Show a LineEdit for text input.
         var vbox = _textLabel.GetParent() as VBoxContainer;
+
+        // Helper label above the input row — flat cream, no shadow.
+        var prompt = new Label();
+        prompt.Name = "DialogueInputPrompt";
+        prompt.Text = "Type your player name:";
+        prompt.AddThemeFontSizeOverride("font_size", 22);
+        prompt.AddThemeColorOverride("font_color", new Color(0.99f, 0.94f, 0.78f, 1f));
+        vbox.AddChild(prompt);
+
+        // Input + Enter sit side-by-side on the cream dialogue bg.
+        var row = new HBoxContainer();
+        row.Name = "DialogueInputRow";
+        row.AddThemeConstantOverride("separation", 10);
+        vbox.AddChild(row);
+
+        // Gray inline input — C3's obj_transBox equivalent.
+        var inputBg = new StyleBoxFlat();
+        inputBg.BgColor = new Color(0.55f, 0.54f, 0.48f, 1f);
+        inputBg.ContentMarginLeft = inputBg.ContentMarginRight = 10;
+        inputBg.ContentMarginTop = inputBg.ContentMarginBottom = 6;
+
         var inputBox = new LineEdit();
         inputBox.Name = "DialogueInput";
         inputBox.MaxLength = 8;
-        inputBox.PlaceholderText = "Enter...";
+        inputBox.PlaceholderText = "";
         inputBox.ProcessMode = ProcessModeEnum.Always;
-        inputBox.CustomMinimumSize = new Vector2(200, 0);
-        vbox.AddChild(inputBox);
+        inputBox.CustomMinimumSize = new Vector2(200, 36);
+        inputBox.AddThemeFontSizeOverride("font_size", 22);
+        inputBox.AddThemeColorOverride("font_color", new Color(0.99f, 0.94f, 0.78f, 1f));
+        inputBox.AddThemeColorOverride("caret_color", new Color(0.35f, 0.23f, 0.08f, 1f));
+        inputBox.AddThemeStyleboxOverride("normal", inputBg);
+        inputBox.AddThemeStyleboxOverride("focus", inputBg);
+        inputBox.AddThemeStyleboxOverride("read_only", inputBg);
+        row.AddChild(inputBox);
 
+        // Boxed "Enter" button — uses the C3 Btn_Action sprite (frame 0 normal,
+        // frame 1 hover). Nine-sliced via texture_margin so the same style can
+        // be reused at any size throughout the UI.
         var okBtn = new Button();
         okBtn.Name = "DialogueInputOk";
-        okBtn.Text = "OK";
+        okBtn.Text = "Enter";
         okBtn.ProcessMode = ProcessModeEnum.Always;
+        okBtn.CustomMinimumSize = new Vector2(70, 36); // native sprite size
+        okBtn.AddThemeFontSizeOverride("font_size", 22);
+        UiStyles.ApplyBtnActionStyle(okBtn);
         okBtn.Pressed += () => SubmitInput(inputBox.Text);
-        vbox.AddChild(okBtn);
+        row.AddChild(okBtn);
 
         inputBox.GrabFocus();
         inputBox.TextSubmitted += text => SubmitInput(text);
@@ -626,18 +791,15 @@ public partial class DialogueManager : CanvasLayer
 
         GD.Print($"[Dialogue] Input '{_inputVariable}' = '{text}'");
 
-        // Remove input UI and restore box size.
-        _dialogueBox.OffsetTop = DialogueBoxDefaultTop;
+        // Remove the input UI we injected in HandleInput.
         var vbox = _textLabel.GetParent() as VBoxContainer;
-        var input = vbox.GetNodeOrNull("DialogueInput");
-        var ok = vbox.GetNodeOrNull("DialogueInputOk");
-        input?.QueueFree();
-        ok?.QueueFree();
+        vbox.GetNodeOrNull("DialogueInputPrompt")?.QueueFree();
+        vbox.GetNodeOrNull("DialogueInputRow")?.QueueFree();
 
         _waitingForInput = false;
         _continueHint.Visible = true;
 
-        // Auto-advance.
+        // Auto-advance (NavigateToNode will re-show _textLabel for the next node).
         Advance();
     }
 
@@ -672,12 +834,17 @@ public partial class DialogueManager : CanvasLayer
     {
         for (int i = 0; i < _responseContainer.GetChildCount(); i++)
         {
-            if (_responseContainer.GetChild(i) is Button btn)
+            if (_responseContainer.GetChild(i) is HBoxContainer row)
             {
-                bool selected = i == _selectedResponseIndex;
-                btn.Text = (_currentResponses != null && i < _currentResponses.Count)
-                    ? (selected ? "> " : "  ") + SubstituteVariables(_currentResponses[i].Text)
-                    : btn.Text;
+                var pointer = row.GetNodeOrNull<Label>("Pointer");
+                if (pointer != null)
+                {
+                    // Pointer lives in a fixed column; we toggle alpha so the
+                    // response text never shifts as selection changes.
+                    pointer.Modulate = i == _selectedResponseIndex
+                        ? Colors.White
+                        : new Color(1, 1, 1, 0);
+                }
             }
         }
     }

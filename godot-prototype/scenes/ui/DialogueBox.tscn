@@ -1,60 +1,108 @@
-[gd_scene load_steps=3 format=3 uid="uid://dialogue001"]
+[gd_scene format=3 uid="uid://dialogue001"]
 
-[ext_resource type="Script" path="res://scripts/ui/DialogueManager.cs" id="1"]
+[ext_resource type="Script" uid="uid://dw2d2xag04406" path="res://scripts/ui/DialogueManager.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://x0q8aslfyrgd" path="res://assets/sprites/ui/dialogue/frame_bg_name.png" id="2_frame"]
+[ext_resource type="Texture2D" uid="uid://s2xkykov00er" path="res://assets/sprites/ui/dialogue/cameo_al.png" id="3_cameo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.1, 0.1, 0.15, 0.92)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.8, 0.75, 0.55, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 8.0
-
-[node name="DialogueManager" type="CanvasLayer"]
+[node name="DialogueManager" type="CanvasLayer" unique_id=736270774]
 layer = 10
 script = ExtResource("1")
+metadata/_edit_vertical_guides_ = [114.0]
 
-[node name="DialogueBox" type="PanelContainer" parent="."]
-visible = false
-anchors_preset = 12
+[node name="DialogueBox" type="Control" parent="." unique_id=999747778]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -355.38458
+offset_top = -195.0
+offset_right = 355.38464
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="FrameBg" type="TextureRect" parent="DialogueBox" unique_id=1933659542]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_frame")
+
+[node name="Cameo" type="TextureRect" parent="DialogueBox" unique_id=1833434789]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("3_cameo")
+
+[node name="NameLabel" type="Label" parent="DialogueBox" unique_id=956334035]
+layout_mode = 0
+offset_left = 110.38458
+offset_top = 45.0
+offset_right = 410.38458
+offset_bottom = 79.0
+theme_override_colors/font_color = Color(0.984, 1, 0.741, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 24
+text = "Speaker"
+
+[node name="TextArea" type="MarginContainer" parent="DialogueBox" unique_id=1526016003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 110.38458
+offset_top = 85.0
+offset_right = -59.00006
+offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0063077, 0.9923795)
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DialogueBox/TextArea" unique_id=1658160457]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TextLabel" type="Label" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1217893458]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.984, 1, 0.741, 1)
+theme_override_constants/line_spacing = 2
+theme_override_constants/paragraph_spacing = 2
+theme_override_constants/shadow_offset_x = 0
+theme_override_font_sizes/font_size = 24
+text = "Dialogue text goes here, sometimes it can be longer than the width of the page..."
+autowrap_mode = 2
+
+[node name="ResponseContainer" type="VBoxContainer" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1853054451]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="ContinueHint" type="Label" parent="DialogueBox" unique_id=574857519]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -100.0
-offset_right = -40.0
-offset_bottom = -10.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
-
-[node name="MarginContainer" type="MarginContainer" parent="DialogueBox"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DialogueBox/MarginContainer"]
-layout_mode = 2
-
-[node name="NameLabel" type="Label" parent="DialogueBox/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Speaker"
-theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
-theme_override_font_sizes/font_size = 16
-
-[node name="TextLabel" type="Label" parent="DialogueBox/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Dialogue text goes here..."
-autowrap_mode = 2
-theme_override_font_sizes/font_size = 16
-
-[node name="ContinueHint" type="Label" parent="DialogueBox/MarginContainer/VBoxContainer"]
-layout_mode = 2
+offset_left = -200.38464
+offset_top = -158.0
+offset_right = -58.384644
+offset_bottom = -136.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.9882353, 0.9411765, 0.78039217, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 14
 text = "[Space] Continue"
 horizontal_alignment = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 0.7)
-theme_override_font_sizes/font_size = 16
+vertical_alignment = 1
