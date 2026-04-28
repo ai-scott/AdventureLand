@@ -356,13 +356,14 @@ public partial class WorldManager : Node
         // Short beat after banner fade-in so the player sees the world before the prompt.
         await ToSignal(GetTree().CreateTimer(0.3), Timer.SignalName.Timeout);
 
-        var font = GD.Load<Font>("res://assets/fonts/Font_Fantasy.ttf");
         var lines = new[]
         {
             "Welcome to AdventureLand! Press [Space] to continue.",
             "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
         };
-        dm.StartDialogueWithFont("AdventureLand", lines, font);
+        // Underscore → space in PrettifySpeaker. The cameo falls back to
+        // cameo_al.png since cameo_adventure_land.png doesn't exist.
+        dm.StartDialogue("Adventure_Land", lines);
 
         QuestSystem.SetWorldFlag("welcome_shown", "true");
         SaveManager.Instance?.Save();

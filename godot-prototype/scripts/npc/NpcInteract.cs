@@ -90,10 +90,35 @@ public partial class NpcInteract : Area2D
 	private void ApplyQuestGate()
 	{
 		bool unlocked = IsUnlocked();
+		bool wasLocked = _lastUnlocked != true;
 		Visible = unlocked;
 		Monitoring = unlocked;
 		if (_body != null) _body.CollisionLayer = unlocked ? _bodyDefaultLayer : 0u;
 		_lastUnlocked = unlocked;
+
+		// Godot's Area2D doesn't fire body_entered retroactively when
+		// Monitoring flips on with a body already overlapping. If the player
+		// is standing on Rosie at the moment she "deploys" mid-quest, that
+		// would leave _playerInRange = false and pressing E would do nothing.
+		// Defer one frame so the physics state is settled, then probe for an
+		// overlapping player and synthesise OnBodyEntered if needed.
+		if (unlocked && wasLocked)
+		{
+			CallDeferred(nameof(CheckPostUnlockOverlap));
+		}
+	}
+
+	private void CheckPostUnlockOverlap()
+	{
+		if (!IsInsideTree() || !Monitoring) return;
+		foreach (var body in GetOverlappingBodies())
+		{
+			if (body is PlayerController player)
+			{
+				OnBodyEntered(player);
+				break;
+			}
+		}
 	}
 
 	private bool IsUnlocked()

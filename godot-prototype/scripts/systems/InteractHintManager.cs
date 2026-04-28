@@ -33,9 +33,11 @@ public partial class InteractHintManager : CanvasLayer
     private readonly Dictionary<Node2D, Func<string>> _candidates = new();
 
     /// <summary>Pixel offset from the source's world position (in screen space,
-    /// since our source is always a Node2D at nominal scale). Y is negative to
-    /// push the hint above the source sprite.</summary>
-    private static readonly Vector2 ScreenOffset = new(0, -28);
+    /// since our source is always a Node2D at nominal scale). Y is negative
+    /// enough to clear a 16×32 NPC sprite — Mana Seed NPCs render with the
+    /// origin at their feet, so the hint needs to clear the head plus a bit
+    /// of breathing room above.</summary>
+    private static readonly Vector2 ScreenOffset = new(0, -44);
 
     public override void _Ready()
     {
@@ -130,31 +132,15 @@ public partial class InteractHintManager : CanvasLayer
         _panel.ProcessMode = ProcessModeEnum.Always;
         _panel.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-        // Match ItemPickupToast.InitPanel() styling for consistency, with
-        // tighter margins since a hint is a single-line badge.
-        var style = new StyleBoxFlat
-        {
-            BgColor = new Color(0.08f, 0.08f, 0.12f, 0.92f),
-            BorderColor = new Color(0.8f, 0.75f, 0.55f, 1),
-            BorderWidthLeft = 2,
-            BorderWidthTop = 2,
-            BorderWidthRight = 2,
-            BorderWidthBottom = 2,
-            CornerRadiusTopLeft = 4,
-            CornerRadiusTopRight = 4,
-            CornerRadiusBottomLeft = 4,
-            CornerRadiusBottomRight = 4,
-            ContentMarginLeft = 8,
-            ContentMarginRight = 8,
-            ContentMarginTop = 4,
-            ContentMarginBottom = 4,
-        };
-        _panel.AddThemeStyleboxOverride("panel", style);
+        // Same panel surface as the dialogue + item toast — one cream/teal
+        // vocabulary across every UI prompt. Tight padding since a hint is
+        // a single-line badge.
+        _panel.AddThemeStyleboxOverride("panel", UiStyles.MakePanelStylebox(contentPadding: 6));
 
         _label = new Label();
         _label.AddThemeFontOverride("font", UiFonts.Body);
         _label.AddThemeFontSizeOverride("font_size", 16);
-        _label.AddThemeColorOverride("font_color", new Color(1, 0.95f, 0.8f, 1));
+        _label.AddThemeColorOverride("font_color", UiStyles.Cream);
         _label.HorizontalAlignment = HorizontalAlignment.Center;
         _panel.AddChild(_label);
 
