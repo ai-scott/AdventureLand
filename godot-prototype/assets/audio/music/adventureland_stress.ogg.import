@@ -3,11 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://kyhd0n5g5gkb"
-valid=false
+path="res://.godot/imported/adventureland_stress.ogg-dd45d33d913c9f4022cff33b964b93e7.oggvorbisstr"
 
 [deps]
 
 source_file="res://assets/audio/music/adventureland_stress.ogg"
+dest_files=["res://.godot/imported/adventureland_stress.ogg-dd45d33d913c9f4022cff33b964b93e7.oggvorbisstr"]
 
 [params]
 
