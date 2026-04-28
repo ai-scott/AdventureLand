@@ -22,10 +22,17 @@ public static class UiFonts
 {
     private static Font _body;
     private static Font _title;
+    private static Font _pixel;
 
     public static Font Body =>
         _body ??= GD.Load<Font>("res://assets/fonts/romulus_by_pix3m-d6aokem.ttf");
 
     public static Font Title =>
         _title ??= GD.Load<Font>("res://assets/fonts/alagard_by_pix3m-d6awiwp.ttf");
+
+    /// <summary>Chunky retro pixel font — for menu options on title / game over
+    /// where we want the "Final Fantasy menu" look rather than the ornate
+    /// alagard title face.</summary>
+    public static Font Pixel =>
+        _pixel ??= GD.Load<Font>("res://assets/fonts/Font_Fantasy.ttf");
 }
