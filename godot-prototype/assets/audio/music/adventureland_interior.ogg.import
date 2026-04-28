@@ -2,10 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://cb3qjtp5c8k6p"
+path="res://.godot/imported/adventureland_interior.ogg-a5fc32dc7baffb217e4e38ab7cece133.oggvorbisstr"
 
 [deps]
 
 source_file="res://assets/audio/music/adventureland_interior.ogg"
+dest_files=["res://.godot/imported/adventureland_interior.ogg-a5fc32dc7baffb217e4e38ab7cece133.oggvorbisstr"]
 
 [params]
 

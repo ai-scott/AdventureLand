@@ -483,11 +483,10 @@ the inspector.
 
 | World | Music |
 |---|---|
-| Title screen | `town` (single track — Town theme works as menu music) |
-| World_00 Village | `town` |
+| Title screen | `town` (single track — menu music; only place `town` is used) |
+| World_00 Village + all other exterior worlds | `adventureland_*` mix layers (Happy/Stress/Danger) |
 | World_00_Home / PennysHouse | `adventureland_calm` (intimate interior cue) |
 | World_00 Blacksmith / GeneralStore / AdventureShop / Windmill_* | `adventureland_interior` (shop/workshop interiors) |
-| World_01 / World_03 / World_10 | `adventureland_*` mix layers (Happy/Stress/Danger) |
 | Sea Monster lake (when ported) | `adventureland_*` mix |
 | Game over | (no music — silence is better) |
 
