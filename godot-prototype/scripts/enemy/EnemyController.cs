@@ -497,6 +497,7 @@ public partial class EnemyController : CharacterBody2D
 	private void OnHurt()
 	{
 		_isHurt = true;
+		SFXController.Instance?.Play("enemy_hurt");
 		// Hurt flash — 2 white blinks, less intense than the player's 3-blink.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
@@ -545,6 +546,7 @@ public partial class EnemyController : CharacterBody2D
 
 	private void OnDied()
 	{
+		SFXController.Instance?.Play("enemy_destroy");
 		// Brief fade, then remove.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
