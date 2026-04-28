@@ -106,10 +106,12 @@ godot-prototype/assets/audio/
 │   ├── door_open.ogg             ← from sounds/DoorOpen.webm
 │   └── bubble.ogg                ← from sounds/SFX/BubbleBubble.webm
 ├── music/
-│   ├── town.ogg                  ← from music/Town.webm
-│   ├── adventureland_happy.ogg   ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
-│   ├── adventureland_stress.ogg  ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
-│   └── adventureland_danger.ogg  ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
+│   ├── town.ogg                    ← from music/Town.webm
+│   ├── adventureland_happy.ogg     ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
+│   ├── adventureland_stress.ogg    ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
+│   ├── adventureland_danger.ogg    ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
+│   ├── adventureland_interior.ogg  ← from music/Adventureland2_01.webm (shop/blacksmith interiors)
+│   └── adventureland_calm.ogg      ← from music/Adventureland3_01.webm (player home + Penny's house)
 └── vo/
     ├── al/
     │   ├── al__welcome_to_adventure_land.ogg
@@ -483,9 +485,9 @@ the inspector.
 |---|---|
 | Title screen | `town` (single track — Town theme works as menu music) |
 | World_00 Village | `town` |
-| World_00_Home / PennysHouse | `town` (interior keeps village theme) |
-| World_00 Blacksmith / shops | `town` |
-| World_20 Snowy Mountain | `adventureland_*` mix layers |
+| World_00_Home / PennysHouse | `adventureland_calm` (intimate interior cue) |
+| World_00 Blacksmith / GeneralStore / AdventureShop / Windmill_* | `adventureland_interior` (shop/workshop interiors) |
+| World_01 / World_03 / World_10 | `adventureland_*` mix layers (Happy/Stress/Danger) |
 | Sea Monster lake (when ported) | `adventureland_*` mix |
 | Game over | (no music — silence is better) |
 
