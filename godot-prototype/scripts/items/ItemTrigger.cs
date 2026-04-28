@@ -155,6 +155,12 @@ public partial class ItemTrigger : Area2D
         _collected = true;
         GD.Print($"[ItemTrigger] Picked up: {Data.Name}");
 
+        // Heart for food, generic collectible chime for everything else.
+        // Routed here (not in ShowTakePrompt's onAccept) so paid purchases
+        // get the same audio feedback as free pickups.
+        SFXController.Instance?.Play(
+            Data.Category == ItemData.ItemCategory.Food ? "heart" : "collectible_pickup");
+
         if (Unique)
         {
             QuestSystem.SetWorldFlag($"ItemCollected_{TriggerID}", "true");
