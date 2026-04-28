@@ -23,6 +23,11 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class InventoryUI : CanvasLayer
 {
+    /// <summary>Autoload-singleton handle for triggers that need to open the
+    /// inventory programmatically (mirrors, menu items, etc.). Set in
+    /// _Ready when the InventoryUI autoload spins up.</summary>
+    public static InventoryUI Instance { get; private set; }
+
     private const int GridCols = 5;
     private const int GridRows = 5;
 
@@ -57,6 +62,7 @@ public partial class InventoryUI : CanvasLayer
 
     public override void _Ready()
     {
+        Instance = this;
         Layer = 9;
         ProcessMode = ProcessModeEnum.Always;
         BuildUI();
@@ -108,8 +114,11 @@ public partial class InventoryUI : CanvasLayer
 
     // ---- Open / Close ----
 
-    private void Open()
+    /// <summary>Open the inventory UI from anywhere — mirror trigger, menu
+    /// item, scripted cutscene. Idempotent if the inventory is already open.</summary>
+    public void Open()
     {
+        if (_isOpen) return;
         _isOpen = true;
         _panel.Visible = true;
         GetTree().Paused = true;

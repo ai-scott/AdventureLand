@@ -78,10 +78,10 @@ expand_mode = 1
 
 [node name="Gems" type="HBoxContainer" parent="." unique_id=1949579530]
 offset_left = 6.0
-offset_top = 27.0
+offset_top = 25.0
 offset_right = 90.0
-offset_bottom = 55.0
-theme_override_constants/separation = 6
+offset_bottom = 59.0
+theme_override_constants/separation = 4
 
 [node name="Icon" type="TextureRect" parent="Gems" unique_id=1184417064]
 texture_filter = 1
@@ -89,15 +89,18 @@ custom_minimum_size = Vector2(22, 22)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("5_gem")
-stretch_mode = 2
+stretch_mode = 3
 
 [node name="Count" type="Label" parent="Gems" unique_id=1983284919]
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(1, 0.9490196, 0.8, 1)
-theme_override_colors/font_shadow_color = Color(0.47843137, 0.5019608, 0.19215687, 1)
+theme_override_colors/font_shadow_color = Color(0.13725491, 0.31764707, 0.14901961, 1)
+theme_override_constants/shadow_offset_x = -2
+theme_override_constants/shadow_offset_y = -1
 theme_override_font_sizes/font_size = 24
 text = "0000"
-vertical_alignment = 2
+vertical_alignment = 1
 
 [node name="Buttons" type="HBoxContainer" parent="." unique_id=123581138]
 offset_left = 2.0
@@ -121,21 +124,24 @@ expand_mode = 1
 [node name="Icon" type="TextureRect" parent="Buttons/Inventory" unique_id=945064615]
 texture_filter = 1
 layout_mode = 0
-offset_left = 6.0
+offset_left = 8.0
 offset_top = 8.0
-offset_right = 26.0
+offset_right = 28.0
 offset_bottom = 28.0
 texture = ExtResource("7_bag")
 expand_mode = 1
 
 [node name="KeyHint" type="Label" parent="Buttons/Inventory" unique_id=521772574]
 layout_mode = 0
-offset_left = 28.0
-offset_top = 6.0
-offset_right = 48.0
-offset_bottom = 32.0
+offset_left = 27.0
+offset_top = 1.0
+offset_right = 47.0
+offset_bottom = 35.0
 theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_colors/font_shadow_color = Color(0.13725491, 0.31764707, 0.14901961, 1)
+theme_override_constants/shadow_offset_x = -2
+theme_override_constants/shadow_offset_y = -1
+theme_override_font_sizes/font_size = 23
 text = "i"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -161,9 +167,9 @@ expand_mode = 1
 [node name="Icon" type="TextureRect" parent="Buttons/Attack" unique_id=983517697]
 texture_filter = 1
 layout_mode = 0
-offset_left = 6.0
-offset_top = 3.9999998
-offset_right = 22.0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 19.0
 offset_bottom = 36.0
 scale = Vector2(1.1147252, 0.8237784)
 texture = ExtResource("8_sword")
@@ -171,12 +177,13 @@ texture = ExtResource("8_sword")
 [node name="KeyHint" type="TextureRect" parent="Buttons/Attack" unique_id=901149149]
 texture_filter = 1
 layout_mode = 0
-offset_left = 26.0
-offset_top = 10.0
+offset_left = 22.0
+offset_top = 6.0
 offset_right = 46.0
-offset_bottom = 26.0
+offset_bottom = 30.0
+scale = Vector2(1.0506876, 1.0506876)
 texture = ExtResource("9_space")
-expand_mode = 1
+expand_mode = 3
 
 [node name="Touch" type="TextureButton" parent="Buttons/Attack" unique_id=1298602956]
 layout_mode = 0
