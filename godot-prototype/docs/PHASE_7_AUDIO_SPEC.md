@@ -8,18 +8,28 @@ be able to read this top-to-bottom and implement.
 repo root (the C3 project's audio assets). Format is `.webm` (Vorbis
 inside a WebM container).
 
-**Gotcha (verified 2026-04-28):** Godot 4.6 imports `.webm` as **video**
-(`VideoStreamTheora`), not audio. `GD.Load<AudioStream>("res://...webm")`
-returns null → silent failure. Remux to `.ogg` (Vorbis-in-Ogg) before
-import:
+**Gotcha (verified 2026-04-28):** Two layered mistakes here, both worth
+calling out so a future-chat doesn't repeat either one.
+
+1. **Godot 4.6 imports `.webm` as video** (`VideoStreamTheora`), not
+   audio. `GD.Load<AudioStream>("res://...webm")` returns null → silent
+   failure inside SFXController.
+
+2. **The C3 `.webm` files contain Opus, not Vorbis.** The container says
+   WebM, but the audio codec inside is Opus. Godot's `.ogg` importer
+   only supports Vorbis (`AudioStreamOggVorbis`); Opus-in-Ogg loads
+   silently as null. Stream-copying with `-c:a copy` preserves the
+   Opus codec and produces unplayable `.ogg` files.
+
+**Correct transcode** (verified working — re-encodes Opus → Vorbis,
+quality 5 ≈ 160 kbps):
 
 ```bash
-ffmpeg -y -loglevel error -i input.webm -vn -c:a copy output.ogg
+ffmpeg -y -loglevel error -i input.webm -vn -c:a libvorbis -q:a 5 output.ogg
 ```
 
-`-c:a copy` keeps the Vorbis stream bit-exact — no quality loss, no
-re-encode. The `.ogg` path then imports cleanly to
-`AudioStreamOggVorbis`.
+The slight re-encode hit is invisible for game SFX. The `.ogg` then
+imports cleanly to `AudioStreamOggVorbis`.
 
 **Estimated effort:** ~half-day for controllers + asset copy, ~half-day
 for the wirings + sea-monster music plumbing.
