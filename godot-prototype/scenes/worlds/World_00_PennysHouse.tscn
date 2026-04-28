@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
@@ -12,6 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="11_npc"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="12_npc"]
+[ext_resource type="Script" path="res://scripts/world/MirrorTrigger.cs" id="13_mirror"]
+
+[sub_resource type="RectangleShape2D" id="MirrorShape_Penny"]
+size = Vector2(20, 20)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -76,3 +80,12 @@ RequiredWorldFlag = "penny_home"
 [node name="Rosie" parent="." instance=ExtResource("12_npc")]
 position = Vector2(129, 39)
 RequiredWorldFlag = "penny_home"
+
+[node name="MirrorTrigger" type="Area2D" parent="."]
+position = Vector2(64, 80)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("13_mirror")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger"]
+shape = SubResource("MirrorShape_Penny")

@@ -25,7 +25,7 @@
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
-[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
+[ext_resource type="Resource" uid="uid://bkbb628ohe8pc" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1392,9 +1392,9 @@ Dialogue = ExtResource("13_8fufv")
 HideWhenWorldFlag = "penny_home"
 
 [node name="Rosie" parent="Entities" unique_id=2001897635 instance=ExtResource("17_46npq")]
-position = Vector2(280, 398)
+position = Vector2(650, 420)
 RequiredQuestId = "rescue_cat_quest"
-RequiredQuestStatus = "Rosie_Found"
+RequiredQuestStatus = "Start_Cat_Quest"
 HideWhenWorldFlag = "penny_home"
 
 [node name="TreeSignTrigger" parent="Entities" unique_id=1858068204 instance=ExtResource("4_46npq")]
@@ -1427,7 +1427,6 @@ position_smoothing_enabled = true
 script = ExtResource("6")
 
 [node name="DialogueManager" parent="." unique_id=1659791479 instance=ExtResource("5")]
-
 
 [node name="GameOver" parent="." unique_id=1366688518 instance=ExtResource("19_ujiax")]
 visible = false

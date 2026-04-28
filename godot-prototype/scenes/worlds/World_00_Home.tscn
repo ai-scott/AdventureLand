@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
@@ -10,6 +10,10 @@
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Home.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+[ext_resource type="Script" path="res://scripts/world/MirrorTrigger.cs" id="11_mirror"]
+
+[sub_resource type="RectangleShape2D" id="MirrorShape_Home"]
+size = Vector2(20, 20)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -65,3 +69,12 @@ script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
+
+[node name="MirrorTrigger" type="Area2D" parent="."]
+position = Vector2(64, 64)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("11_mirror")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger"]
+shape = SubResource("MirrorShape_Home")
