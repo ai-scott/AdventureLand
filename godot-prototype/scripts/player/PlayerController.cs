@@ -333,6 +333,8 @@ public partial class PlayerController : CharacterBody2D
 		_state.Travel(AttackAnimName);
 		Attacking = true;
 
+		SFXController.Instance?.Play("player_sword");
+
 		// Show the weapon immediately. Don't wait on animation_state_started
 		// from MSCA — on rapid re-presses the state machine is mid-exit from
 		// the previous attack and the "started" signal can skip-fire, leaving
@@ -368,7 +370,14 @@ public partial class PlayerController : CharacterBody2D
 	{
 		if (_health == null || _health.Invulnerable || _health.IsDead) return;
 		_health.TakeDamage(amount);
-		if (!_health.IsDead) PlayHurtFlash();
+		if (!_health.IsDead)
+		{
+			PlayHurtFlash();
+			// Gated on !IsDead so the death cue (handled separately by the
+			// game-over flow) doesn't double up with a damage beep on the
+			// killing blow.
+			SFXController.Instance?.Play("player_hurt");
+		}
 	}
 
 	private void PlayHurtFlash()
