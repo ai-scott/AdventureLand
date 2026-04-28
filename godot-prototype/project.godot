@@ -14,6 +14,10 @@ config/name="AdventureLandPrototype"
 run/main_scene="res://scenes/ui/TitleScreen.tscn"
 config/features=PackedStringArray("4.6", "C#")
 
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
+
 [autoload]
 
 SaveManager="*uid://daec4527688be"
