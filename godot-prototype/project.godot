@@ -28,6 +28,7 @@ HUD="*res://scenes/ui/HUD.tscn"
 InventoryUI="*res://scenes/ui/InventoryUI.tscn"
 InteractHintManager="*res://scripts/systems/InteractHintManager.cs"
 SFXController="*res://scripts/systems/audio/SFXController.cs"
+MusicController="*res://scripts/systems/audio/MusicController.cs"
 
 [display]
 
