@@ -10,11 +10,11 @@
 # fonts render blurry. Track the .import alongside the .ttf.
 !assets/fonts/*.import
 
-# Exception: music .import files carry loop=true. Without these, fresh
-# clones re-import the music tracks with loop=false (Godot's default for
-# audio) and tracks fade out mid-session. SFX and VO are one-shots, so
-# they're fine to re-import with defaults.
-!assets/audio/music/*.import
+# Exception: music .ogg.import files carry loop=true. Without these,
+# fresh clones re-import the music tracks with loop=false (Godot's
+# default for audio) and tracks fade out mid-session. SFX and VO are
+# one-shots, so they're fine to re-import with defaults.
+!assets/audio/music/*.ogg.import
 
 # Mono/C#
 .mono/

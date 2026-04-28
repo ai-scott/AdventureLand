@@ -6,8 +6,20 @@ be able to read this top-to-bottom and implement.
 
 **Source of truth for sounds:** the `sounds/` and `music/` folders at the
 repo root (the C3 project's audio assets). Format is `.webm` (Vorbis
-inside a WebM container). Godot 4 reads these natively via
-`AudioStreamOggVorbis` after re-import — no transcoding needed.
+inside a WebM container).
+
+**Gotcha (verified 2026-04-28):** Godot 4.6 imports `.webm` as **video**
+(`VideoStreamTheora`), not audio. `GD.Load<AudioStream>("res://...webm")`
+returns null → silent failure. Remux to `.ogg` (Vorbis-in-Ogg) before
+import:
+
+```bash
+ffmpeg -y -loglevel error -i input.webm -vn -c:a copy output.ogg
+```
+
+`-c:a copy` keeps the Vorbis stream bit-exact — no quality loss, no
+re-encode. The `.ogg` path then imports cleanly to
+`AudioStreamOggVorbis`.
 
 **Estimated effort:** ~half-day for controllers + asset copy, ~half-day
 for the wirings + sea-monster music plumbing.
@@ -65,28 +77,28 @@ the C3 project still uses them at the repo root.
 ```
 godot-prototype/assets/audio/
 ├── sfx/
-│   ├── enemy_hurt.webm           ← from sounds/Enemy_Hurt.webm
-│   ├── enemy_destroy.webm        ← from sounds/Enemy_Destroy.webm
-│   ├── player_sword.webm         ← from sounds/Player_Sword_2.webm
-│   ├── player_hurt.webm          ← from sounds/Player_Hurt2.webm
-│   ├── potion.webm               ← from sounds/Potion.webm
-│   ├── destructible_destroy.webm ← from sounds/Destructible_Destroy.webm
-│   ├── collectible_pickup.webm   ← from sounds/Collectible_Pickup.webm
-│   ├── heart.webm                ← from sounds/Heart.webm
-│   ├── room_clear.webm           ← from sounds/RoomClear.webm
-│   ├── door_open.webm            ← from sounds/DoorOpen.webm
-│   └── bubble.webm               ← from sounds/SFX/BubbleBubble.webm
+│   ├── enemy_hurt.ogg            ← from sounds/Enemy_Hurt.webm
+│   ├── enemy_destroy.ogg         ← from sounds/Enemy_Destroy.webm
+│   ├── player_sword.ogg          ← from sounds/Player_Sword_2.webm
+│   ├── player_hurt.ogg           ← from sounds/Player_Hurt2.webm
+│   ├── potion.ogg                ← from sounds/Potion.webm
+│   ├── destructible_destroy.ogg  ← from sounds/Destructible_Destroy.webm
+│   ├── collectible_pickup.ogg    ← from sounds/Collectible_Pickup.webm
+│   ├── heart.ogg                 ← from sounds/Heart.webm
+│   ├── room_clear.ogg            ← from sounds/RoomClear.webm
+│   ├── door_open.ogg             ← from sounds/DoorOpen.webm
+│   └── bubble.ogg                ← from sounds/SFX/BubbleBubble.webm
 ├── music/
-│   ├── town.webm                 ← from music/Town.webm
-│   ├── adventureland_happy.webm  ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
-│   ├── adventureland_stress.webm ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
-│   └── adventureland_danger.webm ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
+│   ├── town.ogg                  ← from music/Town.webm
+│   ├── adventureland_happy.ogg   ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
+│   ├── adventureland_stress.ogg  ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
+│   └── adventureland_danger.ogg  ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
 └── vo/
     ├── al/
-    │   ├── al__welcome_to_adventure_land.webm
-    │   └── al__have_fun.webm
+    │   ├── al__welcome_to_adventure_land.ogg
+    │   └── al__have_fun.ogg
     └── seamonster/
-        └── (10 lines, copy whole sounds/vo/SeaMonster/ directory)
+        └── (10 lines, copy whole sounds/vo/SeaMonster/ directory and remux)
 ```
 
 **Renaming convention:** `lowercase_snake_case` for filenames so they read
@@ -107,9 +119,10 @@ These are kept *available* for future content (treasure chest =
 `chest_open`, quest complete = `Big Win`, heart container =
 `mystery`/`find`, etc.) but don't ship in the foundation commit.
 
-**Import settings** — Godot 4 imports `.webm` to `AudioStreamOggVorbis`
-by default. For the music tracks set `loop = true` in the import dock so
-they don't fade out mid-track.
+**Import settings** — `.ogg` imports to `AudioStreamOggVorbis` by
+default. For the music tracks set `loop = true` in the import dock (or
+ship a pre-seeded `.import` file with `loop=true`) so they don't fade
+out mid-track. SFX and VO are one-shots, leave them at the default.
 
 ---
 

@@ -29,6 +29,9 @@ public partial class SFXController : Node
 
     private const string BusName = "SFX";
     private const string SfxRoot = "res://assets/audio/sfx/";
+    // .ogg, not .webm — Godot 4 imports .webm as video. Audio assets are
+    // remuxed Vorbis-in-Ogg (see godot-prototype/docs/PHASE_7_AUDIO_SPEC.md §3).
+    private const string SfxExt = ".ogg";
 
     private readonly Queue<AudioStreamPlayer> _free = new();
     private readonly Dictionary<AudioStreamPlayer, string> _activeName = new();
@@ -121,7 +124,7 @@ public partial class SFXController : Node
     {
         if (_streamCache.TryGetValue(name, out var cached)) return cached;
 
-        string path = $"{SfxRoot}{name}.webm";
+        string path = $"{SfxRoot}{name}{SfxExt}";
         if (!ResourceLoader.Exists(path))
         {
             GD.PushWarning($"[SFXController] Missing SFX file: {path}");

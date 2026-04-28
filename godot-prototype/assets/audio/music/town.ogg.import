@@ -2,10 +2,12 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://cqyvtorabjarj"
+valid=false
 
 [deps]
 
-source_file="res://assets/audio/music/adventureland_happy.webm"
+source_file="res://assets/audio/music/town.ogg"
 
 [params]
 

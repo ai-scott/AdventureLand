@@ -2,10 +2,12 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://kyhd0n5g5gkb"
+valid=false
 
 [deps]
 
-source_file="res://assets/audio/music/town.webm"
+source_file="res://assets/audio/music/adventureland_stress.ogg"
 
 [params]
 
