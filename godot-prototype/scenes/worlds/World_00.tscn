@@ -1393,7 +1393,7 @@ Dialogue = ExtResource("13_8fufv")
 HideWhenWorldFlag = "penny_home"
 
 [node name="Rosie" parent="Entities" unique_id=2001897635 instance=ExtResource("17_46npq")]
-position = Vector2(650, 420)
+position = Vector2(655, 430)
 RequiredQuestId = "rescue_cat_quest"
 RequiredQuestStatus = "Start_Cat_Quest"
 HideWhenWorldFlag = "penny_home"

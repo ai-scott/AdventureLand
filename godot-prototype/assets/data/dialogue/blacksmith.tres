@@ -1,21 +1,20 @@
-[gd_resource type="Resource" script_class="DialogueData" format=3]
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://b37l4k620p73l"]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
-
-[sub_resource type="Resource" id="cond_2"]
-script = ExtResource("3")
-Type = 0
-QuestId = "blacksmith_intro"
-Status = "Not_Started"
+[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
 
 [sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
 Type = 12
 CustomFunction = "grantFreeItem"
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+QuestId = "blacksmith_intro"
+Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
@@ -27,17 +26,15 @@ AutoAdvance = "node_001"
 Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 Actions = Array[ExtResource("4")]([SubResource("act_3")])
 
-[sub_resource type="Resource" id="cond_5"]
-script = ExtResource("3")
-Type = 0
-QuestId = "blacksmith_intro"
-Status = "Not_Started"
-
 [sub_resource type="Resource" id="act_6"]
 script = ExtResource("4")
-Type = 2
 QuestId = "blacksmith_intro"
 Status = "Complete"
+
+[sub_resource type="Resource" id="cond_5"]
+script = ExtResource("3")
+QuestId = "blacksmith_intro"
+Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_4"]
 script = ExtResource("2")
@@ -51,19 +48,12 @@ Actions = Array[ExtResource("4")]([SubResource("act_6")])
 
 [sub_resource type="Resource" id="cond_8"]
 script = ExtResource("3")
-Type = 0
 QuestId = "blacksmith_intro"
 Status = "Complete"
 
 [sub_resource type="Resource" id="cond_weapon_yes"]
 script = ExtResource("3")
 Type = 6
-Category = "Weapon"
-
-[sub_resource type="Resource" id="cond_weapon_no"]
-script = ExtResource("3")
-Type = 6
-Negate = true
 Category = "Weapon"
 
 [sub_resource type="Resource" id="node_7"]
@@ -74,6 +64,12 @@ Speaker = "Shopkeeper_Sally"
 Priority = 98
 EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_8"), SubResource("cond_weapon_yes")])
+
+[sub_resource type="Resource" id="cond_weapon_no"]
+script = ExtResource("3")
+Type = 6
+Negate = true
+Category = "Weapon"
 
 [sub_resource type="Resource" id="node_10"]
 script = ExtResource("2")
@@ -88,7 +84,5 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_8"), SubResource("cond_w
 script = ExtResource("1")
 NpcId = "Shopkeeper_Sally"
 DisplayName = "Shopkeeper_Sally"
-DefaultNode = "node_000"
 WorldId = "World00"
-QuestRelations = PackedStringArray("blacksmith_intro")
 Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_4"), SubResource("node_7"), SubResource("node_10")])

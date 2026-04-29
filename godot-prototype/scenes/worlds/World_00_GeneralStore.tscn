@@ -178,12 +178,12 @@ TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
-[node name="Sarah" parent="." unique_id=1965893136 instance=ExtResource("11_npc")]
+[node name="Sarah" parent="Entities" unique_id=1965893136 instance=ExtResource("11_npc")]
 position = Vector2(25, 69)
 NpcName = "Sarah"
 Dialogue = ExtResource("13_dlg")
 
-[node name="NpcAnimator" parent="Sarah" index="1"]
+[node name="NpcAnimator" parent="Entities/Sarah" index="1"]
 Sheet = ExtResource("12_sheet")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=535183703]

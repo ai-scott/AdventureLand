@@ -32,12 +32,18 @@ public partial class InteractHintManager : CanvasLayer
 
     private readonly Dictionary<Node2D, Func<string>> _candidates = new();
 
-    /// <summary>Pixel offset from the source's world position (in screen space,
-    /// since our source is always a Node2D at nominal scale). Y is negative
-    /// enough to clear a 16×32 NPC sprite — Mana Seed NPCs render with the
-    /// origin at their feet, so the hint needs to clear the head plus a bit
-    /// of breathing room above.</summary>
-    private static readonly Vector2 ScreenOffset = new(0, -44);
+    /// <summary>World-space offset from the source's origin to where the hint's
+    /// bottom edge should anchor. Mana Seed NPCs render with origin at the feet
+    /// and a 32px sprite, so -32 is the head; we apply this through the canvas
+    /// transform so camera zoom scales it correctly. (A previous version used a
+    /// fixed screen-pixel offset, which landed mid-body in the 3x-zoom interior
+    /// scenes and above-head in the 2x-zoom village.)</summary>
+    private static readonly Vector2 HeadWorldOffset = new(0, -32);
+
+    /// <summary>Extra screen-space padding above the head so the panel doesn't
+    /// kiss the sprite. Stays in screen pixels because it's about visual
+    /// breathing room, not world geometry.</summary>
+    private const float HeadPaddingScreenPx = 6;
 
     public override void _Ready()
     {
@@ -118,9 +124,13 @@ public partial class InteractHintManager : CanvasLayer
         _label.Text = text;
         _panel.Visible = true;
 
-        // Anchor the panel centered horizontally above the source. Use the
-        // canvas transform so the hint tracks the camera.
-        var screenPos = closest.GetGlobalTransformWithCanvas().Origin + ScreenOffset;
+        // Anchor the panel centered horizontally above the source. Apply the
+        // head offset through the canvas transform so camera zoom scales it
+        // (3x indoors → a 32-world-px head offset is 96 screen px, which is
+        // what we want for a 96-screen-px-tall sprite).
+        var canvasT = closest.GetGlobalTransformWithCanvas();
+        var headScreenPos = canvasT * HeadWorldOffset;
+        var screenPos = headScreenPos + new Vector2(0, -HeadPaddingScreenPx);
         // PanelContainer sizes itself to its content — do the pivot math
         // against the latest size so the hint stays centered as text changes.
         _panel.Position = screenPos - new Vector2(_panel.Size.X * 0.5f, _panel.Size.Y);

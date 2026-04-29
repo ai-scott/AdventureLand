@@ -1,14 +1,13 @@
-[gd_resource type="Resource" script_class="DialogueData" format=3]
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://dnm7ybst6tubi"]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -23,7 +22,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -40,7 +38,6 @@ LeadsTo = "node_003"
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
 Id = "node_001"
-Text = ""
 Speaker = "You"
 Priority = 99
 Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
@@ -48,7 +45,6 @@ Responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6"
 
 [sub_resource type="Resource" id="cond_8"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -63,7 +59,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
 
 [sub_resource type="Resource" id="cond_10"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -78,7 +73,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
 
 [sub_resource type="Resource" id="cond_12"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -95,7 +89,6 @@ LeadsTo = "node_005"
 [sub_resource type="Resource" id="node_11"]
 script = ExtResource("2")
 Id = "node_004"
-Text = ""
 Speaker = "You"
 Priority = 96
 Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
@@ -103,7 +96,6 @@ Responses = Array[ExtResource("5")]([SubResource("resp_13"), SubResource("resp_1
 
 [sub_resource type="Resource" id="cond_16"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -118,7 +110,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
 
 [sub_resource type="Resource" id="cond_18"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -133,7 +124,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_18")])
 
 [sub_resource type="Resource" id="cond_20"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "Not_Started"
 
@@ -150,23 +140,20 @@ LeadsTo = "node_009"
 [sub_resource type="Resource" id="node_19"]
 script = ExtResource("2")
 Id = "node_007"
-Text = ""
 Speaker = "You"
 Priority = 93
 Conditions = Array[ExtResource("3")]([SubResource("cond_20")])
 Responses = Array[ExtResource("5")]([SubResource("resp_21"), SubResource("resp_22")])
 
-[sub_resource type="Resource" id="cond_24"]
-script = ExtResource("3")
-Type = 0
-QuestId = "find_bill_quest"
-Status = "Not_Started"
-
 [sub_resource type="Resource" id="act_25"]
 script = ExtResource("4")
-Type = 2
 QuestId = "find_bill_quest"
 Status = "FindBill"
+
+[sub_resource type="Resource" id="cond_24"]
+script = ExtResource("3")
+QuestId = "find_bill_quest"
+Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_23"]
 script = ExtResource("2")
@@ -178,17 +165,15 @@ EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_24")])
 Actions = Array[ExtResource("4")]([SubResource("act_25")])
 
-[sub_resource type="Resource" id="cond_27"]
-script = ExtResource("3")
-Type = 0
-QuestId = "find_bill_quest"
-Status = "Not_Started"
-
 [sub_resource type="Resource" id="act_28"]
 script = ExtResource("4")
-Type = 2
 QuestId = "find_bill_quest"
 Status = "FindBill"
+
+[sub_resource type="Resource" id="cond_27"]
+script = ExtResource("3")
+QuestId = "find_bill_quest"
+Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_26"]
 script = ExtResource("2")
@@ -202,7 +187,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_28")])
 
 [sub_resource type="Resource" id="cond_30"]
 script = ExtResource("3")
-Type = 0
 QuestId = "find_bill_quest"
 Status = "FindBill"
 
@@ -219,7 +203,5 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_30")])
 script = ExtResource("1")
 NpcId = "Windmill_Nick"
 DisplayName = "Windmill_Nick"
-DefaultNode = "node_000"
 WorldId = "World00"
-QuestRelations = PackedStringArray("find_bill_quest")
 Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_29")])

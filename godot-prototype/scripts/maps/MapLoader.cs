@@ -76,6 +76,11 @@ public partial class MapLoader : Node2D
 		var tileSet = layer.TileSet;
 		if (tileSet == null) { GD.PrintErr($"Layer '{layer.Name}' has no TileSet"); return 0; }
 
+		// CSVs are the source of truth — wipe any tile_map_data baked into the
+		// .tscn so removals in Tiled actually disappear. Without this, SetCell
+		// only adds/overwrites, leaving deleted tiles visibly stuck in-game.
+		layer.Clear();
+
 		var file = FileAccess.Open(csvPath, FileAccess.ModeFlags.Read);
 		int tileCount = 0;
 
