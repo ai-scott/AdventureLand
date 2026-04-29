@@ -106,7 +106,8 @@ godot-prototype/assets/audio/
 │   ├── door_open.ogg             ← from sounds/DoorOpen.webm
 │   └── bubble.ogg                ← from sounds/SFX/BubbleBubble.webm
 ├── music/
-│   ├── town.ogg                    ← from music/Town.webm
+│   ├── town.ogg                    ← from music/Town.webm (currently unused — see §8.1)
+│   ├── title_screens.ogg           ← title screen background
 │   ├── adventureland_happy.ogg     ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
 │   ├── adventureland_stress.ogg    ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
 │   ├── adventureland_danger.ogg    ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
@@ -483,7 +484,7 @@ the inspector.
 
 | World | Music |
 |---|---|
-| Title screen | `town` (single track — menu music; only place `town` is used) |
+| Title screen | `title_screens` (dedicated menu cue) |
 | World_00 Village + all other exterior worlds | `adventureland_*` mix layers (Happy/Stress/Danger) |
 | World_00_Home / PennysHouse | `adventureland_calm` (intimate interior cue) |
 | World_00 Blacksmith / GeneralStore / AdventureShop / Windmill_* | `adventureland_interior` (shop/workshop interiors) |
