@@ -117,4 +117,188 @@ public partial class CostumeController : Node
     public void SetPants(Texture2D tex)      { Pants = tex; SetLayer("04lwr1", tex); }
     public void SetShoes(Texture2D tex)      { Shoes = tex; SetLayer("03fot1", tex); }
     public void SetOuterwear(Texture2D tex)  { Outerwear = tex; SetLayer("10outr", tex); }
+
+    // ---- Equipment Integration (Phase 4) ----
+
+    /// <summary>
+    /// Equip an item by resolving its CostumeLayer to a sprite sheet texture.
+    /// Handles mutual exclusion for leg layers (dress hides pants/overalls).
+    /// </summary>
+    public void EquipItem(ItemData item)
+    {
+        if (item == null) return;
+
+        // Weapons use a separate layer (farmer_1h_weapon) and the MSCA weapon sheets.
+        if (item.Category == ItemData.ItemCategory.Weapon)
+        {
+            EquipWeapon(item);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(item.CostumeLayer))
+        {
+            GD.Print($"[Costume] Item '{item.Name}' has no costume layer — stats-only equip");
+            return;
+        }
+
+        var tex = ResolveBaseSheet(item.CostumeLayer, item.CostumeId);
+        if (tex == null)
+        {
+            GD.PushWarning($"[Costume] Could not resolve texture for '{item.Name}' layer={item.CostumeLayer}");
+            return;
+        }
+
+        // Handle mutual exclusion for leg-type layers.
+        HandleLegExclusion(item.CostumeLayer);
+
+        SetLayer(item.CostumeLayer, tex);
+        GD.Print($"[Costume] Equipped '{item.Name}' on layer {item.CostumeLayer}");
+
+        // If it's a hat, re-evaluate hair visibility.
+        if (item.CostumeLayer == "14head")
+        {
+            Hat = tex;
+            if (HatReplacesHair)
+            {
+                var hair = _spriteLayers?.GetNodeOrNull<Sprite2D>("13hair");
+                if (hair != null) hair.Visible = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Equip a weapon by swapping the farmer_1h_weapon sprite's texture to the
+    /// MSCA weapon sheet indicated by item.WeaponSheet (1-7).
+    /// </summary>
+    private void EquipWeapon(ItemData item)
+    {
+        if (_spriteLayers == null) return;
+
+        var weaponSprite = _spriteLayers.GetNodeOrNull<Sprite2D>("farmer_1h_weapon");
+        if (weaponSprite == null)
+        {
+            GD.PushWarning("[Costume] farmer_1h_weapon sprite not found");
+            return;
+        }
+
+        if (item.WeaponSheet <= 0)
+        {
+            GD.Print($"[Costume] Weapon '{item.Name}' has no WeaponSheet — keeping default");
+            return;
+        }
+
+        // Weapon sheet filenames: "farmer 1hwpn 00N 32x32 v00.png"
+        string path = $"res://assets/sprites/player/farmer/effects/farmer 1hwpn 00{item.WeaponSheet} 32x32 v00.png";
+        if (!ResourceLoader.Exists(path))
+        {
+            GD.PushWarning($"[Costume] Weapon sheet not found: {path}");
+            return;
+        }
+
+        weaponSprite.Texture = GD.Load<Texture2D>(path);
+        GD.Print($"[Costume] Equipped weapon '{item.Name}' (sheet {item.WeaponSheet})");
+    }
+
+    /// <summary>Unequip the visual for a given layer.</summary>
+    public void UnequipLayer(string layerName)
+    {
+        if (string.IsNullOrEmpty(layerName)) return;
+        SetLayer(layerName, null);
+
+        // If unequipping hat, restore hair.
+        if (layerName == "14head")
+        {
+            Hat = null;
+            if (Hair != null) SetLayer("13hair", Hair);
+        }
+    }
+
+    /// <summary>Restore all equipment visuals from the Inventory singleton.</summary>
+    public void RestoreEquipment()
+    {
+        var inv = Inventory.Instance;
+        if (inv == null) return;
+
+        // Iterate equippable categories and apply their visuals.
+        var categories = new[]
+        {
+            ItemData.ItemCategory.Head, ItemData.ItemCategory.Neck,
+            ItemData.ItemCategory.Body, ItemData.ItemCategory.Hand,
+            ItemData.ItemCategory.Legs, ItemData.ItemCategory.Boot,
+            ItemData.ItemCategory.Hair, ItemData.ItemCategory.Weapon,
+        };
+
+        foreach (var cat in categories)
+        {
+            var item = inv.GetEquipped(cat);
+            if (item != null) EquipItem(item);
+        }
+    }
+
+    /// <summary>
+    /// Resolve a base sheet texture from the CostumeLayer and CostumeId.
+    /// The base sheet lives at res://assets/sprites/player/farmer/sheets/{layer}/{baseFile}.png
+    /// where baseFile is extracted from the C3 costume string.
+    /// </summary>
+    private Texture2D ResolveBaseSheet(string layer, string costumeId)
+    {
+        if (string.IsNullOrEmpty(costumeId)) return null;
+
+        // Extract base filename from C3 costume string.
+        // Pattern: optional "51_" prefix + "fbas_14head_boaterhat_00d" + optional "_color_variant"
+        // We need: "fbas_14head_boaterhat_00d" (everything up to and including the variant code like 00a, 00b, 00d, 01, etc.)
+        string baseFile = ExtractBaseFileName(costumeId, layer);
+        if (string.IsNullOrEmpty(baseFile)) return null;
+
+        string path = $"res://assets/sprites/player/farmer/sheets/{layer}/{baseFile}.png";
+        if (!ResourceLoader.Exists(path))
+        {
+            GD.PushWarning($"[Costume] Base sheet not found: {path}");
+            return null;
+        }
+        return GD.Load<Texture2D>(path);
+    }
+
+    /// <summary>
+    /// Extract the base filename from a C3 costume string.
+    /// E.g., "51_fbas_14head_boaterhat_00d_straw_boat" → "fbas_14head_boaterhat_00d"
+    ///       "fbas_13hair_bob1_00_blonde_bob" → "fbas_13hair_bob1_00"
+    ///       "102_fbas_07fot2_fbas_07fot2_cuffedboots_00a_red" → "fbas_07fot2_cuffedboots_00a"
+    /// </summary>
+    private static string ExtractBaseFileName(string costumeId, string layer)
+    {
+        // Strip numeric prefix (e.g., "51_", "102_").
+        var stripped = System.Text.RegularExpressions.Regex.Replace(costumeId, @"^\d+_", "");
+
+        // Handle doubled layer prefix (typo in data: "fbas_07fot2_fbas_07fot2_cuffedboots_00a_red").
+        string layerPrefix = $"fbas_{layer}_";
+        if (stripped.StartsWith(layerPrefix + layerPrefix))
+        {
+            stripped = stripped.Substring(layerPrefix.Length);
+        }
+
+        // Find the variant code (00, 00a, 00b, 00d, 01, 02, etc.) — this ends the base filename.
+        // Pattern: _XX or _XXx where X is digit and x is optional letter.
+        var match = System.Text.RegularExpressions.Regex.Match(stripped, @"_(\d{2}[a-d]?)(?:_|$)");
+        if (!match.Success) return stripped; // fallback: use the whole thing
+
+        int endIdx = match.Index + match.Length;
+        // Remove trailing underscore if present.
+        string result = stripped.Substring(0, endIdx).TrimEnd('_');
+        return result;
+    }
+
+    /// <summary>
+    /// When equipping any leg-type layer, clear ALL other leg layers so only
+    /// one is visible at a time. Layers: 04lwr1 (pants/shorts), 06lwr2 (overalls),
+    /// 08lwr3 (dresses/skirts). All three are in the "Legs" category.
+    /// </summary>
+    private void HandleLegExclusion(string layerName)
+    {
+        string[] legLayers = { "04lwr1", "06lwr2", "08lwr3" };
+        foreach (var layer in legLayers)
+        {
+            if (layer != layerName) SetLayer(layer, null);
+        }
+    }
 }

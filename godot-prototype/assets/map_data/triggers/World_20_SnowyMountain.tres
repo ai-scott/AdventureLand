@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(221.564, 140.873)
+Size = Vector2(50.1099, 37.3368)
+
+[resource]
+script = ExtResource("1")
+SourceTmx = "assets/tiles/tilemaps/World_20_SnowyMountain.tmx"
+Triggers = Array[ExtResource("2")]([SubResource("trig_0")])

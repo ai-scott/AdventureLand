@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-122.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 122
+Name = "Rosie"
+Description = "Penny's cute calico cat."
+Category = 10
+Strength = 0
+Cost = 0
+Icon = ExtResource("2")
+QuestItem = true

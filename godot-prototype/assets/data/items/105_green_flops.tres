@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-105.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 105
+Name = "Green Flops"
+Description = "Sunday Funday wear."
+Category = 8
+Strength = 1
+Cost = 3
+Icon = ExtResource("2")
+CostumeId = "105_fbas_03fot1_sandals_00a_green_flops"
+CostumeLayer = "03fot1"

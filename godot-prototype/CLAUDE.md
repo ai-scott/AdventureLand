@@ -19,7 +19,7 @@ A scope-locked Godot 4 prototype evaluating migration from Construct 3. Goal: pr
 ## Architecture Overview
 
 ```
-VillageMap.tscn (main scene)
+World_00.tscn (main scene — Leafwood Village exterior)
 ├── GrassBackground (Sprite2D, repeating, z=-10)
 ├── Ground3underP (TileMapLayer, z=-3)  ← 337 tiles
 ├── Ground2underP (TileMapLayer, z=-2)  ← 252 tiles
@@ -38,6 +38,18 @@ VillageMap.tscn (main scene)
 ```
 
 **Z-index convention matches Tiled layer names:** "under P" = below player (z<0), "P level" = same layer, "over P" = above player (z>0).
+
+### World naming convention (grid)
+
+Worlds follow a `World_XY` grid naming convention inherited from the C3 project, where X = column (east), Y = row (south):
+
+- `World_00.tscn` — Leafwood Village (start, origin of the grid)
+- `World_10.tscn` — tile one step east of origin
+- `World_01.tscn` — tile one step south of origin
+- `World_00_Blacksmith.tscn` — interior of the Blacksmith inside World_00
+- `World_00_Pennys_House.tscn` — interior of Penny's house inside World_00
+
+All world scenes live in `scenes/worlds/`. Interiors use the `World_XY_Name` suffix pattern. When adding a new world, update `scripts/maps/WorldManager.cs` (Phase 5) so scene transitions know where to send the player. The user has existing **numbered door triggers** from C3 (1, 2, 3…) that pair with matching spawn points — reuse the ID scheme when porting interior↔exterior transitions.
 
 ## Critical Gotchas
 
@@ -87,7 +99,7 @@ Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rena
 
 **Root cause of "jangled" tile rendering:** Without both properties explicitly set in the scene, Godot defaults the atlas region to 64×64 instead of 16×16, causing every tile to sample the wrong part of the tileset.
 
-Both must be present in `VillageMap.tscn`:
+Both must be present in `World_00.tscn`:
 ```
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture_region_size = Vector2i(16, 16)   ← REQUIRED
@@ -100,17 +112,89 @@ These can be silently stripped during git merges. If tiles look jangled again, c
 
 ### 5. TMX converter ignores wangsets and rebuilds the scene
 
-`tools/tmx_to_godot.py` regenerates `scenes/maps/VillageMap.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
+`tools/tmx_to_godot.py` regenerates `scenes/worlds/World_00.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
 
 **To update tile data without touching the scene**, use instead:
 ```bash
-python3 tools/update_tile_csvs.py assets/maps/World_00_Village.tmx
+python3 tools/update_tile_csvs.py assets/tiles/tilemaps/World_00_Village.tmx
 ```
 This writes only the CSV files. MapLoader reads them at runtime — just restart the game.
 
-The TMX is at `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
+The TMX is at `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
 
 `tools/add_decor_layers.py` has embedded raw CSV data — used once, safe to leave as reference.
+
+### 6. TMX trigger data must be baked — do not parse at runtime
+
+Triggers (doors, spawn markers, edge transitions, NPCs, items) are authored
+in Tiled's Object Layer, then baked into `.tres` files by
+`tools/tmx_triggers_to_tres.py`. The Godot runtime (`TriggerSpawner.cs`) loads
+the `.tres`, never the TMX. This keeps shipped builds free of XML parsing and
+Python dependencies.
+
+**Tile authoring → `.tres` flow:**
+1. User edits TMX in Tiled → saves.
+2. Tiled's `autobake.js` extension (installed per `tools/README.md`) runs
+   `tools/bake_all.py` automatically on save.
+3. `bake_all.py` calls `tmx_triggers_to_tres.py` for every TMX → regenerates
+   `assets/map_data/triggers/{TMX_name}.tres`.
+4. Godot reads the `.tres` at play time via `TriggerSpawner`.
+
+**When working on maps/triggers/interiors:**
+- **Before recommending the user hit Play, verify the auto-bake is live.** Ask
+  them whether `AutoBake: armed.` shows up in Tiled's console on startup, or
+  whether the extension is installed. If not, run `python3 tools/bake_all.py`
+  yourself so the `.tres` matches the TMX.
+- **If you edit a TMX directly (rare — user usually edits in Tiled)**, run
+  `python3 tools/bake_all.py` yourself immediately. The staleness check in
+  `TriggerSpawner.CheckStaleness()` will warn at runtime, but the bake is what
+  actually fixes things.
+- **Never add runtime TMX parsing to shipped code.** If you need TMX data at
+  runtime, extend the baker to emit a new `.tres` type.
+
+**Debug-build safety net:** `TriggerSpawner` compares mtimes of the source TMX
+and the baked `.tres`, and pushes a warning if the TMX is newer. If you see a
+`[TriggerSpawner] STALE:` warning in the Output panel, rebake.
+
+### 7. Inherited-instance overrides — edit the .tscn, not the Inspector
+
+NPC scenes (Sally, Sophie, Sarah, Nick, etc. inside the world `.tscn` files) are
+**instances** of `scenes/npc/Npc.tscn` with their `NpcAnimator` child's
+`Sheet` overridden per-instance to a different sprite. Two failure modes
+to know about:
+
+**Failure 1 — editing the inherited child cascades to all NPCs.** Selecting
+the inherited `NpcAnimator` in the Godot scene tree and changing `Sheet` in
+the Inspector edits **the base `Npc.tscn`**, not the instance — so every
+shopkeeper turns into Penny. Godot only creates a per-instance override if
+one already exists; without that, the change writes to the base scene. To
+force an override, right-click the property in the Inspector → "Make
+Editable" / "Override", *or* edit the world `.tscn` directly (preferred —
+fewer surprises).
+
+**Failure 2 — format=3 → format=4 upgrade silently drops the override.**
+When Godot resaves a `format=3` scene as `format=4` (e.g. after the
+editor opens it for the first time in 4.6), the
+`[node name="NpcAnimator" parent="<Npc>" index="1"] Sheet = ExtResource(...)`
+override block can vanish along with its `[ext_resource]`. Diff against
+git (`git diff <scene>.tscn`) before saving and look for missing
+`shopkeeper_*.png` ext_resources.
+
+**The override pattern (paste into world `.tscn` — never via the
+Inspector):**
+
+```
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sally.png" id="12_sheet"]
+...
+[node name="Sally" parent="." instance=ExtResource("11_npc")]
+NpcName = "Sally"
+
+[node name="NpcAnimator" parent="Sally" index="1"]
+Sheet = ExtResource("12_sheet")
+```
+
+`index="1"` matches NpcAnimator's position inside the base `Npc.tscn`; the
+`12_sheet` id is just convention — any unused id in the scene works.
 
 ## Data Resources (GlobalClass pattern)
 
@@ -130,16 +214,21 @@ scripts/data/
 ├── EnemyBehavior.cs       ← one weighted behavior slot
 ├── EnemyAction.cs         ← Move/Animate/Sound/Invulnerable action
 ├── BehaviorCondition.cs   ← distance/hurt/invuln gating
-├── ItemData.cs            ← (future) mirrors ItemsLibrary.json entries
-└── DialogueData.cs        ← (future) mirrors quest-dialogue files
+├── ItemData.cs            ← mirrors ItemsLibrary.json entries
+├── DialogueData.cs        ← mirrors quest-dialogue files
+├── TriggerData.cs         ← one TMX object: Door/Spawn/Edge/Npc/Item
+└── WorldTriggers.cs       ← array of TriggerData baked from one TMX
 
 assets/data/
 ├── enemies/
-│   ├── ooze.tres
-│   ├── crab.tres
-│   └── bat.tres
-├── items/                 ← (future)
-└── dialogue/              ← (future)
+│   ├── ooze.tres, crab.tres, bat.tres
+├── items/                 ← from items_to_tres.py
+└── dialogue/              ← from dialogue_to_tres.py
+
+assets/map_data/triggers/  ← baked from TMX ObjectLayer by tmx_triggers_to_tres.py
+├── World_00_Village.tres
+├── World_00_Blacksmith.tres
+└── ...
 ```
 
 ### The pattern
@@ -203,8 +292,22 @@ All are referenced via `res://assets/...` paths in the scene files.
 
 Defined in `project.godot`:
 - `move_up/down/left/right` → WASD + arrows
-- `interact` → E or Enter
-- `dialogue_advance` → E, Enter, or Space
+- `interact` → Space and Enter (opens dialogue, picks up items, opens doors)
+- `dialogue_advance` → Space and Enter (advances/closes dialogue)
+- `attack` → Space (fires a weapon swing; only active when a weapon is equipped)
+- `cancel` → Z and Escape (closes prompts, declines purchases)
+- `inventory_toggle` → I and Tab
+- Debug: backtick (`` ` ``) toggles collision-shape visualization at runtime.
+
+### UI/prompt text convention
+
+**Never use "[E]" or "Press E" in prompts or docs.** The project sticks to:
+- **Space / Enter (↵)** — "confirm / forward / interact / advance"
+- **Z** — "cancel / back / close / skip"
+
+Prompts render the `↵` glyph (not the letter `E`). When authoring dialogue
+buttons or floating prompts, use `↵ <verb>` (e.g. `↵ Take`, `↵ Buy`). For
+two-option prompts use `[Space] <primary>    [Z] <cancel>`.
 
 ## How User Prefers to Work
 
@@ -227,11 +330,13 @@ Defined in `project.godot`:
 
 - Animation guide: `assets/sprites/player/docs/farmer base animation guide.png`
 - Mana Seed cell reference: user has locally, not in repo (too large / copyrighted)
-- TMX source: `assets/maps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
+- TMX source: `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
 
 ## Docs in this folder
 
+- **`docs/GODOT_PRIMER.md`** — Godot core concepts (nodes, scenes, signals, `[Export]`, NodePath, collision layers, Resources, running scenes) with concrete examples from our project. Read before first editor session.
 - **`docs/GODOT_TRANSITION_PLAN.md`** — the strategic migration roadmap for porting the full C3 Adventure Land to Godot. Phase-by-phase, with risks, stopping points, and system → phase cross-reference. Read once per phase.
+- **`docs/PHASE_1_SETUP.md`** — current-phase Godot-editor walkthrough (Input Map, scene wiring, Ooze spawn, Y-sort verification).
 - `docs/EVALUATION_REPORT.md` — initial Godot evaluation outcome; justifies the migrate decision.
 - `docs/MSCA_INTEGRATION.md` — Mana Seed Character Animator plugin integration details.
 - `docs/ASSET_CATALOG.md` — Mana Seed kit inventory and organization reference.

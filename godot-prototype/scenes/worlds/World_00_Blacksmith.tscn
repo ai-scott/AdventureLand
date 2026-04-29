@@ -1,0 +1,194 @@
+[gd_scene format=4 uid="uid://csxb4n80wah1u"]
+
+[ext_resource type="Texture2D" uid="uid://boo5uayms6iii" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
+[ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
+[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
+[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Blacksmith.tres" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://dvb5r6dfsrg7b" path="res://scenes/npc/Npc.tscn" id="11_npc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sally.png" id="12_sheet"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/blacksmith.tres" id="13_dlg"]
+[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="13_puvp1"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("1")
+99:2/0 = 0
+100:2/0 = 0
+101:2/0 = 0
+102:2/0 = 0
+67:3/0 = 0
+78:6/0 = 0
+76:6/0 = 0
+75:7/0 = 0
+76:7/0 = 0
+73:6/0 = 0
+102:3/0 = 0
+67:4/0 = 0
+89:13/0 = 0
+90:13/0 = 0
+91:13/0 = 0
+76:8/0 = 0
+78:8/0 = 0
+75:8/0 = 0
+77:8/0 = 0
+86:5/0 = 0
+87:5/0 = 0
+73:8/0 = 0
+102:4/0 = 0
+67:5/0 = 0
+89:14/0 = 0
+90:14/0 = 0
+91:14/0 = 0
+76:9/0 = 0
+78:9/0 = 0
+75:9/0 = 0
+77:9/0 = 0
+86:6/0 = 0
+87:6/0 = 0
+73:9/0 = 0
+102:5/0 = 0
+89:15/0 = 0
+90:15/0 = 0
+91:15/0 = 0
+64:3/0 = 0
+65:3/0 = 0
+61:3/0 = 0
+62:3/0 = 0
+63:3/0 = 0
+86:7/0 = 0
+87:7/0 = 0
+65:2/0 = 0
+102:6/0 = 0
+102:7/0 = 0
+61:4/0 = 0
+62:4/0 = 0
+63:4/0 = 0
+64:4/0 = 0
+65:4/0 = 0
+67:6/0 = 0
+61:5/0 = 0
+62:5/0 = 0
+63:5/0 = 0
+64:5/0 = 0
+65:5/0 = 0
+67:8/0 = 0
+61:6/0 = 0
+62:6/0 = 0
+63:6/0 = 0
+64:6/0 = 0
+65:6/0 = 0
+67:9/0 = 0
+101:9/0 = 0
+73:4/0 = 0
+99:8/0 = 0
+102:8/0 = 0
+99:9/0 = 0
+102:9/0 = 0
+89:12/0 = 0
+90:12/0 = 0
+91:12/0 = 0
+18:16/0 = 0
+19:16/0 = 0
+18:17/0 = 0
+19:17/0 = 0
+16:17/0 = 0
+17:17/0 = 0
+110:21/0 = 0
+111:21/0 = 0
+110:24/0 = 0
+110:22/0 = 0
+111:22/0 = 0
+110:25/0 = 0
+110:23/0 = 0
+111:23/0 = 0
+33:14/0 = 0
+34:14/0 = 0
+35:14/0 = 0
+33:15/0 = 0
+34:15/0 = 0
+35:15/0 = 0
+86:25/0 = 0
+87:25/0 = 0
+42:15/0 = 0
+29:24/0 = 0
+30:24/0 = 0
+42:16/0 = 0
+29:25/0 = 0
+30:25/0 = 0
+21:31/0 = 0
+22:34/0 = 0
+23:33/0 = 0
+21:34/0 = 0
+0:6/0 = 0
+0:7/0 = 0
+27:22/0 = 0
+28:22/0 = 0
+0:8/0 = 0
+27:23/0 = 0
+28:23/0 = 0
+37:27/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_1"]
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_1")
+
+[node name="World_00_Blacksmith" type="Node2D" unique_id=2089925110]
+y_sort_enabled = true
+script = ExtResource("5")
+
+[node name="WorldMeta" type="Node" parent="." unique_id=1828982809]
+script = ExtResource("6")
+MapSize = Vector2i(240, 192)
+WorldDisplayName = "Blacksmith"
+IsShop = true
+
+[node name="World_00_Blacksmith_GroundWalls" type="TileMapLayer" parent="." unique_id=309761904]
+z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAABjAAIAAAABAAAAAABkAAIAAAACAAAAAABkAAIAAAADAAAAAABkAAIAAAAEAAAAAABkAAIAAAAFAAAAAABkAAIAAAAGAAAAAABkAAIAAAAHAAAAAABkAAIAAAAIAAAAAABkAAIAAAAJAAAAAABkAAIAAAAKAAAAAABkAAIAAAALAAAAAABkAAIAAAAMAAAAAABkAAIAAAANAAAAAABlAAIAAAAOAAAAAABmAAIAAAAAAAEAAABDAAMAAAABAAEAAABOAAYAAAADAAEAAABMAAYAAAAEAAEAAABLAAcAAAAFAAEAAABOAAYAAAAGAAEAAABLAAcAAAAHAAEAAABMAAcAAAAIAAEAAABLAAcAAAAJAAEAAABOAAYAAAAKAAEAAABLAAcAAAALAAEAAABMAAcAAAAMAAEAAABLAAcAAAANAAEAAABJAAYAAAAOAAEAAABmAAMAAAAAAAIAAABDAAQAAAABAAIAAABZAA0AAAACAAIAAABaAA0AAAADAAIAAABbAA0AAAAEAAIAAABMAAgAAAAFAAIAAABOAAgAAAAGAAIAAABLAAgAAAAHAAIAAABLAAgAAAAIAAIAAABLAAgAAAAJAAIAAABOAAgAAAAKAAIAAABNAAgAAAALAAIAAABWAAUAAAAMAAIAAABXAAUAAAANAAIAAABJAAgAAAAOAAIAAABmAAQAAAAAAAMAAABDAAUAAAABAAMAAABZAA4AAAACAAMAAABaAA4AAAADAAMAAABbAA4AAAAEAAMAAABMAAkAAAAFAAMAAABOAAkAAAAGAAMAAABLAAkAAAAHAAMAAABLAAkAAAAIAAMAAABLAAkAAAAJAAMAAABOAAkAAAAKAAMAAABNAAkAAAALAAMAAABWAAYAAAAMAAMAAABXAAYAAAANAAMAAABJAAkAAAAOAAMAAABmAAUAAAAAAAQAAABDAAMAAAABAAQAAABZAA8AAAACAAQAAABaAA8AAAADAAQAAABbAA8AAAAEAAQAAABAAAMAAAAFAAQAAABBAAMAAAAGAAQAAAA9AAMAAAAHAAQAAAA+AAMAAAAIAAQAAAA/AAMAAAAJAAQAAABAAAMAAAAKAAQAAABBAAMAAAALAAQAAABWAAcAAAAMAAQAAABXAAcAAAANAAQAAABBAAIAAAAOAAQAAABmAAYAAAAAAAUAAABDAAQAAAABAAUAAAA9AAMAAAACAAUAAAA+AAMAAAADAAUAAAA/AAMAAAAEAAUAAABAAAMAAAAFAAUAAABBAAMAAAAGAAUAAAA/AAMAAAAHAAUAAABAAAMAAAAIAAUAAABBAAMAAAAJAAUAAAA9AAMAAAAKAAUAAAA+AAMAAAALAAUAAAA/AAMAAAAMAAUAAABAAAMAAAANAAUAAABBAAMAAAAOAAUAAABmAAcAAAAAAAYAAABDAAUAAAABAAYAAAA9AAQAAAACAAYAAAA+AAQAAAADAAYAAAA/AAQAAAAEAAYAAABAAAQAAAAFAAYAAABBAAQAAAAGAAYAAAA/AAQAAAAHAAYAAABAAAQAAAAIAAYAAABBAAQAAAAJAAYAAAA9AAQAAAAKAAYAAAA+AAQAAAALAAYAAAA/AAQAAAAMAAYAAABAAAQAAAANAAYAAABBAAQAAAAOAAYAAABmAAYAAAAAAAcAAABDAAYAAAABAAcAAAA9AAUAAAACAAcAAAA+AAUAAAADAAcAAAA/AAUAAAAEAAcAAABAAAUAAAAFAAcAAABBAAUAAAAGAAcAAAA/AAUAAAAHAAcAAABAAAUAAAAIAAcAAABBAAUAAAAJAAcAAAA+AAMAAAAKAAcAAAA/AAMAAAALAAcAAABAAAMAAAAMAAcAAABBAAMAAAANAAcAAABBAAMAAAAOAAcAAABmAAcAAAAAAAgAAABDAAgAAAABAAgAAAA9AAYAAAACAAgAAAA+AAYAAAADAAgAAAA/AAYAAAAEAAgAAABAAAYAAAAFAAgAAABBAAYAAAAGAAgAAAA/AAYAAAAHAAgAAABAAAYAAAAIAAgAAABBAAYAAAAJAAgAAAA+AAQAAAAKAAgAAAA/AAQAAAALAAgAAABAAAQAAAAMAAgAAABBAAQAAAANAAgAAABBAAQAAAAOAAgAAABmAAYAAAAAAAkAAABDAAkAAAABAAkAAABlAAkAAAACAAkAAABlAAkAAAAFAAkAAABlAAkAAAAGAAkAAABlAAkAAAAHAAkAAABJAAQAAAAIAAkAAAA9AAUAAAAJAAkAAAA+AAUAAAAKAAkAAAA/AAUAAAALAAkAAABAAAUAAAAMAAkAAABBAAUAAAANAAkAAABBAAUAAAAOAAkAAABmAAcAAAAHAAoAAABjAAgAAAAIAAoAAAA9AAYAAAAJAAoAAAA+AAYAAAAKAAoAAAA/AAYAAAALAAoAAABAAAYAAAAMAAoAAABBAAYAAAANAAoAAABBAAYAAAAOAAoAAABmAAgAAAAHAAsAAABjAAkAAAAIAAsAAABlAAkAAAAJAAsAAABlAAkAAAAMAAsAAABlAAkAAAANAAsAAABlAAkAAAAOAAsAAABmAAkAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_Blacksmith_FurnitureDecor" type="TileMapLayer" parent="." unique_id=2068979437]
+tile_map_data = PackedByteArray("AAABAAEAAABZAAwAAAACAAEAAABaAAwAAAADAAEAAABbAAwAAAAFAAEAAAASABAAAAAGAAEAAAATABAAAAAFAAIAAAASABEAAAAGAAIAAAATABEAAAAHAAIAAAAQABEAAAAIAAIAAAARABEAAAAKAAIAAABuABUAAAANAAIAAABvABUAAAABAAMAAABuABgAAAAKAAMAAABuABYAAAANAAMAAABvABYAAAABAAQAAABuABkAAAAKAAQAAABuABcAAAANAAQAAABvABcAAAAGAAUAAAAhAA4AAAAHAAUAAAAiAA4AAAAIAAUAAAAjAA4AAAAGAAYAAAAhAA8AAAAHAAYAAAAiAA8AAAAIAAYAAAAjAA8AAAADAAkAAABWABkAAAAEAAkAAABXABkAAAAIAAkAAAAqAA8AAAAMAAkAAAAdABgAAAANAAkAAAAeABgAAAAIAAoAAAAqABAAAAAMAAoAAAAdABkAAAANAAoAAAAeABkAAAAKAAsAAABWABkAAAALAAsAAABXABkAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_Blacksmith_Items" type="TileMapLayer" parent="." unique_id=617718437]
+z_index = 1
+tile_map_data = PackedByteArray("AAADAAQAAAAVAB8AAAAEAAQAAAAVAB8AAAAGAAUAAAAWACIAAAAHAAUAAAAXACEAAAAIAAUAAAAVACIAAAANAAUAAAAAAAYAABANAAYAAAAAAAcAABABAAcAAAAbABYAAAACAAcAAAAcABYAAAANAAcAAAAAAAgAABABAAgAAAAbABcAAAACAAgAAAAcABcAAAANAAoAAAAlABsAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="DialogueManager" parent="." unique_id=754294463 instance=ExtResource("3")]
+
+[node name="Entities" type="Node2D" parent="." unique_id=681931207]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" unique_id=1730403402 instance=ExtResource("2")]
+position = Vector2(120, 144)
+
+[node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=109925914]
+zoom = Vector2(3, 3)
+script = ExtResource("4")
+
+[node name="Triggers" type="Node2D" parent="." unique_id=649542751]
+y_sort_enabled = true
+script = ExtResource("7")
+TriggersResource = ExtResource("8")
+DoorScene = ExtResource("9")
+EdgeScene = ExtResource("10")
+
+[node name="Sally" parent="Entities" unique_id=951529814 instance=ExtResource("11_npc")]
+position = Vector2(118, 80)
+NpcName = "Sally"
+Dialogue = ExtResource("13_dlg")
+
+[node name="NpcAnimator" parent="Entities/Sally" index="1"]
+Sheet = ExtResource("12_sheet")
+
+[node name="WorldMusic" type="Node" parent="." unique_id=797386895]
+script = ExtResource("13_puvp1")
+BaseTrack = "adventureland_interior"

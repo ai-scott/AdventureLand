@@ -46,7 +46,7 @@ Standard Godot `AnimatedSprite2D` + `SpriteFrames` doesn't support non-sequentia
 `SetCell()` silently does nothing if `CreateTile()` hasn't been called for that atlas coord. Zero error output. Required lazy registration tracked in a `HashSet<Vector2I>`. Classic Godot 4 gotcha with no documentation callout.
 
 **3. `[Tool]` + scene format drift — ongoing minor friction**
-Adding `[Tool]` to `MapLoader.cs` caused Godot to re-save `VillageMap.tscn` in format=4 with baked tile data, overwriting manual edits. Manual edits (z-index, y_sort) had to be re-applied after each engine-triggered save. Manageable but a workflow rough edge.
+Adding `[Tool]` to `MapLoader.cs` caused Godot to re-save `World_00.tscn` in format=4 with baked tile data, overwriting manual edits. Manual edits (z-index, y_sort) had to be re-applied after each engine-triggered save. Manageable but a workflow rough edge.
 
 **4. Collision data extraction — required a Python pipeline**
 C3 stores per-tile collision polygons in `objectTypes/Tilemaps/tm_forest_fort.json` as normalized (0–1) coords keyed by linear tile ID. Godot uses atlas coords (column, row). Required a purpose-built Python script (`tools/gen_objects_collision.py`) to map between coordinate systems and output a C# dictionary. 45/136 Objects-layer tiles had no C3 polygon and fall back to a bottom-strip approximation.

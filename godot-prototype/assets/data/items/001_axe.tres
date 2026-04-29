@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dbw8nk3ag56sb"]
+
+[ext_resource type="Script" uid="uid://cjqsgn7vhsiem" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://b6l3ooqcnay3d" path="res://assets/sprites/items/itemshowcase-animation 1-001.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 1
+Name = "Axe"
+Description = "A metal blade attached to a wooden handle. Good for chopping down monsters."
+Category = 0
+Strength = 3
+Cost = 6
+Icon = ExtResource("2")
+WeaponSheet = 2

@@ -1,0 +1,192 @@
+[gd_scene format=3 uid="uid://cg6ujiaqlbby7"]
+
+[ext_resource type="Script" uid="uid://vr23st6adsre" path="res://scripts/ui/HUD.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://jfbsqkqdq01k" path="res://assets/sprites/ui/hud_bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://gt73nnljirhr" path="res://assets/sprites/ui/hearts_frame.png" id="3_hf"]
+[ext_resource type="Texture2D" uid="uid://d063w2ddqlg4o" path="res://assets/sprites/ui/heart_full.png" id="4_hfull"]
+[ext_resource type="Texture2D" uid="uid://ckc2r8is0fghn" path="res://assets/sprites/ui/gem.png" id="5_gem"]
+[ext_resource type="Texture2D" uid="uid://cmy36pbamysr3" path="res://assets/sprites/ui/hud_button.png" id="6_btn"]
+[ext_resource type="Texture2D" uid="uid://dvsftmku40tva" path="res://assets/sprites/ui/icon_bag.png" id="7_bag"]
+[ext_resource type="Texture2D" uid="uid://clcsjcy7cl2tp" path="res://assets/sprites/ui/icon_sword.png" id="8_sword"]
+[ext_resource type="Texture2D" uid="uid://djs17dukpft3n" path="res://assets/sprites/ui/icon_space.png" id="9_space"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1045547806]
+layer = 5
+script = ExtResource("1")
+
+[node name="HudBg" type="TextureRect" parent="." unique_id=440210330]
+texture_filter = 1
+offset_left = -25.0
+offset_top = -76.0
+offset_right = 100.0
+offset_bottom = 49.0
+scale = Vector2(1.656538, 1.656538)
+texture = ExtResource("2_bg")
+expand_mode = 1
+
+[node name="HeartsFrame" type="TextureRect" parent="." unique_id=152642516]
+texture_filter = 1
+offset_top = -1.0
+offset_right = 82.0
+offset_bottom = 16.0
+scale = Vector2(1.6382263, 1.6382263)
+texture = ExtResource("3_hf")
+expand_mode = 1
+
+[node name="Hearts" type="HBoxContainer" parent="." unique_id=1706543798]
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 82.0
+offset_bottom = 16.0
+scale = Vector2(1.3914635, 1.3914635)
+theme_override_constants/separation = 2
+
+[node name="Heart1" type="TextureRect" parent="Hearts" unique_id=1448883754]
+texture_filter = 1
+custom_minimum_size = Vector2(13, 11)
+layout_mode = 2
+texture = ExtResource("4_hfull")
+expand_mode = 1
+
+[node name="Heart2" type="TextureRect" parent="Hearts" unique_id=1048946443]
+texture_filter = 1
+custom_minimum_size = Vector2(13, 11)
+layout_mode = 2
+texture = ExtResource("4_hfull")
+expand_mode = 1
+
+[node name="Heart3" type="TextureRect" parent="Hearts" unique_id=2061825139]
+texture_filter = 1
+custom_minimum_size = Vector2(13, 11)
+layout_mode = 2
+texture = ExtResource("4_hfull")
+expand_mode = 1
+
+[node name="Heart4" type="TextureRect" parent="Hearts" unique_id=1647273245]
+texture_filter = 1
+custom_minimum_size = Vector2(13, 11)
+layout_mode = 2
+texture = ExtResource("4_hfull")
+expand_mode = 1
+
+[node name="Heart5" type="TextureRect" parent="Hearts" unique_id=466291372]
+texture_filter = 1
+custom_minimum_size = Vector2(13, 11)
+layout_mode = 2
+texture = ExtResource("4_hfull")
+expand_mode = 1
+
+[node name="Gems" type="HBoxContainer" parent="." unique_id=1949579530]
+offset_left = 6.0
+offset_top = 25.0
+offset_right = 90.0
+offset_bottom = 59.0
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="Gems" unique_id=1184417064]
+texture_filter = 1
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_gem")
+stretch_mode = 3
+
+[node name="Count" type="Label" parent="Gems" unique_id=1983284919]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 0.9490196, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.13725491, 0.31764707, 0.14901961, 1)
+theme_override_constants/shadow_offset_x = -2
+theme_override_constants/shadow_offset_y = -1
+theme_override_font_sizes/font_size = 24
+text = "0000"
+vertical_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="." unique_id=123581138]
+offset_left = 2.0
+offset_top = 64.0
+offset_right = 108.0
+offset_bottom = 104.0
+theme_override_constants/separation = 4
+
+[node name="Inventory" type="Control" parent="Buttons" unique_id=150068720]
+custom_minimum_size = Vector2(50, 36)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="Buttons/Inventory" unique_id=821538460]
+texture_filter = 1
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 36.0
+texture = ExtResource("6_btn")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Buttons/Inventory" unique_id=945064615]
+texture_filter = 1
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 28.0
+offset_bottom = 28.0
+texture = ExtResource("7_bag")
+expand_mode = 1
+
+[node name="KeyHint" type="Label" parent="Buttons/Inventory" unique_id=521772574]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 1.0
+offset_right = 47.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.13725491, 0.31764707, 0.14901961, 1)
+theme_override_constants/shadow_offset_x = -2
+theme_override_constants/shadow_offset_y = -1
+theme_override_font_sizes/font_size = 23
+text = "i"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Touch" type="TextureButton" parent="Buttons/Inventory" unique_id=72898258]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 36.0
+mouse_default_cursor_shape = 2
+
+[node name="Attack" type="Control" parent="Buttons" unique_id=1121092006]
+custom_minimum_size = Vector2(50, 36)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="Buttons/Attack" unique_id=272874205]
+texture_filter = 1
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 36.0
+texture = ExtResource("6_btn")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Buttons/Attack" unique_id=983517697]
+texture_filter = 1
+layout_mode = 0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 19.0
+offset_bottom = 36.0
+scale = Vector2(1.1147252, 0.8237784)
+texture = ExtResource("8_sword")
+
+[node name="KeyHint" type="TextureRect" parent="Buttons/Attack" unique_id=901149149]
+texture_filter = 1
+layout_mode = 0
+offset_left = 22.0
+offset_top = 6.0
+offset_right = 46.0
+offset_bottom = 30.0
+scale = Vector2(1.0506876, 1.0506876)
+texture = ExtResource("9_space")
+expand_mode = 3
+
+[node name="Touch" type="TextureButton" parent="Buttons/Attack" unique_id=1298602956]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 36.0
+mouse_default_cursor_shape = 2

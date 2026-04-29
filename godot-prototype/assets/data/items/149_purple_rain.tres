@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = 149
+Name = "Purple Rain"
+Description = ""
+Category = 11
+Strength = 0
+Cost = 0
+CostumeId = "fbas_13hair_spiky1_00_purple_rain"
+CostumeLayer = "13hair"

@@ -74,7 +74,7 @@ Press **F5** (or the play button). You should see:
 ├── project.godot                    # Godot project config + input mappings
 ├── AdventureLandPrototype.csproj    # C# project
 ├── scenes/
-│   ├── maps/VillageMap.tscn         # Main scene (auto-generated from TMX)
+│   ├── worlds/World_00.tscn         # Main scene — Leafwood Village (auto-generated from TMX)
 │   ├── player/Player.tscn           # Player scene (CharacterBody2D)
 │   ├── npc/Npc.tscn                 # NPC scene (Area2D + StaticBody2D)
 │   └── ui/DialogueBox.tscn          # Dialogue overlay (CanvasLayer)
@@ -99,7 +99,7 @@ Press **F5** (or the play button). You should see:
 │   └── EVALUATION_REPORT.md         # Migration eval write-up
 ├── tools/
 │   └── tmx_to_godot.py              # TMX → Godot converter
-└── assets/maps/World_00_Village.tmx # Tiled source (7 layers, 1430 tiles)
+└── assets/tiles/tilemaps/World_00_Village.tmx # Tiled source (7 layers, 1430 tiles)
 ```
 
 ## Player Animation

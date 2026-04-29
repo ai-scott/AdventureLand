@@ -1,0 +1,184 @@
+[gd_scene format=4 uid="uid://lt8i8uqqu43d"]
+
+[ext_resource type="Texture2D" uid="uid://boo5uayms6iii" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
+[ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
+[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
+[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Resource" uid="uid://blt1mxbrhu04c" path="res://assets/map_data/triggers/World_00_Home.tres" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
+[ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="11_mirror"]
+[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="12_gcqqw"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("1")
+99:2/0 = 0
+100:2/0 = 0
+102:2/0 = 0
+67:3/0 = 0
+78:6/0 = 0
+76:7/0 = 0
+77:7/0 = 0
+75:7/0 = 0
+102:3/0 = 0
+67:4/0 = 0
+78:8/0 = 0
+86:5/0 = 0
+87:5/0 = 0
+76:8/0 = 0
+75:8/0 = 0
+102:4/0 = 0
+67:5/0 = 0
+78:9/0 = 0
+86:6/0 = 0
+87:6/0 = 0
+76:9/0 = 0
+75:9/0 = 0
+102:5/0 = 0
+89:15/0 = 0
+86:7/0 = 0
+87:7/0 = 0
+64:3/0 = 0
+65:3/0 = 0
+61:3/0 = 0
+62:3/0 = 0
+63:3/0 = 0
+102:6/0 = 0
+62:2/0 = 0
+102:7/0 = 0
+61:4/0 = 0
+62:4/0 = 0
+63:4/0 = 0
+64:4/0 = 0
+65:4/0 = 0
+67:6/0 = 0
+61:5/0 = 0
+62:5/0 = 0
+63:5/0 = 0
+64:5/0 = 0
+65:5/0 = 0
+67:8/0 = 0
+61:6/0 = 0
+62:6/0 = 0
+63:6/0 = 0
+64:6/0 = 0
+65:6/0 = 0
+102:8/0 = 0
+67:9/0 = 0
+101:9/0 = 0
+102:9/0 = 0
+24:0/0 = 0
+25:0/0 = 0
+26:0/0 = 0
+27:0/0 = 0
+24:2/0 = 0
+25:2/0 = 0
+26:2/0 = 0
+27:2/0 = 0
+24:3/0 = 0
+25:3/0 = 0
+26:3/0 = 0
+27:3/0 = 0
+44:18/0 = 0
+44:19/0 = 0
+49:19/0 = 0
+48:19/0 = 0
+46:14/0 = 0
+3:6/0 = 0
+42:14/0 = 0
+12:22/0 = 0
+13:22/0 = 0
+3:7/0 = 0
+43:19/0 = 0
+12:23/0 = 0
+13:23/0 = 0
+3:8/0 = 0
+43:20/0 = 0
+14:26/0 = 0
+15:26/0 = 0
+1:18/0 = 0
+0:18/0 = 0
+33:4/0 = 0
+35:4/0 = 0
+14:27/0 = 0
+15:27/0 = 0
+1:19/0 = 0
+0:19/0 = 0
+33:5/0 = 0
+35:5/0 = 0
+4:18/0 = 0
+5:18/0 = 0
+4:19/0 = 0
+5:19/0 = 0
+86:25/0 = 0
+87:25/0 = 0
+54:13/0 = 0
+38:13/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_1"]
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_1")
+
+[sub_resource type="RectangleShape2D" id="MirrorShape_Home"]
+
+[node name="World_00_Home" type="Node2D" unique_id=1585027393]
+y_sort_enabled = true
+script = ExtResource("5")
+
+[node name="WorldMeta" type="Node" parent="." unique_id=1357644814]
+script = ExtResource("6")
+MapSize = Vector2i(160, 160)
+WorldDisplayName = "Home"
+
+[node name="World_00_Home_GroundWalls" type="TileMapLayer" parent="." unique_id=1219232909]
+z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAABjAAIAAAABAAAAAABkAAIAAAACAAAAAABkAAIAAAADAAAAAABkAAIAAAAEAAAAAABkAAIAAAAFAAAAAABkAAIAAAAGAAAAAABkAAIAAAAHAAAAAABkAAIAAAAIAAAAAABkAAIAAAAJAAAAAABmAAIAAAAAAAEAAABDAAMAAAABAAEAAABOAAYAAAACAAEAAABMAAcAAAADAAEAAABNAAcAAAAEAAEAAABLAAcAAAAFAAEAAABOAAYAAAAGAAEAAABNAAcAAAAHAAEAAABMAAcAAAAIAAEAAABLAAcAAAAJAAEAAABmAAMAAAAAAAIAAABDAAQAAAABAAIAAABOAAgAAAACAAIAAABWAAUAAAADAAIAAABXAAUAAAAEAAIAAABMAAgAAAAFAAIAAABOAAgAAAAGAAIAAABLAAgAAAAHAAIAAABLAAgAAAAIAAIAAABMAAgAAAAJAAIAAABmAAQAAAAAAAMAAABDAAUAAAABAAMAAABOAAkAAAACAAMAAABWAAYAAAADAAMAAABXAAYAAAAEAAMAAABMAAkAAAAFAAMAAABOAAkAAAAGAAMAAABLAAkAAAAHAAMAAABLAAkAAAAIAAMAAABLAAkAAAAJAAMAAABmAAUAAAAAAAQAAABDAAMAAAABAAQAAABZAA8AAAACAAQAAABWAAcAAAADAAQAAABXAAcAAAAEAAQAAABAAAMAAAAFAAQAAABBAAMAAAAGAAQAAAA9AAMAAAAHAAQAAAA+AAMAAAAIAAQAAAA/AAMAAAAJAAQAAABmAAYAAAAAAAUAAABDAAQAAAABAAUAAAA9AAMAAAACAAUAAAA+AAMAAAADAAUAAAA+AAMAAAAEAAUAAABAAAMAAAAFAAUAAABBAAMAAAAGAAUAAAA/AAMAAAAHAAUAAABAAAMAAAAIAAUAAAA+AAIAAAAJAAUAAABmAAcAAAAAAAYAAABDAAUAAAABAAYAAAA9AAQAAAACAAYAAAA+AAQAAAADAAYAAAA/AAQAAAAEAAYAAABAAAQAAAAFAAYAAABBAAQAAAAGAAYAAAA/AAQAAAAHAAYAAABAAAQAAAAIAAYAAAA+AAMAAAAJAAYAAABmAAYAAAAAAAcAAABDAAYAAAABAAcAAAA9AAUAAAACAAcAAAA+AAUAAAADAAcAAAA/AAUAAAAEAAcAAABAAAUAAAAFAAcAAABBAAUAAAAGAAcAAAA/AAUAAAAHAAcAAABAAAUAAAAIAAcAAAA+AAIAAAAJAAcAAABmAAcAAAAAAAgAAABDAAgAAAABAAgAAAA9AAYAAAACAAgAAAA+AAYAAAADAAgAAAA/AAYAAAAEAAgAAABAAAYAAAAFAAgAAABBAAYAAAAGAAgAAAA/AAYAAAAHAAgAAABAAAYAAAAIAAgAAABBAAYAAAAJAAgAAABmAAgAAAAAAAkAAABDAAkAAAABAAkAAABlAAkAAAACAAkAAABlAAkAAAADAAkAAABlAAkAAAAGAAkAAABlAAkAAAAHAAkAAABlAAkAAAAIAAkAAABlAAkAAAAJAAkAAABmAAkAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_Home_FloorCoverings" type="TileMapLayer" parent="." unique_id=776054213]
+tile_map_data = PackedByteArray("AAACAAUAAAAYAAAAAAADAAUAAAAZAAAAAAAEAAUAAAAaAAAAAAAFAAUAAAAbAAAAAAACAAYAAAAYAAIAAAADAAYAAAAZAAIAAAAEAAYAAAAaAAIAAAAFAAYAAAAbAAIAAAACAAcAAAAYAAMAAAADAAcAAAAZAAMAAAAEAAcAAAAaAAMAAAAFAAcAAAAbAAMAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_Home_FurnitureDecor" type="TileMapLayer" parent="." unique_id=764315897]
+tile_map_data = PackedByteArray("AAABAAAAAAAsABIAAAACAAAAAAAsABIAAAADAAAAAAAsABIAAAABAAEAAAAsABMAAAAEAAEAAAAxABMAAAAFAAEAAAAwABMAAAAGAAEAAAAuAA4AAAABAAIAAAADAAYAABAEAAIAAAAsABIAAAAFAAIAAAAsABIAAAAGAAIAAAAqAA4AAAAHAAIAAAAMABYAAAAIAAIAAAANABYAAAABAAMAAAADAAcAABAGAAMAAAArABMAAAAHAAMAAAAMABcAAAAIAAMAAAANABcAAAABAAQAAAADAAgAABAGAAQAAAArABQAAAAHAAQAAAAOABoAAAAIAAQAAAAPABoAAAABAAUAAAABABIAABACAAUAAAAAABIAABADAAUAAAAhAAQAAAAEAAUAAAAjAAQAAAAHAAUAAAAOABsAAAAIAAUAAAAPABsAAAABAAYAAAABABMAABACAAYAAAAAABMAABADAAYAAAAhAAUAAAAEAAYAAAAjAAUAAAAHAAcAAAAEABIAAAAIAAcAAAAFABIAAAAHAAgAAAAEABMAAAAIAAgAAAAFABMAAAAEAAkAAABWABkAAAAFAAkAAABXABkAAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="World_00_Home_Items" type="TileMapLayer" parent="." unique_id=693741033]
+z_index = 1
+tile_map_data = PackedByteArray("AAAGAAMAAAA2AA0AAAADAAUAAAAmAA0AAAA=")
+tile_set = SubResource("TileSet_1")
+
+[node name="DialogueManager" parent="." unique_id=1760111029 instance=ExtResource("3")]
+
+[node name="Entities" type="Node2D" parent="." unique_id=1434694756]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" unique_id=1193621137 instance=ExtResource("2")]
+position = Vector2(80, 96)
+
+[node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=1545634024]
+zoom = Vector2(3, 3)
+script = ExtResource("4")
+
+[node name="Triggers" type="Node2D" parent="." unique_id=1949682048]
+y_sort_enabled = true
+script = ExtResource("7")
+TriggersResource = ExtResource("8")
+DoorScene = ExtResource("9")
+EdgeScene = ExtResource("10")
+
+[node name="MirrorTrigger" type="Area2D" parent="." unique_id=117855739]
+position = Vector2(64, 64)
+collision_layer = 0
+script = ExtResource("11_mirror")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger" unique_id=136887338]
+shape = SubResource("MirrorShape_Home")
+
+[node name="WorldMusic" type="Node" parent="." unique_id=1170590716]
+script = ExtResource("12_gcqqw")
+BaseTrack = "adventureland_calm"

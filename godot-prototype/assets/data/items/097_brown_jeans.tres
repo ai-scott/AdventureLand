@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-097.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 97
+Name = "Brown Jeans"
+Description = "Who said jeans had to be blue?"
+Category = 7
+Strength = 2
+Cost = 6
+Icon = ExtResource("2")
+CostumeId = "97_fbas_04lwr1_longpants_00a_tan"
+CostumeLayer = "04lwr1"

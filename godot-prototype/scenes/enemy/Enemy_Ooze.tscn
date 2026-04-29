@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://c6fiy1d6g8ct0"]
+
+[ext_resource type="Script" uid="uid://b13h6i2aa2pll" path="res://scripts/enemy/EnemyController.cs" id="1"]
+[ext_resource type="Script" uid="uid://gmxkev1xd6fq" path="res://scripts/enemy/EnemyFolderAnimator.cs" id="2"]
+[ext_resource type="Resource" uid="uid://dfirehwbf0ak0" path="res://assets/data/enemies/ooze.tres" id="2_pskue"]
+[ext_resource type="Script" uid="uid://dtmt3uegoc48l" path="res://scripts/systems/HealthSystem.cs" id="3"]
+
+[sub_resource type="RectangleShape2D" id="BodyShape"]
+size = Vector2(10, 8)
+
+[sub_resource type="RectangleShape2D" id="HurtboxShape"]
+size = Vector2(14, 10)
+
+[node name="Enemy" type="CharacterBody2D" unique_id=1190379225]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1")
+Data = ExtResource("2_pskue")
+AnimatorPath = NodePath("EnemyAnimator")
+HealthSystemPath = NodePath("HealthSystem")
+HitboxPath = NodePath("Hitbox")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1340464092]
+offset = Vector2(0, -8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1010510474]
+position = Vector2(0, 2)
+shape = SubResource("BodyShape")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=981093584]
+collision_layer = 8
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=503507943]
+position = Vector2(0, -2)
+shape = SubResource("HurtboxShape")
+
+[node name="EnemyAnimator" type="Node" parent="." unique_id=483571305]
+script = ExtResource("2")
+FramesFolder = "res://assets/sprites/enemies/ooze/"
+
+[node name="HealthSystem" type="Node" parent="." unique_id=369404657]
+script = ExtResource("3")
+MaxHealth = 2
+InvulnerabilityDuration = 0.7

@@ -16,7 +16,7 @@ Adventure Land today is a hybrid: **14 Construct 3 event sheets (~35,300 lines o
 |------|--------|-----------|
 | Godot 4.6 .NET project + C# build + input actions | ✅ | `project.godot`, `PlayerController.cs` |
 | Tiled TMX → CSV → runtime `TileMapLayer` pipeline | ✅ | `tools/tmx_to_godot.py`, `MapLoader.cs` |
-| 7-layer tilemap (1,430 tiles) with Y-sort across container | ✅ | `scenes/maps/VillageMap.tscn` |
+| 7-layer tilemap (1,430 tiles) with Y-sort across container | ✅ | `scenes/worlds/World_00.tscn` |
 | Per-tile Objects-layer collision from C3 polygon data | ✅ | `tools/gen_objects_collision.py` |
 | Mana Seed paper-doll player via MSCA plugin | ✅ | `addons/msca/`, `Player.tscn` |
 | `PlayerController.cs` driving `AnimationTree` via Travel + blend | ✅ | `scripts/player/PlayerController.cs` |
@@ -135,7 +135,7 @@ Each phase has a deliverable, a prerequisite set, a rough complexity (S/M/L), an
 ### Phase 0 — Foundation (DONE / in progress)
 Complexity: completed. Everything in section 2 plus the enemy `.tres` data resources (Phase 0b from the evaluation report).
 
-### Phase 1 — Core player loop
+### Phase 1 — Core player loop ✅ DONE (2026-04-14)
 Complexity: **L**. First phase that makes the prototype feel like a game.
 
 **Start with Ooze.** World 00 (Leafwood Village) only spawns oozes — crab and bat are Forest/Lake content and belong to later worlds. Getting Ooze fully wired is the fastest path to "combat works in the world you're actually standing in."
@@ -154,12 +154,13 @@ Deliverables:
 - Damage loop: player sword hits enemy → flash + knockback → enemy attack hits player → HP UI updates.
 - Minimal game-over screen — `GameOver.tscn` (just "You died — press R to restart" for now). Wire up when `HealthSystem.Died` signal fires. Full title/game-over polish is Phase 7.
 - **Fix Y-sort bug** from the Phase 0 punch-list (ensure player renders correctly against buildings/decor).
+- **Input overlap note:** `attack` and `dialogue_advance` both share Space. This is safe because `PlayerController.InputLocked` gates attack input — the dialogue system must set `InputLocked = true` on open and `false` on close (Phase 3 wiring).
 
 Prerequisites: EnemyData resources (done). MSCA `animation_set_hitbox` signal wiring proved.
 
 Exit criterion: **World 00 is playable with combat. Oozes spawn, take damage, can damage the player, die. Player death shows a placeholder game-over screen. Player renders correctly in/out of buildings.** Dialogue, inventory, save are all stubbed or absent. This is a legitimate "walk away" point.
 
-### Phase 2 — Save/load foundation
+### Phase 2 — Save/load foundation ✅ DONE (2026-04-14)
 Complexity: **M**. The layer everything else stands on.
 
 Deliverables:
@@ -172,7 +173,7 @@ Prerequisites: Phase 1 (so we have meaningful state to persist — HP, position)
 
 Exit criterion: **Play for 5 minutes, save, quit Godot, relaunch, continue, find yourself in the same spot with the same HP/position.**
 
-### Phase 3 — Quest + dialogue port
+### Phase 3 — Quest + dialogue port ✅ DONE (2026-04-15)
 Complexity: **L**. Single heaviest phase. Preserves 14 NPC files, 250 nodes, branching + quest integration.
 
 **Starting reality check:** the dialogue working in the prototype today is *proof-of-concept only* — Penny says 3 hardcoded lines, E advances, done. None of the real plumbing exists: no branching, no responses/choices, no quest conditions, no actions (give_item / deploy_npc / start_quest / etc.), no variable substitution (`|PlayerName|`), no UI transitions (opening/closing animations, speaker portraits), no input-mode management (disable movement during dialogue, re-enable on close). All of that builds in this phase. Scope this as a full system build, not a "port the existing UI" task.
@@ -191,7 +192,7 @@ Exit criterion: **Penny's rescue-cat quest plays end-to-end. Pete's herbs quest 
 
 Mechanical effort breakdown: schema port is ~1 day. DialogueManager implementation is ~2-3 days. The Python converter is ~1 day. Per-NPC conversion is automatic once the converter is right; verifying each of the 14 files runs in-game is ~3–4 days of testing and edge-case fixing (Penny alone has 363 lines).
 
-### Phase 4 — Inventory + items
+### Phase 4 — Inventory + items ✅ DONE (2026-04-15)
 Complexity: **L**. User flagged this as complex in C3. Data layer first, UI second.
 
 Deliverables:
@@ -201,6 +202,7 @@ Deliverables:
 - `InventoryUI.tscn` — CanvasLayer with grid, tooltips, drag-drop. This is the hard part. Consider deferring UI polish until Phase 5 so the rest of the game can use inventory functionally.
 - Equipment integration: equipping an item updates `CostumeController` layer textures (already wired in the prototype).
 - `ItemTrigger.tscn` — world-placed item pickup Area2D that reads its `[Export] ItemData` and adds to inventory on collision.
+- **Heart containers** — Zelda-style max-health upgrades. `HeartContainer.tscn` (extends `ItemTrigger`) calls `HealthSystem.IncreaseMaxHealth(amount)` on pickup. `HealthSystem` needs an `IncreaseMaxHealth(int)` method that raises `MaxHealth` and emits `HealthChanged`. Player starts at `MaxHealth = 10`; containers found in the world increase the cap. Persists via `SaveData.MaxHealth`.
 
 Prerequisites: Phase 2 (inventory persists in save), Phase 3 (dialogue actions give items).
 
@@ -213,17 +215,17 @@ Deliverables:
 - All 8 World 00 NPCs ported (Penny, Rosie, Windmill Nick, Blacksmith shopkeeper, General Store shopkeeper, Adventure Shop shopkeeper, Tree Sign, Welcome NPC).
 - Tiled Object Layer pipeline — `MapLoader.cs` parses `<objectgroup>` from TMX to spawn NPCs/triggers from map data. One-line in Tiled → NPC in world.
 
-**Exterior vs interior architecture.** Separate `.tscn` per location:
-  - `scenes/worlds/World00_Village.tscn` — the outdoor village (what we have today)
-  - `scenes/worlds/World00_PennysHouse.tscn`, `Blacksmith.tscn`, `AdventureShop.tscn`, `GeneralStore.tscn`, `WindmillF0.tscn`, `WindmillF1.tscn` — 6 interior scenes
+**Scene naming follows the C3 `World_XY` grid.** X = column (east), Y = row (south). Interiors use a `World_XY_Name` suffix pattern so every world's interiors sort together in the filesystem and in code.
+  - `scenes/worlds/World_00.tscn` — Leafwood Village exterior (what we have today)
+  - `scenes/worlds/World_00_Pennys_House.tscn`, `World_00_Blacksmith.tscn`, `World_00_Adventure_Shop.tscn`, `World_00_General_Store.tscn`, `World_00_Windmill_F0.tscn`, `World_00_Windmill_F1.tscn` — 6 interior scenes
   - Each interior scene is self-contained: its own tilemap (or hand-built walls), its own NPCs, its own camera bounds, its own entrance/exit doors.
   - A shared `WorldBase.tscn` is tempting but unnecessary — interiors diverge enough that inheritance bites back. Compose via signals + shared controller scripts instead.
 
 **World transitions — the right pattern for Adventure Land.**
-  - **Door entry (exterior → interior):** `Area2D` door trigger at the building's entrance, `BodyEntered` signal, invokes `WorldManager.GoTo(scenePath, spawnPoint)`.
+  - **Door entry (exterior → interior):** `Area2D` door trigger at the building's entrance, `BodyEntered` signal, invokes `WorldManager.GoTo(scenePath, doorId)`.
   - **`WorldManager` autoload** — holds the transition primitive. Fades the screen (via a `CanvasLayer` with an `AnimationPlayer`), calls `GetTree().ChangeSceneToFile(path)`, then positions the player at the named spawn marker in the new scene. Responsible for saving "where the player was" to `SaveData.CurrentWorld` after each transition so reload works.
-  - **Exit (interior → exterior):** dedicated `ExitDoor.tscn` inside each interior, returns to `World00_Village.tscn` at the door's original outdoor spawn point.
-  - **Spawn markers** — each scene has named `Marker2D` nodes (`SpawnFromVillage`, `SpawnFromBlacksmith`, etc.). The incoming transition names which marker to use.
+  - **Exit (interior → exterior):** dedicated `ExitDoor.tscn` inside each interior, returns to `World_00.tscn` at the door's original outdoor spawn point.
+  - **Numbered door triggers (reused from C3).** The user's C3 project already assigns each door a numeric ID — door `1` on the village side matches `SpawnFromDoor_1` on the interior side, etc. Reuse that scheme: `DoorTrigger.tscn` exports `[Export] int DoorId`, and each scene has `Marker2D` nodes named `SpawnFromDoor_{n}`. `WorldManager.GoTo(path, doorId)` looks up the matching marker in the destination scene. Carries the existing C3 numbering forward unchanged — fewer surprises when porting map data.
   - **Camera snap on transition** — set `Camera2D.ResetSmoothing()` after spawn to avoid a wild pan across the scene.
   - Pause music/SFX ducking during fade; restore on fade-in.
 
@@ -233,7 +235,7 @@ Deliverables:
 
 Exit criterion: **Feature parity with current C3 World 00. Player can walk into all 6 interiors and back out, buy/sell at shops, drink potions, complete all 8 NPC quest arcs, save+load mid-interior and return to the same scene.**
 
-### Phase 6 — Worlds 01 and 10
+### Phase 6 — Worlds 01, 10, and 03
 Complexity: **M per world**, parallelizable.
 
 Deliverables per world:
@@ -243,8 +245,9 @@ Deliverables per world:
 - World-specific content:
   - **World 01 (Leafwood Forest):** 2 NPCs (Pete, Forest Sign), enemy spawns, new tileset integration.
   - **World 10 (Bottomless Lake):** 4 NPCs (Sea Monster Key, Lake Sign, Sea Monster boss, Pearl), Sea Monster boss controller port (`scripts/systems/npc/sea-monster-*`, 657 LOC — biggest unique-per-world work), water tile animations.
+  - **World 03 (Gray Mist Mountain):** new area south of Leafwood Forest. Snowy foothills biome with a rocky cliff wall (passable only on the east edge), mid-map stone plateaus with barren trees, a dark-rock mountainside on the west edge hosting the goal **cave entrance**. Enemy types: Ice Wolf pack (plateau gauntlet), Frost Bat (aerial patrols), Snow Crab (cave approach). TMX at `assets/tiles/tilemaps/World_03_GrayMistMountain.tmx`; full spec in `docs/WORLD_03_GRAY_MIST_MOUNTAIN.md`. **Blocker:** the map uses 8 stacked tilesets (FantasyForest_Combo + Winter Forest family) — `tmx_interior_to_csvs.py` / `update_tile_csvs.py` only handle one tileset per TMX today. Either extend the baker to track per-tile atlas index or merge the Winter Forest sheets into a combined PNG before this world bakes.
 
-Exit criterion: **All three worlds ported. Main questline playable start to finish. Sea Monster boss fight works. This is the "game is playable" milestone.**
+Exit criterion: **All four worlds ported. Main questline playable start to finish. Sea Monster boss fight works. Gray Mist Mountain cave entrance reachable. This is the "game is playable" milestone.**
 
 ### Phase 7 — Polish
 Complexity: **M**. Everything that didn't block earlier phases.
@@ -253,7 +256,7 @@ Deliverables:
 - `MusicController.cs` — intensity modes (base/mid/high), ducking on dialogue start. Port of `scripts/systems/audio/music-*`.
 - `SFXController.cs` — convention-based (`{obj}_{action}`) pooled players. Port of `scripts/systems/audio/sfx-controller`.
 - VO system — boss voice-over with automatic music ducking.
-- **Title screen** (`scenes/ui/TitleScreen.tscn`) — logo, "New Game" / "Continue" / "Settings" / "Quit". Continue is enabled only if a save exists. Background music, ambient art. Uses `WorldManager.GoTo()` to launch the game scene. This is the game's new `main_scene` — replaces VillageMap as the boot target.
+- **Title screen** (`scenes/ui/TitleScreen.tscn`) — logo, "New Game" / "Continue" / "Settings" / "Quit". Continue is enabled only if a save exists. Background music, ambient art. Uses `WorldManager.GoTo()` to launch the game scene. This is the game's new `main_scene` — replaces World_00 as the boot target.
 - **Game over** (`scenes/ui/GameOver.tscn`) — upgrade from the Phase 1 placeholder. Fade to black on death, "You died" text, options: Continue from last save / Return to Title / Quit. Ties to `SaveManager.LoadLastSave()`.
 - **Intro/credits** — optional intro cutscene at new-game start (`scenes/ui/Intro.tscn` — series of text/image panels, skippable). Credits scene at endgame.
 - Tile animations (`scripts/systems/tiles/`) — water/fire/lava/waterfall. Port the data-driven config; consider using `AnimatedTexture` or a shader instead of per-frame TileMap updates. Aim for the 67% CPU improvement the TS version achieved.

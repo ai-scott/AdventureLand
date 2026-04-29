@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+
+[sub_resource type="Resource" id="act_2"]
+script = ExtResource("4")
+Type = 2
+QuestId = "Waterfall_Bill"
+Status = "SeaMonsterKeyFound"
+
+[sub_resource type="Resource" id="act_3"]
+script = ExtResource("4")
+Type = 3
+ItemId = "Sea Monster Key"
+Quantity = 1
+DestroyTrigger = true
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+Id = "SeaMonsterKey_Found"
+Text = "You found a Sea Monster Key! "
+Speaker = "AL"
+Priority = 100
+EndsDialogue = true
+Actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
+
+[resource]
+script = ExtResource("1")
+NpcId = "Shrine"
+DisplayName = "Shrine"
+DefaultNode = "node_000"
+WorldId = "World00"
+QuestRelations = PackedStringArray("Waterfall_Bill")
+Nodes = Array[ExtResource("2")]([SubResource("node_1")])

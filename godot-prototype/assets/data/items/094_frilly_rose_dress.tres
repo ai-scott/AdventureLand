@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-094.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 94
+Name = "Frilly Rose Dress"
+Description = "If you want to do ballet, this is the dress for you."
+Category = 7
+Strength = 2
+Cost = 8
+Icon = ExtResource("2")
+CostumeId = "94_fbas_08lwr3_frillydress_00a_rose"
+CostumeLayer = "08lwr3"

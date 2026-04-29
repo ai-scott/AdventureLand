@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="268">
+ <tileset firstgid="1" name="Mana_Interiors" tilewidth="16" tileheight="16" tilecount="6784" columns="128">
+  <image source="../spritesheets/Mana_Seed_Interiors.png" width="2048" height="848"/>
+ </tileset>
+ <layer id="1" name="Ground &amp; Walls" width="15" height="12">
+  <data encoding="csv">
+356,357,357,357,357,357,357,357,357,357,357,357,357,358,359,
+452,847,973,974,972,847,974,973,972,847,972,973,974,842,487,
+580,1103,1100,1102,1101,1103,1100,1100,1101,1103,1102,727,728,1098,615,
+708,1231,1229,1230,1229,1231,1228,1228,1228,1231,1230,855,856,1226,743,
+452,2010,319,320,449,450,446,447,448,449,450,983,984,322,871,
+580,446,447,577,449,450,448,449,319,320,447,448,449,450,999,
+708,574,575,576,577,578,576,577,447,448,575,576,577,578,871,
+836,702,703,704,705,706,704,705,319,320,448,449,450,450,999,
+1092,830,831,832,833,834,832,833,447,448,576,577,578,578,871,
+1220,1254,1254,0,0,1254,1254,586,702,703,704,705,706,706,999,
+0,0,0,0,0,0,0,1124,830,831,832,833,834,834,1127,
+0,0,0,0,0,0,0,1252,1254,1254,0,0,1254,1254,1255
+</data>
+ </layer>
+ <layer id="2" name="Furniture &amp; Decor" width="15" height="12">
+  <data encoding="csv">
+0,2349,2349,2349,0,0,0,0,0,0,0,0,0,0,0,
+0,2477,2215,2609,2482,2481,1839,1838,0,0,0,0,0,0,0,
+0,0,2343,2737,2349,2349,0,0,0,0,0,0,0,1433,0,
+0,0,2147484944,0,0,0,0,0,0,0,0,0,0,1561,0,
+0,0,2147485072,0,0,0,0,0,0,0,0,0,0,1689,0,
+0,1553,2147485200,2570,2570,912,913,914,0,0,912,913,914,0,0,
+0,1681,2147485328,2570,2570,1040,1041,1042,0,0,1040,1041,1042,5269,0,
+0,1968,0,2570,2570,1168,1169,1170,0,0,1168,1169,1170,5397,0,
+0,2096,0,0,0,0,0,0,0,0,0,0,5524,5525,0,
+0,0,0,3287,3288,0,0,0,1962,0,0,0,5652,3995,0,
+0,0,0,0,0,0,0,0,2090,0,0,0,5780,3997,0,
+0,0,0,0,0,0,0,0,0,0,3287,3288,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="Items" width="15" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,1722,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1724,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,2570,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,3494,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="Triggers">
+  <object id="1" name="SpawnFromDoor_5" type="spawn" x="168.226" y="156.737" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="2" name="ExitToVillage_5" type="door" x="160" y="176" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00.tscn"/>
+   </properties>
+  </object>
+  <object id="3" name="SpawnFromDoor_9" type="spawn" x="56" y="125.413" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="9"/>
+   </properties>
+  </object>
+  <object id="4" name="ExitToVillage_9" type="door" x="48" y="144" width="32" height="16">
+   <properties>
+    <property name="door_id" type="int" value="9"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_00.tscn"/>
+   </properties>
+  </object>
+  <object id="265" name="Item_Standard_Boater" type="item" x="80" y="80" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="53"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="266" name="Item_Emerald_Tunic" type="item" x="80.0454" y="96.2608" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="72"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="267" name="Item_The_Wrangler" type="item" x="96" y="80" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="54"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="268" name="Item_Lavender_Cloud_Hat" type="item" x="112" y="80" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="55"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="269" name="Item_Red_TeeShirt" type="item" x="96" y="98" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="74"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="270" name="Item_Purple_Tunic" type="item" x="112" y="98" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="76"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="271" name="Item_Ballet_Slippers" type="item" x="160.056" y="80.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="104"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="272" name="Item_Purple_Heart_Skort" type="item" x="160.056" y="98.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="92"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="273" name="Item_Plain_Brown_Shoes" type="item" x="176.056" y="80.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="103"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="274" name="Item_Green_Flops" type="item" x="192.056" y="80.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="105"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="275" name="Item_Brown_Jeans" type="item" x="176.056" y="98.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="97"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="276" name="Item_Red_Shorts" type="item" x="192.056" y="98.0181" width="16" height="16">
+   <properties>
+    <property name="item_id" type="int" value="93"/>
+    <property name="unique" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Walls">
+  <object id="169" type="wall" x="32" y="96" width="16" height="16">
+   <polygon points="0,0 16,0 16,9.82729 11.6347,16 0,16"/>
+  </object>
+  <object id="170" type="wall" x="16" y="112" width="16" height="16"/>
+  <object id="171" type="wall" x="0" y="0" width="16" height="16"/>
+  <object id="172" type="wall" x="16" y="0" width="16" height="16"/>
+  <object id="173" type="wall" x="32" y="0" width="16" height="16"/>
+  <object id="174" type="wall" x="48" y="0" width="16" height="16"/>
+  <object id="175" type="wall" x="64" y="0" width="16" height="16"/>
+  <object id="176" type="wall" x="80" y="0" width="16" height="16"/>
+  <object id="177" type="wall" x="96" y="0" width="16" height="16"/>
+  <object id="178" type="wall" x="112" y="0" width="16" height="16"/>
+  <object id="179" type="wall" x="128" y="0" width="16" height="16"/>
+  <object id="180" type="wall" x="144" y="0" width="16" height="16"/>
+  <object id="181" type="wall" x="160" y="0" width="16" height="16"/>
+  <object id="182" type="wall" x="176" y="0" width="16" height="16"/>
+  <object id="183" type="wall" x="192" y="0" width="16" height="16"/>
+  <object id="184" type="wall" x="208" y="0" width="16" height="16"/>
+  <object id="185" type="wall" x="224" y="0" width="16" height="16"/>
+  <object id="186" type="wall" x="0" y="16" width="16" height="16"/>
+  <object id="187" type="wall" x="224" y="16" width="16" height="16"/>
+  <object id="188" type="wall" x="0" y="32" width="16" height="16"/>
+  <object id="189" type="wall" x="224" y="32" width="16" height="16"/>
+  <object id="190" type="wall" x="0" y="48" width="16" height="16"/>
+  <object id="191" type="wall" x="16" y="48" width="16" height="16"/>
+  <object id="192" type="wall" x="32" y="48" width="16" height="16"/>
+  <object id="193" type="wall" x="48" y="48" width="16" height="16"/>
+  <object id="194" type="wall" x="64" y="48" width="16" height="16"/>
+  <object id="195" type="wall" x="80" y="48" width="16" height="16"/>
+  <object id="196" type="wall" x="96" y="48" width="16" height="16"/>
+  <object id="197" type="wall" x="112" y="48" width="16" height="16"/>
+  <object id="198" type="wall" x="128" y="48" width="16" height="16"/>
+  <object id="199" type="wall" x="144" y="48" width="16" height="16"/>
+  <object id="200" type="wall" x="160" y="48" width="16" height="16"/>
+  <object id="201" type="wall" x="176" y="48" width="16" height="16"/>
+  <object id="202" type="wall" x="192" y="48" width="16" height="16"/>
+  <object id="203" type="wall" x="208" y="48" width="16" height="16"/>
+  <object id="204" type="wall" x="224" y="48" width="16" height="16"/>
+  <object id="205" type="wall" x="0" y="64" width="16" height="16"/>
+  <object id="206" type="wall" x="16" y="64" width="16" height="16"/>
+  <object id="207" type="wall" x="32" y="64" width="16" height="16"/>
+  <object id="208" type="wall" x="208" y="64" width="16" height="16">
+   <polygon points="0,0 16,0 16,5 13,9 10.6763,15.0954 5,15.0222 2.65411,11.3902"/>
+  </object>
+  <object id="209" type="wall" x="224" y="64" width="16" height="16"/>
+  <object id="210" type="wall" x="0" y="80" width="16" height="16"/>
+  <object id="211" type="wall" x="16" y="80" width="16" height="16"/>
+  <object id="212" type="wall" x="32" y="80" width="16" height="16"/>
+  <object id="213" type="wall" x="80" y="80" width="16" height="16"/>
+  <object id="214" type="wall" x="96" y="80" width="16" height="16"/>
+  <object id="215" type="wall" x="112" y="80" width="16" height="16"/>
+  <object id="216" type="wall" x="160" y="80" width="16" height="16"/>
+  <object id="217" type="wall" x="176" y="80" width="16" height="16"/>
+  <object id="218" type="wall" x="192" y="80" width="16" height="16"/>
+  <object id="219" type="wall" x="224" y="80" width="16" height="16"/>
+  <object id="220" type="wall" x="0" y="96" width="16" height="16"/>
+  <object id="221" type="wall" x="16" y="96" width="16" height="16"/>
+  <object id="222" type="wall" x="80" y="96.2457" width="16" height="18.2114"/>
+  <object id="223" type="wall" x="96" y="96" width="16" height="16"/>
+  <object id="224" type="wall" x="112" y="96" width="16" height="18.2934"/>
+  <object id="225" type="wall" x="160" y="96" width="16" height="18.1295"/>
+  <object id="226" type="wall" x="176" y="96" width="16" height="16"/>
+  <object id="227" type="wall" x="192" y="96" width="16" height="18.0476"/>
+  <object id="228" type="wall" x="224" y="96" width="16" height="16"/>
+  <object id="229" type="wall" x="0" y="112" width="16" height="16"/>
+  <object id="230" type="wall" x="80.1397" y="106.273" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 6.10916,15.9276 6.09399,20.6914 0,21.1685"/>
+  </object>
+  <object id="231" type="wall" x="96.1397" y="106.273" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 0,16"/>
+  </object>
+  <object id="232" type="wall" x="112.14" y="106.273" width="16" height="16">
+   <polygon points="0,8 16,8 15.8603,21.1685 10.5083,21.5876 9.39076,16 0,16"/>
+  </object>
+  <object id="236" type="wall" x="224" y="112" width="16" height="16"/>
+  <object id="237" type="wall" x="0" y="128" width="16" height="16"/>
+  <object id="238" type="wall" x="16" y="128" width="16" height="16"/>
+  <object id="239" type="wall" x="224" y="128" width="16" height="16"/>
+  <object id="240" type="wall" x="0" y="144" width="16" height="16"/>
+  <object id="241" type="wall" x="16" y="144" width="16" height="16"/>
+  <object id="242" type="wall" x="32" y="144" width="16" height="16"/>
+  <object id="243" type="wall" x="80" y="144" width="16" height="16"/>
+  <object id="244" type="wall" x="96" y="144" width="16" height="16"/>
+  <object id="245" type="wall" x="112" y="144" width="16" height="16"/>
+  <object id="246" type="wall" x="128" y="142.113" width="16" height="17.8871">
+   <polygon points="4.41172,6.22414 13.0382,6.05511 15.6661,9.42724 16,17.8871 0,17.8871 0,8.94355"/>
+  </object>
+  <object id="247" type="wall" x="208" y="144" width="16" height="16">
+   <polygon points="3.53317,0.160599 10.2998,0.0802994 14.0589,3.5621 13.6424,7 16,11 16,16 4.41646,15.5182 1.26823,6.98036"/>
+  </object>
+  <object id="248" type="wall" x="224" y="144" width="16" height="16"/>
+  <object id="249" type="wall" x="32" y="160" width="16" height="16"/>
+  <object id="250" type="wall" x="48" y="160" width="16" height="16"/>
+  <object id="251" type="wall" x="64" y="160" width="16" height="16"/>
+  <object id="252" type="wall" x="80" y="160" width="16" height="16"/>
+  <object id="253" type="wall" x="112" y="160" width="16" height="16"/>
+  <object id="254" type="wall" x="128" y="160" width="16" height="16"/>
+  <object id="255" type="wall" x="208" y="160" width="16" height="16">
+   <polygon points="3.37257,0.0802994 16,0 16,16 3.85437,15.5985 1.8264,7.37877"/>
+  </object>
+  <object id="256" type="wall" x="224" y="160" width="16" height="16"/>
+  <object id="257" type="wall" x="112" y="176" width="16" height="16"/>
+  <object id="258" type="wall" x="128" y="176" width="16" height="16"/>
+  <object id="259" type="wall" x="144" y="176" width="16" height="16"/>
+  <object id="260" type="wall" x="160" y="176" width="16" height="16">
+   <polygon points="16.1535,13.0615 16,16 0,16 0,13"/>
+  </object>
+  <object id="261" type="wall" x="176" y="176" width="16" height="16">
+   <polygon points="15.9269,12.7943 16,16 0,16 0,13"/>
+  </object>
+  <object id="262" type="wall" x="192" y="176" width="16" height="16"/>
+  <object id="263" type="wall" x="208" y="176" width="16" height="16"/>
+  <object id="264" type="wall" x="224" y="176" width="16" height="16"/>
+  <object id="265" type="wall" x="159.959" y="106.504" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 6.10916,15.9276 6.09399,20.6914 0,21.1685"/>
+  </object>
+  <object id="266" type="wall" x="175.959" y="106.504" width="16" height="16">
+   <polygon points="0,8 16,8 16,16 0,16"/>
+  </object>
+  <object id="267" type="wall" x="191.96" y="106.504" width="16" height="16">
+   <polygon points="0,8 16,8 15.8603,21.1685 10.5083,21.5876 9.39076,16 0,16"/>
+  </object>
+ </objectgroup>
+</map>

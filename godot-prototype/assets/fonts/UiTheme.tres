@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://cuitheme001"]
+
+[ext_resource type="FontFile" uid="uid://orkqklblwy1j" path="res://assets/fonts/alagard_by_pix3m-d6awiwp.ttf" id="1_font"]
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 16
