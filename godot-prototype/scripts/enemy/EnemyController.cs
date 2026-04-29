@@ -81,6 +81,10 @@ public partial class EnemyController : CharacterBody2D
 			return;
 		}
 
+		// Group membership lets EnemyMusicDriver poll the nearest live
+		// enemy without scanning the whole scene tree.
+		AddToGroup("enemy");
+
 		_animator = GetNodeOrNull<EnemyAnimatorBase>(AnimatorPath);
 		_health = GetNodeOrNull<HealthSystem>(HealthSystemPath);
 		_hitbox = GetNodeOrNull<Area2D>(HitboxPath);
