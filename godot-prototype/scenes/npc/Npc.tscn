@@ -33,8 +33,8 @@ shape = SubResource("RectangleShape2D_body")
 shape = SubResource("CircleShape2D_interact")
 
 [node name="InteractLabel" type="Label" parent="." unique_id=678048094]
-z_index = 10
 visible = false
+z_index = 10
 offset_left = -12.0
 offset_top = -32.0
 offset_right = 16.0
