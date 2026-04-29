@@ -1,77 +1,199 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=4 uid="uid://ca0l2b6r7tqbk"]
 
-[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://boo5uayms6iii" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
-[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="7"]
-[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Windmill_1stFloor.tres" id="8"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Resource" uid="uid://dibc2f7i03wyr" path="res://assets/map_data/triggers/World_00_Windmill_1stFloor.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/npc/Npc.tscn" id="11_npc"]
+[ext_resource type="PackedScene" uid="uid://dvb5r6dfsrg7b" path="res://scenes/npc/Npc.tscn" id="11_npc"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
-[ext_resource type="Resource" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
+[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="13_diy5c"]
+[ext_resource type="Resource" uid="uid://dnm7ybst6tubi" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
-texture_region_size = Vector2i(16, 16)
+67:18/0 = 0
+68:2/0 = 0
+68:18/0 = 0
+69:18/0 = 0
+70:18/0 = 0
+67:19/0 = 0
+78:24/0 = 0
+86:21/0 = 0
+87:21/0 = 0
+70:19/0 = 0
+67:20/0 = 0
+78:25/0 = 0
+86:22/0 = 0
+87:22/0 = 0
+70:20/0 = 0
+67:21/0 = 0
+62:18/0 = 0
+63:18/0 = 0
+64:21/0 = 0
+86:23/0 = 0
+87:23/0 = 0
+64:20/0 = 0
+70:21/0 = 0
+67:22/0 = 0
+61:20/0 = 0
+86:25/0 = 0
+87:25/0 = 0
+70:22/0 = 0
+61:21/0 = 0
+64:22/0 = 0
+61:22/0 = 0
+61:19/0 = 0
+70:23/0 = 0
+70:24/0 = 0
+67:25/0 = 0
+68:25/0 = 0
+68:9/0 = 0
+69:9/0 = 0
+69:25/0 = 0
+70:25/0 = 0
+53:35/0 = 0
+54:35/0 = 0
+2:13/0 = 0
+48:26/0 = 0
+49:26/0 = 0
+50:26/0 = 0
+51:26/0 = 0
+48:27/0 = 0
+49:27/0 = 0
+50:27/0 = 0
+51:27/0 = 0
+48:28/0 = 0
+49:28/0 = 0
+50:28/0 = 0
+51:28/0 = 0
+61:29/0 = 0
+48:29/0 = 0
+49:29/0 = 0
+50:29/0 = 0
+51:29/0 = 0
+40:27/0 = 0
+64:28/0 = 0
+65:28/0 = 0
+63:28/0 = 0
+40:28/0 = 0
+82:18/0 = 0
+42:14/0 = 0
+37:14/0 = 0
+6:0/0 = 0
+82:19/0 = 0
+17:12/0 = 0
+16:12/0 = 0
+6:1/0 = 0
+82:20/0 = 0
+17:13/0 = 0
+16:13/0 = 0
+6:2/0 = 0
+22:27/0 = 0
+45:19/0 = 0
+46:19/0 = 0
+47:19/0 = 0
+45:20/0 = 0
+46:20/0 = 0
+47:20/0 = 0
+28:0/0 = 0
+29:0/0 = 0
+10:22/0 = 0
+11:22/0 = 0
+45:21/0 = 0
+39:28/0 = 0
+47:21/0 = 0
+46:15/0 = 0
+45:15/0 = 0
+21:14/0 = 0
+28:1/0 = 0
+29:1/0 = 0
+10:23/0 = 0
+11:23/0 = 0
+46:25/0 = 0
+46:16/0 = 0
+45:16/0 = 0
+21:15/0 = 0
+28:2/0 = 0
+29:2/0 = 0
+21:16/0 = 0
+26:31/0 = 0
+27:31/0 = 0
+28:31/0 = 0
+21:20/0 = 0
+17:30/0 = 0
+42:13/0 = 0
+38:13/0 = 0
+24:11/0 = 0
+44:15/0 = 0
+24:12/0 = 0
+44:16/0 = 0
+24:13/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1"]
 physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
-tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
-[node name="World_00_Windmill_1stFloor" type="Node2D"]
+[node name="World_00_Windmill_1stFloor" type="Node2D" unique_id=1989553785]
 y_sort_enabled = true
 script = ExtResource("5")
-SpawnVillageBuildings = false
 
-[node name="WorldMeta" type="Node" parent="."]
+[node name="WorldMeta" type="Node" parent="." unique_id=1708950640]
 script = ExtResource("6")
 MapSize = Vector2i(240, 192)
 WorldDisplayName = "Windmill — Upstairs"
 
-[node name="World_00_Windmill_1stFloor_GroundWalls" type="TileMapLayer" parent="."]
+[node name="World_00_Windmill_1stFloor_GroundWalls" type="TileMapLayer" parent="." unique_id=217211236]
 z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAABDABIAAAABAAAAAABEAAIAAAACAAAAAABEABIAAAADAAAAAABEABIAAAAEAAAAAABFABIAAAAFAAAAAABEABIAAAAGAAAAAABFABIAAAAHAAAAAABEABIAAAAIAAAAAABFABIAAAAJAAAAAABEABIAAAAKAAAAAABFABIAAAALAAAAAABEABIAAAAMAAAAAABFABIAAAANAAAAAABFABIAAAAOAAAAAABGABIAAAAAAAEAAABDABMAAAABAAEAAABOABgAAAACAAEAAABOABgAAAADAAEAAABOABgAAAAEAAEAAABOABgAAAAFAAEAAABOABgAAAAGAAEAAABOABgAAAAHAAEAAABOABgAAAAIAAEAAABWABUAAAAJAAEAAABXABUAAAAKAAEAAABOABgAAAALAAEAAABOABgAAAAMAAEAAABOABgAAAANAAEAAABOABgAAAAOAAEAAABGABMAAAAAAAIAAABDABQAAAABAAIAAABOABkAAAACAAIAAABOABkAAAADAAIAAABOABkAAAAEAAIAAABOABkAAAAFAAIAAABOABkAAAAGAAIAAABOABkAAAAHAAIAAABOABkAAAAIAAIAAABWABYAAAAJAAIAAABXABYAAAAKAAIAAABOABkAAAALAAIAAABOABkAAAAMAAIAAABOABkAAAANAAIAAABOABkAAAAOAAIAAABGABQAAAAAAAMAAABDABUAAAABAAMAAAA+ABIAAAACAAMAAAA+ABIAAAADAAMAAAA/ABIAAAAEAAMAAABAABUAAAAFAAMAAAA/ABIAAAAGAAMAAAA+ABIAAAAHAAMAAAA+ABIAAAAIAAMAAABWABcAAAAJAAMAAABXABcAAAAKAAMAAAA+ABIAAAALAAMAAAA+ABIAAAAMAAMAAAA+ABIAAAANAAMAAABAABQAAAAOAAMAAABGABUAAAAAAAQAAABDABYAAAABAAQAAABAABQAAAACAAQAAAA9ABQAAAADAAQAAAA+ABIAAAAEAAQAAAA/ABIAAAAFAAQAAABAABUAAAAGAAQAAAA+ABIAAAAHAAQAAAA+ABIAAAAIAAQAAABWABkAACAJAAQAAABXABkAACAKAAQAAAA/ABIAAAALAAQAAABAABUAAAAMAAQAAAA/ABIAAAANAAQAAABAABUAAAAOAAQAAABGABYAAAAAAAUAAABDABUAAAABAAUAAABAABUAAAACAAUAAAA9ABUAAAADAAUAAAA+ABIAAAAEAAUAAAA/ABIAAAAFAAUAAABAABYAAAAGAAUAAAA+ABIAAAAHAAUAAAA+ABIAAAAIAAUAAAA+ABIAAAAJAAUAAAA+ABIAAAAKAAUAAAA/ABIAAAALAAUAAABAABYAAAAMAAUAAAA/ABIAAAANAAUAAABAABYAAAAOAAUAAABGABQAAAAAAAYAAABDABYAAAABAAYAAABAABYAAAACAAYAAAA9ABYAAAADAAYAAAA+ABIAAAAEAAYAAAA+ABIAAAAFAAYAAAA+ABIAAAAGAAYAAAA/ABIAAAAHAAYAAAA+ABIAAAAIAAYAAAA/ABIAAAAJAAYAAAA+ABIAAAAKAAYAAAA/ABIAAAALAAYAAAA/ABIAAAAMAAYAAAA/ABIAAAANAAYAAABAABQAAAAOAAYAAABGABQAAAAAAAcAAABDABUAAAABAAcAAAA9ABMAAAACAAcAAAA+ABIAAAADAAcAAAA/ABIAAAAEAAcAAAA/ABIAAAAFAAcAAAA+ABIAAAAGAAcAAAA/ABIAAAAHAAcAAAA/ABIAAAAIAAcAAAA+ABIAAAAJAAcAAAA/ABIAAAAKAAcAAAA+ABIAAAALAAcAAAA+ABIAAAAMAAcAAAA9ABUAAAANAAcAAABAABQAAAAOAAcAAABGABUAAAAAAAgAAABDABYAAAABAAgAAAA9ABQAAAACAAgAAAA+ABIAAAADAAgAAAA/ABIAAAAEAAgAAABAABUAAAAFAAgAAAA+ABIAAAAGAAgAAAA+ABIAAAAHAAgAAAA/ABIAAAAIAAgAAAA/ABIAAAAJAAgAAAA+ABIAAAAKAAgAAAA/ABIAAAALAAgAAAA+ABIAAAAMAAgAAAA9ABYAAAANAAgAAABAABUAAAAOAAgAAABGABYAAAAAAAkAAABDABUAAAABAAkAAAA9ABUAAAACAAkAAAA+ABIAAAADAAkAAAA+ABIAAAAEAAkAAABAABYAAAAFAAkAAAA/ABIAAAAGAAkAAAA/ABIAAAAHAAkAAAA+ABIAAAAIAAkAAAA9ABUAAAAJAAkAAAA/ABIAAAAKAAkAAAA/ABIAAAALAAkAAAA+ABIAAAAMAAkAAAA9ABUAAAANAAkAAABAABYAAAAOAAkAAABGABcAAAAAAAoAAABDABYAAAABAAoAAAA9ABYAAAACAAoAAAA+ABIAAAADAAoAAAA/ABIAAAAEAAoAAAA/ABIAAAAFAAoAAAA/ABIAAAAGAAoAAAA/ABIAAAAHAAoAAAA/ABIAAAAIAAoAAAA9ABYAAAAJAAoAAAA/ABIAAAAKAAoAAAA/ABIAAAALAAoAAAA+ABIAAAAMAAoAAAA9ABYAAAANAAoAAAA9ABQAAAAOAAoAAABGABgAAAAAAAsAAABDABkAAAABAAsAAABEABkAAAACAAsAAABEABkAAAADAAsAAABEABkAAAAEAAsAAABEABkAAAAFAAsAAABEABkAAAAGAAsAAABEAAkAAAAHAAsAAABFAAkAAAAIAAsAAABEABkAAAAJAAsAAABEABkAAAAKAAsAAABEABkAAAALAAsAAABEABkAAAAMAAsAAABEABkAAAANAAsAAABFABkAAAAOAAsAAABGABkAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_Windmill_1stFloor_FloorCoverings" type="TileMapLayer" parent="."]
-z_index = 0
+[node name="World_00_Windmill_1stFloor_FloorCoverings" type="TileMapLayer" parent="." unique_id=1425841486]
+tile_map_data = PackedByteArray("AAACAAAAAAA1ACMAAAADAAAAAAA2ACMAAAALAAEAAAACAA0AAAAMAAEAAAACAA0AAAACAAIAAAAwABoAAAADAAIAAAAxABoAAAAEAAIAAAAyABoAAAAFAAIAAAAzABoAAAALAAIAAAACAA0AAAACAAMAAAAwABsAAAADAAMAAAAxABsAAAAEAAMAAAAyABsAAAAFAAMAAAAzABsAAAACAAQAAAAwABwAAAADAAQAAAAxABwAAAAEAAQAAAAyABwAAAAFAAQAAAAzABwAAAABAAUAAAA9AB0AAAACAAUAAAAwAB0AAAADAAUAAAAxAB0AAAAEAAUAAAAyAB0AAAAFAAUAAAAzAB0AAAAKAAUAAAAoABsAAAALAAUAAABAABwAAAAMAAUAAABBABwAAAABAAYAAAA/ABwAAAACAAYAAABAABwAAAADAAYAAAA/ABwAAAAEAAYAAABAABwAAAAFAAYAAABBABwAAAAKAAYAAAAoABwAAAALAAYAAABBABwAAAAMAAYAAABBABwAAAALAAcAAABBABwAAAAFAAkAAAA/ABwAAAAGAAkAAABAABwAAAAHAAkAAABBABwAAAAIAAkAAABBABwAAAAFAAoAAAA/ABwAAAAGAAoAAABAABwAAAAHAAoAAABBABwAAAAFAAsAAAA/ABwAAAAGAAsAAABAABwAAAAHAAsAAABBABwAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_Windmill_1stFloor_FurnitureDecor" type="TileMapLayer" parent="."]
-z_index = 0
+[node name="World_00_Windmill_1stFloor_FurnitureDecor" type="TileMapLayer" parent="." unique_id=2039666920]
+tile_map_data = PackedByteArray("AAAFAAEAAABSABIAAAAGAAEAAABSABIAAAAKAAEAAAAqAA4AAAALAAEAAAAlAA4AAAANAAEAAAAGAAAAAAAFAAIAAABSABMAAAAGAAIAAABSABMAAAAHAAIAAAARAAwAABAIAAIAAAAQAAwAAAAJAAIAAAARAAwAAAANAAIAAAAGAAEAAAAFAAMAAABSABQAAAAGAAMAAABSABQAAAAHAAMAAAARAA0AABAIAAMAAAAQAA0AAAAJAAMAAAARAA0AAAANAAMAAAAGAAIAAAANAAQAAAAWABsAAAAJAAYAAAAtABMAAAAKAAYAAAAuABMAAAALAAYAAAAvABMAAAAJAAcAAAAtABQAAAAKAAcAAAAuABQAAAALAAcAAAAvABQAAAABAAgAAAAcAAAAAAACAAgAAAAdAAAAAAADAAgAAAAKABYAAAAEAAgAAAALABYAAAAFAAgAAAAdAAAAABAGAAgAAAAcAAAAABAJAAgAAAAtABUAAAAKAAgAAAAnABwAAAALAAgAAAAvABUAAAAMAAgAAAAuAA8AAAANAAgAAAAtAA8AAAAOAAgAAAAVAA4AAAABAAkAAAAcAAEAAAACAAkAAAAdAAEAAAADAAkAAAAKABcAAAAEAAkAAAALABcAAAAFAAkAAAAdAAEAABAGAAkAAAAcAAEAABALAAkAAAAuABkAAAAMAAkAAAAuABAAAAANAAkAAAAtABAAAAAOAAkAAAAVAA8AAAABAAoAAAAcAAIAAAACAAoAAAAdAAIAAAAFAAoAAAAdAAIAABAGAAoAAAAcAAIAABALAAoAAAAuABkAAAAMAAoAAAAuABkAAAANAAoAAAAVABAAAAAOAAoAAAAVABAAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_Windmill_1stFloor_Items" type="TileMapLayer" parent="."]
+[node name="World_00_Windmill_1stFloor_Items" type="TileMapLayer" parent="." unique_id=1912379696]
 z_index = 1
+tile_map_data = PackedByteArray("AAAHAAIAAAAaAB8AAAAIAAIAAAAbAB8AAAAJAAIAAAAcAB8AAAANAAQAAAAVABQAAAANAAUAAAARAB4AAAAKAAYAAAAqAA0AAAAKAAcAAAAqAA0AAAADAAgAAAAmAA0AAAAEAAgAAAAmAA0AAAANAAgAAAAYAAsAAAAMAAkAAAAsAA8AAAANAAkAAAAYAAwAAAAMAAoAAAAsABAAAAANAAoAAAAYAA0AAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="DialogueManager" parent="." instance=ExtResource("3")]
+[node name="DialogueManager" parent="." unique_id=1090507796 instance=ExtResource("3")]
 
-[node name="Entities" type="Node2D" parent="."]
+[node name="Entities" type="Node2D" parent="." unique_id=1688132066]
 y_sort_enabled = true
 
-[node name="Player" parent="Entities" instance=ExtResource("2")]
+[node name="Player" parent="Entities" unique_id=726633213 instance=ExtResource("2")]
 position = Vector2(120, 96)
 
-[node name="Camera" type="Camera2D" parent="Entities/Player"]
+[node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=288351614]
 zoom = Vector2(3, 3)
 script = ExtResource("4")
 
-[node name="Triggers" type="Node2D" parent="."]
+[node name="Triggers" type="Node2D" parent="." unique_id=1849144142]
 y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
-[node name="Nick" parent="." instance=ExtResource("11_npc")]
+[node name="Nick" parent="." unique_id=1770743101 instance=ExtResource("11_npc")]
 position = Vector2(200, 76)
 NpcName = "Nick"
 Dialogue = ExtResource("13_dlg")
+
 [node name="NpcAnimator" parent="Nick" index="1"]
 Sheet = ExtResource("12_sheet")
+
+[node name="WorldMusic" type="Node" parent="." unique_id=797849896]
+script = ExtResource("13_diy5c")
+BaseTrack = "adventureland_interior"

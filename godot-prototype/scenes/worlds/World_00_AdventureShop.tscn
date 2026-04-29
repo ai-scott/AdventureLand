@@ -1,74 +1,196 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=4 uid="uid://bnfit6s73k8af"]
 
-[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://boo5uayms6iii" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
-[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="7"]
-[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_AdventureShop.tres" id="8"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Resource" uid="uid://iafelxokd7ai" path="res://assets/map_data/triggers/World_00_AdventureShop.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/npc/Npc.tscn" id="11_npc"]
+[ext_resource type="PackedScene" uid="uid://dvb5r6dfsrg7b" path="res://scenes/npc/Npc.tscn" id="11_npc"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sophie.png" id="12_sheet"]
-[ext_resource type="Resource" path="res://assets/data/dialogue/adventureshop.tres" id="13_dlg"]
+[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="13_cxco8"]
+[ext_resource type="Resource" uid="uid://6f8ilr0dt58c" path="res://assets/data/dialogue/adventureshop.tres" id="13_dlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
-texture_region_size = Vector2i(16, 16)
+99:2/0 = 0
+100:2/0 = 0
+101:2/0 = 0
+102:2/0 = 0
+67:3/0 = 0
+78:6/0 = 0
+76:7/0 = 0
+77:7/0 = 0
+75:7/0 = 0
+73:6/0 = 0
+102:3/0 = 0
+67:4/0 = 0
+78:8/0 = 0
+75:8/0 = 0
+77:8/0 = 0
+76:8/0 = 0
+86:5/0 = 0
+87:5/0 = 0
+73:8/0 = 0
+102:4/0 = 0
+67:5/0 = 0
+78:9/0 = 0
+76:9/0 = 0
+77:9/0 = 0
+75:9/0 = 0
+86:6/0 = 0
+87:6/0 = 0
+73:9/0 = 0
+102:5/0 = 0
+89:15/0 = 0
+62:2/0 = 0
+63:2/0 = 0
+64:3/0 = 0
+65:3/0 = 0
+61:3/0 = 0
+86:7/0 = 0
+87:7/0 = 0
+65:2/0 = 0
+102:6/0 = 0
+62:3/0 = 0
+64:4/0 = 0
+63:3/0 = 0
+102:7/0 = 0
+61:4/0 = 0
+62:4/0 = 0
+63:4/0 = 0
+65:4/0 = 0
+67:6/0 = 0
+61:5/0 = 0
+62:5/0 = 0
+63:5/0 = 0
+64:5/0 = 0
+65:5/0 = 0
+67:8/0 = 0
+61:6/0 = 0
+62:6/0 = 0
+63:6/0 = 0
+64:6/0 = 0
+65:6/0 = 0
+67:9/0 = 0
+101:9/0 = 0
+73:4/0 = 0
+99:8/0 = 0
+102:8/0 = 0
+99:9/0 = 0
+102:9/0 = 0
+44:18/0 = 0
+28:26/0 = 0
+28:27/0 = 0
+2:16/0 = 0
+3:16/0 = 0
+37:17/0 = 0
+50:14/0 = 0
+47:14/0 = 0
+6:16/0 = 0
+7:16/0 = 0
+2:17/0 = 0
+3:17/0 = 0
+37:18/0 = 0
+6:17/0 = 0
+7:17/0 = 0
+61:25/0 = 0
+62:25/0 = 0
+63:25/0 = 0
+64:25/0 = 0
+38:12/0 = 0
+45:19/0 = 0
+46:19/0 = 0
+47:19/0 = 0
+62:26/0 = 0
+45:20/0 = 0
+46:20/0 = 0
+47:20/0 = 0
+62:27/0 = 0
+45:21/0 = 0
+46:21/0 = 0
+47:21/0 = 0
+62:28/0 = 0
+61:29/0 = 0
+62:29/0 = 0
+63:29/0 = 0
+64:29/0 = 0
+25:11/0 = 0
+86:25/0 = 0
+87:25/0 = 0
+29:22/0 = 0
+30:22/0 = 0
+25:12/0 = 0
+29:23/0 = 0
+30:23/0 = 0
+25:13/0 = 0
+16:31/0 = 0
+17:31/0 = 0
+24:11/0 = 0
+24:12/0 = 0
+24:13/0 = 0
+37:27/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1"]
 physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
-tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
-[node name="World_00_AdventureShop" type="Node2D"]
+[node name="World_00_AdventureShop" type="Node2D" unique_id=452320351]
 y_sort_enabled = true
 script = ExtResource("5")
-SpawnVillageBuildings = false
 
-[node name="WorldMeta" type="Node" parent="."]
+[node name="WorldMeta" type="Node" parent="." unique_id=1295468211]
 script = ExtResource("6")
 MapSize = Vector2i(240, 192)
 WorldDisplayName = "Adventure Shop"
 IsShop = true
 
-[node name="World_00_AdventureShop_GroundWalls" type="TileMapLayer" parent="."]
+[node name="World_00_AdventureShop_GroundWalls" type="TileMapLayer" parent="." unique_id=790379598]
 z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAABjAAIAAAABAAAAAABkAAIAAAACAAAAAABkAAIAAAADAAAAAABkAAIAAAAEAAAAAABkAAIAAAAFAAAAAABkAAIAAAAGAAAAAABkAAIAAAAHAAAAAABkAAIAAAAIAAAAAABkAAIAAAAJAAAAAABkAAIAAAAKAAAAAABkAAIAAAALAAAAAABkAAIAAAAMAAAAAABkAAIAAAANAAAAAABlAAIAAAAOAAAAAABmAAIAAAAAAAEAAABDAAMAAAABAAEAAABOAAYAAAACAAEAAABMAAcAAAADAAEAAABNAAcAAAAEAAEAAABLAAcAAAAFAAEAAABOAAYAAAAGAAEAAABNAAcAAAAHAAEAAABMAAcAAAAIAAEAAABLAAcAAAAJAAEAAABOAAYAAAAKAAEAAABLAAcAAAALAAEAAABMAAcAAAAMAAEAAABNAAcAAAANAAEAAABJAAYAAAAOAAEAAABmAAMAAAAAAAIAAABDAAQAAAABAAIAAABOAAgAAAACAAIAAABLAAgAAAADAAIAAABNAAgAAAAEAAIAAABMAAgAAAAFAAIAAABOAAgAAAAGAAIAAABLAAgAAAAHAAIAAABWAAUAAAAIAAIAAABXAAUAAAAJAAIAAABOAAgAAAAKAAIAAABNAAgAAAALAAIAAABLAAgAAAAMAAIAAABLAAgAAAANAAIAAABJAAgAAAAOAAIAAABmAAQAAAAAAAMAAABDAAUAAAABAAMAAABOAAkAAAACAAMAAABMAAkAAAADAAMAAABNAAkAAAAEAAMAAABMAAkAAAAFAAMAAABOAAkAAAAGAAMAAABLAAkAAAAHAAMAAABWAAYAAAAIAAMAAABXAAYAAAAJAAMAAABOAAkAAAAKAAMAAABNAAkAAAALAAMAAABMAAkAAAAMAAMAAABMAAkAAAANAAMAAABJAAkAAAAOAAMAAABmAAUAAAAAAAQAAABDAAMAAAABAAQAAABZAA8AAAACAAQAAAA+AAIAAAADAAQAAAA/AAIAAAAEAAQAAABAAAMAAAAFAAQAAABBAAMAAAAGAAQAAAA9AAMAAAAHAAQAAABWAAcAAAAIAAQAAABXAAcAAAAJAAQAAABAAAMAAAAKAAQAAABBAAMAAAALAAQAAAA+AAIAAAAMAAQAAAA+AAIAAAANAAQAAABBAAIAAAAOAAQAAABmAAYAAAAAAAUAAABDAAQAAAABAAUAAAA9AAMAAAACAAUAAAA+AAMAAAADAAUAAABAAAQAAAAEAAUAAABAAAMAAAAFAAUAAABBAAMAAAAGAAUAAAA/AAMAAAAHAAUAAABAAAMAAAAIAAUAAAA+AAIAAAAJAAUAAAA/AAIAAAAKAAUAAAA+AAMAAAALAAUAAAA/AAMAAAAMAAUAAABAAAMAAAANAAUAAABBAAMAAAAOAAUAAABmAAcAAAAAAAYAAABDAAUAAAABAAYAAAA9AAQAAAACAAYAAAA+AAQAAAADAAYAAAA/AAQAAAAEAAYAAABAAAQAAAAFAAYAAABBAAQAAAAGAAYAAAA/AAQAAAAHAAYAAABAAAQAAAAIAAYAAAA+AAMAAAAJAAYAAAA/AAMAAAAKAAYAAAA+AAQAAAALAAYAAAA/AAQAAAAMAAYAAABAAAQAAAANAAYAAABBAAQAAAAOAAYAAABmAAYAAAAAAAcAAABDAAYAAAABAAcAAAA9AAUAAAACAAcAAAA+AAUAAAADAAcAAAA/AAUAAAAEAAcAAABAAAUAAAAFAAcAAABBAAUAAAAGAAcAAAA/AAUAAAAHAAcAAABAAAUAAAAIAAcAAAA+AAIAAAAJAAcAAAA/AAIAAAAKAAcAAAA/AAMAAAALAAcAAABAAAMAAAAMAAcAAABBAAMAAAANAAcAAABBAAMAAAAOAAcAAABmAAcAAAAAAAgAAABDAAgAAAABAAgAAAA9AAYAAAACAAgAAAA+AAYAAAADAAgAAAA/AAYAAAAEAAgAAABAAAYAAAAFAAgAAABBAAYAAAAGAAgAAAA/AAYAAAAHAAgAAABAAAYAAAAIAAgAAAA+AAMAAAAJAAgAAAA/AAMAAAAKAAgAAAA/AAQAAAALAAgAAABAAAQAAAAMAAgAAABBAAQAAAANAAgAAABBAAQAAAAOAAgAAABmAAYAAAAAAAkAAABDAAkAAAABAAkAAABlAAkAAAACAAkAAABlAAkAAAAFAAkAAABlAAkAAAAGAAkAAABlAAkAAAAHAAkAAABJAAQAAAAIAAkAAAA9AAUAAAAJAAkAAAA+AAUAAAAKAAkAAAA/AAUAAAALAAkAAABAAAUAAAAMAAkAAABBAAUAAAANAAkAAABBAAUAAAAOAAkAAABmAAcAAAAHAAoAAABjAAgAAAAIAAoAAAA9AAYAAAAJAAoAAAA+AAYAAAAKAAoAAAA/AAYAAAALAAoAAABAAAYAAAAMAAoAAABBAAYAAAANAAoAAABBAAYAAAAOAAoAAABmAAgAAAAHAAsAAABjAAkAAAAIAAsAAABlAAkAAAAJAAsAAABlAAkAAAAMAAsAAABlAAkAAAANAAsAAABlAAkAAAAOAAsAAABmAAkAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_AdventureShop_FurnitureDecor" type="TileMapLayer" parent="."]
-z_index = 0
+[node name="World_00_AdventureShop_FurnitureDecor" type="TileMapLayer" parent="." unique_id=194321089]
+tile_map_data = PackedByteArray("AAABAAAAAAAsABIAAAACAAAAAAAsABIAAAADAAAAAAAsABIAAAABAAEAAAAcABoAAAABAAIAAAAcABsAAAACAAIAAAACABAAAAADAAIAAAADABAAAAAEAAIAAAAlABEAAAAGAAIAAAAyAA4AAAAKAAIAAAAvAA4AAAALAAIAAAAGABAAAAAMAAIAAAAHABAAAAACAAMAAAACABEAAAADAAMAAAADABEAAAAEAAMAAAAlABIAAAALAAMAAAAGABEAAAAMAAMAAAAHABEAAAACAAQAAAA9ABkAAAADAAQAAAA9ABkAAAAEAAQAAAA9ABkAAAAFAAQAAAA+ABkAAAAGAAQAAAA/ABkAAAAHAAQAAABAABkAAAAIAAQAAAA9ABkAAAAJAAQAAAA+ABkAAAAKAAQAAAA/ABkAAAALAAQAAABAABkAAAABAAUAAAAmAAwAAAACAAUAAAAtABMAAAADAAUAAAAuABMAAAAEAAUAAAAvABMAAAAFAAUAAAA+ABoAAAAGAAUAAAAtABMAAAAHAAUAAAAuABMAAAAIAAUAAAAvABMAAAAJAAUAAAA+ABoAAAAKAAUAAAAtABMAAAALAAUAAAAuABMAAAAMAAUAAAAvABMAAAABAAYAAAAmAAwAAAACAAYAAAAtABQAAAADAAYAAAAuABQAAAAEAAYAAAAvABQAAAAFAAYAAAA+ABsAAAAGAAYAAAAtABQAAAAHAAYAAAAuABQAAAAIAAYAAAAvABQAAAAJAAYAAAA+ABsAAAAKAAYAAAAtABQAAAALAAYAAAAuABQAAAAMAAYAAAAvABQAAAABAAcAAAAmAAwAAAACAAcAAAAtABUAAAADAAcAAAAuABUAAAAEAAcAAAAvABUAAAAFAAcAAAA+ABwAAAAGAAcAAAAtABUAAAAHAAcAAAAuABUAAAAIAAcAAAAvABUAAAAJAAcAAAA+ABwAAAAKAAcAAAAtABUAAAALAAcAAAAuABUAAAAMAAcAAAAvABUAAAACAAgAAAA9AB0AAAADAAgAAAA9AB0AAAAEAAgAAAA9AB0AAAAFAAgAAAA+AB0AAAAGAAgAAAA/AB0AAAAHAAgAAABAAB0AAAAIAAgAAAA9AB0AAAAJAAgAAAA+AB0AAAAKAAgAAAA/AB0AAAALAAgAAABAAB0AAAANAAgAAAAZAAsAAAADAAkAAABWABkAAAAEAAkAAABXABkAAAAIAAkAAAAdABYAAAAJAAkAAAAeABYAAAANAAkAAAAZAAwAAAAIAAoAAAAdABcAAAAJAAoAAAAeABcAAAANAAoAAAAZAA0AAAAKAAsAAABWABkAAAALAAsAAABXABkAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_AdventureShop_Items" type="TileMapLayer" parent="."]
+[node name="World_00_AdventureShop_Items" type="TileMapLayer" parent="." unique_id=831268089]
 z_index = 1
+tile_map_data = PackedByteArray("AAAMAAQAAAAQAB8AAAANAAQAAAARAB8AAAABAAYAAAAYAAsAAAABAAcAAAAYAAwAAAABAAgAAAAYAA0AAAANAAoAAAAlABsAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="DialogueManager" parent="." instance=ExtResource("3")]
+[node name="DialogueManager" parent="." unique_id=188411821 instance=ExtResource("3")]
 
-[node name="Entities" type="Node2D" parent="."]
+[node name="Entities" type="Node2D" parent="." unique_id=1165956531]
 y_sort_enabled = true
 
-[node name="Player" parent="Entities" instance=ExtResource("2")]
+[node name="Player" parent="Entities" unique_id=1969955879 instance=ExtResource("2")]
 position = Vector2(176, 160)
 
-[node name="Camera" type="Camera2D" parent="Entities/Player"]
+[node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=658091502]
 zoom = Vector2(3, 3)
 script = ExtResource("4")
 
-[node name="Triggers" type="Node2D" parent="."]
+[node name="Triggers" type="Node2D" parent="." unique_id=2146975632]
 y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
-[node name="Sophie" parent="." instance=ExtResource("11_npc")]
+[node name="Sophie" parent="." unique_id=900158436 instance=ExtResource("11_npc")]
 position = Vector2(23, 65)
 NpcName = "Sophie"
 Dialogue = ExtResource("13_dlg")
+
 [node name="NpcAnimator" parent="Sophie" index="1"]
 Sheet = ExtResource("12_sheet")
+
+[node name="WorldMusic" type="Node" parent="." unique_id=1444742794]
+script = ExtResource("13_cxco8")
+BaseTrack = "adventureland_interior"

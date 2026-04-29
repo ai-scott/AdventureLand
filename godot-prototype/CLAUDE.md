@@ -156,6 +156,46 @@ Python dependencies.
 and the baked `.tres`, and pushes a warning if the TMX is newer. If you see a
 `[TriggerSpawner] STALE:` warning in the Output panel, rebake.
 
+### 7. Inherited-instance overrides — edit the .tscn, not the Inspector
+
+NPC scenes (Sally, Sophie, Sarah, Nick, etc. inside the world `.tscn` files) are
+**instances** of `scenes/npc/Npc.tscn` with their `NpcAnimator` child's
+`Sheet` overridden per-instance to a different sprite. Two failure modes
+to know about:
+
+**Failure 1 — editing the inherited child cascades to all NPCs.** Selecting
+the inherited `NpcAnimator` in the Godot scene tree and changing `Sheet` in
+the Inspector edits **the base `Npc.tscn`**, not the instance — so every
+shopkeeper turns into Penny. Godot only creates a per-instance override if
+one already exists; without that, the change writes to the base scene. To
+force an override, right-click the property in the Inspector → "Make
+Editable" / "Override", *or* edit the world `.tscn` directly (preferred —
+fewer surprises).
+
+**Failure 2 — format=3 → format=4 upgrade silently drops the override.**
+When Godot resaves a `format=3` scene as `format=4` (e.g. after the
+editor opens it for the first time in 4.6), the
+`[node name="NpcAnimator" parent="<Npc>" index="1"] Sheet = ExtResource(...)`
+override block can vanish along with its `[ext_resource]`. Diff against
+git (`git diff <scene>.tscn`) before saving and look for missing
+`shopkeeper_*.png` ext_resources.
+
+**The override pattern (paste into world `.tscn` — never via the
+Inspector):**
+
+```
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sally.png" id="12_sheet"]
+...
+[node name="Sally" parent="." instance=ExtResource("11_npc")]
+NpcName = "Sally"
+
+[node name="NpcAnimator" parent="Sally" index="1"]
+Sheet = ExtResource("12_sheet")
+```
+
+`index="1"` matches NpcAnimator's position inside the base `Npc.tscn`; the
+`12_sheet` id is just convention — any unused id in the scene works.
+
 ## Data Resources (GlobalClass pattern)
 
 Game data (enemy stats, items, dialogue) lives in `.tres` files as `[GlobalClass]` Resource subclasses. **Do not hardcode game data in C#.** Edit stats in the Godot Inspector; the files are plain text and diff cleanly in git.
