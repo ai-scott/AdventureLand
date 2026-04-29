@@ -1,91 +1,226 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene format=4 uid="uid://bkt3m82njn6rd"]
 
-[ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://boo5uayms6iii" path="res://assets/tiles/spritesheets/Mana_Seed_Interiors.png" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
-[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="7"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_PennysHouse.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="11_npc"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="12_npc"]
-[ext_resource type="Script" path="res://scripts/world/MirrorTrigger.cs" id="13_mirror"]
-
-[sub_resource type="RectangleShape2D" id="MirrorShape_Penny"]
-size = Vector2(20, 20)
+[ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="13_mirror"]
+[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="14_s4bq0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
-texture_region_size = Vector2i(16, 16)
+67:18/0 = 0
+68:18/0 = 0
+69:18/0 = 0
+70:18/0 = 0
+67:19/0 = 0
+86:21/0 = 0
+87:21/0 = 0
+78:24/0 = 0
+70:19/0 = 0
+67:20/0 = 0
+86:22/0 = 0
+87:22/0 = 0
+78:25/0 = 0
+70:20/0 = 0
+67:21/0 = 0
+86:23/0 = 0
+87:23/0 = 0
+63:18/0 = 0
+64:21/0 = 0
+62:18/0 = 0
+64:20/0 = 0
+70:21/0 = 0
+67:22/0 = 0
+61:20/0 = 0
+70:22/0 = 0
+61:21/0 = 0
+64:22/0 = 0
+61:22/0 = 0
+61:19/0 = 0
+70:23/0 = 0
+70:24/0 = 0
+67:25/0 = 0
+68:25/0 = 0
+86:25/0 = 0
+87:25/0 = 0
+69:25/0 = 0
+70:25/0 = 0
+15:4/0 = 0
+16:4/0 = 0
+17:4/0 = 0
+16:5/0 = 0
+17:5/0 = 0
+40:21/0 = 0
+18:4/0 = 0
+40:22/0 = 0
+19:4/0 = 0
+15:6/0 = 0
+16:6/0 = 0
+17:6/0 = 0
+18:5/0 = 0
+39:22/0 = 0
+20:5/0 = 0
+46:15/0 = 0
+49:17/0 = 0
+18:6/0 = 0
+19:6/0 = 0
+20:6/0 = 0
+0:18/0 = 0
+1:18/0 = 0
+46:16/0 = 0
+50:18/0 = 0
+0:19/0 = 0
+1:19/0 = 0
+12:6/0 = 0
+13:6/0 = 0
+45:14/0 = 0
+5:0/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+12:20/0 = 0
+13:20/0 = 0
+57:15/0 = 0
+12:7/0 = 0
+13:7/0 = 0
+8:18/0 = 0
+9:18/0 = 0
+6:18/0 = 0
+7:18/0 = 0
+4:1/0 = 0
+8:7/0 = 0
+9:7/0 = 0
+12:21/0 = 0
+13:21/0 = 0
+57:16/0 = 0
+12:8/0 = 0
+13:8/0 = 0
+8:19/0 = 0
+9:19/0 = 0
+6:19/0 = 0
+7:19/0 = 0
+4:2/0 = 0
+8:8/0 = 0
+9:8/0 = 0
+14:20/0 = 0
+15:20/0 = 0
+3:6/0 = 0
+14:21/0 = 0
+15:21/0 = 0
+41:21/0 = 0
+18:7/0 = 0
+19:7/0 = 0
+20:7/0 = 0
+3:7/0 = 0
+41:22/0 = 0
+18:8/0 = 0
+19:8/0 = 0
+20:8/0 = 0
+3:8/0 = 0
+18:9/0 = 0
+19:9/0 = 0
+20:9/0 = 0
+45:15/0 = 0
+44:15/0 = 0
+53:15/0 = 0
+42:21/0 = 0
+45:16/0 = 0
+44:16/0 = 0
+24:31/0 = 0
+25:31/0 = 0
+53:16/0 = 0
+42:22/0 = 0
+43:14/0 = 0
+38:13/0 = 0
+9:4/0 = 0
+40:13/0 = 0
+59:13/0 = 0
+44:13/0 = 0
+42:13/0 = 0
+50:13/0 = 0
+48:13/0 = 0
+18:19/0 = 0
+43:18/0 = 0
+54:13/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1"]
 physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
-tile_size = Vector2i(16, 16)
 sources/0 = SubResource("TileSetAtlasSource_1")
 
-[node name="World_00_PennysHouse" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="MirrorShape_Penny"]
+
+[node name="World_00_PennysHouse" type="Node2D" unique_id=1291921752]
 y_sort_enabled = true
 script = ExtResource("5")
-SpawnVillageBuildings = false
 
-[node name="WorldMeta" type="Node" parent="."]
+[node name="WorldMeta" type="Node" parent="." unique_id=1061047142]
 script = ExtResource("6")
 MapSize = Vector2i(240, 192)
 WorldDisplayName = "Penny's House"
 IsShop = true
 
-[node name="World_00_PennysHouse_GroundWalls" type="TileMapLayer" parent="."]
+[node name="World_00_PennysHouse_GroundWalls" type="TileMapLayer" parent="." unique_id=1619581713]
 z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAABDABIAAAABAAAAAABEABIAAAACAAAAAABEABIAAAADAAAAAABEABIAAAAEAAAAAABFABIAAAAFAAAAAABEABIAAAAGAAAAAABFABIAAAAHAAAAAABEABIAAAAIAAAAAABFABIAAAAJAAAAAABEABIAAAAKAAAAAABFABIAAAALAAAAAABEABIAAAAMAAAAAABFABIAAAANAAAAAABFABIAAAAOAAAAAABGABIAAAAAAAEAAABDABMAAAABAAEAAABWABUAAAACAAEAAABXABUAAAADAAEAAABOABgAAAAEAAEAAABOABgAAAAFAAEAAABOABgAAAAGAAEAAABOABgAAAAHAAEAAABOABgAAAAIAAEAAABOABgAAAAJAAEAAABWABUAAAAKAAEAAABXABUAAAALAAEAAABOABgAAAAMAAEAAABOABgAAAANAAEAAABOABgAAAAOAAEAAABGABMAAAAAAAIAAABDABQAAAABAAIAAABWABYAAAACAAIAAABXABYAAAADAAIAAABOABkAAAAEAAIAAABOABkAAAAFAAIAAABOABkAAAAGAAIAAABOABkAAAAHAAIAAABOABkAAAAIAAIAAABOABkAAAAJAAIAAABWABYAAAAKAAIAAABXABYAAAALAAIAAABOABkAAAAMAAIAAABOABgAAAANAAIAAABOABkAAAAOAAIAAABGABQAAAAAAAMAAABDABUAAAABAAMAAABWABcAAAACAAMAAABXABcAAAADAAMAAAA/ABIAAAAEAAMAAABAABUAAAAFAAMAAAA/ABIAAAAGAAMAAAA+ABIAAAAHAAMAAAA/ABIAAAAIAAMAAAA+ABIAAAAJAAMAAABWABcAAAAKAAMAAABXABcAAAALAAMAAAA+ABIAAAAMAAMAAAA/ABIAAAANAAMAAABAABQAAAAOAAMAAABGABUAAAAAAAQAAABDABYAAAABAAQAAABAABQAAAACAAQAAAA9ABQAAAADAAQAAAA+ABIAAAAEAAQAAAA/ABIAAAAFAAQAAABAABUAAAAGAAQAAAA+ABIAAAAHAAQAAAA+ABIAAAAIAAQAAAA+ABIAAAAJAAQAAAA+ABIAAAAKAAQAAAA/ABIAAAALAAQAAABAABUAAAAMAAQAAAA/ABIAAAANAAQAAABAABUAAAAOAAQAAABGABYAAAAAAAUAAABDABUAAAABAAUAAABAABUAAAACAAUAAAA9ABUAAAADAAUAAAA+ABIAAAAEAAUAAAA/ABIAAAAFAAUAAABAABYAAAAGAAUAAAA+ABIAAAAHAAUAAAA+ABIAAAAIAAUAAAA+ABIAAAAJAAUAAAA+ABIAAAAKAAUAAAA/ABIAAAALAAUAAABAABYAAAAMAAUAAAA/ABIAAAANAAUAAABAABYAAAAOAAUAAABGABQAAAAAAAYAAABDABYAAAABAAYAAABAABYAAAACAAYAAAA9ABYAAAADAAYAAAA+ABIAAAAEAAYAAAA+ABIAAAAFAAYAAAA+ABIAAAAGAAYAAAA/ABIAAAAHAAYAAAA+ABIAAAAIAAYAAAA/ABIAAAAJAAYAAAA+ABIAAAAKAAYAAAA/ABIAAAALAAYAAAA/ABIAAAAMAAYAAAA/ABIAAAANAAYAAABAABQAAAAOAAYAAABGABQAAAAAAAcAAABDABUAAAABAAcAAAA9ABMAAAACAAcAAAA+ABIAAAADAAcAAAA/ABIAAAAEAAcAAAA/ABIAAAAFAAcAAAA+ABIAAAAGAAcAAAA/ABIAAAAHAAcAAAA/ABIAAAAIAAcAAAA+ABIAAAAJAAcAAAA/ABIAAAAKAAcAAAA+ABIAAAALAAcAAAA+ABIAAAAMAAcAAAA9ABUAAAANAAcAAABAABQAAAAOAAcAAABGABUAAAAAAAgAAABDABYAAAABAAgAAAA9ABQAAAACAAgAAAA+ABIAAAADAAgAAAA/ABIAAAAEAAgAAABAABUAAAAFAAgAAAA+ABIAAAAGAAgAAAA+ABIAAAAHAAgAAAA/ABIAAAAIAAgAAAA/ABIAAAAJAAgAAAA+ABIAAAAKAAgAAAA/ABIAAAALAAgAAAA+ABIAAAAMAAgAAAA9ABYAAAANAAgAAABAABUAAAAOAAgAAABGABYAAAAAAAkAAABDABUAAAABAAkAAAA9ABUAAAACAAkAAAA+ABIAAAADAAkAAAA+ABIAAAAEAAkAAABAABYAAAAFAAkAAAA/ABIAAAAGAAkAAAA/ABIAAAAHAAkAAAA+ABIAAAAIAAkAAAA9ABUAAAAJAAkAAAA/ABIAAAAKAAkAAAA/ABIAAAALAAkAAAA+ABIAAAAMAAkAAAA9ABUAAAANAAkAAABAABYAAAAOAAkAAABGABcAAAAAAAoAAABDABYAAAABAAoAAAA9ABYAAAACAAoAAAA+ABIAAAADAAoAAAA/ABIAAAAEAAoAAAA/ABIAAAAFAAoAAAA/ABIAAAAGAAoAAAA/ABIAAAAHAAoAAAA/ABIAAAAIAAoAAAA9ABYAAAAJAAoAAAA/ABIAAAAKAAoAAAA/ABIAAAALAAoAAAA+ABIAAAAMAAoAAAA9ABYAAAANAAoAAAA9ABQAAAAOAAoAAABGABgAAAAAAAsAAABDABkAAAABAAsAAABEABkAAAACAAsAAABEABkAAAADAAsAAABEABkAAAAEAAsAAABEABkAAAAFAAsAAABEABkAAAAGAAsAAABWABkAAAAHAAsAAABXABkAAAAIAAsAAABEABkAAAAJAAsAAABEABkAAAAKAAsAAABEABkAAAALAAsAAABEABkAAAAMAAsAAABEABkAAAANAAsAAABFABkAAAAOAAsAAABGABkAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_PennysHouse_FloorCoverings" type="TileMapLayer" parent="."]
-z_index = 0
+[node name="World_00_PennysHouse_FloorCoverings" type="TileMapLayer" parent="." unique_id=2038015625]
+tile_map_data = PackedByteArray("AAABAAMAAAAPAAQAAAACAAMAAAAQAAQAAAADAAMAAAARAAQAAAABAAQAAAAQAAUAAAACAAQAAAAQAAUAAAADAAQAAAARAAUAAAAIAAQAAAAoABUAAAABAAUAAAAQAAUAAAACAAUAAAAQAAUAAAADAAUAAAARAAUAAAAGAAUAAAASAAQAAAAHAAUAAAAQAAQAAAAIAAUAAAAoABYAAAAJAAUAAAATAAQAAAAKAAUAAAARAAQAAAABAAYAAAAPAAYAAAACAAYAAAAQAAYAAAADAAYAAAARAAYAAAAGAAYAAAASAAUAAAAHAAYAAAAQAAUAAAAIAAYAAAAQAAUAAAAJAAYAAAAQAAUAAAAKAAYAAAARAAUAAAAGAAcAAAASAAUAAAAHAAcAAAAQAAUAAAAIAAcAAAAnABYAAAAJAAcAAAAQAAUAAAAKAAcAAAAUAAUAAAABAAgAAAAuAA8AAAADAAgAAAAxABEAAAAGAAgAAAASAAYAAAAHAAgAAAATAAYAAAAIAAgAAAAQAAYAAAAJAAgAAAAQAAYAAAAKAAgAAAAUAAYAAAAMAAgAAAAAABIAAAANAAgAAAABABIAAAABAAkAAAAuABAAAAADAAkAAAAyABIAAAAMAAkAAAAAABMAAAANAAkAAAABABMAAAADAAoAAAAyABIAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_PennysHouse_FurnitureDecor" type="TileMapLayer" parent="."]
-z_index = 0
+[node name="World_00_PennysHouse_FurnitureDecor" type="TileMapLayer" parent="." unique_id=677282292]
+tile_map_data = PackedByteArray("AAAFAAEAAAAMAAYAAAAGAAEAAAANAAYAAAAIAAEAAAAtAA4AAAALAAEAAAAFAAAAAAAMAAEAAAAIAAYAAAANAAEAAAAJAAYAAAABAAIAAAAMABQAAAACAAIAAAANABQAAAADAAIAAAA5AA8AAAAFAAIAAAAMAAcAAAAGAAIAAAANAAcAAAAHAAIAAAAIABIAAAAIAAIAAAAJABIAAAAJAAIAAAAGABIAAAAKAAIAAAAHABIAAAALAAIAAAAEAAEAAAAMAAIAAAAIAAcAAAANAAIAAAAJAAcAAAABAAMAAAAMABUAAAACAAMAAAANABUAAAADAAMAAAA5ABAAAAAFAAMAAAAMAAgAAAAGAAMAAAANAAgAAAAHAAMAAAAIABMAAAAIAAMAAAAJABMAAAAJAAMAAAAGABMAAAAKAAMAAAAHABMAAAALAAMAAAAEAAIAAAAMAAMAAAAIAAgAAAANAAMAAAAJAAgAAAABAAQAAAAOABQAAAACAAQAAAAPABQAAAANAAQAAAADAAYAAAABAAUAAAAOABUAAAACAAUAAAAPABUAAAAGAAUAAAApABUAAAAHAAUAAAASAAcAAAAIAAUAAAATAAcAAAAJAAUAAAAUAAcAAAAKAAUAAAApABUAABANAAUAAAADAAcAAAAGAAYAAAApABYAAAAHAAYAAAASAAgAAAAIAAYAAAATAAgAAAAJAAYAAAAUAAgAAAAKAAYAAAApABYAABANAAYAAAADAAgAAAAHAAcAAAASAAkAAAAIAAcAAAATAAkAAAAJAAcAAAAUAAkAAAAMAAgAAAAAABIAAAANAAgAAAABABIAAAABAAkAAAAtAA8AAAACAAkAAAAsAA8AAAADAAkAAAAxABEAAAALAAkAAAA1AA8AAAAMAAkAAAAqABUAAAANAAkAAAABABMAAAABAAoAAAAtABAAAAACAAoAAAAsABAAAAADAAoAAAAYAB8AAAAEAAoAAAAZAB8AAAALAAoAAAA1ABAAAAAMAAoAAAAqABYAAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="World_00_PennysHouse_Items" type="TileMapLayer" parent="."]
+[node name="World_00_PennysHouse_Items" type="TileMapLayer" parent="." unique_id=308724746]
 z_index = 1
+tile_map_data = PackedByteArray("AAAHAAEAAAArAA4AAAADAAIAAAAmAA0AAAAHAAIAAAAJAAQAAAAHAAMAAAAJAAQAAAAHAAUAAAAoAA0AAAAIAAUAAAA7AA0AAAAJAAUAAAAsAA0AAAAHAAYAAAAqAA0AAAAIAAYAAAAyAA0AAAAJAAYAAAAwAA0AAAAFAAcAAAASABMAAAAIAAcAAAAnABYAAAAKAAcAAAArABIAAAALAAcAAAArABIAAAAMAAkAAAA2AA0AAAA=")
 tile_set = SubResource("TileSet_1")
 
-[node name="DialogueManager" parent="." instance=ExtResource("3")]
+[node name="DialogueManager" parent="." unique_id=1882164078 instance=ExtResource("3")]
 
-[node name="Entities" type="Node2D" parent="."]
+[node name="Entities" type="Node2D" parent="." unique_id=1174024222]
 y_sort_enabled = true
 
-[node name="Player" parent="Entities" instance=ExtResource("2")]
+[node name="Player" parent="Entities" unique_id=1483610790 instance=ExtResource("2")]
 position = Vector2(120, 160)
 
-[node name="Camera" type="Camera2D" parent="Entities/Player"]
+[node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=601830707]
 zoom = Vector2(3, 3)
 script = ExtResource("4")
 
-[node name="Triggers" type="Node2D" parent="."]
+[node name="Triggers" type="Node2D" parent="." unique_id=1538725206]
 y_sort_enabled = true
 script = ExtResource("7")
 TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
-[node name="Penny" parent="." instance=ExtResource("11_npc")]
+[node name="Penny" parent="." unique_id=363822383 instance=ExtResource("11_npc")]
 position = Vector2(74, 77)
 RequiredWorldFlag = "penny_home"
 
-[node name="Rosie" parent="." instance=ExtResource("12_npc")]
+[node name="Rosie" parent="." unique_id=1952459597 instance=ExtResource("12_npc")]
 position = Vector2(129, 39)
 RequiredWorldFlag = "penny_home"
 
-[node name="MirrorTrigger" type="Area2D" parent="."]
+[node name="MirrorTrigger" type="Area2D" parent="." unique_id=916648655]
 position = Vector2(64, 80)
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("13_mirror")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger" unique_id=647396013]
 shape = SubResource("MirrorShape_Penny")
+
+[node name="WorldMusic" type="Node" parent="." unique_id=2052455333]
+script = ExtResource("14_s4bq0")
+BaseTrack = "adventureland_calm"
