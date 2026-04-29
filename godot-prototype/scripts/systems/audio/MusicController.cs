@@ -152,11 +152,45 @@ public partial class MusicController : Node
         _crossfadeTween?.Kill();
         _crossfadeTween = CreateTween().SetParallel(true);
 
-        _crossfadeTween.TweenProperty(_base, "volume_db", mode == Mode.Base ? 0f : SilentDb, fadeSec);
-        _crossfadeTween.TweenProperty(_mid,  "volume_db", mode == Mode.Mid  ? 0f : SilentDb, fadeSec);
-        _crossfadeTween.TweenProperty(_high, "volume_db", mode == Mode.High ? 0f : SilentDb, fadeSec);
+        // Tween LINEAR amplitude (0..1), not dB. A straight dB lerp from
+        // 0 → -80 sounds like "drops fast, fades in late": dB is
+        // logarithmic, so most of the perceived loudness change happens
+        // in the first ~10 dB of the cut. Linear amplitude tweened in
+        // parallel produces a true crossfade where outgoing and incoming
+        // layers cross at roughly half-loudness mid-fade.
+        TweenLayerGain(_base, mode == Mode.Base ? 1f : 0f, fadeSec);
+        TweenLayerGain(_mid,  mode == Mode.Mid  ? 1f : 0f, fadeSec);
+        TweenLayerGain(_high, mode == Mode.High ? 1f : 0f, fadeSec);
 
         _mode = mode;
+    }
+
+    /// <summary>Tween a player's linear amplitude (0..1) over `duration`,
+    /// converting to volume_db each tick. Starting amplitude is read from
+    /// the player's current volume_db so an in-flight fade interrupted
+    /// mid-crossfade resumes from where it actually is, not from 0/1.</summary>
+    private void TweenLayerGain(AudioStreamPlayer player, float targetGain, float duration)
+    {
+        float startGain = DbToLinear(player.VolumeDb);
+        _crossfadeTween.TweenMethod(
+            Callable.From<float>(g => player.VolumeDb = LinearToDb(g)),
+            startGain,
+            targetGain,
+            duration);
+    }
+
+    private static float LinearToDb(float gain)
+    {
+        // Clamp the floor: anything below ~0.0001 maps to SilentDb so the
+        // tween's tail doesn't push volume_db to -inf and audibly tick.
+        if (gain <= 0.0001f) return SilentDb;
+        return 20f * Mathf.Log(gain) / Mathf.Log(10f);
+    }
+
+    private static float DbToLinear(float db)
+    {
+        if (db <= SilentDb + 0.5f) return 0f;
+        return Mathf.Pow(10f, db / 20f);
     }
 
     /// <summary>Duck the Music bus by `db` (positive number — magnitude of
