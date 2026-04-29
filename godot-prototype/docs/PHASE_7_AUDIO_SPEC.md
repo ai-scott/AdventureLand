@@ -106,8 +106,8 @@ godot-prototype/assets/audio/
 │   ├── door_open.ogg             ← from sounds/DoorOpen.webm
 │   └── bubble.ogg                ← from sounds/SFX/BubbleBubble.webm
 ├── music/
-│   ├── town.ogg                    ← from music/Town.webm (currently unused — see §8.1)
 │   ├── title_screens.ogg           ← title screen background
+│   ├── dungeon.ogg                 ← reserved for the future dungeon world (no scene yet)
 │   ├── adventureland_happy.ogg     ← from sounds/Soundtrack/Adventureland1 Happy_01.webm
 │   ├── adventureland_stress.ogg    ← from sounds/Soundtrack/Adventureland1 Stress_01.webm
 │   ├── adventureland_danger.ogg    ← from sounds/Soundtrack/Adventureland1 Danger_01.webm
@@ -513,7 +513,7 @@ Mirror the C3 source at
 **Bus + controller smoke test:**
 
 - [ ] Boot game → no audio errors in the Output panel.
-- [ ] Title screen plays `town` music. Volume is reasonable on default
+- [ ] Title screen plays `title_screens` music. Volume is reasonable on default
       master.
 - [ ] Press Space → menu beep would fire if we added one (we haven't —
       noted in §11).
