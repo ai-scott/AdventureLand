@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
-[ext_resource type="Resource" uid="uid://blt1mxbrhu04c" path="res://assets/map_data/triggers/World_00_Home.tres" id="8"]
+[ext_resource type="Resource" uid="uid://dtp1xqxqjbtor" path="res://assets/map_data/triggers/World_00_Home.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="11_mirror"]
@@ -124,6 +124,7 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [sub_resource type="RectangleShape2D" id="MirrorShape_Home"]
+size = Vector2(25, 26)
 
 [node name="World_00_Home" type="Node2D" unique_id=1585027393]
 y_sort_enabled = true
@@ -172,11 +173,12 @@ DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
 [node name="MirrorTrigger" type="Area2D" parent="." unique_id=117855739]
-position = Vector2(64, 64)
+position = Vector2(33, 76)
 collision_layer = 0
 script = ExtResource("11_mirror")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger" unique_id=136887338]
+position = Vector2(-2, -4)
 shape = SubResource("MirrorShape_Home")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=1170590716]

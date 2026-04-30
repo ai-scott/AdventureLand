@@ -10,7 +10,7 @@ Tiled schema
 In Tiled, add an Object Layer (any name — "Triggers" recommended) and place
 rectangle objects. Each object must have:
 
-  class  (a.k.a. "Type"): one of "door" | "spawn" | "edge" | "npc" | "item"
+  class  (a.k.a. "Type"): one of "door" | "spawn" | "edge" | "npc" | "item" | "wall" | "mirror"
 
 And these custom properties (set via the Properties panel), per class:
 
@@ -22,6 +22,8 @@ And these custom properties (set via the Properties panel), per class:
   npc:    npc_name      (string)
   item:   item_id       (int)
           requires_purchase (bool, optional — defaults false)
+  wall:   (no props — rect bounds; optional <polygon> child for non-rect shapes)
+  mirror: (no props — rect bounds; spawns a MirrorTrigger Area2D)
 
 The object's rectangle x/y/width/height become Position/Size on the trigger.
 Tiled uses top-left anchoring for rectangles; we preserve that and let the
@@ -53,6 +55,7 @@ KIND_MAP = {
     "npc": 3,
     "item": 4,
     "wall": 5,
+    "mirror": 6,
 }
 
 
@@ -196,10 +199,13 @@ def write_tres(triggers, source_tmx_relpath, output_path):
         if t["kind"] in ("door", "edge"):
             rq_id = str(props.get("required_quest_id", ""))
             rq_status = str(props.get("required_quest_status", ""))
+            rq_flag = str(props.get("required_world_flag", ""))
             if rq_id:
                 lines.append(f'RequiredQuestId = "{escape_tres_string(rq_id)}"')
             if rq_status:
                 lines.append(f'RequiredQuestStatus = "{escape_tres_string(rq_status)}"')
+            if rq_flag:
+                lines.append(f'RequiredWorldFlag = "{escape_tres_string(rq_flag)}"')
         # NPC
         if t["kind"] == "npc":
             npc_name = str(props.get("npc_name", "") or t["name"])

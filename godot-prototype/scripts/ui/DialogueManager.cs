@@ -309,14 +309,15 @@ public partial class DialogueManager : CanvasLayer
                 row.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
 
                 // Pointing-hand icon from the C3 TextIcons sheet (Arrow tag).
-                // 18x18 pixel-art sprite, lives in a fixed 24px column so toggling
-                // its visibility doesn't shift the response text.
+                // 18x18 native; scaled ~1.3x via KeepAspectCentered into a 24x24
+                // square so the arrow reads more clearly. Column is fixed-width so
+                // toggling visibility doesn't shift the response text.
                 var pointer = new TextureRect();
                 pointer.Name = "Pointer";
                 pointer.Texture = UiStyles.Arrow;
                 pointer.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
-                pointer.StretchMode = TextureRect.StretchModeEnum.Keep;
-                pointer.CustomMinimumSize = new Vector2(24, 0);
+                pointer.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+                pointer.CustomMinimumSize = new Vector2(24, 24);
                 pointer.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
                 pointer.Modulate = new Color(1, 1, 1, 0); // hidden; shown on selection
                 row.AddChild(pointer);
@@ -409,6 +410,14 @@ public partial class DialogueManager : CanvasLayer
     private static string PrettifySpeaker(string speaker)
     {
         if (string.IsNullOrEmpty(speaker)) return "";
+        // "Penny:Rosie" → "Penny". Authors append ":QuestName" to a speaker
+        // when the same NPC plays a different beat per quest — only the
+        // name belongs in the UI; the suffix stays for content routing.
+        int colon = speaker.IndexOf(':');
+        if (colon > 0) speaker = speaker.Substring(0, colon);
+        // "AL" → "Adventure Land" — the narrator/world voice abbreviation
+        // shouldn't render as a 2-letter shorthand to the player.
+        if (speaker == "AL") return "Adventure Land";
         // "Shopkeeper_Sally" → "Shopkeeper Sally". Speaker IDs keep
         // underscores in .tres files to stay identifier-safe.
         return speaker.Replace('_', ' ');
@@ -648,8 +657,11 @@ public partial class DialogueManager : CanvasLayer
             animator?.PlayWalk("up");
 
             var tween = penny.CreateTween();
-            var target = penny.GlobalPosition + new Vector2(0, -48);
-            tween.TweenProperty(penny, "global_position", target, 1.2f)
+            // Just one tile-step toward the door — enough to read as
+            // "she's heading inside" without burning seconds on a long
+            // tween before the fade.
+            var target = penny.GlobalPosition + new Vector2(0, -16);
+            tween.TweenProperty(penny, "global_position", target, 0.4f)
                  .SetTrans(Tween.TransitionType.Linear);
             await ToSignal(tween, Tween.SignalName.Finished);
         }
@@ -757,16 +769,14 @@ public partial class DialogueManager : CanvasLayer
         inputBox.AddThemeStyleboxOverride("read_only", inputBg);
         row.AddChild(inputBox);
 
-        // Boxed "Enter" button — uses the C3 Btn_Action sprite (frame 0 normal,
-        // frame 1 hover). Nine-sliced via texture_margin so the same style can
-        // be reused at any size throughout the UI.
-        var okBtn = new Button();
+        // Design-system primary button with a ↵ kbd chip — matches the
+        // Title-screen Name Entry "Let's go!" button. Space can't double
+        // as the submit key here because the LineEdit captures it as
+        // input; Enter is the only path.
+        var okBtn = UiFrames.BuildChipButton("Enter", "↵", UiFrames.ApplyPrimaryButton);
         okBtn.Name = "DialogueInputOk";
-        okBtn.Text = "Enter";
         okBtn.ProcessMode = ProcessModeEnum.Always;
-        okBtn.CustomMinimumSize = new Vector2(70, 36); // native sprite size
-        okBtn.AddThemeFontSizeOverride("font_size", 22);
-        UiStyles.ApplyBtnActionStyle(okBtn);
+        okBtn.CustomMinimumSize = new Vector2(140, 40);
         okBtn.Pressed += () => SubmitInput(inputBox.Text);
         row.AddChild(okBtn);
 
@@ -836,7 +846,7 @@ public partial class DialogueManager : CanvasLayer
         {
             if (_responseContainer.GetChild(i) is HBoxContainer row)
             {
-                var pointer = row.GetNodeOrNull<Label>("Pointer");
+                var pointer = row.GetNodeOrNull<TextureRect>("Pointer");
                 if (pointer != null)
                 {
                     // Pointer lives in a fixed column; we toggle alpha so the

@@ -27,6 +27,7 @@ public partial class TriggerSpawner : Node2D
     [Export] public PackedScene DoorScene;
     [Export] public PackedScene EdgeScene;
     [Export] public PackedScene ItemScene;
+    [Export] public PackedScene MirrorScene;
 
     public override void _Ready()
     {
@@ -107,6 +108,8 @@ public partial class TriggerSpawner : Node2D
                 return MakeItem(t, center);
             case TriggerData.TriggerKind.Wall:
                 return MakeWall(t);
+            case TriggerData.TriggerKind.Mirror:
+                return MakeMirror(t, center);
             default:
                 GD.PushWarning($"[TriggerSpawner] Unknown kind {t.Kind}");
                 return null;
@@ -167,6 +170,7 @@ public partial class TriggerSpawner : Node2D
         instance.DoorId = t.DoorId;
         instance.RequiredQuestId = t.RequiredQuestId;
         instance.RequiredQuestStatus = t.RequiredQuestStatus;
+        instance.RequiredWorldFlag = t.RequiredWorldFlag;
         ResizeCollision(instance, t.Size);
         return instance;
     }
@@ -232,6 +236,39 @@ public partial class TriggerSpawner : Node2D
         instance.TriggerID = ((int)t.Position.X << 16) | ((int)t.Position.Y & 0xFFFF);
         instance.Unique = true;
         return instance;
+    }
+
+    /// <summary>Spawn a MirrorTrigger Area2D at the mirror object's center,
+    /// sized to the Tiled rect. Authors place these in Tiled with
+    /// class="mirror" — data-driven so per-scene mirror positions live
+    /// alongside the rest of the map data instead of in scene files.</summary>
+    private Node MakeMirror(TriggerData t, Vector2 center)
+    {
+        var scene = MirrorScene ?? GD.Load<PackedScene>("res://scenes/world/MirrorTrigger.tscn");
+        if (scene != null)
+        {
+            var instance = scene.Instantiate<Area2D>();
+            instance.Name = $"Mirror_{(int)t.Position.X}_{(int)t.Position.Y}";
+            instance.Position = center;
+            ResizeCollision(instance, t.Size);
+            return instance;
+        }
+
+        // Fallback: build the Area2D in code if no scene exists yet. Lets
+        // the trigger work even before we ship MirrorTrigger.tscn.
+        var area = new Area2D
+        {
+            Name = $"Mirror_{(int)t.Position.X}_{(int)t.Position.Y}",
+            CollisionLayer = 0,
+            Position = center,
+        };
+        area.SetScript(GD.Load<Script>("res://scripts/world/MirrorTrigger.cs"));
+        var shapeNode = new CollisionShape2D
+        {
+            Shape = new RectangleShape2D { Size = t.Size },
+        };
+        area.AddChild(shapeNode);
+        return area;
     }
 
     private Node MakeEdge(TriggerData t, Vector2 center)

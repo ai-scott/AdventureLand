@@ -57,6 +57,14 @@ public partial class HUD : CanvasLayer
         GetNode<TextureButton>("Buttons/Attack/Touch").Pressed += () =>
             SendAction("attack");
 
+        // Apply design-system styling to the scene-authored HUD buttons
+        // so they read as the same teal+gold action buttons used in
+        // dialogs and menus. Inventory uses a text chip ("i"); attack
+        // uses the bare spc-key icon (the texture already has the kbd
+        // chip styling baked in — no extra panel needed).
+        ApplyDesignSystemButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 28);
+        ApplyDesignSystemButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 40);
+
         _attackButton = GetNode<Control>("Buttons/Attack");
         if (Inventory.Instance != null)
         {
@@ -160,5 +168,93 @@ public partial class HUD : CanvasLayer
         // Release next frame so single-press actions fire once.
         var release = new InputEventAction { Action = action, Pressed = false };
         Input.ParseInputEvent(release);
+    }
+
+    /// <summary>Restyle a scene-authored HUD button to the design system:
+    /// hide the legacy texture bg + key-hint + icon, layer a mossy teal
+    /// PanelContainer underneath, then center an HBox of [Icon, Chip].
+    /// Both items live inside the button as a tight cluster — the chip
+    /// hugs the icon so the keypress reads as part of the action.</summary>
+    /// <summary>Naked spc-key glyph (no chip frame) — the icon_space.png
+    /// texture is already drawn as a kbd chip, so wrapping it again would
+    /// double the border. Used by the HUD attack button.</summary>
+    private static Control BuildSpaceGlyph()
+    {
+        return new TextureRect
+        {
+            Texture = UiStyles.Space,
+            CustomMinimumSize = UiStyles.Space != null ? UiStyles.Space.GetSize() * 2f : new Vector2(36, 36),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+    }
+
+    private void ApplyDesignSystemButton(string path, Texture2D iconTex, Control kbdChip, int iconSize)
+    {
+        var btn = GetNodeOrNull<Control>(path);
+        if (btn == null) return;
+
+        // Wider, slightly taller — stacked vertically, the buttons can be
+        // generous without crowding the HP/gem strip.
+        btn.CustomMinimumSize = new Vector2(96, 48);
+
+        // Hide all legacy visuals (Bg TextureRect, Icon TextureRect, KeyHint).
+        // Touch button stays for clicks but gets resized + de-focused below.
+        foreach (var child in btn.GetChildren())
+        {
+            if (child is TextureButton) continue;
+            if (child is CanvasItem ci) ci.Visible = false;
+        }
+
+        // Mossy teal panel as the new backdrop.
+        var newBg = new PanelContainer
+        {
+            Name = "DesignBg",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        newBg.AddThemeStyleboxOverride("panel",
+            UiFrames.ActionButton(DesignTokens.Teal, DesignTokens.Ink));
+        newBg.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        btn.AddChild(newBg);
+        btn.MoveChild(newBg, 0);
+
+        // Centered HBox of [Icon, Chip]. Tight separation so the chip
+        // sits right next to the action's icon — reads as a unit.
+        var hbox = new HBoxContainer
+        {
+            Name = "DesignContent",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        hbox.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        hbox.Alignment = BoxContainer.AlignmentMode.Center;
+        hbox.AddThemeConstantOverride("separation", 4);
+        btn.AddChild(hbox);
+
+        var iconRect = new TextureRect
+        {
+            Texture = iconTex,
+            CustomMinimumSize = new Vector2(iconSize, iconSize),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        hbox.AddChild(iconRect);
+
+        hbox.AddChild(kbdChip);
+
+        // Resize the click target to fill the whole button so taps on the
+        // chip area register, and disable focus so spurious key events
+        // (Space/Enter while elsewhere has focus) can't accidentally fire
+        // the inventory/attack action.
+        if (btn.GetNodeOrNull<TextureButton>("Touch") is { } touch)
+        {
+            touch.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            touch.FocusMode = Control.FocusModeEnum.None;
+        }
     }
 }

@@ -68,6 +68,22 @@ public partial class GameOverScreen : CanvasLayer
 
     private void OnPlayerDied()
     {
+        // The CanvasLayer is authored with visible=false so nothing in
+        // it renders during normal play; turn it on now so the dim/bg/
+        // OVER/menu children can fade themselves in via modulate.
+        Visible = true;
+
+        // Tree order in the .tscn has Bg as the last sibling, which means
+        // it draws ON TOP of the OVER labels and the menu — hiding them.
+        // Reorder so the painted bg sits at the back of the stack and the
+        // OVER text + menu render over it.
+        if (_bg != null) MoveChild(_bg, 0);
+        if (_dim != null) MoveChild(_dim, 1);
+
+        // Swap to the title-screen music — same dread-loop the title uses,
+        // ties the death beat back to where the player will land next.
+        MusicController.Instance?.StartTrack("title_screens");
+
         // Populate the menu. Try Again only when there's a save slot to reload.
         foreach (var child in _menu.GetChildren()) child.QueueFree();
 
@@ -86,6 +102,9 @@ public partial class GameOverScreen : CanvasLayer
             GetTree().Paused = false;
             GetTree().ChangeSceneToFile("res://scenes/ui/TitleScreen.tscn");
         }));
+
+        // Auto-focus the first option so keyboard nav works immediately.
+        CallDeferred(nameof(FocusFirstMenuOption));
 
         // Defer pause so the overlay renders its first frame.
         GetTree().CreateTimer(0.05).Timeout += () => GetTree().Paused = true;
@@ -136,10 +155,17 @@ public partial class GameOverScreen : CanvasLayer
 
     private static Button MakeMenuButton(string text, System.Action onPressed)
     {
-        var btn = new Button();
-        btn.Text = text;
-        btn.Pressed += () => onPressed();
-        TitleScreen.StyleMenuButton(btn);
-        return btn;
+        // Reuse the title-screen pointer-list look so Game Over and Title
+        // share a single menu vocabulary (gold-border-on-focus, cream
+        // text on dark bg, no chip).
+        return TitleScreen.BuildPointerOption(text, onPressed);
+    }
+
+    private void FocusFirstMenuOption()
+    {
+        foreach (var child in _menu.GetChildren())
+        {
+            if (child is Button btn && !btn.Disabled) { btn.GrabFocus(); return; }
+        }
     }
 }

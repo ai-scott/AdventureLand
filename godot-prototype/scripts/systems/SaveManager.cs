@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace AdventureLandPrototype;
 
@@ -255,10 +256,30 @@ public partial class SaveManager : Node
         GD.Print($"[SaveManager] Auto-saved to slot {ActiveSlot}");
     }
 
-    /// <summary>Get a display-friendly world name from a scene path.</summary>
+    /// <summary>Get a display-friendly world name from a scene path.
+    /// Mirrors the per-scene <c>WorldMeta.WorldDisplayName</c> values so the
+    /// save-slot list shows the same banner copy a player sees on entry.
+    /// Falls back to a humanized filename for any scene not in the map.</summary>
     public static string WorldDisplayName(string scenePath)
     {
         if (string.IsNullOrEmpty(scenePath)) return "Unknown";
-        return scenePath.GetFile().GetBaseName().Replace("_", " ");
+        var key = scenePath.GetFile().GetBaseName();
+        if (WorldDisplayNames.TryGetValue(key, out var pretty)) return pretty;
+        return key.Replace("_", " ");
     }
+
+    private static readonly Dictionary<string, string> WorldDisplayNames = new()
+    {
+        ["World_00"] = "Leafwood Village",
+        ["World_00_Home"] = "Home",
+        ["World_00_PennysHouse"] = "Penny's House",
+        ["World_00_Blacksmith"] = "Blacksmith",
+        ["World_00_AdventureShop"] = "Adventure Shop",
+        ["World_00_GeneralStore"] = "General Store",
+        ["World_00_Windmill_GroundFloor"] = "Windmill",
+        ["World_00_Windmill_1stFloor"] = "Windmill — Upstairs",
+        ["World_01"] = "Leafwood Forest",
+        ["World_03"] = "Gray Mist Mountain",
+        ["World_10"] = "The Bottomless Lake",
+    };
 }

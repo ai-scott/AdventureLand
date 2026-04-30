@@ -169,6 +169,6 @@ public partial class NpcInteract : Area2D
 	/// on top of the dialogue box.</summary>
 	private string GetHintText()
 	{
-		return _suppressUntilExit ? "" : "↵ Talk";
+		return _suppressUntilExit ? "" : "Talk";
 	}
 }

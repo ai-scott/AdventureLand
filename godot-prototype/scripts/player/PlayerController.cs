@@ -320,6 +320,11 @@ public partial class PlayerController : CharacterBody2D
 		if (Inventory.Instance?.GetEquippedId(ItemData.ItemCategory.Weapon) is not > 0)
 			return;
 
+		// Suppress attack while an interactable hint is visible — Space goes
+		// to the prompt (Take/Talk/Look/Enter), not a swing. Player can step
+		// away from the hint range to attack.
+		if (InteractHintManager.Instance?.IsHintVisible == true) return;
+
 		StartAttack();
 	}
 

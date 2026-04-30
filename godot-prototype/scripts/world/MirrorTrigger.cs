@@ -44,7 +44,7 @@ public partial class MirrorTrigger : Area2D
     {
         if (body is not PlayerController) return;
         _playerInRange = true;
-        InteractHintManager.Instance?.Register(this, () => "↵ Look");
+        InteractHintManager.Instance?.Register(this, () => "Look");
     }
 
     private void OnBodyExited(Node2D body)

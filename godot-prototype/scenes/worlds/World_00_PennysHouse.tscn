@@ -7,13 +7,14 @@
 [ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
-[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_PennysHouse.tres" id="8"]
+[ext_resource type="Resource" uid="uid://tas1rt1stnu5" path="res://assets/map_data/triggers/World_00_PennysHouse.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="11_npc"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="12_npc"]
 [ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="13_mirror"]
 [ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="14_s4bq0"]
+[ext_resource type="Resource" uid="uid://btcjgotpmsqup" path="res://assets/data/dialogue/penny.tres" id="15_pdlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -157,6 +158,7 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [sub_resource type="RectangleShape2D" id="MirrorShape_Penny"]
+size = Vector2(22, 27)
 
 [node name="World_00_PennysHouse" type="Node2D" unique_id=1291921752]
 y_sort_enabled = true
@@ -198,6 +200,16 @@ position = Vector2(120, 160)
 zoom = Vector2(3, 3)
 script = ExtResource("4")
 
+[node name="Penny" parent="Entities" unique_id=363822383 instance=ExtResource("11_npc")]
+position = Vector2(64, 79)
+NpcName = "Penny"
+Dialogue = ExtResource("15_pdlg")
+RequiredWorldFlag = "penny_home"
+
+[node name="Rosie" parent="Entities" unique_id=1952459597 instance=ExtResource("12_npc")]
+position = Vector2(128, 58)
+RequiredWorldFlag = "penny_home"
+
 [node name="Triggers" type="Node2D" parent="." unique_id=1538725206]
 y_sort_enabled = true
 script = ExtResource("7")
@@ -205,20 +217,13 @@ TriggersResource = ExtResource("8")
 DoorScene = ExtResource("9")
 EdgeScene = ExtResource("10")
 
-[node name="Penny" parent="Entities" unique_id=363822383 instance=ExtResource("11_npc")]
-position = Vector2(74, 77)
-RequiredWorldFlag = "penny_home"
-
-[node name="Rosie" parent="Entities" unique_id=1952459597 instance=ExtResource("12_npc")]
-position = Vector2(128, 58)
-RequiredWorldFlag = "penny_home"
-
 [node name="MirrorTrigger" type="Area2D" parent="." unique_id=916648655]
-position = Vector2(64, 80)
+position = Vector2(212, 109)
 collision_layer = 0
 script = ExtResource("13_mirror")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MirrorTrigger" unique_id=647396013]
+position = Vector2(-1, 0)
 shape = SubResource("MirrorShape_Penny")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=2052455333]

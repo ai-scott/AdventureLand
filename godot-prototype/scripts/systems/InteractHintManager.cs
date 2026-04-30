@@ -30,6 +30,11 @@ public partial class InteractHintManager : CanvasLayer
     private PanelContainer _panel;
     private Label _label;
 
+    /// <summary>True while a hint is being shown to the player. Read by
+    /// PlayerController to suppress attacks while an interactable is in
+    /// range — pressing Space goes to the interaction, not a swing.</summary>
+    public bool IsHintVisible => _panel != null && _panel.Visible;
+
     private readonly Dictionary<Node2D, Func<string>> _candidates = new();
 
     /// <summary>World-space offset from the source's origin to where the hint's
@@ -73,6 +78,15 @@ public partial class InteractHintManager : CanvasLayer
 
     public override void _Process(double delta)
     {
+        // While a modal UI owns the screen (item dialog, NPC dialogue,
+        // inventory) the tree is paused — suppress the hint so it doesn't
+        // sit underneath/over the dialog and confuse the keypress mapping.
+        if (GetTree().Paused)
+        {
+            _panel.Visible = false;
+            return;
+        }
+
         // Prune freed nodes. Sources don't always unregister cleanly on
         // QueueFree (e.g., item collected mid-frame), so guard every lookup.
         if (_candidates.Count == 0)
@@ -121,6 +135,12 @@ public partial class InteractHintManager : CanvasLayer
             return;
         }
 
+        // Strip legacy "↵ " or "↵" prefix — triggers used to bake the
+        // glyph into the hint text; the new panel renders the kbd icon
+        // below the verb so we just want the verb here.
+        if (text.StartsWith("↵ ")) text = text.Substring(2);
+        else if (text.StartsWith("↵")) text = text.Substring(1);
+
         _label.Text = text;
         _panel.Visible = true;
 
@@ -142,17 +162,50 @@ public partial class InteractHintManager : CanvasLayer
         _panel.ProcessMode = ProcessModeEnum.Always;
         _panel.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-        // Same panel surface as the dialogue + item toast — one cream/teal
-        // vocabulary across every UI prompt. Tight padding since a hint is
-        // a single-line badge.
-        _panel.AddThemeStyleboxOverride("panel", UiStyles.MakePanelStylebox(contentPadding: 6));
+        // Design-system mossy bevel with corner gaps. Asymmetric vertical
+        // content margins: a normal top, a much smaller bottom so the
+        // panel hugs the spc icon's lower edge. The icon's transparent
+        // bottom pixels overlap the bevel/border zone harmlessly.
+        UiFrames.ApplyMossyPanel(_panel, padding: 4);
+        if (_panel.GetThemeStylebox("panel") is BevelStyleBox sb)
+        {
+            sb.ContentMarginTop = sb.BorderWidth + sb.BevelWidth + 2; // 8
+            sb.ContentMarginBottom = sb.BorderWidth;                   // 3 (just border)
+        }
 
+        var vbox = new VBoxContainer();
+        vbox.AddThemeConstantOverride("separation", 0);
+        vbox.MouseFilter = Control.MouseFilterEnum.Ignore;
+        _panel.AddChild(vbox);
+
+        // Action verb in Alagard gold (display face) — "Take", "Talk",
+        // "Look", etc. The trigger now returns just the verb (no "↵ "
+        // prefix); the kbd icon below stands in for the keypress.
         _label = new Label();
-        _label.AddThemeFontOverride("font", UiFonts.Body);
-        _label.AddThemeFontSizeOverride("font_size", 16);
-        _label.AddThemeColorOverride("font_color", UiStyles.Cream);
+        _label.AddThemeFontSizeOverride("font_size", 18);
+        _label.AddThemeColorOverride("font_color", DesignTokens.Gold);
         _label.HorizontalAlignment = HorizontalAlignment.Center;
-        _panel.AddChild(_label);
+        _label.MouseFilter = Control.MouseFilterEnum.Ignore;
+        vbox.AddChild(_label);
+
+        // Space-key icon centered below the verb. SizeFlagsVertical=
+        // ShrinkBegin pulls the icon up tight to the verb so the bottom
+        // padding inside the texture overlaps the panel's bevel zone.
+        var spaceIcon = new TextureRect
+        {
+            Texture = UiStyles.Space,
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        if (UiStyles.Space != null)
+        {
+            spaceIcon.CustomMinimumSize = UiStyles.Space.GetSize() * 2f;
+        }
+        vbox.AddChild(spaceIcon);
 
         AddChild(_panel);
     }

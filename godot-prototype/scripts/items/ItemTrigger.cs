@@ -108,7 +108,7 @@ public partial class ItemTrigger : Area2D
     {
         bool freeGrant = ShopState.NextItemFree;
         bool paidShop  = ShopState.IsActive && !freeGrant && Data.Cost > 0;
-        return paidShop ? $"↵ Buy ({Data.Cost}g)" : "↵ Take";
+        return paidShop ? "Buy" : "Take";
     }
 
     private void TryTake()

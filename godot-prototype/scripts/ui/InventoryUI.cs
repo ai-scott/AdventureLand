@@ -121,6 +121,14 @@ public partial class InventoryUI : CanvasLayer
         if (_isOpen) return;
         _isOpen = true;
         _panel.Visible = true;
+        if (_banner != null)
+        {
+            var save = SaveManager.Instance?.CurrentData;
+            var name = string.IsNullOrEmpty(save?.PlayerName) ? "Hero" : save.PlayerName;
+            _banner.GetNode<Label>("BannerLabel").Text = name;
+            _banner.Visible = true;
+            CallDeferred(nameof(RepositionBanner));
+        }
         GetTree().Paused = true;
         _selectedSlot = 0;
         RefreshAll();
@@ -130,6 +138,7 @@ public partial class InventoryUI : CanvasLayer
     {
         _isOpen = false;
         _panel.Visible = false;
+        if (_banner != null) _banner.Visible = false;
         GetTree().Paused = false;
     }
 
@@ -194,21 +203,24 @@ public partial class InventoryUI : CanvasLayer
 
     // ---- UI Building ----
 
+    private PanelContainer _banner;
+
     private void BuildUI()
     {
         _panel = new PanelContainer();
         _panel.AnchorRight = 1;
         _panel.AnchorBottom = 1;
+        // Inset from screen edges so the deep-wood banner straddling the
+        // top edge has room to render above the panel.
+        _panel.OffsetLeft = 16;
+        _panel.OffsetTop = 28;
+        _panel.OffsetRight = -16;
+        _panel.OffsetBottom = -16;
         _panel.ProcessMode = ProcessModeEnum.Always;
 
-        // Semi-transparent dark background.
-        var panelStyle = new StyleBoxFlat();
-        panelStyle.BgColor = new Color(0.05f, 0.05f, 0.1f, 0.92f);
-        panelStyle.ContentMarginLeft = 20;
-        panelStyle.ContentMarginTop = 20;
-        panelStyle.ContentMarginRight = 20;
-        panelStyle.ContentMarginBottom = 20;
-        _panel.AddThemeStyleboxOverride("panel", panelStyle);
+        // Design-system mossy frame with bevel + corner gaps. Replaces the
+        // legacy semi-transparent dark fill.
+        UiFrames.ApplyMossyPanel(_panel, padding: 16);
 
         var hbox = new HBoxContainer();
         hbox.AddThemeConstantOverride("separation", 20);
@@ -222,8 +234,8 @@ public partial class InventoryUI : CanvasLayer
 
         var titleLabel = new Label();
         titleLabel.Text = "Inventory";
-        titleLabel.AddThemeColorOverride("font_color", new Color(1, 0.85f, 0.4f, 1));
-        titleLabel.AddThemeFontSizeOverride("font_size", 16);
+        titleLabel.AddThemeColorOverride("font_color", DesignTokens.Gold);
+        titleLabel.AddThemeFontSizeOverride("font_size", 24);
         leftVbox.AddChild(titleLabel);
 
         _grid = new GridContainer();
@@ -232,24 +244,13 @@ public partial class InventoryUI : CanvasLayer
         _grid.AddThemeConstantOverride("v_separation", 4);
         leftVbox.AddChild(_grid);
 
-        // Create slot panels (icon + label).
-        var slotStyle = new StyleBoxFlat();
-        slotStyle.BgColor = new Color(0.15f, 0.15f, 0.22f, 0.8f);
-        slotStyle.BorderWidthLeft = 1;
-        slotStyle.BorderWidthTop = 1;
-        slotStyle.BorderWidthRight = 1;
-        slotStyle.BorderWidthBottom = 1;
-        slotStyle.BorderColor = new Color(0.4f, 0.4f, 0.4f, 0.5f);
-        slotStyle.ContentMarginLeft = 2;
-        slotStyle.ContentMarginTop = 2;
-        slotStyle.ContentMarginRight = 2;
-        slotStyle.ContentMarginBottom = 2;
-
+        // Slot chips use the design-system bevel — same vocabulary as save
+        // slots. Selected style is gold-bordered (handled in RefreshHighlight).
         for (int i = 0; i < Inventory.SlotCount; i++)
         {
             var slotPanel = new PanelContainer();
             slotPanel.CustomMinimumSize = new Vector2(54, 44);
-            slotPanel.AddThemeStyleboxOverride("panel", (StyleBox)slotStyle.Duplicate());
+            slotPanel.AddThemeStyleboxOverride("panel", BuildSlotStylebox(DesignTokens.Ink));
 
             var vbox = new VBoxContainer();
             vbox.AddThemeConstantOverride("separation", 0);
@@ -265,9 +266,9 @@ public partial class InventoryUI : CanvasLayer
 
             var label = new Label();
             label.HorizontalAlignment = HorizontalAlignment.Center;
-            label.AddThemeFontSizeOverride("font_size", 16);
+            label.AddThemeFontSizeOverride("font_size", 14);
             label.AddThemeFontOverride("font", UiFonts.Body);
-            label.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f, 0.9f));
+            label.AddThemeColorOverride("font_color", DesignTokens.Paper);
             vbox.AddChild(label);
 
             _grid.AddChild(slotPanel);
@@ -276,47 +277,38 @@ public partial class InventoryUI : CanvasLayer
             _slotLabels[i] = label;
         }
 
-        // Tooltip panel.
+        // Tooltip panel — design-system mossy chip.
         var tooltipPanel = new PanelContainer();
-        var tooltipStyle = new StyleBoxFlat();
-        tooltipStyle.BgColor = new Color(0.12f, 0.12f, 0.18f, 0.9f);
-        tooltipStyle.BorderWidthLeft = 1;
-        tooltipStyle.BorderWidthTop = 1;
-        tooltipStyle.BorderWidthRight = 1;
-        tooltipStyle.BorderWidthBottom = 1;
-        tooltipStyle.BorderColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-        tooltipStyle.ContentMarginLeft = 8;
-        tooltipStyle.ContentMarginTop = 6;
-        tooltipStyle.ContentMarginRight = 8;
-        tooltipStyle.ContentMarginBottom = 6;
-        tooltipPanel.AddThemeStyleboxOverride("panel", tooltipStyle);
-        tooltipPanel.CustomMinimumSize = new Vector2(0, 80);
+        tooltipPanel.AddThemeStyleboxOverride("panel", UiFrames.SaveSlotChip(DesignTokens.Ink));
+        tooltipPanel.CustomMinimumSize = new Vector2(0, 96);
         leftVbox.AddChild(tooltipPanel);
 
         var tooltipVbox = new VBoxContainer();
         tooltipVbox.AddThemeConstantOverride("separation", 2);
         tooltipPanel.AddChild(tooltipVbox);
 
+        // Item name in display Alagard gold (matches item-dialog title).
         _tooltipName = new Label();
-        _tooltipName.AddThemeColorOverride("font_color", new Color(1, 0.9f, 0.5f, 1));
-        _tooltipName.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipName.AddThemeColorOverride("font_color", DesignTokens.Gold);
+        _tooltipName.AddThemeFontSizeOverride("font_size", 22);
         tooltipVbox.AddChild(_tooltipName);
 
         _tooltipDesc = new Label();
         _tooltipDesc.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-        _tooltipDesc.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipDesc.AddThemeFontSizeOverride("font_size", 20);
         _tooltipDesc.AddThemeFontOverride("font", UiFonts.Body);
+        _tooltipDesc.AddThemeColorOverride("font_color", DesignTokens.Paper);
         tooltipVbox.AddChild(_tooltipDesc);
 
         _tooltipStats = new Label();
-        _tooltipStats.AddThemeColorOverride("font_color", new Color(0.7f, 0.85f, 1f, 1));
-        _tooltipStats.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipStats.AddThemeColorOverride("font_color", DesignTokens.Paper);
+        _tooltipStats.AddThemeFontSizeOverride("font_size", 20);
         _tooltipStats.AddThemeFontOverride("font", UiFonts.Body);
         tooltipVbox.AddChild(_tooltipStats);
 
         _tooltipAction = new Label();
-        _tooltipAction.AddThemeColorOverride("font_color", new Color(0.6f, 0.6f, 0.6f, 0.8f));
-        _tooltipAction.AddThemeFontSizeOverride("font_size", 16);
+        _tooltipAction.AddThemeColorOverride("font_color", DesignTokens.Gold);
+        _tooltipAction.AddThemeFontSizeOverride("font_size", 20);
         _tooltipAction.AddThemeFontOverride("font", UiFonts.Body);
         tooltipVbox.AddChild(_tooltipAction);
 
@@ -328,29 +320,97 @@ public partial class InventoryUI : CanvasLayer
 
         var equipTitle = new Label();
         equipTitle.Text = "Equipment";
-        equipTitle.AddThemeColorOverride("font_color", new Color(1, 0.85f, 0.4f, 1));
-        equipTitle.AddThemeFontSizeOverride("font_size", 16);
+        equipTitle.AddThemeColorOverride("font_color", DesignTokens.Gold);
+        equipTitle.AddThemeFontSizeOverride("font_size", 24);
         rightVbox.AddChild(equipTitle);
 
         for (int i = 0; i < EquipCategories.Length; i++)
         {
             var label = new Label();
-            label.AddThemeFontSizeOverride("font_size", 16);
+            label.AddThemeFontSizeOverride("font_size", 20);
             label.AddThemeFontOverride("font", UiFonts.Body);
+            label.AddThemeColorOverride("font_color", DesignTokens.Paper);
             rightVbox.AddChild(label);
             _equipLabels[i] = label;
         }
 
         // Instructions at bottom.
         var helpLabel = new Label();
-        helpLabel.Text = "[Arrows] Navigate  [Space] Equip/Use  [Z] Unequip  [I/Esc] Close";
-        helpLabel.AddThemeColorOverride("font_color", new Color(0.5f, 0.5f, 0.5f, 0.7f));
+        helpLabel.Text = "Arrows · Navigate    spc · Equip/Use    z · Unequip    i / esc · Close";
+        helpLabel.AddThemeColorOverride("font_color", DesignTokens.Paper);
         helpLabel.AddThemeFontSizeOverride("font_size", 16);
         helpLabel.AddThemeFontOverride("font", UiFonts.Body);
         helpLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        helpLabel.Modulate = new Color(1, 1, 1, 0.7f);
         rightVbox.AddChild(helpLabel);
 
         AddChild(_panel);
+
+        BuildBanner();
+    }
+
+    /// <summary>Build the deep-wood banner that straddles the top edge of
+    /// the inventory panel. Player name set on Open() so it tracks the
+    /// active save.</summary>
+    private void BuildBanner()
+    {
+        _banner = new PanelContainer();
+        _banner.AddThemeStyleboxOverride("panel", UiFrames.DeepWoodBanner(padding: 8));
+        _banner.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        var label = new Label
+        {
+            Name = "BannerLabel",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        label.AddThemeFontSizeOverride("font_size", 22);
+        label.AddThemeColorOverride("font_color", DesignTokens.Paper);
+        _banner.AddChild(label);
+        _banner.Visible = false;
+
+        AddChild(_banner);
+        _panel.Resized += RepositionBanner;
+        _banner.Resized += RepositionBanner;
+    }
+
+    private void RepositionBanner()
+    {
+        if (_banner == null || _panel == null) return;
+        if (!_banner.IsInsideTree() || !_panel.IsInsideTree()) return;
+        var panelRect = _panel.GetGlobalRect();
+        var bannerSize = _banner.Size;
+        if (bannerSize.X <= 0 || bannerSize.Y <= 0)
+        {
+            CallDeferred(nameof(RepositionBanner));
+            return;
+        }
+        _banner.GlobalPosition = new Vector2(
+            panelRect.GetCenter().X - bannerSize.X / 2f,
+            panelRect.Position.Y - bannerSize.Y / 2f);
+    }
+
+    /// <summary>Slot-chip stylebox — same vocabulary as save-slot chips
+    /// but with a tight 2px content margin so the icon fills the cell.</summary>
+    private static BevelStyleBox BuildSlotStylebox(Color borderColor)
+    {
+        var sb = new BevelStyleBox
+        {
+            Fill = DesignTokens.MossyField,
+            BevelHi = DesignTokens.MossyFieldHi,
+            BevelLo = DesignTokens.MossyFieldLo,
+            Border = borderColor,
+            BorderWidth = 3,
+            BevelWidth = 3,
+            CornerGap = 3,
+            Padding = 0,
+        };
+        sb.ContentMarginLeft = 2;
+        sb.ContentMarginRight = 2;
+        sb.ContentMarginTop = 2;
+        sb.ContentMarginBottom = 2;
+        return sb;
     }
 
     // ---- Refresh ----
@@ -388,33 +448,10 @@ public partial class InventoryUI : CanvasLayer
 
     private void RefreshHighlight()
     {
-        var selectedStyle = new StyleBoxFlat();
-        selectedStyle.BgColor = new Color(0.25f, 0.25f, 0.15f, 0.9f);
-        selectedStyle.BorderWidthLeft = 2;
-        selectedStyle.BorderWidthTop = 2;
-        selectedStyle.BorderWidthRight = 2;
-        selectedStyle.BorderWidthBottom = 2;
-        selectedStyle.BorderColor = new Color(1f, 0.85f, 0.4f, 1f);
-        selectedStyle.ContentMarginLeft = 2;
-        selectedStyle.ContentMarginTop = 2;
-        selectedStyle.ContentMarginRight = 2;
-        selectedStyle.ContentMarginBottom = 2;
-
-        var normalStyle = new StyleBoxFlat();
-        normalStyle.BgColor = new Color(0.15f, 0.15f, 0.22f, 0.8f);
-        normalStyle.BorderWidthLeft = 1;
-        normalStyle.BorderWidthTop = 1;
-        normalStyle.BorderWidthRight = 1;
-        normalStyle.BorderWidthBottom = 1;
-        normalStyle.BorderColor = new Color(0.4f, 0.4f, 0.4f, 0.5f);
-        normalStyle.ContentMarginLeft = 2;
-        normalStyle.ContentMarginTop = 2;
-        normalStyle.ContentMarginRight = 2;
-        normalStyle.ContentMarginBottom = 2;
-
         for (int i = 0; i < Inventory.SlotCount; i++)
         {
-            _slotPanels[i].AddThemeStyleboxOverride("panel", i == _selectedSlot ? selectedStyle : normalStyle);
+            var border = i == _selectedSlot ? DesignTokens.Gold : DesignTokens.Ink;
+            _slotPanels[i].AddThemeStyleboxOverride("panel", BuildSlotStylebox(border));
         }
     }
 
