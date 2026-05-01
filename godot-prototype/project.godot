@@ -29,9 +29,9 @@ EnemyMusicDriver="*res://scripts/systems/audio/EnemyMusicDriver.cs"
 
 [display]
 
-window/size/viewport_width=720
+window/size/viewport_width=840
 window/size/viewport_height=480
-window/size/window_width_override=1440
+window/size/window_width_override=1680
 window/size/window_height_override=960
 window/stretch/mode="viewport"
 window/stretch/scale_mode="integer"

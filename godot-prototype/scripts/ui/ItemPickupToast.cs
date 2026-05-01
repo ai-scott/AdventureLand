@@ -33,8 +33,10 @@ public partial class ItemPickupToast : CanvasLayer
     private bool _purchaseAffordable;
 
     // Choice-button selection state. Keyboard arrow keys move between the
-    // primary (Take/Equip/Buy) and cancel buttons, and Space confirms
-    // whichever is highlighted. Mouse hover also drives selection, so the
+    // primary (Take/Equip/Buy) and cancel buttons. Space confirms
+    // whichever is highlighted (via the focused button's ui_accept), while
+    // Return always fires the primary action regardless of focus — see the
+    // _Input override. Mouse hover also drives selection, so the
     // yellow-bordered "selected" stylebox stays in sync regardless of input.
     private Button _primaryBtn;
     private Button _cancelBtn;
@@ -61,12 +63,10 @@ public partial class ItemPickupToast : CanvasLayer
             {
                 SetCancelSelected(true);
             }
-            // Space confirms the highlighted button (mirrors clicking it).
+            // Space presses whichever button is focused via the button's
+            // built-in ui_accept handling — no extra polling needed. Return
+            // always fires Accept (primary) and is intercepted in _Input.
             // Z is a hard-cancel shortcut regardless of which is highlighted.
-            else if (Input.IsActionJustPressed("dialogue_advance"))
-            {
-                if (_cancelSelected) Cancel(); else Accept();
-            }
             else if (Input.IsActionJustPressed("cancel"))
             {
                 Cancel();
@@ -76,6 +76,28 @@ public partial class ItemPickupToast : CanvasLayer
         {
             _autoCloseTimer -= delta;
             if (_autoCloseTimer <= 0) Close();
+        }
+    }
+
+    /// <summary>Intercept Return so it always fires the primary (Take / Equip /
+    /// Buy) action regardless of which button currently holds focus. Space
+    /// continues to flow through the focused button's ui_accept and presses
+    /// whatever is highlighted — that asymmetry is the contract with the user
+    /// (↵ = accept, Space = "do the highlighted thing"). Runs in _Input so
+    /// the event is consumed before the focused button can also respond.</summary>
+    public override void _Input(InputEvent @event)
+    {
+        if (!_waitingForChoice) return;
+        if (@event is InputEventKey key && key.Pressed && !key.Echo)
+        {
+            if (key.Keycode == Key.Enter || key.Keycode == Key.KpEnter)
+            {
+                if (_primaryBtn != null && !_primaryBtn.Disabled)
+                {
+                    Accept();
+                    GetViewport().SetInputAsHandled();
+                }
+            }
         }
     }
 
@@ -516,7 +538,9 @@ public partial class ItemPickupToast : CanvasLayer
         cancelBtn.Pressed += Cancel;
         row.AddChild(cancelBtn);
 
-        var primaryBtn = UiFrames.BuildChipButton(primaryLabel, "spc", UiFrames.ApplyPrimaryButton);
+        // Primary takes the ↵ hint — Return always fires it (see _Input
+        // override). Space presses whichever button currently holds focus.
+        var primaryBtn = UiFrames.BuildChipButton(primaryLabel, "↵", UiFrames.ApplyPrimaryButton);
         primaryBtn.CustomMinimumSize = new Vector2(160, 40);
         primaryBtn.ProcessMode = ProcessModeEnum.Always;
         primaryBtn.Pressed += Accept;
@@ -538,8 +562,15 @@ public partial class ItemPickupToast : CanvasLayer
         cancelBtn.MouseEntered += () => SetCancelSelected(true);
 
         // Initial highlight state — primary (Take/Buy/Equip) is the
-        // recommended action when the prompt opens.
+        // recommended action when the prompt opens. When the primary is
+        // disabled (e.g. Can't afford), focus falls back to cancel so
+        // Space still has a target to confirm.
         if (primaryEnabled) primaryBtn.GrabFocus();
+        else
+        {
+            cancelBtn.GrabFocus();
+            _cancelSelected = true;
+        }
     }
 
     private void Accept()

@@ -3,9 +3,9 @@ using Godot;
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Unified top-left HUD: hearts (bound to HealthSystem) + gems (bound to
-/// CurrencySystem) + inventory / attack action buttons with key hints.
-/// Replaces the earlier separate HealthBar + CurrencyHUD scenes.
+/// Unified HUD: hearts + gems (top-left) + inventory / attack action chips
+/// (bottom-right) + global mute toggle (top-right). Replaces the earlier
+/// separate HealthBar + CurrencyHUD scenes.
 ///
 /// <para><b>Autoloaded</b> (see project.godot [autoload] block). The HUD is
 /// instanced once and persists across scene transitions so every world
@@ -13,14 +13,15 @@ namespace AdventureLandPrototype;
 /// instance it. HealthSystem is looked up dynamically each frame — the
 /// autoload has no scene-specific NodePath to rely on.</para>
 ///
+/// <para>The mute toggle stays visible on every screen (title, gameplay,
+/// game-over). The hearts / gems / action buttons only render when there's
+/// a Player in the active scene — title and game-over hide them.</para>
+///
 /// The bag + sword buttons synthesize the existing Godot input actions
 /// ("inventory_toggle" / "attack") so input gating in PlayerController and
 /// InventoryUI keeps working without the HUD needing a direct handle to
-/// either.
-///
-/// Mobile reposition (Phase 7 backlog) hooks on top of this scene by
-/// re-anchoring the Buttons node to the bottom corners — the per-button
-/// wiring stays identical.
+/// either. Both buttons are also hidden while a dialogue is open so the
+/// player can't poke them mid-conversation.
 /// </summary>
 public partial class HUD : CanvasLayer
 {
@@ -28,6 +29,13 @@ public partial class HUD : CanvasLayer
     private TextureRect[] _hearts;
     private Label _gemLabel;
     private Control _attackButton;
+    private Control _heartsFrame;
+    private Control _heartsRow;
+    private Control _gemsRow;
+    private Control _hudBg;
+    private Control _buttonsRow;
+    private Button _muteButton;
+    private Label _muteLabel;
     private int _lastGems = -1;
     private int _lastWeaponId = -2; // -2 so first tick always refreshes (-1 = "none")
 
@@ -52,20 +60,50 @@ public partial class HUD : CanvasLayer
         // 8px design and look "squished" when scaled up for the HUD. Alagard's
         // 16px-native chunkier glyphs read better as a large number.
 
+        // Cache the world-state UI containers so we can hide them on title /
+        // game-over / dialogue without disturbing the persistent mute toggle.
+        _hudBg = GetNodeOrNull<Control>("HudBg");
+        _heartsFrame = GetNodeOrNull<Control>("HeartsFrame");
+        _heartsRow = GetNodeOrNull<Control>("Hearts");
+        _gemsRow = GetNodeOrNull<Control>("Gems");
+        _buttonsRow = GetNodeOrNull<Control>("Buttons");
+
         GetNode<TextureButton>("Buttons/Inventory/Touch").Pressed += () =>
             SendAction("inventory_toggle");
         GetNode<TextureButton>("Buttons/Attack/Touch").Pressed += () =>
             SendAction("attack");
 
-        // Apply design-system styling to the scene-authored HUD buttons
-        // so they read as the same teal+gold action buttons used in
-        // dialogs and menus. Inventory uses a text chip ("i"); attack
-        // uses the bare spc-key icon (the texture already has the kbd
-        // chip styling baked in — no extra panel needed).
-        ApplyDesignSystemButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 28);
-        ApplyDesignSystemButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 40);
+        // Re-anchor the action buttons to the bottom-right corner. Scene
+        // authors them top-left for layout-tool clarity; the autoload
+        // override places them where the design lives at runtime.
+        if (_buttonsRow is VBoxContainer buttonsBox)
+        {
+            buttonsBox.Alignment = BoxContainer.AlignmentMode.End;
+            buttonsBox.AnchorLeft = 1f;
+            buttonsBox.AnchorTop = 1f;
+            buttonsBox.AnchorRight = 1f;
+            buttonsBox.AnchorBottom = 1f;
+            buttonsBox.GrowHorizontal = Control.GrowDirection.Begin;
+            buttonsBox.GrowVertical = Control.GrowDirection.Begin;
+            // Box right edge sits ButtonEdgeMargin from the screen right;
+            // left edge is exactly one chip width inboard. Same for vertical.
+            buttonsBox.OffsetRight = -ButtonEdgeMargin;
+            buttonsBox.OffsetLeft = -(ChipButtonSize + ButtonEdgeMargin);
+            buttonsBox.OffsetBottom = -ButtonEdgeMargin;
+            buttonsBox.OffsetTop = -(ButtonsRowHeight + ButtonEdgeMargin);
+            buttonsBox.AddThemeConstantOverride("separation", 6);
+        }
+
+        // Apply design-system styling: square chip-style buttons with the
+        // icon stacked over a kbd hint chip — same vocabulary as the
+        // Take / Enter buttons elsewhere in the UI.
+        ApplyChipActionButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 32);
+        ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 36);
 
         _attackButton = GetNode<Control>("Buttons/Attack");
+
+        BuildMuteButton();
+
         if (Inventory.Instance != null)
         {
             Inventory.Instance.ItemEquipped += OnItemEquippedOrUnequipped;
@@ -73,6 +111,13 @@ public partial class HUD : CanvasLayer
             RefreshAttackButtonVisibility();
         }
     }
+
+    /// <summary>Square chip buttons stack vertically in the bottom-right
+    /// corner. Edge margin matches the spec value used elsewhere; row
+    /// height covers two stacked buttons + their separation.</summary>
+    private const int ChipButtonSize = 68;
+    private const int ButtonEdgeMargin = 14;
+    private const int ButtonsRowHeight = ChipButtonSize * 2 + 6;
 
     private void OnItemEquippedOrUnequipped(int itemId, string category)
     {
@@ -95,12 +140,21 @@ public partial class HUD : CanvasLayer
 
     public override void _Process(double delta)
     {
-        // Autoload lives across scenes — hide the HUD when there's no player
-        // in the current scene (TitleScreen, GameOver) and re-attach the
-        // HealthSystem when a fresh Player node shows up after a transition.
+        // Autoload lives across scenes — when there's no player (TitleScreen,
+        // GameOver) hide world UI but keep the persistent mute toggle. Re-
+        // attach the HealthSystem when a fresh Player node shows up after a
+        // scene swap.
         var player = GetTree()?.GetFirstNodeInGroup("player") as Node2D;
-        Visible = player != null;
-        if (player == null) return;
+        bool inWorld = player != null;
+        bool inDialogue = DialogueManager.Instance?.IsActive ?? false;
+
+        SetWorldHudVisible(inWorld);
+        // Hide the action chips (and let attack/inventory ignore the synth
+        // input it would never consume anyway) while a dialogue is on screen
+        // — mute stays visible so the player can still silence audio.
+        if (_buttonsRow != null) _buttonsRow.Visible = inWorld && !inDialogue;
+
+        if (!inWorld) return;
 
         if (_health == null || !IsInstanceValid(_health))
         {
@@ -123,6 +177,19 @@ public partial class HUD : CanvasLayer
             _lastWeaponId = weaponId;
             if (_attackButton != null) _attackButton.Visible = weaponId != -1;
         }
+    }
+
+    /// <summary>Toggle the world-only HUD pieces (hearts, gems, action
+    /// buttons, painted bg) without touching the mute button — so the mute
+    /// toggle persists across title / game-over screens.</summary>
+    private void SetWorldHudVisible(bool visible)
+    {
+        if (_hudBg != null) _hudBg.Visible = visible;
+        if (_heartsFrame != null) _heartsFrame.Visible = visible;
+        if (_heartsRow != null) _heartsRow.Visible = visible;
+        if (_gemsRow != null) _gemsRow.Visible = visible;
+        // _buttonsRow is driven separately so dialogue can hide it
+        // independently of the world / no-world toggle.
     }
 
     private void AttachToPlayerHealth(Node2D player)
@@ -170,11 +237,6 @@ public partial class HUD : CanvasLayer
         Input.ParseInputEvent(release);
     }
 
-    /// <summary>Restyle a scene-authored HUD button to the design system:
-    /// hide the legacy texture bg + key-hint + icon, layer a mossy teal
-    /// PanelContainer underneath, then center an HBox of [Icon, Chip].
-    /// Both items live inside the button as a tight cluster — the chip
-    /// hugs the icon so the keypress reads as part of the action.</summary>
     /// <summary>Naked spc-key glyph (no chip frame) — the icon_space.png
     /// texture is already drawn as a kbd chip, so wrapping it again would
     /// double the border. Used by the HUD attack button.</summary>
@@ -183,33 +245,37 @@ public partial class HUD : CanvasLayer
         return new TextureRect
         {
             Texture = UiStyles.Space,
-            CustomMinimumSize = UiStyles.Space != null ? UiStyles.Space.GetSize() * 2f : new Vector2(36, 36),
+            CustomMinimumSize = UiStyles.Space != null ? UiStyles.Space.GetSize() * 2f : new Vector2(28, 28),
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
             SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
             MouseFilter = Control.MouseFilterEnum.Ignore,
         };
     }
 
-    private void ApplyDesignSystemButton(string path, Texture2D iconTex, Control kbdChip, int iconSize)
+    /// <summary>Restyle the scene-authored HUD action button as a square
+    /// design-system chip (~52×52): icon stacked vertically over a small
+    /// kbd hint chip. Same vocabulary as the in-prompt Take / Enter buttons,
+    /// just compact enough to live in a corner without dominating play.</summary>
+    private void ApplyChipActionButton(string path, Texture2D iconTex, Control kbdChip, int iconSize)
     {
         var btn = GetNodeOrNull<Control>(path);
         if (btn == null) return;
 
-        // Wider, slightly taller — stacked vertically, the buttons can be
-        // generous without crowding the HP/gem strip.
-        btn.CustomMinimumSize = new Vector2(96, 48);
+        btn.CustomMinimumSize = new Vector2(ChipButtonSize, ChipButtonSize);
 
-        // Hide all legacy visuals (Bg TextureRect, Icon TextureRect, KeyHint).
-        // Touch button stays for clicks but gets resized + de-focused below.
+        // Hide all legacy visuals (Bg TextureRect, KeyHint, Icon). Touch
+        // button stays for clicks; resized + de-focused below.
         foreach (var child in btn.GetChildren())
         {
             if (child is TextureButton) continue;
             if (child is CanvasItem ci) ci.Visible = false;
         }
 
-        // Mossy teal panel as the new backdrop.
+        // Mossy teal panel as the new backdrop — same stylebox as the
+        // primary chip buttons in dialogs.
         var newBg = new PanelContainer
         {
             Name = "DesignBg",
@@ -221,17 +287,18 @@ public partial class HUD : CanvasLayer
         btn.AddChild(newBg);
         btn.MoveChild(newBg, 0);
 
-        // Centered HBox of [Icon, Chip]. Tight separation so the chip
-        // sits right next to the action's icon — reads as a unit.
-        var hbox = new HBoxContainer
+        // Vertical stack: icon on top, kbd chip below, both centered. The
+        // kbd chip pinches to its own size so the icon takes the visual
+        // weight while the chip reads as a corner hint.
+        var vbox = new VBoxContainer
         {
             Name = "DesignContent",
             MouseFilter = Control.MouseFilterEnum.Ignore,
         };
-        hbox.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        hbox.Alignment = BoxContainer.AlignmentMode.Center;
-        hbox.AddThemeConstantOverride("separation", 4);
-        btn.AddChild(hbox);
+        vbox.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        vbox.Alignment = BoxContainer.AlignmentMode.Center;
+        vbox.AddThemeConstantOverride("separation", 2);
+        btn.AddChild(vbox);
 
         var iconRect = new TextureRect
         {
@@ -240,12 +307,17 @@ public partial class HUD : CanvasLayer
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
             SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
             MouseFilter = Control.MouseFilterEnum.Ignore,
         };
-        hbox.AddChild(iconRect);
+        vbox.AddChild(iconRect);
 
-        hbox.AddChild(kbdChip);
+        // Center the kbd chip inside its row.
+        var chipWrap = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
+        chipWrap.Alignment = BoxContainer.AlignmentMode.Center;
+        chipWrap.AddChild(kbdChip);
+        vbox.AddChild(chipWrap);
 
         // Resize the click target to fill the whole button so taps on the
         // chip area register, and disable focus so spurious key events
@@ -256,5 +328,79 @@ public partial class HUD : CanvasLayer
             touch.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
             touch.FocusMode = Control.FocusModeEnum.None;
         }
+    }
+
+    // ---- Mute button ----------------------------------------------------
+
+    /// <summary>Build the global mute toggle in the top-right corner. Lives
+    /// on the HUD so the same instance appears across every scene (title,
+    /// gameplay, game-over). Toggles the Master audio bus mute and persists
+    /// the choice via <see cref="UserPrefs"/>.</summary>
+    private void BuildMuteButton()
+    {
+        const int Size = 36;
+
+        _muteButton = new Button { Text = "" };
+        _muteButton.Name = "MuteButton";
+        _muteButton.CustomMinimumSize = new Vector2(Size, Size);
+        _muteButton.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+        _muteButton.FocusMode = Control.FocusModeEnum.None;
+        _muteButton.ProcessMode = ProcessModeEnum.Always;
+        UiFrames.ApplyPrimaryButton(_muteButton);
+
+        _muteButton.AnchorLeft = 1f;
+        _muteButton.AnchorRight = 1f;
+        _muteButton.AnchorTop = 0f;
+        _muteButton.AnchorBottom = 0f;
+        _muteButton.GrowHorizontal = Control.GrowDirection.Begin;
+        _muteButton.OffsetLeft = -(Size + ButtonEdgeMargin);
+        _muteButton.OffsetTop = ButtonEdgeMargin;
+        _muteButton.OffsetRight = -ButtonEdgeMargin;
+        _muteButton.OffsetBottom = ButtonEdgeMargin + Size;
+
+        _muteLabel = new Label
+        {
+            Text = "♪",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        _muteLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        _muteLabel.AddThemeFontSizeOverride("font_size", 22);
+        _muteButton.AddChild(_muteLabel);
+
+        _muteButton.Pressed += ToggleMute;
+        AddChild(_muteButton);
+
+        // Apply the persisted state on boot — silently if unmuted (default),
+        // immediately if the user previously muted.
+        ApplyMuteState(UserPrefs.GetMuted());
+    }
+
+    private void ToggleMute() => ApplyMuteState(!IsMasterMuted(), persist: true);
+
+    private void ApplyMuteState(bool muted, bool persist = false)
+    {
+        int idx = AudioServer.GetBusIndex("Master");
+        if (idx >= 0) AudioServer.SetBusMute(idx, muted);
+
+        if (_muteLabel != null)
+        {
+            // Cream when audible, dim stone when muted — paired with a
+            // strikethrough-ish "OFF" suffix so the state reads even in
+            // monochrome / colorblind playthroughs.
+            _muteLabel.Text = muted ? "♪̸" : "♪";
+            _muteLabel.AddThemeColorOverride("font_color",
+                muted ? DesignTokens.Stone : DesignTokens.Paper);
+        }
+        _muteButton.TooltipText = muted ? "Unmute audio" : "Mute audio";
+
+        if (persist) UserPrefs.SetMuted(muted);
+    }
+
+    private static bool IsMasterMuted()
+    {
+        int idx = AudioServer.GetBusIndex("Master");
+        return idx >= 0 && AudioServer.IsBusMute(idx);
     }
 }

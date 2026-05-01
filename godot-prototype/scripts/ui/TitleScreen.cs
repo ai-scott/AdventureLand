@@ -63,6 +63,7 @@ public partial class TitleScreen : Control
     private PanelContainer _settingsPanel;
     private VBoxContainer _settingsList;
     private Button _settingsBackBtn;
+    private Button _settingsCreditsBtn;
     private PanelContainer _creditsPanel;
     private VBoxContainer _creditsList;
     private Button _creditsBackBtn;
@@ -85,19 +86,13 @@ public partial class TitleScreen : Control
 
     public override void _Ready()
     {
-        // Decide on input mode for the whole session. Persisted preference
-        // wins so a user who explicitly toggled mobile mode keeps it across
-        // launches; first-launch falls back to platform auto-detection.
-        var stored = UserPrefs.GetMobileOverride();
-        if (stored.HasValue)
-        {
-            UiStyles.SetMobileOverride(stored.Value);
-        }
-        else
-        {
-            bool detected = UiStyles.DetectMobile();
-            UserPrefs.SetMobileOverride(detected);
-        }
+        // Mobile mode is auto-detected on every launch until there's a
+        // user-facing Settings entry to toggle it persistently. The
+        // legacy persisted pref (writeable from the now-hidden Settings
+        // panel) was getting accidentally flipped on without a way to
+        // revert; clear any old override on startup so a stale pref
+        // can't strand the player on the wrong button style.
+        UiStyles.DetectMobile();
 
         _saveManager = GetNode<SaveManager>("/root/SaveManager");
 
@@ -398,6 +393,34 @@ public partial class TitleScreen : Control
         return false;
     }
 
+    /// <summary>Intercept Return so prompt screens with a clear primary
+    /// action fire that primary regardless of which button currently holds
+    /// focus. Space continues to flow through the focused button's
+    /// ui_accept and presses whichever button is highlighted (the contract
+    /// is ↵ = accept, Space = "the highlighted thing"). Runs in _Input so
+    /// the event is consumed before GUI processes it on the focused button.</summary>
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is InputEventKey key && key.Pressed && !key.Echo)
+        {
+            if (key.Keycode == Key.Enter || key.Keycode == Key.KpEnter)
+            {
+                BaseButton primary = _state switch
+                {
+                    State.Settings => _settingsCreditsBtn,
+                    State.SlotSelect when GodotObject.IsInstanceValid(_overwriteYesBtn)
+                                       && _overwriteYesBtn.IsInsideTree() => _overwriteYesBtn,
+                    _ => null,
+                };
+                if (primary != null && !primary.Disabled)
+                {
+                    primary.EmitSignal(BaseButton.SignalName.Pressed);
+                    GetViewport().SetInputAsHandled();
+                }
+            }
+        }
+    }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (!@event.IsPressed() || @event.IsEcho()) return;
@@ -522,6 +545,11 @@ public partial class TitleScreen : Control
         foreach (var child in _slotList.GetChildren())
             child.QueueFree();
         _slotButtons.Clear();
+        // Clear stale overwrite refs so the _Input Return intercept doesn't
+        // try to emit on a freed button between QueueFree (deferred) and
+        // the new slot list mounting.
+        _overwriteYesBtn = null;
+        _overwriteNoBtn = null;
 
         // Deep-wood banner straddles the top of the panel — built once as
         // a TitleScreen child (sibling of SlotPanel) so it can render
@@ -598,7 +626,7 @@ public partial class TitleScreen : Control
         // Continue is a visual indicator only — not focusable, not mouse
         // clickable. The user confirms by hitting Enter on the focused slot.
         // Its gold border mirrors the slot's "this is what Enter does" state.
-        _continueBtn = BuildChipButton("Continue", "spc", UiFrames.ApplyPrimaryButton);
+        _continueBtn = BuildChipButton("Continue", "↵", UiFrames.ApplyPrimaryButton);
         _continueBtn.CustomMinimumSize = new Vector2(180, 40);
         _continueBtn.FocusMode = Control.FocusModeEnum.None;
         _continueBtn.MouseFilter = Control.MouseFilterEnum.Ignore;
@@ -807,10 +835,13 @@ public partial class TitleScreen : Control
         _settingsBackBtn.Pressed += () => HideSettings();
         bottomRow.AddChild(_settingsBackBtn);
 
-        var creditsBtn = UiFrames.BuildChipButton("Credits", "spc", UiFrames.ApplyPrimaryButton);
-        creditsBtn.CustomMinimumSize = new Vector2(160, 40);
-        creditsBtn.Pressed += () => ShowCredits(returnTo: State.Settings);
-        bottomRow.AddChild(creditsBtn);
+        // Credits is the Settings panel's primary action — ↵ always presses
+        // it (see _Input override) regardless of focus, while Space presses
+        // whichever button currently holds focus.
+        _settingsCreditsBtn = UiFrames.BuildChipButton("Credits", "↵", UiFrames.ApplyPrimaryButton);
+        _settingsCreditsBtn.CustomMinimumSize = new Vector2(160, 40);
+        _settingsCreditsBtn.Pressed += () => ShowCredits(returnTo: State.Settings);
+        bottomRow.AddChild(_settingsCreditsBtn);
     }
 
     /// <summary>Stand up the Credits panel — mossy frame with placeholder
@@ -848,14 +879,13 @@ public partial class TitleScreen : Control
         _creditsList.AddChild(title);
         _creditsList.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8) });
 
-        // Placeholder copy — edit these strings to author the real credits.
         var creditLines = new (string head, string body)[]
         {
-            ("Created by",  "Scott Addison Clay"),
-            ("Built with",  "Claude Code"),
-            ("Art",         "Mana Seed (Seliel the Shaper)"),
-            ("Fonts",       "Alagard · Jersey 15"),
-            ("Music",       "Adventure Land OST"),
+            ("Game by",      "Penlock Games"),
+            ("Game Design",  "Penny Clay and Flylock"),
+            ("Developer",    "Flylock"),
+            ("Music",        "Richard Furch"),
+            ("Art",          "Penny, Mana Seed, Namatnieks, RunninBlood"),
         };
         foreach (var (head, body) in creditLines)
         {
@@ -1205,7 +1235,10 @@ public partial class TitleScreen : Control
         _overwriteNoBtn.Pressed += () => ShowSlotSelect(true);
         hbox.AddChild(_overwriteNoBtn);
 
-        var yes = BuildChipButton("Yes", "spc", UiFrames.ApplyDangerButton);
+        // Yes is the prompt's primary — ↵ always fires it (see _Input
+        // override). Space presses whichever button holds focus, so a
+        // user who has navigated to "No" can still confirm No with Space.
+        var yes = BuildChipButton("Yes", "↵", UiFrames.ApplyDangerButton);
         yes.CustomMinimumSize = new Vector2(140, 40);
         yes.Pressed += () =>
         {

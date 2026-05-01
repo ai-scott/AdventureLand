@@ -21,6 +21,11 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class DialogueManager : CanvasLayer
 {
+    /// <summary>Latest live DialogueManager. Set in _Ready, cleared in
+    /// _ExitTree. Used by other UIs (HUD, InventoryUI) to gate input while
+    /// a dialogue is open without needing a node lookup every frame.</summary>
+    public static DialogueManager Instance { get; private set; }
+
     public bool IsActive { get; private set; }
 
     private DialogueData _npcData;
@@ -52,6 +57,8 @@ public partial class DialogueManager : CanvasLayer
 
     public override void _Ready()
     {
+        Instance = this;
+
         _dialogueBox = GetNode<Control>("DialogueBox");
         _frameBg = GetNode<TextureRect>("DialogueBox/FrameBg");
         _cameo = GetNode<TextureRect>("DialogueBox/Cameo");
@@ -71,6 +78,11 @@ public partial class DialogueManager : CanvasLayer
         _texFrameBgName ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg_name.png");
 
         _dialogueBox.Visible = false;
+    }
+
+    public override void _ExitTree()
+    {
+        if (Instance == this) Instance = null;
     }
 
     public override void _Process(double delta)
