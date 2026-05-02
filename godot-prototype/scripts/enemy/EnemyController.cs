@@ -466,13 +466,32 @@ public partial class EnemyController : CharacterBody2D
 			case EnemyAction.MovePattern.None:
 				return Vector2.Zero;
 
-			// Stubs for Phase 6 (Crab + Bat): fall back to Stop for now.
+			// Crab scuttle: chase the player but bias horizontal travel — matches
+			// the C3 moveCrabTowardPlayer scaling (1.5x horizontal, 0.7x vertical).
+			// Magnitude is intentionally non-unit so the speed multiplier in
+			// ApplyMove yields the same effective velocity as C3.
 			case EnemyAction.MovePattern.CrabTowardPlayer:
+			{
+				if (toPlayer.Length() <= 0.001f) return Vector2.Zero;
+				var n = toPlayer.Normalized();
+				return new Vector2(n.X * 1.5f, n.Y * 0.7f);
+			}
+
+			// Strafe perpendicular to the player. Sign convention matches
+			// moveSideways in enemy-utils.ts (right = +perp, left = -perp).
+			case EnemyAction.MovePattern.SidewaysLeft:
+			case EnemyAction.MovePattern.SidewaysRight:
+			{
+				if (toPlayer.Length() <= 0.001f) return Vector2.Zero;
+				var n = toPlayer.Normalized();
+				var perp = new Vector2(-n.Y, n.X);
+				return pattern == EnemyAction.MovePattern.SidewaysLeft ? -perp : perp;
+			}
+
+			// Bat-only patterns — still stubbed; will land in Phase 6 bat work.
 			case EnemyAction.MovePattern.SwoopToPlayer:
 			case EnemyAction.MovePattern.FleeToNearestTree:
 			case EnemyAction.MovePattern.IdleInTree:
-			case EnemyAction.MovePattern.SidewaysLeft:
-			case EnemyAction.MovePattern.SidewaysRight:
 				return Vector2.Zero;
 		}
 

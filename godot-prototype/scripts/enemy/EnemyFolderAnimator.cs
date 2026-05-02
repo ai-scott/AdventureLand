@@ -153,13 +153,40 @@ public partial class EnemyFolderAnimator : EnemyAnimatorBase
 
 		if (!_sprite.SpriteFrames.HasAnimation(animName))
 		{
-			GD.PushWarning($"[EnemyFolderAnimator] Unknown animation '{animName}'. Falling back to 'idle_down'.");
-			animName = "idle_down";
-			if (!_sprite.SpriteFrames.HasAnimation(animName)) return;
+			// Crab et al. don't ship every cardinal direction (no walk_down on a
+			// sideways-walker). Walk back along progressively looser matches before
+			// giving up: same prefix any direction → directionless prefix → idle*.
+			var fallback = ResolveFallback(animName);
+			if (fallback == null) return;
+			animName = fallback;
 		}
 
 		_currentAnim = animName;
 		_sprite.Play(animName);
+	}
+
+	private string ResolveFallback(string requested)
+	{
+		var frames = _sprite.SpriteFrames;
+		int us = requested.IndexOf('_');
+		string prefix = us >= 0 ? requested.Substring(0, us) : requested;
+
+		// 1. Same prefix, any direction (walk_left, walk_right, walk_up, walk_down).
+		foreach (var dir in new[] { "right", "left", "up", "down" })
+		{
+			var candidate = $"{prefix}_{dir}";
+			if (candidate != requested && frames.HasAnimation(candidate)) return candidate;
+		}
+		// 2. Prefix without any direction (e.g. "hurt", "idle").
+		if (frames.HasAnimation(prefix)) return prefix;
+		// 3. Idle in any flavor.
+		foreach (var idle in new[] { "idle_down", "idle", "idle_right", "idle_left", "idle_up" })
+		{
+			if (frames.HasAnimation(idle)) return idle;
+		}
+		// 4. First available animation — better something than nothing.
+		var anims = frames.GetAnimationNames();
+		return anims.Length > 0 ? anims[0] : null;
 	}
 
 	public override void Stop()

@@ -136,6 +136,13 @@ public partial class InventoryUI : CanvasLayer
 	// invisible layout anchor providing top/bottom offset references.
 	private readonly System.Collections.Generic.List<Button> _activeActionChips = new();
 
+	// 5-swatch preview rows for the HairColor / Skin cyclers. Built in
+	// _Ready, refreshed in UpdateCyclerLabels. Center swatch (index 2) is
+	// the active selection — flanked by ±1 and ±2 wrapping around the
+	// roster so the player can see what's coming next in either direction.
+	private PanelContainer[] _hairColorSwatches;
+	private PanelContainer[] _skinSwatches;
+
 	// Keyboard focus zones. Grid is the default 5×5 cell selection; the
 	// three Cycler zones are entered by Left from the leftmost grid column
 	// (top→Hair, middle→HairColor, bottom→Skin). CloseButton is reached by
@@ -154,6 +161,7 @@ public partial class InventoryUI : CanvasLayer
 		BuildLivePreview();
 		RebuildGridCells();
 		NormalizeCyclerArrows();
+		BuildSwatchRows();
 		WireSignals();
 
 		_panel.Visible = false;
@@ -698,6 +706,133 @@ public partial class InventoryUI : CanvasLayer
 		}
 	}
 
+	/// <summary>Hide the text labels on the HairColor and Skin cyclers and
+	/// drop a 5-swatch preview row in their place. Hair STYLE keeps its
+	/// text label since the variation is shape, not color, and the swatch
+	/// vocabulary doesn't apply.
+	///
+	/// Each swatch is a PanelContainer with a colored StyleBoxFlat. Sizes
+	/// step down from the centered active swatch (22 px) to the ±1
+	/// flankers (18 px) to the ±2 outer swatches (14 px), matching the
+	/// "selected one pops" visual the user asked for.</summary>
+	private void BuildSwatchRows()
+	{
+		var hairCycler = GetNodeOrNull<Control>("Panel/Frame/HairColorCycler");
+		if (hairCycler != null)
+		{
+			if (_hairColorLabel != null) _hairColorLabel.Visible = false;
+			_hairColorSwatches = BuildSwatchRow(hairCycler);
+		}
+
+		var skinCycler = GetNodeOrNull<Control>("Panel/Frame/SkinCycler");
+		if (skinCycler != null)
+		{
+			if (_skinLabel != null) _skinLabel.Visible = false;
+			_skinSwatches = BuildSwatchRow(skinCycler);
+		}
+	}
+
+	/// <summary>Spawn an HBox of 5 swatch panels inside the given cycler
+	/// Control. The HBox spans the gap between the cycler's left and right
+	/// arrows (offsets 22 / -40 mirror the arrow Buttons' offsets) AND
+	/// matches the Label child's vertical band so the swatches baseline
+	/// with the arrow icons (which NormalizeCyclerArrows pinned to the
+	/// label's vertical center). Without this alignment the swatches sit
+	/// at the cycler's vertical center while the arrows sit at the
+	/// label's center, and the two end up out of line for cyclers whose
+	/// label is authored off-center.</summary>
+	private static PanelContainer[] BuildSwatchRow(Control parent)
+	{
+		var hbox = new HBoxContainer
+		{
+			Name = "SwatchRow",
+			MouseFilter = Control.MouseFilterEnum.Ignore,
+		};
+		// Mixed anchors: X spans full parent (left=0, right=1) so the
+		// inset offsets clear the arrow buttons; Y is pinned to the parent
+		// TOP only (top=0, bottom=0) so the offsets read in the same
+		// reference frame as the Label child (which uses anchors_preset=0).
+		// Earlier versions used FullRect — that made offset_bottom relative
+		// to parent.bottom, throwing the swatch row below the arrow band.
+		hbox.AnchorLeft = 0f;
+		hbox.AnchorRight = 1f;
+		hbox.AnchorTop = 0f;
+		hbox.AnchorBottom = 0f;
+		// Inset to clear the left + right arrow buttons (which sit at the
+		// cycler's ends per the .tscn). The 40 px right inset accounts for
+		// the right arrow button + the cycler control's own right margin.
+		hbox.OffsetLeft = 22;
+		hbox.OffsetRight = -40;
+		// Align vertically with the cycler's Label band — the arrows were
+		// pinned to the label's center by NormalizeCyclerArrows, so
+		// matching the same band keeps swatches and arrows on one line.
+		var sibLabel = parent.GetNodeOrNull<Label>("Label");
+		if (sibLabel != null)
+		{
+			hbox.OffsetTop = sibLabel.OffsetTop;
+			hbox.OffsetBottom = sibLabel.OffsetBottom;
+		}
+		else
+		{
+			hbox.OffsetTop = 0;
+			hbox.OffsetBottom = 30;
+		}
+		hbox.Alignment = BoxContainer.AlignmentMode.Center;
+		hbox.AddThemeConstantOverride("separation", 4);
+		parent.AddChild(hbox);
+
+		var sizes = new[] { 14, 18, 22, 18, 14 };
+		var frames = new PanelContainer[5];
+		for (int i = 0; i < 5; i++)
+		{
+			var frame = new PanelContainer
+			{
+				CustomMinimumSize = new Vector2(sizes[i], sizes[i]),
+				MouseFilter = Control.MouseFilterEnum.Ignore,
+				SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+			};
+			// Every swatch keeps the 1 px ink border (the "green outline" —
+			// DesignTokens.Ink is #10180F, very dark green). The center
+			// (selected) swatch ALSO gets a 3 px gold outline OUTSIDE the
+			// ink — drawn via the stylebox shadow with offset (0,0) so it
+			// reads as a second border layer rather than a drop shadow.
+			// 3 px is enough to read at the swatch's small render size;
+			// 1 px was getting lost. Ink between bg and gold means lighter
+			// swatch colors (pale skin tones, blonde hair) don't blend
+			// into the gold.
+			var sb = new StyleBoxFlat
+			{
+				BgColor = new Color(0.5f, 0f, 0.5f, 1f), // magenta = unset, helps spot bind bugs
+				BorderColor = DesignTokens.Ink,
+				ShadowColor = i == 2 ? DesignTokens.Gold : new Color(0, 0, 0, 0),
+				ShadowSize = i == 2 ? 3 : 0,
+				ShadowOffset = Vector2.Zero,
+			};
+			sb.SetBorderWidthAll(1);
+			sb.SetCornerRadiusAll(2);
+			frame.AddThemeStyleboxOverride("panel", sb);
+			frames[i] = frame;
+			hbox.AddChild(frame);
+		}
+		return frames;
+	}
+
+	/// <summary>Refresh the 5 swatch panels' BgColors. Indices wrap, so a
+	/// 4-color roster repeats colors at the outer slots — that's expected
+	/// and reads as "you've seen everything, here it is again".</summary>
+	private static void UpdateSwatchRow(PanelContainer[] frames, int activeIdx, int count, System.Func<int, Color> colorFor)
+	{
+		if (frames == null || count == 0) return;
+		for (int i = 0; i < 5; i++)
+		{
+			int wrapped = ((activeIdx + (i - 2)) % count + count) % count;
+			if (frames[i].GetThemeStylebox("panel") is StyleBoxFlat sb)
+			{
+				sb.BgColor = colorFor(wrapped);
+			}
+		}
+	}
+
 	/// <summary>"Sell N [gem] [↵]" chip used in shops. Inline-built rather
 	/// than going through UiFrames.BuildChipButton so we can splice a gem
 	/// TextureRect between the label and the kbd-hint chip — the standard
@@ -1202,8 +1337,12 @@ public partial class InventoryUI : CanvasLayer
 		}
 
 		bool equipped = inv.IsEquipped(item.Id);
-		// No star — equipped state is communicated by the live preview
-		// (item visible on the character) and the chip's "Unequip" label.
+		// Equipped state is communicated by the live preview (item visible
+		// on the character) and the chip's "Unequip" label. Key / quest
+		// items get a "★ Quest Item" line in the stat row instead of a
+		// title prefix — same vertical slot the +N stat modifier uses for
+		// normal gear, so the layout stays balanced and the title doesn't
+		// shift right.
 		_detailsName.Text = item.Name;
 		_detailsDesc.Text = item.Description ?? "";
 
@@ -1238,6 +1377,14 @@ public partial class InventoryUI : CanvasLayer
 				// 4 px text-icon spacing.
 				_detailsStats.AddChild(BuildInlineStat($"{sign}{displayValue}", icon, arrow));
 			}
+		}
+		else if (item.IsKeyItem)
+		{
+			// "★ Quest Item" line — slots into the same row as +N stat
+			// modifiers for normal gear. Gold star + moss-green label so
+			// the marker reads as related to the description, not as a
+			// separate UI chip.
+			_detailsStats.AddChild(BuildKeyItemMarker());
 		}
 		// Gem cost is intentionally NOT shown in the inventory details —
 		// the player only sees a gem amount when they're standing in a
@@ -1291,6 +1438,48 @@ public partial class InventoryUI : CanvasLayer
 				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 		};
 		return wrapper;
+	}
+
+	/// <summary>"★ Quest Item" inline row used for key / quest items in
+	/// place of a stat modifier. Cream star (matches the DetailsName title
+	/// face for the "pop") + moss-green label at body-text size so the
+	/// marker reads as part of the description block. Position is driven
+	/// by the scene's DetailsStats offsets — edit those in the Godot
+	/// editor to move the row.
+	///
+	/// Star and label both bottom-align inside the HBox so the glyphs
+	/// share a baseline regardless of the font-size delta (Alagard 22 vs
+	/// Jersey 20). Without this the star sits a few px high.</summary>
+	private static HBoxContainer BuildKeyItemMarker()
+	{
+		var box = new HBoxContainer();
+		box.AddThemeConstantOverride("separation", 4);
+		box.SizeFlagsVertical = Control.SizeFlags.ShrinkEnd;
+
+		var star = new Label
+		{
+			Text = "★",
+			VerticalAlignment = VerticalAlignment.Bottom,
+			SizeFlagsVertical = Control.SizeFlags.Fill,
+		};
+		star.AddThemeFontSizeOverride("font_size", 22);
+		star.AddThemeColorOverride("font_color", UiStyles.Cream);
+		box.AddChild(star);
+
+		var label = new Label
+		{
+			Text = "Quest Item",
+			VerticalAlignment = VerticalAlignment.Bottom,
+			SizeFlagsVertical = Control.SizeFlags.Fill,
+		};
+		label.AddThemeFontOverride("font", UiFonts.Body);
+		// Match DetailsDesc font_size (20) so the line reads as part of
+		// the description block rather than a separate chip.
+		label.AddThemeFontSizeOverride("font_size", 20);
+		label.AddThemeColorOverride("font_color", new Color(0.23529412f, 0.4117647f, 0.101960786f));
+		box.AddChild(label);
+
+		return box;
 	}
 
 	private static HBoxContainer BuildInlineStat(string text, Texture2D icon, Control arrow = null)
@@ -1359,12 +1548,20 @@ public partial class InventoryUI : CanvasLayer
 
 	private void UpdateCyclerLabels()
 	{
+		// Hair STYLE keeps the text label — variation is shape, not color.
 		if (_hairLabel != null)
-			_hairLabel.Text = CharacterCustomization.HairStyleCount > 0 ? $"Hair {_hairIndex + 1:D2}" : "Hair —";
-		if (_hairColorLabel != null)
-			_hairColorLabel.Text = CharacterCustomization.HairColorCount > 0 ? $"Color {_hairColorIndex + 1:D2}" : "Color —";
-		if (_skinLabel != null)
-			_skinLabel.Text = CharacterCustomization.SkinCount > 0 ? $"Skin {_skinIndex + 1:D2}" : "Skin —";
+			_hairLabel.Text = CharacterCustomization.HairStyleCount > 0
+				? CharacterCustomization.HairStyleName(_hairIndex)
+				: "Hair —";
+
+		// Hair COLOR + SKIN show 5-swatch preview rows. The labels were
+		// hidden in BuildSwatchRows; the swatch row IS the language now.
+		UpdateSwatchRow(_hairColorSwatches, _hairColorIndex,
+			CharacterCustomization.HairColorCount,
+			CharacterCustomization.DominantHairColor);
+		UpdateSwatchRow(_skinSwatches, _skinIndex,
+			CharacterCustomization.SkinCount,
+			CharacterCustomization.DominantSkinColor);
 	}
 
 	private void RefreshGems()

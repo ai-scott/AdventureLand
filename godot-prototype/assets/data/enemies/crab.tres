@@ -147,7 +147,7 @@ Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResour
 [resource]
 script = ExtResource("1")
 Type = "Crab"
-Health = 3
+Health = 10
 ViewDistance = 150.0
 AttackDistance = 32.0
 Behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])

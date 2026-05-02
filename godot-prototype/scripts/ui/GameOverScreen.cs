@@ -114,7 +114,7 @@ public partial class GameOverScreen : CanvasLayer
         // The C3 version runs three timelines concurrently, so we split
         // them across three independent Godot tweens:
         //   scrollTween  : dim fade + 4s bg scroll
-        //   overTween    : 1s delay, then 4×(on 0.1 / off 0.15) flash, stays on
+        //   overTween    : 3s delay, then 4×(on 0.1 / off 0.15) flash, stays on
         //   menuTween    : 6s delay (scroll + wait 2s), then fade in menu
         // No dim overlay — the painted forest bg carries the mood on its own;
         // a 0.9α dim mudded the colors and was removed per design pass.
@@ -125,7 +125,9 @@ public partial class GameOverScreen : CanvasLayer
 
         var overTween = CreateTween();
         overTween.SetProcessMode(Tween.TweenProcessMode.Idle);
-        overTween.TweenInterval(1.0);
+        // 3s delay — gives the bg scroll most of its 4s travel time so
+        // "Adventure" has fully revealed by the time "OVER" punches in.
+        overTween.TweenInterval(3.0);
         // C3 Flash behavior: on 0.1s, off 0.15s, for duration 1.0s → 4 cycles.
         for (int i = 0; i < 4; i++)
         {

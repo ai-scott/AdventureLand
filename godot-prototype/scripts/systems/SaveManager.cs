@@ -208,8 +208,29 @@ public partial class SaveManager : Node
         // idempotent — same position written twice.
         ApplySaveToPlayer();
 
+        // Two frames of settle so the camera, costume layers, and any
+        // signal handlers triggered by Inventory.LoadFrom catch up before
+        // the FadeIn reveals the world. Without this, the camera can
+        // briefly render at the scene's authored spawn (where Player.tscn
+        // was instanced) and pan to the saved position during the fade,
+        // which the player perceives as "the world appeared in the
+        // starting position then moved".
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
         if (FadeOverlay.Instance != null)
         {
+            // Location banner on every Continue, not just first visit.
+            // Mirrors NewGame's first-world banner pacing (0.3s fade in +
+            // 1.2s hold + 0.4s fade out = 1.9s of black + banner before
+            // the world reveal). Uses WorldMeta if available, otherwise
+            // the canonical name map keyed by scene filename.
+            var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
+            string displayName = !string.IsNullOrEmpty(meta?.WorldDisplayName)
+                ? meta.WorldDisplayName
+                : WorldDisplayName(CurrentData.CurrentWorld);
+            FadeOverlay.Instance.ShowBanner(displayName, 0.3, 1.2, 0.4);
+            await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
             await FadeOverlay.Instance.FadeIn(0.3);
         }
     }
@@ -246,7 +267,11 @@ public partial class SaveManager : Node
 
     private void ApplySaveToPlayer()
     {
-        if (CurrentData == null) return;
+        if (CurrentData == null)
+        {
+            GD.PushWarning("[SaveManager] ApplySaveToPlayer called with null CurrentData");
+            return;
+        }
 
         // Clear any stale tree-paused state from the previous scene. If a dialogue
         // was active when a transition fired (race condition — door trigger races
@@ -257,9 +282,10 @@ public partial class SaveManager : Node
         var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
         if (player == null)
         {
-            GD.PushWarning("[SaveManager] Player not found after scene load");
+            GD.PushWarning($"[SaveManager] Player not found in scene '{GetTree().CurrentScene?.SceneFilePath}' — saved world was '{CurrentData.CurrentWorld}'");
             return;
         }
+        GD.Print($"[SaveManager] ApplySaveToPlayer: scene={GetTree().CurrentScene?.SceneFilePath} pos=({CurrentData.PositionX}, {CurrentData.PositionY})");
 
         // WorldManager may set a spawn override for door/edge transitions.
         // Otherwise use the saved position.
@@ -273,6 +299,29 @@ public partial class SaveManager : Node
         else
         {
             player.GlobalPosition = new Vector2(CurrentData.PositionX, CurrentData.PositionY);
+        }
+
+        // Clamp position to the new world's bounds (with a small edge
+        // margin) — saved data may have a stale or edge-transition
+        // placeholder position outside the new map (e.g. Y=9999 from
+        // WorldManager.ComputeEntryPosition's "clamp later" sentinel
+        // when you walk off the north edge). Without this, the player
+        // ends up far below the visible viewport on Continue.
+        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
+        if (meta != null && meta.MapSize.X > 0 && meta.MapSize.Y > 0)
+        {
+            const float EdgeMargin = 32f;
+            var pos = player.GlobalPosition;
+            var clamped = new Vector2(
+                Mathf.Clamp(pos.X, EdgeMargin, meta.MapSize.X - EdgeMargin),
+                Mathf.Clamp(pos.Y, EdgeMargin, meta.MapSize.Y - EdgeMargin));
+            if (clamped != pos)
+            {
+                GD.Print($"[SaveManager] Clamped player position {pos} → {clamped} (map={meta.MapSize})");
+                player.GlobalPosition = clamped;
+                CurrentData.PositionX = clamped.X;
+                CurrentData.PositionY = clamped.Y;
+            }
         }
 
         var health = player.GetNodeOrNull<HealthSystem>("HealthSystem");

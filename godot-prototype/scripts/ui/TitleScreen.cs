@@ -1264,8 +1264,21 @@ public partial class TitleScreen : Control
             _overwriteYesBtn.GrabFocus();
     }
 
+    private bool _slotConfirmInFlight;
+
     private void OnSlotChosen(int slot)
     {
+        // Re-entry guard: pressing Space on a focused slot button fires
+        // Pressed twice (Godot's native ui_accept on the Button + this
+        // screen's _UnhandledInput dialogue_advance handler also emits
+        // Pressed manually). Without the guard, _saveManager.Load runs
+        // twice, which spawns two parallel FadeOut tweens that fight
+        // each other and produce a jumpy fade-out. The flag stays true
+        // for the rest of this scene's lifetime — the next title load
+        // (e.g. coming back from game over) is a fresh instance.
+        if (_slotConfirmInFlight) return;
+        _slotConfirmInFlight = true;
+
         _selectedSlot = slot;
 
         if (_slotModeNewGame)

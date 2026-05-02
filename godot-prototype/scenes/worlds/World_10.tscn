@@ -9,6 +9,9 @@
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="8"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="8_msv86"]
 [ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="9_wti8o"]
+[ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="10_tspwn"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_10_Lake.tres" id="11_trres"]
+[ext_resource type="PackedScene" uid="uid://b8crab0001prj" path="res://scenes/enemy/Enemy_Crab.tscn" id="12_crab"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1667,3 +1670,16 @@ script = ExtResource("9_wti8o")
 BaseTrack = "adventureland_happy"
 MidTrack = "adventureland_stress"
 HighTrack = "adventureland_danger"
+
+[node name="Triggers" type="Node2D" parent="." unique_id=1957789752]
+script = ExtResource("10_tspwn")
+TriggersResource = ExtResource("11_trres")
+
+[node name="Crab1" parent="Entities" instance=ExtResource("12_crab")]
+position = Vector2(200, 260)
+
+[node name="Crab2" parent="Entities" instance=ExtResource("12_crab")]
+position = Vector2(520, 260)
+
+[node name="Crab3" parent="Entities" instance=ExtResource("12_crab")]
+position = Vector2(360, 380)

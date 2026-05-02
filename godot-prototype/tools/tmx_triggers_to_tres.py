@@ -107,12 +107,24 @@ def parse_object_properties(obj_elem):
     return props
 
 
+def is_axis_aligned_rect(points):
+    """A polygon is rect-shaped iff it has exactly 4 vertices with two unique
+    xs and two unique ys (allowing tiny float noise from Tiled's sub-pixel
+    object handles)."""
+    if len(points) != 4:
+        return False
+    xs = sorted({round(p[0], 3) for p in points})
+    ys = sorted({round(p[1], 3) for p in points})
+    return len(xs) == 2 and len(ys) == 2
+
+
 def parse_tmx_objects(tmx_path):
     """Parse TMX, return a list of trigger dicts."""
     tree = ET.parse(tmx_path)
     root = tree.getroot()
 
     triggers = []
+    skipped_nonrect = 0
     for group in root.findall("objectgroup"):
         for obj in group.findall("object"):
             # Tiled's "class" attribute was "type" before 1.9 — accept both.
@@ -130,16 +142,35 @@ def parse_tmx_objects(tmx_path):
             h = float(obj.get("height", 16))
             props = parse_object_properties(obj)
 
-            # Walls may carry a <polygon points="..."> child for non-rect shapes.
+            # Walls may carry a <polygon points="..."> child. We only honor
+            # polygons that are axis-aligned rectangles (e.g. half-tile ledges
+            # like "0,8 16,8 16,16 0,16"). Anything else — crosses, diagonals,
+            # ellipses, freeform shapes — is dropped so the wall reverts to its
+            # plain Position/Size rect. Non-rect Tiled handles (most often the
+            # tile-collision crosses left over from "Add objects from tile")
+            # are skipped entirely rather than upgraded to a full-tile block.
             polygon = None
             poly_elem = obj.find("polygon")
+            polyline_elem = obj.find("polyline")
+            ellipse_elem = obj.find("ellipse")
             if poly_elem is not None:
                 pts_raw = poly_elem.get("points", "").strip()
                 if pts_raw:
-                    polygon = []
+                    pts = []
                     for pair in pts_raw.split():
                         xs, ys = pair.split(",")
-                        polygon.append((float(xs), float(ys)))
+                        pts.append((float(xs), float(ys)))
+                    if is_axis_aligned_rect(pts):
+                        polygon = pts
+                    else:
+                        if kind_str == "wall":
+                            skipped_nonrect += 1
+                            continue
+                        # Non-wall classes don't use polygon data — let them through as rects.
+            elif polyline_elem is not None or ellipse_elem is not None:
+                if kind_str == "wall":
+                    skipped_nonrect += 1
+                    continue
 
             triggers.append({
                 "kind": kind_str,
@@ -150,6 +181,8 @@ def parse_tmx_objects(tmx_path):
                 "id": obj.get("id"),
             })
 
+    if skipped_nonrect:
+        print(f"  Skipped {skipped_nonrect} non-rect wall(s) (crosses, diagonals, freeform)")
     return triggers
 
 

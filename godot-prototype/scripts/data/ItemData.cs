@@ -68,4 +68,11 @@ public partial class ItemData : Resource
 
     /// <summary>Whether this item is consumable (food restores health).</summary>
     public bool IsConsumable => Category == ItemCategory.Food;
+
+    /// <summary>Narrative-critical items the player can't equip, consume,
+    /// or sell — keys, quest deliverables, etc. The inventory UI marks
+    /// these with a leading star and suppresses every action chip so
+    /// "this is a key item" reads at a glance. Both <c>Category==Key</c>
+    /// and the <c>QuestItem</c> flag count.</summary>
+    public bool IsKeyItem => Category == ItemCategory.Key || QuestItem;
 }

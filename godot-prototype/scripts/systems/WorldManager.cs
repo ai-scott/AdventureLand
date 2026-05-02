@@ -124,6 +124,10 @@ public partial class WorldManager : Node
                 {
                     SaveManager.Instance.CurrentData.PositionX = marker.GlobalPosition.X;
                     SaveManager.Instance.CurrentData.PositionY = marker.GlobalPosition.Y;
+                    // ApplySaveToPlayer auto-saved the OLD saved position
+                    // already (before this marker override ran). Re-save
+                    // with the marker position so disk matches in-memory.
+                    SaveManager.Instance.Save();
                 }
             }
         }
@@ -250,6 +254,10 @@ public partial class WorldManager : Node
         {
             SaveManager.Instance.CurrentData.PositionX = pos.X;
             SaveManager.Instance.CurrentData.PositionY = pos.Y;
+            // ApplySaveToPlayer just auto-saved the (X, 9999) placeholder
+            // PendingSpawnPosition. Re-save with the clamped value so the
+            // next Continue doesn't reload off-map.
+            SaveManager.Instance.Save();
         }
     }
 

@@ -7,6 +7,8 @@
 process_mode = 3
 layer = 100
 script = ExtResource("1")
+metadata/_edit_horizontal_guides_ = [214.0]
+metadata/_edit_vertical_guides_ = [506.0]
 
 [node name="Dim" type="ColorRect" parent="." unique_id=945799903]
 modulate = Color(1, 1, 1, 0)
@@ -17,20 +19,20 @@ color = Color(0, 0, 0, 1)
 
 [node name="OverShadow" type="Label" parent="." unique_id=1253900049]
 modulate = Color(1, 1, 1, 0)
-offset_left = 413.0
-offset_top = 133.0
-offset_right = 617.0
-offset_bottom = 197.0
+offset_left = 527.0
+offset_top = 163.0
+offset_right = 731.0
+offset_bottom = 227.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 64
 text = "OVER"
 
 [node name="OverMain" type="Label" parent="." unique_id=665031816]
 modulate = Color(1, 1, 1, 0)
-offset_left = 410.0
-offset_top = 130.0
-offset_right = 614.0
-offset_bottom = 194.0
+offset_left = 524.0
+offset_top = 160.0
+offset_right = 728.0
+offset_bottom = 224.0
 theme_override_colors/font_color = Color(0.96, 0.21, 0.2, 1)
 theme_override_font_sizes/font_size = 64
 text = "OVER"
@@ -51,7 +53,6 @@ theme_override_constants/separation = 6
 
 [node name="Bg" type="TextureRect" parent="." unique_id=1196363267]
 texture_filter = 1
-offset_left = 0.0
 offset_top = -780.0
 offset_right = 420.0
 offset_bottom = -150.0
