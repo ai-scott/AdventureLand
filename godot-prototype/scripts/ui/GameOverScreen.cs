@@ -47,8 +47,8 @@ public partial class GameOverScreen : CanvasLayer
         _overMain = GetNode<Label>("OverMain");
         _menu = GetNode<VBoxContainer>("Menu");
 
-        _overShadow.AddThemeFontOverride("font", UiFonts.Pixel);
-        _overMain.AddThemeFontOverride("font", UiFonts.Pixel);
+        _overShadow.AddThemeFontOverride("font", UiFonts.Display);
+        _overMain.AddThemeFontOverride("font", UiFonts.Display);
 
         if (PlayerHealthPath == null || PlayerHealthPath.IsEmpty)
         {
@@ -116,10 +116,11 @@ public partial class GameOverScreen : CanvasLayer
         //   scrollTween  : dim fade + 4s bg scroll
         //   overTween    : 1s delay, then 4×(on 0.1 / off 0.15) flash, stays on
         //   menuTween    : 6s delay (scroll + wait 2s), then fade in menu
+        // No dim overlay — the painted forest bg carries the mood on its own;
+        // a 0.9α dim mudded the colors and was removed per design pass.
         var scrollTween = CreateTween();
         scrollTween.SetProcessMode(Tween.TweenProcessMode.Idle); // run during pause
-        scrollTween.TweenProperty(_dim, "modulate:a", 0.9f, 0.4);
-        scrollTween.Parallel().TweenProperty(_bg, "position:y", BgEndY, BgTweenDuration)
+        scrollTween.TweenProperty(_bg, "position:y", BgEndY, BgTweenDuration)
             .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
 
         var overTween = CreateTween();

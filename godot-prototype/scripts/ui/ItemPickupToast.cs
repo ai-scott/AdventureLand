@@ -28,6 +28,13 @@ public partial class ItemPickupToast : CanvasLayer
     private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
 
+    // Process-wide count of toasts currently in their "waiting for choice"
+    // (modal) state. Lets PlayerController gate input even on the same frame
+    // that a modal closes, and prevents toast #1's Close from unpausing the
+    // tree out from under a chained toast #2 (purchase → compare flow).
+    private static int _activeModalCount;
+    public static bool IsAnyModalActive => _activeModalCount > 0;
+
     // Take/Purchase mode callback — invoked when the player accepts.
     private Action _onAccept;
     private bool _purchaseAffordable;
@@ -44,7 +51,12 @@ public partial class ItemPickupToast : CanvasLayer
 
     public override void _Ready()
     {
-        Layer = 11; // above dialogue (10) and inventory (9)
+        // Above InventoryUI (layer=100 in its .tscn) and DialogueManager
+        // (layer=10). Sell-confirm spawns from the inventory, so the toast
+        // MUST sit above 100 or the player can't see it. FadeOverlay
+        // (layer=100) only covers the screen during scene transitions, so
+        // any conflict with this layer is benign.
+        Layer = 110;
         ProcessMode = ProcessModeEnum.Always;
     }
 
@@ -53,15 +65,20 @@ public partial class ItemPickupToast : CanvasLayer
         if (_waitingForChoice)
         {
             // Arrow / WASD horizontally toggle which button is highlighted.
-            // Up/Down also work since the buttons are side-by-side and many
-            // players reach for vertical nav by reflex.
+            // Cancel sits on the LEFT, Primary on the RIGHT (see
+            // AddChoiceButtons row order), so move_left selects cancel and
+            // move_right selects primary. The previous mapping was swapped,
+            // which left _cancelSelected out of sync with focus and forced
+            // a second arrow press to swap buttons. Up/Down also work
+            // since the buttons are side-by-side and many players reach
+            // for vertical nav by reflex.
             if (Input.IsActionJustPressed("move_left") || Input.IsActionJustPressed("move_up"))
             {
-                SetCancelSelected(false);
+                SetCancelSelected(true);
             }
             else if (Input.IsActionJustPressed("move_right") || Input.IsActionJustPressed("move_down"))
             {
-                SetCancelSelected(true);
+                SetCancelSelected(false);
             }
             // Space presses whichever button is focused via the button's
             // built-in ui_accept handling — no extra polling needed. Return
@@ -123,7 +140,11 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = CurrencySystem.GetGems() >= cost;
         BuildPurchaseToast(item, cost);
         _waitingForChoice = true;
+        _activeModalCount++;
         GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        // Same frame guard as Close — covers the press that just opened us.
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Same confirm/cancel flow as ShowPurchase but for free pickups.
@@ -137,7 +158,29 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = true; // always, no cost
         BuildTakeToast(item);
         _waitingForChoice = true;
+        _activeModalCount++;
         GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+    }
+
+    /// <summary>Confirm overlay for selling an inventory item back to a shop.
+    /// Shows the item card with a "Sell N [gem] ↵" primary chip; on accept,
+    /// the caller (InventoryUI) deducts the item, credits gems, and saves.
+    /// Mirrors ShowPurchase's pause + input-lock pattern so the inventory
+    /// stays open underneath but stops responding to nav input until the
+    /// confirm closes.</summary>
+    public void ShowSell(ItemData item, int sellPrice, Action onAccept)
+    {
+        _newItem = item;
+        _onAccept = onAccept;
+        _purchaseAffordable = true; // always — selling never fails on funds
+        BuildSellToast(item, sellPrice);
+        _waitingForChoice = true;
+        _activeModalCount++;
+        GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Show the pickup toast for the given item. Call after adding to inventory.</summary>
@@ -164,7 +207,10 @@ public partial class ItemPickupToast : CanvasLayer
                 _isUpgrade = item.Strength > _oldItem.Strength;
                 BuildCompareToast(item, _oldItem);
                 _waitingForChoice = true;
+                _activeModalCount++;
                 GetTree().Paused = true;
+                SetPlayerInputLocked(true);
+                PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
             }
         }
         else if (item.IsConsumable)
@@ -304,6 +350,64 @@ public partial class ItemPickupToast : CanvasLayer
             cancelLabel: "Leave it");
     }
 
+    private void BuildSellToast(ItemData item, int sellPrice)
+    {
+        InitPanel();
+        SetItemBanner("Sell");
+
+        AddSpacer(10);
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", IconRightPadding);
+        _content.AddChild(row);
+
+        AddIcon(row, item.Icon, size: IconSize);
+        var textVbox = AddTextColumn(row);
+        AddTitleLabel(textVbox, item.Name);
+        if (!string.IsNullOrEmpty(item.Description))
+            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
+
+        // Chip row: stat (with up/down arrow only if the item ISN'T the one
+        // currently equipped in this slot — so the player can compare what
+        // they'd be missing out on) + the gems they'll receive in gold.
+        var chipRow = new HBoxContainer();
+        chipRow.AddThemeConstantOverride("separation", 6);
+        chipRow.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        if (item.IsEquippable || item.IsConsumable)
+        {
+            var icon = CategoryIcon(item.Category);
+            if (icon != null)
+            {
+                int displayValue = item.IsConsumable
+                    ? Mathf.CeilToInt(item.Strength / 2f)
+                    : item.Strength;
+                var sign = displayValue >= 0 ? "+" : "";
+                var statChip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
+                if (item.IsEquippable)
+                {
+                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    if (equipped != null && equipped.Id != item.Id)
+                    {
+                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        if (arrow != null && statChip.GetChild(0) is HBoxContainer chipInnerRow)
+                        {
+                            chipInnerRow.AddChild(arrow);
+                        }
+                    }
+                }
+                chipRow.AddChild(statChip);
+            }
+        }
+        chipRow.AddChild(UiFrames.BuildStatChip($"+{sellPrice}", UiStyles.Gem, DesignTokens.Gold));
+        textVbox.AddChild(chipRow);
+
+        AddSpacer(8);
+        AddChoiceButtons(
+            primaryLabel: $"Sell for {sellPrice}",
+            cancelLabel: "Keep it");
+    }
+
     private void BuildPurchaseToast(ItemData item, int cost)
     {
         InitPanel();
@@ -376,7 +480,23 @@ public partial class ItemPickupToast : CanvasLayer
                     ? Mathf.CeilToInt(item.Strength / 2f)
                     : item.Strength;
                 var sign = displayValue >= 0 ? "+" : "";
-                row.AddChild(UiFrames.BuildStatChip($"{sign}{displayValue}", icon));
+                var chip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
+                // Arrow tucks INSIDE the chip's HBox so it shares the dark
+                // mossy frame with the value + ability icon — reads as one
+                // composite badge instead of two adjacent UI atoms.
+                if (item.IsEquippable)
+                {
+                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    if (equipped != null && equipped.Id != item.Id)
+                    {
+                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        if (arrow != null && chip.GetChild(0) is HBoxContainer chipRow)
+                        {
+                            chipRow.AddChild(arrow);
+                        }
+                    }
+                }
+                row.AddChild(chip);
                 any = true;
             }
         }
@@ -460,16 +580,56 @@ public partial class ItemPickupToast : CanvasLayer
         return col;
     }
 
+    /// <summary>Bouncing green-up / red-down arrow indicating whether the
+    /// new item is a stat upgrade vs what's currently equipped. Wrapper +
+    /// inner-anchored TextureRect so the bounce tween isn't clobbered by
+    /// the parent HBox's resort each layout pass.</summary>
+    private static Control BuildDirectionArrow(int diff)
+    {
+        if (diff == 0) return null;
+        bool up = diff > 0;
+        var wrapper = new Control
+        {
+            Name = "DirectionArrow",
+            CustomMinimumSize = new Vector2(14, 22),
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+        };
+        var arrow = new TextureRect
+        {
+            Texture = up ? UiStyles.ArrowUp : UiStyles.ArrowDown,
+            Modulate = up ? new Color(0.42f, 0.82f, 0.36f) : new Color(0.92f, 0.32f, 0.28f),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        arrow.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        wrapper.AddChild(arrow);
+
+        wrapper.TreeEntered += () =>
+        {
+            float bounce = up ? -3f : 3f;
+            var tween = wrapper.CreateTween().SetLoops();
+            tween.TweenProperty(arrow, "position:y", bounce, 0.4)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            tween.TweenProperty(arrow, "position:y", 0f, 0.4)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+        };
+        return wrapper;
+    }
+
     private static Texture2D CategoryIcon(ItemData.ItemCategory cat) => cat switch
     {
         ItemData.ItemCategory.Food   => UiStyles.Heart,
         ItemData.ItemCategory.Weapon => UiStyles.Sword,
-        // Until shield/boot icons are imported, equippable categories fall
-        // back to the bag — still communicates "this goes in a slot".
+        ItemData.ItemCategory.Boot   => UiStyles.BootStat,
+        // Clothing all rolls into Defense — same shield as the inventory
+        // panel uses, so the shop and the inventory speak the same icons.
         ItemData.ItemCategory.Head or ItemData.ItemCategory.Neck or
         ItemData.ItemCategory.Body or ItemData.ItemCategory.Hand or
-        ItemData.ItemCategory.Legs or ItemData.ItemCategory.Boot or
-        ItemData.ItemCategory.Hair => UiStyles.Bag,
+        ItemData.ItemCategory.Legs or ItemData.ItemCategory.Hair => UiStyles.Shield,
         _ => null,
     };
 
@@ -827,10 +987,32 @@ public partial class ItemPickupToast : CanvasLayer
     {
         if (_waitingForChoice)
         {
-            GetTree().Paused = false;
+            // Only unpause / unlock when this is the LAST modal closing —
+            // the purchase → compare chain spawns toast #2 from inside
+            // toast #1's Accept handler, so toast #1's Close would
+            // otherwise yank the pause out from under toast #2.
+            _activeModalCount = System.Math.Max(0, _activeModalCount - 1);
+            if (_activeModalCount == 0)
+            {
+                GetTree().Paused = false;
+                SetPlayerInputLocked(false);
+            }
         }
         _waitingForChoice = false;
         _onAccept = null;
+        // Tell PlayerController to skip the attack input on the closing
+        // frame — Space-to-confirm shouldn't fall through to a swing.
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
         QueueFree();
+    }
+
+    /// <summary>Belt-and-suspenders for the modal flows: pause should be
+    /// enough on its own (player's _PhysicsProcess inherits pause), but if
+    /// any node up the player's parent chain ever gets ProcessMode.Always,
+    /// pause stops catching it. InputLocked zeros input regardless.</summary>
+    private void SetPlayerInputLocked(bool locked)
+    {
+        var player = GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        if (player != null) player.InputLocked = locked;
     }
 }

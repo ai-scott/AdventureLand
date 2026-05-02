@@ -90,7 +90,10 @@ public partial class ItemTrigger : Area2D
         if (_collected) return;
         if (!body.IsInGroup("player")) return;
         _playerInRange = true;
-        InteractHintManager.Instance?.Register(this, GetHintText);
+        // Items render at 16px, half the height of NPCs — pass a -16 head
+        // offset so the hint panel sits just above the sprite rather than a
+        // full sprite-height higher (the default is tuned for 32px NPCs).
+        InteractHintManager.Instance?.Register(this, GetHintText, headOffsetY: -16f);
         if (_sprite != null && _shineMaterial != null) _sprite.Material = _shineMaterial;
     }
 

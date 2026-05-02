@@ -18,6 +18,7 @@
 [ext_resource type="FontFile" uid="uid://orkqklblwy1j" path="res://assets/fonts/alagard_by_pix3m-d6awiwp.ttf" id="17"]
 [ext_resource type="FontFile" uid="uid://dlh8g7bd7v54g" path="res://assets/fonts/romulus_by_pix3m-d6aokem.ttf" id="18"]
 [ext_resource type="Texture2D" uid="uid://b1gamgqkxkcw3" path="res://assets/sprites/ui/inventory/stat_0.png" id="19"]
+[ext_resource type="FontFile" uid="uid://byloqhucqhjd8" path="res://assets/fonts/Jersey15-Regular.ttf" id="19_5grit"]
 [ext_resource type="Texture2D" uid="uid://dfiic7fwywwx4" path="res://assets/sprites/ui/inventory/stat_1.png" id="20"]
 [ext_resource type="Texture2D" uid="uid://c6nov1lg2fqx3" path="res://assets/sprites/ui/inventory/stat_2.png" id="21"]
 [ext_resource type="Texture2D" uid="uid://bp8f0444fo4s5" path="res://assets/sprites/ui/inventory/stat_3.png" id="22"]
@@ -26,7 +27,8 @@
 process_mode = 3
 layer = 100
 script = ExtResource("1")
-metadata/_edit_vertical_guides_ = [70.0, 131.0, 572.0]
+metadata/_edit_vertical_guides_ = [70.0, 572.0, 524.0, 762.0]
+metadata/_edit_horizontal_guides_ = [240.0, 383.0]
 
 [node name="Panel" type="Control" parent="." unique_id=1416647347]
 process_mode = 3
@@ -34,6 +36,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Backdrop" type="ColorRect" parent="Panel" unique_id=1044761323]
 layout_mode = 0
@@ -42,15 +46,21 @@ anchor_bottom = 1.0
 color = Color(0.122, 0.361, 0.376, 1)
 
 [node name="Frame" type="Control" parent="Panel" unique_id=474567756]
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="FrameBg" type="TextureRect" parent="Panel/Frame" unique_id=350240165]
 texture_filter = 1
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("2")
 expand_mode = 1
@@ -150,10 +160,10 @@ stretch_mode = 5
 
 [node name="AbilitiesHeading" type="Label" parent="Panel/Frame" unique_id=727254600]
 layout_mode = 0
-offset_left = 131.0
-offset_top = 110.0
-offset_right = 331.0
-offset_bottom = 140.0
+offset_left = 122.0
+offset_top = 108.0
+offset_right = 322.0
+offset_bottom = 138.0
 theme_override_colors/font_color = Color(0.9843137, 1, 0.7411765, 1)
 theme_override_colors/font_shadow_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_constants/shadow_offset_x = 1
@@ -164,17 +174,18 @@ text = "Abilities"
 
 [node name="AbilityRow0" type="Control" parent="Panel/Frame" unique_id=2072373280]
 anchors_preset = 0
-offset_left = 61.0
+offset_left = 37.0
 offset_top = 138.0
-offset_right = 341.0
+offset_right = 317.0
 offset_bottom = 170.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AbilityRow0" unique_id=435574638]
 texture_filter = 1
 layout_mode = 0
-offset_left = 10.0
-offset_right = 46.0
-offset_bottom = 36.0
+offset_left = 33.0
+offset_top = -3.0
+offset_right = 69.0
+offset_bottom = 33.0
 mouse_filter = 2
 texture = ExtResource("5")
 expand_mode = 1
@@ -189,6 +200,8 @@ offset_left = 3.0
 offset_top = 3.0
 offset_right = -3.0
 offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("19")
 expand_mode = 1
@@ -196,33 +209,33 @@ stretch_mode = 5
 
 [node name="Value" type="Label" parent="Panel/Frame/AbilityRow0" unique_id=227148739]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 4.0
-offset_right = 110.0
-offset_bottom = 32.0
+offset_left = 85.0
+offset_top = 1.0
+offset_right = 125.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "0"
 vertical_alignment = 1
 
 [node name="Label" type="Label" parent="Panel/Frame/AbilityRow0" unique_id=622126481]
 layout_mode = 0
-offset_left = 102.0
-offset_top = 4.0
-offset_right = 280.0
-offset_bottom = 32.0
+offset_left = 123.0
+offset_top = 1.0
+offset_right = 301.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Attack"
 vertical_alignment = 1
 
 [node name="AbilityRow1" type="Control" parent="Panel/Frame" unique_id=83015557]
 anchors_preset = 0
-offset_left = 61.0
+offset_left = 37.0
 offset_top = 174.0
-offset_right = 341.0
+offset_right = 317.0
 offset_bottom = 206.0
 
 [node name="Icon" type="TextureRect" parent="Panel/Frame/AbilityRow1" unique_id=396449863]
@@ -231,10 +244,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 6.0
-offset_right = -241.0
-offset_bottom = -6.0
+offset_left = 39.0
+offset_top = 3.0
+offset_right = -218.0
+offset_bottom = -9.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -244,33 +257,33 @@ stretch_mode = 5
 
 [node name="Value" type="Label" parent="Panel/Frame/AbilityRow1" unique_id=1805249829]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 4.0
-offset_right = 110.0
-offset_bottom = 32.0
+offset_left = 85.0
+offset_top = 1.0
+offset_right = 125.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "0"
 vertical_alignment = 1
 
 [node name="Label" type="Label" parent="Panel/Frame/AbilityRow1" unique_id=1966158877]
 layout_mode = 0
-offset_left = 102.0
-offset_top = 4.0
-offset_right = 280.0
-offset_bottom = 32.0
+offset_left = 123.0
+offset_top = 1.0
+offset_right = 301.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Max Hearts"
 vertical_alignment = 1
 
 [node name="AbilityRow2" type="Control" parent="Panel/Frame" unique_id=2015255473]
 anchors_preset = 0
-offset_left = 61.0
+offset_left = 37.0
 offset_top = 210.0
-offset_right = 341.0
+offset_right = 317.0
 offset_bottom = 242.0
 
 [node name="Icon" type="TextureRect" parent="Panel/Frame/AbilityRow2" unique_id=805177792]
@@ -279,10 +292,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 3.0
-offset_right = -240.0
-offset_bottom = -5.0
+offset_left = 39.0
+offset_right = -217.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -292,33 +304,33 @@ stretch_mode = 5
 
 [node name="Value" type="Label" parent="Panel/Frame/AbilityRow2" unique_id=1808572598]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 4.0
-offset_right = 110.0
-offset_bottom = 32.0
+offset_left = 85.0
+offset_top = 1.0
+offset_right = 125.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "0"
 vertical_alignment = 1
 
 [node name="Label" type="Label" parent="Panel/Frame/AbilityRow2" unique_id=1771675610]
 layout_mode = 0
-offset_left = 102.0
-offset_top = 4.0
-offset_right = 280.0
-offset_bottom = 32.0
+offset_left = 123.0
+offset_top = 1.0
+offset_right = 301.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Defense"
 vertical_alignment = 1
 
 [node name="AbilityRow3" type="Control" parent="Panel/Frame" unique_id=177694510]
 anchors_preset = 0
-offset_left = 61.0
+offset_left = 37.0
 offset_top = 246.0
-offset_right = 341.0
+offset_right = 317.0
 offset_bottom = 278.0
 
 [node name="Icon" type="TextureRect" parent="Panel/Frame/AbilityRow3" unique_id=2024001611]
@@ -327,10 +339,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 17.0
-offset_top = 6.0
-offset_right = -239.0
-offset_bottom = -2.0
+offset_left = 40.0
+offset_top = 3.0
+offset_right = -216.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -340,34 +352,34 @@ stretch_mode = 5
 
 [node name="Value" type="Label" parent="Panel/Frame/AbilityRow3" unique_id=1601733500]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 4.0
-offset_right = 110.0
-offset_bottom = 32.0
+offset_left = 85.0
+offset_top = 1.0
+offset_right = 125.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "0"
 vertical_alignment = 1
 
 [node name="Label" type="Label" parent="Panel/Frame/AbilityRow3" unique_id=1387931618]
 layout_mode = 0
-offset_left = 102.0
-offset_top = 4.0
-offset_right = 280.0
-offset_bottom = 32.0
+offset_left = 123.0
+offset_top = 1.0
+offset_right = 301.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Speed"
 vertical_alignment = 1
 
 [node name="AppearanceHeading" type="Label" parent="Panel/Frame" unique_id=725389778]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 289.0
-offset_right = 270.0
-offset_bottom = 319.0
+offset_left = 69.0
+offset_top = 286.0
+offset_right = 269.0
+offset_bottom = 316.0
 theme_override_colors/font_color = Color(0.9843137, 1, 0.7411765, 1)
 theme_override_colors/font_shadow_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_constants/shadow_offset_x = 1
@@ -378,10 +390,10 @@ text = "Appearance"
 
 [node name="AppearanceSlot0" type="Control" parent="Panel/Frame" unique_id=980360480]
 anchors_preset = 0
-offset_left = 71.0
-offset_top = 323.0
-offset_right = 201.0
-offset_bottom = 363.0
+offset_left = 70.0
+offset_top = 320.0
+offset_right = 200.0
+offset_bottom = 360.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot0" unique_id=744632290]
 texture_filter = 1
@@ -414,21 +426,22 @@ offset_right = 130.0
 offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Head"
 vertical_alignment = 1
 
 [node name="AppearanceSlot1" type="Control" parent="Panel/Frame" unique_id=1957828004]
 anchors_preset = 0
-offset_left = 211.0
-offset_top = 323.0
-offset_right = 341.0
-offset_bottom = 363.0
+offset_left = 226.0
+offset_top = 320.0
+offset_right = 356.0
+offset_bottom = 360.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot1" unique_id=1983167368]
 texture_filter = 1
 layout_mode = 0
-offset_right = 40.0
+offset_left = -24.0
+offset_right = 16.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -450,22 +463,22 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot1" unique_id=261448191]
 layout_mode = 0
-offset_left = 46.0
+offset_left = 30.0
 offset_top = 10.0
-offset_right = 130.0
-offset_bottom = 34.0
+offset_right = 114.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Hand"
 vertical_alignment = 1
 
 [node name="AppearanceSlot2" type="Control" parent="Panel/Frame" unique_id=1970303291]
 anchors_preset = 0
-offset_left = 71.0
-offset_top = 365.0
-offset_right = 201.0
-offset_bottom = 405.0
+offset_left = 70.0
+offset_top = 362.0
+offset_right = 200.0
+offset_bottom = 402.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot2" unique_id=856322339]
 texture_filter = 1
@@ -497,21 +510,22 @@ offset_right = 130.0
 offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Neck"
 vertical_alignment = 1
 
 [node name="AppearanceSlot3" type="Control" parent="Panel/Frame" unique_id=949604934]
 anchors_preset = 0
-offset_left = 211.0
-offset_top = 365.0
-offset_right = 341.0
-offset_bottom = 405.0
+offset_left = 226.0
+offset_top = 362.0
+offset_right = 356.0
+offset_bottom = 402.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot3" unique_id=1151444534]
 texture_filter = 1
 layout_mode = 0
-offset_right = 40.0
+offset_left = -24.0
+offset_right = 16.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -533,22 +547,22 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot3" unique_id=1611026648]
 layout_mode = 0
-offset_left = 46.0
+offset_left = 30.0
 offset_top = 10.0
-offset_right = 130.0
-offset_bottom = 34.0
+offset_right = 114.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Body"
 vertical_alignment = 1
 
 [node name="AppearanceSlot4" type="Control" parent="Panel/Frame" unique_id=543672889]
 anchors_preset = 0
-offset_left = 71.0
-offset_top = 407.0
-offset_right = 201.0
-offset_bottom = 447.0
+offset_left = 70.0
+offset_top = 404.0
+offset_right = 200.0
+offset_bottom = 444.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot4" unique_id=698440259]
 texture_filter = 1
@@ -581,21 +595,22 @@ offset_right = 130.0
 offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Legs"
 vertical_alignment = 1
 
 [node name="AppearanceSlot5" type="Control" parent="Panel/Frame" unique_id=954722887]
 anchors_preset = 0
-offset_left = 211.0
-offset_top = 407.0
-offset_right = 341.0
-offset_bottom = 447.0
+offset_left = 226.0
+offset_top = 404.0
+offset_right = 356.0
+offset_bottom = 444.0
 
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot5" unique_id=222644010]
 texture_filter = 1
 layout_mode = 0
-offset_right = 40.0
+offset_left = -24.0
+offset_right = 16.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -617,37 +632,39 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot5" unique_id=1542914296]
 layout_mode = 0
-offset_left = 46.0
+offset_left = 30.0
 offset_top = 10.0
-offset_right = 130.0
-offset_bottom = 34.0
+offset_right = 114.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Boot"
 vertical_alignment = 1
 
 [node name="PreviewRect" type="TextureRect" parent="Panel/Frame" unique_id=1913109821]
 texture_filter = 1
 layout_mode = 0
-offset_left = 311.0
-offset_top = 100.0
-offset_right = 505.0
-offset_bottom = 361.0
+offset_left = 312.0
+offset_top = 96.0
+offset_right = 506.0
+offset_bottom = 357.0
 mouse_filter = 2
 expand_mode = 1
 
 [node name="HairCycler" type="Control" parent="Panel/Frame" unique_id=1784310098]
 anchors_preset = 0
-offset_left = 295.0
-offset_top = 378.0
-offset_right = 505.0
-offset_bottom = 400.0
+offset_left = 338.0
+offset_top = 360.0
+offset_right = 518.0
+offset_bottom = 394.0
 
 [node name="LeftArrow" type="Button" parent="Panel/Frame/HairCycler" unique_id=1329887884]
 layout_mode = 0
+offset_left = -8.0
+offset_top = 4.0
 offset_right = 22.0
-offset_bottom = 22.0
+offset_bottom = 34.0
 focus_mode = 0
 flat = true
 
@@ -657,10 +674,13 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 140.0
-offset_right = 140.0
+offset_top = -2.0
+offset_right = 6.0
+offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
 mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
@@ -669,21 +689,23 @@ flip_h = true
 
 [node name="Label" type="Label" parent="Panel/Frame/HairCycler" unique_id=1138742408]
 layout_mode = 0
-offset_left = 26.0
-offset_right = 184.0
-offset_bottom = 22.0
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 152.0
+offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 text = "Hair 01"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RightArrow" type="Button" parent="Panel/Frame/HairCycler" unique_id=497255017]
 layout_mode = 0
-offset_left = 188.0
-offset_right = 210.0
-offset_bottom = 22.0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 170.0
+offset_bottom = 34.0
 focus_mode = 0
 flat = true
 
@@ -693,12 +715,88 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -145.0
-offset_top = -1.0
-offset_right = -145.0
-offset_bottom = -1.0
+offset_top = -2.0
+offset_right = 6.0
+offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
+mouse_filter = 2
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HairColorCycler" type="Control" parent="Panel/Frame" unique_id=410065409]
+anchors_preset = 0
+offset_left = 338.0
+offset_top = 398.0
+offset_right = 518.0
+offset_bottom = 432.0
+
+[node name="LeftArrow" type="Button" parent="Panel/Frame/HairColorCycler" unique_id=410065410]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 4.0
+offset_right = 22.0
+offset_bottom = 34.0
+focus_mode = 0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/HairColorCycler/LeftArrow" unique_id=410065411]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -10.0
+offset_right = 6.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
+mouse_filter = 2
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="Label" type="Label" parent="Panel/Frame/HairColorCycler" unique_id=410065412]
+layout_mode = 0
+offset_left = 10.0
+offset_top = -6.0
+offset_right = 159.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
+theme_override_fonts/font = ExtResource("18")
+theme_override_font_sizes/font_size = 28
+text = "Hair Color 01"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightArrow" type="Button" parent="Panel/Frame/HairColorCycler" unique_id=410065413]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 170.0
+offset_bottom = 34.0
+focus_mode = 0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/HairColorCycler/RightArrow" unique_id=410065414]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -10.0
+offset_right = 6.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
 mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
@@ -706,15 +804,17 @@ stretch_mode = 5
 
 [node name="SkinCycler" type="Control" parent="Panel/Frame" unique_id=1809568935]
 anchors_preset = 0
-offset_left = 295.0
-offset_top = 412.0
-offset_right = 505.0
-offset_bottom = 434.0
+offset_left = 338.0
+offset_top = 436.0
+offset_right = 518.0
+offset_bottom = 470.0
 
 [node name="LeftArrow" type="Button" parent="Panel/Frame/SkinCycler" unique_id=1480539443]
 layout_mode = 0
+offset_left = -8.0
+offset_top = 4.0
 offset_right = 22.0
-offset_bottom = 22.0
+offset_bottom = 34.0
 focus_mode = 0
 flat = true
 
@@ -724,10 +824,13 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 136.0
-offset_right = 136.0
+offset_top = -17.0
+offset_right = 6.0
+offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
 mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
@@ -736,21 +839,23 @@ flip_h = true
 
 [node name="Label" type="Label" parent="Panel/Frame/SkinCycler" unique_id=344998627]
 layout_mode = 0
-offset_left = 26.0
-offset_right = 184.0
-offset_bottom = 22.0
+offset_left = 10.0
+offset_top = -14.0
+offset_right = 152.0
+offset_bottom = 16.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 28
 text = "Skin 01"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RightArrow" type="Button" parent="Panel/Frame/SkinCycler" unique_id=1534434121]
 layout_mode = 0
-offset_left = 188.0
-offset_right = 210.0
-offset_bottom = 22.0
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 170.0
+offset_bottom = 34.0
 focus_mode = 0
 flat = true
 
@@ -760,21 +865,35 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -146.0
-offset_right = -146.0
+offset_top = -18.0
+offset_right = 6.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(-1, -1)
+pivot_offset = Vector2(16, 16)
 mouse_filter = 2
 texture = ExtResource("6")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="DetailsItemIcon" type="TextureRect" parent="Panel/Frame" unique_id=410065428]
+texture_filter = 1
+layout_mode = 0
+offset_left = 531.0
+offset_top = 76.0
+offset_right = 567.0
+offset_bottom = 112.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="DetailsName" type="Label" parent="Panel/Frame" unique_id=2135709319]
 layout_mode = 0
-offset_left = 572.0
-offset_top = 112.0
-offset_right = 852.0
-offset_bottom = 147.0
+offset_left = 580.0
+offset_top = 67.0
+offset_right = 860.0
+offset_bottom = 102.0
 theme_override_colors/font_color = Color(0.9843137, 1, 0.7411765, 1)
 theme_override_colors/font_shadow_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_constants/shadow_offset_x = 1
@@ -786,30 +905,31 @@ vertical_alignment = 1
 
 [node name="DetailsDesc" type="Label" parent="Panel/Frame" unique_id=1436854508]
 layout_mode = 0
-offset_left = 572.0
-offset_top = 144.0
-offset_right = 800.0
-offset_bottom = 194.0
-theme_override_colors/font_color = Color(0.063, 0.094, 0.059, 1)
-theme_override_fonts/font = ExtResource("18")
-theme_override_font_sizes/font_size = 16
+offset_left = 524.0
+offset_top = 117.0
+offset_right = 765.0
+offset_bottom = 189.0
+theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = ExtResource("19_5grit")
+theme_override_font_sizes/font_size = 20
 text = "A long reaching weapon when you want to stay away from an enemy."
 autowrap_mode = 3
 
 [node name="DetailsStats" type="HBoxContainer" parent="Panel/Frame" unique_id=2033301601]
 layout_mode = 0
-offset_left = 573.0
-offset_top = 197.0
-offset_right = 703.0
-offset_bottom = 221.0
+offset_left = 582.0
+offset_top = 96.0
+offset_right = 712.0
+offset_bottom = 120.0
 theme_override_constants/separation = 8
 
 [node name="DetailsAction" type="Label" parent="Panel/Frame" unique_id=1759871127]
 layout_mode = 0
-offset_left = 643.0
-offset_top = 118.0
-offset_right = 793.0
-offset_bottom = 142.0
+offset_left = 611.0
+offset_top = 178.0
+offset_right = 761.0
+offset_bottom = 202.0
 theme_override_colors/font_color = Color(0.063, 0.094, 0.059, 1)
 theme_override_fonts/font = ExtResource("18")
 theme_override_font_sizes/font_size = 16
@@ -819,14 +939,14 @@ vertical_alignment = 1
 
 [node name="GemLabel" type="Label" parent="Panel/Frame" unique_id=807958990]
 layout_mode = 0
-offset_left = 641.0
-offset_top = 73.0
-offset_right = 731.0
-offset_bottom = 99.0
+offset_left = 665.0
+offset_top = 216.0
+offset_right = 733.0
+offset_bottom = 250.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
-theme_override_fonts/font = ExtResource("18")
+theme_override_fonts/font = ExtResource("17")
 theme_override_font_sizes/font_size = 24
-text = "0 Gems"
+text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -834,9 +954,9 @@ vertical_alignment = 1
 texture_filter = 1
 layout_mode = 0
 offset_left = 737.0
-offset_top = 75.0
+offset_top = 216.0
 offset_right = 761.0
-offset_bottom = 99.0
+offset_bottom = 240.0
 mouse_filter = 2
 texture = ExtResource("10")
 expand_mode = 1
@@ -850,13 +970,14 @@ offset_bottom = 260.0
 mouse_filter = 2
 texture = ExtResource("3")
 expand_mode = 1
+metadata/_edit_lock_ = true
 
 [node name="CollectionHeading" type="Label" parent="Panel/Frame" unique_id=720351643]
 layout_mode = 0
-offset_left = 572.0
-offset_top = 204.0
-offset_right = 772.0
-offset_bottom = 234.0
+offset_left = 525.0
+offset_top = 220.0
+offset_right = 725.0
+offset_bottom = 250.0
 theme_override_colors/font_color = Color(0.9843137, 1, 0.7411765, 1)
 theme_override_colors/font_shadow_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_constants/shadow_offset_x = 1
@@ -867,10 +988,10 @@ text = "Collection"
 
 [node name="Grid" type="Control" parent="Panel/Frame" unique_id=1500282942]
 anchors_preset = 0
-offset_left = 570.0
-offset_top = 235.0
-offset_right = 770.0
-offset_bottom = 435.0
+offset_left = 525.0
+offset_top = 251.0
+offset_right = 765.0
+offset_bottom = 451.0
 
 [node name="Cell0" type="TextureRect" parent="Panel/Frame/Grid" unique_id=2084828756]
 texture_filter = 1
@@ -914,6 +1035,8 @@ offset_left = 4.0
 offset_top = 4.0
 offset_right = -4.0
 offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
@@ -1463,13 +1586,143 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
+[node name="Cell25" type="TextureRect" parent="Panel/Frame/Grid" unique_id=410065608]
+texture_filter = 1
+layout_mode = 0
+offset_left = 200.0
+offset_right = 236.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/Grid/Cell25" unique_id=410065609]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Cell26" type="TextureRect" parent="Panel/Frame/Grid" unique_id=410065610]
+texture_filter = 1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 40.0
+offset_right = 236.0
+offset_bottom = 76.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/Grid/Cell26" unique_id=410065611]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Cell27" type="TextureRect" parent="Panel/Frame/Grid" unique_id=410065612]
+texture_filter = 1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 80.0
+offset_right = 236.0
+offset_bottom = 116.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/Grid/Cell27" unique_id=410065613]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Cell28" type="TextureRect" parent="Panel/Frame/Grid" unique_id=410065614]
+texture_filter = 1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 120.0
+offset_right = 236.0
+offset_bottom = 156.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/Grid/Cell28" unique_id=410065615]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Cell29" type="TextureRect" parent="Panel/Frame/Grid" unique_id=410065616]
+texture_filter = 1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 160.0
+offset_right = 236.0
+offset_bottom = 196.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/Frame/Grid/Cell29" unique_id=410065617]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SlotCursor" type="TextureRect" parent="Panel/Frame" unique_id=455086445]
 texture_filter = 1
 layout_mode = 0
-offset_left = 570.0
-offset_top = 235.0
-offset_right = 606.0
-offset_bottom = 271.0
+offset_left = 525.0
+offset_top = 251.0
+offset_right = 561.0
+offset_bottom = 287.0
 mouse_filter = 2
 texture = ExtResource("7")
 expand_mode = 1
+
+[node name="PreviewViewport" type="SubViewport" parent="." unique_id=410065418]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(194, 261)
+render_target_update_mode = 4
+
+[node name="PreviewLayers" type="Node2D" parent="PreviewViewport" unique_id=410065419]
+texture_filter = 1
+position = Vector2(97, 248)
+scale = Vector2(8, 8)

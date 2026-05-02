@@ -152,6 +152,7 @@ public partial class CostumeController : Node
         HandleLegExclusion(item.CostumeLayer);
 
         SetLayer(item.CostumeLayer, tex);
+        ApplyCostumePalette(item);
         GD.Print($"[Costume] Equipped '{item.Name}' on layer {item.CostumeLayer}");
 
         // If it's a hat, re-evaluate hair visibility.
@@ -204,6 +205,7 @@ public partial class CostumeController : Node
     {
         if (string.IsNullOrEmpty(layerName)) return;
         SetLayer(layerName, null);
+        ClearLayerMaterial(layerName);
 
         // If unequipping hat, restore hair.
         if (layerName == "14head")
@@ -213,13 +215,54 @@ public partial class CostumeController : Node
         }
     }
 
-    /// <summary>Restore all equipment visuals from the Inventory singleton.</summary>
+    /// <summary>Apply the baked palette swap for this item to its costume
+    /// layer. If no palette is registered, clears any prior swap so the
+    /// previously-equipped item's colors don't bleed through.
+    /// Skin recoloring lives on layer 01body, never on a clothing layer,
+    /// so resetting here is safe — it can't clobber the skin cycler's
+    /// material.</summary>
+    private void ApplyCostumePalette(ItemData item)
+    {
+        if (_spriteLayers == null) return;
+        var layer = _spriteLayers.GetNodeOrNull<Sprite2D>(item.CostumeLayer);
+        if (layer == null) return;
+
+        var palette = CostumePaletteRegistry.Get(item.Id);
+        layer.Material = palette.HasValue
+            ? PaletteSwapper.CreateMaterial(palette.Value.BaseRamp, palette.Value.VariantRamp)
+            : null;
+    }
+
+    private void ClearLayerMaterial(string layerName)
+    {
+        if (_spriteLayers == null) return;
+        var layer = _spriteLayers.GetNodeOrNull<Sprite2D>(layerName);
+        if (layer != null) layer.Material = null;
+    }
+
+    /// <summary>Restore all equipment visuals from the Inventory singleton.
+    /// Clears every costume layer first so any [Export] Inspector defaults
+    /// (e.g. a hat texture set in the player scene) don't bleed through for
+    /// categories the inventory has unequipped.</summary>
     public void RestoreEquipment()
     {
         var inv = Inventory.Instance;
         if (inv == null) return;
 
-        // Iterate equippable categories and apply their visuals.
+        // Wipe every clothing layer to a clean slate. Skin (01body) and the
+        // body-shape layers (00undr, etc.) are intentionally not touched —
+        // those are character identity, not equipment.
+        string[] costumeLayers = {
+            "13hair", "14head", "05shrt", "04lwr1", "06lwr2", "08lwr3",
+            "03fot1", "07fot2", "09hand", "10outr", "11neck", "12face",
+        };
+        foreach (var layer in costumeLayers)
+        {
+            SetLayer(layer, null);
+            ClearLayerMaterial(layer);
+        }
+
+        // Equip whatever the inventory currently has on.
         var categories = new[]
         {
             ItemData.ItemCategory.Head, ItemData.ItemCategory.Neck,
@@ -227,11 +270,18 @@ public partial class CostumeController : Node
             ItemData.ItemCategory.Legs, ItemData.ItemCategory.Boot,
             ItemData.ItemCategory.Hair, ItemData.ItemCategory.Weapon,
         };
-
         foreach (var cat in categories)
         {
             var item = inv.GetEquipped(cat);
             if (item != null) EquipItem(item);
+        }
+
+        // Apply persisted hair / hair-color / skin so the character looks
+        // the way the player chose at NewGame (random) or last save.
+        var save = SaveManager.Instance?.CurrentData;
+        if (save != null && _spriteLayers != null)
+        {
+            CharacterCustomization.Apply(_spriteLayers, save.HairStyleIndex, save.HairColorIndex, save.SkinIndex);
         }
     }
 
@@ -251,12 +301,40 @@ public partial class CostumeController : Node
         if (string.IsNullOrEmpty(baseFile)) return null;
 
         string path = $"res://assets/sprites/player/farmer/sheets/{layer}/{baseFile}.png";
-        if (!ResourceLoader.Exists(path))
+        if (ResourceLoader.Exists(path)) return GD.Load<Texture2D>(path);
+
+        // Sibling fallback — Mana Seed shape variants (00, 00a, 00b, 00c…)
+        // share the same default ramp, so when the exact base PNG isn't in
+        // the project (e.g. cloakwithmantleplain_00 missing, only _00b on
+        // disk) we use any sibling. The bake script applies the same fix
+        // so the palette swap targets line up.
+        var sibling = FindSiblingBase(layer, baseFile);
+        if (sibling != null)
         {
-            GD.PushWarning($"[Costume] Base sheet not found: {path}");
-            return null;
+            GD.Print($"[Costume] Using sibling base sheet '{System.IO.Path.GetFileName(sibling)}' for '{baseFile}'");
+            return GD.Load<Texture2D>(sibling);
         }
-        return GD.Load<Texture2D>(path);
+
+        GD.PushWarning($"[Costume] Base sheet not found: {path}");
+        return null;
+    }
+
+    /// <summary>For a missing base file like "fbas_11neck_cloakwithmantleplain_00",
+    /// scan the layer dir for any "<stem>_00<letter?>.png" (no letter, a, b,
+    /// c, d, e, f) and return the first hit. Returns null if no sibling
+    /// exists.</summary>
+    private static string FindSiblingBase(string layer, string expectedBase)
+    {
+        var dir = $"res://assets/sprites/player/farmer/sheets/{layer}/";
+        var m = System.Text.RegularExpressions.Regex.Match(expectedBase, @"^(.+?)_00[a-z]?$");
+        if (!m.Success) return null;
+        string stem = m.Groups[1].Value;
+        foreach (var letter in new[] { "", "a", "b", "c", "d", "e", "f" })
+        {
+            string candidate = $"{dir}{stem}_00{letter}.png";
+            if (ResourceLoader.Exists(candidate)) return candidate;
+        }
+        return null;
     }
 
     /// <summary>
@@ -289,13 +367,19 @@ public partial class CostumeController : Node
     }
 
     /// <summary>
-    /// When equipping any leg-type layer, clear ALL other leg layers so only
-    /// one is visible at a time. Layers: 04lwr1 (pants/shorts), 06lwr2 (overalls),
-    /// 08lwr3 (dresses/skirts). All three are in the "Legs" category.
+    /// When equipping any leg-type layer, clear the OTHER leg layers so only
+    /// one is visible at a time. Layers: 04lwr1 (pants/shorts), 06lwr2
+    /// (overalls), 08lwr3 (dresses/skirts) — all three are in the "Legs"
+    /// category.
+    ///
+    /// The early-return is the load-bearing line: without it, equipping any
+    /// non-leg item (e.g. boots on 07fot2) would clear all three leg layers
+    /// and the player would lose their pants on every shoe change.
     /// </summary>
     private void HandleLegExclusion(string layerName)
     {
         string[] legLayers = { "04lwr1", "06lwr2", "08lwr3" };
+        if (System.Array.IndexOf(legLayers, layerName) < 0) return;
         foreach (var layer in legLayers)
         {
             if (layer != layerName) SetLayer(layer, null);

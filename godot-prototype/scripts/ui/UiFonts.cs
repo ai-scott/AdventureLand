@@ -30,6 +30,7 @@ public static class UiFonts
     private static Font _body;
     private static Font _title;
     private static Font _pixel;
+    private static Font _display;
 
     public static Font Body
     {
@@ -51,4 +52,10 @@ public static class UiFonts
     /// alagard title face.</summary>
     public static Font Pixel =>
         _pixel ??= GD.Load<Font>("res://assets/fonts/Font_Fantasy.ttf");
+
+    /// <summary>NES-style block pixel font (PressStart2P). Use for screen-spanning
+    /// hero text — the GAME OVER stinger is the canonical caller. Uppercase only;
+    /// renders pixel-perfect at multiples of 8 (16, 24, 48, 96).</summary>
+    public static Font Display =>
+        _display ??= GD.Load<Font>("res://assets/fonts/PressStart2P-Regular.ttf");
 }

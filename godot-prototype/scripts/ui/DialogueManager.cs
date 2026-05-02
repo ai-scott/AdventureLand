@@ -346,8 +346,12 @@ public partial class DialogueManager : CanvasLayer
                 btn.Flat = true;
                 btn.Alignment = HorizontalAlignment.Left;
                 btn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-                btn.AddThemeColorOverride("font_color", new Color(0.99f, 0.94f, 0.78f, 1));
-                btn.AddThemeColorOverride("font_focus_color", new Color(0.99f, 0.94f, 0.78f, 1));
+                // Match the dialogue body TextLabel cream (#FBFFBD) exactly —
+                // the prior #FCF0C7 read as a slightly different warm tone
+                // next to the body copy.
+                var bodyCream = new Color(0.984f, 1f, 0.741f, 1);
+                btn.AddThemeColorOverride("font_color", bodyCream);
+                btn.AddThemeColorOverride("font_focus_color", bodyCream);
                 btn.AddThemeColorOverride("font_hover_color", new Color(1f, 1f, 0.9f, 1));
                 row.AddChild(btn);
 

@@ -96,9 +96,11 @@ public partial class HUD : CanvasLayer
 
         // Apply design-system styling: square chip-style buttons with the
         // icon stacked over a kbd hint chip — same vocabulary as the
-        // Take / Enter buttons elsewhere in the UI.
-        ApplyChipActionButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 32);
-        ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 36);
+        // Take / Enter buttons elsewhere in the UI. iconSize is the actual
+        // rendered glyph size INSIDE the 68px chip — keeping a margin so
+        // the glyph doesn't run to the bevel border.
+        ApplyChipActionButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 44);
+        ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 50);
 
         _attackButton = GetNode<Control>("Buttons/Attack");
 
@@ -242,10 +244,12 @@ public partial class HUD : CanvasLayer
     /// double the border. Used by the HUD attack button.</summary>
     private static Control BuildSpaceGlyph()
     {
+        // 1.5× scale (was 2×) — design pass wanted the SPC glyph smaller so
+        // the sword icon takes more of the button's visual weight.
         return new TextureRect
         {
             Texture = UiStyles.Space,
-            CustomMinimumSize = UiStyles.Space != null ? UiStyles.Space.GetSize() * 2f : new Vector2(28, 28),
+            CustomMinimumSize = UiStyles.Space != null ? UiStyles.Space.GetSize() * 1.5f : new Vector2(20, 20),
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
@@ -287,37 +291,52 @@ public partial class HUD : CanvasLayer
         btn.AddChild(newBg);
         btn.MoveChild(newBg, 0);
 
-        // Vertical stack: icon on top, kbd chip below, both centered. The
-        // kbd chip pinches to its own size so the icon takes the visual
-        // weight while the chip reads as a corner hint.
-        var vbox = new VBoxContainer
-        {
-            Name = "DesignContent",
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-        };
-        vbox.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        vbox.Alignment = BoxContainer.AlignmentMode.Center;
-        vbox.AddThemeConstantOverride("separation", 2);
-        btn.AddChild(vbox);
-
+        // Layout per design pass: icon centered + larger; kbd hint pinned
+        // to the bottom-left corner of the chip (anchor 0,1 with a small
+        // inset). Anchor-positioned rather than stacked-VBox so the icon
+        // gets the full button center for visual weight while the hint
+        // reads as a corner accent.
         var iconRect = new TextureRect
         {
+            Name = "DesignIcon",
             Texture = iconTex,
-            CustomMinimumSize = new Vector2(iconSize, iconSize),
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
-            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
             MouseFilter = Control.MouseFilterEnum.Ignore,
         };
-        vbox.AddChild(iconRect);
+        // Centered iconSize×iconSize box inside the 68px button — anchors
+        // pinned to the button's centre, offsets define the half-extent
+        // each side. Using FullRect here would stretch the icon to the
+        // bevel border; this leaves margin so the icon "sits inside".
+        iconRect.AnchorLeft = 0.5f;
+        iconRect.AnchorRight = 0.5f;
+        iconRect.AnchorTop = 0.5f;
+        iconRect.AnchorBottom = 0.5f;
+        iconRect.GrowHorizontal = Control.GrowDirection.Both;
+        iconRect.GrowVertical = Control.GrowDirection.Both;
+        iconRect.OffsetLeft = -iconSize / 2f;
+        iconRect.OffsetRight = iconSize / 2f;
+        iconRect.OffsetTop = -iconSize / 2f;
+        iconRect.OffsetBottom = iconSize / 2f;
+        btn.AddChild(iconRect);
 
-        // Center the kbd chip inside its row.
-        var chipWrap = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
-        chipWrap.Alignment = BoxContainer.AlignmentMode.Center;
-        chipWrap.AddChild(kbdChip);
-        vbox.AddChild(chipWrap);
+        // Kbd hint pinned to the bottom-left corner of the button. Anchor
+        // both axes to the bottom-left point (0,1) and let the chip's
+        // PanelContainer grow to its content size — no need to guess
+        // CustomMinimumSize. CornerInset keeps it off the bevel.
+        const int CornerInset = 5;
+        kbdChip.AnchorLeft = 0f;
+        kbdChip.AnchorRight = 0f;
+        kbdChip.AnchorTop = 1f;
+        kbdChip.AnchorBottom = 1f;
+        kbdChip.GrowHorizontal = Control.GrowDirection.End;
+        kbdChip.GrowVertical = Control.GrowDirection.Begin;
+        kbdChip.OffsetLeft = CornerInset;
+        kbdChip.OffsetTop = -CornerInset;
+        kbdChip.OffsetRight = CornerInset;
+        kbdChip.OffsetBottom = -CornerInset;
+        btn.AddChild(kbdChip);
 
         // Resize the click target to fill the whole button so taps on the
         // chip area register, and disable focus so spurious key events

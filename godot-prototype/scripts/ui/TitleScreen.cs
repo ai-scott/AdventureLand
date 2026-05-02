@@ -76,11 +76,11 @@ public partial class TitleScreen : Control
 
     private SaveManager _saveManager;
 
-    // Title image is 720×720 in a 720×480 viewport. Starts with the bottom
-    // 480px of the image visible (Y = -240) and pans **down** over 4.5s so
-    // it settles with the top edge of the image flush against the viewport
-    // top (Y = 0).
-    private const float BgStartY = -240f;
+    // Title image is 840×840 (native 420×420 at integer 2× scale) in an
+    // 840×480 viewport. Starts with the bottom 480px of the image visible
+    // (Y = -360) and pans **down** over 4.5s so it settles with the top
+    // edge of the image flush against the viewport top (Y = 0).
+    private const float BgStartY = -360f;
     private const float BgEndY = 0f;
     private const float BgScrollDuration = 4.5f;
 
@@ -709,8 +709,10 @@ public partial class TitleScreen : Control
         nameVBoxTop.AddChild(topSpacer);
         nameVBoxTop.MoveChild(topSpacer, 0);
 
-        // Bump max length per design spec and apply the mossy input style.
-        _nameInput.MaxLength = 16;
+        // 12-char cap — 16 was breaking layout in a few places (inventory
+        // header, save-slot rows). Captioned below the input as
+        // "12 characters max" via the interpolated Caption.
+        _nameInput.MaxLength = 12;
         _nameInput.AddThemeFontSizeOverride("font_size", 22);
         _nameInput.CustomMinimumSize = new Vector2(280, 0);
         _nameInput.AddThemeStyleboxOverride("normal", UiFrames.SaveSlotChip(DesignTokens.Ink));

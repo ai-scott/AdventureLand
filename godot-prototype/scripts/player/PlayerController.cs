@@ -31,6 +31,12 @@ public partial class PlayerController : CharacterBody2D
 	[Export] public float Speed = 80f;
 	[Export] public float Acceleration = 10f;
 	[Export] public float Friction = 10f;
+	/// <summary>Pixels-per-second added to <see cref="Speed"/> per point of
+	/// equipped boot Strength. With BaseSpeed=80 and SpeedPerBootPoint=10,
+	/// a +5 boot gives a 62% movement boost — tweak in the Inspector if
+	/// the curve feels too aggressive or too tame.</summary>
+	[Export] public float SpeedPerBootPoint = 10f;
+	private float _baseSpeed;
 
 	[ExportGroup("Combat")]
 	/// <summary>Which MSCA attack state to Travel to. OverhandStrike is the default one-hand swing.</summary>
@@ -68,6 +74,12 @@ public partial class PlayerController : CharacterBody2D
 	/// <summary>True while mid-attack — blocks movement input, gates re-press.</summary>
 	public bool Attacking { get; private set; } = false;
 
+	/// <summary>Process-frame number recorded by overlays (toasts, prompts)
+	/// when they close. <see cref="_UnhandledInput"/> uses it to suppress
+	/// attack inputs for one frame after a close, so the Space key that
+	/// confirmed the prompt doesn't fall through into an attack swing.</summary>
+	public static ulong LastOverlayCloseFrame { get; set; }
+
 	private AnimationTree _tree;
 	private AnimationNodeStateMachinePlayback _state;
 	private Node2D _spriteLayers;
@@ -85,6 +97,11 @@ public partial class PlayerController : CharacterBody2D
 	// one-shot safety timer scheduled for a prior attack knows it's stale
 	// and won't stomp a fresh swing already in progress.
 	private int _attackSeq;
+	// Enemies already damaged during the current swing. The attack hitbox
+	// is monitored across the whole animation, so without this set an enemy
+	// re-entering the area (or staying in it as the hitbox sweeps) would
+	// be hit multiple times per swing.
+	private readonly System.Collections.Generic.HashSet<ulong> _hitThisSwing = new();
 
 	private const string AnimIdle = "Idle";
 	private const string AnimWalk = "Walk";
@@ -95,6 +112,23 @@ public partial class PlayerController : CharacterBody2D
 	public override void _Ready()
 	{
 		AddToGroup("player");
+
+		// Capture the Inspector-authored Speed before any boot bonus mutates
+		// it; RecomputeSpeed always rebuilds from the base so unequipping
+		// boots returns to exactly the authored value.
+		_baseSpeed = Speed;
+
+		var inv = Inventory.Instance;
+		if (inv != null)
+		{
+			inv.ItemEquipped += (_, _) => RecomputeSpeed();
+			inv.ItemUnequipped += _ => RecomputeSpeed();
+			// InventoryChanged fires on bulk loads (LoadFrom) so a Continue
+			// gets the correct speed even if equipment is restored without
+			// going through Equip().
+			inv.InventoryChanged += RecomputeSpeed;
+			RecomputeSpeed();
+		}
 
 		var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
 		_tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
@@ -207,6 +241,8 @@ public partial class PlayerController : CharacterBody2D
 		}
 
 		// Input: always zero when locked or mid-attack, else read the action axis.
+		// Hint visibility deliberately doesn't gate movement — the player needs
+		// to be able to walk past items without confirming/cancelling first.
 		var input = (InputLocked || Attacking)
 			? Vector2.Zero
 			: Input.GetVector("move_left", "move_right", "move_up", "move_down");
@@ -315,6 +351,17 @@ public partial class PlayerController : CharacterBody2D
 		if (InputLocked || Attacking) return;
 		if (!@event.IsActionPressed("attack")) return;
 
+		// Belt-and-suspenders to keep Space-to-confirm from also triggering
+		// a sword swing: skip if the tree is paused (modal open), if any
+		// ItemPickupToast modal is mid-flight (catches the chained
+		// purchase → compare flow where toast #1 closes after spawning
+		// toast #2 in the same Accept handler), or for ~15 frames after
+		// a modal closes (covers any straggling input event that the
+		// focused button didn't fully consume).
+		if (GetTree().Paused) return;
+		if (ItemPickupToast.IsAnyModalActive) return;
+		if (Engine.GetProcessFrames() <= LastOverlayCloseFrame + 15) return;
+
 		// Gate attack on equipped weapon — no weapon, no swing. Avoids phantom
 		// attacks when the player has never picked up a weapon.
 		if (Inventory.Instance?.GetEquippedId(ItemData.ItemCategory.Weapon) is not > 0)
@@ -331,6 +378,7 @@ public partial class PlayerController : CharacterBody2D
 	private void StartAttack()
 	{
 		_attackSeq++;
+		_hitThisSwing.Clear();
 		int thisAttack = _attackSeq;
 
 		// MSCA BlendSpace2D uses facing direction for the strike variant.
@@ -370,11 +418,44 @@ public partial class PlayerController : CharacterBody2D
 		};
 	}
 
-	/// <summary>Receives damage from an enemy's Hitbox. Routes to the HealthSystem.</summary>
+	/// <summary>Recalculate movement <see cref="Speed"/> from the authored
+	/// base + a per-point bonus for equipped boots. Wired to the Inventory's
+	/// equip/unequip and bulk-load signals in <c>_Ready</c>, so any change
+	/// to footwear flows through automatically.</summary>
+	private void RecomputeSpeed()
+	{
+		var inv = Inventory.Instance;
+		int bootStr = inv?.GetEquipped(ItemData.ItemCategory.Boot)?.Strength ?? 0;
+		Speed = _baseSpeed + bootStr * SpeedPerBootPoint;
+	}
+
+	/// <summary>Sum of equipped armor's Strength values across the slots
+	/// the inventory's "Defense" stat panel adds up: Head, Neck, Body, Hand,
+	/// Legs. Boots are excluded — boot Strength is the Speed stat, not
+	/// Defense. Returns 0 if Inventory hasn't loaded yet.</summary>
+	private static int ComputeDefense()
+	{
+		var inv = Inventory.Instance;
+		if (inv == null) return 0;
+		int Sum(ItemData.ItemCategory cat) => inv.GetEquipped(cat)?.Strength ?? 0;
+		return Sum(ItemData.ItemCategory.Head)
+			 + Sum(ItemData.ItemCategory.Neck)
+			 + Sum(ItemData.ItemCategory.Body)
+			 + Sum(ItemData.ItemCategory.Hand)
+			 + Sum(ItemData.ItemCategory.Legs);
+	}
+
+	/// <summary>Receives damage from an enemy's Hitbox. Subtracts equipped
+	/// armor's Defense before routing to HealthSystem; clamps to a minimum
+	/// of 1 so a wall of defense can't make the player unkillable.</summary>
 	public void TakeDamage(int amount)
 	{
 		if (_health == null || _health.Invulnerable || _health.IsDead) return;
-		_health.TakeDamage(amount);
+		int defense = ComputeDefense();
+		int actual = Mathf.Max(1, amount - defense);
+		_health.TakeDamage(actual);
+		// Red floating number over the player to mirror what the enemy hits land.
+		DamageNumber.Spawn(GetTree().CurrentScene, GlobalPosition, actual, isHurt: true);
 		if (!_health.IsDead)
 		{
 			PlayHurtFlash();
@@ -414,6 +495,25 @@ public partial class PlayerController : CharacterBody2D
 
 		_facing = SnapToCardinal(delta.Normalized());
 		SetBlend(AnimIdle, _facing);
+	}
+
+	/// <summary>Snap to a cardinal direction and force the Idle state. Used
+	/// by the inventory live preview so the mirrored character always reads
+	/// face-down regardless of which way the player was walking. Set before
+	/// pausing the tree — the AnimationTree state persists across pause.
+	///
+	/// The Advance(0.1) is load-bearing: <c>Travel</c> only queues a
+	/// transition, and the AnimationPlayer commits that transition during
+	/// its next process tick. Without manually advancing, the caller pauses
+	/// the tree before the transition fires and the preview snapshots
+	/// whatever frame the player was mid-walk on.</summary>
+	public void ShowIdleFacing(Vector2 dir)
+	{
+		_facing = SnapToCardinal(dir);
+		if (_state == null || _tree == null) return;
+		SetBlend(AnimIdle, _facing);
+		_state.Travel(AnimIdle);
+		_tree.Advance(0.1);
 	}
 
 	// ----- MSCA signal handlers (SpriteLayers emits these from GDScript) -----
@@ -458,12 +558,23 @@ public partial class PlayerController : CharacterBody2D
 		var enemyHealth = enemyRoot?.GetNodeOrNull<HealthSystem>("HealthSystem");
 		if (enemyHealth == null) return;
 
+		// One hit per swing: skip enemies already counted in this attack
+		// sequence so a sweep that re-enters the same hitbox doesn't deal
+		// damage twice. Set is cleared in StartAttack.
+		ulong enemyId = enemyRoot.GetInstanceId();
+		if (!_hitThisSwing.Add(enemyId)) return;
+
 		// Damage = equipped weapon's Strength, min 1. Attack input is gated on
 		// having a weapon equipped, so in practice the fallback only triggers
 		// if a weapon somehow has Strength=0 in its ItemData (authoring bug).
 		var weapon = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon);
 		int damage = weapon != null && weapon.Strength > 0 ? weapon.Strength : 1;
 		enemyHealth.TakeDamage(damage);
+		// Floating combat number — white over the enemy at the moment of hit.
+		if (enemyRoot is Node2D enemyNode)
+		{
+			DamageNumber.Spawn(GetTree().CurrentScene, enemyNode.GlobalPosition, damage);
+		}
 
 		// Knockback: push enemy away from player via their stun timer.
 		if (enemyRoot is EnemyController enemy)

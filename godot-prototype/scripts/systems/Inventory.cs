@@ -18,7 +18,9 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class Inventory : Node
 {
-    public const int SlotCount = 25;
+    // 30 slots: 6 columns × 5 rows. Was 25 (5×5) — bumped when the
+    // Collection grid grew a column to align with the description.
+    public const int SlotCount = 30;
 
     public static Inventory Instance { get; private set; }
 
@@ -39,13 +41,16 @@ public partial class Inventory : Node
     [Signal] public delegate void ItemEquippedEventHandler(int itemId, string category);
     [Signal] public delegate void ItemUnequippedEventHandler(string category);
 
-    // Starter equipment IDs from the C3 SaveGameData.json defaults.
+    // Starter equipment IDs from the C3 SaveGameData.json defaults. Hair
+    // intentionally omitted — hair style + color are now driven entirely by
+    // the inventory cyclers (HairStyleIndex / HairColorIndex on SaveData),
+    // not by item ownership, so a hair "item" would just take up a grid slot
+    // without serving the customization path.
     private static readonly int[] StarterItemIds =
     {
         75,  // Body: Golden Tee-Shirt
         95,  // Legs: Brown Shorts
         101, // Boot: Blue Slippers
-        149, // Hair: Purple Rain
     };
 
     public override void _Ready()

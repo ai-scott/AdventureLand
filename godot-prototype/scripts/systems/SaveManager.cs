@@ -107,6 +107,13 @@ public partial class SaveManager : Node
         Inventory.Instance?.GrantStarterEquipment();
         Inventory.Instance?.SaveTo(CurrentData);
 
+        // Pick a random hair style + color + skin tone so each fresh hero
+        // looks distinct out of the gate. Player can re-roll later via the
+        // appearance cyclers in the inventory screen.
+        CharacterCustomization.Randomize(CurrentData);
+        GD.Print($"[SaveManager] Randomized appearance: " +
+                 $"hair={CurrentData.HairStyleIndex} color={CurrentData.HairColorIndex} skin={CurrentData.SkinIndex}");
+
         // Write directly — don't call Save() which snapshots the live scene (still TitleScreen).
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok) GD.PrintErr($"[SaveManager] NewGame save failed: {err}");
@@ -115,6 +122,11 @@ public partial class SaveManager : Node
         if (FadeOverlay.Instance != null)
         {
             await FadeOverlay.Instance.FadeOut(0.3);
+            // First-world load can stutter for a beat (TileMap bake, asset
+            // cache cold). Pin "Loading..." over the black so the user sees
+            // a static screen instead of an unresponsive UI during the
+            // ChangeSceneToFile freeze.
+            await FadeOverlay.Instance.ShowLoading();
         }
 
         TransitionToWorld(CurrentData.CurrentWorld);
@@ -160,18 +172,46 @@ public partial class SaveManager : Node
     }
 
     /// <summary>Load a save slot and transition to the saved world.</summary>
-    public bool Load(int slot)
+    public async void Load(int slot)
     {
         GD.Print($"[SaveManager] Load slot={slot} exists={SlotExists(slot)}");
-        if (!SlotExists(slot)) return false;
+        if (!SlotExists(slot)) return;
 
         CurrentData = ResourceLoader.Load<SaveData>(SlotPath(slot), cacheMode: ResourceLoader.CacheMode.Replace);
-        if (CurrentData == null) { GD.Print("[SaveManager] Load returned null"); return false; }
+        if (CurrentData == null) { GD.Print("[SaveManager] Load returned null"); return; }
 
         GD.Print($"[SaveManager] Loaded: name={CurrentData.PlayerName} world={CurrentData.CurrentWorld} HP={CurrentData.Health}");
         ActiveSlot = slot;
+
+        // Same loading interstitial as NewGame — Continue from the title can
+        // hit the same TileMap-bake freeze on the first world transition.
+        if (FadeOverlay.Instance != null)
+        {
+            await FadeOverlay.Instance.FadeOut(0.3);
+            await FadeOverlay.Instance.ShowLoading();
+        }
         TransitionToWorld(CurrentData.CurrentWorld);
-        return true;
+
+        // Wait for the new scene + Player._Ready to land.
+        for (int i = 0; i < 30; i++)
+        {
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            if (GetTree().GetFirstNodeInGroup("player") != null) break;
+        }
+
+        // Apply save state synchronously HERE — before FadeIn — so the
+        // player is at the saved position when the fade reveals the world.
+        // Otherwise the auto-fired ApplySaveWhenReady (queued by
+        // TransitionToWorld) races against this method's FadeIn, and on
+        // some runs the player flashes at the scene's default spawn for
+        // a frame before snapping. The double-apply (here + auto) is
+        // idempotent — same position written twice.
+        ApplySaveToPlayer();
+
+        if (FadeOverlay.Instance != null)
+        {
+            await FadeOverlay.Instance.FadeIn(0.3);
+        }
     }
 
     /// <summary>Delete a save slot.</summary>
@@ -250,6 +290,17 @@ public partial class SaveManager : Node
         {
             costume.RestoreEquipment();
         }
+
+        // Customization (hair style / hair color / skin) is now applied
+        // inside CostumeController.RestoreEquipment via CharacterCustomization
+        // so it lives next to the equipment restore. Nothing else to do here.
+
+        // Snap the camera onto the player's saved position so the fade
+        // reveals the world centered on the player, not on whatever spawn
+        // the scene defaulted to. Also re-applies WorldMeta bounds — every
+        // world has different limits, and the camera carries over stale
+        // values from the previous scene otherwise.
+        WorldManager.Instance?.SnapCamera(player);
 
         // Auto-save on every world entry — die → retry puts you at world start with full HP.
         Save();

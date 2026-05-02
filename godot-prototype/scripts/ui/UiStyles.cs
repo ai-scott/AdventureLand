@@ -24,6 +24,8 @@ public static class UiStyles
     private static Texture2D _texHeart;
     private static Texture2D _texSword;
     private static Texture2D _texBag;
+    private static Texture2D _texShield;
+    private static Texture2D _texBootStat;
     private static Texture2D _texGem;
     private static Texture2D _texSpace;
     private static Font _fontMenu;
@@ -48,6 +50,11 @@ public static class UiStyles
     public static Texture2D Heart     => _texHeart     ??= GD.Load<Texture2D>("res://assets/sprites/ui/heart_full.png");
     public static Texture2D Sword     => _texSword     ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_sword.png");
     public static Texture2D Bag       => _texBag       ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_bag.png");
+    /// <summary>Shield icon (stat_2) — Defense stat, used for any equippable
+    /// clothing slot (Head/Neck/Body/Hand/Legs).</summary>
+    public static Texture2D Shield    => _texShield    ??= GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_2.png");
+    /// <summary>Boot icon (stat_3) — Speed stat, used for the Boot slot.</summary>
+    public static Texture2D BootStat  => _texBootStat  ??= GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_3.png");
     public static Texture2D Gem       => _texGem       ??= GD.Load<Texture2D>("res://assets/sprites/ui/gem.png");
     public static Texture2D Space     => _texSpace     ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_space.png");
 

@@ -36,14 +36,16 @@ public partial class InteractHintManager : CanvasLayer
     public bool IsHintVisible => _panel != null && _panel.Visible;
 
     private readonly Dictionary<Node2D, Func<string>> _candidates = new();
+    /// <summary>Per-source head-offset Y (world units). Items override to -16
+    /// because their sprites are 16px tall, not 32 like Mana Seed NPCs.</summary>
+    private readonly Dictionary<Node2D, float> _headOffsetY = new();
 
-    /// <summary>World-space offset from the source's origin to where the hint's
-    /// bottom edge should anchor. Mana Seed NPCs render with origin at the feet
-    /// and a 32px sprite, so -32 is the head; we apply this through the canvas
-    /// transform so camera zoom scales it correctly. (A previous version used a
-    /// fixed screen-pixel offset, which landed mid-body in the 3x-zoom interior
-    /// scenes and above-head in the 2x-zoom village.)</summary>
-    private static readonly Vector2 HeadWorldOffset = new(0, -32);
+    /// <summary>Default world-space offset Y from the source's origin to the
+    /// head of the sprite. Mana Seed NPCs render with origin at the feet and
+    /// a 32px sprite, so -32 lands above the head. Sources with shorter
+    /// sprites (items at 16px) pass <c>headOffsetY</c> in Register to use
+    /// the correct anchor for their height.</summary>
+    private const float DefaultHeadOffsetY = -32f;
 
     /// <summary>Extra screen-space padding above the head so the panel doesn't
     /// kiss the sprite. Stays in screen pixels because it's about visual
@@ -64,16 +66,18 @@ public partial class InteractHintManager : CanvasLayer
         if (Instance == this) Instance = null;
     }
 
-    public void Register(Node2D source, Func<string> textProvider)
+    public void Register(Node2D source, Func<string> textProvider, float? headOffsetY = null)
     {
         if (source == null || textProvider == null) return;
         _candidates[source] = textProvider;
+        if (headOffsetY.HasValue) _headOffsetY[source] = headOffsetY.Value;
     }
 
     public void Unregister(Node2D source)
     {
         if (source == null) return;
         _candidates.Remove(source);
+        _headOffsetY.Remove(source);
     }
 
     public override void _Process(double delta)
@@ -147,9 +151,11 @@ public partial class InteractHintManager : CanvasLayer
         // Anchor the panel centered horizontally above the source. Apply the
         // head offset through the canvas transform so camera zoom scales it
         // (3x indoors → a 32-world-px head offset is 96 screen px, which is
-        // what we want for a 96-screen-px-tall sprite).
+        // what we want for a 96-screen-px-tall sprite). Per-source override
+        // covers shorter sprites (items at 16px → -16).
+        float offsetY = _headOffsetY.TryGetValue(closest, out var oy) ? oy : DefaultHeadOffsetY;
         var canvasT = closest.GetGlobalTransformWithCanvas();
-        var headScreenPos = canvasT * HeadWorldOffset;
+        var headScreenPos = canvasT * new Vector2(0, offsetY);
         var screenPos = headScreenPos + new Vector2(0, -HeadPaddingScreenPx);
         // PanelContainer sizes itself to its content — do the pivot math
         // against the latest size so the hint stays centered as text changes.

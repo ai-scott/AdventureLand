@@ -263,7 +263,7 @@ public partial class WorldManager : Node
 
     /// <summary>Snap any Camera2D in the scene so the new world doesn't pan across.
     /// Also re-apply WorldMeta bounds since they may differ per world.</summary>
-    private void SnapCamera(Node2D player)
+    public void SnapCamera(Node2D player)
     {
         var scene = GetTree().CurrentScene;
         if (scene == null) return;
