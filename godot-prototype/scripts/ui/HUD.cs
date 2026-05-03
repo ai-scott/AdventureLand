@@ -29,6 +29,8 @@ public partial class HUD : CanvasLayer
     private TextureRect[] _hearts;
     private Label _gemLabel;
     private Control _attackButton;
+    private TextureRect _attackIcon;
+    private Texture2D _defaultAttackIcon;
     private Control _heartsFrame;
     private Control _heartsRow;
     private Control _gemsRow;
@@ -36,6 +38,10 @@ public partial class HUD : CanvasLayer
     private Control _buttonsRow;
     private Button _muteButton;
     private Label _muteLabel;
+    // Custom-drawn prohibition sign (circle + diagonal slash) shown only
+    // when audio is muted. Lives as a sibling of _muteLabel inside the
+    // mute button so it draws ON TOP of the ♪ glyph.
+    private HudMutedSlash _muteSlash;
     private int _lastGems = -1;
     private int _lastWeaponId = -2; // -2 so first tick always refreshes (-1 = "none")
 
@@ -103,6 +109,8 @@ public partial class HUD : CanvasLayer
         ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 50);
 
         _attackButton = GetNode<Control>("Buttons/Attack");
+        _attackIcon = _attackButton?.GetNodeOrNull<TextureRect>("DesignIcon");
+        _defaultAttackIcon = UiStyles.Sword;
 
         BuildMuteButton();
 
@@ -111,6 +119,7 @@ public partial class HUD : CanvasLayer
             Inventory.Instance.ItemEquipped += OnItemEquippedOrUnequipped;
             Inventory.Instance.ItemUnequipped += OnItemUnequipped;
             RefreshAttackButtonVisibility();
+            RefreshAttackIcon();
         }
     }
 
@@ -124,13 +133,19 @@ public partial class HUD : CanvasLayer
     private void OnItemEquippedOrUnequipped(int itemId, string category)
     {
         if (category == ItemData.ItemCategory.Weapon.ToString())
+        {
             RefreshAttackButtonVisibility();
+            RefreshAttackIcon();
+        }
     }
 
     private void OnItemUnequipped(string category)
     {
         if (category == ItemData.ItemCategory.Weapon.ToString())
+        {
             RefreshAttackButtonVisibility();
+            RefreshAttackIcon();
+        }
     }
 
     private void RefreshAttackButtonVisibility()
@@ -138,6 +153,17 @@ public partial class HUD : CanvasLayer
         if (_attackButton == null || Inventory.Instance == null) return;
         _attackButton.Visible =
             Inventory.Instance.GetEquippedId(ItemData.ItemCategory.Weapon) != -1;
+    }
+
+    /// <summary>Swap the attack chip's icon to the equipped weapon's
+    /// sprite so the button reads as "this is the weapon you'd swing"
+    /// rather than a generic sword. Falls back to UiStyles.Sword when
+    /// nothing is equipped (defensive — the button hides anyway).</summary>
+    private void RefreshAttackIcon()
+    {
+        if (_attackIcon == null) return;
+        var weapon = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon);
+        _attackIcon.Texture = weapon?.Icon ?? _defaultAttackIcon;
     }
 
     public override void _Process(double delta)
@@ -178,6 +204,7 @@ public partial class HUD : CanvasLayer
         {
             _lastWeaponId = weaponId;
             if (_attackButton != null) _attackButton.Visible = weaponId != -1;
+            RefreshAttackIcon();
         }
     }
 
@@ -279,11 +306,14 @@ public partial class HUD : CanvasLayer
         }
 
         // Mossy teal panel as the new backdrop — same stylebox as the
-        // primary chip buttons in dialogs.
+        // primary chip buttons in dialogs, but translucent so the world
+        // tiles below stay readable. Modulate is on the bg only — icon
+        // and kbd-hint chip stay full alpha for legibility.
         var newBg = new PanelContainer
         {
             Name = "DesignBg",
             MouseFilter = Control.MouseFilterEnum.Ignore,
+            Modulate = new Color(1f, 1f, 1f, 0.55f),
         };
         newBg.AddThemeStyleboxOverride("panel",
             UiFrames.ActionButton(DesignTokens.Teal, DesignTokens.Ink));
@@ -354,7 +384,13 @@ public partial class HUD : CanvasLayer
     /// <summary>Build the global mute toggle in the top-right corner. Lives
     /// on the HUD so the same instance appears across every scene (title,
     /// gameplay, game-over). Toggles the Master audio bus mute and persists
-    /// the choice via <see cref="UserPrefs"/>.</summary>
+    /// the choice via <see cref="UserPrefs"/>.
+    ///
+    /// Structure mirrors the inventory/attack chips so the bg can be
+    /// translucent independently of the icon: the Button itself is given
+    /// transparent styleboxes (handles clicks only), a child PanelContainer
+    /// carries the teal stylebox at <c>Modulate.A = 0.55</c>, and the
+    /// ♪ Label + slash overlay sit on top at full alpha.</summary>
     private void BuildMuteButton()
     {
         const int Size = 36;
@@ -365,7 +401,16 @@ public partial class HUD : CanvasLayer
         _muteButton.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
         _muteButton.FocusMode = Control.FocusModeEnum.None;
         _muteButton.ProcessMode = ProcessModeEnum.Always;
-        UiFrames.ApplyPrimaryButton(_muteButton);
+
+        // Make the Button itself a click target only — strip every default
+        // stylebox to empty so the visible chrome comes from the child
+        // PanelContainer (which we can modulate independently).
+        var emptySb = new StyleBoxEmpty();
+        _muteButton.AddThemeStyleboxOverride("normal", emptySb);
+        _muteButton.AddThemeStyleboxOverride("hover", emptySb);
+        _muteButton.AddThemeStyleboxOverride("pressed", emptySb);
+        _muteButton.AddThemeStyleboxOverride("focus", emptySb);
+        _muteButton.AddThemeStyleboxOverride("disabled", emptySb);
 
         _muteButton.AnchorLeft = 1f;
         _muteButton.AnchorRight = 1f;
@@ -376,6 +421,19 @@ public partial class HUD : CanvasLayer
         _muteButton.OffsetTop = ButtonEdgeMargin;
         _muteButton.OffsetRight = -ButtonEdgeMargin;
         _muteButton.OffsetBottom = ButtonEdgeMargin + Size;
+
+        // Translucent teal backdrop — same alpha as the inventory/attack
+        // chip bg so the row reads as one family.
+        var bg = new PanelContainer
+        {
+            Name = "DesignBg",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            Modulate = new Color(1f, 1f, 1f, 0.55f),
+        };
+        bg.AddThemeStyleboxOverride("panel",
+            UiFrames.ActionButton(DesignTokens.Teal, DesignTokens.Ink));
+        bg.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        _muteButton.AddChild(bg);
 
         _muteLabel = new Label
         {
@@ -388,6 +446,27 @@ public partial class HUD : CanvasLayer
         _muteLabel.AddThemeFontSizeOverride("font_size", 22);
         _muteButton.AddChild(_muteLabel);
 
+        // Prohibition overlay — drawn on top of the ♪ when muted.
+        _muteSlash = new HudMutedSlash { MouseFilter = Control.MouseFilterEnum.Ignore };
+        _muteSlash.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        _muteSlash.Visible = false;
+        _muteButton.AddChild(_muteSlash);
+
+        // "M" kbd hint pinned just below the button so the global keybind
+        // is discoverable. Sized like the chip-button hints elsewhere in
+        // the UI; positioned below (not inside) because the 36 px button
+        // doesn't have room for an inset chip without crowding the ♪.
+        var muteKbd = UiFrames.BuildKbdChip("M");
+        muteKbd.AnchorLeft = 0.5f;
+        muteKbd.AnchorRight = 0.5f;
+        muteKbd.AnchorTop = 1f;
+        muteKbd.AnchorBottom = 1f;
+        muteKbd.GrowHorizontal = Control.GrowDirection.Both;
+        muteKbd.GrowVertical = Control.GrowDirection.End;
+        muteKbd.OffsetTop = 4;
+        muteKbd.OffsetBottom = 4;
+        _muteButton.AddChild(muteKbd);
+
         _muteButton.Pressed += ToggleMute;
         AddChild(_muteButton);
 
@@ -398,6 +477,22 @@ public partial class HUD : CanvasLayer
 
     private void ToggleMute() => ApplyMuteState(!IsMasterMuted(), persist: true);
 
+    /// <summary>Global M-key shortcut for the mute toggle. Lives on the
+    /// HUD (autoload, ProcessMode.Always) so it works on every screen —
+    /// title, gameplay, game-over — without each scene needing its own
+    /// handler. _UnhandledInput rather than _Input so a focused LineEdit
+    /// (e.g. name entry on the title screen) takes the keypress first
+    /// and the player can type "M" without muting.</summary>
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is InputEventKey key && key.Pressed && !key.Echo
+            && key.Keycode == Key.M)
+        {
+            ToggleMute();
+            GetViewport().SetInputAsHandled();
+        }
+    }
+
     private void ApplyMuteState(bool muted, bool persist = false)
     {
         int idx = AudioServer.GetBusIndex("Master");
@@ -405,12 +500,17 @@ public partial class HUD : CanvasLayer
 
         if (_muteLabel != null)
         {
-            // Cream when audible, dim stone when muted — paired with a
-            // strikethrough-ish "OFF" suffix so the state reads even in
-            // monochrome / colorblind playthroughs.
-            _muteLabel.Text = muted ? "♪̸" : "♪";
-            _muteLabel.AddThemeColorOverride("font_color",
-                muted ? DesignTokens.Stone : DesignTokens.Paper);
+            // Note glyph stays cream + visible in both states. The
+            // muted state is communicated by the prohibition overlay
+            // drawn ON TOP of the note (circle + diagonal slash), which
+            // reads more clearly than the previous "go dim gray" treatment.
+            _muteLabel.Text = "♪";
+            _muteLabel.AddThemeColorOverride("font_color", DesignTokens.Paper);
+        }
+        if (_muteSlash != null)
+        {
+            _muteSlash.Visible = muted;
+            _muteSlash.QueueRedraw();
         }
         _muteButton.TooltipText = muted ? "Unmute audio" : "Mute audio";
 
@@ -421,5 +521,25 @@ public partial class HUD : CanvasLayer
     {
         int idx = AudioServer.GetBusIndex("Master");
         return idx >= 0 && AudioServer.IsBusMute(idx);
+    }
+}
+
+/// <summary>Prohibition overlay for the muted state — circle + diagonal
+/// slash drawn in red over the ♪ glyph. Lives as a child of the mute
+/// button; visibility is toggled by HUD.ApplyMuteState. Uses _Draw rather
+/// than a TextureRect so the line weight scales cleanly with the button
+/// size and we don't need to ship a "muted" PNG asset.</summary>
+public partial class HudMutedSlash : Godot.Control
+{
+    public override void _Draw()
+    {
+        var center = Size * 0.5f;
+        float radius = Mathf.Min(Size.X, Size.Y) * 0.42f;
+        const float Width = 2.5f;
+        // Circle outline + 45° diagonal slash (top-right to bottom-left,
+        // matches the universal "prohibited" sign convention).
+        DrawArc(center, radius, 0f, Mathf.Tau, 32, DesignTokens.Danger, Width, antialiased: true);
+        var unit = new Vector2(0.7071f, -0.7071f) * radius;
+        DrawLine(center - unit, center + unit, DesignTokens.Danger, Width, antialiased: true);
     }
 }
