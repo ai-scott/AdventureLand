@@ -160,8 +160,10 @@ public partial class TitleScreen : Control
     /// <summary>Title art pans up slowly — starts with the "Adventure Land!"
     /// hero at the top of the viewport and scrolls until the image's bottom
     /// edge rests on the viewport floor, revealing the castle-path area.
-    /// Menu options fade in once the scroll lands; the bottom-right
-    /// Credits link fades in alongside.</summary>
+    /// Menu options fade in 1 s into the scroll (in parallel with the bg
+    /// pan) so the player can interact while the art is still settling
+    /// rather than waiting for the full BgScrollDuration. Credits link
+    /// fades in alongside.</summary>
     private void PlayEntryAnimation()
     {
         if (_creditsCornerBtn != null)
@@ -169,13 +171,20 @@ public partial class TitleScreen : Control
             _creditsCornerBtn.Modulate = new Color(1, 1, 1, 0);
         }
 
-        var tween = CreateTween();
-        tween.TweenProperty(_bgImage, "position:y", BgEndY, BgScrollDuration)
+        // Bg scroll runs in its own tween — sequential timeline.
+        var scrollTween = CreateTween();
+        scrollTween.TweenProperty(_bgImage, "position:y", BgEndY, BgScrollDuration)
             .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_mainMenu, "modulate:a", 1.0f, 0.6);
+
+        // Menu fade-in runs in parallel — starts at t=1 s, regardless of
+        // BgScrollDuration. Two separate tweens keeps the sequencing
+        // clean: bg scrolls for its full 4 s, menu pops in early.
+        var menuTween = CreateTween();
+        menuTween.TweenInterval(1.0);
+        menuTween.TweenProperty(_mainMenu, "modulate:a", 1.0f, 0.6);
         if (_creditsCornerBtn != null)
         {
-            tween.Parallel().TweenProperty(_creditsCornerBtn, "modulate:a", 1.0f, 0.6);
+            menuTween.Parallel().TweenProperty(_creditsCornerBtn, "modulate:a", 1.0f, 0.6);
         }
     }
 
@@ -403,7 +412,14 @@ public partial class TitleScreen : Control
     {
         if (@event is InputEventKey key && key.Pressed && !key.Echo)
         {
-            if (key.Keycode == Key.Enter || key.Keycode == Key.KpEnter)
+            // Both Enter and Space fire the prompt's primary action regardless
+            // of focus when there's an unambiguous primary on screen (the
+            // Settings Credits link, or the overwrite-confirm Yes button).
+            // Without the Space branch, a freed slot button stealing focus
+            // mid-rebuild leaves Space dead — even though the user clearly
+            // means "fire the highlighted thing".
+            bool isAccept = key.Keycode == Key.Enter || key.Keycode == Key.KpEnter || key.Keycode == Key.Space;
+            if (isAccept)
             {
                 BaseButton primary = _state switch
                 {
@@ -538,6 +554,12 @@ public partial class TitleScreen : Control
         _state = State.SlotSelect;
         _slotModeNewGame = newGame;
         _selectedSlot = -1;
+        // Reset the slot-confirm guard on every entry into the slot screen.
+        // Without this, a player who backs out of slot select after the
+        // guard latched (Continue → click slot → OnSlotChosen → fade-out
+        // tween starts → user hits Back too fast / fade canceled) is locked
+        // out of every subsequent slot selection until they relaunch.
+        _slotConfirmInFlight = false;
         _mainMenu.Visible = false;
         _namePanel.Visible = false;
         _dimmer.Visible = true;
@@ -1254,7 +1276,13 @@ public partial class TitleScreen : Control
         _backBtn = _overwriteNoBtn;
         _overwriteYesBtn = yes;
 
-        // Pre-select Yes — pressing ↵ confirms overwrite.
+        // Pre-select Yes — pressing ↵ confirms overwrite. Grab focus right
+        // away (not deferred) so the very next frame's Enter/Space lands on
+        // Yes — without this, a deferred grab let an Enter pressed during
+        // the same frame's gap fall through to nothing. Defer is also kept
+        // as a backup in case the synchronous grab is rejected (e.g. the
+        // node tree is mid-rebuild).
+        if (!_overwriteYesBtn.Disabled) _overwriteYesBtn.GrabFocus();
         CallDeferred(nameof(FocusFirstOverwriteOption));
     }
 

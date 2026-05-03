@@ -115,7 +115,8 @@ public partial class GameOverScreen : CanvasLayer
         // them across three independent Godot tweens:
         //   scrollTween  : dim fade + 4s bg scroll
         //   overTween    : 3s delay, then 4×(on 0.1 / off 0.15) flash, stays on
-        //   menuTween    : 6s delay (scroll + wait 2s), then fade in menu
+        //   menuTween    : 1s delay, then fade in menu (in parallel with the
+        //                  bg scroll — player can act before the scroll lands)
         // No dim overlay — the painted forest bg carries the mood on its own;
         // a 0.9α dim mudded the colors and was removed per design pass.
         var scrollTween = CreateTween();
@@ -152,7 +153,9 @@ public partial class GameOverScreen : CanvasLayer
 
         var menuTween = CreateTween();
         menuTween.SetProcessMode(Tween.TweenProcessMode.Idle);
-        menuTween.TweenInterval(BgTweenDuration + 2.0);
+        // 1 s delay (was BgTweenDuration + 2.0 = 6 s) — menu pops in early
+        // alongside the bg scroll so the player isn't kept waiting.
+        menuTween.TweenInterval(1.0);
         menuTween.TweenProperty(_menu, "modulate:a", 1.0f, 0.5);
     }
 

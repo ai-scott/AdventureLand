@@ -37,9 +37,18 @@ public partial class DialogueManager : CanvasLayer
     private TextureRect _frameBg;
     private TextureRect _cameo;
     private Label _nameLabel;
-    private Label _textLabel;
+    private RichTextLabel _textLabel;
     private Label _continueHint;
     private VBoxContainer _responseContainer;
+
+    // Key-item reveal overlay — curly TextItemFrame + large item icon that
+    // pops up when an "AL"-spoken node grants a quest item (Sea Monster Key,
+    // Pearl, Magic Trident, etc.). Built once in _Ready, toggled per-node.
+    // Mirrors C3's obj_TextItemFrame + ItemShowcase pair from eDialogue.json.
+    private Control _itemRevealRoot;
+    private TextureRect _itemRevealFrame;
+    private TextureRect _itemRevealIcon;
+    private static Texture2D _texItemFrame;
 
     private PlayerController _player;
     private bool _waitingForInput;
@@ -63,7 +72,7 @@ public partial class DialogueManager : CanvasLayer
         _frameBg = GetNode<TextureRect>("DialogueBox/FrameBg");
         _cameo = GetNode<TextureRect>("DialogueBox/Cameo");
         _nameLabel = GetNode<Label>("DialogueBox/NameLabel");
-        _textLabel = GetNode<Label>("DialogueBox/TextArea/VBoxContainer/TextLabel");
+        _textLabel = GetNode<RichTextLabel>("DialogueBox/TextArea/VBoxContainer/TextLabel");
         // ContinueHint lives as a direct child of DialogueBox so it can be
         // pinned to the bottom-right of the frame instead of riding the
         // VBoxContainer — otherwise tall wrapped body text pushes it offscreen.
@@ -77,7 +86,97 @@ public partial class DialogueManager : CanvasLayer
         _texFrameBg ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg.png");
         _texFrameBgName ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg_name.png");
 
+        BuildItemRevealOverlay();
+
         _dialogueBox.Visible = false;
+    }
+
+    /// <summary>One-time build of the curly key-item reveal popup. Anchors
+    /// to the top edge of the dialogue box and floats upward so the curly
+    /// frame doesn't fight the body text. Hidden by default; ShowItemReveal
+    /// enables it for the lifetime of one dialogue node.</summary>
+    private void BuildItemRevealOverlay()
+    {
+        _texItemFrame ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/text_item_frame.png");
+        if (_texItemFrame == null) return;
+
+        // Frame is 420×130 at native; scale to 0.7 keeps the curl detail while
+        // fitting comfortably above the dialogue body without looming over the
+        // viewport. Update FrameDisplay* if the texture or scale changes.
+        const float FrameDisplayWidth = 294f;
+        const float FrameDisplayHeight = 91f;
+        const float FrameOffsetAbove = -FrameDisplayHeight - 14f; // float 14 px above the box
+
+        _itemRevealRoot = new Control { Name = "ItemReveal", Visible = false };
+        // Anchor top-center of the dialogue box, then offset upward so the
+        // popup hovers above. AnchorPreset doesn't expose this exact case so
+        // we set anchors manually.
+        _itemRevealRoot.AnchorLeft = 0.5f;
+        _itemRevealRoot.AnchorRight = 0.5f;
+        _itemRevealRoot.AnchorTop = 0f;
+        _itemRevealRoot.AnchorBottom = 0f;
+        _itemRevealRoot.OffsetLeft = -FrameDisplayWidth / 2f;
+        _itemRevealRoot.OffsetRight = FrameDisplayWidth / 2f;
+        _itemRevealRoot.OffsetTop = FrameOffsetAbove;
+        _itemRevealRoot.OffsetBottom = FrameOffsetAbove + FrameDisplayHeight;
+        _itemRevealRoot.MouseFilter = Control.MouseFilterEnum.Ignore;
+        _dialogueBox.AddChild(_itemRevealRoot);
+
+        _itemRevealFrame = new TextureRect
+        {
+            Texture = _texItemFrame,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            StretchMode = TextureRect.StretchModeEnum.KeepAspect,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        _itemRevealFrame.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        _itemRevealRoot.AddChild(_itemRevealFrame);
+
+        // Item icon — anchored full-rect on top of the frame and centered
+        // by the StretchMode. Native item icons are 16-32 px; the keep-aspect
+        // stretch + centered preset blows them up to fill ~70% of the frame
+        // height visually, which reads as "big trophy display" without
+        // pixel-doubling artifacts (TextureFilter.Nearest preserves pixels).
+        _itemRevealIcon = new TextureRect
+        {
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        // Inset so the icon sits inside the curl, not over the curly border.
+        _itemRevealIcon.AnchorLeft = 0;
+        _itemRevealIcon.AnchorTop = 0;
+        _itemRevealIcon.AnchorRight = 1;
+        _itemRevealIcon.AnchorBottom = 1;
+        _itemRevealIcon.OffsetLeft = 32;
+        _itemRevealIcon.OffsetTop = 14;
+        _itemRevealIcon.OffsetRight = -32;
+        _itemRevealIcon.OffsetBottom = -14;
+        _itemRevealRoot.AddChild(_itemRevealIcon);
+    }
+
+    private void ShowItemReveal(ItemData item)
+    {
+        if (_itemRevealRoot == null || item?.Icon == null) return;
+        _itemRevealIcon.Texture = item.Icon;
+        _itemRevealRoot.Visible = true;
+        // Scale + fade in for a small "ta-da" pop. Initial scale 0.6 → 1.0
+        // over 200 ms with elastic-out feels rewarding without being slow.
+        _itemRevealRoot.Modulate = new Color(1, 1, 1, 0);
+        _itemRevealRoot.Scale = new Vector2(0.6f, 0.6f);
+        var tween = CreateTween().SetParallel(true);
+        tween.TweenProperty(_itemRevealRoot, "modulate:a", 1.0f, 0.18);
+        tween.TweenProperty(_itemRevealRoot, "scale", Vector2.One, 0.28)
+            .SetTrans(Tween.TransitionType.Elastic).SetEase(Tween.EaseType.Out);
+    }
+
+    private void HideItemReveal()
+    {
+        if (_itemRevealRoot == null || !_itemRevealRoot.Visible) return;
+        _itemRevealRoot.Visible = false;
+        _itemRevealIcon.Texture = null;
     }
 
     public override void _ExitTree()
@@ -236,7 +335,8 @@ public partial class DialogueManager : CanvasLayer
         _fontOverride = font;
         if (font == null) return;
         _nameLabel?.AddThemeFontOverride("font", font);
-        _textLabel?.AddThemeFontOverride("font", font);
+        // RichTextLabel keys font overrides by the per-style name, not "font".
+        _textLabel?.AddThemeFontOverride("normal_font", font);
         _continueHint?.AddThemeFontOverride("font", font);
     }
 
@@ -246,7 +346,7 @@ public partial class DialogueManager : CanvasLayer
         // Scene labels carry no font override, so clearing falls back to the
         // global theme (alagard) — exactly what we want for NPC dialogue.
         _nameLabel?.RemoveThemeFontOverride("font");
-        _textLabel?.RemoveThemeFontOverride("font");
+        _textLabel?.RemoveThemeFontOverride("normal_font");
         _continueHint?.RemoveThemeFontOverride("font");
         _fontOverride = null;
     }
@@ -277,12 +377,50 @@ public partial class DialogueManager : CanvasLayer
     {
         _currentNode = node;
 
+        // Reset any reveal from the previous node before this one's actions
+        // run — keeps consecutive reveals from stacking visually and avoids
+        // a stale icon flashing if this node has no reveal of its own.
+        HideItemReveal();
+
         // Execute node actions.
         ExecuteActions(node.Actions);
 
-        // Variable substitution.
-        var text = SubstituteVariables(node.Text);
+        // Key-item reveal: if this is an AL-narrated node that grants a
+        // quest item ("You got X!" pattern from welcome.tres / pearl quest /
+        // SeaMonster key flow), surface the curly TextItemFrame popup with
+        // the item's icon. C3 calls this obj_TextItemFrame + ItemShowcase
+        // and triggers it from the same speaker="AL" + give_item action shape.
+        var revealItem = ResolveRevealItem(node);
+        if (revealItem != null) ShowItemReveal(revealItem);
+
+        // "System" / silent action-carrier nodes — empty text, no responses,
+        // an autoAdvance to the real line. C3's `return_summon` and
+        // `hostile_encounter_summon` use this pattern to fire side effects
+        // (summon_sea_monster, make_sea_monster_hostile) before the visible
+        // dialogue node runs. Showing the empty box reads as a UI bug and
+        // forces the player to press Space through nothing — auto-advance
+        // straight to the next node instead.
+        // GUARD: skip the auto-skip when the actions left us waiting for
+        // input (Penny's "What's your name?" → empty You-node with an Input
+        // action → "Cool name!"). Without the guard we tear past the input
+        // UI and the player never gets to type their name.
+        bool hasResponses = node.Responses != null && node.Responses.Count > 0;
+        if (string.IsNullOrEmpty(node.Text) && !hasResponses
+            && !string.IsNullOrEmpty(node.AutoAdvance)
+            && !_waitingForInput)
+        {
+            var next = FindNodeById(node.AutoAdvance);
+            if (next != null) { NavigateToNode(next); return; }
+        }
+
+        // Variable substitution + inline icon markup ([icon=UpArrow] etc).
+        var text = SubstituteIcons(SubstituteVariables(node.Text));
         var speaker = node.Speaker;
+
+        // Cut any in-flight VO and start the new line. Most nodes have no
+        // recorded VO — the controller silently no-ops on missing files, so
+        // we don't gate this on a registry. Cuts apply on auto-advance too.
+        VOController.Instance?.Play(speaker, node.Id);
 
         UpdateSpeakerVisuals(speaker);
 
@@ -463,6 +601,7 @@ public partial class DialogueManager : CanvasLayer
 
         ClearResponses();
         RemoveFontOverride();
+        HideItemReveal();
         _currentNode = null;
         _currentResponses = null;
         _npcData = null;
@@ -557,6 +696,11 @@ public partial class DialogueManager : CanvasLayer
                     if (!string.IsNullOrEmpty(giveId))
                     {
                         QuestSystem.GrantUniqueItem(giveId);
+                        // Toast the player so dialogue rewards (Magic Trident,
+                        // herbs, etc.) feel like loot — without this the line
+                        // "I give you the Magic Trident" passes without any
+                        // visual confirmation of the actual item gain.
+                        ShowGiveItemToast(giveId);
                         if (a.DestroyTrigger) DestroyCurrentNpcTrigger();
                     }
                     break;
@@ -566,11 +710,17 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SpawnUniqueItem:
-                    // In C3 this deploys an NPC into the world.
-                    // For now, show/unhide the NPC node if it exists in the scene.
+                    // C3 deploys an NPC OR reveals a quest pickup. We support
+                    // both: first try unhiding an Area2D pickup (matches the
+                    // pearl_quest flow — pearl ItemTrigger lives placed-but-
+                    // hidden at the waterfall). Falls back to ShowNpcInScene
+                    // for legacy NPC-deploy semantics.
                     var spawnName = a.ItemName ?? a.ItemId;
-                    GD.Print($"[Dialogue] Deploy NPC: {spawnName}");
-                    ShowNpcInScene(spawnName);
+                    GD.Print($"[Dialogue] Spawn unique: {spawnName}");
+                    if (!RevealQuestPickup(spawnName))
+                    {
+                        ShowNpcInScene(spawnName);
+                    }
                     break;
 
                 case DialogueAction.ActionType.SetFlag:
@@ -603,13 +753,137 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SummonSeaMonster:
+                {
+                    var smc = FindSeaMonster();
+                    if (smc != null && !smc.IsBusy && smc.GetState() == SeaMonsterController.State.Hidden)
+                    {
+                        smc.Summon();
+                    }
+                    // Already-risen branches (re-summon during the same convo)
+                    // are no-ops — the dialogue already drives the right node.
+                    break;
+                }
+
                 case DialogueAction.ActionType.MakeSeaMonsterHostile:
+                    FindSeaMonster()?.MakeHostile();
+                    break;
+
                 case DialogueAction.ActionType.SeaMonsterAcceptQuest:
+                    // Peaceful retreat — defer one frame so the dialogue's
+                    // EndsDialogue path runs cleanly before we tween Y.
+                    CallDeferred(nameof(SeaMonsterRetreat));
+                    break;
+
                 case DialogueAction.ActionType.SeaMonsterQuestComplete:
-                    GD.Print($"[Dialogue] Sea monster action: {a.Type} (Phase 6)");
+                    CallDeferred(nameof(SeaMonsterRetreat));
                     break;
             }
         }
+    }
+
+    // ---- Sea-monster + pickup helpers ----
+
+    /// <summary>Pull an ItemData out of a node's GiveItem actions if the
+    /// node is shaped like a "You got X!" reveal: speaker == "AL" and at
+    /// least one give_item action with a resolvable item. Mirrors C3's
+    /// trigger for obj_TextItemFrame — same shape catches Sea Monster Key,
+    /// Pearl, Magic Trident, Rosie, Cake, etc. Returns null when the node
+    /// is a regular line, so the reveal popup stays hidden.</summary>
+    private static ItemData ResolveRevealItem(DialogueNode node)
+    {
+        if (node == null || node.Actions == null) return null;
+        // Speaker check is intentionally permissive — "AL" is canonical, but
+        // "Adventure_Land" / "AdventureLand" / case differences slip through
+        // from authoring. Dropping the check entirely would surface a frame
+        // for NPC-given mundane items (e.g. shopkeeper hands you a freebie),
+        // which we don't want — keep the AL gate but match loosely.
+        var speaker = (node.Speaker ?? "").Replace("_", "").Replace(" ", "");
+        bool isAL = speaker.Equals("AL", System.StringComparison.OrdinalIgnoreCase)
+                 || speaker.Equals("AdventureLand", System.StringComparison.OrdinalIgnoreCase);
+        if (!isAL) return null;
+
+        foreach (var a in node.Actions)
+        {
+            if (a == null || a.Type != DialogueAction.ActionType.GiveItem) continue;
+            var key = a.ItemId ?? a.ItemName;
+            if (string.IsNullOrEmpty(key)) continue;
+            ItemData item = null;
+            if (int.TryParse(key, out int id)) item = Inventory.GetItem(id);
+            item ??= Inventory.GetItemByName(key);
+            if (item?.Icon != null) return item;
+        }
+        return null;
+    }
+
+    /// <summary>Mirror of ItemTrigger.ShowPickupToast for dialogue-given
+    /// items. Resolves the item by ID first (numeric keys preferred for
+    /// reliability) then by name. Falls through silently for unknown items
+    /// so dialogue can still grant world-flag-only quest tokens without
+    /// crashing.</summary>
+    private void ShowGiveItemToast(string itemKey)
+    {
+        if (string.IsNullOrEmpty(itemKey)) return;
+        ItemData item = null;
+        if (int.TryParse(itemKey, out int id)) item = Inventory.GetItem(id);
+        item ??= Inventory.GetItemByName(itemKey);
+        if (item == null) return;
+        var toast = new ItemPickupToast();
+        GetTree().CurrentScene.AddChild(toast);
+        toast.Show(item);
+    }
+
+    private SeaMonsterController FindSeaMonster()
+    {
+        var scene = GetTree().CurrentScene;
+        return scene == null ? null : FindFirstByType<SeaMonsterController>(scene);
+    }
+
+    private void SeaMonsterRetreat()
+    {
+        FindSeaMonster()?.Retreat();
+    }
+
+    /// <summary>Reveal a placed-but-hidden quest pickup by Item name. Walks
+    /// the scene for an ItemTrigger whose Data.Name matches and toggles
+    /// Visible + Monitoring on. Returns true if one was unhidden — letting
+    /// SpawnUniqueItem fall through to the legacy NPC-deploy path otherwise.</summary>
+    private bool RevealQuestPickup(string itemName)
+    {
+        if (string.IsNullOrEmpty(itemName)) return false;
+        var scene = GetTree().CurrentScene;
+        if (scene == null) return false;
+        var trigger = FindFirstMatching<ItemTrigger>(scene, t => t.Data?.Name == itemName);
+        if (trigger == null) return false;
+        trigger.Visible = true;
+        trigger.Monitoring = true;
+        // Restore the pickup mask we zeroed in the scene to keep it dormant
+        // until the dialogue spawned it. Layer 1 = player.
+        trigger.CollisionMask = 1;
+        return true;
+    }
+
+    private static T FindFirstByType<T>(Node from) where T : Node
+    {
+        if (from == null) return null;
+        if (from is T match) return match;
+        foreach (var c in from.GetChildren())
+        {
+            var r = FindFirstByType<T>(c);
+            if (r != null) return r;
+        }
+        return null;
+    }
+
+    private static T FindFirstMatching<T>(Node from, System.Predicate<T> pred) where T : Node
+    {
+        if (from == null) return null;
+        if (from is T match && pred(match)) return match;
+        foreach (var c in from.GetChildren())
+        {
+            var r = FindFirstMatching<T>(c, pred);
+            if (r != null) return r;
+        }
+        return null;
     }
 
     // ---- Custom dialogue actions ----
@@ -843,6 +1117,55 @@ public partial class DialogueManager : CanvasLayer
         }
 
         return text;
+    }
+
+    /// <summary>Convert C3-style inline icon markers like [icon=UpArrow] into
+    /// RichTextLabel BBCode `[img]` tags. Unknown markers are stripped so
+    /// they don't render as literal text. The TextLabel is RichTextLabel +
+    /// bbcode_enabled so the [img] tags resolve to inline pixmaps sized to
+    /// the body font (24 px). Each glyph gets a leading space to keep it
+    /// from kerning into adjacent letters.</summary>
+    private static readonly System.Text.RegularExpressions.Regex IconMarker =
+        new(@"\[icon=([^\]]+)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    // Maps the C3 [icon=...] markup tags to the corresponding C3 TextIcons
+    // glyphs (per objectTypes/HUD_UI/Dialogue/TextIcons.json — frames 2/3/6-9
+    // are the dialogue arrows + pointer + space). Earlier this pointed at
+    // the inventory ability-stat indicators (ui_hintarrow-*) which are a
+    // different art style intended for stat-diff badges, not dialogue body.
+    private static readonly Dictionary<string, string> IconPaths = new()
+    {
+        ["pointer"]    = "res://assets/sprites/ui/text_icons/pointer.png",
+        ["spc"]        = "res://assets/sprites/ui/text_icons/spc.png",
+        ["space"]      = "res://assets/sprites/ui/text_icons/spc.png",
+        ["uparrow"]    = "res://assets/sprites/ui/text_icons/up_arrow.png",
+        ["downarrow"]  = "res://assets/sprites/ui/text_icons/down_arrow.png",
+        ["leftarrow"]  = "res://assets/sprites/ui/text_icons/left_arrow.png",
+        ["rightarrow"] = "res://assets/sprites/ui/text_icons/right_arrow.png",
+        ["esc"]        = "res://assets/sprites/ui/text_icons/esc.png",
+        ["gem"]        = "res://assets/sprites/ui/text_icons/gem.png",
+        ["sword"]      = "res://assets/sprites/ui/text_icons/sword.png",
+        ["heart"]      = "res://assets/sprites/ui/text_icons/heart.png",
+        ["bag"]        = "res://assets/sprites/ui/text_icons/bag.png",
+    };
+    private const int IconHeightPx = 22; // ~= body font 24, leaves 1px breathing room top/bottom
+
+    private string SubstituteIcons(string text)
+    {
+        if (string.IsNullOrEmpty(text) || !text.Contains("[icon=")) return text;
+        return IconMarker.Replace(text, m =>
+        {
+            string key = m.Groups[1].Value.Trim().ToLowerInvariant();
+            if (!IconPaths.TryGetValue(key, out var path))
+            {
+                GD.PushWarning($"[Dialogue] Unknown icon marker '{m.Value}' — stripped");
+                return "";
+            }
+            // Empty width arg + height keeps aspect ratio. The leading space
+            // separates the icon from the preceding word ("spacebar[icon=Spc]"
+            // → "spacebar ␣" rather than letters touching the icon edge).
+            return $" [img=,{IconHeightPx}]{path}[/img]";
+        });
     }
 
     // ---- UI Helpers ----

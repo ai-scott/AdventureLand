@@ -33,6 +33,11 @@ public partial class SaveManager : Node
     /// Cleared after use.</summary>
     public Vector2? PendingSpawnPosition { get; set; }
 
+    /// <summary>One-shot flag: when true, the next ApplySaveToPlayer leaves
+    /// the player at the scene-authored spawn instead of the saved position.
+    /// Set by Load() (Continue / restart) and cleared after a single use.</summary>
+    private bool _useSceneSpawn;
+
     private static string SlotPath(int slot) => $"{SaveDir}/slot_{slot}.tres";
 
     public override void _Ready()
@@ -182,6 +187,19 @@ public partial class SaveManager : Node
 
         GD.Print($"[SaveManager] Loaded: name={CurrentData.PlayerName} world={CurrentData.CurrentWorld} HP={CurrentData.Health}");
         ActiveSlot = slot;
+        // Continue / Try Again refills the player to full so a bad death
+        // doesn't soft-lock the next session at 1 HP. World-to-world
+        // transitions (door/edge) keep their existing HP via the snapshot
+        // in TransitionToWorld; this branch only fires on the title-screen
+        // Continue path and game-over restart.
+        CurrentData.Health = CurrentData.MaxHealth;
+        // Continue should also reset spawn to the scene's authored Player
+        // position (not where the player died). Without this, "Try Again"
+        // drops you back on the patch of map that just killed you — e.g.
+        // mid-pink-shell on the SM island, where the crab is still in
+        // attack range and you can't react. ApplySaveToPlayer reads this
+        // flag and skips the saved-position restore for one application.
+        _useSceneSpawn = true;
 
         // Same loading interstitial as NewGame — Continue from the title can
         // hit the same TileMap-bake freeze on the first world transition.
@@ -249,6 +267,18 @@ public partial class SaveManager : Node
     public void TransitionToWorld(string scenePath)
     {
         GD.Print($"[SaveManager] TransitionToWorld: {scenePath}");
+        // Snapshot the live player's HP into CurrentData before the scene
+        // swap. Without this, the new scene's Player._Ready resets HP to
+        // MaxHealth, then ApplySaveToPlayer restores from a stale
+        // CurrentData.Health (last touched by Save() — typically full).
+        // Net effect: every door/edge transition silently heals the player.
+        var livePlayer = GetTree().GetFirstNodeInGroup("player") as Node2D;
+        var liveHealth = livePlayer?.GetNodeOrNull<HealthSystem>("HealthSystem");
+        if (liveHealth != null && CurrentData != null)
+        {
+            CurrentData.Health = liveHealth.CurrentHealth;
+            CurrentData.MaxHealth = liveHealth.MaxHealth;
+        }
         GetTree().ChangeSceneToFile(scenePath);
         // Wait for the new scene's _Ready callbacks to run before applying state.
         _ = ApplySaveWhenReady();
@@ -287,14 +317,28 @@ public partial class SaveManager : Node
         }
         GD.Print($"[SaveManager] ApplySaveToPlayer: scene={GetTree().CurrentScene?.SceneFilePath} pos=({CurrentData.PositionX}, {CurrentData.PositionY})");
 
-        // WorldManager may set a spawn override for door/edge transitions.
-        // Otherwise use the saved position.
+        // Spawn precedence:
+        //   1. PendingSpawnPosition — set by WorldManager for door/edge
+        //      transitions (overrides everything).
+        //   2. _useSceneSpawn — Continue / Try Again. Leave the player at
+        //      whatever GlobalPosition the scene authored on Player.tscn
+        //      (the new scene's _Ready already placed it there) and copy
+        //      that into CurrentData so the next save reflects the reset.
+        //   3. Otherwise — restore the saved position (normal Load path
+        //      that's not a fresh Continue, e.g. internal re-applies).
         if (PendingSpawnPosition.HasValue)
         {
             player.GlobalPosition = PendingSpawnPosition.Value;
             CurrentData.PositionX = PendingSpawnPosition.Value.X;
             CurrentData.PositionY = PendingSpawnPosition.Value.Y;
             PendingSpawnPosition = null;
+        }
+        else if (_useSceneSpawn)
+        {
+            CurrentData.PositionX = player.GlobalPosition.X;
+            CurrentData.PositionY = player.GlobalPosition.Y;
+            _useSceneSpawn = false;
+            GD.Print($"[SaveManager] Continue: respawned at scene-authored {player.GlobalPosition}");
         }
         else
         {
@@ -330,6 +374,17 @@ public partial class SaveManager : Node
             health.RestoreState(CurrentData.Health, CurrentData.MaxHealth);
         }
 
+        // Spawn-unstuck: if the saved/edge position lands on a solid (a wall
+        // baked from a TMX layer that moved between sessions, the SM body
+        // mid-rise, etc.), the player can't move and dies before they can
+        // react. Sample positions on a small spiral outward and reposition
+        // to the first free spot. The player's CollisionShape2D drives the
+        // shape query so it adapts to any future hitbox tweaks.
+        if (player is CharacterBody2D body)
+        {
+            UnstickPlayer(body);
+        }
+
         // Restore inventory state.
         Inventory.Instance?.LoadFrom(CurrentData);
 
@@ -354,6 +409,53 @@ public partial class SaveManager : Node
         // Auto-save on every world entry — die → retry puts you at world start with full HP.
         Save();
         GD.Print($"[SaveManager] Auto-saved to slot {ActiveSlot}");
+    }
+
+    /// <summary>If the player overlaps a solid at the spawn position,
+    /// search for a nearby free spot in a coarse spiral and move them.
+    /// Same shape/mask the player uses for movement, so we resolve to a
+    /// position they can actually navigate from rather than bumping out
+    /// into another collider on the first frame.</summary>
+    private static void UnstickPlayer(CharacterBody2D player)
+    {
+        var shape = player.GetNodeOrNull<CollisionShape2D>("CollisionShape2D")?.Shape;
+        if (shape == null) return;
+
+        var space = player.GetWorld2D()?.DirectSpaceState;
+        if (space == null) return;
+
+        var query = new PhysicsShapeQueryParameters2D
+        {
+            Shape = shape,
+            Transform = new Transform2D(0f, player.GlobalPosition),
+            CollisionMask = player.CollisionMask,
+            // Exclude the player itself so it doesn't self-collide.
+            Exclude = new Godot.Collections.Array<Rid> { player.GetRid() },
+        };
+
+        // Quick exit if there's no overlap — the common case.
+        if (space.IntersectShape(query, 1).Count == 0) return;
+
+        // Spiral outward in 8-px steps, 8 directions per ring. 64 px max
+        // covers the size of an SM body (60×30) and any single wall tile
+        // (16); past that we're better off leaving the player where they
+        // are than teleporting them across the map.
+        for (int radius = 8; radius <= 64; radius += 8)
+        {
+            for (int angleDeg = 0; angleDeg < 360; angleDeg += 45)
+            {
+                float rad = Mathf.DegToRad(angleDeg);
+                var candidate = player.GlobalPosition + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * radius;
+                query.Transform = new Transform2D(0f, candidate);
+                if (space.IntersectShape(query, 1).Count == 0)
+                {
+                    GD.Print($"[SaveManager] Unstuck spawn {player.GlobalPosition} → {candidate}");
+                    player.GlobalPosition = candidate;
+                    return;
+                }
+            }
+        }
+        GD.PushWarning($"[SaveManager] Could not unstick player at {player.GlobalPosition} — surrounded");
     }
 
     /// <summary>Get a display-friendly world name from a scene path.

@@ -13,6 +13,8 @@
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_01_Forest_broken_bridge.tres" id="11_trres"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="12_gover"]
 [ext_resource type="PackedScene" uid="uid://b8bat00001prj" path="res://scenes/enemy/Enemy_Bat.tscn" id="13_bat"]
+[ext_resource type="PackedScene" uid="uid://b8pete0001npc" path="res://scenes/npc/Pete.tscn" id="14_pete"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/pete.tres" id="15_petedlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1248,3 +1250,8 @@ position = Vector2(228, 51)
 
 [node name="Bat3" parent="Entities" instance=ExtResource("13_bat")]
 position = Vector2(376, 130)
+
+[node name="Pete" parent="Entities" instance=ExtResource("14_pete")]
+position = Vector2(564, 78)
+NpcName = "Pete"
+Dialogue = ExtResource("15_petedlg")

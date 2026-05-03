@@ -88,6 +88,15 @@ public partial class PlayerController : CharacterBody2D
 	private Sprite2D _weaponSprite;
 	private Vector2 _facing = Vector2.Down;
 
+	// Magic Trident swing FX — its own AnimatedSprite2D spawned per-strike,
+	// since the C3 trident frames don't fit the MSCA 128×64 "1hwpn" sheet
+	// the equipped weapon Sprite2D expects (3-5 frames per direction × 4
+	// directions = 16 frames, much more than the 8-cell MSCA grid). The
+	// regular farmer_1h_weapon stays hidden while this overlay plays.
+	private const int MagicTridentItemId = 4;
+	private static SpriteFrames _tridentFrames;
+	private AnimatedSprite2D _tridentEffect;
+
 	// Knockback stun — blocks input while > 0, velocity decays.
 	private double _knockbackTimer;
 	private Vector2 _knockbackVelocity;
@@ -392,7 +401,9 @@ public partial class PlayerController : CharacterBody2D
 		// from MSCA — on rapid re-presses the state machine is mid-exit from
 		// the previous attack and the "started" signal can skip-fire, leaving
 		// the weapon invisible for the whole second swing.
-		if (_weaponSprite != null) _weaponSprite.Visible = true;
+		bool isTrident = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
+		if (_weaponSprite != null) _weaponSprite.Visible = !isTrident;
+		if (isTrident) PlayTridentSwing();
 
 		// Sync hitbox to the weapon sprite immediately; _PhysicsProcess will keep
 		// it in sync each tick while the swing animation runs.
@@ -478,6 +489,116 @@ public partial class PlayerController : CharacterBody2D
 			// killing blow.
 			SFXController.Instance?.Play("player_hurt");
 		}
+	}
+
+	/// <summary>Spawn a one-shot AnimatedSprite2D that plays the Magic
+	/// Trident's directional swing frames (ported from C3
+	/// `weapons_effects-magic trident_<dir>-N.png`). Anchored to the player
+	/// so it follows movement. Auto-frees when the animation finishes,
+	/// matching the swing's ~0.4s feel. Called only when the trident is
+	/// the equipped weapon — the standard farmer_1h_weapon Sprite2D is
+	/// hidden for that frame so the two visuals don't overlap.</summary>
+	private void PlayTridentSwing()
+	{
+		_tridentFrames ??= BuildTridentFrames();
+		if (_tridentFrames == null) return;
+
+		// One swing at a time — kill any in-flight effect from a rapid
+		// re-press so the next swing reads as its own pop, not a stack.
+		if (_tridentEffect != null && IsInstanceValid(_tridentEffect)) _tridentEffect.QueueFree();
+
+		_tridentEffect = new AnimatedSprite2D
+		{
+			Name = "TridentSwingFx",
+			SpriteFrames = _tridentFrames,
+			TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+			ZIndex = 1, // sit on top of the player body
+		};
+		// Anchor so the trident appears in front of the player at chest
+		// height for vertical swings, lateral for horizontal. Mirrors C3's
+		// authored frame offsets — the artwork already includes the swing
+		// arc, so a small body offset is plenty.
+		_tridentEffect.Position = new Vector2(0, -8);
+		AddChild(_tridentEffect);
+
+		string anim = FacingAnimSuffix(_facing);
+		if (!_tridentFrames.HasAnimation(anim)) anim = _tridentFrames.GetAnimationNames()[0];
+		_tridentEffect.AnimationFinished += () =>
+		{
+			if (_tridentEffect != null && IsInstanceValid(_tridentEffect)) _tridentEffect.QueueFree();
+			_tridentEffect = null;
+		};
+		_tridentEffect.Play(anim);
+	}
+
+	/// <summary>Resolve the player's eight-direction facing vector to one of
+	/// the four cardinal trident animation suffixes. Diagonals snap to the
+	/// dominant axis — matches MSCA's facing convention (sprite art is
+	/// authored 4-direction).</summary>
+	private static string FacingAnimSuffix(Vector2 dir)
+	{
+		if (Mathf.Abs(dir.X) >= Mathf.Abs(dir.Y))
+			return dir.X >= 0 ? "right" : "left";
+		return dir.Y >= 0 ? "down" : "up";
+	}
+
+	/// <summary>Build the SpriteFrames once and cache statically. Folder
+	/// scan + ParseFrameName mirror the EnemyFolderAnimator approach so
+	/// the magic_trident folder layout slots in without a custom builder.
+	/// 12 fps lands the swing under the body's strike anim length so the
+	/// FX doesn't outlast the player's recovery frames.</summary>
+	private static SpriteFrames BuildTridentFrames()
+	{
+		const string Folder = "res://assets/sprites/player/weapons/magic_trident";
+		var dir = DirAccess.Open(Folder);
+		if (dir == null)
+		{
+			GD.PushWarning($"[PlayerController] Trident folder missing: {Folder}");
+			return null;
+		}
+
+		var groups = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(int idx, string path)>>();
+		dir.ListDirBegin();
+		string fileName = dir.GetNext();
+		while (!string.IsNullOrEmpty(fileName))
+		{
+			if (!dir.CurrentIsDir() && fileName.EndsWith(".png") && !fileName.EndsWith(".import"))
+			{
+				// Pattern: "magic_trident_<dir>-NNN.png"
+				var stem = fileName.Replace(".png", "");
+				int dash = stem.LastIndexOf('-');
+				if (dash > 0 && int.TryParse(stem[(dash + 1)..], out int frame))
+				{
+					string animKey = stem[..dash].Replace("magic_trident_", "");
+					if (!groups.ContainsKey(animKey)) groups[animKey] = new();
+					groups[animKey].Add((frame, $"{Folder}/{fileName}"));
+				}
+			}
+			fileName = dir.GetNext();
+		}
+		dir.ListDirEnd();
+
+		if (groups.Count == 0)
+		{
+			GD.PushWarning("[PlayerController] No trident frames found");
+			return null;
+		}
+
+		var frames = new SpriteFrames();
+		frames.RemoveAnimation("default");
+		foreach (var (anim, list) in groups)
+		{
+			list.Sort((a, b) => a.idx.CompareTo(b.idx));
+			frames.AddAnimation(anim);
+			frames.SetAnimationSpeed(anim, 12f);
+			frames.SetAnimationLoop(anim, false); // one-shot — auto-frees on Finished
+			foreach (var (_, path) in list)
+			{
+				var tex = GD.Load<Texture2D>(path);
+				if (tex != null) frames.AddFrame(anim, tex);
+			}
+		}
+		return frames;
 	}
 
 	private void PlayHurtFlash()

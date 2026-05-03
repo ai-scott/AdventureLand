@@ -364,14 +364,24 @@ public partial class WorldManager : Node
         // Short beat after banner fade-in so the player sees the world before the prompt.
         await ToSignal(GetTree().CreateTimer(0.3), Timer.SignalName.Timeout);
 
-        var lines = new[]
+        // Use the data-driven welcome.tres so each node carries its Id and
+        // the VOController can match {speaker}__{node}.ogg lookups (e.g.
+        // al__welcome_to_adventure_land.ogg, al__have_fun.ogg). Falls back to
+        // an inline two-line script if the resource is missing.
+        var welcome = GD.Load<DialogueData>("res://assets/data/dialogue/welcome.tres");
+        if (welcome != null)
         {
-            "Welcome to AdventureLand! Press [Space] to continue.",
-            "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
-        };
-        // Underscore → space in PrettifySpeaker. The cameo falls back to
-        // cameo_al.png since cameo_adventure_land.png doesn't exist.
-        dm.StartDialogue("Adventure_Land", lines);
+            dm.StartDialogue(welcome);
+        }
+        else
+        {
+            GD.PushWarning("[Welcome] welcome.tres not found — falling back to inline lines");
+            dm.StartDialogue("Adventure_Land", new[]
+            {
+                "Welcome to AdventureLand! Press [Space] to continue.",
+                "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
+            });
+        }
 
         QuestSystem.SetWorldFlag("welcome_shown", "true");
         SaveManager.Instance?.Save();

@@ -70,16 +70,16 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="TextLabel" type="Label" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1217893458]
+[node name="TextLabel" type="RichTextLabel" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1217893458]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.984, 1, 0.741, 1)
-theme_override_constants/line_spacing = 2
-theme_override_constants/paragraph_spacing = 2
-theme_override_constants/shadow_offset_x = 0
-theme_override_font_sizes/font_size = 24
-text = "Dialogue text goes here, sometimes it can be longer than the width of the page..."
-autowrap_mode = 2
+theme_override_colors/default_color = Color(0.984, 1, 0.741, 1)
+theme_override_constants/line_separation = 2
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+text = "Dialogue text goes here."
 
 [node name="ResponseContainer" type="VBoxContainer" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1853054451]
 layout_mode = 2
