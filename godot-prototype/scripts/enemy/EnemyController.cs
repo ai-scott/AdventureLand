@@ -35,6 +35,25 @@ public partial class EnemyController : CharacterBody2D
 	/// <summary>Knockback force applied to both player and enemy on contact.</summary>
 	[Export] public float ContactKnockbackForce = 300f;
 
+	/// <summary>When true, the Sprite2D child's FlipH is driven by _facing —
+	/// "right" sets FlipH=true so a left-only spritesheet (e.g. the bat) can
+	/// face right via mirroring. Ground enemies that ship dedicated _right
+	/// frames should leave this off (the FlipH override would fight their
+	/// directional anims).</summary>
+	[Export] public bool MirrorHorizontally = false;
+
+	/// <summary>Distance to the bat's home perch under which FleeToNearestTree
+	/// considers itself "arrived" and ends the behavior immediately. Tuned
+	/// against bat flee speed so the bat doesn't overshoot in one tick.</summary>
+	[Export] public float HomeArrivalRadius = 10f;
+
+	/// <summary>Optional Sprite2D rendered below the bat to fake altitude.
+	/// When set, the controller drives its Y offset per tick based on current
+	/// behavior — perch/flee = high (offset 60), swoop = lerped 50→15 by
+	/// distance to player, hurt = 30. Eased toward target for smooth altitude
+	/// changes. Leave unset on ground enemies.</summary>
+	[Export] public NodePath ShadowPath;
+
 	/// <summary>Optional override. If null, looked up at runtime via GetTree().GetFirstNodeInGroup("player").</summary>
 	[Export] public NodePath PlayerPath;
 
@@ -50,6 +69,28 @@ public partial class EnemyController : CharacterBody2D
 	private readonly HashSet<string> _executedActions = new();       // one-shot actions per behavior
 	private Vector2 _sidewaysDirection = Vector2.Zero;
 	private string _facing = "down";
+	// Bat anchor — set on first physics tick (not _Ready, since the world
+	// scene may still be moving the spawned bat into place). FleeToNearestTree
+	// returns to this point. Captured once and never overwritten so the bat
+	// always returns to its authored perch even after combat moves it around.
+	private Vector2 _homePosition;
+	private bool _homePositionCaptured;
+
+	// When set (by post-behavior hooks like "swoop ended → flee" or "hurt → flee"),
+	// the next SelectNextBehavior pulls this behavior by name and clears its
+	// cooldown. C3 mirrors this with `justSwooped`/`wasJustHurt` flags.
+	private string _forcedNextBehavior;
+
+	// Bat shadow — eased Y offset that fakes altitude. Cached resolution of
+	// ShadowPath; updated per tick when not null.
+	private Sprite2D _shadow;
+	private float _shadowOffsetY;
+	private const float ShadowEaseSpeed = 6f; // higher = snappier altitude change
+	// Set by ComputeMove for player-aware patterns whose movement vector is
+	// non-axis-aligned (e.g. CrabTowardPlayer scales 1.5x/0.7x). Cleared at the
+	// top of every ExecuteActions tick. UpdateFacing respects the lock so the
+	// scaled velocity doesn't overwrite the "face the actual player" intent.
+	private bool _facingLockedThisTick;
 	private float _currentSpeed;
 
 	// Set by player sword on hit. Consumed by the `hurt` behavior's condition.
@@ -73,6 +114,16 @@ public partial class EnemyController : CharacterBody2D
 	private const float WallProbeLength = 14f;      // px ahead to look for walls
 	private const uint WallCollisionMask = 2;       // layer 2 = walls/obstacles (matches CollisionMask)
 
+	// Bat tunables — referenced inline below to keep type-coupled bat logic
+	// in one visible block instead of scattered magic numbers.
+	private const float BatBiteRange = 40f;             // swoop swaps to attack_left within this radius
+	private const float BatVulnerableSwoopRadius = 143f;// during swoop, vulnerable to player sword inside this radius
+	private const float BatShadowOffsetIdle = 60f;      // shadow Y offset at perch / flee
+	private const float BatShadowOffsetSwoopFar = 50f;  // shadow offset at swoop start (max altitude)
+	private const float BatShadowOffsetSwoopNear = 15f; // shadow offset at bite range (low altitude)
+	private const float BatShadowOffsetHurt = 30f;      // shadow offset during hurt
+	private const float BatSwoopRefDistance = 200f;     // distance scale for the swoop offset lerp
+
 	public override void _Ready()
 	{
 		if (Data == null)
@@ -88,6 +139,14 @@ public partial class EnemyController : CharacterBody2D
 		_animator = GetNodeOrNull<EnemyAnimatorBase>(AnimatorPath);
 		_health = GetNodeOrNull<HealthSystem>(HealthSystemPath);
 		_hitbox = GetNodeOrNull<Area2D>(HitboxPath);
+		_shadow = ShadowPath != null && !ShadowPath.IsEmpty ? GetNodeOrNull<Sprite2D>(ShadowPath) : null;
+		if (_shadow != null)
+		{
+			// Initialize at the resting offset so the shadow doesn't "jump"
+			// into place on the first AI tick.
+			_shadowOffsetY = BatShadowOffsetIdle;
+			_shadow.Position = new Vector2(0, _shadowOffsetY);
+		}
 
 		if (_health != null)
 		{
@@ -120,6 +179,15 @@ public partial class EnemyController : CharacterBody2D
 		// Lazy player lookup — deferred from _Ready to handle scene-tree ordering.
 		_player ??= GetTree().GetFirstNodeInGroup("player") as Node2D;
 
+		// Snapshot the spawn pose once on the first tick so any
+		// scene-construction repositioning has settled. This is the bat's
+		// "tree" for FleeToNearestTree.
+		if (!_homePositionCaptured)
+		{
+			_homePosition = GlobalPosition;
+			_homePositionCaptured = true;
+		}
+
 		// Knockback stun — skip AI, let velocity decay.
 		if (_knockbackTimer > 0)
 		{
@@ -144,6 +212,13 @@ public partial class EnemyController : CharacterBody2D
 					if (_currentBehavior.Cooldown > 0)
 					{
 						_cooldowns[_currentBehavior.Name] = _currentBehavior.Cooldown;
+					}
+					// Bat: completing a swoop forces a flee-back. Mirrors C3's
+					// `justSwooped` flag — without this, the bat keeps swooping
+					// and never returns to its perch.
+					if (Data?.Type == "Bat" && _currentBehavior.Name == "swoop_attack")
+					{
+						_forcedNextBehavior = "flee_to_tree";
 					}
 				}
 				SelectNextBehavior();
@@ -177,6 +252,45 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		MoveAndSlide();
+		UpdateShadow(delta);
+	}
+
+	/// <summary>Eases the shadow Y offset toward the target dictated by the
+	/// current behavior. Called every physics tick when ShadowPath is set;
+	/// no-op otherwise. The Y-only offset is in local space, so the shadow
+	/// rides with the bat horizontally and "falls behind" vertically as the
+	/// bat gains altitude.</summary>
+	private void UpdateShadow(double delta)
+	{
+		if (_shadow == null) return;
+
+		float target = TargetShadowOffset();
+		_shadowOffsetY = Mathf.Lerp(_shadowOffsetY, target, (float)Mathf.Min(1.0, ShadowEaseSpeed * delta));
+		_shadow.Position = new Vector2(0, _shadowOffsetY);
+	}
+
+	private float TargetShadowOffset()
+	{
+		string b = _currentBehavior?.Name ?? "";
+		switch (b)
+		{
+			case "idle_hanging":
+			case "flee_to_tree":
+				return BatShadowOffsetIdle;
+			case "swoop_attack":
+			{
+				// Lerp 50→15 as distance to player shrinks 200→0. Out of swoop
+				// range (no player or no bat behavior), default to far.
+				if (_player == null) return BatShadowOffsetSwoopFar;
+				float d = Mathf.Clamp(GlobalPosition.DistanceTo(_player.GlobalPosition), 0f, BatSwoopRefDistance);
+				float t = d / BatSwoopRefDistance; // 0=close, 1=far
+				return Mathf.Lerp(BatShadowOffsetSwoopNear, BatShadowOffsetSwoopFar, t);
+			}
+			case "hurt_flash":
+				return BatShadowOffsetHurt;
+			default:
+				return BatShadowOffsetIdle;
+		}
 	}
 
 	private void SelectNextBehavior()
@@ -187,6 +301,20 @@ public partial class EnemyController : CharacterBody2D
 		{
 			_currentBehavior = null;
 			return;
+		}
+
+		// Highest priority: a behavior the previous tick explicitly asked for
+		// by name (e.g. bat post-swoop → flee). Bypass weight and cooldown.
+		if (!string.IsNullOrEmpty(_forcedNextBehavior))
+		{
+			var named = FindBehaviorByName(_forcedNextBehavior);
+			_forcedNextBehavior = null;
+			if (named != null)
+			{
+				_cooldowns.Remove(named.Name);
+				EnterBehavior(named);
+				return;
+			}
 		}
 
 		// Priority: any behavior with a hurt/invuln condition that currently matches takes weight over normal selection.
@@ -243,14 +371,29 @@ public partial class EnemyController : CharacterBody2D
 		EnterBehavior(eligible[eligible.Count - 1]); // safety
 	}
 
+	private EnemyBehavior FindBehaviorByName(string name)
+	{
+		if (Data?.Behaviors == null) return null;
+		foreach (var b in Data.Behaviors)
+		{
+			if (b != null && b.Name == name) return b;
+		}
+		return null;
+	}
+
 	private EnemyBehavior FindForcedBehavior()
 	{
 		// Priority order: weight=0 (forced-only) behaviors whose conditions currently match.
 		// Examples: "hurt" (when _isHurt), "retreat" (post-hurt invuln).
+		// CRITICAL: a weight=0 behavior with NO conditions is name-only — it
+		// must be invoked via _forcedNextBehavior, never via the generic forced
+		// scan. Skipping these here prevents the bat's flee_to_tree (weight 0,
+		// no conditions) from latching on tick 1 and spinning forever.
 		foreach (var b in Data.Behaviors)
 		{
 			if (b == null) continue;
 			if (b.Weight != 0) continue;
+			if (b.Conditions == null || b.Conditions.Count == 0) continue;
 			if (_cooldowns.ContainsKey(b.Name)) continue;
 			if (!ConditionsMet(b)) continue;
 			return b;
@@ -320,6 +463,11 @@ public partial class EnemyController : CharacterBody2D
 	{
 		if (_currentBehavior == null || _currentBehavior.Actions == null) return;
 
+		// Reset the per-tick facing lock so ComputeMove can opt-in to forcing
+		// facing this tick (CrabTowardPlayer does this so the scaled scuttle
+		// vector doesn't override "face the actual player").
+		_facingLockedThisTick = false;
+
 		Vector2 desired = Vector2.Zero;
 		float desiredSpeed = 0f;
 
@@ -336,11 +484,24 @@ public partial class EnemyController : CharacterBody2D
 
 				case EnemyAction.ActionType.Animate:
 				{
-					if (_executedActions.Add("animate:" + a.AnimName))
+					// Always re-resolve {direction} and call Play. The animator
+					// itself early-returns when the requested anim matches the
+					// currently playing one, so the per-tick call is cheap and
+					// avoids the latch-bug from caching resolved names in a set
+					// (facing flipping right→up→right would block the second
+					// "right" because it was already added on the first flip).
+					var resolved = a.AnimName.Replace("{direction}", _facing).ToLowerInvariant();
+					// Bat bite: during swoop, swap to attack anim once the bat
+					// is within bite range. Mirrors C3's per-tick override in
+					// executeMovementAction (see enemy-ai.ts:574-595).
+					if (Data?.Type == "Bat"
+						&& _currentBehavior?.Name == "swoop_attack"
+						&& _player != null
+						&& GlobalPosition.DistanceTo(_player.GlobalPosition) < BatBiteRange)
 					{
-						var resolved = a.AnimName.Replace("{direction}", _facing).ToLowerInvariant();
-						_animator?.Play(resolved);
+						resolved = "attack_left";
 					}
+					_animator?.Play(resolved);
 					break;
 				}
 
@@ -470,10 +631,13 @@ public partial class EnemyController : CharacterBody2D
 			// the C3 moveCrabTowardPlayer scaling (1.5x horizontal, 0.7x vertical).
 			// Magnitude is intentionally non-unit so the speed multiplier in
 			// ApplyMove yields the same effective velocity as C3.
+			// Facing uses the *un-scaled* normal so the crab still faces straight
+			// up when the player is above (the scaled vector biases horizontal).
 			case EnemyAction.MovePattern.CrabTowardPlayer:
 			{
 				if (toPlayer.Length() <= 0.001f) return Vector2.Zero;
 				var n = toPlayer.Normalized();
+				ForceFacing(n);
 				return new Vector2(n.X * 1.5f, n.Y * 0.7f);
 			}
 
@@ -488,9 +652,32 @@ public partial class EnemyController : CharacterBody2D
 				return pattern == EnemyAction.MovePattern.SidewaysLeft ? -perp : perp;
 			}
 
-			// Bat-only patterns — still stubbed; will land in Phase 6 bat work.
+			// Bat: simple direct flight toward the player. The C3 reference
+			// uses a parabolic bezier curve here ("dramatic swoop") — for
+			// the prototype we settle for straight-line tracking, which still
+			// reads as a swoop because it's faster than the player can dodge
+			// and the bat returns home afterward via FleeToNearestTree.
 			case EnemyAction.MovePattern.SwoopToPlayer:
+				return toPlayer.Length() > 0.001f ? toPlayer.Normalized() : Vector2.Zero;
+
+			// Bat: head back to the spawn perch. End the behavior the moment
+			// we're inside HomeArrivalRadius so the bat doesn't oscillate
+			// around the perch. Setting _behaviorTimer = 0 lets the next
+			// SelectNextBehavior pick up — typically idle_hanging.
 			case EnemyAction.MovePattern.FleeToNearestTree:
+			{
+				if (!_homePositionCaptured) return Vector2.Zero;
+				var toHome = _homePosition - GlobalPosition;
+				if (toHome.Length() <= HomeArrivalRadius)
+				{
+					_behaviorTimer = 0;
+					return Vector2.Zero;
+				}
+				return toHome.Normalized();
+			}
+
+			// Bat: hang. The bat's idle_hanging behavior pairs this with the
+			// "Idle" anim — no motion, just resting at the perch.
 			case EnemyAction.MovePattern.IdleInTree:
 				return Vector2.Zero;
 		}
@@ -510,16 +697,86 @@ public partial class EnemyController : CharacterBody2D
 
 	private void UpdateFacing(Vector2 dir)
 	{
+		if (_facingLockedThisTick) return;
 		if (dir == Vector2.Zero) return;
 		if (Mathf.Abs(dir.X) >= Mathf.Abs(dir.Y))
 			_facing = dir.X > 0 ? "right" : "left";
 		else
 			_facing = dir.Y > 0 ? "down" : "up";
+		ApplyMirror();
+	}
+
+	/// <summary>Set facing from <paramref name="dir"/> and lock it for the
+	/// remainder of this tick — used by player-aware move patterns whose
+	/// scaled velocity would otherwise mislead UpdateFacing.</summary>
+	private void ForceFacing(Vector2 dir)
+	{
+		if (dir == Vector2.Zero) return;
+		if (Mathf.Abs(dir.X) >= Mathf.Abs(dir.Y))
+			_facing = dir.X > 0 ? "right" : "left";
+		else
+			_facing = dir.Y > 0 ? "down" : "up";
+		_facingLockedThisTick = true;
+		ApplyMirror();
+	}
+
+	/// <summary>Whether this enemy is currently in a hittable state. Default
+	/// true; bats override based on altitude — invulnerable in idle/flee,
+	/// invulnerable during the high-altitude portion of a swoop. Player sword
+	/// checks this before applying damage so hits at the wrong moment whiff
+	/// silently (the floating damage number is suppressed in PlayerController
+	/// when this returns false).</summary>
+	public bool CanBeHit()
+	{
+		if (Data?.Type != "Bat") return true;
+		string b = _currentBehavior?.Name ?? "";
+		// Perched or returning to perch — always out of reach.
+		if (b == "idle_hanging" || b == "flee_to_tree") return false;
+		// Mid-swoop: vulnerable only when low (close to player). Mirrors the
+		// C3 shadow-altitude check (offset < 40 px ⇔ distance < ~143 px).
+		if (b == "swoop_attack")
+		{
+			if (_player == null) return false;
+			return GlobalPosition.DistanceTo(_player.GlobalPosition) < BatVulnerableSwoopRadius;
+		}
+		// hurt_flash and any non-bat-listed behavior: vulnerable.
+		return true;
+	}
+
+	/// <summary>If MirrorHorizontally is enabled, flip the Sprite2D so a
+	/// left-only spritesheet (e.g. bat, which only ships fly_left/hurt_left)
+	/// can face right. The Sprite2D may be a regular Sprite2D or
+	/// AnimatedSprite2D — both expose FlipH the same way via the property.</summary>
+	private void ApplyMirror()
+	{
+		if (!MirrorHorizontally) return;
+		var sprite = GetNodeOrNull<Node>("Sprite2D");
+		if (sprite == null) return;
+		bool flip = _facing == "right";
+		sprite.Set("flip_h", flip);
 	}
 
 	private void OnHurt()
 	{
-		_isHurt = true;
+		// Bats skip the hurt_flash behavior entirely and dive back to the
+		// perch — the brief invuln + height-based invuln during the flee
+		// covers the i-frame window. Other enemies use the standard isHurt
+		// path which trips their hurt_flash via cond_is_hurt.
+		bool isBat = Data?.Type == "Bat";
+		if (isBat)
+		{
+			_forcedNextBehavior = "flee_to_tree";
+			// C3 wipes both cooldowns on hit so the bat can flee even if
+			// flee_to_tree just rolled off — otherwise a bat hit mid-swoop
+			// would idle in mid-air for a tick before fleeing.
+			_cooldowns.Remove("flee_to_tree");
+			_cooldowns.Remove("swoop_attack");
+		}
+		else
+		{
+			_isHurt = true;
+		}
+
 		SFXController.Instance?.Play("enemy_hurt");
 		// Hurt flash — 2 white blinks, less intense than the player's 3-blink.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");

@@ -446,13 +446,27 @@ public partial class PlayerController : CharacterBody2D
 	}
 
 	/// <summary>Receives damage from an enemy's Hitbox. Subtracts equipped
-	/// armor's Defense before routing to HealthSystem; clamps to a minimum
-	/// of 1 so a wall of defense can't make the player unkillable.</summary>
+	/// armor's Defense (halved, rounded up) before routing to HealthSystem.
+	/// Stacking enough armor *can* fully block weaker hits — defense 7 wipes
+	/// a strength-4 ooze entirely (7/2 ↑ = 4 ≥ 4) but only chips 4 off a
+	/// strength-6 crab (6 - 4 = 2). Floor at 0 so the calc never heals.</summary>
 	public void TakeDamage(int amount)
 	{
 		if (_health == null || _health.Invulnerable || _health.IsDead) return;
 		int defense = ComputeDefense();
-		int actual = Mathf.Max(1, amount - defense);
+		// (defense + 1) / 2 with int math = ceil(defense / 2): defense 7 → 4,
+		// defense 6 → 3, defense 5 → 3. Matches the design call-out where odd
+		// defense rounds *up* in the player's favor.
+		int reduction = (defense + 1) / 2;
+		int actual = Mathf.Max(0, amount - reduction);
+		if (actual <= 0)
+		{
+			// Hit lands but is fully blocked — no HP change, no flash, no
+			// invuln. The contact-knockback impulse from the enemy still
+			// fires (it's applied separately in EnemyController) so the
+			// player still feels the collision.
+			return;
+		}
 		_health.TakeDamage(actual);
 		// Red floating number over the player to mirror what the enemy hits land.
 		DamageNumber.Spawn(GetTree().CurrentScene, GlobalPosition, actual, isHurt: true);
@@ -564,6 +578,12 @@ public partial class PlayerController : CharacterBody2D
 		ulong enemyId = enemyRoot.GetInstanceId();
 		if (!_hitThisSwing.Add(enemyId)) return;
 
+		// Altitude-based invuln (bats high in the canopy, mid-flee, or far
+		// out on a swoop). Skip damage AND the floating number — the swing
+		// just passes through.
+		var enemyCtl = enemyRoot as EnemyController;
+		if (enemyCtl != null && !enemyCtl.CanBeHit()) return;
+
 		// Damage = equipped weapon's Strength, min 1. Attack input is gated on
 		// having a weapon equipped, so in practice the fallback only triggers
 		// if a weapon somehow has Strength=0 in its ItemData (authoring bug).
@@ -577,11 +597,11 @@ public partial class PlayerController : CharacterBody2D
 		}
 
 		// Knockback: push enemy away from player via their stun timer.
-		if (enemyRoot is EnemyController enemy)
+		if (enemyCtl != null)
 		{
-			var dir = (enemy.GlobalPosition - GlobalPosition).Normalized();
+			var dir = (enemyCtl.GlobalPosition - GlobalPosition).Normalized();
 			if (dir == Vector2.Zero) dir = _facing;
-			enemy.ApplyKnockback(dir * 200f);
+			enemyCtl.ApplyKnockback(dir * 200f);
 		}
 	}
 

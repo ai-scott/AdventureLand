@@ -665,11 +665,16 @@ public partial class ItemPickupToast : CanvasLayer
     private const int PanelWidth = 400;
 
     /// <summary>Compact toast width — auto-close 'Equipped!' / 'Added to
-    /// inventory' panels anchor to the bottom-right corner so they don't
+    /// inventory' panels anchor to the top-right corner so they don't
     /// obscure the world. Tight default width; PanelContainer expands
     /// to fit longer item names.</summary>
     private const int ToastPanelWidth = 180;
     private const float ToastEdgeMargin = 12f;
+    /// <summary>Vertical offset from the top edge so toasts sit below the
+    /// mute button (HUD top-right, ~50 px tall + edge margin). Bumping this
+    /// by hand because HUD doesn't expose a "free vertical region" hook —
+    /// keep in sync with HUD.BuildMuteButton if that layout changes.</summary>
+    private const float ToastTopOffset = 64f;
 
     // ---- Buttons ----
 
@@ -762,29 +767,29 @@ public partial class ItemPickupToast : CanvasLayer
 
     // ---- Panel + layout helpers ----
 
-    /// <summary>Compact bottom-right panel for autoclose toasts (Equipped!,
-    /// Added to inventory, Quest item). Anchors at (1, 1) with margin so
-    /// the panel hugs the bottom-right corner without obscuring the
+    /// <summary>Compact top-right panel for autoclose toasts (Equipped!,
+    /// Added to inventory, Quest item). Anchors at (1, 0) with margin so
+    /// the panel hugs the top-right corner without obscuring the
     /// world.</summary>
     private void InitToastPanel()
     {
         _panel = new PanelContainer();
         _panel.AnchorLeft = 1f;
         _panel.AnchorRight = 1f;
-        _panel.AnchorTop = 1f;
-        _panel.AnchorBottom = 1f;
+        _panel.AnchorTop = 0f;
+        _panel.AnchorBottom = 0f;
         _panel.GrowHorizontal = Control.GrowDirection.Begin;
-        _panel.GrowVertical = Control.GrowDirection.Begin;
+        _panel.GrowVertical = Control.GrowDirection.End;
         _panel.OffsetRight = -ToastEdgeMargin;
-        _panel.OffsetBottom = -ToastEdgeMargin;
+        _panel.OffsetTop = ToastTopOffset;
         _panel.OffsetLeft = -(ToastPanelWidth + ToastEdgeMargin);
-        // Top offset auto-adjusts as content sizes (PanelContainer expands
-        // upward thanks to GrowDirection.Begin).
-        _panel.OffsetTop = -ToastEdgeMargin;
+        // Bottom offset auto-adjusts as content sizes (PanelContainer expands
+        // downward thanks to GrowDirection.End).
+        _panel.OffsetBottom = ToastTopOffset;
         _panel.ProcessMode = ProcessModeEnum.Always;
         _panel.CustomMinimumSize = new Vector2(ToastPanelWidth, 0);
 
-        // Tight padding so the toast hugs its content — bottom-right
+        // Tight padding so the toast hugs its content — top-right
         // corner shouldn't carry visual weight while the player's
         // attention is on the world.
         UiFrames.ApplyMossyPanel(_panel, padding: 6);

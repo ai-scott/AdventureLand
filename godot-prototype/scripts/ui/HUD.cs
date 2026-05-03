@@ -42,6 +42,10 @@ public partial class HUD : CanvasLayer
     // when audio is muted. Lives as a sibling of _muteLabel inside the
     // mute button so it draws ON TOP of the ♪ glyph.
     private HudMutedSlash _muteSlash;
+    // "M" kbd hint pinned below the mute button. Hidden by default;
+    // shown on hover so the binding is discoverable without taking up
+    // permanent visual real estate next to the button.
+    private PanelContainer _muteKbd;
     private int _lastGems = -1;
     private int _lastWeaponId = -2; // -2 so first tick always refreshes (-1 = "none")
 
@@ -452,21 +456,22 @@ public partial class HUD : CanvasLayer
         _muteSlash.Visible = false;
         _muteButton.AddChild(_muteSlash);
 
-        // "M" kbd hint pinned just below the button so the global keybind
-        // is discoverable. Sized like the chip-button hints elsewhere in
-        // the UI; positioned below (not inside) because the 36 px button
-        // doesn't have room for an inset chip without crowding the ♪.
-        var muteKbd = UiFrames.BuildKbdChip("M");
-        muteKbd.AnchorLeft = 0.5f;
-        muteKbd.AnchorRight = 0.5f;
-        muteKbd.AnchorTop = 1f;
-        muteKbd.AnchorBottom = 1f;
-        muteKbd.GrowHorizontal = Control.GrowDirection.Both;
-        muteKbd.GrowVertical = Control.GrowDirection.End;
-        muteKbd.OffsetTop = 4;
-        muteKbd.OffsetBottom = 4;
-        _muteButton.AddChild(muteKbd);
+        // "M" kbd hint pinned just below the button — discoverable on
+        // hover only so it doesn't hang out as permanent visual chrome.
+        _muteKbd = UiFrames.BuildKbdChip("M");
+        _muteKbd.AnchorLeft = 0.5f;
+        _muteKbd.AnchorRight = 0.5f;
+        _muteKbd.AnchorTop = 1f;
+        _muteKbd.AnchorBottom = 1f;
+        _muteKbd.GrowHorizontal = Control.GrowDirection.Both;
+        _muteKbd.GrowVertical = Control.GrowDirection.End;
+        _muteKbd.OffsetTop = 4;
+        _muteKbd.OffsetBottom = 4;
+        _muteKbd.Visible = false;
+        _muteButton.AddChild(_muteKbd);
 
+        _muteButton.MouseEntered += () => { if (_muteKbd != null) _muteKbd.Visible = true; };
+        _muteButton.MouseExited += () => { if (_muteKbd != null) _muteKbd.Visible = false; };
         _muteButton.Pressed += ToggleMute;
         AddChild(_muteButton);
 

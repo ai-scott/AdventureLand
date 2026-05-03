@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="10_tspwn"]
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_10_Lake.tres" id="11_trres"]
 [ext_resource type="PackedScene" uid="uid://b8crab0001prj" path="res://scenes/enemy/Enemy_Crab.tscn" id="12_crab"]
+[ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="13_gover"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1674,6 +1675,10 @@ HighTrack = "adventureland_danger"
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789752]
 script = ExtResource("10_tspwn")
 TriggersResource = ExtResource("11_trres")
+
+[node name="GameOver" parent="." unique_id=1366688520 instance=ExtResource("13_gover")]
+visible = false
+PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
 
 [node name="Crab1" parent="Entities" instance=ExtResource("12_crab")]
 position = Vector2(200, 260)

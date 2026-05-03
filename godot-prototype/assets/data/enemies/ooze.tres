@@ -82,6 +82,6 @@ Actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource(
 [resource]
 script = ExtResource("1")
 Type = "Ooze"
-Health = 2
+Health = 5
 Speed = 15.0
 Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_hop"), SubResource("beh_hurt")])
