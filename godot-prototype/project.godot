@@ -16,7 +16,7 @@ config/features=PackedStringArray("4.6", "C#")
 
 [autoload]
 
-SaveManager="*uid://daec4527688be"
+SaveManager="*res://scripts/systems/SaveManager.cs"
 Inventory="*res://scripts/systems/Inventory.cs"
 WorldManager="*res://scripts/systems/WorldManager.cs"
 FadeOverlay="*res://scenes/ui/FadeOverlay.tscn"

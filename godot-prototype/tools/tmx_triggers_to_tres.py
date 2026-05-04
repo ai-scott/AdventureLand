@@ -107,15 +107,17 @@ def parse_object_properties(obj_elem):
     return props
 
 
-def is_axis_aligned_rect(points):
-    """A polygon is rect-shaped iff it has exactly 4 vertices with two unique
-    xs and two unique ys (allowing tiny float noise from Tiled's sub-pixel
-    object handles)."""
-    if len(points) != 4:
+def is_tile_collision_cross(points):
+    """Detect Tiled's auto-generated '+' tile-collision shape — 12 vertices
+    inside a single tile, produced by 'Add objects from tile' for tiles with
+    no real collision authored. Signature: 12 points in a ≤17×17 bbox.
+    Real walls (slanted edges, curves, building outlines) either have fewer
+    vertices, or span more than one tile."""
+    if len(points) != 12:
         return False
-    xs = sorted({round(p[0], 3) for p in points})
-    ys = sorted({round(p[1], 3) for p in points})
-    return len(xs) == 2 and len(ys) == 2
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
+    return (max(xs) - min(xs)) <= 17 and (max(ys) - min(ys)) <= 17
 
 
 def parse_tmx_objects(tmx_path):
@@ -142,13 +144,13 @@ def parse_tmx_objects(tmx_path):
             h = float(obj.get("height", 16))
             props = parse_object_properties(obj)
 
-            # Walls may carry a <polygon points="..."> child. We only honor
-            # polygons that are axis-aligned rectangles (e.g. half-tile ledges
-            # like "0,8 16,8 16,16 0,16"). Anything else — crosses, diagonals,
-            # ellipses, freeform shapes — is dropped so the wall reverts to its
-            # plain Position/Size rect. Non-rect Tiled handles (most often the
-            # tile-collision crosses left over from "Add objects from tile")
-            # are skipped entirely rather than upgraded to a full-tile block.
+            # Walls may carry a <polygon points="..."> child describing a
+            # non-rectangular shape (slanted building edges, tree trunks,
+            # curved walls). We preserve these as CollisionPolygon2D points
+            # at runtime. The only polygons we drop are Tiled's auto-generated
+            # tile-collision '+' crosses left over from "Add objects from
+            # tile" — those are placeholders for tiles with no real collision
+            # and would create junk plus-shaped colliders if kept.
             polygon = None
             poly_elem = obj.find("polygon")
             polyline_elem = obj.find("polyline")
@@ -160,13 +162,10 @@ def parse_tmx_objects(tmx_path):
                     for pair in pts_raw.split():
                         xs, ys = pair.split(",")
                         pts.append((float(xs), float(ys)))
-                    if is_axis_aligned_rect(pts):
-                        polygon = pts
-                    else:
-                        if kind_str == "wall":
-                            skipped_nonrect += 1
-                            continue
-                        # Non-wall classes don't use polygon data — let them through as rects.
+                    if kind_str == "wall" and is_tile_collision_cross(pts):
+                        skipped_nonrect += 1
+                        continue
+                    polygon = pts
             elif polyline_elem is not None or ellipse_elem is not None:
                 if kind_str == "wall":
                     skipped_nonrect += 1

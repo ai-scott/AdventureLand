@@ -1,18 +1,20 @@
-[gd_resource type="Resource" script_class="WorldTriggers" format=3 uid="uid://dk4sl1hopax2i"]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=78 format=3]
 
-[ext_resource type="Script" uid="uid://un2dpvnmnvyr" path="res://scripts/data/WorldTriggers.cs" id="1"]
-[ext_resource type="Script" uid="uid://rx5fndisersa" path="res://scripts/data/TriggerData.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
 
 [sub_resource type="Resource" id="trig_0"]
 script = ExtResource("2")
 Kind = 1
-Position = Vector2(104, 156.584)
+Position = Vector2(104.0, 156.584)
+Size = Vector2(16.0, 16.0)
 DoorId = 7
 
 [sub_resource type="Resource" id="trig_1"]
 script = ExtResource("2")
-Position = Vector2(96, 176)
-Size = Vector2(32, 16)
+Kind = 0
+Position = Vector2(96.0, 176.0)
+Size = Vector2(32.0, 16.0)
 TargetScene = "res://scenes/worlds/World_00.tscn"
 DoorId = 7
 
@@ -20,10 +22,12 @@ DoorId = 7
 script = ExtResource("2")
 Kind = 1
 Position = Vector2(53.5268, 39.6472)
+Size = Vector2(16.0, 16.0)
 DoorId = 8
 
 [sub_resource type="Resource" id="trig_3"]
 script = ExtResource("2")
+Kind = 0
 Position = Vector2(21.0961, 15.6424)
 Size = Vector2(31.5654, 28.6044)
 TargetScene = "res://scenes/worlds/World_00_Windmill_1stFloor.tscn"
@@ -33,361 +37,432 @@ DoorId = 8
 script = ExtResource("2")
 Kind = 4
 Position = Vector2(32.5376, 147.886)
+Size = Vector2(16.0, 16.0)
 ItemId = 111
 
 [sub_resource type="Resource" id="trig_5"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(16, 16)
-Size = Vector2(16, 32)
+Position = Vector2(16.0, 16.0)
+Size = Vector2(16.0, 32.0)
 
 [sub_resource type="Resource" id="trig_6"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(64, 16)
+Position = Vector2(64.0, 16.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_7"]
 script = ExtResource("2")
 Kind = 5
+Position = Vector2(0.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_8"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(16, 0)
+Position = Vector2(16.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_9"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(32, 0)
+Position = Vector2(32.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_10"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(48, 0)
+Position = Vector2(48.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_11"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(64, 0)
+Position = Vector2(64.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_12"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(80, 0)
+Position = Vector2(80.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_13"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(96, 0)
+Position = Vector2(96.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_14"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(112, 0)
+Position = Vector2(112.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_15"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(128, 0)
+Position = Vector2(128.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_16"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(144, 0)
+Position = Vector2(144.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_17"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(160, 0)
+Position = Vector2(160.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_18"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(176, 0)
+Position = Vector2(176.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_19"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(192, 0)
+Position = Vector2(192.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_20"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(208, 0)
+Position = Vector2(208.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_21"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 0)
+Position = Vector2(224.0, 0.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_22"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 16)
+Position = Vector2(0.0, 16.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_23"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(48, 16)
+Position = Vector2(48.0, 16.0)
+Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(31.6885, 0.203747), Vector2(31.7904, 31.8923), Vector2(13, 16), Vector2(-5.3195, -0.575105)])
 
 [sub_resource type="Resource" id="trig_24"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 16)
+Position = Vector2(224.0, 16.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_25"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 32)
+Position = Vector2(0.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_26"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(96, 32)
+Position = Vector2(96.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_27"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(112, 32)
+Position = Vector2(112.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_28"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(128, 32)
+Position = Vector2(128.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_29"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(144, 32)
+Position = Vector2(144.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_30"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(160, 32)
+Position = Vector2(160.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_31"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(176, 32)
+Position = Vector2(176.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_32"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(192, 32)
+Position = Vector2(192.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_33"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 32)
+Position = Vector2(224.0, 32.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_34"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 48)
+Position = Vector2(0.0, 48.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_35"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(16, 48)
+Position = Vector2(16.0, 48.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_36"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(192, 48)
+Position = Vector2(192.0, 48.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_37"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(208, 48)
+Position = Vector2(208.0, 48.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_38"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 48)
+Position = Vector2(224.0, 48.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_39"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 64)
+Position = Vector2(0.0, 64.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_40"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(16, 64)
+Position = Vector2(16.0, 64.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_41"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(32, 64)
+Position = Vector2(32.0, 64.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_42"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(48, 64)
+Position = Vector2(48.0, 64.0)
+Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(-16.0122, -29.1135), Vector2(26.69, 13.129), Vector2(23.3143, 15.867), Vector2(0, 16), Vector2(-16.0915, 15.9793)])
 
 [sub_resource type="Resource" id="trig_43"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(208, 64)
+Position = Vector2(208.0, 64.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_44"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 64)
+Position = Vector2(224.0, 64.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_45"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 80)
+Position = Vector2(0.0, 80.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_46"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 80)
+Position = Vector2(224.0, 80.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_47"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 96)
+Position = Vector2(0.0, 96.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_48"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 96)
+Position = Vector2(224.0, 96.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_49"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 112)
+Position = Vector2(0.0, 112.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_50"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 112)
+Position = Vector2(224.0, 112.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_51"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 128)
+Position = Vector2(0.0, 128.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_52"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 128)
+Position = Vector2(224.0, 128.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_53"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 144)
+Position = Vector2(0.0, 144.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_54"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(32, 144)
+Position = Vector2(32.0, 144.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_55"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 144)
+Position = Vector2(224.0, 144.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_56"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 160)
+Position = Vector2(0.0, 160.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_57"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(32, 160)
+Position = Vector2(32.0, 160.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_58"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 160)
+Position = Vector2(224.0, 160.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_59"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(0, 176)
+Position = Vector2(0.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_60"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(16, 176)
+Position = Vector2(16.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_61"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(32, 176)
+Position = Vector2(32.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_62"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(48, 176)
+Position = Vector2(48.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_63"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(64, 176)
+Position = Vector2(64.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_64"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(80, 176)
+Position = Vector2(80.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_65"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(96, 176)
+Position = Vector2(96.0, 176.0)
+Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(16.0224, 12.8957), Vector2(16, 16), Vector2(0, 16), Vector2(0, 13)])
 
 [sub_resource type="Resource" id="trig_66"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(112, 176)
+Position = Vector2(112.0, 176.0)
+Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(16.1007, 12.9964), Vector2(16, 16), Vector2(0, 16), Vector2(0, 13)])
 
 [sub_resource type="Resource" id="trig_67"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(128, 176)
+Position = Vector2(128.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_68"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(144, 176)
+Position = Vector2(144.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_69"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(160, 176)
+Position = Vector2(160.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_70"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(176, 176)
+Position = Vector2(176.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_71"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(192, 176)
+Position = Vector2(192.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_72"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(208, 176)
+Position = Vector2(208.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_73"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(224, 176)
+Position = Vector2(224.0, 176.0)
+Size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_74"]
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(79.9168, 48.1381)
+Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(16, 0), Vector2(16, -16), Vector2(13, -16), Vector2(0, -9)])
 
 [resource]
