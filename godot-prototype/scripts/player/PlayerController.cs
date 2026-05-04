@@ -184,6 +184,14 @@ public partial class PlayerController : CharacterBody2D
 		{
 			GD.PushWarning("[PlayerController] No HealthSystem found — player cannot take damage.");
 		}
+		else
+		{
+			// Death animation — Travel to MSCA's Death state when HP hits 0.
+			// The GameOverScreen takes ~8 s to play its title-style entry
+			// sequence (bg scroll + OVER flash + menu), so the player has
+			// time to fall + bounce before the menu becomes interactive.
+			_health.Died += OnPlayerDied;
+		}
 
 		// Subscribe to MSCA's animation_set_hitbox signal. This is a GDScript signal on the
 		// SpriteLayers node (MSCAFarmerSpriteLayers.gd). Signal args from the plugin source:
@@ -613,6 +621,52 @@ public partial class PlayerController : CharacterBody2D
 			tween.TweenProperty(ci, "modulate", new Color(3f, 3f, 3f, 1f), 0.05);
 			tween.TweenProperty(ci, "modulate", new Color(1f, 1f, 1f, 1f), 0.08);
 		}
+	}
+
+	/// <summary>Travel to MSCA's Death state when HP hits 0. The Death
+	/// animation (per addons/msca/jsons/farmer_base_animations.json) is
+	/// the directional fall + DeathBounce that MSCA ships for the
+	/// farmer base. Hides the equipped weapon sprite and zeros velocity
+	/// so the player doesn't slide while dying. The GameOverScreen plays
+	/// its own ~8 s entry sequence after Died fires, so the death anim
+	/// has plenty of room to play out before the menu shows.</summary>
+	private void OnPlayerDied()
+	{
+		Velocity = Vector2.Zero;
+		if (_weaponSprite != null) _weaponSprite.Visible = false;
+		// Snap mid-attack/walk poses out so the death animation reads
+		// cleanly. Without this, dying mid-strike leaves the player frozen
+		// in the strike pose for a frame before MSCA's Death state takes
+		// over, which looks like an animation hitch.
+		Attacking = false;
+		if (_attackHitbox != null) _attackHitbox.Monitoring = false;
+		if (_tridentEffect != null && IsInstanceValid(_tridentEffect))
+		{
+			_tridentEffect.QueueFree();
+			_tridentEffect = null;
+		}
+		// Force facing Down for the death pose. The C3 reference plays a
+		// single down-facing crumple regardless of which way the player
+		// was moving, and MSCA's Death BlendSpace2D reads cleanest with
+		// a definite cardinal — diagonals on Death pose look like the
+		// player's mid-fall instead of resting.
+		_facing = Vector2.Down;
+		SetBlend("Death", _facing);
+		_state?.Travel("Death");
+		SFXController.Instance?.Play("player_hurt", -3f);
+		// Lock the body in the final death pose. MSCA's Death state has a
+		// 0.2s timer (farmer_base_animations.json:7281), then transitions
+		// into DeathBounce (0.7s of 4 keyframes alternating frames 179 ↔
+		// 180). After that, the state machine returns to Idle and the
+		// player stands back up. Disable the AnimationTree once the bounce
+		// settles so the last frame holds — the GameOverScreen still shows
+		// the body face-down on the ground while the fade-out runs.
+		// 0.95s = Death (0.2) + DeathBounce (0.7) + 0.05s safety margin.
+		InputLocked = true;
+		GetTree().CreateTimer(0.95).Timeout += () =>
+		{
+			if (_tree != null) _tree.Active = false;
+		};
 	}
 
 	/// <summary>Apply a knockback impulse. Stuns input for KnockbackDuration while velocity decays.</summary>

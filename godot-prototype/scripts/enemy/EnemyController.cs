@@ -827,6 +827,7 @@ public partial class EnemyController : CharacterBody2D
 	private void OnDied()
 	{
 		SFXController.Instance?.Play("enemy_destroy");
+		DropLoot();
 		// Brief fade, then remove.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
@@ -838,6 +839,31 @@ public partial class EnemyController : CharacterBody2D
 		else
 		{
 			QueueFree();
+		}
+	}
+
+	/// <summary>Spawn 2-3 random loot drops at the death position. Mirrors
+	/// C3's dropLoot function (eGameRoom.json:6858+) — random count
+	/// `int(2 + random(2))` and equal-weight Gem/Gold/Coin/Heart roll, with
+	/// each drop launched at a random 360° angle so the pile fans outward.
+	/// PackedScene loaded once and cached on first kill — avoids ResourceLoader
+	/// hits on every monster death.</summary>
+	private static PackedScene _gemScene;
+	private void DropLoot()
+	{
+		_gemScene ??= GD.Load<PackedScene>("res://scenes/world/Gem.tscn");
+		if (_gemScene == null) return;
+		var parent = GetTree().CurrentScene;
+		if (parent == null) return;
+
+		// `int(2 + random(2))` in C3 yields 2 or 3 (random returns 0..2 exclusive).
+		int count = GD.RandRange(2, 3);
+		for (int i = 0; i < count; i++)
+		{
+			var gem = _gemScene.Instantiate<Gem>();
+			gem.Variant = Gem.RollKind();
+			gem.GlobalPosition = GlobalPosition;
+			parent.AddChild(gem);
 		}
 	}
 }

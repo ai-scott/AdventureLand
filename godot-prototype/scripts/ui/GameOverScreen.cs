@@ -66,11 +66,46 @@ public partial class GameOverScreen : CanvasLayer
         _health.Died += OnPlayerDied;
     }
 
-    private void OnPlayerDied()
+    private async void OnPlayerDied()
     {
+        // Refill the player's HP to full immediately. Mirrors the C3 flow
+        // in eGameRoom.json:4258+ where the death sequence runs to
+        // completion before the GameOver layout swaps in — by then HP
+        // should already read full so the HUD doesn't flicker. Done
+        // synchronously here (vs. waiting for SaveManager.Load on
+        // Continue) so the corner hearts repaint while the body is still
+        // crumpling. HealthSystem.RestoreState clamps + emits
+        // HealthChanged so the HUD picks it up.
+        _health.RestoreState(_health.MaxHealth, _health.MaxHealth);
+
+        // 1-second on-screen beat for the death animation (C3
+        // eGameRoom.json:4351 — wait 1s after setting the death-pose
+        // frames). The player's MSCA Death + DeathBounce play to
+        // completion uncovered, and at the 0.95s mark
+        // PlayerController.OnPlayerDied flips the AnimationTree off so
+        // the last pose freezes for the rest of the sequence.
+        await ToSignal(GetTree().CreateTimer(1.0), Timer.SignalName.Timeout);
+
+        // Fade the live world to black via FadeOverlay (the same overlay
+        // SaveManager uses for transitions). This hides the player corpse
+        // + HUD before the GameOver screen reveals — without it, the body
+        // crossfades with the bg scroll and reads as "two scenes layered"
+        // instead of a clean cut.
+        if (FadeOverlay.Instance != null)
+        {
+            await FadeOverlay.Instance.FadeOut(0.8);
+        }
+
         // The CanvasLayer is authored with visible=false so nothing in
         // it renders during normal play; turn it on now so the dim/bg/
         // OVER/menu children can fade themselves in via modulate.
+        // GameOverScreen and FadeOverlay are both layer=100 — the GameOver
+        // CanvasLayer was added after FadeOverlay (autoload order in
+        // project.godot), so its children render *over* the black overlay,
+        // letting the bg/dim/OVER/menu fade in against the blackout. The
+        // FadeOverlay is left at full alpha for the rest of the
+        // sequence; Try Again / Title Screen handlers below explicitly
+        // FadeIn before changing scene so the next view starts visible.
         Visible = true;
 
         // Tree order in the .tscn has Bg as the last sibling, which means
@@ -106,8 +141,12 @@ public partial class GameOverScreen : CanvasLayer
         // Auto-focus the first option so keyboard nav works immediately.
         CallDeferred(nameof(FocusFirstMenuOption));
 
-        // Defer pause so the overlay renders its first frame.
-        GetTree().CreateTimer(0.05).Timeout += () => GetTree().Paused = true;
+        // Pause the tree NOW that the death anim has had its 1s on-screen
+        // beat (above) — freezes the player's death state in place and
+        // halts any lingering enemy AI / projectiles. The entry tweens
+        // (scroll, OVER flash, menu fade) all use ProcessMode.Idle so
+        // they continue running while paused.
+        GetTree().Paused = true;
 
         // --- Play the entry sequence ---
         //

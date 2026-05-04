@@ -36,7 +36,12 @@ public static class QuestSystem
 
     public static void CompleteQuest(string questId)
     {
-        SetQuestStatus(questId, "Completed");
+        // Dialogue conditions throughout the project (pete.tres,
+        // sea-monster.tres, etc) check for Status == "Complete". An
+        // earlier "Completed" mismatch silently kept the post-quest
+        // node_complete and node_post_complete branches from ever
+        // matching after a CompleteQuest action fired.
+        SetQuestStatus(questId, "Complete");
     }
 
     // ---- World Flags ----

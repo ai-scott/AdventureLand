@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://b0gem001loot"]
+
+[ext_resource type="Script" path="res://scripts/world/Gem.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-000.png" id="g0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-001.png" id="g1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-002.png" id="g2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-003.png" id="g3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-004.png" id="g4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-005.png" id="g5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-006.png" id="g6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-007.png" id="g7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-000.png" id="ld0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-001.png" id="ld1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-002.png" id="ld2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-003.png" id="ld3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-004.png" id="ld4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-005.png" id="ld5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-006.png" id="ld6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gold-007.png" id="ld7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-000.png" id="c0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-001.png" id="c1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-002.png" id="c2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-003.png" id="c3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-004.png" id="c4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-005.png" id="c5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-006.png" id="c6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/coin-007.png" id="c7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-000.png" id="h0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-001.png" id="h1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-002.png" id="h2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-003.png" id="h3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-004.png" id="h4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-005.png" id="h5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-006.png" id="h6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/world/loot/heart-007.png" id="h7"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_loot"]
+animations = [{
+"frames": [
+{"duration": 1.0, "texture": ExtResource("g0")},
+{"duration": 1.0, "texture": ExtResource("g1")},
+{"duration": 1.0, "texture": ExtResource("g2")},
+{"duration": 1.0, "texture": ExtResource("g3")},
+{"duration": 1.0, "texture": ExtResource("g4")},
+{"duration": 1.0, "texture": ExtResource("g5")},
+{"duration": 1.0, "texture": ExtResource("g6")},
+{"duration": 1.0, "texture": ExtResource("g7")}],
+"loop": true,
+"name": &"gem",
+"speed": 8.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("ld0")},
+{"duration": 1.0, "texture": ExtResource("ld1")},
+{"duration": 1.0, "texture": ExtResource("ld2")},
+{"duration": 1.0, "texture": ExtResource("ld3")},
+{"duration": 1.0, "texture": ExtResource("ld4")},
+{"duration": 1.0, "texture": ExtResource("ld5")},
+{"duration": 1.0, "texture": ExtResource("ld6")},
+{"duration": 1.0, "texture": ExtResource("ld7")}],
+"loop": true,
+"name": &"gold",
+"speed": 8.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("c0")},
+{"duration": 1.0, "texture": ExtResource("c1")},
+{"duration": 1.0, "texture": ExtResource("c2")},
+{"duration": 1.0, "texture": ExtResource("c3")},
+{"duration": 1.0, "texture": ExtResource("c4")},
+{"duration": 1.0, "texture": ExtResource("c5")},
+{"duration": 1.0, "texture": ExtResource("c6")},
+{"duration": 1.0, "texture": ExtResource("c7")}],
+"loop": true,
+"name": &"coin",
+"speed": 8.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": ExtResource("h0")},
+{"duration": 1.0, "texture": ExtResource("h1")},
+{"duration": 1.0, "texture": ExtResource("h2")},
+{"duration": 1.0, "texture": ExtResource("h3")},
+{"duration": 1.0, "texture": ExtResource("h4")},
+{"duration": 1.0, "texture": ExtResource("h5")},
+{"duration": 1.0, "texture": ExtResource("h6")},
+{"duration": 1.0, "texture": ExtResource("h7")}],
+"loop": true,
+"name": &"heart",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
+radius = 10.0
+
+[node name="Gem" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_loot")
+animation = &"gem"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gem")

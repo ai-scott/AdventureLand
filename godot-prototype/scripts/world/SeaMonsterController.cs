@@ -147,14 +147,25 @@ public partial class SeaMonsterController : Node2D
         // Drive the shader uniform on every frame of the tween. We can't
         // bind a method-tween cleanly to a shader uniform in C#, so a
         // simple polling loop fed by the same SceneTree timer covers it.
-        while (_state == State.Rising && IsInstanceValid(this))
+        // The loop terminates on tween.IsRunning() rather than awaiting
+        // the Finished signal afterward — Finished fires the same frame
+        // the position lands, and an `await ToSignal(tween, Finished)`
+        // AFTER the signal has already been emitted hangs forever in
+        // Godot 4 (the awaiter never resumes). That's what was leaving
+        // the SeaMonster silent + the pearl undeployed: this method
+        // deadlocked here and never ran StartDialogue.
+        while (_state == State.Rising && IsInstanceValid(this)
+            && tween.IsValid() && tween.IsRunning())
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             UpdateWaterLineUniform();
-            if (Mathf.IsEqualApprox(Position.Y, SurfaceY)) break;
         }
-        await ToSignal(tween, Tween.SignalName.Finished);
-        UpdateWaterLineUniform();
+        // Snap to final position in case the loop exited a frame early.
+        if (IsInstanceValid(this))
+        {
+            Position = new Vector2(_restingX, SurfaceY);
+            UpdateWaterLineUniform();
+        }
         _state = State.NPC;
         // Pearl deploys after the very first interaction regardless of
         // dialogue branch. C3's flow only spawned it via accept/refuse
@@ -207,13 +218,19 @@ public partial class SeaMonsterController : Node2D
         var tween = CreateTween();
         tween.SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Sine);
         tween.TweenProperty(this, "position:y", SubmergedY, RetreatSeconds);
-        while (_state == State.Retreating && IsInstanceValid(this))
+        // Same async-deadlock fix as Summon — terminate on tween.IsRunning()
+        // and snap-to-final, never await Finished after the fact.
+        while (_state == State.Retreating && IsInstanceValid(this)
+            && tween.IsValid() && tween.IsRunning())
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             UpdateWaterLineUniform();
-            if (Mathf.IsEqualApprox(Position.Y, SubmergedY)) break;
         }
-        await ToSignal(tween, Tween.SignalName.Finished);
+        if (IsInstanceValid(this))
+        {
+            Position = new Vector2(_restingX, SubmergedY);
+            UpdateWaterLineUniform();
+        }
         Visible = false;
         _state = State.Hidden;
     }

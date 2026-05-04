@@ -55,26 +55,11 @@ Status = "Not_Started"
 [sub_resource type="Resource" id="node_7"]
 script = ExtResource("2")
 Id = "node_002"
-Text = "I've been feeling pretty sick lately. Usually I get herbs from the mountains to"
+Text = "I've been feeling pretty sick lately. Usually I get herbs from the mountains to the south, but the bridge broke!"
 Speaker = "Pete"
 Priority = 99
-AutoAdvance = "node_002b"
+AutoAdvance = "node_006"
 Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
-
-[sub_resource type="Resource" id="cond_10"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pete_herbs_quest"
-Status = "Not_Started"
-
-[sub_resource type="Resource" id="node_9"]
-script = ExtResource("2")
-Id = "node_002b"
-Text = "the south, but the bridge broke!"
-Speaker = "Pete"
-Priority = 98
-AutoAdvance = "node_005"
-Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
 
 [sub_resource type="Resource" id="cond_12"]
 script = ExtResource("3")
@@ -130,7 +115,7 @@ Status = "Not_Started"
 [sub_resource type="Resource" id="node_17"]
 script = ExtResource("2")
 Id = "node_006b"
-Text = "Usually I get herbs from the mountains to the south. Could you help me?"
+Text = "Could you help me?"
 Speaker = "Pete"
 Priority = 94
 AutoAdvance = "node_007"
@@ -235,4 +220,4 @@ DisplayName = "Pete"
 DefaultNode = "node_000"
 WorldId = "World01"
 QuestRelations = PackedStringArray("pete_herbs_quest")
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_28"), SubResource("node_30")])
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_28"), SubResource("node_30")])

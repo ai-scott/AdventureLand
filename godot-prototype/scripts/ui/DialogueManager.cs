@@ -376,6 +376,8 @@ public partial class DialogueManager : CanvasLayer
     private void NavigateToNode(DialogueNode node)
     {
         _currentNode = node;
+        // Trace where we land for debugging dialogue jumps.
+        GD.Print($"[Dialogue] → {node.Id} (pri={node.Priority}, speaker={node.Speaker}, autoAdv={node.AutoAdvance ?? ""}, text=\"{(node.Text?.Length > 40 ? node.Text.Substring(0, 40) + "…" : node.Text)}\")");
 
         // Reset any reveal from the previous node before this one's actions
         // run — keeps consecutive reveals from stacking visually and avoids
@@ -1129,24 +1131,28 @@ public partial class DialogueManager : CanvasLayer
         new(@"\[icon=([^\]]+)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     // Maps the C3 [icon=...] markup tags to the corresponding C3 TextIcons
-    // glyphs (per objectTypes/HUD_UI/Dialogue/TextIcons.json — frames 2/3/6-9
-    // are the dialogue arrows + pointer + space). Earlier this pointed at
-    // the inventory ability-stat indicators (ui_hintarrow-*) which are a
-    // different art style intended for stat-diff badges, not dialogue body.
+    // glyphs. The PNG files in <c>assets/sprites/ui/text_icons/</c> were
+    // extracted from the C3 atlas with their frame indices off by one —
+    // each file's actual *content* is the icon for the NEXT name in the
+    // atlas order. So <c>empty.png</c> contains the pointer cursor,
+    // <c>pointer.png</c> contains the SPC chip, etc. Rather than rename
+    // the asset files (which other systems may reference by path), we
+    // map each tag here to whichever file actually contains the right
+    // visual.
     private static readonly Dictionary<string, string> IconPaths = new()
     {
-        ["pointer"]    = "res://assets/sprites/ui/text_icons/pointer.png",
-        ["spc"]        = "res://assets/sprites/ui/text_icons/spc.png",
-        ["space"]      = "res://assets/sprites/ui/text_icons/spc.png",
+        ["pointer"]    = "res://assets/sprites/ui/text_icons/empty.png",   // empty.png contains the cursor
+        ["spc"]        = "res://assets/sprites/ui/text_icons/pointer.png", // pointer.png contains the SPC chip
+        ["space"]      = "res://assets/sprites/ui/text_icons/pointer.png",
+        ["esc"]        = "res://assets/sprites/ui/text_icons/spc.png",     // spc.png contains the ESC chip
         ["uparrow"]    = "res://assets/sprites/ui/text_icons/up_arrow.png",
         ["downarrow"]  = "res://assets/sprites/ui/text_icons/down_arrow.png",
         ["leftarrow"]  = "res://assets/sprites/ui/text_icons/left_arrow.png",
         ["rightarrow"] = "res://assets/sprites/ui/text_icons/right_arrow.png",
-        ["esc"]        = "res://assets/sprites/ui/text_icons/esc.png",
-        ["gem"]        = "res://assets/sprites/ui/text_icons/gem.png",
-        ["sword"]      = "res://assets/sprites/ui/text_icons/sword.png",
-        ["heart"]      = "res://assets/sprites/ui/text_icons/heart.png",
-        ["bag"]        = "res://assets/sprites/ui/text_icons/bag.png",
+        ["heart"]      = "res://assets/sprites/ui/text_icons/sword.png",   // sword.png contains the heart
+        ["bag"]        = "res://assets/sprites/ui/text_icons/heart.png",   // heart.png contains the bag
+        ["gem"]        = "res://assets/sprites/ui/text_icons/bag.png",     // bag.png contains the gem
+        ["sword"]      = "res://assets/sprites/ui/text_icons/sword.png",   // no clean source — sword.png itself shows a heart; revisit when we re-extract the atlas
     };
     private const int IconHeightPx = 22; // ~= body font 24, leaves 1px breathing room top/bottom
 

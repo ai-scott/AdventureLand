@@ -46,6 +46,14 @@ public partial class HUD : CanvasLayer
     // shown on hover so the binding is discoverable without taking up
     // permanent visual real estate next to the button.
     private PanelContainer _muteKbd;
+    // Low-HP warning — red vignette pulse on screen edges + periodic beep.
+    // Shown when the player's CurrentHealth drops to a single heart (2 HP)
+    // or less. Both pause when the player dies (game over takes over).
+    private HudLowHpVignette _lowHpVignette;
+    private AudioStreamPlayer _lowHpBeep;
+    private double _lowHpBeepTimer;
+    private const double LowHpBeepInterval = 0.55;
+    private const int LowHpHpThreshold = 2; // 2 HP = 1 heart
     private int _lastGems = -1;
     private int _lastWeaponId = -2; // -2 so first tick always refreshes (-1 = "none")
 
@@ -117,6 +125,7 @@ public partial class HUD : CanvasLayer
         _defaultAttackIcon = UiStyles.Sword;
 
         BuildMuteButton();
+        BuildLowHpWarning();
 
         if (Inventory.Instance != null)
         {
@@ -125,6 +134,63 @@ public partial class HUD : CanvasLayer
             RefreshAttackButtonVisibility();
             RefreshAttackIcon();
         }
+    }
+
+    /// <summary>Set up the low-HP warning visuals + audio: a red vignette
+    /// drawn at the screen edges that pulses when HP drops to ≤ 2 (single
+    /// heart), plus a procedural beep that fires on a timer while the
+    /// vignette is active. Both auto-stop when HP recovers or the player
+    /// dies (Game Over takes over).</summary>
+    private void BuildLowHpWarning()
+    {
+        _lowHpVignette = new HudLowHpVignette
+        {
+            Name = "LowHpVignette",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            Visible = false,
+        };
+        _lowHpVignette.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        AddChild(_lowHpVignette);
+        // Move vignette ABOVE the world UI but BELOW the mute button so a
+        // muted prohibition sign isn't tinted red on top of being muted.
+        MoveChild(_lowHpVignette, GetChildCount() - 2);
+
+        _lowHpBeep = new AudioStreamPlayer
+        {
+            Name = "LowHpBeep",
+            ProcessMode = ProcessModeEnum.Always,
+            Stream = MakeBeepStream(880f, 0.08f),
+            VolumeDb = -10f,
+        };
+        AddChild(_lowHpBeep);
+    }
+
+    /// <summary>Procedural sine-wave beep — saves shipping a tiny .ogg
+    /// just for the low-HP warning. 880 Hz at 0.08 s with a triangular
+    /// envelope (no click on attack/release) is the canonical "warning"
+    /// pip used in older RPGs.</summary>
+    private static AudioStreamWav MakeBeepStream(float hz, float durationSec)
+    {
+        const int SampleRate = 22050;
+        int sampleCount = (int)(SampleRate * durationSec);
+        var data = new byte[sampleCount * 2];
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float t = i / (float)SampleRate;
+            // Triangle envelope so the tone fades in/out within the clip.
+            float env = 1f - Mathf.Abs(2f * t / durationSec - 1f);
+            float sample = Mathf.Sin(t * hz * Mathf.Tau) * env * 0.45f;
+            short s16 = (short)(sample * short.MaxValue);
+            data[i * 2] = (byte)(s16 & 0xFF);
+            data[i * 2 + 1] = (byte)((s16 >> 8) & 0xFF);
+        }
+        return new AudioStreamWav
+        {
+            Format = AudioStreamWav.FormatEnum.Format16Bits,
+            Stereo = false,
+            MixRate = SampleRate,
+            Data = data,
+        };
     }
 
     /// <summary>Square chip buttons stack vertically in the bottom-right
@@ -185,6 +251,11 @@ public partial class HUD : CanvasLayer
         // input it would never consume anyway) while a dialogue is on screen
         // — mute stays visible so the player can still silence audio.
         if (_buttonsRow != null) _buttonsRow.Visible = inWorld && !inDialogue;
+
+        // Low-HP warning: pulse + beep when the player has 1 heart or less.
+        // Off entirely on title / game-over (no player), and once the player
+        // is dead (game over screen takes over the visuals).
+        UpdateLowHpWarning(delta, inWorld);
 
         if (!inWorld) return;
 
@@ -526,6 +597,95 @@ public partial class HUD : CanvasLayer
     {
         int idx = AudioServer.GetBusIndex("Master");
         return idx >= 0 && AudioServer.IsBusMute(idx);
+    }
+
+    /// <summary>Drive the red-edge vignette + beep cadence when the
+    /// player is on their last heart. Pulses the vignette alpha via a
+    /// sine over time and fires the beep on a fixed interval. Both
+    /// stop when HP recovers above the threshold OR the player dies.</summary>
+    private void UpdateLowHpWarning(double delta, bool inWorld)
+    {
+        bool active = inWorld
+            && _health != null && IsInstanceValid(_health)
+            && !_health.IsDead
+            && _health.CurrentHealth > 0
+            && _health.CurrentHealth <= LowHpHpThreshold;
+
+        if (_lowHpVignette != null)
+        {
+            _lowHpVignette.Visible = active;
+            if (active)
+            {
+                // 0..1 sine-pulse, period ~0.7s, mapped to alpha 0.35..0.85.
+                float t = (float)Time.GetTicksMsec() / 1000f;
+                float pulse = 0.5f + 0.5f * Mathf.Sin(t * Mathf.Tau / 0.7f);
+                _lowHpVignette.Modulate = new Color(1f, 1f, 1f, 0.35f + pulse * 0.5f);
+            }
+        }
+
+        if (active)
+        {
+            _lowHpBeepTimer -= delta;
+            if (_lowHpBeepTimer <= 0)
+            {
+                _lowHpBeep?.Play();
+                _lowHpBeepTimer = LowHpBeepInterval;
+            }
+        }
+        else
+        {
+            _lowHpBeepTimer = 0;
+            if (_lowHpBeep != null && _lowHpBeep.Playing) _lowHpBeep.Stop();
+        }
+    }
+}
+
+/// <summary>Red-edge vignette drawn on the HUD when the player is on
+/// their last heart. Painted via _Draw rather than a TextureRect so the
+/// gradient scales cleanly to any viewport size and we don't need to
+/// ship an asset. Alpha is driven externally via Modulate (HUD pulses
+/// it with a sine over time).</summary>
+public partial class HudLowHpVignette : Godot.Control
+{
+    public override void _Draw()
+    {
+        var rect = new Rect2(Vector2.Zero, Size);
+        if (rect.Size.X <= 0 || rect.Size.Y <= 0) return;
+
+        // Step the alpha out from each edge so the world stays visible in
+        // the center but the screen border reads RED. Four equal edge
+        // strips (top/bottom/left/right) drawn as a series of 1-px filled
+        // bands with quadratic alpha falloff — fakes a vignette without
+        // needing a shader. Halved from the original thickness so the
+        // playfield isn't squeezed on a tight viewport.
+        const int BandCount = 28;
+        float thicknessW = rect.Size.X * 0.09f;  // was 0.18
+        float thicknessH = rect.Size.Y * 0.11f;  // was 0.22
+        var col = new Color(0.92f, 0.18f, 0.18f, 0f);
+
+        float bandH = thicknessH / BandCount;
+        float bandW = thicknessW / BandCount;
+        for (int i = 0; i < BandCount; i++)
+        {
+            float t = i / (float)BandCount;             // 0 at edge, ~1 at inner
+            col.A = (1f - t) * (1f - t) * 0.85f;        // quadratic falloff
+
+            // +1 px overlap so the strips abut without single-pixel gaps
+            // when the screen size doesn't divide cleanly by BandCount.
+            // Top
+            DrawRect(new Rect2(0, i * bandH, rect.Size.X, bandH + 1f), col);
+            // Bottom (mirror)
+            DrawRect(new Rect2(0, rect.Size.Y - (i + 1) * bandH, rect.Size.X, bandH + 1f), col);
+            // Left
+            DrawRect(new Rect2(i * bandW, 0, bandW + 1f, rect.Size.Y), col);
+            // Right (mirror)
+            DrawRect(new Rect2(rect.Size.X - (i + 1) * bandW, 0, bandW + 1f, rect.Size.Y), col);
+        }
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationResized) QueueRedraw();
     }
 }
 
