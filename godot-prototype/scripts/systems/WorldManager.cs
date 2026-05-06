@@ -60,6 +60,36 @@ public partial class WorldManager : Node
         if (tree?.CurrentScene != null) RepaintShapes(tree.CurrentScene);
 
         GD.Print($"[Debug] Collision shapes {(DebugVisible ? "ON" : "OFF")}");
+
+        // Debug loadout — grant the Pike (id 3) and Big Red Boots (id 102)
+        // and auto-equip both so the dev can sprint + one-shot enemies while
+        // poking at collision shapes. Only granted on the toggle-ON edge so
+        // a second backtick press doesn't keep duplicating items.
+        if (DebugVisible) GrantDebugLoadout();
+    }
+
+    private static void GrantDebugLoadout()
+    {
+        var inv = Inventory.Instance;
+        if (inv == null) return;
+        TryAddAndEquip(inv, itemId: 3);   // Pike (Weapon, Strength 5)
+        TryAddAndEquip(inv, itemId: 102); // Big Red Boots (Boot, Strength 3)
+    }
+
+    private static void TryAddAndEquip(Inventory inv, int itemId)
+    {
+        if (!inv.HasItem(itemId))
+        {
+            if (!inv.AddItem(itemId)) return;
+        }
+        for (int i = 0; i < Inventory.SlotCount; i++)
+        {
+            if (inv.GetSlotItemId(i) == itemId)
+            {
+                inv.Equip(i);
+                break;
+            }
+        }
     }
 
     private static void RepaintShapes(Node root)
