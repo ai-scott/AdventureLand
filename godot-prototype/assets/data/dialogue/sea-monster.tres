@@ -204,6 +204,12 @@ EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
 Actions = Array[ExtResource("4")]([SubResource("act_28"), SubResource("act_29"), SubResource("act_30"), SubResource("act_31")])
 
+[sub_resource type="Resource" id="cond_no_pearl"]
+script = ExtResource("3")
+Type = 1
+Negate = true
+ItemId = "Pink Oyster Pearl"
+
 [sub_resource type="Resource" id="cond_33"]
 script = ExtResource("3")
 Type = 0
@@ -226,7 +232,7 @@ Text = ""
 Speaker = "System"
 Priority = 994
 AutoAdvance = "hostile_encounter"
-Conditions = Array[ExtResource("3")]([SubResource("cond_33")])
+Conditions = Array[ExtResource("3")]([SubResource("cond_33"), SubResource("cond_no_pearl")])
 Actions = Array[ExtResource("4")]([SubResource("act_34"), SubResource("act_35")])
 
 [sub_resource type="Resource" id="cond_37"]
@@ -242,7 +248,7 @@ Text = "YOU DARE RETURN WITHOUT MY PEARL?! FACE MY WRATH!"
 Speaker = "SeaMonster"
 Priority = 993
 EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_37")])
+Conditions = Array[ExtResource("3")]([SubResource("cond_37"), SubResource("cond_no_pearl")])
 
 [sub_resource type="Resource" id="cond_39"]
 script = ExtResource("3")

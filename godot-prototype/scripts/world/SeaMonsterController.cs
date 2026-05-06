@@ -65,6 +65,12 @@ public partial class SeaMonsterController : Node2D
 
     [Export] public float WaterBallInterval = 1.4f;
 
+    /// <summary>Offset from the SM's origin where water-balls spawn — should
+    /// land on the mouth in the artwork, not the body. The SM sprite has
+    /// offset=(0,-32) in the scene, putting the mouth roughly 36-44 px above
+    /// the node origin. Tune in the Inspector if the artwork shifts.</summary>
+    [Export] public Vector2 WaterBallSpawnOffset = new Vector2(-8, -40);
+
     private Sprite2D _sprite;
     private Texture2D _idleTexture;
     private ShaderMaterial _shaderMat;
@@ -137,6 +143,13 @@ public partial class SeaMonsterController : Node2D
         Visible = true;
         Position = new Vector2(_restingX, SubmergedY);
         UpdateWaterLineUniform();
+
+        // Reset to the calm/idle texture in case the previous summon left us
+        // in MakeHostile()'s AttackTexture. The peaceful return path
+        // (return_summon → return_with_pearl) calls Summon() before any
+        // greeting line, so a hostile-then-peaceful sequence would otherwise
+        // show the angry face for the "Wow! my pearl!" line.
+        if (_sprite != null && _idleTexture != null) _sprite.Texture = _idleTexture;
 
         SFXController.Instance?.Play("seamonster_rise");
         EmitBubbleBurst();
@@ -283,8 +296,7 @@ public partial class SeaMonsterController : Node2D
     {
         if (WaterBallScene == null) return;
         var ball = WaterBallScene.Instantiate<WaterBall>();
-        // Spawn just in front of the SM's mouth — middle-ish of the sprite.
-        Vector2 spawn = GlobalPosition + new Vector2(0, -16);
+        Vector2 spawn = GlobalPosition + WaterBallSpawnOffset;
         var to = (player.GlobalPosition - spawn);
         if (to.Length() <= 0.001f) return;
         ball.Direction = to.Normalized();
@@ -320,6 +332,14 @@ public partial class SeaMonsterController : Node2D
     private void EmitBubbleBurst()
     {
         if (_bubbles == null) return;
+        // Burst sits midway between the shader's water-line cutoff and the
+        // SM's resting Y — the cutoff alone read as "bubbles floating in
+        // mid-air above the waves" because the visible water surface in the
+        // tile art sits a few pixels below the shader line. CpuParticles2D
+        // defaults to global-space spawning, so the particles stick to this
+        // world-Y once emitted.
+        float burstY = (WaterLineWorldY + SurfaceY) * 0.5f;
+        _bubbles.GlobalPosition = new Vector2(GlobalPosition.X, burstY);
         // Restart cleanly — Emitting = false → true forces the one-shot
         // sequence to play even if a previous burst is still trailing off.
         _bubbles.Emitting = false;

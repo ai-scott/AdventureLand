@@ -70,7 +70,9 @@ public partial class WaterBall : Area2D
         _splashing = true;
         Monitoring = false;
         if (_sprite == null) { QueueFree(); return; }
-        _sprite.Rotation = 0;
+        // Keep flight rotation through the splash so droplets continue
+        // outward in the direction of travel — resetting rotation to 0
+        // reads as a horizontally-flipped splash for left/up-bound shots.
         _sprite.Play("splash");
         _sprite.AnimationFinished += () => QueueFree();
     }
