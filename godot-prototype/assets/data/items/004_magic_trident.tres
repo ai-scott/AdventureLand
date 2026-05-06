@@ -13,3 +13,4 @@ Strength = 6
 Cost = 20
 Icon = ExtResource("2")
 WeaponSheet = 7
+QuestItem = true

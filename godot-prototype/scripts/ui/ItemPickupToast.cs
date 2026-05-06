@@ -188,6 +188,23 @@ public partial class ItemPickupToast : CanvasLayer
     {
         _newItem = item;
 
+        // Quest items short-circuit the equip/compare prompt — story rewards
+        // (Magic Trident etc.) read as "you got the trident!" feedback, not
+        // an inventory-management decision. Auto-equip silently when the
+        // slot is free; if a comparable item is already equipped, just add
+        // to the inventory and let the player swap from the menu later.
+        if (item.QuestItem)
+        {
+            if (item.IsEquippable)
+            {
+                int equippedId = Inventory.Instance?.GetEquippedId(item.Category) ?? -1;
+                if (equippedId <= 0) DoEquip(item);
+            }
+            BuildSimpleToast(item, "Quest item received!");
+            _autoCloseTimer = 2.5;
+            return;
+        }
+
         if (item.IsEquippable)
         {
             var inv = Inventory.Instance;
@@ -670,11 +687,14 @@ public partial class ItemPickupToast : CanvasLayer
     /// to fit longer item names.</summary>
     private const int ToastPanelWidth = 180;
     private const float ToastEdgeMargin = 12f;
-    /// <summary>Vertical offset from the top edge so toasts sit below the
-    /// mute button (HUD top-right, ~50 px tall + edge margin). Bumping this
-    /// by hand because HUD doesn't expose a "free vertical region" hook —
-    /// keep in sync with HUD.BuildMuteButton if that layout changes.</summary>
-    private const float ToastTopOffset = 64f;
+    /// <summary>Vertical offset from the top edge — matches the mute button's
+    /// 14 px top margin (HUD.ButtonEdgeMargin) so the toast slots into the
+    /// same top-right corner as the music icon. The toast briefly overlaps
+    /// the mute button while it's visible (≈2.5 s), which the design pass
+    /// approved as the right tradeoff: pickups are short, transient events
+    /// and stealing the mute slot for that window keeps them in the
+    /// player's natural field of view.</summary>
+    private const float ToastTopOffset = 14f;
 
     // ---- Buttons ----
 
