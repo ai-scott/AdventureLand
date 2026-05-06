@@ -26,10 +26,10 @@ public partial class VOController : Node
     private const string VoRoot = "res://assets/audio/vo/";
     private const string VoExt = ".ogg";
 
-    /// <summary>Music bus attenuation while VO is active. -6 dB ≈ 50% perceived
-    /// volume — quiet enough that the VO sits clearly on top, loud enough that
-    /// the score doesn't disappear and snap back jarringly when the line ends.</summary>
-    private const float MusicDuckDb = -6f;
+    /// <summary>Music bus attenuation while VO is active. -9 dB ≈ 35% perceived
+    /// volume — pushes the score further down so the VO sits clearly on top
+    /// without losing the music underneath.</summary>
+    private const float MusicDuckDb = -9f;
 
     private AudioStreamPlayer _player;
     private int _musicBusIdx = -1;
