@@ -17,6 +17,13 @@ public partial class ItemTrigger : Area2D
     [Export] public ItemData Data;
     [Export] public int TriggerID;
     [Export] public bool Unique = true;
+    /// <summary>When true, the item icon stays hidden and a looping sparkle
+    /// effect plays on top of whatever the trigger is sitting on (e.g. the
+    /// Shrine in World_10). The pickup flow is otherwise unchanged — walk
+    /// up, press interact, get the toast + item. Mirrors the C3 pattern in
+    /// unique-items-config.ts where the Sea Monster Key spawns a Sparkle
+    /// particle on the Shrine instead of the item itself.</summary>
+    [Export] public bool ShrineSparkle = false;
 
     private bool _collected;
     private bool _playerInRange;
@@ -48,8 +55,13 @@ public partial class ItemTrigger : Area2D
         if (_sprite != null && Data.Icon != null)
         {
             _sprite.Texture = Data.Icon;
-            _sprite.Visible = true;
+            _sprite.Visible = !ShrineSparkle; // shrine variant keeps the item itself hidden
             _sprite.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+        }
+
+        if (ShrineSparkle)
+        {
+            BuildShrineSparkle();
         }
 
         BuildShineMaterial();
@@ -89,12 +101,48 @@ public partial class ItemTrigger : Area2D
     {
         if (_collected) return;
         if (!body.IsInGroup("player")) return;
+
+        // Money-category items (Money Bag, etc.) are currency, not gear —
+        // grant their cost as gems on contact and despawn. No hint, no
+        // confirm prompt, no inventory slot. Mirrors the C3 behavior where
+        // walking onto a money bag adds gold and clears the sprite.
+        if (Data.Category == ItemData.ItemCategory.Money)
+        {
+            AutoCollectMoney();
+            return;
+        }
+
         _playerInRange = true;
         // Items render at 16px, half the height of NPCs — pass a -16 head
         // offset so the hint panel sits just above the sprite rather than a
         // full sprite-height higher (the default is tuned for 32px NPCs).
         InteractHintManager.Instance?.Register(this, GetHintText, headOffsetY: -16f);
         if (_sprite != null && _shineMaterial != null) _sprite.Material = _shineMaterial;
+    }
+
+    /// <summary>Walk-on currency pickup for Money-category items. Adds the
+    /// item's Cost to the gem wallet, marks the trigger collected so a
+    /// scene re-entry doesn't respawn it, plays the standard collectible
+    /// chime, sparkles, and scales out. No inventory slot is consumed.</summary>
+    private void AutoCollectMoney()
+    {
+        _collected = true;
+        int gems = Mathf.Max(0, Data.Cost);
+        if (gems > 0) CurrencySystem.AddGems(gems);
+        GD.Print($"[ItemTrigger] Money pickup: {Data.Name} → +{gems} gems");
+
+        if (Unique)
+        {
+            QuestSystem.SetWorldFlag($"ItemCollected_{TriggerID}", "true");
+        }
+
+        SaveManager.Instance?.Save();
+        SFXController.Instance?.Play("collectible_pickup");
+        SpawnSparkles();
+
+        var tween = CreateTween();
+        tween.TweenProperty(this, "scale", Vector2.Zero, 0.2);
+        tween.TweenCallback(Callable.From(() => QueueFree()));
     }
 
     private void OnBodyExited(Node2D body)
@@ -205,6 +253,40 @@ public partial class ItemTrigger : Area2D
         // Add to scene root so it persists after this node is freed.
         GetTree().CurrentScene.AddChild(toast);
         toast.Show(Data);
+    }
+
+    /// <summary>Build an in-place ping-pong sparkle that loops while the
+    /// trigger is alive — mirrors the C3 Particle "Sparkle" animation
+    /// (frames 0,1,2 ping-pong at speed 6). Auto-cleans up via parenting:
+    /// the AnimatedSprite2D is a child of this trigger, so when the trigger
+    /// QueueFrees on pickup the sparkle goes with it.</summary>
+    private void BuildShrineSparkle()
+    {
+        var f0 = GD.Load<Texture2D>("res://assets/sprites/ui/particle-sparkle-000.png");
+        var f1 = GD.Load<Texture2D>("res://assets/sprites/ui/particle-sparkle-001.png");
+        var f2 = GD.Load<Texture2D>("res://assets/sprites/ui/particle-sparkle-002.png");
+        if (f0 == null || f1 == null || f2 == null) return;
+
+        var frames = new SpriteFrames();
+        frames.AddAnimation("sparkle");
+        frames.SetAnimationSpeed("sparkle", 6.0);
+        frames.SetAnimationLoop("sparkle", true);
+        // Ping-pong sequence (0,1,2,1) loops as 0,1,2,1,0,1,2,1,... matching
+        // C3's isPingPong=true on the Sparkle animation.
+        frames.AddFrame("sparkle", f0);
+        frames.AddFrame("sparkle", f1);
+        frames.AddFrame("sparkle", f2);
+        frames.AddFrame("sparkle", f1);
+
+        var anim = new AnimatedSprite2D
+        {
+            SpriteFrames = frames,
+            Animation = "sparkle",
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            ZIndex = 5,
+        };
+        AddChild(anim);
+        anim.Play("sparkle");
     }
 
     private void SpawnSparkles()

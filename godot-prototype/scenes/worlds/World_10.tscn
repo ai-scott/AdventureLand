@@ -20,6 +20,9 @@
 [ext_resource type="Resource" path="res://assets/data/items/123_pink_oyster_pearl.tres" id="18_pearl"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/shrine.png" id="19_shrine"]
 [ext_resource type="Resource" path="res://assets/data/items/121_sea_monster_key.tres" id="20_smkey"]
+[ext_resource type="Texture2D" path="res://assets/buildings/AL_LakeSign.png" id="21_lksgn"]
+[ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="22_signsc"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/lakesign.tres" id="23_lkdlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -1688,13 +1691,13 @@ visible = false
 PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
 
 [node name="Crab1" parent="Entities" instance=ExtResource("12_crab")]
-position = Vector2(200, 260)
+position = Vector2(650, 130)
 
 [node name="Crab2" parent="Entities" instance=ExtResource("12_crab")]
-position = Vector2(520, 260)
+position = Vector2(130, 380)
 
 [node name="Crab3" parent="Entities" instance=ExtResource("12_crab")]
-position = Vector2(360, 380)
+position = Vector2(550, 410)
 
 [node name="SeaMonster" parent="Entities" instance=ExtResource("14_sm")]
 position = Vector2(560, 224)
@@ -1716,11 +1719,22 @@ TriggerID = 12300
 Unique = true
 
 [node name="Shrine" type="Sprite2D" parent="Entities"]
-position = Vector2(128, 96)
+position = Vector2(128, 86)
 texture = ExtResource("19_shrine")
 
 [node name="SeaMonsterKeyPickup" parent="Entities" instance=ExtResource("17_itrig")]
-position = Vector2(128, 142)
+position = Vector2(128, 112)
 Data = ExtResource("20_smkey")
 TriggerID = 12100
 Unique = true
+ShrineSparkle = true
+
+[node name="LakeSign" type="Sprite2D" parent="Entities"]
+position = Vector2(51.362, 188.892)
+texture = ExtResource("21_lksgn")
+centered = false
+
+[node name="LakeSignTrigger" parent="Entities" instance=ExtResource("22_signsc")]
+position = Vector2(77, 211)
+NpcName = "Lake Sign"
+Dialogue = ExtResource("23_lkdlg")

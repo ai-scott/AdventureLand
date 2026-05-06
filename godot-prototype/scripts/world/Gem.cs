@@ -27,9 +27,11 @@ public partial class Gem : Area2D
     [Export] public float MagnetSpeed = 320f; // px/s while collected
     /// <summary>Pull-from-distance radius. Once the player walks within this
     /// many pixels of an uncollected drop, the magnet kicks in even without
-    /// physical body overlap — same "vacuum loot" feel as Zelda gems / Hades
-    /// boons. Set to 0 to disable and rely on contact-only pickup.</summary>
-    [Export] public float MagnetRadius = 38f;
+    /// physical body overlap. 16 px is intentionally tight so the player
+    /// reads the drop animation (~0.3 s drift to settle) before pickup —
+    /// earlier 38 px range was too aggressive and ate the drop visual.
+    /// Set to 0 to disable and rely on contact-only pickup.</summary>
+    [Export] public float MagnetRadius = 16f;
 
     private Vector2 _velocity;
     private bool _collected;
