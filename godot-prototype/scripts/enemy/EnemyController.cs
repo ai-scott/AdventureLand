@@ -103,7 +103,7 @@ public partial class EnemyController : CharacterBody2D
 
 	// Contact damage tracking — distance-based polling for reliable re-hit.
 	private double _contactDamageTimer;
-	private const double ContactDamageCooldown = 0.6; // slightly longer than player invuln (0.5s) so damage lands
+	private const double ContactDamageCooldown = 1.1; // slightly longer than player invuln (1.0s) so damage lands and gives breathing room
 	private const float ContactRange = 16f; // px — slightly larger than hitbox shape
 
 	// Wall-avoidance steering — when the chosen side commits for a short window
@@ -172,12 +172,81 @@ public partial class EnemyController : CharacterBody2D
 		SelectNextBehavior();
 	}
 
+	private bool _spawnUnstuckChecked;
+
+	/// <summary>If the enemy was placed inside a wall (e.g. an authored
+	/// position over water on the lake), spiral outward and reposition to
+	/// the first free spot. Mirrors the player-side unstuck in
+	/// SaveManager.UnstickPlayer. Called once on the first physics tick —
+	/// defers past TriggerSpawner._Ready so the StaticBody2D walls exist
+	/// in the physics world before the shape query runs.</summary>
+	private void TryUnstickFromWalls()
+	{
+		if (_spawnUnstuckChecked) return;
+		_spawnUnstuckChecked = true;
+
+		var shape = GetNodeOrNull<CollisionShape2D>("CollisionShape2D")?.Shape;
+		if (shape == null) return;
+		var space = GetWorld2D()?.DirectSpaceState;
+		if (space == null) return;
+
+		var query = new PhysicsShapeQueryParameters2D
+		{
+			Shape = shape,
+			Transform = new Transform2D(0f, GlobalPosition),
+			CollisionMask = CollisionMask, // walls layer (2)
+			Exclude = new Godot.Collections.Array<Rid> { GetRid() },
+		};
+
+		if (space.IntersectShape(query, 1).Count == 0) return; // free already
+
+		// Spiral outward in 8-px steps, 8 directions per ring. Up to 80 px
+		// (5× the typical wall thickness) so a crab placed deep in a lake
+		// can find dry ground. Beyond that, leave it where it is — the
+		// authored position is too deep into bad territory to auto-rescue.
+		for (int radius = 8; radius <= 80; radius += 8)
+		{
+			for (int angleDeg = 0; angleDeg < 360; angleDeg += 45)
+			{
+				float rad = Mathf.DegToRad(angleDeg);
+				var candidate = GlobalPosition + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * radius;
+				query.Transform = new Transform2D(0f, candidate);
+				if (space.IntersectShape(query, 1).Count == 0)
+				{
+					GD.Print($"[EnemyController] {Data?.Type} unstuck {GlobalPosition} → {candidate}");
+					GlobalPosition = candidate;
+					return;
+				}
+			}
+		}
+		GD.PushWarning($"[EnemyController] {Data?.Type} could not unstuck from walls at {GlobalPosition}");
+	}
+
 	public override void _PhysicsProcess(double delta)
 	{
 		if (_health != null && _health.IsDead) return;
 
 		// Lazy player lookup — deferred from _Ready to handle scene-tree ordering.
 		_player ??= GetTree().GetFirstNodeInGroup("player") as Node2D;
+
+		// If the player is dead, treat as absent for the rest of this tick so
+		// behaviors fall through to patrol/wander instead of locking us onto
+		// the corpse and ping-ponging the contact-damage check across it.
+		// Re-fetched next tick (same group lookup) and re-cleared if still
+		// dead — minor overhead, but keeps every consumer of `_player` in
+		// this file honest without having to thread an "alive?" check
+		// through every behavior/condition path.
+		if (_player is PlayerController pcAlive && pcAlive.IsDead)
+		{
+			_player = null;
+		}
+
+		// Defer the spawn-on-wall unstuck to the first physics tick so the
+		// TriggerSpawner walls (StaticBody2Ds spawned in its _Ready) are
+		// already in the physics world. Same scene-tree-ordering reason as
+		// the player lookup above. The Bat's home position capture below
+		// runs *after* the unstuck so its perch reflects the corrected pos.
+		TryUnstickFromWalls();
 
 		// Snapshot the spawn pose once on the first tick so any
 		// scene-construction repositioning has settled. This is the bat's
@@ -555,8 +624,16 @@ public partial class EnemyController : CharacterBody2D
 		var from = GlobalPosition;
 		var exclude = new Godot.Collections.Array<Rid> { GetRid() };
 
+		// Probe with the normalized move direction so the look-ahead is a
+		// uniform WallProbeLength regardless of how the AI scaled the
+		// desired vector (the crab's CrabTowardPlayer pattern returns a
+		// 1.5×/0.7× non-unit vector — without this, the forward probe goes
+		// ~23 px in a tilted direction and the side probes are stretched
+		// the same way, making the avoidance read like the crab is
+		// looking off-axis).
+		var dir = desired.Normalized();
 		// Forward probe — is a wall in our path?
-		var qFwd = PhysicsRayQueryParameters2D.Create(from, from + desired * WallProbeLength, WallCollisionMask, exclude);
+		var qFwd = PhysicsRayQueryParameters2D.Create(from, from + dir * WallProbeLength, WallCollisionMask, exclude);
 		if (space.IntersectRay(qFwd).Count == 0)
 		{
 			_avoidanceBias = Vector2.Zero;
@@ -564,8 +641,8 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		// Wall ahead — probe ±90° perpendiculars.
-		var left  = new Vector2(-desired.Y,  desired.X);
-		var right = new Vector2( desired.Y, -desired.X);
+		var left  = new Vector2(-dir.Y,  dir.X);
+		var right = new Vector2( dir.Y, -dir.X);
 
 		var qLeft  = PhysicsRayQueryParameters2D.Create(from, from + left  * WallProbeLength, WallCollisionMask, exclude);
 		var qRight = PhysicsRayQueryParameters2D.Create(from, from + right * WallProbeLength, WallCollisionMask, exclude);
