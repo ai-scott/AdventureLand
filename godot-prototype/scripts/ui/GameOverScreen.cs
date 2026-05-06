@@ -68,23 +68,14 @@ public partial class GameOverScreen : CanvasLayer
 
     private async void OnPlayerDied()
     {
-        // Refill the player's HP to full immediately. Mirrors the C3 flow
-        // in eGameRoom.json:4258+ where the death sequence runs to
-        // completion before the GameOver layout swaps in — by then HP
-        // should already read full so the HUD doesn't flicker. Done
-        // synchronously here (vs. waiting for SaveManager.Load on
-        // Continue) so the corner hearts repaint while the body is still
-        // crumpling. HealthSystem.RestoreState clamps + emits
-        // HealthChanged so the HUD picks it up.
-        _health.RestoreState(_health.MaxHealth, _health.MaxHealth);
-
-        // 1-second on-screen beat for the death animation (C3
-        // eGameRoom.json:4351 — wait 1s after setting the death-pose
-        // frames). The player's MSCA Death + DeathBounce play to
-        // completion uncovered, and at the 0.95s mark
-        // PlayerController.OnPlayerDied flips the AnimationTree off so
-        // the last pose freezes for the rest of the sequence.
-        await ToSignal(GetTree().CreateTimer(1.0), Timer.SignalName.Timeout);
+        // ~3-second on-screen beat. Death + DeathBounce burn ~1.8s at the
+        // halved SpeedScale set in PlayerController.OnPlayerDied, then the
+        // body freezes face-down at the 1.9s mark. The remaining ~1s is
+        // the "lie on the ground" beat — body unhittable (IsDead gate in
+        // PlayerController.TakeDamage) and visibly still — before the
+        // world fades to black. HP stays at 0 during this window so the
+        // corner hearts read empty while the player crumples.
+        await ToSignal(GetTree().CreateTimer(2.9), Timer.SignalName.Timeout);
 
         // Fade the live world to black via FadeOverlay (the same overlay
         // SaveManager uses for transitions). This hides the player corpse
@@ -95,6 +86,16 @@ public partial class GameOverScreen : CanvasLayer
         {
             await FadeOverlay.Instance.FadeOut(0.8);
         }
+
+        // NOW refill HP — under the black overlay, before the menu fades
+        // in. The HUD repaint is invisible until the next session starts
+        // (Try Again loads the save; Title Screen leaves play). Player's
+        // own IsDead flag stays set so the corpse can't be re-hit, and
+        // the death animation we travelled to in OnPlayerDied is still
+        // held by the AnimationTree (PlayerController gates _PhysicsProcess
+        // on its own IsDead flag, not HealthSystem's, so the refill here
+        // doesn't kick the player back into Idle).
+        _health.RestoreState(_health.MaxHealth, _health.MaxHealth);
 
         // The CanvasLayer is authored with visible=false so nothing in
         // it renders during normal play; turn it on now so the dim/bg/

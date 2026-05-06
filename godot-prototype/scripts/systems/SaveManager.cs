@@ -33,10 +33,12 @@ public partial class SaveManager : Node
     /// Cleared after use.</summary>
     public Vector2? PendingSpawnPosition { get; set; }
 
-    /// <summary>One-shot flag: when true, the next ApplySaveToPlayer leaves
-    /// the player at the scene-authored spawn instead of the saved position.
-    /// Set by Load() (Continue / restart) and cleared after a single use.</summary>
-    private bool _useSceneSpawn;
+    /// <summary>Set by Load() for Continue/Try Again so ApplySaveToPlayer
+    /// refills HP to MaxHealth instead of using CurrentData.Health (which
+    /// can hold stale gameplay HP from a pre-death auto-save). Cleared
+    /// after the apply so subsequent door/edge transitions keep the
+    /// player's working HP.</summary>
+    private bool _forceFullHealthOnApply;
 
     private static string SlotPath(int slot) => $"{SaveDir}/slot_{slot}.tres";
 
@@ -192,14 +194,14 @@ public partial class SaveManager : Node
         // transitions (door/edge) keep their existing HP via the snapshot
         // in TransitionToWorld; this branch only fires on the title-screen
         // Continue path and game-over restart.
+        // Spawn position is left as the saved value — that's the last
+        // edge/door entry into this world (auto-saved in
+        // ApplySaveToPlayer), which is the player's expected "checkpoint".
+        // The unstuck spiral in ApplySaveToPlayer handles edge cases
+        // where the saved position now overlaps a wall (e.g. Tiled
+        // edits added a wall after the save).
         CurrentData.Health = CurrentData.MaxHealth;
-        // Continue should also reset spawn to the scene's authored Player
-        // position (not where the player died). Without this, "Try Again"
-        // drops you back on the patch of map that just killed you — e.g.
-        // mid-pink-shell on the SM island, where the crab is still in
-        // attack range and you can't react. ApplySaveToPlayer reads this
-        // flag and skips the saved-position restore for one application.
-        _useSceneSpawn = true;
+        _forceFullHealthOnApply = true;
 
         // Same loading interstitial as NewGame — Continue from the title can
         // hit the same TileMap-bake freeze on the first world transition.
@@ -320,25 +322,16 @@ public partial class SaveManager : Node
         // Spawn precedence:
         //   1. PendingSpawnPosition — set by WorldManager for door/edge
         //      transitions (overrides everything).
-        //   2. _useSceneSpawn — Continue / Try Again. Leave the player at
-        //      whatever GlobalPosition the scene authored on Player.tscn
-        //      (the new scene's _Ready already placed it there) and copy
-        //      that into CurrentData so the next save reflects the reset.
-        //   3. Otherwise — restore the saved position (normal Load path
-        //      that's not a fresh Continue, e.g. internal re-applies).
+        //   2. Otherwise — restore the saved position. That's the last
+        //      auto-save (= last edge/door entry into this world) for
+        //      a fresh Continue, or the saved position for any internal
+        //      re-applies.
         if (PendingSpawnPosition.HasValue)
         {
             player.GlobalPosition = PendingSpawnPosition.Value;
             CurrentData.PositionX = PendingSpawnPosition.Value.X;
             CurrentData.PositionY = PendingSpawnPosition.Value.Y;
             PendingSpawnPosition = null;
-        }
-        else if (_useSceneSpawn)
-        {
-            CurrentData.PositionX = player.GlobalPosition.X;
-            CurrentData.PositionY = player.GlobalPosition.Y;
-            _useSceneSpawn = false;
-            GD.Print($"[SaveManager] Continue: respawned at scene-authored {player.GlobalPosition}");
         }
         else
         {
@@ -371,7 +364,17 @@ public partial class SaveManager : Node
         var health = player.GetNodeOrNull<HealthSystem>("HealthSystem");
         if (health != null)
         {
-            health.RestoreState(CurrentData.Health, CurrentData.MaxHealth);
+            // Continue / Try Again forces a full refill regardless of what
+            // CurrentData.Health holds. The line-196 fix in Load() seeds
+            // CurrentData with MaxHealth, but TransitionToWorld's snapshot
+            // (line 273) and any auto-save fired between Load and apply
+            // can re-stomp the value back to whatever the live player had,
+            // which on Try Again is whatever HP was saved before the death
+            // beat ran. Reading off MaxHealth directly here is the only
+            // place the saved value never leaks through.
+            int desiredHealth = _forceFullHealthOnApply ? CurrentData.MaxHealth : CurrentData.Health;
+            health.RestoreState(desiredHealth, CurrentData.MaxHealth);
+            _forceFullHealthOnApply = false;
         }
 
         // Spawn-unstuck: if the saved/edge position lands on a solid (a wall

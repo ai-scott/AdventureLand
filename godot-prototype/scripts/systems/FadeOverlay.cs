@@ -23,6 +23,12 @@ public partial class FadeOverlay : CanvasLayer
     private ColorRect _fadeRect;
     private Label _bannerLabel;
 
+    /// <summary>True when the overlay is currently visibly black (alpha
+    /// near 1). Lets new scenes know if they need to fade themselves up
+    /// — e.g. TitleScreen reached via Game Over → Title Screen, where the
+    /// previous scene faded to black but didn't fade back up.</summary>
+    public bool IsOpaque => _fadeRect != null && _fadeRect.Color.A > 0.01f;
+
     public override void _Ready()
     {
         Instance = this;

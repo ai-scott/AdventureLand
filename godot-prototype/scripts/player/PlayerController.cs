@@ -74,6 +74,15 @@ public partial class PlayerController : CharacterBody2D
 	/// <summary>True while mid-attack — blocks movement input, gates re-press.</summary>
 	public bool Attacking { get; private set; } = false;
 
+	/// <summary>One-way: set to true the moment HealthSystem.Died fires and
+	/// stays true until the scene reloads. Gates TakeDamage, knockback,
+	/// movement, attack input, and physics-body collision so the player
+	/// can't be re-hit or stand back up after the Death animation runs.
+	/// Game over flow refills HP for the HUD readout but mustn't undo this
+	/// flag — IsDead-based checks alone aren't enough since CurrentHealth
+	/// goes back to MaxHealth.</summary>
+	public bool IsDead { get; private set; } = false;
+
 	/// <summary>Process-frame number recorded by overlays (toasts, prompts)
 	/// when they close. <see cref="_UnhandledInput"/> uses it to suppress
 	/// attack inputs for one frame after a close, so the Space key that
@@ -96,6 +105,76 @@ public partial class PlayerController : CharacterBody2D
 	private const int MagicTridentItemId = 4;
 	private static SpriteFrames _tridentFrames;
 	private AnimatedSprite2D _tridentEffect;
+	/// <summary>Per-direction fine-tune offset added on top of MSCA's
+	/// per-frame strike data. Default zero produces an MSCA-faithful swing;
+	/// tune if the trident art needs a global nudge against the body for
+	/// a given direction. Tune in the Inspector while the game runs —
+	/// changes take effect on the next swing. Negative Y is up.</summary>
+	[ExportGroup("Trident swing bias")]
+	[Export] public Vector2 TridentSwingOffsetUp    = Vector2.Zero;
+	[Export] public Vector2 TridentSwingOffsetDown  = Vector2.Zero;
+	[Export] public Vector2 TridentSwingOffsetLeft  = Vector2.Zero;
+	[Export] public Vector2 TridentSwingOffsetRight = Vector2.Zero;
+
+	/// <summary>Debug: keep MSCA's regular farmer_1h_weapon sprite visible
+	/// during the trident swing, so you can SEE where MSCA places the
+	/// stock weapon at each beat and align the trident overlay to match.
+	/// Equip a non-trident weapon AND the trident (ItemId checks pick the
+	/// trident as primary), and both render side-by-side during the swing.
+	/// Leave off for normal play — the doubled sprite reads as a bug
+	/// otherwise.</summary>
+	[Export] public bool DebugShowMscaWeaponDuringTridentSwing = false;
+
+	/// <summary>One beat of MSCA's StrikeForehandOneHandWeapon weapon-track.
+	/// MSCA writes these into a Godot animation that drives the
+	/// farmer_1h_weapon Sprite2D's offset/rotation/flip every tick — see
+	/// addons/msca/packs/farmer_base.gd:230-238 (skip_offset=true means
+	/// these are raw pixels relative to SpriteLayers, our coordinate frame).
+	/// Mirroring them here puts the trident swing FX on the exact same
+	/// arc the regular weapon overlay would trace.</summary>
+	private record struct MscaBeat(Vector2 Offset, float RotationDeg, bool FlipH);
+
+	/// <summary>StrikeForehandOneHandWeapon's farmer_1h_weapon track,
+	/// lifted from addons/msca/jsons/farmer_base_animations.json. 5 beats
+	/// per direction, paired with TridentFrameDurations below for the
+	/// 0.18 / 0.08 / 0.08 / 0.08 / 0.3 second cadence.</summary>
+	private static readonly System.Collections.Generic.Dictionary<string, MscaBeat[]> TridentMscaBeats = new()
+	{
+		["down"] = new[] {
+			new MscaBeat(new Vector2(  6, -22),   0f, false),
+			new MscaBeat(new Vector2( 17, -20),   0f, true),
+			new MscaBeat(new Vector2(  5, -10),  90f, true),
+			new MscaBeat(new Vector2(-18, -25),   0f, false),
+			new MscaBeat(new Vector2(-18, -25),   0f, false),
+		},
+		["up"] = new[] {
+			new MscaBeat(new Vector2( -9, -20),   0f, false),
+			new MscaBeat(new Vector2(-18, -26),   0f, false),
+			new MscaBeat(new Vector2( -8, -30),   0f, false),
+			new MscaBeat(new Vector2(-20, -20),  90f, false),
+			new MscaBeat(new Vector2(-20, -20),  90f, false),
+		},
+		["right"] = new[] {
+			new MscaBeat(new Vector2( -2, -20),   0f, false),
+			new MscaBeat(new Vector2( -8,   4),   0f, false),
+			new MscaBeat(new Vector2(-12, -28),  90f, true),
+			new MscaBeat(new Vector2(-27,   9),  90f, false),
+			new MscaBeat(new Vector2(-27,   9),  90f, false),
+		},
+		["left"] = new[] {
+			new MscaBeat(new Vector2( -2,  20), 180f, true),
+			new MscaBeat(new Vector2(  4, -10),  90f, true),
+			new MscaBeat(new Vector2(-12,  28),  90f, true),
+			new MscaBeat(new Vector2(-27,  -9),  90f, false),
+			new MscaBeat(new Vector2(-27,  -9),  90f, false),
+		},
+	};
+
+	/// <summary>MSCA's per-frame strike timing, in seconds. Used as the
+	/// duration values for SpriteFrames.AddFrame so the swing visuals beat
+	/// in sync with the body animation: 0.18 windup → 3 strike beats at
+	/// 0.08 each → 0.3 recovery hold.</summary>
+	private static readonly float[] TridentFrameDurations = { 0.18f, 0.08f, 0.08f, 0.08f, 0.3f };
 
 	// Knockback stun — blocks input while > 0, velocity decays.
 	private double _knockbackTimer;
@@ -246,7 +325,12 @@ public partial class PlayerController : CharacterBody2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (_health != null && _health.IsDead) return;
+		// Gate on the player's one-way IsDead flag, NOT _health.IsDead — the
+		// GameOverScreen refills HP partway through the death beat (so the
+		// menu hearts read full when it lands), which flips _health.IsDead
+		// back to false. Without this, the next tick re-enters Idle/Walk and
+		// overwrites the Death animation we travelled to in OnPlayerDied.
+		if (IsDead) return;
 
 		// Knockback stun — skip input, decay velocity.
 		if (_knockbackTimer > 0)
@@ -410,7 +494,7 @@ public partial class PlayerController : CharacterBody2D
 		// the previous attack and the "started" signal can skip-fire, leaving
 		// the weapon invisible for the whole second swing.
 		bool isTrident = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
-		if (_weaponSprite != null) _weaponSprite.Visible = !isTrident;
+		if (_weaponSprite != null) _weaponSprite.Visible = !isTrident || DebugShowMscaWeaponDuringTridentSwing;
 		if (isTrident) PlayTridentSwing();
 
 		// Sync hitbox to the weapon sprite immediately; _PhysicsProcess will keep
@@ -471,6 +555,7 @@ public partial class PlayerController : CharacterBody2D
 	/// strength-6 crab (6 - 4 = 2). Floor at 0 so the calc never heals.</summary>
 	public void TakeDamage(int amount)
 	{
+		if (IsDead) return;
 		if (_health == null || _health.Invulnerable || _health.IsDead) return;
 		int defense = ComputeDefense();
 		// (defense + 1) / 2 with int math = ceil(defense / 2): defense 7 → 4,
@@ -522,21 +607,39 @@ public partial class PlayerController : CharacterBody2D
 			TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
 			ZIndex = 1, // sit on top of the player body
 		};
-		// Anchor so the trident appears in front of the player at chest
-		// height for vertical swings, lateral for horizontal. Mirrors C3's
-		// authored frame offsets — the artwork already includes the swing
-		// arc, so a small body offset is plenty.
-		_tridentEffect.Position = new Vector2(0, -8);
-		AddChild(_tridentEffect);
-
 		string anim = FacingAnimSuffix(_facing);
 		if (!_tridentFrames.HasAnimation(anim)) anim = _tridentFrames.GetAnimationNames()[0];
+		// Place the AnimatedSprite2D at the player's CharacterBody2D origin
+		// (the SpriteLayers parent for MSCA's farmer_1h_weapon sits at the
+		// same spot, so MSCA's offset values translate directly). Add the
+		// per-direction bias as the rotation pivot's resting position —
+		// keeps the swing arc shape MSCA-faithful while letting the user
+		// nudge each facing globally.
+		_tridentEffect.Position = TridentBiasFor(anim);
+		AddChild(_tridentEffect);
+
+		// Apply MSCA's per-frame OFFSET only — the trident PNGs already
+		// depict the weapon at each swing pose (frame 0 = windup pose,
+		// frame 2 = mid-strike, etc.), so MSCA's rotation/flip would
+		// double-transform art that's already pre-rotated. Offsets still
+		// give us the correct hand position at each beat.
+		void ApplyMscaBeat()
+		{
+			if (!TridentMscaBeats.TryGetValue(anim, out var beats)) return;
+			int frame = _tridentEffect.Frame;
+			if (frame < 0 || frame >= beats.Length) return;
+			_tridentEffect.Offset = beats[frame].Offset;
+		}
+		_tridentEffect.FrameChanged += ApplyMscaBeat;
 		_tridentEffect.AnimationFinished += () =>
 		{
 			if (_tridentEffect != null && IsInstanceValid(_tridentEffect)) _tridentEffect.QueueFree();
 			_tridentEffect = null;
 		};
 		_tridentEffect.Play(anim);
+		// Frame 0 is already on screen — call once after Play so beat 0 is
+		// applied before FrameChanged fires for beats 1, 2, 3…
+		ApplyMscaBeat();
 	}
 
 	/// <summary>Resolve the player's eight-direction facing vector to one of
@@ -549,6 +652,15 @@ public partial class PlayerController : CharacterBody2D
 			return dir.X >= 0 ? "right" : "left";
 		return dir.Y >= 0 ? "down" : "up";
 	}
+
+	private Vector2 TridentBiasFor(string anim) => anim switch
+	{
+		"up"    => TridentSwingOffsetUp,
+		"down"  => TridentSwingOffsetDown,
+		"left"  => TridentSwingOffsetLeft,
+		"right" => TridentSwingOffsetRight,
+		_       => Vector2.Zero,
+	};
 
 	/// <summary>Build the SpriteFrames once and cache statically. Folder
 	/// scan + ParseFrameName mirror the EnemyFolderAnimator approach so
@@ -598,12 +710,23 @@ public partial class PlayerController : CharacterBody2D
 		{
 			list.Sort((a, b) => a.idx.CompareTo(b.idx));
 			frames.AddAnimation(anim);
-			frames.SetAnimationSpeed(anim, 12f);
+			// Speed = 1.0 means each frame's `duration` argument is the
+			// literal time in seconds (Godot computes frame_time = duration
+			// / speed). With our per-frame TridentFrameDurations matching
+			// MSCA's [0.18, 0.08, 0.08, 0.08, 0.3] cadence, that gives us
+			// a 0.72-second swing in lockstep with MSCA's strike anim.
+			frames.SetAnimationSpeed(anim, 1.0);
 			frames.SetAnimationLoop(anim, false); // one-shot — auto-frees on Finished
-			foreach (var (_, path) in list)
+
+			// Pad to MSCA's 5-frame strike. left/right only have 3 trident
+			// frames in the C3 source — beats 3 and 4 are MSCA's recovery
+			// hold (the dupe in the JSON), so we just repeat the last
+			// trident frame into those slots. up/down already have 5.
+			for (int beat = 0; beat < TridentFrameDurations.Length; beat++)
 			{
-				var tex = GD.Load<Texture2D>(path);
-				if (tex != null) frames.AddFrame(anim, tex);
+				int srcIdx = System.Math.Min(beat, list.Count - 1);
+				var tex = GD.Load<Texture2D>(list[srcIdx].path);
+				if (tex != null) frames.AddFrame(anim, tex, TridentFrameDurations[beat]);
 			}
 		}
 		return frames;
@@ -632,7 +755,22 @@ public partial class PlayerController : CharacterBody2D
 	/// has plenty of room to play out before the menu shows.</summary>
 	private void OnPlayerDied()
 	{
+		// One-way death lock: from this point on, TakeDamage / ApplyKnockback
+		// no-op, the body collision and hurtbox are off, and AI/movement
+		// input is frozen. The GameOverScreen refills HP for the HUD readout
+		// (so hearts show full while the menu lands) but THIS flag — not
+		// CurrentHealth — is the source of truth for "player is gone". Without
+		// it, refilling HP makes IsDead false, and the next stray crab bump
+		// would re-fire OnHurt + the player would briefly stand back up.
+		IsDead = true;
 		Velocity = Vector2.Zero;
+		_knockbackTimer = 0;
+		_knockbackVelocity = Vector2.Zero;
+		// Disable the body so enemies can't bump the corpse into damage
+		// events on subsequent ticks. Layer 0 = no one detects us; mask 0 =
+		// we don't collide with anything either.
+		CollisionLayer = 0;
+		CollisionMask = 0;
 		if (_weaponSprite != null) _weaponSprite.Visible = false;
 		// Snap mid-attack/walk poses out so the death animation reads
 		// cleanly. Without this, dying mid-strike leaves the player frozen
@@ -651,6 +789,10 @@ public partial class PlayerController : CharacterBody2D
 		// a definite cardinal — diagonals on Death pose look like the
 		// player's mid-fall instead of resting.
 		_facing = Vector2.Down;
+		// Slow the AnimationTree so the Death + DeathBounce sequence reads
+		// as a heavy crumple rather than a quick flop. SpeedScale=0.5 halves
+		// the play rate, so the freeze-timer below has to double too.
+		_tree?.Set("speed_scale", 0.5f);
 		SetBlend("Death", _facing);
 		_state?.Travel("Death");
 		SFXController.Instance?.Play("player_hurt", -3f);
@@ -661,9 +803,9 @@ public partial class PlayerController : CharacterBody2D
 		// player stands back up. Disable the AnimationTree once the bounce
 		// settles so the last frame holds — the GameOverScreen still shows
 		// the body face-down on the ground while the fade-out runs.
-		// 0.95s = Death (0.2) + DeathBounce (0.7) + 0.05s safety margin.
+		// 1.9s = (Death 0.2 + DeathBounce 0.7 + 0.05 margin) × 2 (SpeedScale=0.5).
 		InputLocked = true;
-		GetTree().CreateTimer(0.95).Timeout += () =>
+		GetTree().CreateTimer(1.9).Timeout += () =>
 		{
 			if (_tree != null) _tree.Active = false;
 		};
@@ -672,6 +814,7 @@ public partial class PlayerController : CharacterBody2D
 	/// <summary>Apply a knockback impulse. Stuns input for KnockbackDuration while velocity decays.</summary>
 	public void ApplyKnockback(Vector2 force)
 	{
+		if (IsDead) return;
 		_knockbackVelocity = force;
 		_knockbackTimer = KnockbackDuration;
 	}
@@ -725,7 +868,15 @@ public partial class PlayerController : CharacterBody2D
 		if (stateName == AttackAnimName)
 		{
 			Attacking = true;
-			if (_weaponSprite != null) _weaponSprite.Visible = true;
+			// Keep MSCA's farmer_1h_weapon hidden for trident swings — the
+			// trident has its own AnimatedSprite2D overlay (PlayTridentSwing)
+			// and showing the default weapon sprite alongside it produces
+			// a frame or two of "previous weapon" leaking through the
+			// trident's swing arc. StartAttack already hid it; this MSCA
+			// callback fires *after* StartAttack and was unconditionally
+			// re-enabling visibility.
+			bool isTrident = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
+			if (_weaponSprite != null) _weaponSprite.Visible = !isTrident || DebugShowMscaWeaponDuringTridentSwing;
 		}
 	}
 

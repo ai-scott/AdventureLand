@@ -146,6 +146,17 @@ public partial class TitleScreen : Control
 
         ShowMain();
         PlayEntryAnimation();
+
+        // Lift the FadeOverlay if we landed here behind a black sheet.
+        // Game Over → Title Screen leaves FadeOverlay at alpha=1 from
+        // GameOverScreen's pre-banner FadeOut, and the menu button
+        // handler has no chance to fade back in (its lambda is freed
+        // along with the world scene at ChangeSceneToFile). Without this
+        // call the title screen renders behind opaque black.
+        if (FadeOverlay.Instance != null && FadeOverlay.Instance.IsOpaque)
+        {
+            _ = FadeOverlay.Instance.FadeIn(0.5);
+        }
     }
 
     /// <summary>Drape the project-standard pixel panel over a PanelContainer.
@@ -1121,18 +1132,12 @@ public partial class TitleScreen : Control
             nameLabel.AddThemeColorOverride("font_color", DesignTokens.Gold);
             hbox.AddChild(nameLabel);
 
-            hbox.AddChild(BuildHeartRow(data.Health, data.MaxHealth));
-
-            var hpLabel = new Label
-            {
-                Text = $"{data.Health}/{data.MaxHealth}",
-                VerticalAlignment = VerticalAlignment.Center,
-                MouseFilter = Control.MouseFilterEnum.Ignore,
-            };
-            hpLabel.AddThemeFontOverride("font", UiFonts.Body);
-            hpLabel.AddThemeFontSizeOverride("font_size", 20);
-            hpLabel.AddThemeColorOverride("font_color", DesignTokens.Paper);
-            hbox.AddChild(hpLabel);
+            // Hearts represent the player's heart-container count, not live
+            // HP — Continue/Try Again refills to full (SaveManager.Load
+            // line ~196), so showing 4/10 on the slot would mislead the
+            // player into thinking they'd resume injured. Pass MaxHealth
+            // for both args so every heart renders full.
+            hbox.AddChild(BuildHeartRow(data.MaxHealth, data.MaxHealth));
 
             // World/area name flows naturally after HP, left-aligned, with
             // ExpandFill so it absorbs any extra row width.
@@ -1173,7 +1178,10 @@ public partial class TitleScreen : Control
     private static Control BuildHeartRow(int hp, int maxHp)
     {
         var row = new HBoxContainer();
-        row.AddThemeConstantOverride("separation", 1);
+        // Wider spacing reads as "container slots" rather than the cramped
+        // HUD row — the slot card has plenty of horizontal room now that
+        // the X/Y label is gone, so the hearts can breathe.
+        row.AddThemeConstantOverride("separation", 5);
         row.MouseFilter = Control.MouseFilterEnum.Ignore;
         row.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
 
@@ -1189,7 +1197,7 @@ public partial class TitleScreen : Control
             var heart = new TextureRect
             {
                 Texture = tex,
-                CustomMinimumSize = new Vector2(16, 16),
+                CustomMinimumSize = new Vector2(20, 20),
                 StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
                 TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
                 SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
