@@ -74,6 +74,7 @@ public partial class VOController : Node
         // "You" is the player — never has VO. Cheap early exit so the cache
         // doesn't fill with player-response misses.
         if (speaker.Equals("You", System.StringComparison.OrdinalIgnoreCase)) return;
+        using var _perf = PerfMonitor.Measure("vo_play", $"{speaker}/{nodeId}");
 
         // Speaker is just lowercased (existing files use "seamonster", not
         // "sea_monster" — the C3 webm names had no separator there). Node id

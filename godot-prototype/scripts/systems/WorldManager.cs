@@ -165,9 +165,11 @@ public partial class WorldManager : Node
 
         // Change scene via SaveManager so HP/inventory/costume restore.
         // Don't set PendingSpawnPosition yet — we compute it after the scene loads.
-        SaveManager.Instance?.TransitionToWorld(targetScene);
+        // The await keeps the fade animating while ResourceLoader threads the load.
+        if (SaveManager.Instance != null)
+            await SaveManager.Instance.TransitionToWorld(targetScene);
 
-        // Wait a few frames for the new scene + Player._Ready to run.
+        // Wait a few frames for Player._Ready to run after the scene swap.
         for (int i = 0; i < 30; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -232,9 +234,10 @@ public partial class WorldManager : Node
         if (SaveManager.Instance != null)
             SaveManager.Instance.PendingSpawnPosition = entryPos;
 
-        SaveManager.Instance?.TransitionToWorld(targetScene);
+        if (SaveManager.Instance != null)
+            await SaveManager.Instance.TransitionToWorld(targetScene);
 
-        // Wait for scene ready.
+        // Wait a few frames for Player._Ready to run after the scene swap.
         for (int i = 0; i < 30; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

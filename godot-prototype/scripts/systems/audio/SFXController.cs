@@ -71,6 +71,7 @@ public partial class SFXController : Node
     public void Play(string name, float volumeDb = 0f)
     {
         if (string.IsNullOrEmpty(name)) return;
+        using var _perf = PerfMonitor.Measure("sfx_play", name);
 
         var stream = LoadStream(name);
         if (stream == null) return;

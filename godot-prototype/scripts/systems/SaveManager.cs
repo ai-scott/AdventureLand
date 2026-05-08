@@ -125,18 +125,17 @@ public partial class SaveManager : Node
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok) GD.PrintErr($"[SaveManager] NewGame save failed: {err}");
 
-        // Fade to black immediately so the user sees feedback while the scene loads.
+        // Pin "Loading..." text BEFORE the fade so the user sees feedback
+        // the same frame they click — see comment in Load() for rationale.
+        // BannerLabel renders above FadeRect, so the text stays visible
+        // as the title screen fades to black behind it.
         if (FadeOverlay.Instance != null)
         {
-            await FadeOverlay.Instance.FadeOut(0.3);
-            // First-world load can stutter for a beat (TileMap bake, asset
-            // cache cold). Pin "Loading..." over the black so the user sees
-            // a static screen instead of an unresponsive UI during the
-            // ChangeSceneToFile freeze.
             await FadeOverlay.Instance.ShowLoading();
+            await FadeOverlay.Instance.FadeOut(0.3);
         }
 
-        TransitionToWorld(CurrentData.CurrentWorld);
+        await TransitionToWorld(CurrentData.CurrentWorld);
 
         // Show the first-world banner ("Leafwood Village") over the black fade,
         // then fade in the new scene. Fire-and-forget — don't block NewGame's caller.
@@ -203,16 +202,22 @@ public partial class SaveManager : Node
         CurrentData.Health = CurrentData.MaxHealth;
         _forceFullHealthOnApply = true;
 
-        // Same loading interstitial as NewGame — Continue from the title can
-        // hit the same TileMap-bake freeze on the first world transition.
+        // Pin "Loading..." text BEFORE the fade so the user sees feedback
+        // the same frame they click. With ShowLoading after FadeOut, the
+        // 0.3s fade ran with nothing on screen and the text only appeared
+        // once the world was already black — read as unresponsive on
+        // Try Again. BannerLabel renders above FadeRect, so the text
+        // stays visible as the world fades to black behind it.
         if (FadeOverlay.Instance != null)
         {
-            await FadeOverlay.Instance.FadeOut(0.3);
             await FadeOverlay.Instance.ShowLoading();
+            await FadeOverlay.Instance.FadeOut(0.3);
         }
-        TransitionToWorld(CurrentData.CurrentWorld);
+        await TransitionToWorld(CurrentData.CurrentWorld);
 
-        // Wait for the new scene + Player._Ready to land.
+        // Wait for the new scene + Player._Ready to land. The await above
+        // already returns after ChangeSceneToPacked, but _Ready can take a
+        // few frames more (esp. for MSCA player setup).
         for (int i = 0; i < 30; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -265,9 +270,14 @@ public partial class SaveManager : Node
         return true;
     }
 
-    /// <summary>Change scene and apply saved state to the player.</summary>
-    public void TransitionToWorld(string scenePath)
+    /// <summary>Change scene and apply saved state to the player.
+    /// Uses ResourceLoader's threaded loader so the ~1.5s scene load happens
+    /// off the main thread — animations, fades, and audio keep ticking while
+    /// the new scene cooks. Callers should <c>await</c> this so subsequent
+    /// "wait for player" loops run AFTER the scene actually swapped.</summary>
+    public async System.Threading.Tasks.Task TransitionToWorld(string scenePath)
     {
+        using var _perf = PerfMonitor.Measure("scene_transition", scenePath);
         GD.Print($"[SaveManager] TransitionToWorld: {scenePath}");
         // Snapshot the live player's HP into CurrentData before the scene
         // swap. Without this, the new scene's Player._Ready resets HP to
@@ -295,9 +305,62 @@ public partial class SaveManager : Node
         // dict would overwrite the saved EquippedItems before LoadFrom
         // gets a chance to read them, resetting the player to nothing.
         if (livePlayer != null) Inventory.Instance?.SaveTo(CurrentData);
-        GetTree().ChangeSceneToFile(scenePath);
+
+        bool swapped = await TryThreadedSceneSwapAsync(scenePath);
+        if (!swapped)
+        {
+            // Threaded path failed (rare — typically a missing file or
+            // resource format mismatch). Fall back to the synchronous load
+            // so behavior degrades to "stutter" instead of "broken".
+            GD.Print($"[SaveManager] threaded load fell through, using sync ChangeSceneToFile");
+            GetTree().ChangeSceneToFile(scenePath);
+        }
+
         // Wait for the new scene's _Ready callbacks to run before applying state.
         _ = ApplySaveWhenReady();
+    }
+
+    /// <summary>Threaded scene load + swap. Returns true on success, false if
+    /// the threaded path failed at any step (caller should fall back to a
+    /// synchronous <c>ChangeSceneToFile</c>).</summary>
+    private async System.Threading.Tasks.Task<bool> TryThreadedSceneSwapAsync(string scenePath)
+    {
+        var requestErr = ResourceLoader.LoadThreadedRequest(scenePath);
+        if (requestErr != Error.Ok)
+        {
+            GD.PushError($"[SaveManager] LoadThreadedRequest failed for {scenePath}: {requestErr}");
+            return false;
+        }
+
+        // Poll status, yielding a frame each iteration so the engine keeps
+        // the fade animation, audio, and any other autoload _Process work
+        // running. Worst case ~90 iterations at 60fps for a 1.5s load.
+        while (true)
+        {
+            var status = ResourceLoader.LoadThreadedGetStatus(scenePath);
+            if (status == ResourceLoader.ThreadLoadStatus.Loaded) break;
+            if (status == ResourceLoader.ThreadLoadStatus.Failed ||
+                status == ResourceLoader.ThreadLoadStatus.InvalidResource)
+            {
+                GD.PushError($"[SaveManager] LoadThreadedGetStatus={status} for {scenePath}");
+                return false;
+            }
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+
+        if (ResourceLoader.LoadThreadedGet(scenePath) is not PackedScene packed)
+        {
+            GD.PushError($"[SaveManager] LoadThreadedGet did not return PackedScene for {scenePath}");
+            return false;
+        }
+
+        var swapErr = GetTree().ChangeSceneToPacked(packed);
+        if (swapErr != Error.Ok)
+        {
+            GD.PushError($"[SaveManager] ChangeSceneToPacked failed: {swapErr}");
+            return false;
+        }
+        return true;
     }
 
     private async System.Threading.Tasks.Task ApplySaveWhenReady()

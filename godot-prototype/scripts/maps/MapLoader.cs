@@ -53,6 +53,7 @@ public partial class MapLoader : Node2D
 
 	private void LoadAllLayers()
 	{
+		using var _perf = PerfMonitor.Measure("map_load", GetParent()?.Name ?? Name);
 		int totalTiles = 0;
 		foreach (var child in GetChildren())
 		{

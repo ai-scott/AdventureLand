@@ -29,6 +29,7 @@ public partial class NpcAnimator : Node
 
     public override void _Ready()
     {
+        using var _perf = PerfMonitor.Measure("npc_init", GetParent()?.Name ?? Name);
         _sprite = GetParent().GetNode<AnimatedSprite2D>("Sprite2D");
         BuildFrames();
         PlayIdle();
