@@ -175,13 +175,17 @@ public static class UiFrames
         label.AddThemeColorOverride("font_color", DesignTokens.Paper);
         hbox.AddChild(label);
 
-        if (!string.IsNullOrEmpty(kbdHint))
+        // Skip the keyboard-hint chip on mobile/touch builds — there's no
+        // physical key to suggest, and the chip looks like noise next to the
+        // verb. The button itself remains tap-friendly.
+        if (!string.IsNullOrEmpty(kbdHint) && !UiStyles.IsMobile)
         {
             hbox.AddChild(BuildKbdChip(kbdHint));
         }
 
         return btn;
     }
+
 
     /// <summary>Compact stat chip used inside item dialogs — mossy panel
     /// with text followed by an optional icon (e.g. "+3" + sword,

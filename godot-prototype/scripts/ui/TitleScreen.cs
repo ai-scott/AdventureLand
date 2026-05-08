@@ -287,20 +287,12 @@ public partial class TitleScreen : Control
 
     private Button AddMainOption(string text, System.Action onPressed)
     {
-        // On mobile we use boxed Btn_Action style for a clear tap target.
-        // On desktop we use a pointer-list style that matches the dialogue
-        // response selector — pointer icon left of the label, white when
-        // selected, gray when not.
-        Button btn;
-        if (UiStyles.IsMobile)
-        {
-            btn = UiStyles.CreateActionButton(text, onPressed, highlighted: false);
-            btn.CustomMinimumSize = new Vector2(220, 44);
-        }
-        else
-        {
-            btn = BuildPointerOption(text, onPressed);
-        }
+        // Both desktop and mobile use the pointer-list style — a transparent
+        // Button with a centered Label, gold focus border. Tap-friendly on
+        // mobile because the Button itself is the click target; the visual
+        // matches the dialogue response selector and the rest of the
+        // typography on the title screen.
+        var btn = BuildPointerOption(text, onPressed);
         _mainOptions.AddChild(btn);
         return btn;
     }

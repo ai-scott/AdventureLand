@@ -890,7 +890,9 @@ public partial class InventoryUI : CanvasLayer
 		};
 		labelGem.AddChild(gem);
 
-		hbox.AddChild(UiFrames.BuildKbdChip("↵"));
+		// Skip the ↵ kbd chip on touch builds — same rationale as
+		// UiFrames.BuildChipButton's mobile branch.
+		if (!UiStyles.IsMobile) hbox.AddChild(UiFrames.BuildKbdChip("↵"));
 		return btn;
 	}
 
@@ -1109,10 +1111,42 @@ public partial class InventoryUI : CanvasLayer
 			qty.AddThemeConstantOverride("shadow_offset_y", 1);
 			cell.AddChild(qty);
 			_slotQtyLabels[i] = qty;
+
+			// Touch / mouse-click support: tap a cell to select it (mirrors
+			// the arrow-key cursor); tap the already-selected cell to fire
+			// the same code path Space does (Equip / Unequip / Use). Wired
+			// on every build, not just mobile, so desktop mouse users get
+			// it too — keyboard nav still works in parallel.
+			cell.MouseFilter = Control.MouseFilterEnum.Stop;
+			int slotIndex = i; // capture for closure
+			cell.GuiInput += evt => OnCellTapped(evt, slotIndex);
 		}
 
 		// Move the slot cursor to the front so it draws above the cell BGs.
 		_slotCursor.GetParent().MoveChild(_slotCursor, -1);
+	}
+
+	/// <summary>Tap-to-select / tap-again-to-equip handler for one inventory
+	/// cell. Routes through the existing _selectedSlot + OnAction code paths
+	/// so equipment, use, sell, and details-panel state stay consistent with
+	/// the keyboard flow.</summary>
+	private void OnCellTapped(InputEvent evt, int slot)
+	{
+		bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
+					  || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
+		if (!tapped) return;
+
+		if (_selectedSlot == slot && _focusZone == FocusZone.Grid)
+		{
+			OnAction();
+		}
+		else
+		{
+			_focusZone = FocusZone.Grid;
+			_selectedSlot = slot;
+			RefreshHighlight();
+			RefreshDetails();
+		}
 	}
 
 	// ---- Live preview (mirror player SpriteLayers into SubViewport) ----

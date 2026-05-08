@@ -59,11 +59,28 @@ public partial class InteractHintManager : CanvasLayer
         ProcessMode = ProcessModeEnum.Always;
         BuildPanel();
         _panel.Visible = false;
+        // Rebuild the panel when the mobile flag flips at runtime so the
+        // Shift+M debug toggle swaps in the chunky translucent tap target
+        // (or the desktop kbd-icon panel) without a full restart.
+        UiStyles.MobileChanged += RebuildPanel;
     }
 
     public override void _ExitTree()
     {
+        UiStyles.MobileChanged -= RebuildPanel;
         if (Instance == this) Instance = null;
+    }
+
+    private void RebuildPanel()
+    {
+        if (_panel != null && IsInstanceValid(_panel))
+        {
+            _panel.QueueFree();
+            _panel = null;
+            _label = null;
+        }
+        BuildPanel();
+        _panel.Visible = false; // re-show on the next _Process tick if a hint is registered
     }
 
     public void Register(Node2D source, Func<string> textProvider, float? headOffsetY = null)
@@ -166,29 +183,76 @@ public partial class InteractHintManager : CanvasLayer
     {
         _panel = new PanelContainer();
         _panel.ProcessMode = ProcessModeEnum.Always;
-        _panel.MouseFilter = Control.MouseFilterEnum.Ignore;
+        // Mobile: panel itself becomes the tap target (synthesizes "interact"
+        // so the source's existing IsActionJustPressed path fires unchanged).
+        // Desktop: ignore mouse so clicks pass through to the world.
+        _panel.MouseFilter = UiStyles.IsMobile
+            ? Control.MouseFilterEnum.Stop
+            : Control.MouseFilterEnum.Ignore;
+        if (UiStyles.IsMobile)
+        {
+            _panel.GuiInput += evt =>
+            {
+                if (!_panel.Visible) return;
+                bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
+                              || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
+                if (!tapped) return;
+                var press = new InputEventAction { Action = "interact", Pressed = true };
+                Input.ParseInputEvent(press);
+                var release = new InputEventAction { Action = "interact", Pressed = false };
+                Input.ParseInputEvent(release);
+            };
+        }
 
         // Design-system mossy bevel with corner gaps. Asymmetric vertical
         // content margins: a normal top, a much smaller bottom so the
         // panel hugs the spc icon's lower edge. The icon's transparent
-        // bottom pixels overlap the bevel/border zone harmlessly.
-        UiFrames.ApplyMossyPanel(_panel, padding: 4);
+        // bottom pixels overlap the bevel/border zone harmlessly. On mobile
+        // we boost the padding for a chunkier tap target and dim the fill
+        // alpha to match the HUD chip family (translucent backdrop, opaque
+        // border + label).
+        int panelPadding = UiStyles.IsMobile ? 10 : 4;
+        UiFrames.ApplyMossyPanel(_panel, padding: panelPadding);
         if (_panel.GetThemeStylebox("panel") is BevelStyleBox sb)
         {
             sb.ContentMarginTop = sb.BorderWidth + sb.BevelWidth + 2; // 8
             sb.ContentMarginBottom = sb.BorderWidth;                   // 3 (just border)
+            if (UiStyles.IsMobile)
+            {
+                // Translucent fill / bevel — leaves the gold border + label
+                // crisp while the moss field reads through to the world.
+                const float Alpha = 0.55f;
+                sb.Fill = WithAlpha(sb.Fill, Alpha);
+                sb.BevelHi = WithAlpha(sb.BevelHi, Alpha);
+                sb.BevelLo = WithAlpha(sb.BevelLo, Alpha);
+                // Symmetric vertical padding now that there's no kbd icon
+                // tucked under the verb — center the label in a chunkier box.
+                sb.ContentMarginTop = sb.BorderWidth + sb.BevelWidth + 6;
+                sb.ContentMarginBottom = sb.BorderWidth + sb.BevelWidth + 6;
+                sb.ContentMarginLeft = sb.BorderWidth + sb.BevelWidth + 12;
+                sb.ContentMarginRight = sb.BorderWidth + sb.BevelWidth + 12;
+            }
+        }
+        if (UiStyles.IsMobile)
+        {
+            // Floor at HUD-chip height (~68px tall). Width auto-grows with
+            // the verb ("Take", "Talk", "Look", "Buy", "Enter"…) so longer
+            // verbs read with the same horizontal padding.
+            _panel.CustomMinimumSize = new Vector2(68, 68);
         }
 
         var vbox = new VBoxContainer();
         vbox.AddThemeConstantOverride("separation", 0);
         vbox.MouseFilter = Control.MouseFilterEnum.Ignore;
+        // Center the verb vertically inside the (now taller) panel.
+        vbox.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
         _panel.AddChild(vbox);
 
         // Action verb in Alagard gold (display face) — "Take", "Talk",
         // "Look", etc. The trigger now returns just the verb (no "↵ "
         // prefix); the kbd icon below stands in for the keypress.
         _label = new Label();
-        _label.AddThemeFontSizeOverride("font_size", 18);
+        _label.AddThemeFontSizeOverride("font_size", UiStyles.IsMobile ? 26 : 18);
         _label.AddThemeColorOverride("font_color", DesignTokens.Gold);
         _label.HorizontalAlignment = HorizontalAlignment.Center;
         _label.MouseFilter = Control.MouseFilterEnum.Ignore;
@@ -197,22 +261,29 @@ public partial class InteractHintManager : CanvasLayer
         // Space-key icon centered below the verb. SizeFlagsVertical=
         // ShrinkBegin pulls the icon up tight to the verb so the bottom
         // padding inside the texture overlaps the panel's bevel zone.
-        var spaceIcon = new TextureRect
+        // Skipped on mobile — the panel itself is the tap target, no key
+        // to advertise.
+        if (!UiStyles.IsMobile)
         {
-            Texture = UiStyles.Space,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
-            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
-            SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-        };
-        if (UiStyles.Space != null)
-        {
-            spaceIcon.CustomMinimumSize = UiStyles.Space.GetSize() * 2f;
+            var spaceIcon = new TextureRect
+            {
+                Texture = UiStyles.Space,
+                StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+                SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
+                SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            };
+            if (UiStyles.Space != null)
+            {
+                spaceIcon.CustomMinimumSize = UiStyles.Space.GetSize() * 2f;
+            }
+            vbox.AddChild(spaceIcon);
         }
-        vbox.AddChild(spaceIcon);
 
         AddChild(_panel);
     }
+
+    private static Color WithAlpha(Color c, float a) => new(c.R, c.G, c.B, a);
 }

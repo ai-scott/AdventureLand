@@ -28,6 +28,7 @@ public partial class HUD : CanvasLayer
     private HealthSystem _health;
     private TextureRect[] _hearts;
     private Label _gemLabel;
+    private MobileDPad _mobileDpad;
     private Control _attackButton;
     private TextureRect _attackIcon;
     private Texture2D _defaultAttackIcon;
@@ -117,8 +118,11 @@ public partial class HUD : CanvasLayer
         // Take / Enter buttons elsewhere in the UI. iconSize is the actual
         // rendered glyph size INSIDE the 68px chip — keeping a margin so
         // the glyph doesn't run to the bevel border.
-        ApplyChipActionButton("Buttons/Inventory", UiStyles.Bag, UiFrames.BuildKbdChip("i"), iconSize: 44);
-        ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, BuildSpaceGlyph(), iconSize: 50);
+        // Skip the kbd hint chips on mobile — no physical key to advertise.
+        Control invKbd = UiStyles.IsMobile ? null : UiFrames.BuildKbdChip("i");
+        Control atkKbd = UiStyles.IsMobile ? null : BuildSpaceGlyph();
+        ApplyChipActionButton("Buttons/Inventory", UiStyles.Bag, invKbd, iconSize: 44);
+        ApplyChipActionButton("Buttons/Attack", UiStyles.Sword, atkKbd, iconSize: 50);
 
         _attackButton = GetNode<Control>("Buttons/Attack");
         _attackIcon = _attackButton?.GetNodeOrNull<TextureRect>("DesignIcon");
@@ -126,6 +130,13 @@ public partial class HUD : CanvasLayer
 
         BuildMuteButton();
         BuildLowHpWarning();
+
+        // Mobile/touch builds: drop in a virtual joystick + ROYGBIV dpad
+        // overlay. Hidden by default; visibility is driven each frame by
+        // _Process alongside the world HUD pieces (off on title / game-over /
+        // dialogue / inventory). Also hide HUD chips' kbd hint chips on
+        // mobile — handled in ApplyChipActionButton via null kbdChip.
+        SyncMobileDpadPresence();
 
         if (Inventory.Instance != null)
         {
@@ -251,6 +262,12 @@ public partial class HUD : CanvasLayer
         // input it would never consume anyway) while a dialogue is on screen
         // — mute stays visible so the player can still silence audio.
         if (_buttonsRow != null) _buttonsRow.Visible = inWorld && !inDialogue;
+        // React to runtime mobile-mode toggles (Shift+M debug shortcut) by
+        // adding/removing the dpad. Idempotent — no-op when state matches.
+        SyncMobileDpadPresence();
+        // Mobile dpad shares the same gating: only when the player is in
+        // the world AND no modal (dialogue / inventory) is consuming input.
+        if (_mobileDpad != null) _mobileDpad.Visible = inWorld && !inDialogue;
 
         // Low-HP warning: pulse + beep when the player has 1 heart or less.
         // Off entirely on title / game-over (no player), and once the player
@@ -280,6 +297,28 @@ public partial class HUD : CanvasLayer
             _lastWeaponId = weaponId;
             if (_attackButton != null) _attackButton.Visible = weaponId != -1;
             RefreshAttackIcon();
+        }
+    }
+
+    /// <summary>Idempotent: spawn the MobileDPad child when IsMobile is true
+    /// and we don't already have one, free it when IsMobile flips to false.
+    /// Called from <c>_Ready</c> for the initial state and every <c>_Process</c>
+    /// tick so the Shift+M debug toggle takes effect live without a restart.</summary>
+    private void SyncMobileDpadPresence()
+    {
+        bool wantDpad = UiStyles.IsMobile;
+        bool haveDpad = _mobileDpad != null && IsInstanceValid(_mobileDpad);
+        if (wantDpad == haveDpad) return;
+
+        if (wantDpad)
+        {
+            _mobileDpad = new MobileDPad { Name = "MobileDPad", Visible = false };
+            AddChild(_mobileDpad);
+        }
+        else
+        {
+            _mobileDpad.QueueFree();
+            _mobileDpad = null;
         }
     }
 
@@ -429,19 +468,23 @@ public partial class HUD : CanvasLayer
         // Kbd hint pinned to the bottom-left corner of the button. Anchor
         // both axes to the bottom-left point (0,1) and let the chip's
         // PanelContainer grow to its content size — no need to guess
-        // CustomMinimumSize. CornerInset keeps it off the bevel.
-        const int CornerInset = 5;
-        kbdChip.AnchorLeft = 0f;
-        kbdChip.AnchorRight = 0f;
-        kbdChip.AnchorTop = 1f;
-        kbdChip.AnchorBottom = 1f;
-        kbdChip.GrowHorizontal = Control.GrowDirection.End;
-        kbdChip.GrowVertical = Control.GrowDirection.Begin;
-        kbdChip.OffsetLeft = CornerInset;
-        kbdChip.OffsetTop = -CornerInset;
-        kbdChip.OffsetRight = CornerInset;
-        kbdChip.OffsetBottom = -CornerInset;
-        btn.AddChild(kbdChip);
+        // CustomMinimumSize. CornerInset keeps it off the bevel. Skipped
+        // when kbdChip is null (mobile builds — no physical key to show).
+        if (kbdChip != null)
+        {
+            const int CornerInset = 5;
+            kbdChip.AnchorLeft = 0f;
+            kbdChip.AnchorRight = 0f;
+            kbdChip.AnchorTop = 1f;
+            kbdChip.AnchorBottom = 1f;
+            kbdChip.GrowHorizontal = Control.GrowDirection.End;
+            kbdChip.GrowVertical = Control.GrowDirection.Begin;
+            kbdChip.OffsetLeft = CornerInset;
+            kbdChip.OffsetTop = -CornerInset;
+            kbdChip.OffsetRight = CornerInset;
+            kbdChip.OffsetBottom = -CornerInset;
+            btn.AddChild(kbdChip);
+        }
 
         // Resize the click target to fill the whole button so taps on the
         // chip area register, and disable focus so spurious key events
@@ -529,20 +572,24 @@ public partial class HUD : CanvasLayer
 
         // "M" kbd hint pinned just below the button — discoverable on
         // hover only so it doesn't hang out as permanent visual chrome.
-        _muteKbd = UiFrames.BuildKbdChip("M");
-        _muteKbd.AnchorLeft = 0.5f;
-        _muteKbd.AnchorRight = 0.5f;
-        _muteKbd.AnchorTop = 1f;
-        _muteKbd.AnchorBottom = 1f;
-        _muteKbd.GrowHorizontal = Control.GrowDirection.Both;
-        _muteKbd.GrowVertical = Control.GrowDirection.End;
-        _muteKbd.OffsetTop = 4;
-        _muteKbd.OffsetBottom = 4;
-        _muteKbd.Visible = false;
-        _muteButton.AddChild(_muteKbd);
+        // Skip on mobile (no physical M key, no hover).
+        if (!UiStyles.IsMobile)
+        {
+            _muteKbd = UiFrames.BuildKbdChip("M");
+            _muteKbd.AnchorLeft = 0.5f;
+            _muteKbd.AnchorRight = 0.5f;
+            _muteKbd.AnchorTop = 1f;
+            _muteKbd.AnchorBottom = 1f;
+            _muteKbd.GrowHorizontal = Control.GrowDirection.Both;
+            _muteKbd.GrowVertical = Control.GrowDirection.End;
+            _muteKbd.OffsetTop = 4;
+            _muteKbd.OffsetBottom = 4;
+            _muteKbd.Visible = false;
+            _muteButton.AddChild(_muteKbd);
 
-        _muteButton.MouseEntered += () => { if (_muteKbd != null) _muteKbd.Visible = true; };
-        _muteButton.MouseExited += () => { if (_muteKbd != null) _muteKbd.Visible = false; };
+            _muteButton.MouseEntered += () => { if (_muteKbd != null) _muteKbd.Visible = true; };
+            _muteButton.MouseExited += () => { if (_muteKbd != null) _muteKbd.Visible = false; };
+        }
         _muteButton.Pressed += ToggleMute;
         AddChild(_muteButton);
 

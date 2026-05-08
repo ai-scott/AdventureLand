@@ -83,23 +83,41 @@ public static class UiStyles
     /// override has been set.</summary>
     public static bool IsMobile { get; private set; }
 
-    /// <summary>Detect once at boot — combines export-time platform feature
-    /// (`mobile`) with runtime touchscreen probe (catches mobile browsers on
-    /// HTML5 builds). Caller persists choice via SetMobileOverride.</summary>
+    /// <summary>Detect once at boot. True if either:
+    ///   • The build was exported for a mobile platform target (iOS / Android),
+    ///     in which case <c>OS.HasFeature("mobile")</c> is true, OR
+    ///   • The build is the HTML5 web target running on a touch device
+    ///     (mobile browser on a phone or tablet — the deploy target).
+    /// Desktop builds + the editor return false even when the host machine
+    /// happens to expose a touch surface (e.g., Mac trackpads report
+    /// <c>DisplayServer.IsTouchscreenAvailable() = true</c> on M-series chips).
+    /// Caller persists choice via <see cref="SetMobileOverride"/>.</summary>
     public static bool DetectMobile()
     {
         bool platformMobile = OS.HasFeature("mobile");
-        bool touchscreen    = DisplayServer.IsTouchscreenAvailable();
-        IsMobile = platformMobile || touchscreen;
+        bool touchOnWeb     = OS.HasFeature("web") && DisplayServer.IsTouchscreenAvailable();
+        IsMobile = platformMobile || touchOnWeb;
         return IsMobile;
     }
 
     /// <summary>Hard-set the mobile flag. Used when SaveData has a stored
-    /// preference, or when the user toggles the choice from settings.</summary>
+    /// preference, or when the user toggles the choice from settings or the
+    /// Shift+M debug shortcut. Fires <see cref="MobileChanged"/> if the value
+    /// actually changed so autoload UIs (HUD dpad, InteractHintManager floating
+    /// panel, DialogueManager mobile continue hint) can rebuild without a
+    /// scene reload.</summary>
     public static void SetMobileOverride(bool mobile)
     {
+        if (IsMobile == mobile) return;
         IsMobile = mobile;
+        MobileChanged?.Invoke();
     }
+
+    /// <summary>Fires when <see cref="IsMobile"/> changes. Subscribed by any
+    /// autoload UI that builds mobile-specific elements in <c>_Ready</c> and
+    /// would otherwise stay frozen in its boot-time state when the user
+    /// toggles mode at runtime.</summary>
+    public static event System.Action MobileChanged;
 
     // ---- Button style ----
 
