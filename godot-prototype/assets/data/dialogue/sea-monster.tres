@@ -416,6 +416,10 @@ Type = 0
 QuestId = "pearl_quest"
 Status = "Active"
 
+[sub_resource type="Resource" id="act_64"]
+script = ExtResource("4")
+Type = 18
+
 [sub_resource type="Resource" id="node_62"]
 script = ExtResource("2")
 Id = "quest_in_progress"
@@ -424,6 +428,7 @@ Speaker = "SeaMonster"
 Priority = 992
 EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_63")])
+Actions = Array[ExtResource("4")]([SubResource("act_64")])
 
 [resource]
 script = ExtResource("1")

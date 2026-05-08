@@ -152,7 +152,13 @@ public partial class SeaMonsterController : Node2D
         if (_sprite != null && _idleTexture != null) _sprite.Texture = _idleTexture;
 
         SFXController.Instance?.Play("seamonster_rise");
-        EmitBubbleBurst();
+        // Hold the burst for a beat and drop it 30 px lower than Retreat's
+        // surface burst — the rise reads cleaner when the bubbles surface
+        // *just below* the SM's incoming silhouette and a hair after the
+        // SFX, rather than at the surface line before the body shows.
+        await ToSignal(GetTree().CreateTimer(0.1), Timer.SignalName.Timeout);
+        if (!IsInstanceValid(this) || _state != State.Rising) return;
+        EmitBubbleBurst(yOffset: 30f);
 
         var tween = CreateTween();
         tween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Sine);
@@ -329,7 +335,7 @@ public partial class SeaMonsterController : Node2D
     /// Emitting on the scene-authored CPUParticles2D (one_shot = true so
     /// the burst auto-stops). Both summon and retreat use the same effect
     /// — it's the "something's happening at the water surface" cue.</summary>
-    private void EmitBubbleBurst()
+    private void EmitBubbleBurst(float yOffset = 0f)
     {
         if (_bubbles == null) return;
         // Burst sits midway between the shader's water-line cutoff and the
@@ -337,8 +343,11 @@ public partial class SeaMonsterController : Node2D
         // mid-air above the waves" because the visible water surface in the
         // tile art sits a few pixels below the shader line. CpuParticles2D
         // defaults to global-space spawning, so the particles stick to this
-        // world-Y once emitted.
-        float burstY = (WaterLineWorldY + SurfaceY) * 0.5f;
+        // world-Y once emitted. yOffset (positive = lower in world space)
+        // shifts the burst down for the rise — the SM is still underwater
+        // when bubbles fire, so dropping them below the surface line keeps
+        // the burst visually anchored to the body about to break through.
+        float burstY = (WaterLineWorldY + SurfaceY) * 0.5f + yOffset;
         _bubbles.GlobalPosition = new Vector2(GlobalPosition.X, burstY);
         // Restart cleanly — Emitting = false → true forces the one-shot
         // sequence to play even if a previous burst is still trailing off.

@@ -283,7 +283,11 @@ public partial class ItemTrigger : Area2D
             SpriteFrames = frames,
             Animation = "sparkle",
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-            ZIndex = 5,
+            // ZIndex=0 so the parent's y_sort_enabled determines render order
+            // — picks the right depth relative to the player on shared layers.
+            // The previous ZIndex=5 forced the sparkle above the player even
+            // when the player walked in front of the trigger.
+            ZIndex = 0,
         };
         AddChild(anim);
         anim.Play("sparkle");

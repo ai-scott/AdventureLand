@@ -48,6 +48,20 @@ public partial class WorldManager : Node
     public override void _Input(InputEvent @event)
     {
         if (@event is not InputEventKey key || !key.Pressed || key.Echo) return;
+
+        // F1 — dev shortcut to bail back to the title screen without
+        // needing to die or rebuild. Intentionally does NOT save first; the
+        // intent is to abandon the current run for testing, not check-point
+        // it. Hits ChangeSceneToFile directly so it works mid-dialogue
+        // (DialogueManager.Paused state would otherwise eat key inputs).
+        if (key.Keycode == Key.F1)
+        {
+            GD.Print("[Debug] F1 — returning to TitleScreen");
+            GetTree().Paused = false;
+            GetTree().ChangeSceneToFile("res://scenes/ui/TitleScreen.tscn");
+            return;
+        }
+
         if (key.Keycode != Key.Quoteleft) return;
 
         DebugVisible = !DebugVisible;
@@ -61,22 +75,40 @@ public partial class WorldManager : Node
 
         GD.Print($"[Debug] Collision shapes {(DebugVisible ? "ON" : "OFF")}");
 
-        // Debug loadout — grant the Pike (id 3) and Big Red Boots (id 102)
-        // and auto-equip both so the dev can sprint + one-shot enemies while
-        // poking at collision shapes. Only granted on the toggle-ON edge so
-        // a second backtick press doesn't keep duplicating items.
+        // Debug loadout — grant the highest-Strength item per equip slot
+        // (plus the Magic Trident as the dev weapon) and auto-equip them so
+        // the dev can sprint + tank + one-shot enemies while poking at
+        // collision shapes. Only granted on the toggle-ON edge so a second
+        // backtick press doesn't keep duplicating items.
         if (DebugVisible) GrantDebugLoadout();
     }
 
-    private static void GrantDebugLoadout()
+    private void GrantDebugLoadout()
     {
         var inv = Inventory.Instance;
         if (inv == null) return;
-        TryAddAndEquip(inv, itemId: 3);   // Pike (Weapon, Strength 5)
-        TryAddAndEquip(inv, itemId: 102); // Big Red Boots (Boot, Strength 3)
+        // CostumeController is the bridge from "_equipped dict" to "actual
+        // sprite layers swapped on the player". Inventory.Equip only mutates
+        // the data model — without an EquipItem call on the costume, the
+        // gear shows in the inventory grid but the player still wears the
+        // starter outfit. InventoryUI does both calls in tandem; we mirror
+        // that here so the dev loadout actually looks like the dev loadout.
+        var player = GetTree().GetFirstNodeInGroup("player") as Node;
+        var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
+
+        // Best-in-slot per category — IDs lifted from assets/data/items/.
+        // If a tie existed (e.g., Big Red Boots vs Forest Green Boots both
+        // at Str 3), the lower ID wins. Update if a stronger item is added.
+        TryAddAndEquip(inv, costume, itemId: 4);   // Magic Trident   (Weapon, Str 6)
+        TryAddAndEquip(inv, costume, itemId: 54);  // The Wrangler    (Head,   Str 3)
+        TryAddAndEquip(inv, costume, itemId: 62);  // Cloak of Billowing (Neck,  Str 3)
+        TryAddAndEquip(inv, costume, itemId: 73);  // Sunset Vest and Top (Body, Str 3)
+        TryAddAndEquip(inv, costume, itemId: 81);  // Gold + Purple Ring (Hand,  Str 2)
+        TryAddAndEquip(inv, costume, itemId: 96);  // Bluejean Overalls (Legs,  Str 3)
+        TryAddAndEquip(inv, costume, itemId: 102); // Big Red Boots    (Boot,   Str 3)
     }
 
-    private static void TryAddAndEquip(Inventory inv, int itemId)
+    private static void TryAddAndEquip(Inventory inv, CostumeController costume, int itemId)
     {
         if (!inv.HasItem(itemId))
         {
@@ -87,6 +119,8 @@ public partial class WorldManager : Node
             if (inv.GetSlotItemId(i) == itemId)
             {
                 inv.Equip(i);
+                var item = inv.GetSlotItem(i);
+                if (item != null) costume?.EquipItem(item);
                 break;
             }
         }

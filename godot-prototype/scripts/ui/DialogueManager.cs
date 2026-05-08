@@ -41,6 +41,10 @@ public partial class DialogueManager : CanvasLayer
     private Label _continueHint;
     private VBoxContainer _responseContainer;
 
+    // Mobile-only "tap to continue" affordance — pointer icon + label pinned
+    // to the top-right of the dialogue box, replacing the desktop ContinueHint.
+    private Control _mobileContinueHint;
+
     // Key-item reveal overlay — curly TextItemFrame + large item icon that
     // pops up when an "AL"-spoken node grants a quest item (Sea Monster Key,
     // Pearl, Magic Trident, etc.). Built once in _Ready, toggled per-node.
@@ -48,7 +52,6 @@ public partial class DialogueManager : CanvasLayer
     private Control _itemRevealRoot;
     private TextureRect _itemRevealFrame;
     private TextureRect _itemRevealIcon;
-    private static Texture2D _texItemFrame;
 
     private PlayerController _player;
     private bool _waitingForInput;
@@ -88,73 +91,157 @@ public partial class DialogueManager : CanvasLayer
 
         BuildItemRevealOverlay();
 
+        // On mobile, taps anywhere on the dialogue panel synthesize the
+        // dialogue_advance action — same code path as Space/Enter on desktop.
+        // Skipped on desktop so a stray click in the dialogue area doesn't
+        // race the keyboard. ProcessMode.Always so taps register while the
+        // tree is paused (dialogues pause the game).
+        // Mobile-only "tap anywhere on dialogue to advance" — top-right
+        // pointer hint built here; tap detection lives in _Input (see below)
+        // because gui_input on _dialogueBox doesn't fire — the FrameBg
+        // child's default MouseFilter=Stop consumes the GUI event first.
+        if (UiStyles.IsMobile)
+        {
+            BuildMobileContinueHint();
+        }
+        // React to runtime mobile-mode toggles (Shift+M) — build/destroy
+        // the mobile pointer hint so it matches the current mode without
+        // requiring a scene reload.
+        UiStyles.MobileChanged += OnMobileChanged;
+
         _dialogueBox.Visible = false;
     }
 
-    /// <summary>One-time build of the curly key-item reveal popup. Anchors
-    /// to the top edge of the dialogue box and floats upward so the curly
-    /// frame doesn't fight the body text. Hidden by default; ShowItemReveal
-    /// enables it for the lifetime of one dialogue node.</summary>
+    private void OnMobileChanged()
+    {
+        if (UiStyles.IsMobile && _mobileContinueHint == null)
+        {
+            BuildMobileContinueHint();
+        }
+        else if (!UiStyles.IsMobile && _mobileContinueHint != null)
+        {
+            _mobileContinueHint.QueueFree();
+            _mobileContinueHint = null;
+        }
+    }
+
+    /// <summary>Mobile tap-to-advance. Runs in _Input which fires BEFORE the
+    /// GUI sorts the event onto its deepest hit Control — so even though the
+    /// dialogue's FrameBg / Cameo / NameLabel children have default
+    /// MouseFilter=Stop and would otherwise swallow the event, we get first
+    /// crack. Hit-test against the dialogue box's global rect so taps
+    /// OUTSIDE the dialogue (HUD chips, dpad zone) keep their own behavior.
+    /// ProcessMode is set to Always in StartDialogue, so this fires while
+    /// the tree is paused mid-dialogue.</summary>
+    public override void _Input(InputEvent evt)
+    {
+        if (!UiStyles.IsMobile) return;
+        if (!IsActive) return;
+        if (_dialogueBox == null || !_dialogueBox.Visible) return;
+        if (_currentResponses != null && _currentResponses.Count > 0) return;
+        if (_waitingForInput) return;
+
+        Vector2? pos = evt switch
+        {
+            InputEventScreenTouch t when t.Pressed => t.Position,
+            InputEventMouseButton m when m.Pressed && m.ButtonIndex == MouseButton.Left => m.Position,
+            _ => null,
+        };
+        if (pos == null) return;
+        if (!_dialogueBox.GetGlobalRect().HasPoint(pos.Value)) return;
+
+        SynthAdvance();
+        GetViewport().SetInputAsHandled();
+    }
+
+    /// <summary>Mobile replacement for the "[Space] Continue" label — same
+    /// bottom-right slot inside the dialogue box as the desktop ContinueHint,
+    /// rendered as: pointer icon + "to continue". The pointer texture is the
+    /// same cursor glyph the dialogue body uses for [icon=Pointer], so the
+    /// hint visually matches inline cues like "Tap [pointer] to continue".</summary>
+    private void BuildMobileContinueHint()
+    {
+        // Pull the cursor glyph from the same atlas the body text uses
+        // (see IconPaths above — "pointer" key maps to empty.png because
+        // the C3 extraction was off-by-one). Cached as a static so we
+        // don't reload the resource for every dialogue.
+        _pointerGlyph ??= GD.Load<Texture2D>("res://assets/sprites/ui/text_icons/empty.png");
+
+        var row = new HBoxContainer
+        {
+            Name = "MobileContinueHint",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            Visible = false,
+        };
+        row.AddThemeConstantOverride("separation", 4);
+
+        // Match the scene-authored ContinueHint position — bottom-right of
+        // the dialogue box, ~58px in from the right edge, ~136px up from the
+        // bottom. Numbers come from DialogueBox.tscn ContinueHint offsets.
+        row.AnchorLeft = 1f;
+        row.AnchorRight = 1f;
+        row.AnchorTop = 1f;
+        row.AnchorBottom = 1f;
+        row.GrowHorizontal = Control.GrowDirection.Begin;
+        row.GrowVertical = Control.GrowDirection.Begin;
+        row.OffsetRight = -58f;
+        row.OffsetBottom = -136f;
+
+        var pointer = new TextureRect
+        {
+            Texture = _pointerGlyph,
+            CustomMinimumSize = _pointerGlyph != null ? _pointerGlyph.GetSize() : new Vector2(22, 22),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        row.AddChild(pointer);
+
+        var label = new Label
+        {
+            Text = "to continue",
+            VerticalAlignment = VerticalAlignment.Center,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        label.AddThemeFontSizeOverride("font_size", 14);
+        label.AddThemeColorOverride("font_color", new Color(0.9882353f, 0.9411765f, 0.78039217f, 1f));
+        label.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.85f));
+        label.AddThemeConstantOverride("shadow_offset_x", 1);
+        label.AddThemeConstantOverride("shadow_offset_y", 1);
+        row.AddChild(label);
+
+        _dialogueBox.AddChild(row);
+        _mobileContinueHint = row;
+    }
+
+    private static Texture2D _pointerGlyph;
+
+    private static void SynthAdvance()
+    {
+        var press = new InputEventAction { Action = "dialogue_advance", Pressed = true };
+        Input.ParseInputEvent(press);
+        var release = new InputEventAction { Action = "dialogue_advance", Pressed = false };
+        Input.ParseInputEvent(release);
+    }
+
+    /// <summary>Bind the scene-authored key-item reveal nodes (ItemReveal +
+    /// ItemRevealFrame + ItemRevealIcon — see DialogueBox.tscn). Position +
+    /// size live in the scene so they can be tweaked visually in the Godot
+    /// editor; this method only grabs node references and confirms the
+    /// curly frame texture loaded.</summary>
     private void BuildItemRevealOverlay()
     {
-        _texItemFrame ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/text_item_frame.png");
-        if (_texItemFrame == null) return;
-
-        // Frame is 420×130 at native; scale to 0.7 keeps the curl detail while
-        // fitting comfortably above the dialogue body without looming over the
-        // viewport. Update FrameDisplay* if the texture or scale changes.
-        const float FrameDisplayWidth = 294f;
-        const float FrameDisplayHeight = 91f;
-        const float FrameOffsetAbove = -FrameDisplayHeight - 14f; // float 14 px above the box
-
-        _itemRevealRoot = new Control { Name = "ItemReveal", Visible = false };
-        // Anchor top-center of the dialogue box, then offset upward so the
-        // popup hovers above. AnchorPreset doesn't expose this exact case so
-        // we set anchors manually.
-        _itemRevealRoot.AnchorLeft = 0.5f;
-        _itemRevealRoot.AnchorRight = 0.5f;
-        _itemRevealRoot.AnchorTop = 0f;
-        _itemRevealRoot.AnchorBottom = 0f;
-        _itemRevealRoot.OffsetLeft = -FrameDisplayWidth / 2f;
-        _itemRevealRoot.OffsetRight = FrameDisplayWidth / 2f;
-        _itemRevealRoot.OffsetTop = FrameOffsetAbove;
-        _itemRevealRoot.OffsetBottom = FrameOffsetAbove + FrameDisplayHeight;
-        _itemRevealRoot.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _dialogueBox.AddChild(_itemRevealRoot);
-
-        _itemRevealFrame = new TextureRect
+        _itemRevealRoot = _dialogueBox.GetNodeOrNull<Control>("ItemReveal");
+        _itemRevealFrame = _dialogueBox.GetNodeOrNull<TextureRect>("ItemReveal/ItemRevealFrame");
+        _itemRevealIcon = _dialogueBox.GetNodeOrNull<TextureRect>("ItemReveal/ItemRevealIcon");
+        if (_itemRevealRoot == null || _itemRevealFrame == null || _itemRevealIcon == null)
         {
-            Texture = _texItemFrame,
-            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspect,
-            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-        };
-        _itemRevealFrame.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        _itemRevealRoot.AddChild(_itemRevealFrame);
-
-        // Item icon — anchored full-rect on top of the frame and centered
-        // by the StretchMode. Native item icons are 16-32 px; the keep-aspect
-        // stretch + centered preset blows them up to fill ~70% of the frame
-        // height visually, which reads as "big trophy display" without
-        // pixel-doubling artifacts (TextureFilter.Nearest preserves pixels).
-        _itemRevealIcon = new TextureRect
-        {
-            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
-            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-        };
-        // Inset so the icon sits inside the curl, not over the curly border.
-        _itemRevealIcon.AnchorLeft = 0;
-        _itemRevealIcon.AnchorTop = 0;
-        _itemRevealIcon.AnchorRight = 1;
-        _itemRevealIcon.AnchorBottom = 1;
-        _itemRevealIcon.OffsetLeft = 32;
-        _itemRevealIcon.OffsetTop = 14;
-        _itemRevealIcon.OffsetRight = -32;
-        _itemRevealIcon.OffsetBottom = -14;
-        _itemRevealRoot.AddChild(_itemRevealIcon);
+            GD.PushWarning("[Dialogue] ItemReveal nodes missing from DialogueBox.tscn — key-item reveal disabled.");
+            return;
+        }
+        _itemRevealRoot.Visible = false;
     }
 
     private void ShowItemReveal(ItemData item)
@@ -162,14 +249,16 @@ public partial class DialogueManager : CanvasLayer
         if (_itemRevealRoot == null || item?.Icon == null) return;
         _itemRevealIcon.Texture = item.Icon;
         _itemRevealRoot.Visible = true;
-        // Scale + fade in for a small "ta-da" pop. Initial scale 0.6 → 1.0
-        // over 200 ms with elastic-out feels rewarding without being slow.
+        // Fade in only — no scale tween. The previous elastic 0.6 → 1.0
+        // scale read as "the icon snapped into position" because scaling
+        // from the Control's pivot offset visibly translated the frame +
+        // icon from their final layout spot. Keeping scale fixed at 1.0
+        // means they appear exactly where they belong, just fading from
+        // transparent to fully opaque.
+        _itemRevealRoot.Scale = Vector2.One;
         _itemRevealRoot.Modulate = new Color(1, 1, 1, 0);
-        _itemRevealRoot.Scale = new Vector2(0.6f, 0.6f);
-        var tween = CreateTween().SetParallel(true);
+        var tween = CreateTween();
         tween.TweenProperty(_itemRevealRoot, "modulate:a", 1.0f, 0.18);
-        tween.TweenProperty(_itemRevealRoot, "scale", Vector2.One, 0.28)
-            .SetTrans(Tween.TransitionType.Elastic).SetEase(Tween.EaseType.Out);
     }
 
     private void HideItemReveal()
@@ -181,6 +270,7 @@ public partial class DialogueManager : CanvasLayer
 
     public override void _ExitTree()
     {
+        UiStyles.MobileChanged -= OnMobileChanged;
         if (Instance == this) Instance = null;
     }
 
@@ -445,6 +535,7 @@ public partial class DialogueManager : CanvasLayer
             SetPlayerSpeakingVisuals();
             _responseContainer.Visible = true;
             _continueHint.Visible = false;
+            if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
 
             for (int i = 0; i < validResponses.Count; i++)
             {
@@ -477,6 +568,12 @@ public partial class DialogueManager : CanvasLayer
                 var btn = new Button();
                 btn.Text = SubstituteVariables(resp.Text);
                 btn.Pressed += () => OnResponseChosen(idx);
+                // Hover (or finger-drag on touch — Godot emits MouseEntered
+                // for the Control under an active touch when emulate_touch_
+                // from_mouse is on) drives the pointer to the option the
+                // user is currently over. On release Pressed fires on
+                // whichever option ends up under their finger.
+                btn.MouseEntered += () => SelectResponse(idx);
                 btn.ProcessMode = ProcessModeEnum.Always;
                 btn.FocusMode = Control.FocusModeEnum.None; // we handle focus manually
                 // Match the body TextLabel: 24px, cream, no shadow.
@@ -504,9 +601,18 @@ public partial class DialogueManager : CanvasLayer
         else
         {
             _responseContainer.Visible = false;
-            _continueHint.Visible = true;
-            _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
-                !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
+            // Mobile gets a pointer-icon + "to continue" chip pinned top-right
+            // (built in _Ready); desktop keeps the bottom-right keyboard hint.
+            _continueHint.Visible = !UiStyles.IsMobile;
+            if (UiStyles.IsMobile)
+            {
+                if (_mobileContinueHint != null) _mobileContinueHint.Visible = true;
+            }
+            else
+            {
+                _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
+                    !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
+            }
             _selectedResponseIndex = -1;
         }
     }
@@ -604,6 +710,7 @@ public partial class DialogueManager : CanvasLayer
         ClearResponses();
         RemoveFontOverride();
         HideItemReveal();
+        if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
         _currentNode = null;
         _currentResponses = null;
         _npcData = null;
@@ -777,6 +884,14 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SeaMonsterQuestComplete:
+                    CallDeferred(nameof(SeaMonsterRetreat));
+                    break;
+
+                case DialogueAction.ActionType.SeaMonsterRetreat:
+                    // Plain retreat — no quest state change, no dialogue branch.
+                    // Used when a dialogue line ends the conversation but
+                    // doesn't otherwise carry SM-state semantics (e.g., the
+                    // "Have you found my pearl yet?" quest_in_progress reply).
                     CallDeferred(nameof(SeaMonsterRetreat));
                     break;
             }
@@ -1018,6 +1133,7 @@ public partial class DialogueManager : CanvasLayer
         _waitingForInput = true;
         _inputVariable = variable;
         _continueHint.Visible = false;
+        if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
         _responseContainer.Visible = false;
         // Hide the body text — the "What's your name?" node already showed
         // on the previous beat, and the input row replaces the dialogue body.

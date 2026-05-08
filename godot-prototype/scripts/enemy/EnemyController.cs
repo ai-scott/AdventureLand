@@ -930,8 +930,14 @@ public partial class EnemyController : CharacterBody2D
 	{
 		_gemScene ??= GD.Load<PackedScene>("res://scenes/world/Gem.tscn");
 		if (_gemScene == null) return;
-		var parent = GetTree().CurrentScene;
-		if (parent == null) return;
+		var scene = GetTree().CurrentScene;
+		if (scene == null) return;
+		// Prefer the y-sorted "Entities" container that the player + NPCs
+		// live under — without it, gems parent at the world root which has
+		// no y_sort_enabled, so they always render above (or below) the
+		// player regardless of position. Fall back to the scene root if
+		// the world doesn't follow the convention, so loot still spawns.
+		var parent = scene.FindChild("Entities", recursive: false, owned: false) ?? scene;
 
 		// `int(2 + random(2))` in C3 yields 2 or 3 (random returns 0..2 exclusive).
 		int count = GD.RandRange(2, 3);

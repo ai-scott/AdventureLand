@@ -52,11 +52,22 @@ public partial class PlayerController : CharacterBody2D
 	/// blade passes through the facing line at mid-progress. 90° = quarter
 	/// circle sweep; raise for a wider arc.</summary>
 	[Export] public float HitboxSweepDegrees = 90f;
-	/// <summary>How fast the arc traverses relative to the animation length.
-	/// 1.0 = arc finishes exactly when the animation ends; 1.2 = sweep finishes
-	/// 20% sooner (and holds the end position for the follow-through), which
-	/// matches how MSCA strikes peak mid-anim. Clamped internally to 1.0.</summary>
+	/// <summary>How fast the arc traverses relative to the strike window.
+	/// 1.0 = arc finishes exactly when the strike window ends; 1.2 = sweep
+	/// finishes 20% sooner (and holds the end position for the follow-through).
+	/// Clamped internally to 1.0.</summary>
 	[Export] public float HitboxSweepSpeed = 1.2f;
+	/// <summary>Animation progress (0–1) at which the strike window opens.
+	/// Before this, the hitbox is parked and Monitoring is off — the trident
+	/// is in windup. With the default 0.18 / 0.08 / 0.08 / 0.08 / 0.3 second
+	/// beat cadence, frame 0 (windup) ends at 0.18/0.72 ≈ 0.25.</summary>
+	[Export] public float StrikeWindowStart = 0.25f;
+	/// <summary>Animation progress (0–1) at which the strike window closes.
+	/// After this, Monitoring is forced off — the trident is in recovery.
+	/// Default 0.58 corresponds to the end of frame 3 (last action beat)
+	/// in the 5-beat 0.72-second cadence; raise toward 1.0 for a longer
+	/// follow-through that can still hit during recovery.</summary>
+	[Export] public float StrikeWindowEnd = 0.58f;
 	/// <summary>Pivot offset from the player origin (feet) to the shoulder the
 	/// sword rotates around. Negative Y is "up the body". −12 lands roughly at
 	/// mid-chest for a 32px Mana Seed sprite.</summary>
@@ -125,49 +136,52 @@ public partial class PlayerController : CharacterBody2D
 	/// otherwise.</summary>
 	[Export] public bool DebugShowMscaWeaponDuringTridentSwing = false;
 
-	/// <summary>One beat of MSCA's StrikeForehandOneHandWeapon weapon-track.
-	/// MSCA writes these into a Godot animation that drives the
-	/// farmer_1h_weapon Sprite2D's offset/rotation/flip every tick — see
-	/// addons/msca/packs/farmer_base.gd:230-238 (skip_offset=true means
-	/// these are raw pixels relative to SpriteLayers, our coordinate frame).
-	/// Mirroring them here puts the trident swing FX on the exact same
-	/// arc the regular weapon overlay would trace.</summary>
-	private record struct MscaBeat(Vector2 Offset, float RotationDeg, bool FlipH);
+	/// <summary>Per-beat trident position for each facing direction. 5 beats
+	/// per direction (windup → 3 strike beats → recovery hold), paired with
+	/// TridentFrameDurations below for the 0.18 / 0.08 / 0.08 / 0.08 / 0.3
+	/// second cadence. Defaults are lifted from MSCA's
+	/// StrikeForehandOneHandWeapon weapon-track in
+	/// addons/msca/jsons/farmer_base_animations.json — tweak per-beat in
+	/// the Inspector to override. The TridentSwingOffset* bias above adds
+	/// to every beat in that direction; per-beat Offset replaces nothing,
+	/// it positions the sprite directly at that frame.</summary>
+	[ExportSubgroup("Per-beat positions")]
+	[Export] public Godot.Collections.Array<TridentSwingBeat> TridentBeatsDown  { get; set; } = MakeDefaultDownBeats();
+	[Export] public Godot.Collections.Array<TridentSwingBeat> TridentBeatsUp    { get; set; } = MakeDefaultUpBeats();
+	[Export] public Godot.Collections.Array<TridentSwingBeat> TridentBeatsRight { get; set; } = MakeDefaultRightBeats();
+	[Export] public Godot.Collections.Array<TridentSwingBeat> TridentBeatsLeft  { get; set; } = MakeDefaultLeftBeats();
 
-	/// <summary>StrikeForehandOneHandWeapon's farmer_1h_weapon track,
-	/// lifted from addons/msca/jsons/farmer_base_animations.json. 5 beats
-	/// per direction, paired with TridentFrameDurations below for the
-	/// 0.18 / 0.08 / 0.08 / 0.08 / 0.3 second cadence.</summary>
-	private static readonly System.Collections.Generic.Dictionary<string, MscaBeat[]> TridentMscaBeats = new()
+	private static Godot.Collections.Array<TridentSwingBeat> MakeDefaultDownBeats() => new()
 	{
-		["down"] = new[] {
-			new MscaBeat(new Vector2(  6, -22),   0f, false),
-			new MscaBeat(new Vector2( 17, -20),   0f, true),
-			new MscaBeat(new Vector2(  5, -10),  90f, true),
-			new MscaBeat(new Vector2(-18, -25),   0f, false),
-			new MscaBeat(new Vector2(-18, -25),   0f, false),
-		},
-		["up"] = new[] {
-			new MscaBeat(new Vector2( -9, -20),   0f, false),
-			new MscaBeat(new Vector2(-18, -26),   0f, false),
-			new MscaBeat(new Vector2( -8, -30),   0f, false),
-			new MscaBeat(new Vector2(-20, -20),  90f, false),
-			new MscaBeat(new Vector2(-20, -20),  90f, false),
-		},
-		["right"] = new[] {
-			new MscaBeat(new Vector2( -2, -20),   0f, false),
-			new MscaBeat(new Vector2( -8,   4),   0f, false),
-			new MscaBeat(new Vector2(-12, -28),  90f, true),
-			new MscaBeat(new Vector2(-27,   9),  90f, false),
-			new MscaBeat(new Vector2(-27,   9),  90f, false),
-		},
-		["left"] = new[] {
-			new MscaBeat(new Vector2( -2,  20), 180f, true),
-			new MscaBeat(new Vector2(  4, -10),  90f, true),
-			new MscaBeat(new Vector2(-12,  28),  90f, true),
-			new MscaBeat(new Vector2(-27,  -9),  90f, false),
-			new MscaBeat(new Vector2(-27,  -9),  90f, false),
-		},
+		new TridentSwingBeat { Offset = new Vector2(8f, -15f) },
+		new TridentSwingBeat { Offset = new Vector2(13f, 10f), RotationDeg = 290f },
+		new TridentSwingBeat { Offset = new Vector2(-5f, 15f), RotationDeg = 320f },
+		new TridentSwingBeat { Offset = new Vector2(0f, 20f), RotationDeg = 123f },
+		new TridentSwingBeat { Offset = new Vector2(0f, 20f), RotationDeg = 123f },
+	};
+	private static Godot.Collections.Array<TridentSwingBeat> MakeDefaultUpBeats() => new()
+	{
+		new TridentSwingBeat { Offset = new Vector2(-10f, 16f), RotationDeg = 110f },
+		new TridentSwingBeat { Offset = new Vector2(-20f, -22f) },
+		new TridentSwingBeat { Offset = new Vector2(-8f, -30f) },
+		new TridentSwingBeat { Offset = new Vector2(0f, -20f), RotationDeg = 50f },
+		new TridentSwingBeat { Offset = new Vector2(0f, -20f), RotationDeg = 50f },
+	};
+	private static Godot.Collections.Array<TridentSwingBeat> MakeDefaultRightBeats() => new()
+	{
+		new TridentSwingBeat { Offset = new Vector2(-2f, -20f) },
+		new TridentSwingBeat { Offset = new Vector2(-4f, 8f) },
+		new TridentSwingBeat { Offset = new Vector2(35f, -10f) },
+		new TridentSwingBeat { Offset = new Vector2(16f, 16f), RotationDeg = 220f },
+		new TridentSwingBeat { Offset = new Vector2(16f, 16f), RotationDeg = 220f },
+	};
+	private static Godot.Collections.Array<TridentSwingBeat> MakeDefaultLeftBeats() => new()
+	{
+		new TridentSwingBeat { Offset = new Vector2(4f, -18f) },
+		new TridentSwingBeat { Offset = new Vector2(3f, 6f), RotationDeg = -10f },
+		new TridentSwingBeat { Offset = new Vector2(-35f, -9f) },
+		new TridentSwingBeat { Offset = new Vector2(-20f, 12f), RotationDeg = 125f },
+		new TridentSwingBeat { Offset = new Vector2(-20f, 12f), RotationDeg = 125f },
 	};
 
 	/// <summary>MSCA's per-frame strike timing, in seconds. Used as the
@@ -200,6 +214,15 @@ public partial class PlayerController : CharacterBody2D
 	public override void _Ready()
 	{
 		AddToGroup("player");
+
+		// Top-down sliding: Godot defaults CharacterBody2D to MotionMode.Grounded,
+		// which assumes gravity and only slides along "floor" surfaces below
+		// FloorMaxAngle from the up vector. In a top-down game with no gravity,
+		// that gating prevents the character from sliding along diagonal walls
+		// — they hit the wall and stop dead. Floating treats every collision
+		// surface symmetrically so MoveAndSlide projects the leftover motion
+		// along the wall, which is the expected feel for diagonal corners.
+		MotionMode = MotionModeEnum.Floating;
 
 		// Capture the Inspector-authored Speed before any boot bonus mutates
 		// it; RecomputeSpeed always rebuilds from the base so unequipping
@@ -377,8 +400,16 @@ public partial class PlayerController : CharacterBody2D
 		// while a swing is in progress. MSCA animates farmer_1h_weapon.offset and
 		// .rotation through each strike, so reading them each physics tick makes the
 		// hitbox sweep with the visible blade instead of sitting in one fixed spot.
+		// Monitoring is gated to the StrikeWindow so windup/recovery don't land
+		// hits — overrides MSCA's animation_set_hitbox keyframe for tighter
+		// per-direction control. UpdateAttackHitbox still fires outside the
+		// window so the debug rect (gated on Monitoring in _Draw) parks at
+		// rest position rather than jumping when the window opens.
 		if (Attacking)
 		{
+			float progress = GetAttackProgress();
+			bool inStrike = progress >= StrikeWindowStart && progress <= StrikeWindowEnd;
+			if (_attackHitbox != null) _attackHitbox.Monitoring = inStrike;
 			UpdateAttackHitbox();
 			QueueRedraw(); // drive _Draw so the debug rect tracks the swing
 		}
@@ -391,7 +422,10 @@ public partial class PlayerController : CharacterBody2D
 	/// </summary>
 	public override void _Draw()
 	{
-		if (!Attacking || !WorldManager.DebugVisible || _attackHitbox == null) return;
+		// Gate on Monitoring (not Attacking) so the debug rect only shows
+		// during the live strike window — matches what can actually deal
+		// damage, makes mismatches between visual and hit-detection obvious.
+		if (!WorldManager.DebugVisible || _attackHitbox == null || !_attackHitbox.Monitoring) return;
 
 		var cs = _attackHitbox.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
 		if (cs?.Shape is not RectangleShape2D rect) return;
@@ -419,9 +453,17 @@ public partial class PlayerController : CharacterBody2D
 		if (_attackHitbox == null || _spriteLayers == null) return;
 
 		float progress = GetAttackProgress();
-		// Speed-up: finish the arc before the animation ends so the blade holds
-		// the follow-through position while the sprite is still recovering.
-		float t = Mathf.Clamp(progress * HitboxSweepSpeed, 0f, 1f);
+		// Remap raw animation progress to strike-window-relative progress so
+		// the arc fully traverses during the strike beats (not stretched
+		// across the windup/recovery beats too). Outside the window the
+		// hitbox parks at the start (before strike) or end (after strike)
+		// of the arc — Monitoring is off there anyway, so the placement is
+		// purely cosmetic for the debug overlay.
+		float winLen = Mathf.Max(0.001f, StrikeWindowEnd - StrikeWindowStart);
+		float windowProgress = Mathf.Clamp((progress - StrikeWindowStart) / winLen, 0f, 1f);
+		// Speed-up: finish the arc before the strike window ends so the blade
+		// holds the follow-through position through the last few frames.
+		float t = Mathf.Clamp(windowProgress * HitboxSweepSpeed, 0f, 1f);
 
 		// Right-facing strike sweeps in the "correct" direction by default
 		// (Mana Seed authors forehand strikes that way). Up/Down/Left strikes
@@ -445,6 +487,21 @@ public partial class PlayerController : CharacterBody2D
 		double len = _state.GetCurrentLength();
 		if (len <= 0) return 0.5f;
 		return Mathf.Clamp((float)(pos / len), 0f, 1f);
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		// Shift+T — dump current trident beat values to the Output console
+		// in C# MakeDefault*Beats() format. Workflow: tune live in the
+		// Remote Inspector tab, hit Shift+T when happy, copy the printed
+		// block, paste into PlayerController.cs replacing the matching
+		// MakeDefault*Beats() body. Survives Inspector clears + scene
+		// resets without manual transcription.
+		if (@event is InputEventKey key && key.Pressed && !key.Echo
+			&& key.Keycode == Key.T && key.ShiftPressed)
+		{
+			DumpTridentBeats();
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -618,17 +675,21 @@ public partial class PlayerController : CharacterBody2D
 		_tridentEffect.Position = TridentBiasFor(anim);
 		AddChild(_tridentEffect);
 
-		// Apply MSCA's per-frame OFFSET only — the trident PNGs already
-		// depict the weapon at each swing pose (frame 0 = windup pose,
-		// frame 2 = mid-strike, etc.), so MSCA's rotation/flip would
-		// double-transform art that's already pre-rotated. Offsets still
-		// give us the correct hand position at each beat.
+		// Apply per-beat Offset / RotationDeg / FlipH from the [Export] beat
+		// arrays so live Inspector edits show up on the next swing. Defaults
+		// keep RotationDeg=0 and FlipH=false, which leaves the trident PNGs
+		// (already drawn pre-rotated per frame) reading as authored.
 		void ApplyMscaBeat()
 		{
-			if (!TridentMscaBeats.TryGetValue(anim, out var beats)) return;
+			var beats = BeatsForAnim(anim);
+			if (beats == null) return;
 			int frame = _tridentEffect.Frame;
-			if (frame < 0 || frame >= beats.Length) return;
-			_tridentEffect.Offset = beats[frame].Offset;
+			if (frame < 0 || frame >= beats.Count) return;
+			var beat = beats[frame];
+			if (beat == null) return;
+			_tridentEffect.Offset = beat.Offset;
+			_tridentEffect.RotationDegrees = beat.RotationDeg;
+			_tridentEffect.FlipH = beat.FlipH;
 		}
 		_tridentEffect.FrameChanged += ApplyMscaBeat;
 		_tridentEffect.AnimationFinished += () =>
@@ -661,6 +722,52 @@ public partial class PlayerController : CharacterBody2D
 		"right" => TridentSwingOffsetRight,
 		_       => Vector2.Zero,
 	};
+
+	private Godot.Collections.Array<TridentSwingBeat> BeatsForAnim(string anim) => anim switch
+	{
+		"up"    => TridentBeatsUp,
+		"down"  => TridentBeatsDown,
+		"left"  => TridentBeatsLeft,
+		"right" => TridentBeatsRight,
+		_       => null,
+	};
+
+	/// <summary>Dump current beat values for all 4 directions to the Output
+	/// console, formatted as C# ready to paste over the MakeDefault*Beats()
+	/// methods. Used to promote live-tuned Remote-Inspector values back
+	/// into source so they survive scene reloads. Bound to Shift+T.</summary>
+	private void DumpTridentBeats()
+	{
+		var sb = new System.Text.StringBuilder();
+		sb.AppendLine();
+		sb.AppendLine("// === Trident beats dump — paste over MakeDefault*Beats() in PlayerController.cs ===");
+		AppendDirection(sb, "Down",  TridentBeatsDown);
+		AppendDirection(sb, "Up",    TridentBeatsUp);
+		AppendDirection(sb, "Right", TridentBeatsRight);
+		AppendDirection(sb, "Left",  TridentBeatsLeft);
+		sb.AppendLine("// === end dump ===");
+		GD.Print(sb.ToString());
+	}
+
+	private static void AppendDirection(System.Text.StringBuilder sb, string dir, Godot.Collections.Array<TridentSwingBeat> beats)
+	{
+		sb.AppendLine($"private static Godot.Collections.Array<TridentSwingBeat> MakeDefault{dir}Beats() => new()");
+		sb.AppendLine("{");
+		if (beats != null)
+		{
+			foreach (var b in beats)
+			{
+				if (b == null) { sb.AppendLine("\tnull,"); continue; }
+				// Only emit non-default fields to keep the output readable.
+				var extras = new System.Collections.Generic.List<string>();
+				if (Mathf.Abs(b.RotationDeg) > 0.001f) extras.Add($"RotationDeg = {b.RotationDeg}f");
+				if (b.FlipH) extras.Add("FlipH = true");
+				string tail = extras.Count == 0 ? "" : ", " + string.Join(", ", extras);
+				sb.AppendLine($"\tnew TridentSwingBeat {{ Offset = new Vector2({b.Offset.X}f, {b.Offset.Y}f){tail} }},");
+			}
+		}
+		sb.AppendLine("};");
+	}
 
 	/// <summary>Build the SpriteFrames once and cache statically. Folder
 	/// scan + ParseFrameName mirror the EnemyFolderAnimator approach so
@@ -718,13 +825,21 @@ public partial class PlayerController : CharacterBody2D
 			frames.SetAnimationSpeed(anim, 1.0);
 			frames.SetAnimationLoop(anim, false); // one-shot — auto-frees on Finished
 
-			// Pad to MSCA's 5-frame strike. left/right only have 3 trident
-			// frames in the C3 source — beats 3 and 4 are MSCA's recovery
-			// hold (the dupe in the JSON), so we just repeat the last
-			// trident frame into those slots. up/down already have 5.
+			// Pad to MSCA's 5-frame strike. Two quirks of the C3 source:
+			//   • left/right only have 3 trident PNGs (000-002) — beats 3
+			//     and 4 reuse the last action frame (002) as the hold pose.
+			//   • up/down have 5 PNGs (000-004), but 004 is INTENTIONALLY
+			//     BLANK — in C3 the trident hid during the recovery beat
+			//     since the strike was over. Here we want the player to
+			//     keep visibly holding the trident through recovery, so we
+			//     skip 004 and reuse 003 (the last action frame) for beat 4.
+			// The Inspector-exposed beat array still controls beat 4's
+			// position/rotation independently — only the texture is shared.
 			for (int beat = 0; beat < TridentFrameDurations.Length; beat++)
 			{
-				int srcIdx = System.Math.Min(beat, list.Count - 1);
+				bool isFinalRecovery = beat == TridentFrameDurations.Length - 1;
+				int rawIdx = isFinalRecovery ? beat - 1 : beat;
+				int srcIdx = System.Math.Min(rawIdx, list.Count - 1);
 				var tex = GD.Load<Texture2D>(list[srcIdx].path);
 				if (tex != null) frames.AddFrame(anim, tex, TridentFrameDurations[beat]);
 			}
@@ -783,32 +898,65 @@ public partial class PlayerController : CharacterBody2D
 			_tridentEffect.QueueFree();
 			_tridentEffect = null;
 		}
-		// Force facing Down for the death pose. The C3 reference plays a
-		// single down-facing crumple regardless of which way the player
-		// was moving, and MSCA's Death BlendSpace2D reads cleanest with
-		// a definite cardinal — diagonals on Death pose look like the
-		// player's mid-fall instead of resting.
-		_facing = Vector2.Down;
-		// Slow the AnimationTree so the Death + DeathBounce sequence reads
-		// as a heavy crumple rather than a quick flop. SpeedScale=0.5 halves
-		// the play rate, so the freeze-timer below has to double too.
-		_tree?.Set("speed_scale", 0.5f);
-		SetBlend("Death", _facing);
-		_state?.Travel("Death");
+		// Snap facing to a cardinal — diagonals would otherwise pick a death
+		// frame triple based on whichever axis dominated last, which can
+		// flicker between sequences mid-fall. Cardinal-only matches the
+		// per-direction frame mapping in PlayDeathSequence.
+		_facing = SnapToCardinal(_facing);
 		SFXController.Instance?.Play("player_hurt", -3f);
-		// Lock the body in the final death pose. MSCA's Death state has a
-		// 0.2s timer (farmer_base_animations.json:7281), then transitions
-		// into DeathBounce (0.7s of 4 keyframes alternating frames 179 ↔
-		// 180). After that, the state machine returns to Idle and the
-		// player stands back up. Disable the AnimationTree once the bounce
-		// settles so the last frame holds — the GameOverScreen still shows
-		// the body face-down on the ground while the fade-out runs.
-		// 1.9s = (Death 0.2 + DeathBounce 0.7 + 0.05 margin) × 2 (SpeedScale=0.5).
+
 		InputLocked = true;
-		GetTree().CreateTimer(1.9).Timeout += () =>
+		PlayDeathSequence();
+	}
+
+	/// <summary>Drive the body's spritesheet frame manually through a
+	/// hand-authored 3-frame fall sequence — MSCA's Death/DeathBounce
+	/// states only animate one frame and a side-flopping bounce, neither
+	/// matches the C3 reference of "crumple straight down and stay there."
+	/// Per-direction frame triples (Down/Right share, Left mirrors, Up has
+	/// its own up-facing frames) come from the Mana Seed farmer base
+	/// spritesheet layout. set_corresponding_layers_to_animframe writes to
+	/// every body + costume layer in lockstep so equipped gear stays
+	/// visually consistent across the fall.</summary>
+	private async void PlayDeathSequence()
+	{
+		if (_spriteLayers == null) return;
+
+		// Disable the AnimationTree so manual frame writes aren't stomped
+		// on the next process tick. MSCA documents this requirement on the
+		// helper itself (msca_farmer_sprite_layers.gd:12).
+		if (_tree != null) _tree.Active = false;
+
+		int[] frames;
+		bool flipped = false;
+		if (_facing.Y < -0.5f)        // Up — back-facing fall
 		{
-			if (_tree != null) _tree.Active = false;
-		};
+			frames = new[] { 181, 182, 183 };
+		}
+		else if (_facing.X < -0.5f)   // Left — mirror of right-facing fall
+		{
+			frames = new[] { 178, 179, 180 };
+			flipped = true;
+		}
+		else                           // Down or Right — right-facing fall
+		{
+			frames = new[] { 178, 179, 180 };
+		}
+
+		// 0.15s per beat reads as a deliberate crumple without dragging
+		// out the time-to-game-over. Final frame is held by simply not
+		// scheduling another tick — the AnimationTree is already off, so
+		// nothing else writes to those sprite frames.
+		const double frameDuration = 0.15;
+		for (int i = 0; i < frames.Length; i++)
+		{
+			if (!IsInstanceValid(_spriteLayers)) return;
+			_spriteLayers.Call("set_corresponding_layers_to_animframe", frames[i], flipped);
+			if (i < frames.Length - 1)
+			{
+				await ToSignal(GetTree().CreateTimer(frameDuration), Timer.SignalName.Timeout);
+			}
+		}
 	}
 
 	/// <summary>Apply a knockback impulse. Stuns input for KnockbackDuration while velocity decays.</summary>

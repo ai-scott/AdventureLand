@@ -281,6 +281,20 @@ public partial class SaveManager : Node
             CurrentData.Health = liveHealth.CurrentHealth;
             CurrentData.MaxHealth = liveHealth.MaxHealth;
         }
+        // Same problem applies to inventory: Equip/Unequip from the UI
+        // don't write to CurrentData, so without this snapshot the new
+        // scene's ApplySaveToPlayer → Inventory.LoadFrom(CurrentData)
+        // would overwrite the live (correct) equipment with whatever was
+        // last persisted, silently reverting the player's chosen weapon
+        // and clothing on every world transition.
+        //
+        // Critically, only snapshot when a live player exists. On Continue
+        // from the Title screen (or Try Again from GameOver) there's no
+        // player in the scene yet — and Inventory autoload's _equipped is
+        // still empty since nothing has loaded it. Snapshotting that empty
+        // dict would overwrite the saved EquippedItems before LoadFrom
+        // gets a chance to read them, resetting the player to nothing.
+        if (livePlayer != null) Inventory.Instance?.SaveTo(CurrentData);
         GetTree().ChangeSceneToFile(scenePath);
         // Wait for the new scene's _Ready callbacks to run before applying state.
         _ = ApplySaveWhenReady();
