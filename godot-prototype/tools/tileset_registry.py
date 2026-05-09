@@ -20,6 +20,8 @@ TILESETS_BY_TSX = {
     "FantasyForest_Combo.tsx":            ("FantasyForest_Combo.png",                             100, 16),
     # Interiors
     "Mana_Interiors.tsx":                 ("Mana_Seed_Interiors.png",                             128, 16),
+    # Lake — animated water/waterfall (used by World_10_Lake)
+    "LakeWaterfall.tsx":                  ("tm_water.png",                                         16, 16),
     # Gray Mist Mountain — Winter Forest family
     "winter forest (clean).tsx":           ("WinterSheets/winter forest (clean).png",              32, 16),
     "winter forest (snowy).tsx":           ("WinterSheets/winter forest (snowy).png",              32, 16),

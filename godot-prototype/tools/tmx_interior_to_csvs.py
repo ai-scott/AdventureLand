@@ -82,9 +82,16 @@ def sanitize_layer_name(name):
 
 
 def parse_all_tilesets(root):
-    """Return list of (firstgid, image, columns, tile_size) sorted by firstgid.
-    Aborts on any tileset not present in the registry."""
-    out = []
+    """Return (resolution, manifest):
+       resolution: list of (firstgid, image, columns, tile_size, output_index)
+                   sorted by firstgid, used for gid → atlas resolution
+       manifest:   list of (image, columns, tile_size) deduped by image,
+                   each entry's index is the output sourceId in the CSV
+    Multiple TMX <tileset>s can point at the same PNG (e.g. an embedded
+    tileset added by Tiled when a PNG is dragged in, then later replaced
+    by an external .tsx). They collapse to one Godot source so the scene's
+    TileSet doesn't need a redundant source per duplicate."""
+    raw = []
     for ts in root.findall("tileset"):
         firstgid = int(ts.get("firstgid", 1))
         resolved = resolve_tileset(ts)
@@ -97,29 +104,38 @@ def parse_all_tilesets(root):
                 f"image='{img_src}'. Add it to tools/tileset_registry.py."
             )
         image, columns, tile_size = resolved
-        out.append((firstgid, image, columns, tile_size))
-    out.sort(key=lambda x: x[0])
-    return out
+        raw.append((firstgid, image, columns, tile_size))
+    raw.sort(key=lambda x: x[0])
+
+    manifest = []
+    image_to_idx = {}
+    resolution = []
+    for firstgid, image, cols, ts in raw:
+        if image not in image_to_idx:
+            image_to_idx[image] = len(manifest)
+            manifest.append((image, cols, ts))
+        resolution.append((firstgid, image, cols, ts, image_to_idx[image]))
+    return resolution, manifest
 
 
-def resolve_gid(raw_gid, tilesets):
-    """Given a raw GID (with flip bits), return (tileset_index, atlas_x, atlas_y)
+def resolve_gid(raw_gid, resolution):
+    """Given a raw GID (with flip bits), return (output_index, atlas_x, atlas_y)
     or None if the GID is 0 (empty cell)."""
     tid = raw_gid & TILE_ID_MASK
     if tid == 0:
         return None
     # Find the highest firstgid ≤ tid
     best_idx = 0
-    for i, entry in enumerate(tilesets):
+    for i, entry in enumerate(resolution):
         if entry[0] <= tid:
             best_idx = i
         else:
             break
-    firstgid, _, columns, _ = tilesets[best_idx]
+    firstgid, _, columns, _, output_idx = resolution[best_idx]
     local_id = tid - firstgid  # 0-based within this tileset
     ax = local_id % columns
     ay = local_id // columns
-    return (best_idx, ax, ay)
+    return (output_idx, ax, ay)
 
 
 def main():
@@ -135,14 +151,14 @@ def main():
     tree = ET.parse(tmx_path)
     root = tree.getroot()
 
-    tilesets = parse_all_tilesets(root)
-    if not tilesets:
+    resolution, manifest_entries = parse_all_tilesets(root)
+    if not resolution:
         print("ERROR: TMX has no tilesets")
         sys.exit(1)
 
-    print(f"Tilesets ({len(tilesets)}):")
-    for i, (firstgid, img, cols, ts) in enumerate(tilesets):
-        print(f"  [{i}] firstgid={firstgid:>6}  {img}  ({cols} cols, {ts}×{ts})")
+    print(f"Tilesets ({len(resolution)} declared, {len(manifest_entries)} unique):")
+    for firstgid, img, cols, ts, out_idx in resolution:
+        print(f"  firstgid={firstgid:>6}  {img}  ({cols} cols, {ts}×{ts}) → source {out_idx}")
         if not (SPRITESHEET_DIR / img).exists():
             print(f"      WARN: image missing at {SPRITESHEET_DIR / img}")
 
@@ -164,9 +180,9 @@ def main():
 
         rows = []
         flipped = 0
-        per_ts_counts = [0] * len(tilesets)
+        per_ts_counts = [0] * len(manifest_entries)
         for i, raw in enumerate(tiles):
-            resolved = resolve_gid(raw, tilesets)
+            resolved = resolve_gid(raw, resolution)
             if resolved is None:
                 continue
             flip = 0
@@ -192,8 +208,8 @@ def main():
     # Manifest — only needed for multi-tileset TMXs, but always write for uniformity.
     manifest = {
         "tilesets": [
-            {"image": img, "columns": cols, "tile_size": ts, "firstgid": fgid}
-            for fgid, img, cols, ts in tilesets
+            {"image": img, "columns": cols, "tile_size": ts}
+            for img, cols, ts in manifest_entries
         ]
     }
     manifest_path = OUTPUT_DIR / f"{tmx_base}_tilesets.json"

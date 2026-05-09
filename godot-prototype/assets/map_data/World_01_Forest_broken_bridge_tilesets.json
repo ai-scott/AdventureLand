@@ -3,8 +3,7 @@
     {
       "image": "FantasyForest_Combo.png",
       "columns": 100,
-      "tile_size": 16,
-      "firstgid": 1
+      "tile_size": 16
     }
   ]
 }
