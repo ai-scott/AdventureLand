@@ -35,6 +35,7 @@ TILESETS_BY_TSX = {
 TILESETS_BY_IMAGE = {
     "FantasyForest_Combo.png": ("FantasyForest_Combo.png", 100, 16),
     "Mana_Seed_Interiors.png": ("Mana_Seed_Interiors.png", 128, 16),
+    "tm_water.png":            ("tm_water.png",             16, 16),
 }
 
 

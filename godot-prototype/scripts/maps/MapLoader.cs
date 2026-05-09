@@ -60,10 +60,59 @@ public partial class MapLoader : Node2D
 			if (child is TileMapLayer layer)
 			{
 				string csvPath = $"res://assets/map_data/{layer.Name}.csv";
+				CheckCsvStaleness(layer.Name, csvPath);
 				totalTiles += LoadLayerFromCsv(layer, csvPath);
 			}
 		}
 		GD.Print($"Map loaded: {totalTiles} tiles, {_createdTiles.Count} unique atlas positions");
+	}
+
+	/// <summary>
+	/// Debug-only: warn if the source TMX is newer than the baked CSV. Mirrors
+	/// the staleness check in TriggerSpawner — catches TMX edits that landed
+	/// without bake_all.py running (autobake extension missing, git pull
+	/// without rebake, etc.). Layer names follow {tmx_stem}_{layer} for all
+	/// non-Village worlds; the lone Village exception uses unprefixed names
+	/// (Decor1PLevel, etc.) and shares World_00_Village.tmx.
+	/// </summary>
+	private static void CheckCsvStaleness(string layerName, string csvPath)
+	{
+		if (!OS.IsDebugBuild()) return;
+		if (!FileAccess.FileExists(csvPath)) return;
+
+		string tmxPath = ResolveTmxForLayer(layerName);
+		if (tmxPath == null || !FileAccess.FileExists(tmxPath)) return;
+
+		ulong tmxTime = FileAccess.GetModifiedTime(tmxPath);
+		ulong csvTime = FileAccess.GetModifiedTime(csvPath);
+		if (tmxTime > csvTime)
+		{
+			GD.PushWarning(
+				$"[MapLoader] STALE: {tmxPath} is newer than {csvPath}. " +
+				$"Run: python3 tools/bake_all.py"
+			);
+		}
+	}
+
+	/// <summary>
+	/// Walk back through the layer name's underscore-separated prefixes and
+	/// return the first matching TMX. Layer "World_10_Lake_Decor1Plevel" tries
+	/// "World_10_Lake.tmx" → "World_10.tmx" → "World.tmx" until one exists.
+	/// World_00_Village's unprefixed layers (e.g. "Decor1PLevel") fall through
+	/// and resolve to World_00_Village.tmx via the explicit fallback.
+	/// </summary>
+	private static string ResolveTmxForLayer(string layerName)
+	{
+		const string TmxDir = "res://assets/tiles/tilemaps/";
+		int cut = layerName.LastIndexOf('_');
+		while (cut > 0)
+		{
+			string candidate = $"{TmxDir}{layerName[..cut]}.tmx";
+			if (FileAccess.FileExists(candidate)) return candidate;
+			cut = layerName.LastIndexOf('_', cut - 1);
+		}
+		string fallback = $"{TmxDir}World_00_Village.tmx";
+		return FileAccess.FileExists(fallback) ? fallback : null;
 	}
 
 	private int LoadLayerFromCsv(TileMapLayer layer, string csvPath)

@@ -1,16 +1,10 @@
-[gd_resource type="Resource" script_class="DialogueData" format=3]
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://q4v3hf8xtxsq"]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
-
-[sub_resource type="Resource" id="cond_2"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Not_Started"
+[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
+[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
+[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
+[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
+[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
 
 [sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
@@ -18,9 +12,13 @@ Type = 14
 
 [sub_resource type="Resource" id="act_4"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
@@ -34,7 +32,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_3"), SubResource("act_4")])
 
 [sub_resource type="Resource" id="cond_6"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Met_Sea_Monster"
 
@@ -51,21 +48,13 @@ LeadsTo = "explain_pearl"
 [sub_resource type="Resource" id="node_5"]
 script = ExtResource("2")
 Id = "greeting_response"
-Text = ""
 Speaker = "You"
 Priority = 999
 Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
 Responses = Array[ExtResource("5")]([SubResource("resp_7"), SubResource("resp_8")])
 
-[sub_resource type="Resource" id="cond_10"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Met_Sea_Monster"
-
 [sub_resource type="Resource" id="act_11"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Active"
 
@@ -81,9 +70,13 @@ Reason = "player_taunted"
 
 [sub_resource type="Resource" id="act_14"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_10"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Met_Sea_Monster"
 
 [sub_resource type="Resource" id="node_9"]
 script = ExtResource("2")
@@ -97,7 +90,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_11"), SubResource("act_12"),
 
 [sub_resource type="Resource" id="cond_16"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Met_Sea_Monster"
 
@@ -112,7 +104,6 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
 
 [sub_resource type="Resource" id="cond_18"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Met_Sea_Monster"
 
@@ -129,21 +120,13 @@ LeadsTo = "refuse_quest"
 [sub_resource type="Resource" id="node_17"]
 script = ExtResource("2")
 Id = "explain_pearl_response"
-Text = ""
 Speaker = "You"
 Priority = 996
 Conditions = Array[ExtResource("3")]([SubResource("cond_18")])
 Responses = Array[ExtResource("5")]([SubResource("resp_19"), SubResource("resp_20")])
 
-[sub_resource type="Resource" id="cond_22"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Met_Sea_Monster"
-
 [sub_resource type="Resource" id="act_23"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Active"
 
@@ -156,6 +139,11 @@ ItemName = "Pink Oyster Pearl"
 script = ExtResource("4")
 Type = 16
 
+[sub_resource type="Resource" id="cond_22"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Met_Sea_Monster"
+
 [sub_resource type="Resource" id="node_21"]
 script = ExtResource("2")
 Id = "accept_quest"
@@ -166,15 +154,8 @@ EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_22")])
 Actions = Array[ExtResource("4")]([SubResource("act_23"), SubResource("act_24"), SubResource("act_25")])
 
-[sub_resource type="Resource" id="cond_27"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Met_Sea_Monster"
-
 [sub_resource type="Resource" id="act_28"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Active"
 
@@ -190,9 +171,13 @@ Reason = "player_refused"
 
 [sub_resource type="Resource" id="act_31"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_27"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Met_Sea_Monster"
 
 [sub_resource type="Resource" id="node_26"]
 script = ExtResource("2")
@@ -204,18 +189,6 @@ EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
 Actions = Array[ExtResource("4")]([SubResource("act_28"), SubResource("act_29"), SubResource("act_30"), SubResource("act_31")])
 
-[sub_resource type="Resource" id="cond_no_pearl"]
-script = ExtResource("3")
-Type = 1
-Negate = true
-ItemId = "Pink Oyster Pearl"
-
-[sub_resource type="Resource" id="cond_33"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Hostile_Encounter"
-
 [sub_resource type="Resource" id="act_34"]
 script = ExtResource("4")
 Type = 14
@@ -225,10 +198,20 @@ script = ExtResource("4")
 Type = 15
 Reason = "returning_after_hostile"
 
+[sub_resource type="Resource" id="cond_33"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_no_pearl"]
+script = ExtResource("3")
+Type = 1
+Negate = true
+ItemId = "Pink Oyster Pearl"
+
 [sub_resource type="Resource" id="node_32"]
 script = ExtResource("2")
 Id = "hostile_encounter_summon"
-Text = ""
 Speaker = "System"
 Priority = 994
 AutoAdvance = "hostile_encounter"
@@ -237,7 +220,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_34"), SubResource("act_35")]
 
 [sub_resource type="Resource" id="cond_37"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Hostile_Encounter"
 
@@ -250,6 +232,10 @@ Priority = 993
 EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_37"), SubResource("cond_no_pearl")])
 
+[sub_resource type="Resource" id="act_41"]
+script = ExtResource("4")
+Type = 14
+
 [sub_resource type="Resource" id="cond_39"]
 script = ExtResource("3")
 Type = 1
@@ -257,24 +243,23 @@ ItemId = "Pink Oyster Pearl"
 
 [sub_resource type="Resource" id="cond_40"]
 script = ExtResource("3")
-Type = 0
 Negate = true
 QuestId = "pearl_quest"
 Status = "Complete"
 
-[sub_resource type="Resource" id="act_41"]
-script = ExtResource("4")
-Type = 14
-
 [sub_resource type="Resource" id="node_38"]
 script = ExtResource("2")
 Id = "return_summon"
-Text = ""
 Speaker = "System"
 Priority = 994
 AutoAdvance = "return_with_pearl"
 Conditions = Array[ExtResource("3")]([SubResource("cond_39"), SubResource("cond_40")])
 Actions = Array[ExtResource("4")]([SubResource("act_41")])
+
+[sub_resource type="Resource" id="act_45"]
+script = ExtResource("4")
+Type = 4
+ItemId = "Pink Oyster Pearl"
 
 [sub_resource type="Resource" id="cond_43"]
 script = ExtResource("3")
@@ -283,15 +268,9 @@ ItemId = "Pink Oyster Pearl"
 
 [sub_resource type="Resource" id="cond_44"]
 script = ExtResource("3")
-Type = 0
 Negate = true
 QuestId = "pearl_quest"
 Status = "Complete"
-
-[sub_resource type="Resource" id="act_45"]
-script = ExtResource("4")
-Type = 4
-ItemId = "Pink Oyster Pearl"
 
 [sub_resource type="Resource" id="node_42"]
 script = ExtResource("2")
@@ -305,7 +284,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_45")])
 
 [sub_resource type="Resource" id="cond_47"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Pearl_Found"
 
@@ -318,12 +296,6 @@ Priority = 992
 AutoAdvance = "trident_received"
 Conditions = Array[ExtResource("3")]([SubResource("cond_47")])
 
-[sub_resource type="Resource" id="cond_49"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Pearl_Found"
-
 [sub_resource type="Resource" id="act_50"]
 script = ExtResource("4")
 Type = 3
@@ -331,13 +303,17 @@ ItemId = "Magic Trident"
 
 [sub_resource type="Resource" id="act_51"]
 script = ExtResource("4")
-Type = 2
 QuestId = "pearl_quest"
 Status = "Complete"
 
 [sub_resource type="Resource" id="act_52"]
 script = ExtResource("4")
 Type = 17
+
+[sub_resource type="Resource" id="cond_49"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Pearl_Found"
 
 [sub_resource type="Resource" id="node_48"]
 script = ExtResource("2")
@@ -349,20 +325,18 @@ EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_49")])
 Actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_51"), SubResource("act_52")])
 
-[sub_resource type="Resource" id="cond_54"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Complete"
-
 [sub_resource type="Resource" id="act_55"]
 script = ExtResource("4")
 Type = 14
 
+[sub_resource type="Resource" id="cond_54"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Complete"
+
 [sub_resource type="Resource" id="node_53"]
 script = ExtResource("2")
 Id = "already_complete_summon"
-Text = ""
 Speaker = "System"
 Priority = 992
 AutoAdvance = "already_complete"
@@ -371,7 +345,6 @@ Actions = Array[ExtResource("4")]([SubResource("act_55")])
 
 [sub_resource type="Resource" id="cond_57"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Complete"
 
@@ -384,9 +357,12 @@ Priority = 991
 EndsDialogue = true
 Conditions = Array[ExtResource("3")]([SubResource("cond_57")])
 
+[sub_resource type="Resource" id="act_61"]
+script = ExtResource("4")
+Type = 14
+
 [sub_resource type="Resource" id="cond_59"]
 script = ExtResource("3")
-Type = 0
 QuestId = "pearl_quest"
 Status = "Active"
 
@@ -396,29 +372,23 @@ Type = 1
 Negate = true
 ItemId = "Pink Oyster Pearl"
 
-[sub_resource type="Resource" id="act_61"]
-script = ExtResource("4")
-Type = 14
-
 [sub_resource type="Resource" id="node_58"]
 script = ExtResource("2")
 Id = "quest_in_progress_summon"
-Text = ""
 Speaker = "System"
 Priority = 993
 AutoAdvance = "quest_in_progress"
 Conditions = Array[ExtResource("3")]([SubResource("cond_59"), SubResource("cond_60")])
 Actions = Array[ExtResource("4")]([SubResource("act_61")])
 
-[sub_resource type="Resource" id="cond_63"]
-script = ExtResource("3")
-Type = 0
-QuestId = "pearl_quest"
-Status = "Active"
-
 [sub_resource type="Resource" id="act_64"]
 script = ExtResource("4")
 Type = 18
+
+[sub_resource type="Resource" id="cond_63"]
+script = ExtResource("3")
+QuestId = "pearl_quest"
+Status = "Active"
 
 [sub_resource type="Resource" id="node_62"]
 script = ExtResource("2")
@@ -436,5 +406,4 @@ NpcId = "SeaMonster"
 DisplayName = "SeaMonster"
 DefaultNode = "greeting"
 WorldId = "World10"
-QuestRelations = PackedStringArray("pearl_quest")
 Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_5"), SubResource("node_9"), SubResource("node_15"), SubResource("node_17"), SubResource("node_21"), SubResource("node_26"), SubResource("node_32"), SubResource("node_36"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_53"), SubResource("node_56"), SubResource("node_58"), SubResource("node_62")])

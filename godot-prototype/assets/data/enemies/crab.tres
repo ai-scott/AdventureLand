@@ -57,6 +57,35 @@ Weight = 6.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")])
 Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move")])
 
+[sub_resource type="Resource" id="act_lurch_animate"]
+script = ExtResource("3")
+AnimName = "Attack_{direction}"
+
+[sub_resource type="Resource" id="act_lurch_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 1
+Speed = 120.0
+
+[sub_resource type="Resource" id="cond_lurch_in_range"]
+script = ExtResource("4")
+Value = 60.0
+
+[sub_resource type="Resource" id="cond_lurch_not_close"]
+script = ExtResource("4")
+Operator = 1
+Value = 30.0
+
+[sub_resource type="Resource" id="beh_lurch"]
+script = ExtResource("2")
+Name = "lurch_attack"
+DurationMin = 0.4
+DurationMax = 0.4
+Weight = 8.0
+Cooldown = 2.0
+Conditions = Array[ExtResource("4")]([SubResource("cond_lurch_in_range"), SubResource("cond_lurch_not_close")])
+Actions = Array[ExtResource("3")]([SubResource("act_lurch_animate"), SubResource("act_lurch_move")])
+
 [sub_resource type="Resource" id="act_attack_animate"]
 script = ExtResource("3")
 AnimName = "Attack_{direction}"
@@ -144,35 +173,6 @@ Weight = 99.0
 Cooldown = 1.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")])
 Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move"), SubResource("act_retreat_sound")])
-
-[sub_resource type="Resource" id="act_lurch_animate"]
-script = ExtResource("3")
-AnimName = "Attack_{direction}"
-
-[sub_resource type="Resource" id="act_lurch_move"]
-script = ExtResource("3")
-Type = 0
-Pattern = 1
-Speed = 120.0
-
-[sub_resource type="Resource" id="cond_lurch_in_range"]
-script = ExtResource("4")
-Value = 60.0
-
-[sub_resource type="Resource" id="cond_lurch_not_close"]
-script = ExtResource("4")
-Operator = 1
-Value = 30.0
-
-[sub_resource type="Resource" id="beh_lurch"]
-script = ExtResource("2")
-Name = "lurch_attack"
-DurationMin = 0.4
-DurationMax = 0.4
-Weight = 8.0
-Cooldown = 2.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_lurch_in_range"), SubResource("cond_lurch_not_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_lurch_animate"), SubResource("act_lurch_move")])
 
 [resource]
 script = ExtResource("1")

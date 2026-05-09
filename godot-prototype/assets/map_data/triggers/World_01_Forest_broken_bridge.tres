@@ -1,9 +1,23 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
 
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(2.77778, 260.185)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(-2.43292, -0.34756), Vector2(59.2593, 0), Vector2(67.7481, -18.0964), Vector2(167.785, -17.2628), Vector2(175.788, -1.25691), Vector2(216.136, -1.25691), Vector2(220.804, 12.4148), Vector2(232.308, 14.5822), Vector2(237.81, 29.421), Vector2(247.981, 30.2546), Vector2(255.984, 47.2609), Vector2(411.874, 46.594), Vector2(418.377, 29.421), Vector2(471.896, 29.5877), Vector2(479.732, 45.2601), Vector2(522.748, 45.7603), Vector2(529.751, 30.2546), Vector2(575.434, 29.7545), Vector2(578.102, 66.4346), Vector2(577.435, 103.948), Vector2(532.074, 104.243), Vector2(472.772, 104.348), Vector2(374.369, 104.533), Vector2(278.507, 104.839), Vector2(260.424, 101.324), Vector2(258.902, 86.4949), Vector2(219.348, 85.9375), Vector2(211.666, 69.7257), Vector2(170.868, 69.4978), Vector2(166.723, 55.8581), Vector2(160.303, 54.1755), Vector2(57.1376, 54.2545), Vector2(23.2979, 71.255), Vector2(-1.94082, 71.3211), Vector2(-2.11087, 52.2627)])
+
+[sub_resource type="Resource" id="trig_1"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(636.567, 292.441)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-0.666911, 70.6926), Vector2(56.8542, 71.1928), Vector2(56.6875, 59.3551), Vector2(58.8549, 59.5218), Vector2(63.8567, 52.8527), Vector2(70.5259, 52.8527), Vector2(76.0279, 58.3547), Vector2(77.6952, 66.1909), Vector2(82.5303, 66.1909), Vector2(83.1972, 10.0037), Vector2(59.3551, 10.8373), Vector2(59.3551, 0.166728)])
+
 [resource]
 script = ExtResource("1")
 SourceTmx = "assets/tiles/tilemaps/World_01_Forest_broken_bridge.tmx"
-Triggers = Array[ExtResource("2")]([])
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1")])

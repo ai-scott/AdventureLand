@@ -97,14 +97,19 @@ def bake_triggers(tmx_path):
     return _run("tmx_triggers_to_tres.py", tmx_path)
 
 
-def bake_tile_csvs(tmx_path, flavor):
-    """Run the CSV emitter appropriate for the TMX flavor."""
-    if flavor in ("interior", "multi"):
-        return _run("tmx_interior_to_csvs.py", tmx_path)
-    # Village flavor: update_tile_csvs.py. Historically skipped in bake_all
-    # because it overwrites World_00.tscn's CSVs that are already hand-tuned.
-    # Still useful on demand, but not auto-run by default to avoid surprises.
-    return True
+def bake_tile_csvs(tmx_path):
+    """Run the CSV emitter appropriate for the TMX flavor.
+
+    World_00_Village.tmx is the lone holdout — its scene uses unprefixed CSV
+    names (Decor1PLevel.csv, etc.) and the .tscn was hand-tuned, so
+    update_tile_csvs.py is the right tool there and is run on-demand only.
+    Every other world TMX (village, interior, or multi-tileset) gets baked
+    into prefixed CSVs by tmx_interior_to_csvs.py so MapLoader can find
+    {tmx_stem}_{layer}.csv at runtime.
+    """
+    if Path(tmx_path).name == "World_00_Village.tmx":
+        return True
+    return _run("tmx_interior_to_csvs.py", tmx_path)
 
 
 def main():
@@ -122,7 +127,7 @@ def main():
     for tmx in tmxs:
         flavor = classify_tmx(tmx)
         print(f"\n{tmx.name}  [{flavor}]")
-        step1 = bake_tile_csvs(tmx, flavor)
+        step1 = bake_tile_csvs(tmx)
         step2 = bake_triggers(tmx)
         if step1 and step2:
             ok += 1
