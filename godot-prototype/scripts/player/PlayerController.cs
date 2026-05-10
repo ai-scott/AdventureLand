@@ -692,18 +692,19 @@ public partial class PlayerController : CharacterBody2D
 			Name = "TridentSwingFx",
 			SpriteFrames = _tridentFrames,
 			TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-			ZIndex = 1, // sit on top of the player body
 		};
 		string anim = FacingAnimSuffix(_facing);
 		if (!_tridentFrames.HasAnimation(anim)) anim = _tridentFrames.GetAnimationNames()[0];
-		// Place the AnimatedSprite2D at the player's CharacterBody2D origin
-		// (the SpriteLayers parent for MSCA's farmer_1h_weapon sits at the
-		// same spot, so MSCA's offset values translate directly). Add the
-		// per-direction bias as the rotation pivot's resting position —
-		// keeps the swing arc shape MSCA-faithful while letting the user
-		// nudge each facing globally.
-		_tridentEffect.Position = TridentBiasFor(anim);
-		AddChild(_tridentEffect);
+		// Parent under SpriteLayers so the trident shares the player's
+		// y-sort/z context with farmer_1h_weapon and friends — otherwise
+		// it pops onto a different visual layer than the body and stock
+		// weapons. SpriteLayers is offset (0, 4) from Player.origin, so
+		// subtract that to keep the [Export] bias values authored against
+		// the Player root still visually correct.
+		Node2D tridentParent = _spriteLayers ?? (Node2D)this;
+		Vector2 parentOffset = _spriteLayers != null ? _spriteLayers.Position : Vector2.Zero;
+		_tridentEffect.Position = TridentBiasFor(anim) - parentOffset;
+		tridentParent.AddChild(_tridentEffect);
 
 		// Apply per-beat Offset / RotationDeg / FlipH from the [Export] beat
 		// arrays so live Inspector edits show up on the next swing. Defaults
