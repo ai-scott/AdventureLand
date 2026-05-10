@@ -495350,6 +495350,7 @@ vframes = 6
 frame = 35
 
 [node name="farmer_1h_weapon" type="Sprite2D" parent="SpriteLayers" unique_id=484406235]
+visible = false
 texture = ExtResource("6_ejd4k")
 offset = Vector2(0, -10)
 hframes = 4
@@ -495412,7 +495413,6 @@ frame = 127
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="SpriteLayers" unique_id=991132623]
 libraries/ = SubResource("AnimationLibrary_cqwyb")
-autoplay = &"StrikeForehandOneHandWeaponDown"
 
 [node name="AnimationTree" type="AnimationTree" parent="SpriteLayers" unique_id=2090951062]
 tree_root = SubResource("AnimationNodeStateMachine_l5kh4")
@@ -495492,8 +495492,10 @@ parameters/WorkAtDesk2/blend_position = Vector2(0, 0)
 script = ExtResource("19_pi3ps")
 
 [node name="AttackHitbox" type="Area2D" parent="." unique_id=2073815912]
+visible = false
 collision_layer = 4
 collision_mask = 8
+monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox" unique_id=1602477189]
 shape = SubResource("RectangleShape2D_kswpp")
