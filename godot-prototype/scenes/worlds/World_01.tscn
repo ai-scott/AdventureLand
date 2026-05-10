@@ -14,11 +14,11 @@
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="12_gover"]
 [ext_resource type="PackedScene" path="res://scenes/enemy/Enemy_Bat.tscn" id="13_bat"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Pete.tscn" id="14_pete"]
-[ext_resource type="Resource" path="res://assets/data/dialogue/pete.tres" id="15_petedlg"]
+[ext_resource type="Resource" uid="uid://11cns08xebfo" path="res://assets/data/dialogue/pete.tres" id="15_petedlg"]
 [ext_resource type="Texture2D" uid="uid://bvkj4keoc4b8q" path="res://assets/buildings/AL_TreeSign.png" id="16_fsign"]
 [ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="17_signsc"]
-[ext_resource type="Resource" path="res://assets/data/dialogue/forestsign.tres" id="18_fsdlg"]
-[ext_resource type="Texture2D" path="res://assets/buildings/Cabin1.png" id="19_cabin"]
+[ext_resource type="Resource" uid="uid://d1nb5b7c1thtf" path="res://assets/data/dialogue/forestsign.tres" id="18_fsdlg"]
+[ext_resource type="Texture2D" uid="uid://bpmu6r4wq6o5q" path="res://assets/buildings/Cabin1.png" id="19_cabin"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -121,6 +121,7 @@ texture = ExtResource("1")
 24:10/0 = 0
 24:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(6, -8, 8, -8, 8, 8, -6, 8, -7, 2, -7, 0, -6, -1, 0, -6)
 25:10/0 = 0
+25:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 26:10/0 = 0
 26:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 5, -8, 8, -6, 8, 8, -8, 8)
 27:10/0 = 0
@@ -253,7 +254,9 @@ texture = ExtResource("1")
 35:10/0 = 0
 35:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(1, -8, 8, -8, 8, 6, 5, 6, 3, 5, 1, 1, 0, -2, 0, -5)
 36:10/0 = 0
+36:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 37:10/0 = 0
+37:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 38:10/0 = 0
 38:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -6, -6, -6, -1, -2, 1, 0, 3, 3, 3, 5, 2, 8, -8, 8)
 34:4/0 = 0
@@ -1381,7 +1384,7 @@ position = Vector2(528, 50)
 NpcName = "Forest Sign"
 Dialogue = ExtResource("18_fsdlg")
 
-[node name="Cabin1" type="Sprite2D" parent="Entities"]
+[node name="Cabin1" type="Sprite2D" parent="Entities" unique_id=1253282592]
 position = Vector2(72, 326)
 texture = ExtResource("19_cabin")
 centered = false
