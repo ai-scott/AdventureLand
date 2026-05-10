@@ -301,7 +301,7 @@ public partial class EnemyController : CharacterBody2D
 		if (_player != null)
 		{
 			float dist = GlobalPosition.DistanceTo(_player.GlobalPosition);
-			bool inContact = dist < ContactRange;
+			bool inContact = dist < ContactRange && CanBeHit();
 
 			if (inContact)
 			{
@@ -875,6 +875,7 @@ public partial class EnemyController : CharacterBody2D
 	{
 		if (!body.IsInGroup("player")) return;
 		if (_health != null && _health.IsDead) return;
+		if (!CanBeHit()) return;
 
 		if (body is PlayerController pc)
 		{
