@@ -199,6 +199,16 @@ public partial class PlayerController : CharacterBody2D
 	// one-shot safety timer scheduled for a prior attack knows it's stale
 	// and won't stomp a fresh swing already in progress.
 	private int _attackSeq;
+	// Latched true once the AnimationTree's current state is the attack
+	// state during this swing. Used by _PhysicsProcess to detect a clean
+	// transition out of the attack state and clear Attacking without
+	// waiting on MSCA's animation_state_finished signal — that signal
+	// fires from an animation keyframe and can be skipped on rapid
+	// re-presses while the state machine is mid-transition. Without this
+	// poll, the 1-second safety timer is the only fallback, which leaves
+	// the player frozen at the last attack frame long enough for nearby
+	// enemies to land the killing blow.
+	private bool _enteredAttackState;
 	// Enemies already damaged during the current swing. The attack hitbox
 	// is monitored across the whole animation, so without this set an enemy
 	// re-entering the area (or staying in it as the hitbox sweeps) would
@@ -407,11 +417,30 @@ public partial class PlayerController : CharacterBody2D
 		// rest position rather than jumping when the window opens.
 		if (Attacking)
 		{
-			float progress = GetAttackProgress();
-			bool inStrike = progress >= StrikeWindowStart && progress <= StrikeWindowEnd;
-			if (_attackHitbox != null) _attackHitbox.Monitoring = inStrike;
-			UpdateAttackHitbox();
-			QueueRedraw(); // drive _Draw so the debug rect tracks the swing
+			// Poll the state machine so we don't get stranded if MSCA's
+			// animation_state_finished keyframe is skipped during a rapid
+			// re-press (the state machine can be mid-transition when the
+			// keyframe is supposed to fire, and the emit_signal call gets
+			// skipped). Once we've observed the attack state at least once,
+			// any subsequent tick where the state has moved on means the
+			// swing is over — clear Attacking immediately rather than
+			// waiting on the 1-second safety timer.
+			bool inAttackState = _state.GetCurrentNode() == AttackAnimName;
+			if (inAttackState) _enteredAttackState = true;
+			if (_enteredAttackState && !inAttackState)
+			{
+				Attacking = false;
+				if (_attackHitbox != null) _attackHitbox.Monitoring = false;
+				if (_weaponSprite != null) _weaponSprite.Visible = false;
+			}
+			else
+			{
+				float progress = GetAttackProgress();
+				bool inStrike = progress >= StrikeWindowStart && progress <= StrikeWindowEnd;
+				if (_attackHitbox != null) _attackHitbox.Monitoring = inStrike;
+				UpdateAttackHitbox();
+				QueueRedraw(); // drive _Draw so the debug rect tracks the swing
+			}
 		}
 	}
 
@@ -537,6 +566,7 @@ public partial class PlayerController : CharacterBody2D
 	{
 		_attackSeq++;
 		_hitThisSwing.Clear();
+		_enteredAttackState = false;
 		int thisAttack = _attackSeq;
 
 		// MSCA BlendSpace2D uses facing direction for the strike variant.
