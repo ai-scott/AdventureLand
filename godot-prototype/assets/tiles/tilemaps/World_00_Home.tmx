@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="117">
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="118">
  <tileset firstgid="1" name="Mana_Interiors" tilewidth="16" tileheight="16" tilecount="6784" columns="128">
   <image source="../spritesheets/Mana_Seed_Interiors.png" width="2048" height="848"/>
  </tileset>
@@ -45,7 +45,7 @@
 0,0,0,0,3287,3288,0,0,0,0
 </data>
  </layer>
- <layer id="3" name="Items" width="10" height="10" locked="1">
+ <layer id="3" name="Objects" width="10" height="10" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
@@ -157,5 +157,8 @@
   <object id="114" type="wall" x="144" y="144" width="16" height="16"/>
   <object id="115" type="wall" x="64" y="158" width="16" height="16"/>
   <object id="116" type="wall" x="80" y="158" width="16" height="16"/>
+  <object id="117" type="wall" x="17.6709" y="85.4339">
+   <polygon points="0,0 5.40351,-4.96539 11.2451,-3.2129 11.8293,4.96539 19.8616,9.34661 19.7155,15.3343 18.2551,17.3789 18.4011,18.4011 20.8838,18.5472 19.7155,22.0522 12.2674,22.3442 13.8739,24.5349 13.1437,26.2873 7.74016,26.2873 1.02229,22.1982 1.46041,17.5249 3.35894,17.963 3.06686,15.0422 -0.438122,5.11143"/>
+  </object>
  </objectgroup>
 </map>

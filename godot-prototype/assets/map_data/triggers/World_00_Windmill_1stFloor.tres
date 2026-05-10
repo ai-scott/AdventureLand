@@ -337,7 +337,7 @@ script = ExtResource("2")
 Kind = 5
 Position = Vector2(144.0, 112.0)
 Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(4.99732, 0.764273), Vector2(5.68417, 5.95017), Vector2(6.29311, 13.2142), Vector2(18.9359, 16.5661), Vector2(33.8811, 16.0941), Vector2(40.2489, 7.27279), Vector2(39.8122, -8.28824), Vector2(28.9827, -15.7039), Vector2(13.7525, -14.5161), Vector2(4.50978, -5.36298)])
+PolygonPoints = Array[Vector2]([Vector2(4.99732, 0.764273), Vector2(5.68417, 5.95017), Vector2(6.29311, 13.2142), Vector2(11.3598, 23.7327), Vector2(16.1677, 24.106), Vector2(18.7763, 30.8126), Vector2(29.1175, 30.6892), Vector2(31.4276, 24.9168), Vector2(35.9287, 24.2844), Vector2(40.2489, 7.27279), Vector2(39.8122, -8.28824), Vector2(30.5206, -14.459), Vector2(31.6319, -24.5529), Vector2(29.8017, -26.5561), Vector2(16.0467, -25.1451), Vector2(17.6429, -13.9018), Vector2(4.50978, -5.36298)])
 
 [sub_resource type="Resource" id="trig_54"]
 script = ExtResource("2")

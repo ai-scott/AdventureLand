@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#c0a920" nextlayerid="43" nextobjectid="11">
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#c0a920" nextlayerid="43" nextobjectid="14">
  <tileset firstgid="1" name="Forest Combo" tilewidth="16" tileheight="16" tilecount="9200" columns="100" tilerendersize="grid">
   <image source="../spritesheets/FantasyForest_Combo.png" width="1600" height="1472"/>
   <tile id="701">
@@ -576,7 +576,11 @@
    <polygon points="0,0 49.8102,-0.696646 48.7652,15.6745 44.237,18.4611 44.237,26.4725 41.7987,29.6074 38.3155,28.5625 37.9672,19.8544 12.1913,19.1578 12.1913,28.2141 5.92149,27.5175 6.61813,17.4161 0.696646,17.7645"/>
   </object>
   <object id="10" type="wall" x="554.53" y="58.1699">
-   <polygon points="0,0 17.4161,-5.92149 32.0457,17.4161 74.1928,-5.92149 58.5182,-36.5739 9.75304,-25.4276"/>
+   <polygon points="0,0 17.4161,-5.92149 32.0457,17.4161 74.1928,-5.92149 58.5182,-36.5739 -2.43826,-36.9222"/>
+  </object>
+  <object id="12" type="wall" x="0.712276" y="0.356138" width="5.69821" height="479.362"/>
+  <object id="13" type="wall" x="695.894" y="291.321">
+   <polygon points="0,0 0.712276,-4.27366 -0.356138,-4.98593 -1.78069,-5.69821 -1.42455,-19.5876 0.712276,-19.2315 4.27366,-25.2858 3.91752,-46.6541 0.712276,-46.2979 0.356138,-63.0364 -1.42455,-63.3926 -1.42455,-79.4188 3.20524,-83.6924 3.20524,-111.471 0.356138,-111.471 0,-127.854 -1.06841,-127.854 -1.78069,-141.031 1.06841,-141.387 4.98593,-148.51 4.62979,-177.001 0.356138,-177.001 0.712276,-190.89 -1.42455,-191.958 -1.78069,-206.204 -0.712276,-206.204 3.91752,-211.546 3.91752,-245.023 0.356138,-244.311 0.356138,-260.337 -1.06841,-260.337 -1.42455,-274.582 1.06841,-274.939 5.34207,-282.061 11.7526,-282.061 23.8612,-291.321 23.5051,9.61573 0.712276,9.97187"/>
   </object>
  </objectgroup>
  <group id="20" name="Buildings" locked="1">

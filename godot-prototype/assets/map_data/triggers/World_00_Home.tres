@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=64 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=65 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
@@ -383,7 +383,14 @@ Kind = 5
 Position = Vector2(80.0, 158.0)
 Size = Vector2(16.0, 16.0)
 
+[sub_resource type="Resource" id="trig_61"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(17.6709, 85.4339)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(5.40351, -4.96539), Vector2(11.2451, -3.2129), Vector2(11.8293, 4.96539), Vector2(19.8616, 9.34661), Vector2(19.7155, 15.3343), Vector2(18.2551, 17.3789), Vector2(18.4011, 18.4011), Vector2(20.8838, 18.5472), Vector2(19.7155, 22.0522), Vector2(12.2674, 22.3442), Vector2(13.8739, 24.5349), Vector2(13.1437, 26.2873), Vector2(7.74016, 26.2873), Vector2(1.02229, 22.1982), Vector2(1.46041, 17.5249), Vector2(3.35894, 17.963), Vector2(3.06686, 15.0422), Vector2(-0.438122, 5.11143)])
+
 [resource]
 script = ExtResource("1")
 SourceTmx = "assets/tiles/tilemaps/World_00_Home.tmx"
-Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60")])
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60"), SubResource("trig_61")])

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="256">
+<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="15" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="256">
  <tileset firstgid="1" source="../Tilesets/Mana_Interiors.tsx"/>
  <layer id="1" name="Ground &amp; Walls" width="15" height="12" locked="1">
   <data encoding="csv">
@@ -17,7 +17,7 @@
 3268,3269,3269,3269,3269,3269,1221,1222,3269,3269,3269,3269,3269,3270,3271
 </data>
  </layer>
- <layer id="3" name="Floor Coverings" width="15" height="12" locked="1">
+ <layer id="3" name="Floor Coverings" width="15" height="12">
   <data encoding="csv">
 0,0,4534,4535,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,1667,1667,0,0,
@@ -49,7 +49,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="4" name="Items" width="15" height="12" locked="1">
+ <layer id="4" name="Objects" width="15" height="12" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -78,7 +78,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="Walls" locked="1">
+ <objectgroup id="6" name="Walls">
   <object id="163" type="wall" x="80" y="48" width="7.76151" height="32"/>
   <object id="164" type="wall" x="113.407" y="48" width="46.5933" height="16">
    <polygon points="0,0 46.1058,0 45.4964,10.8808 41.1446,16 0,16"/>
@@ -147,7 +147,7 @@
   <object id="218" type="wall" x="224" y="96" width="16" height="16"/>
   <object id="219" type="wall" x="0" y="112" width="16" height="16"/>
   <object id="220" type="wall" x="144" y="112" width="16" height="16">
-   <polygon points="4.99732,0.764273 5.68417,5.95017 6.29311,13.2142 18.9359,16.5661 33.8811,16.0941 40.2489,7.27279 39.8122,-8.28824 28.9827,-15.7039 13.7525,-14.5161 4.50978,-5.36298"/>
+   <polygon points="4.99732,0.764273 5.68417,5.95017 6.29311,13.2142 11.3598,23.7327 16.1677,24.106 18.7763,30.8126 29.1175,30.6892 31.4276,24.9168 35.9287,24.2844 40.2489,7.27279 39.8122,-8.28824 30.5206,-14.459 31.6319,-24.5529 29.8017,-26.5561 16.0467,-25.1451 17.6429,-13.9018 4.50978,-5.36298"/>
   </object>
   <object id="223" type="wall" x="224" y="112" width="16" height="16"/>
   <object id="224" type="wall" x="0" y="128" width="16" height="16"/>

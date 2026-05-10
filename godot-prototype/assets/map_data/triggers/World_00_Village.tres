@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=83 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=86 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
@@ -51,7 +51,7 @@ DoorId = 3
 [sub_resource type="Resource" id="trig_6"]
 script = ExtResource("2")
 Kind = 0
-Position = Vector2(44.1888, 333.21)
+Position = Vector2(45.5666, 337.171)
 Size = Vector2(32.0, 16.0)
 TargetScene = "res://scenes/worlds/World_00_PennysHouse.tscn"
 DoorId = 4
@@ -61,7 +61,7 @@ RequiredQuestStatus = "End_Cat_Quest"
 [sub_resource type="Resource" id="trig_7"]
 script = ExtResource("2")
 Kind = 1
-Position = Vector2(52.0, 354.0)
+Position = Vector2(53.55, 352.106)
 Size = Vector2(16.0, 16.0)
 DoorId = 4
 
@@ -537,9 +537,9 @@ PolygonPoints = Array[Vector2]([Vector2(103.316, 48.7736), Vector2(102.686, 86.9
 [sub_resource type="Resource" id="trig_75"]
 script = ExtResource("2")
 Kind = 5
-Position = Vector2(39.0, 227.184)
+Position = Vector2(37.45, 227.184)
 Size = Vector2(48.0, 129.317)
-PolygonPoints = Array[Vector2]([Vector2(44.6833, 79.4629), Vector2(44.9909, 122.073), Vector2(3.60788, 122.603), Vector2(0, 79.207)])
+PolygonPoints = Array[Vector2]([Vector2(44.6833, 79.4629), Vector2(44.9909, 122.073), Vector2(31.8003, 122.402), Vector2(31.3541, 115.782), Vector2(15.0862, 115.719), Vector2(13.6998, 123.346), Vector2(3.60788, 122.603), Vector2(0, 79.207)])
 
 [sub_resource type="Resource" id="trig_76"]
 script = ExtResource("2")
@@ -569,7 +569,28 @@ Position = Vector2(232.261, 157.793)
 Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(47.8955, -28.5405), Vector2(95.7911, 4.26467), Vector2(82.669, 17.7148), Vector2(56.2863, 19.1831), Vector2(53.7251, 11.6617), Vector2(40.9609, 11.7263), Vector2(39.5866, 18.9882), Vector2(14.1062, 19.6831), Vector2(0, 5.57688)])
 
+[sub_resource type="Resource" id="trig_80"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(644.404, 207.057)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-5.61683, 1.53186), Vector2(-16.8505, 14.808), Vector2(-17.1058, 22.4673), Vector2(-6.12745, 26.5523), Vector2(13.2761, 27.0629), Vector2(-36.2541, 52.3386), Vector2(-35.2328, 57.4449), Vector2(29.3607, 25.531), Vector2(26.8076, -3.31904)])
+
+[sub_resource type="Resource" id="trig_81"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(609.937, 295.139)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(60.7639, -31.9138), Vector2(71.4869, -25.531), Vector2(71.9975, -16.8505), Vector2(53.6152, 26.0417), Vector2(40.0837, 32.4244), Vector2(23.7439, 28.0842), Vector2(18.6377, 20.9355), Vector2(19.9142, 14.5527), Vector2(24.2545, 10.723), Vector2(23.9992, 5.61683), Vector2(4.08497, 5.61683)])
+
+[sub_resource type="Resource" id="trig_82"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(182.503, 321.553)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(15.1281, 0.321875), Vector2(15.7719, -1.93125), Vector2(20.2781, -2.25312), Vector2(20.2781, 19.9562), Vector2(21.2437, 28.325), Vector2(13.8406, 29.9343), Vector2(14.1625, 19.9562), Vector2(15.45, 19.9562), Vector2(15.45, 5.47187), Vector2(10.6702, 5.70996), Vector2(10.6702, 7.02585), Vector2(12.5125, 7.28903), Vector2(12.7757, 14.658), Vector2(0.53787, 14.658), Vector2(0.53787, 17.0266), Vector2(-1.83074, 16.6319), Vector2(-5.77842, 12.421), Vector2(-5.77842, 10.3156), Vector2(-0.778024, 5.97313), Vector2(-0.383256, 7.42062), Vector2(0.274691, 7.28903), Vector2(0.274691, 4.65724), Vector2(-1.69915, 3.47294), Vector2(-1.30438, 0.0516141)])
+
 [resource]
 script = ExtResource("1")
 SourceTmx = "assets/tiles/tilemaps/World_00_Village.tmx"
-Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60"), SubResource("trig_61"), SubResource("trig_62"), SubResource("trig_63"), SubResource("trig_64"), SubResource("trig_65"), SubResource("trig_66"), SubResource("trig_67"), SubResource("trig_68"), SubResource("trig_69"), SubResource("trig_70"), SubResource("trig_71"), SubResource("trig_72"), SubResource("trig_73"), SubResource("trig_74"), SubResource("trig_75"), SubResource("trig_76"), SubResource("trig_77"), SubResource("trig_78"), SubResource("trig_79")])
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60"), SubResource("trig_61"), SubResource("trig_62"), SubResource("trig_63"), SubResource("trig_64"), SubResource("trig_65"), SubResource("trig_66"), SubResource("trig_67"), SubResource("trig_68"), SubResource("trig_69"), SubResource("trig_70"), SubResource("trig_71"), SubResource("trig_72"), SubResource("trig_73"), SubResource("trig_74"), SubResource("trig_75"), SubResource("trig_76"), SubResource("trig_77"), SubResource("trig_78"), SubResource("trig_79"), SubResource("trig_80"), SubResource("trig_81"), SubResource("trig_82")])

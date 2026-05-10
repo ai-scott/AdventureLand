@@ -110,14 +110,18 @@ def parse_object_properties(obj_elem):
 def is_tile_collision_cross(points):
     """Detect Tiled's auto-generated '+' tile-collision shape — 12 vertices
     inside a single tile, produced by 'Add objects from tile' for tiles with
-    no real collision authored. Signature: 12 points in a ≤17×17 bbox.
-    Real walls (slanted edges, curves, building outlines) either have fewer
-    vertices, or span more than one tile."""
+    no real collision authored. Signature: 12 points confined to the tile
+    interior (all coords roughly in [0, 16]). Real authored walls often
+    extend negative or past the tile (chair tops anchored at the bottom
+    edge, slanted building corners, etc.) and survive this filter."""
     if len(points) != 12:
         return False
     xs = [p[0] for p in points]
     ys = [p[1] for p in points]
-    return (max(xs) - min(xs)) <= 17 and (max(ys) - min(ys)) <= 17
+    return (
+        min(xs) >= 0 and min(ys) >= 0
+        and max(xs) <= 16 and max(ys) <= 16
+    )
 
 
 def parse_tmx_objects(tmx_path):

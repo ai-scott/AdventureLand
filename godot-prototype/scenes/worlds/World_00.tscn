@@ -26,7 +26,7 @@
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
-[ext_resource type="Resource" uid="uid://bkbb628ohe8pc" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
+[ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -676,8 +676,11 @@ texture = ExtResource("1")
 31:32/0 = 0
 1:7/0 = 0
 35:9/0 = 0
+35:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, 4.74827, 0, 8, 8.606239, 8.606239)
 36:9/0 = 0
+36:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 4.2022133, 8, 3.509758, 8, 7.466652, -8, 8)
 37:9/0 = 0
+37:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 3.4622803, 8, 4.2536583, 8, 8, -8, 8)
 38:9/0 = 0
 27:16/0 = 0
 32:11/0 = 0
@@ -1283,6 +1286,7 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 
 [node name="World_00" type="Node2D" unique_id=772777698]
+y_sort_enabled = true
 script = ExtResource("7")
 
 [node name="GrassBackground" type="Sprite2D" parent="." unique_id=1788386527]
@@ -1402,7 +1406,7 @@ HideWhenWorldFlag = "penny_home"
 position = Vector2(486, 284)
 
 [node name="Enemy" parent="Entities" unique_id=1190379225 instance=ExtResource("14_dy4xb")]
-position = Vector2(267, 217)
+position = Vector2(362, 301)
 
 [node name="EdgeSouth" parent="Entities" unique_id=1170496001 instance=ExtResource("27_b4gdq")]
 position = Vector2(360, 496)
