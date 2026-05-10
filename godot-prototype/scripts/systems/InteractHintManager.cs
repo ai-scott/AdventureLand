@@ -35,6 +35,15 @@ public partial class InteractHintManager : CanvasLayer
     /// range — pressing Space goes to the interaction, not a swing.</summary>
     public bool IsHintVisible => _panel != null && _panel.Visible;
 
+    /// <summary>The source whose hint is currently displayed (the registrant
+    /// closest to the player). Null when no hint is visible. Interactors
+    /// that own their own input handler — e.g. ItemTrigger when several
+    /// pickup circles overlap — gate their interact press on
+    /// <c>this == ActiveSource</c> so a press always fires the closest
+    /// candidate, not whichever one happens to run first in scene-tree
+    /// order.</summary>
+    public Node2D ActiveSource { get; private set; }
+
     private readonly Dictionary<Node2D, Func<string>> _candidates = new();
     /// <summary>Per-source head-offset Y (world units). Items override to -16
     /// because their sprites are 16px tall, not 32 like Mana Seed NPCs.</summary>
@@ -95,6 +104,7 @@ public partial class InteractHintManager : CanvasLayer
         if (source == null) return;
         _candidates.Remove(source);
         _headOffsetY.Remove(source);
+        if (ActiveSource == source) ActiveSource = null;
     }
 
     public override void _Process(double delta)
@@ -105,6 +115,7 @@ public partial class InteractHintManager : CanvasLayer
         if (GetTree().Paused)
         {
             _panel.Visible = false;
+            ActiveSource = null;
             return;
         }
 
@@ -113,6 +124,7 @@ public partial class InteractHintManager : CanvasLayer
         if (_candidates.Count == 0)
         {
             _panel.Visible = false;
+            ActiveSource = null;
             return;
         }
 
@@ -120,6 +132,7 @@ public partial class InteractHintManager : CanvasLayer
         if (player == null)
         {
             _panel.Visible = false;
+            ActiveSource = null;
             return;
         }
 
@@ -146,15 +159,22 @@ public partial class InteractHintManager : CanvasLayer
         if (closest == null)
         {
             _panel.Visible = false;
+            ActiveSource = null;
             return;
         }
 
         string text = _candidates[closest]() ?? "";
         if (string.IsNullOrEmpty(text))
         {
+            // The closest source is suppressing its hint (e.g. NpcInteract
+            // while its dialogue is open). Treat it as inactive so a stray
+            // press doesn't re-trigger it through the ActiveSource gate.
             _panel.Visible = false;
+            ActiveSource = null;
             return;
         }
+
+        ActiveSource = closest;
 
         // Strip legacy "↵ " or "↵" prefix — triggers used to bake the
         // glyph into the hint text; the new panel renders the kbd icon
@@ -176,8 +196,35 @@ public partial class InteractHintManager : CanvasLayer
         var screenPos = headScreenPos + new Vector2(0, -HeadPaddingScreenPx);
         // PanelContainer sizes itself to its content — do the pivot math
         // against the latest size so the hint stays centered as text changes.
-        _panel.Position = screenPos - new Vector2(_panel.Size.X * 0.5f, _panel.Size.Y);
+        var defaultPanelPos = screenPos - new Vector2(_panel.Size.X * 0.5f, _panel.Size.Y);
+
+        // If the above-source panel would clip off the top of the viewport
+        // (sources near the map's north edge — forest sign, windmill door —
+        // where there's no headroom to hover the hint above), flip below the
+        // source instead. Stays anchored on the trigger so the hint doesn't
+        // chase the player around (convention: hints sit on the interactable).
+        // For interactables like signs, "below the trigger" lands roughly at
+        // the player's feet anyway because the player is standing in front of
+        // it to read.
+        if (defaultPanelPos.Y < TopMarginPx)
+        {
+            // Mirror the head offset: instead of -32 above the source, place
+            // the panel +HeadPaddingScreenPx below the source's origin (which
+            // is the trigger center for Area2D sources).
+            var belowScreenPos = canvasT * Vector2.Zero + new Vector2(0, HeadPaddingScreenPx);
+            _panel.Position = belowScreenPos - new Vector2(_panel.Size.X * 0.5f, 0);
+        }
+        else
+        {
+            _panel.Position = defaultPanelPos;
+        }
     }
+
+    /// <summary>If the above-source panel position would land within this
+    /// many screen pixels of the viewport top, the hint flips below the
+    /// source. 8px gives a small breathing buffer so we don't only catch
+    /// the literal off-screen case.</summary>
+    private const float TopMarginPx = 8f;
 
     private void BuildPanel()
     {

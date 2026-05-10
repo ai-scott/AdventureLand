@@ -91,7 +91,14 @@ public partial class ItemTrigger : Area2D
         // This replaces the old "bump = pickup" behavior so the player can
         // browse a shop's items without burning gems on the first one they
         // brush against.
-        if (_playerInRange && !_collected && Input.IsActionJustPressed("interact"))
+        //
+        // Gate on InteractHintManager.ActiveSource so that when several
+        // pickup circles overlap (shop shelves, scattered loot piles) the
+        // press always lands on the item whose hint is being shown — i.e.
+        // the one closest to the player — rather than whichever ItemTrigger
+        // happens to run first in scene-tree order.
+        if (_playerInRange && !_collected && Input.IsActionJustPressed("interact")
+            && InteractHintManager.Instance?.ActiveSource == this)
         {
             TryTake();
         }
