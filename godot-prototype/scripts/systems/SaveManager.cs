@@ -496,7 +496,7 @@ public partial class SaveManager : Node
     /// Same shape/mask the player uses for movement, so we resolve to a
     /// position they can actually navigate from rather than bumping out
     /// into another collider on the first frame.</summary>
-    private static void UnstickPlayer(CharacterBody2D player)
+    public static void UnstickPlayer(CharacterBody2D player)
     {
         var shape = player.GetNodeOrNull<CollisionShape2D>("CollisionShape2D")?.Shape;
         if (shape == null) return;

@@ -185,11 +185,15 @@ public partial class WorldManager : Node
             if (player != null)
             {
                 player.GlobalPosition = marker.GlobalPosition;
+                // Door markers can land on tree/wall colliders if the
+                // exterior tile layout shifts — nudge to nearest clear spot
+                // so the player isn't immobilized in a tree on entry.
+                if (player is CharacterBody2D body) SaveManager.UnstickPlayer(body);
                 SnapCamera(player);
                 if (SaveManager.Instance?.CurrentData != null)
                 {
-                    SaveManager.Instance.CurrentData.PositionX = marker.GlobalPosition.X;
-                    SaveManager.Instance.CurrentData.PositionY = marker.GlobalPosition.Y;
+                    SaveManager.Instance.CurrentData.PositionX = player.GlobalPosition.X;
+                    SaveManager.Instance.CurrentData.PositionY = player.GlobalPosition.Y;
                     // ApplySaveToPlayer auto-saved the OLD saved position
                     // already (before this marker override ran). Re-save
                     // with the marker position so disk matches in-memory.
@@ -315,12 +319,16 @@ public partial class WorldManager : Node
         pos.Y = Mathf.Clamp(pos.Y, EdgeMargin, meta.MapSize.Y - EdgeMargin);
 
         player.GlobalPosition = pos;
+        // Edge re-entry can drop the player onto a tree/wall tile right at
+        // the opposite border — unstick before saving so the persisted
+        // position is the navigable one.
+        if (player is CharacterBody2D body) SaveManager.UnstickPlayer(body);
         SnapCamera(player);
 
         if (SaveManager.Instance?.CurrentData != null)
         {
-            SaveManager.Instance.CurrentData.PositionX = pos.X;
-            SaveManager.Instance.CurrentData.PositionY = pos.Y;
+            SaveManager.Instance.CurrentData.PositionX = player.GlobalPosition.X;
+            SaveManager.Instance.CurrentData.PositionY = player.GlobalPosition.Y;
             // ApplySaveToPlayer just auto-saved the (X, 9999) placeholder
             // PendingSpawnPosition. Re-save with the clamped value so the
             // next Continue doesn't reload off-map.
