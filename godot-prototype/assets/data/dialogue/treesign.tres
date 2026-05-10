@@ -14,7 +14,7 @@ Status = "Not_Started"
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
 Id = "node_000"
-Text = "The Secret of the Tree of [b]AdventureLand[/b] is deeply mysterious."
+Text = "The Secret of the Tree of AdventureLand is deeply mysterious."
 Speaker = "AL"
 Priority = 100
 AutoAdvance = "node_001"

@@ -148,8 +148,9 @@ public partial class CostumeController : Node
             return;
         }
 
-        // Handle mutual exclusion for leg-type layers.
+        // Handle mutual exclusion for leg-type and boot-type layers.
         HandleLegExclusion(item.CostumeLayer);
+        HandleBootExclusion(item.CostumeLayer);
 
         SetLayer(item.CostumeLayer, tex);
         ApplyCostumePalette(item);
@@ -383,6 +384,27 @@ public partial class CostumeController : Node
         foreach (var layer in legLayers)
         {
             if (layer != layerName) SetLayer(layer, null);
+        }
+    }
+
+    /// <summary>The Boot category covers two sprite layers: 03fot1 (low
+    /// shoes / slippers) and 07fot2 (boots over pant legs). Without this,
+    /// swapping from a 07fot2 boot to a 03fot1 shoe (or vice versa) leaves
+    /// the previous boot's layer visible because the inventory's same-slot
+    /// unequip path only fires for the data model — the costume only ever
+    /// receives the new EquipItem call, not a matching UnequipLayer for
+    /// the OLD layer when the layers differ.</summary>
+    private void HandleBootExclusion(string layerName)
+    {
+        string[] bootLayers = { "03fot1", "07fot2" };
+        if (System.Array.IndexOf(bootLayers, layerName) < 0) return;
+        foreach (var layer in bootLayers)
+        {
+            if (layer != layerName)
+            {
+                SetLayer(layer, null);
+                ClearLayerMaterial(layer);
+            }
         }
     }
 }

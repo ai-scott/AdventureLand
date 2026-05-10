@@ -35,6 +35,7 @@ public partial class DialogueManager : CanvasLayer
     // UI nodes — bound in _Ready from DialogueBox.tscn.
     private Control _dialogueBox;
     private TextureRect _frameBg;
+    private NinePatchRect _nameExtender;
     private TextureRect _cameo;
     private Label _nameLabel;
     private RichTextLabel _textLabel;
@@ -73,6 +74,7 @@ public partial class DialogueManager : CanvasLayer
 
         _dialogueBox = GetNode<Control>("DialogueBox");
         _frameBg = GetNode<TextureRect>("DialogueBox/FrameBg");
+        _nameExtender = GetNodeOrNull<NinePatchRect>("DialogueBox/NameExtender");
         _cameo = GetNode<TextureRect>("DialogueBox/Cameo");
         _nameLabel = GetNode<Label>("DialogueBox/NameLabel");
         _textLabel = GetNode<RichTextLabel>("DialogueBox/TextArea/VBoxContainer/TextLabel");
@@ -519,6 +521,7 @@ public partial class DialogueManager : CanvasLayer
         // Underscores are used in speaker IDs to keep them identifier-safe
         // in .tres files (e.g., "Shopkeeper_Sally"). Render as spaces.
         _nameLabel.Text = PrettifySpeaker(speaker);
+        LayoutNameExtender();
         _textLabel.Text = text;
         // Hide the body label when the node has no text (response-only nodes)
         // so the ResponseContainer flows up to the top of the text area.
@@ -655,6 +658,51 @@ public partial class DialogueManager : CanvasLayer
         _frameBg.Texture = _texFrameBg;
         _cameo.Visible = false;
         _nameLabel.Visible = false;
+        if (_nameExtender != null) _nameExtender.Visible = false;
+    }
+
+    /// <summary>Show the hearts_frame.png extender behind the speaker name
+    /// when the rendered text overflows the small plate baked into
+    /// frame_bg_name.png. The existing plate fits ~170px of text starting at
+    /// NameLabel.OffsetLeft (110); long names like "Shopkeeper Sophie" or
+    /// "Adventure Land" run off the right end without this widener.
+    ///
+    /// Honors the scene-authored OffsetLeft / Scale / vertical offsets so
+    /// the extender's rounded left end stays tucked into the existing plate
+    /// where the user placed it — only the right edge is stretched at
+    /// runtime to clear the rendered name + a small pad.</summary>
+    private void LayoutNameExtender()
+    {
+        if (_nameExtender == null) return;
+        if (_nameLabel == null || !_nameLabel.Visible || string.IsNullOrEmpty(_nameLabel.Text))
+        {
+            _nameExtender.Visible = false;
+            return;
+        }
+
+        var font = _nameLabel.GetThemeFont("font");
+        int fontSize = _nameLabel.GetThemeFontSize("font_size");
+        if (font == null) { _nameExtender.Visible = false; return; }
+        float textWidth = font.GetStringSize(_nameLabel.Text, HorizontalAlignment.Left, -1, fontSize).X;
+
+        const float plateWidth = 170f;
+        if (textWidth <= plateWidth)
+        {
+            _nameExtender.Visible = false;
+            return;
+        }
+
+        // Rendered right edge of the extender = OffsetLeft + Size.X * Scale.X,
+        // where Size.X = OffsetRight - OffsetLeft. Solve for the OffsetRight
+        // that puts the rendered edge past (NameLabel.OffsetLeft + textWidth)
+        // by a small pad. This keeps the authored Scale (1.55x in the scene)
+        // intact so the texture's rounded ends still read correctly.
+        const float rightPadding = 24f;
+        float scaleX = _nameExtender.Scale.X;
+        if (scaleX <= 0f) scaleX = 1f;
+        float targetRight = _nameLabel.OffsetLeft + textWidth + rightPadding;
+        _nameExtender.OffsetRight = _nameExtender.OffsetLeft + (targetRight - _nameExtender.OffsetLeft) / scaleX;
+        _nameExtender.Visible = true;
     }
 
 
