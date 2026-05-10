@@ -349,6 +349,10 @@ public partial class SeaMonsterController : Node2D
         // the burst visually anchored to the body about to break through.
         float burstY = (WaterLineWorldY + SurfaceY) * 0.5f + yOffset;
         _bubbles.GlobalPosition = new Vector2(GlobalPosition.X, burstY);
+        // Re-show in case ClearBubbles() hid the node when the previous
+        // dialogue opened — without this, no bubbles render on subsequent
+        // summons even though the particle system restarts.
+        _bubbles.Visible = true;
         // Restart cleanly — Emitting = false → true forces the one-shot
         // sequence to play even if a previous burst is still trailing off.
         _bubbles.Emitting = false;
@@ -362,8 +366,25 @@ public partial class SeaMonsterController : Node2D
             GD.PushWarning("[SeaMonster] No dialogue assigned — staying silent at the surface");
             return;
         }
+        // Clear any lingering bubble particles before the dialogue opens.
+        // Bubble lifetime (1.6s) + explosiveness=0.35 emission spread means
+        // the burst trails ~2.7s, but the rise tween is only 2.2s — without
+        // this, bubbles overlap the dialogue box on screen.
+        ClearBubbles();
         var dm = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
         if (dm == null || dm.IsActive) return;
         dm.StartDialogue(Dialogue);
+    }
+
+    private void ClearBubbles()
+    {
+        if (_bubbles == null) return;
+        _bubbles.Emitting = false;
+        // Restart with Emitting=false clears the existing particle buffer
+        // without spawning a new burst. Visible toggle is the belt-and-
+        // suspenders backup in case any frame slips through.
+        _bubbles.Visible = false;
+        _bubbles.Restart();
+        _bubbles.Emitting = false;
     }
 }
