@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
@@ -17,7 +17,21 @@ Position = Vector2(636.567, 292.441)
 Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-0.666911, 70.6926), Vector2(56.8542, 71.1928), Vector2(56.6875, 59.3551), Vector2(58.8549, 59.5218), Vector2(63.8567, 52.8527), Vector2(70.5259, 52.8527), Vector2(76.0279, 58.3547), Vector2(77.6952, 66.1909), Vector2(82.5303, 66.1909), Vector2(83.1972, 10.0037), Vector2(59.3551, 10.8373), Vector2(59.3551, 0.166728)])
 
+[sub_resource type="Resource" id="trig_2"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(503.326, 24.3826)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(49.8102, -0.696646), Vector2(48.7652, 15.6745), Vector2(44.237, 18.4611), Vector2(44.237, 26.4725), Vector2(41.7987, 29.6074), Vector2(38.3155, 28.5625), Vector2(37.9672, 19.8544), Vector2(12.1913, 19.1578), Vector2(12.1913, 28.2141), Vector2(5.92149, 27.5175), Vector2(6.61813, 17.4161), Vector2(0.696646, 17.7645)])
+
+[sub_resource type="Resource" id="trig_3"]
+script = ExtResource("2")
+Kind = 5
+Position = Vector2(554.53, 58.1699)
+Size = Vector2(16.0, 16.0)
+PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(17.4161, -5.92149), Vector2(32.0457, 17.4161), Vector2(74.1928, -5.92149), Vector2(58.5182, -36.5739), Vector2(9.75304, -25.4276)])
+
 [resource]
 script = ExtResource("1")
 SourceTmx = "assets/tiles/tilemaps/World_01_Forest_broken_bridge.tmx"
-Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1")])
+Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3")])

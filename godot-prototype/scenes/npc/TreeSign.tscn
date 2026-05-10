@@ -10,6 +10,7 @@ radius = 18.0
 collision_layer = 2
 script = ExtResource("1")
 NpcName = "Tree Sign"
+InteractVerb = "Look"
 Dialogue = ExtResource("2")
 
 [node name="InteractZone" type="CollisionShape2D" parent="."]

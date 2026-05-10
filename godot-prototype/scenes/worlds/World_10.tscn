@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="8_msv86"]
 [ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="9_wti8o"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="10_tspwn"]
-[ext_resource type="Resource" path="res://assets/map_data/triggers/World_10_Lake.tres" id="11_trres"]
+[ext_resource type="Resource" uid="uid://baagu25e6co5g" path="res://assets/map_data/triggers/World_10_Lake.tres" id="11_trres"]
 [ext_resource type="PackedScene" uid="uid://b8crab0001prj" path="res://scenes/enemy/Enemy_Crab.tscn" id="12_crab"]
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="13_gover"]
 [ext_resource type="PackedScene" uid="uid://gxawk8hguuhw" path="res://scenes/npc/SeaMonster.tscn" id="14_sm"]
@@ -1950,6 +1950,7 @@ region_rect = Rect2(0, 0, 720, 480)
 
 [node name="World_10_Lake_Waterfall" type="TileMapLayer" parent="." unique_id=1066219179]
 z_index = -2
+tile_map_data = PackedByteArray("AAASAAAAAQAAAAIAAAATAAAAAQAAAAIAAAAUAAAAAQAAAAIAAAAVAAAAAQAAAAIAAAAWAAAAAQAAABAAAAASAAEAAQAAAAMAAAATAAEAAQAAAAMAAAAUAAEAAQAAAAMAAAAVAAEAAQAAAAMAAAAWAAEAAQAAABEAAAASAAIAAQAAAAAAAAATAAIAAQAAAAAAAAAUAAIAAQAAAAAAAAAVAAIAAQAAAAAAAAAWAAIAAQAAAAAAAAASAAMAAQAAAAEAAAATAAMAAQAAAAEAAAAUAAMAAQAAAAEAAAAVAAMAAQAAAAEAAAAWAAMAAQAAAAEAAAASAAQAAQAAAAQAAAATAAQAAQAAAAQAAAAUAAQAAQAAAAQAAAAVAAQAAQAAAAQAAAAWAAQAAQAAAAQAAAASAAUAAQAAAAcAAAATAAUAAQAAAAUAAAAUAAUAAQAAAAUAAAAVAAUAAQAAAAUAAAAWAAUAAQAAAAkAAAASAAYAAQAAABIAAAATAAYAAQAAABIAAAAUAAYAAQAAABIAAAAVAAYAAQAAABIAAAAWAAYAAQAAABIAAAA=")
 tile_set = SubResource("TileSet_1")
 
 [node name="World_10_Lake_Ground3underP" type="TileMapLayer" parent="." unique_id=1613545671]
@@ -2049,7 +2050,7 @@ texture = ExtResource("21_lksgn")
 centered = false
 
 [node name="LakeSignTrigger" parent="Entities" unique_id=600997698 instance=ExtResource("22_signsc")]
-position = Vector2(77, 211)
+position = Vector2(77, 222)
 NpcName = "Lake Sign"
 Dialogue = ExtResource("23_lkdlg")
 

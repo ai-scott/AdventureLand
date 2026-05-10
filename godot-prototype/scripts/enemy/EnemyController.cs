@@ -112,6 +112,11 @@ public partial class EnemyController : CharacterBody2D
 	private double _avoidanceTimer;
 	private const double AvoidanceCommitTime = 0.35;
 	private const float WallProbeLength = 14f;      // px ahead to look for walls
+
+	// Cached collision mask so the bat can drop wall collision while flying
+	// home and restore it for grounded behaviors (swoop). Snapshotted in _Ready
+	// so edits to the export carry through.
+	private uint _defaultCollisionMask;
 	private const uint WallCollisionMask = 2;       // layer 2 = walls/obstacles (matches CollisionMask)
 
 	// Bat tunables — referenced inline below to keep type-coupled bat logic
@@ -135,6 +140,8 @@ public partial class EnemyController : CharacterBody2D
 		// Group membership lets EnemyMusicDriver poll the nearest live
 		// enemy without scanning the whole scene tree.
 		AddToGroup("enemy");
+
+		_defaultCollisionMask = CollisionMask;
 
 		_animator = GetNodeOrNull<EnemyAnimatorBase>(AnimatorPath);
 		_health = GetNodeOrNull<HealthSystem>(HealthSystemPath);
@@ -320,8 +327,24 @@ public partial class EnemyController : CharacterBody2D
 			}
 		}
 
+		ApplyFlyingPhasePass();
 		MoveAndSlide();
 		UpdateShadow(delta);
+	}
+
+	/// <summary>Bats are flying creatures — at perch/flee altitude they shouldn't
+	/// be physically blocked by tree-trunk walls. Drop wall collision while
+	/// idle_hanging or flee_to_tree; restore for swoop_attack/hurt_flash so
+	/// the bat still feels like it occupies the world during combat. Without
+	/// this, a bat returning home behind a thick line of tree colliders gets
+	/// pinned and never reaches its perch.</summary>
+	private void ApplyFlyingPhasePass()
+	{
+		if (Data?.Type != "Bat") return;
+		string b = _currentBehavior?.Name ?? "";
+		bool flying = b == "flee_to_tree" || b == "idle_hanging";
+		uint target = flying ? (_defaultCollisionMask & ~WallCollisionMask) : _defaultCollisionMask;
+		if (CollisionMask != target) CollisionMask = target;
 	}
 
 	/// <summary>Eases the shadow Y offset toward the target dictated by the
@@ -606,6 +629,16 @@ public partial class EnemyController : CharacterBody2D
 	private Vector2 ApplyWallAvoidance(Vector2 desired, double delta)
 	{
 		if (desired == Vector2.Zero)
+		{
+			_avoidanceBias = Vector2.Zero;
+			_avoidanceTimer = 0;
+			return desired;
+		}
+
+		// Flying bats heading home phase through walls (see ApplyFlyingPhasePass)
+		// — running the avoidance probes would just steer them off-course around
+		// obstacles they're going to fly straight over anyway.
+		if (Data?.Type == "Bat" && _currentBehavior?.Name == "flee_to_tree")
 		{
 			_avoidanceBias = Vector2.Zero;
 			_avoidanceTimer = 0;
