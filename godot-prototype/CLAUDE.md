@@ -95,20 +95,37 @@ Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rena
 
 **Idle starts at column 1**, not 0 — columns 0 and 3 in the idle row are blank. Getting this wrong causes flickering.
 
-### 4. TileSet requires tile_size AND texture_region_size
+### 4. TileSet `tile_size` AND per-source `texture_region_size`
 
-**Root cause of "jangled" tile rendering:** Without both properties explicitly set in the scene, Godot defaults the atlas region to 64×64 instead of 16×16, causing every tile to sample the wrong part of the tileset.
+**Root cause of "jangled" / flickering tile rendering:** Two separate
+size fields, both required, both default to wrong values silently.
 
-Both must be present in `World_00.tscn`:
+The TileSet sub-resource needs `tile_size`. **Each individual atlas
+source** also needs its own `texture_region_size` matching the source
+PNG's tile dimensions — they are NOT inherited from the TileSet. When
+omitted, Godot defaults the source region to 16×16, which only "works"
+for 16-px tilesets by accident; a 32×32 atlas with default 16×16
+region samples quarter-tiles and animations cycle through misaligned
+fragments (visible flicker).
+
 ```
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
-texture_region_size = Vector2i(16, 16)   ← REQUIRED
-
 [sub_resource type="TileSet" id="TileSet_1"]
-tile_size = Vector2i(16, 16)             ← REQUIRED
+tile_size = Vector2i(16, 16)             ← REQUIRED on TileSet
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("...")
+texture_region_size = Vector2i(16, 16)   ← REQUIRED on every source
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_water_plants"]
+texture = ExtResource("...")
+texture_region_size = Vector2i(32, 32)   ← MATCH the source PNG's tile dims
 ```
 
-These can be silently stripped during git merges. If tiles look jangled again, check these first.
+**Set in editor**: TileSet panel → click the source → Setup section →
+Texture Region Size.
+
+These can be silently stripped during git merges. If tiles look
+jangled or animated tiles flicker, check these first.
 
 ### 5. TMX converter ignores wangsets and rebuilds the scene
 
@@ -196,6 +213,55 @@ Sheet = ExtResource("12_sheet")
 `index="1"` matches NpcAnimator's position inside the base `Npc.tscn`; the
 `12_sheet` id is just convention — any unused id in the scene works.
 
+### 8. Bake assigns Godot TileSet source IDs sequentially by TMX firstgid
+
+`tmx_interior_to_csvs.py` walks the TMX's `<tileset firstgid="...">`
+entries in order and assigns each one a sequential source index
+(0, 1, 2, …), deduped by image. The CSV's 5th column emits this
+index as the source id. The Godot scene's TileSet sub-resource MUST
+have a source registered at the matching id — IDs are not auto-aligned.
+
+**Symptoms of misalignment**:
+- `[MapLoader] Layer 'X': TileSet has no source with id=N` in Output.
+- Painted Tiled cells silently render empty in-game.
+- Animator runs against the wrong texture (e.g. WaterPlants .tres
+  programming the Beach atlas).
+
+**To check**: `awk -F, '{print $5}' assets/map_data/{world}_{layer}.csv | sort -u`
+shows source ids actually used. Cross-reference with the Godot TileSet
+panel — each source has an "ID" field at the top of its Setup section.
+If the CSV says id=3 but the texture is at id=4, click the "ID" field
+and renumber.
+
+### 9. Tiled layer names → CSV filenames are sanitized
+
+`sanitize_layer_name()` strips spaces and non-alphanumeric chars from
+the Tiled layer name before producing the CSV filename. The Godot
+`TileMapLayer` node MUST be named `{tmx_stem}_{sanitized_layer}` to
+match — `MapLoader` looks for `{node.Name}.csv` and silently skips
+layers whose CSV doesn't exist.
+
+**Examples**: "Water Plants" → `World_10_Lake_WaterPlants` (not
+`World_10_Lake_Plants`); "Decor 1 - P level" → `World_10_Lake_Decor1Plevel`;
+"Ground 3 - under P" → `World_10_Lake_Ground3underP`.
+
+**Symptom**: `[MapLoader] Map data not found: res://assets/map_data/...`
+in Output, layer renders empty even though Tiled shows painted cells.
+
+### 10. Same-image tilesets in a TMX dedupe to one Godot source
+
+If Tiled adds an embedded `tm_water` tileset when you drag the PNG in,
+and you later add the external `LakeWaterfall.tsx` pointing at the
+same PNG, the TMX has **two** `<tileset>` declarations with the same
+image. The baker collapses them to one Godot source (so the scene's
+TileSet doesn't need a redundant source). Functional, but messy — the
+status line will show `Tilesets (N declared, M unique)` whenever
+`N > M`.
+
+**Cleanup in Tiled**: Map → Map Properties → Tilesets → select the
+embedded duplicate → minus button. Re-paint any cells that referenced
+the embedded gids using the external tileset.
+
 ## Data Resources (GlobalClass pattern)
 
 Game data (enemy stats, items, dialogue) lives in `.tres` files as `[GlobalClass]` Resource subclasses. **Do not hardcode game data in C#.** Edit stats in the Godot Inspector; the files are plain text and diff cleanly in git.
@@ -276,6 +342,89 @@ assets/map_data/triggers/  ← baked from TMX ObjectLayer by tmx_triggers_to_tre
 3. Runtime dispatch is `switch (action.Type)` — easy to port from the TS `switch (action.type)`
 
 If action types diverge significantly later (e.g., compound actions, conditional actions), refactor to subclasses.
+
+## Animated Tiles
+
+Lake water, beach edges, waterfall, and decorative water plants use
+Godot's native per-tile animation on `TileSetAtlasSource` — the
+renderer cycles frames automatically with no per-frame C# tick. A
+small runtime node programs the animation parameters from a `.tres`
+config so authoring stays out of the editor UI.
+
+### Architecture
+
+- **`scripts/maps/TileAnimator.cs`** — runtime-only `Node`. One per
+  `(TileSet source, .tres)` pair. `_Ready` programs frame count,
+  duration, separation, and columns onto each declared atlas tile.
+  Sibling nodes can share a TileMapLayer (multiple animators per
+  layer, each handling a different atlas source).
+- **`scripts/data/AnimatedTileSet.cs`** — `[GlobalClass]` Resource
+  holding `Array<AnimatedTileEntry>`.
+- **`scripts/data/AnimatedTileEntry.cs`** — per-base-tile animation
+  params: `AtlasCoord`, `FrameCount`, `FrameDuration`,
+  `FrameSeparation`, `FrameColumns`.
+- **`tools/pack_animated_tiles.py`** — converts Mana Seed asset
+  folders into packed atlas PNG + `.tsx` (for Tiled) + `.tres` (for
+  TileAnimator).
+
+### Convention: column-based atlases
+
+Every packer output is **column-based** — each atlas COLUMN is one
+base tile, with that tile's frames stacked vertically downward. The
+matching `.tres` uses `FrameColumns=1` so Godot cycles frames down
+through the column. **In Tiled, paint only from row 0**; cells beneath
+are the animation frames and should never be painted directly.
+
+The packer handles two source layouts and normalizes both to this:
+- **Convention A** — single horizontal frame strip per file
+  (e.g. `32x32_Waterfall_Left.png` = one tile × N frames). Each strip
+  becomes one atlas column.
+- **Convention B** — Mana Seed playbook (`Name.png` lookbook +
+  `Name_1.png ... Name_N.png` per-tile strips, N tile types). Each
+  per-tile strip becomes one atlas column.
+
+### Wiring a new animated tileset
+
+1. **Pack**: `python3 tools/pack_animated_tiles.py <source-folder>
+   [--frame-duration 0.15]`. Generates PNG/TSX/TRES.
+2. **Register**: add the `.tsx` to `tools/tileset_registry.py` with
+   `columns` = number of distinct base tiles (atlas tile-column
+   count, NOT frame count).
+3. **Tiled**: Map → Tilesets → add the `.tsx`. Add a tile layer.
+   Paint from row 0. Save → autobake regenerates the CSV.
+4. **Godot scene**:
+   - Add a `TileMapLayer` node named to match the CSV (see Gotcha 9
+     for sanitization rules).
+   - In TileSet panel, add an Atlas source for the new PNG. **Set
+     `texture_region_size`** to match the source tile dims (Gotcha 4).
+     The source ID must match the bake-assigned id (Gotcha 8).
+   - Add a `TileAnimator` sibling node: `TargetLayer` → the new
+     layer, `SourceId` → the bake-assigned id, `Animations` → the
+     `.tres`.
+5. Run. Expect log line: `[TileAnimator] {Name}: N ok, 0 failed →
+   source S on {LayerName}`.
+
+### Animator gotchas
+
+- **Runtime-only on purpose.** `[Tool]` was tried — mutates the
+  shared TileSet sub-resource at editor load and persists noise into
+  the scene file. Animator stays runtime-only; the editor view will
+  not animate, only the running game does.
+- **`SetTileAnimationFramesCount` silently fails** to resize when any
+  frame cell is occupied by another tile registration. TileAnimator's
+  `RemoveTile` cleanup handles atlas cells auto-registered by Godot's
+  "Setup tiles automatically" — frees the column the animation needs
+  to occupy before extending.
+- **Order matters**: set `animation_columns` and `animation_separation`
+  BEFORE `animation_frames_count`, or the resize validates against
+  the wrong layout footprint and stays at 1 frame.
+- **C# `[Export]` defaults don't always apply on `.tres` deserialize**
+  — the packer writes every field explicitly to avoid silent
+  zero-default fallthroughs.
+- **Frame-cell math depends on `FrameColumns`**: with `0`, frames
+  extend right; with `1`, frames extend down. The cleanup loop in
+  TileAnimator computes frame positions per Godot's actual layout
+  formula — change with care.
 
 ## Asset Expectations
 

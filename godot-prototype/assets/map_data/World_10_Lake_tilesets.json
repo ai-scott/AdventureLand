@@ -9,6 +9,26 @@
       "image": "tm_water.png",
       "columns": 16,
       "tile_size": 16
+    },
+    {
+      "image": "Beach.png",
+      "columns": 14,
+      "tile_size": 16
+    },
+    {
+      "image": "Water_Plants_Colour2_32x32.png",
+      "columns": 8,
+      "tile_size": 32
+    },
+    {
+      "image": "Water_Plants_Colour2_16x16.png",
+      "columns": 3,
+      "tile_size": 16
+    },
+    {
+      "image": "Rocks_32x32.png",
+      "columns": 2,
+      "tile_size": 32
     }
   ]
 }

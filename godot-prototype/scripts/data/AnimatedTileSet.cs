@@ -10,5 +10,5 @@ namespace AdventureLandPrototype;
 [GlobalClass]
 public partial class AnimatedTileSet : Resource
 {
-    [Export] public Array<AnimatedTileEntry> Entries { get; set; } = new();
+	[Export] public Array<AnimatedTileEntry> Entries { get; set; } = new();
 }

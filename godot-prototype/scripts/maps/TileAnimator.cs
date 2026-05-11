@@ -51,10 +51,21 @@ public partial class TileAnimator : Node
             // cell as its own tile — and SetTileAnimationFramesCount silently
             // refuses to resize when frames would overlap an existing tile.
             // Runtime-only mutation; doesn't persist to the .tres on disk.
-            Vector2I step = new Vector2I(1, 0) + entry.FrameSeparation;
+            //
+            // Frame layout per Godot's API: with FrameColumns=0 frames lay out
+            // in a single horizontal row; with FrameColumns=N>0 they wrap to
+            // a new row every N frames. Separation adds an extra cell gap per
+            // step in each axis.
+            int cols = entry.FrameColumns;
             for (int f = 1; f < entry.FrameCount; f++)
             {
-                Vector2I framePos = entry.AtlasCoord + step * f;
+                int dx = (cols == 0) ? f : (f % cols);
+                int dy = (cols == 0) ? 0 : (f / cols);
+                Vector2I framePos = entry.AtlasCoord + new Vector2I(
+                    dx * (1 + entry.FrameSeparation.X),
+                    dy * (1 + entry.FrameSeparation.Y)
+                );
+                if (framePos == entry.AtlasCoord) continue;
                 if (src.HasTile(framePos))
                     src.RemoveTile(framePos);
             }
