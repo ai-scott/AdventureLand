@@ -12,14 +12,37 @@ AnimName = "Idle_{direction}"
 [sub_resource type="Resource" id="act_idle_move"]
 script = ExtResource("3")
 Type = 0
-Pattern = 1
+Pattern = 3
 Speed = 20.0
+
+[sub_resource type="Resource" id="cond_idle_distance"]
+script = ExtResource("4")
+Operator = 1
+Value = 200.0
 
 [sub_resource type="Resource" id="beh_idle"]
 script = ExtResource("2")
 Name = "idle"
 Weight = 4.0
+Conditions = Array[ExtResource("4")]([SubResource("cond_idle_distance")])
 Actions = Array[ExtResource("3")]([SubResource("act_idle_animate"), SubResource("act_idle_move")])
+
+[sub_resource type="Resource" id="act_wait_animate"]
+script = ExtResource("3")
+AnimName = "Idle_{direction}"
+
+[sub_resource type="Resource" id="act_wait_stop"]
+script = ExtResource("3")
+Type = 0
+Pattern = 4
+
+[sub_resource type="Resource" id="beh_wait"]
+script = ExtResource("2")
+Name = "wait"
+DurationMin = 0.3
+DurationMax = 0.5
+Weight = 1.0
+Actions = Array[ExtResource("3")]([SubResource("act_wait_animate"), SubResource("act_wait_stop")])
 
 [sub_resource type="Resource" id="act_hop_animate"]
 script = ExtResource("3")
@@ -38,15 +61,15 @@ Sound = "Slime_Jump"
 
 [sub_resource type="Resource" id="cond_hop_distance"]
 script = ExtResource("4")
-Value = 250.0
+Value = 200.0
 
 [sub_resource type="Resource" id="beh_hop"]
 script = ExtResource("2")
 Name = "hop"
 DurationMin = 0.8
 DurationMax = 1.2
-Weight = 2.0
-Cooldown = 2.0
+Weight = 6.0
+Cooldown = 0.5
 Conditions = Array[ExtResource("4")]([SubResource("cond_hop_distance")])
 Actions = Array[ExtResource("3")]([SubResource("act_hop_animate"), SubResource("act_hop_move"), SubResource("act_hop_sound")])
 
@@ -84,4 +107,5 @@ script = ExtResource("1")
 Type = "Ooze"
 Health = 5
 Speed = 15.0
-Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_hop"), SubResource("beh_hurt")])
+WanderRadius = 100.0
+Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_wait"), SubResource("beh_hop"), SubResource("beh_hurt")])

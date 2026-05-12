@@ -731,6 +731,19 @@ public partial class EnemyController : CharacterBody2D
 					var angle = GD.RandRange(0f, Mathf.Tau);
 					_sidewaysDirection = new Vector2(Mathf.Cos((float)angle), Mathf.Sin((float)angle));
 				}
+				// Wander leash: if we've drifted past WanderRadius from spawn,
+				// override the random direction with a beeline home for this
+				// tick. Prevents idle enemies (ooze, crab patrol) from walking
+				// off the map. WanderRadius=0 disables — chase patterns aren't
+				// affected since they don't go through this branch.
+				if (Data != null && Data.WanderRadius > 0f && _homePositionCaptured)
+				{
+					var fromHome = GlobalPosition - _homePosition;
+					if (fromHome.Length() > Data.WanderRadius)
+					{
+						return (-fromHome).Normalized();
+					}
+				}
 				return _sidewaysDirection;
 
 			case EnemyAction.MovePattern.Stop:

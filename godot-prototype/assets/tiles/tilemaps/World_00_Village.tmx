@@ -601,8 +601,7 @@
   <object id="13" name="EnterPennysHouse_4" type="door" x="45.5666" y="337.171" width="32" height="16">
    <properties>
     <property name="door_id" type="int" value="4"/>
-    <property name="required_quest_id" value="rescue_cat_quest"/>
-    <property name="required_quest_status" value="End_Cat_Quest"/>
+    <property name="required_world_flag" value="penny_home"/>
     <property name="target_scene" type="file" value="../../../scenes/worlds/World_00_PennysHouse.tscn"/>
    </properties>
   </object>
