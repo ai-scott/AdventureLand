@@ -68,6 +68,9 @@ public partial class InventoryUI : CanvasLayer
 	// Same handle-list shape as before but the icons now live as scene
 	// children of AppearanceSlotN/Chip/Icon.
 	private readonly TextureRect[] _appearanceIcons = new TextureRect[6];
+	// The AppearanceSlotN Control nodes themselves — clickable to jump the
+	// details panel to whatever's equipped in that category.
+	private readonly Control[] _appearanceSlots = new Control[6];
 
 	private TextureRect _previewRect;
 	private Label _hairLabel;
@@ -484,9 +487,28 @@ public partial class InventoryUI : CanvasLayer
 			_abilityValues[i] = GetNode<Label>($"Panel/Frame/AbilityRow{i}/Value");
 		}
 
+		// Attack row (AbilityRow0) shows the equipped weapon — make it
+		// clickable like the gear slots so tapping the weapon opens its
+		// details (with the "Unequip" chip) and parks the cursor there.
+		var attackRow = GetNodeOrNull<Control>("Panel/Frame/AbilityRow0");
+		if (attackRow != null)
+		{
+			attackRow.MouseFilter = Control.MouseFilterEnum.Stop;
+			attackRow.GuiInput += evt => OnEquippedSlotTapped(evt, ItemData.ItemCategory.Weapon, attackRow);
+		}
+
 		for (int i = 0; i < 6; i++)
 		{
 			_appearanceIcons[i] = GetNode<TextureRect>($"Panel/Frame/AppearanceSlot{i}/Chip/Icon");
+
+			// Click/tap an equipped-gear slot to select that item in the
+			// grid, open its details panel (with the "Unequip" chip), and
+			// move the yellow cursor onto the clicked slot.
+			var slotNode = GetNode<Control>($"Panel/Frame/AppearanceSlot{i}");
+			_appearanceSlots[i] = slotNode;
+			slotNode.MouseFilter = Control.MouseFilterEnum.Stop;
+			var cat = AppearanceCategories[i]; // capture for closure
+			slotNode.GuiInput += evt => OnEquippedSlotTapped(evt, cat, slotNode);
 		}
 
 		_previewRect = GetNode<TextureRect>("Panel/Frame/PreviewRect");
@@ -722,6 +744,7 @@ public partial class InventoryUI : CanvasLayer
 		{
 			if (_hairColorLabel != null) _hairColorLabel.Visible = false;
 			_hairColorSwatches = BuildSwatchRow(hairCycler);
+			WireSwatchClicks(_hairColorSwatches, CycleHairColor);
 		}
 
 		var skinCycler = GetNodeOrNull<Control>("Panel/Frame/SkinCycler");
@@ -729,6 +752,30 @@ public partial class InventoryUI : CanvasLayer
 		{
 			if (_skinLabel != null) _skinLabel.Visible = false;
 			_skinSwatches = BuildSwatchRow(skinCycler);
+			WireSwatchClicks(_skinSwatches, CycleSkin);
+		}
+	}
+
+	/// <summary>Make the four flanking swatches clickable: clicking the
+	/// swatch at offset ±1 / ±2 from center cycles the selection by that
+	/// many steps, so the clicked color lands in the center slot. The
+	/// center swatch (index 2) is already selected, so it's left inert.</summary>
+	private void WireSwatchClicks(PanelContainer[] frames, System.Action<int> cycleBy)
+	{
+		if (frames == null) return;
+		for (int i = 0; i < frames.Length; i++)
+		{
+			if (i == 2) continue; // center = current selection
+			int delta = i - 2; // -2, -1, +1, +2
+			var frame = frames[i];
+			frame.MouseFilter = Control.MouseFilterEnum.Stop;
+			frame.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+			frame.GuiInput += evt =>
+			{
+				bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
+							  || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
+				if (tapped) cycleBy(delta);
+			};
 		}
 	}
 
@@ -1112,11 +1159,13 @@ public partial class InventoryUI : CanvasLayer
 			cell.AddChild(qty);
 			_slotQtyLabels[i] = qty;
 
-			// Touch / mouse-click support: tap a cell to select it (mirrors
-			// the arrow-key cursor); tap the already-selected cell to fire
-			// the same code path Space does (Equip / Unequip / Use). Wired
-			// on every build, not just mobile, so desktop mouse users get
-			// it too — keyboard nav still works in parallel.
+			// Touch / mouse-click support: a single click/tap only *selects*
+			// the cell (mirrors the arrow-key cursor) and opens its details
+			// panel — it never equips. Equip / Unequip / Use happens via the
+			// action chip in the details panel, or via a double-click /
+			// double-tap on the cell. Wired on every build, not just mobile,
+			// so desktop mouse users get it too — keyboard nav still works
+			// in parallel.
 			cell.MouseFilter = Control.MouseFilterEnum.Stop;
 			int slotIndex = i; // capture for closure
 			cell.GuiInput += evt => OnCellTapped(evt, slotIndex);
@@ -1126,27 +1175,106 @@ public partial class InventoryUI : CanvasLayer
 		_slotCursor.GetParent().MoveChild(_slotCursor, -1);
 	}
 
-	/// <summary>Tap-to-select / tap-again-to-equip handler for one inventory
-	/// cell. Routes through the existing _selectedSlot + OnAction code paths
-	/// so equipment, use, sell, and details-panel state stay consistent with
-	/// the keyboard flow.</summary>
+	// Double-tap tracking for touch (InputEventScreenTouch has no DoubleTap
+	// flag the way mouse buttons do, so we time it ourselves).
+	private int _lastTapSlot = -1;
+	private ulong _lastTapMsec;
+	private const ulong DoubleTapWindowMsec = 300;
+
+	/// <summary>Click / tap handler for one inventory cell. A single
+	/// click/tap selects the cell and opens its details panel — it never
+	/// equips. A double-click (desktop) or double-tap (touch) fires the
+	/// same code path Space does (Equip / Unequip / Use) as a shortcut.
+	/// Routes through _selectedSlot + OnAction so equipment, use, sell, and
+	/// details-panel state stay consistent with the keyboard flow.</summary>
 	private void OnCellTapped(InputEvent evt, int slot)
+	{
+		bool tapped;
+		bool isDoubleActivate;
+
+		if (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left)
+		{
+			tapped = true;
+			isDoubleActivate = m.DoubleClick;
+		}
+		else if (evt is InputEventScreenTouch t && t.Pressed)
+		{
+			tapped = true;
+			ulong now = Time.GetTicksMsec();
+			isDoubleActivate = _lastTapSlot == slot && now - _lastTapMsec <= DoubleTapWindowMsec;
+			_lastTapSlot = slot;
+			_lastTapMsec = now;
+		}
+		else
+		{
+			return;
+		}
+
+		if (!tapped) return;
+
+		// Always (re)select first so the details panel + highlight reflect
+		// the tapped cell, even on the activating double-tap.
+		_focusZone = FocusZone.Grid;
+		_selectedSlot = slot;
+		RefreshHighlight();
+		RefreshDetails();
+
+		if (isDoubleActivate)
+			OnAction();
+	}
+
+	/// <summary>Click/tap handler for one equipped-gear slot in the left
+	/// Appearance grid (or the Attack row, which displays the equipped
+	/// weapon). Finds the inventory cell holding whatever's equipped in that
+	/// category, selects it, opens its details panel (the chip there reads
+	/// "Unequip"), and moves the yellow slot cursor onto the clicked slot.
+	/// Does nothing if the slot is empty. Never unequips directly; that's
+	/// the chip's job (or a double-tap on the cell).</summary>
+	private void OnEquippedSlotTapped(InputEvent evt, ItemData.ItemCategory category, Control slotNode)
 	{
 		bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
 					  || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
 		if (!tapped) return;
 
-		if (_selectedSlot == slot && _focusZone == FocusZone.Grid)
+		var inv = Inventory.Instance;
+		if (inv == null) return;
+
+		int equippedId = inv.GetEquippedId(category);
+		if (equippedId <= 0) return; // nothing equipped in this slot
+
+		int gridSlot = -1;
+		for (int i = 0; i < Inventory.SlotCount; i++)
 		{
-			OnAction();
+			if (inv.GetSlotItemId(i) == equippedId) { gridSlot = i; break; }
 		}
-		else
-		{
-			_focusZone = FocusZone.Grid;
-			_selectedSlot = slot;
-			RefreshHighlight();
-			RefreshDetails();
-		}
+		if (gridSlot < 0) return; // equipped item not present in the grid
+
+		// Keep details / OnAction pointed at the real grid cell, but park
+		// the visible cursor over the slot the player actually clicked.
+		_focusZone = FocusZone.Grid;
+		_selectedSlot = gridSlot;
+		RefreshDetails();
+		MoveSlotCursorTo(slotNode);
+	}
+
+	/// <summary>Position the yellow SlotCursor over an arbitrary slot-style
+	/// Control on the left side (an AppearanceSlot or the AbilityRow Attack
+	/// chip). Both the cursor and the target are children of Panel/Frame, so
+	/// we work in Frame-relative offsets: target's offset plus its "Chip"
+	/// child's offset.</summary>
+	private void MoveSlotCursorTo(Control slotNode)
+	{
+		if (_slotCursor == null || slotNode == null) return;
+		var chip = slotNode.GetNodeOrNull<Control>("Chip");
+		float chipL = chip?.OffsetLeft ?? 0f;
+		float chipT = chip?.OffsetTop ?? 0f;
+		float chipW = chip != null ? chip.OffsetRight - chip.OffsetLeft : CellSize;
+		float chipH = chip != null ? chip.OffsetBottom - chip.OffsetTop : CellSize;
+		_slotCursor.OffsetLeft = slotNode.OffsetLeft + chipL;
+		_slotCursor.OffsetTop = slotNode.OffsetTop + chipT;
+		_slotCursor.OffsetRight = _slotCursor.OffsetLeft + chipW;
+		_slotCursor.OffsetBottom = _slotCursor.OffsetTop + chipH;
+		_slotCursor.Visible = true;
 	}
 
 	// ---- Live preview (mirror player SpriteLayers into SubViewport) ----

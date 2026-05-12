@@ -2,7 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ⚠️ CRITICAL: Construct 3 Git Workflow
+## ⚠️ CURRENT FOCUS: Godot Prototype Only
+
+**As of 2026-05-12, all active development happens in [`godot-prototype/`](godot-prototype/).** The Construct 3 project (`project.c3proj`, `eventSheets/`, `layouts/`, `scripts/`, etc.) is now **reference material only** — read it to understand intended game behavior, data, and content, but do not edit C3 files or implement new features there.
+
+- Read [`godot-prototype/CLAUDE.md`](godot-prototype/CLAUDE.md) before touching anything in the Godot project.
+- When the C3 event sheets describe behavior we want (e.g. inventory flow, dialogue, enemy AI), port/reimplement it in the Godot prototype rather than fixing it in C3.
+- The C3-specific guidance below (Construct 3 git workflow, event-sheet patterns, browser console limits, nested-object namespace pattern, etc.) is retained for context when reading the old project but does **not** apply to new work.
+
+## ⚠️ CRITICAL: Construct 3 Git Workflow (legacy / reference project only)
 
 **NEVER run `git restore` or destructive git commands without explicit user confirmation.**
 

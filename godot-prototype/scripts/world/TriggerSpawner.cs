@@ -229,10 +229,11 @@ public partial class TriggerSpawner : Node2D
         instance.Name = $"Item_{t.ItemId}_{(int)t.Position.X}_{(int)t.Position.Y}";
         instance.Position = center;
         instance.Data = data;
-        // Pack (x, y) into a stable unique-per-placement TriggerID. Worlds are
-        // ≤720×480 so 16 bits per axis is plenty. Moving an item in Tiled
-        // effectively resets its collected state — same invariant as creating
-        // a new placement.
+        // Pack (x, y) into a per-placement TriggerID. Worlds are ≤720×480 so
+        // 16 bits per axis is plenty. NOTE: this is only unique *within* a
+        // scene — ItemTrigger.CollectFlagKey() prefixes the world name so two
+        // items on the same tile in different scenes don't share state.
+        // Moving an item in Tiled effectively resets its collected state.
         instance.TriggerID = ((int)t.Position.X << 16) | ((int)t.Position.Y & 0xFFFF);
         instance.Unique = true;
         return instance;

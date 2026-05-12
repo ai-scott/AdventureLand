@@ -44,7 +44,7 @@ public partial class ItemTrigger : Area2D
         }
 
         // Check if this unique item was already collected.
-        if (Unique && QuestSystem.HasWorldFlag($"ItemCollected_{TriggerID}"))
+        if (Unique && QuestSystem.HasWorldFlag(CollectFlagKey()))
         {
             QueueFree();
             return;
@@ -72,6 +72,19 @@ public partial class ItemTrigger : Area2D
     public override void _ExitTree()
     {
         InteractHintManager.Instance?.Unregister(this);
+    }
+
+    /// <summary>World-flag key for "this placement has been collected".
+    /// TriggerID alone only encodes (x, y), so two items sitting on the same
+    /// tile in <em>different</em> scenes (e.g. the silver ring at (112,97) in
+    /// the Adventure Shop and the Sunset Scarf at (112,97) in Penny's House)
+    /// would otherwise share a flag — picking one up would despawn the other.
+    /// Prefixing with the current world scene's name disambiguates them.</summary>
+    private string CollectFlagKey()
+    {
+        string scene = GetTree()?.CurrentScene?.SceneFilePath ?? "";
+        string world = string.IsNullOrEmpty(scene) ? "?" : scene.GetFile().GetBaseName();
+        return $"ItemCollected_{world}_{TriggerID}";
     }
 
     /// <summary>Prepare a ShaderMaterial that makes the item's own sprite
@@ -140,7 +153,7 @@ public partial class ItemTrigger : Area2D
 
         if (Unique)
         {
-            QuestSystem.SetWorldFlag($"ItemCollected_{TriggerID}", "true");
+            QuestSystem.SetWorldFlag(CollectFlagKey(), "true");
         }
 
         SaveManager.Instance?.Save();
@@ -221,7 +234,7 @@ public partial class ItemTrigger : Area2D
 
         if (Unique)
         {
-            QuestSystem.SetWorldFlag($"ItemCollected_{TriggerID}", "true");
+            QuestSystem.SetWorldFlag(CollectFlagKey(), "true");
         }
 
         // Auto-save so items persist if the player quits.
