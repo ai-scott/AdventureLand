@@ -495182,6 +495182,7 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 size = Vector2(10, 10)
 
 [node name="Player" type="CharacterBody2D" unique_id=1472698308]
+y_sort_enabled = true
 collision_mask = 10
 script = ExtResource("1")
 DebugDumpHairRamps = true
@@ -495209,6 +495210,7 @@ position = Vector2(0, 4)
 script = ExtResource("3_ov1oi")
 
 [node name="shadow" type="Sprite2D" parent="SpriteLayers" unique_id=418024077]
+z_index = -1
 texture = ExtResource("4_rn7t0")
 offset = Vector2(0, 1)
 hframes = 8

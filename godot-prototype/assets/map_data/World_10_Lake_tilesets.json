@@ -29,6 +29,21 @@
       "image": "Rocks_32x32.png",
       "columns": 2,
       "tile_size": 32
+    },
+    {
+      "image": "Small_Cliff_Dirt.png",
+      "columns": 14,
+      "tile_size": 16
+    },
+    {
+      "image": "Small_Cliff_Grass.png",
+      "columns": 14,
+      "tile_size": 16
+    },
+    {
+      "image": "Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.png",
+      "columns": 6,
+      "tile_size": 16
     }
   ]
 }

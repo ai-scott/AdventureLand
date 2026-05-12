@@ -40,6 +40,11 @@ TILESETS_BY_TSX = {
     "Rocks_48x48.tsx":                    ("Rocks_48x48.png",                                       2, 48),
     "Rocks_48x64.tsx":                    ("Rocks_48x64.png",                                       1, 48),
     "Rocks_64x80.tsx":                    ("Rocks_64x80.png",                                       1, 64),
+    # Lake — animated cliff edges (water-adjacent rock walls)
+    "Small_Cliff_Dirt.tsx":               ("Small_Cliff_Dirt.png",                                 14, 16),
+    "Small_Cliff_Sand.tsx":               ("Small_Cliff_Sand.png",                                 14, 16),
+    "Small_Cliff_Grass.tsx":              ("Small_Cliff_Grass.png",                                14, 16),
+    "Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.tsx":  ("Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.png", 6, 16),
     # Gray Mist Mountain — Winter Forest family
     "winter forest (clean).tsx":           ("WinterSheets/winter forest (clean).png",              32, 16),
     "winter forest (snowy).tsx":           ("WinterSheets/winter forest (snowy).png",              32, 16),

@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="AnimatedTileSet" format=3 uid="uid://cbw8q8x5gd8cs"]
+
+[ext_resource type="Script" uid="uid://dtabuqpl8hvvl" path="res://scripts/data/AnimatedTileSet.cs" id="1"]
+[ext_resource type="Script" uid="uid://6prkt6apikef" path="res://scripts/data/AnimatedTileEntry.cs" id="2"]
+
+[sub_resource type="Resource" id="E_0"]
+script = ExtResource("2")
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[sub_resource type="Resource" id="E_1"]
+script = ExtResource("2")
+AtlasCoord = Vector2i(1, 0)
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[sub_resource type="Resource" id="E_2"]
+script = ExtResource("2")
+AtlasCoord = Vector2i(2, 0)
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[sub_resource type="Resource" id="E_3"]
+script = ExtResource("2")
+AtlasCoord = Vector2i(3, 0)
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[sub_resource type="Resource" id="E_4"]
+script = ExtResource("2")
+AtlasCoord = Vector2i(4, 0)
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[sub_resource type="Resource" id="E_5"]
+script = ExtResource("2")
+AtlasCoord = Vector2i(5, 0)
+FrameCount = 6
+FrameDuration = 0.1
+FrameColumns = 1
+
+[resource]
+script = ExtResource("1")
+Entries = Array[ExtResource("2")]([SubResource("E_0"), SubResource("E_1"), SubResource("E_2"), SubResource("E_3"), SubResource("E_4"), SubResource("E_5")])

@@ -301,8 +301,11 @@ def main():
     # Convention B — one atlas per playbook (vertical: cols=tiles, rows=frames).
     for name, tile_paths, tw, th, frames_per_tile in playbooks:
         atlas, *_ = pack_playbook(name, tile_paths, tw, th, frames_per_tile)
-        # Collapse e.g. "Beach_Beach" → "Beach" when prefix == playbook name.
-        out_name = base_prefix if name == base_prefix else f"{base_prefix}_{name}"
+        # Collapse "Beach_Beach" → "Beach", and parent="Small_Cliff_Dirt" +
+        # base="SmallCliff_Dirt" → "Small_Cliff_Dirt" (Mana Seed playbook
+        # bases often drop underscores the parent folder spells out).
+        norm = lambda s: s.replace("_", "").lower()
+        out_name = base_prefix if norm(name) == norm(base_prefix) else f"{base_prefix}_{name}"
         emit(out_name, atlas, tw, th, len(tile_paths), frames_per_tile,
              args.frame_duration, vertical=True, dry_run=args.dry_run)
 
