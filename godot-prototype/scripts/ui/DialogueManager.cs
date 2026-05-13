@@ -55,6 +55,14 @@ public partial class DialogueManager : CanvasLayer
     private TextureRect _itemRevealIcon;
 
     private PlayerController _player;
+
+    /// <summary>One-shot callback fired after the dialogue overlay actually
+    /// closes. Used for SeaMonster retreat: the tree is paused while the
+    /// reveal is up, so the SM's bubble particles + descend tween freeze
+    /// even though the bubble SFX (un-paused audio bus) plays. Deferring
+    /// the whole retreat until EndDialogue keeps the bubble cue in sync
+    /// with the visual.</summary>
+    private System.Action _pendingPostClose;
     private bool _waitingForInput;
     private string _inputVariable;
     private bool _justStarted; // prevent E from advancing on the same frame it opened
@@ -769,6 +777,15 @@ public partial class DialogueManager : CanvasLayer
         // Input stays locked until the fade completes so the player can't
         // bump an NPC and retrigger dialogue mid-fade.
         GetTree().Paused = false;
+
+        // Run any post-close hook (currently used by SeaMonster retreat to
+        // sync bubble SFX with the visual descend — see the action handler
+        // for the full reasoning). Cleared after firing so a stale callback
+        // can't leak into the next dialogue.
+        var postClose = _pendingPostClose;
+        _pendingPostClose = null;
+        postClose?.Invoke();
+
         FadeOut(() =>
         {
             if (_player != null) _player.InputLocked = false;
@@ -799,14 +816,25 @@ public partial class DialogueManager : CanvasLayer
         return FindNodeById(_npcData.DefaultNode);
     }
 
+    /// <summary>Resolve a node by Id, picking the highest-priority variant
+    /// whose conditions currently pass. Falls back to the first node with
+    /// the Id if none pass — preserves single-node behavior so existing
+    /// dialogues aren't affected. Lets multiple nodes share an Id to act as
+    /// a conditional branch off an AutoAdvance/LeadsTo (e.g. Penny's name
+    /// gag jumps to either the joke variant or a silent passthrough).</summary>
     private DialogueNode FindNodeById(string id)
     {
         if (string.IsNullOrEmpty(id) || _npcData?.Nodes == null) return null;
+        DialogueNode best = null;
+        DialogueNode firstWithId = null;
         foreach (var n in _npcData.Nodes)
         {
-            if (n != null && n.Id == id) return n;
+            if (n == null || n.Id != id) continue;
+            firstWithId ??= n;
+            if (!QuestSystem.AllConditionsMet(n.Conditions)) continue;
+            if (best == null || n.Priority > best.Priority) best = n;
         }
-        return null;
+        return best ?? firstWithId;
     }
 
     private Array<DialogueResponse> FilterResponses(Array<DialogueResponse> responses)
@@ -926,21 +954,17 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SeaMonsterAcceptQuest:
-                    // Peaceful retreat — defer one frame so the dialogue's
-                    // EndsDialogue path runs cleanly before we tween Y.
-                    CallDeferred(nameof(SeaMonsterRetreat));
-                    break;
-
                 case DialogueAction.ActionType.SeaMonsterQuestComplete:
-                    CallDeferred(nameof(SeaMonsterRetreat));
-                    break;
-
                 case DialogueAction.ActionType.SeaMonsterRetreat:
-                    // Plain retreat — no quest state change, no dialogue branch.
-                    // Used when a dialogue line ends the conversation but
-                    // doesn't otherwise carry SM-state semantics (e.g., the
-                    // "Have you found my pearl yet?" quest_in_progress reply).
-                    CallDeferred(nameof(SeaMonsterRetreat));
+                    // Hold the retreat until the overlay closes — the tree
+                    // is paused while the dialogue/reveal is up, so kicking
+                    // off the tween here would freeze the bubble particles
+                    // and Y-descend until the player dismisses (while the
+                    // un-paused bubble SFX plays immediately, breaking
+                    // sync). EndDialogue fires _pendingPostClose right
+                    // after unpausing so SFX, particles, and descend all
+                    // hit together.
+                    _pendingPostClose = SeaMonsterRetreat;
                     break;
             }
         }
@@ -1072,6 +1096,21 @@ public partial class DialogueManager : CanvasLayer
                 // closes before the cutscene begins.
                 _ = RunPennyOpensHomeCutscene();
                 break;
+            case "adoptPennyName":
+            {
+                // The player picked the "Actually, it really is X." response in
+                // Penny's name gag. Promote what they typed at her into the
+                // canonical PlayerName so HUD, save data, and every later
+                // |PlayerName| substitution use the new spelling.
+                var data = SaveManager.Instance?.CurrentData;
+                var given = QuestSystem.GetWorldFlag("PennyName");
+                if (data != null && !string.IsNullOrWhiteSpace(given))
+                {
+                    data.PlayerName = given.Trim();
+                    GD.Print($"[Dialogue] adoptPennyName -> '{data.PlayerName}'");
+                }
+                break;
+            }
             default:
                 GD.PushWarning($"[Dialogue] Unknown custom action: '{a.CustomFunction}'");
                 break;
@@ -1255,6 +1294,19 @@ public partial class DialogueManager : CanvasLayer
             QuestSystem.SetWorldFlag(_inputVariable, text);
         }
 
+        // Penny gag: the title screen already captured a name. If the player
+        // tells Penny something different, the next node should tease them
+        // about the mismatch. Stash the comparison as a world flag so the
+        // shared-Id "penny_name_check" pair can branch on it.
+        if (_inputVariable == "PennyName")
+        {
+            var titleName = SaveManager.Instance?.CurrentData?.PlayerName ?? "";
+            bool matches = string.IsNullOrWhiteSpace(titleName)
+                           || string.Equals(titleName.Trim(), text.Trim(),
+                                            System.StringComparison.OrdinalIgnoreCase);
+            QuestSystem.SetWorldFlag("PennyNameMatches", matches ? "true" : "false");
+        }
+
         GD.Print($"[Dialogue] Input '{_inputVariable}' = '{text}'");
 
         // Remove the input UI we injected in HandleInput.
@@ -1281,6 +1333,11 @@ public partial class DialogueManager : CanvasLayer
             text = text.Replace("|PlayerName|", data.PlayerName);
             text = text.Replace("|CurrentWorld|", data.CurrentWorld);
         }
+
+        // Penny gag: the name the player typed at her stays in a world flag
+        // until they confirm which name to keep. Substitute it directly so
+        // her response options can show "Actually, it really is <typed>."
+        text = text.Replace("|PennyName|", QuestSystem.GetWorldFlag("PennyName"));
 
         return text;
     }

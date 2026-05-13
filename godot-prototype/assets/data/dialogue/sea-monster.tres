@@ -290,7 +290,7 @@ Status = "Pearl_Found"
 [sub_resource type="Resource" id="node_46"]
 script = ExtResource("2")
 Id = "give_trident"
-Text = "I found this magical weapon in the lake. Happy Birthday, dear girl!"
+Text = "I found this magical weapon in the lake. Take it for being so kind to me."
 Speaker = "SeaMonster"
 Priority = 992
 AutoAdvance = "trident_received"

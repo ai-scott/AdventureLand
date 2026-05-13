@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
 [ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
 
-[sub_resource type="Resource" id="cond_2"]
+[sub_resource type="Resource" id="cond_1"]
 script = ExtResource("3")
 Type = 0
 QuestId = "welcome_quest"
@@ -15,19 +15,34 @@ Status = "Not_Started"
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
 Id = "WelcomeToAdventureLand"
-Text = "Welcome to AdventureLand! Tap[icon=Pointer] or hit spacebar[icon=Spc] to continue"
+Text = "Welcome to your new home in AdventureLand! You've just moved in, and the townsfolk are eager to meet you."
 Speaker = "AL"
 Priority = 100
-AutoAdvance = "HaveFun"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+AutoAdvance = "StrangeCreatures"
+Conditions = Array[ExtResource("3")]([SubResource("cond_1")])
 
-[sub_resource type="Resource" id="cond_4"]
+[sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
 Type = 0
 QuestId = "welcome_quest"
 Status = "Not_Started"
 
-[sub_resource type="Resource" id="act_5"]
+[sub_resource type="Resource" id="node_2"]
+script = ExtResource("2")
+Id = "StrangeCreatures"
+Text = "Word is there are some strange creatures around this town, too. Keep your wits about you."
+Speaker = "AL"
+Priority = 99
+AutoAdvance = "HaveFun"
+Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_3"]
+script = ExtResource("3")
+Type = 0
+QuestId = "welcome_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
 Type = 2
 QuestId = "welcome_quest"
@@ -38,10 +53,10 @@ script = ExtResource("2")
 Id = "HaveFun"
 Text = "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!"
 Speaker = "AL"
-Priority = 99
+Priority = 98
 EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
-Actions = Array[ExtResource("4")]([SubResource("act_5")])
+Conditions = Array[ExtResource("3")]([SubResource("cond_3")])
+Actions = Array[ExtResource("4")]([SubResource("act_3")])
 
 [resource]
 script = ExtResource("1")
@@ -50,4 +65,4 @@ DisplayName = "AdventureLand"
 DefaultNode = "node_000"
 WorldId = "World00"
 QuestRelations = PackedStringArray("welcome_quest")
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_2"), SubResource("node_3")])
