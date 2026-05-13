@@ -1013,17 +1013,26 @@ public partial class PlayerController : CharacterBody2D
 	/// face-down regardless of which way the player was walking. Set before
 	/// pausing the tree — the AnimationTree state persists across pause.
 	///
-	/// The Advance(0.1) is load-bearing: <c>Travel</c> only queues a
-	/// transition, and the AnimationPlayer commits that transition during
-	/// its next process tick. Without manually advancing, the caller pauses
-	/// the tree before the transition fires and the preview snapshots
-	/// whatever frame the player was mid-walk on.</summary>
+	/// The manual <see cref="AnimationTree.Advance"/> pumping is load-bearing:
+	/// <c>Travel</c> only queues the transition (the state machine commits it
+	/// on subsequent processing), and the Idle animation's discrete sprite
+	/// `frame` tracks don't overwrite the latched walk frame until the
+	/// playhead has actually moved into the new state. The caller pauses the
+	/// tree immediately afterward, so if we don't pump it here the preview
+	/// snapshots whatever frame the player was mid-stride on. Pump until the
+	/// state machine reports it's in Idle (capped so a blocked transition
+	/// can't hang), then advance a touch more so every layer settles.</summary>
 	public void ShowIdleFacing(Vector2 dir)
 	{
 		_facing = SnapToCardinal(dir);
 		if (_state == null || _tree == null) return;
 		SetBlend(AnimIdle, _facing);
 		_state.Travel(AnimIdle);
+		// Step 0 commits the queued Travel; the loop drives the walk cycle to
+		// its end in case the Walk→Idle transition is waiting on it.
+		_tree.Advance(0.0);
+		for (int i = 0; i < 30 && _state.GetCurrentNode().ToString() != AnimIdle; i++)
+			_tree.Advance(0.1);
 		_tree.Advance(0.1);
 	}
 

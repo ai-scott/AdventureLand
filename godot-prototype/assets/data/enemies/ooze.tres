@@ -41,7 +41,6 @@ script = ExtResource("2")
 Name = "wait"
 DurationMin = 0.3
 DurationMax = 0.5
-Weight = 1.0
 Actions = Array[ExtResource("3")]([SubResource("act_wait_animate"), SubResource("act_wait_stop")])
 
 [sub_resource type="Resource" id="act_hop_animate"]

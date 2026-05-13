@@ -1,34 +1,30 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" format=3 uid="uid://vcwcykhp2k5e"]
 
-[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+[ext_resource type="Script" uid="uid://un2dpvnmnvyr" path="res://scripts/data/WorldTriggers.cs" id="1"]
+[ext_resource type="Script" uid="uid://rx5fndisersa" path="res://scripts/data/TriggerData.cs" id="2"]
 
 [sub_resource type="Resource" id="trig_0"]
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(2.77778, 260.185)
-Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(-2.43292, -0.34756), Vector2(59.2593, 0), Vector2(67.7481, -18.0964), Vector2(167.785, -17.2628), Vector2(175.788, -1.25691), Vector2(216.136, -1.25691), Vector2(220.804, 12.4148), Vector2(232.308, 14.5822), Vector2(237.81, 29.421), Vector2(247.981, 30.2546), Vector2(255.984, 47.2609), Vector2(411.874, 46.594), Vector2(418.377, 29.421), Vector2(471.896, 29.5877), Vector2(479.732, 45.2601), Vector2(522.748, 45.7603), Vector2(529.751, 30.2546), Vector2(575.434, 29.7545), Vector2(578.102, 66.4346), Vector2(577.435, 103.948), Vector2(532.074, 104.243), Vector2(472.772, 104.348), Vector2(374.369, 104.533), Vector2(278.507, 104.839), Vector2(260.424, 101.324), Vector2(258.902, 86.4949), Vector2(219.348, 85.9375), Vector2(211.666, 69.7257), Vector2(170.868, 69.4978), Vector2(166.723, 55.8581), Vector2(160.303, 54.1755), Vector2(57.1376, 54.2545), Vector2(23.2979, 71.255), Vector2(-1.94082, 71.3211), Vector2(-2.11087, 52.2627)])
 
 [sub_resource type="Resource" id="trig_1"]
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(636.567, 292.441)
-Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-0.666911, 70.6926), Vector2(56.8542, 71.1928), Vector2(56.6875, 59.3551), Vector2(58.8549, 59.5218), Vector2(63.8567, 52.8527), Vector2(70.5259, 52.8527), Vector2(76.0279, 58.3547), Vector2(77.6952, 66.1909), Vector2(82.5303, 66.1909), Vector2(83.1972, 10.0037), Vector2(59.3551, 10.8373), Vector2(59.3551, 0.166728)])
 
 [sub_resource type="Resource" id="trig_2"]
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(503.326, 24.3826)
-Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(49.8102, -0.696646), Vector2(48.7652, 15.6745), Vector2(44.237, 18.4611), Vector2(44.237, 26.4725), Vector2(41.7987, 29.6074), Vector2(38.3155, 28.5625), Vector2(37.9672, 19.8544), Vector2(12.1913, 19.1578), Vector2(12.1913, 28.2141), Vector2(5.92149, 27.5175), Vector2(6.61813, 17.4161), Vector2(0.696646, 17.7645)])
 
 [sub_resource type="Resource" id="trig_3"]
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(554.53, 58.1699)
-Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(17.4161, -5.92149), Vector2(32.0457, 17.4161), Vector2(74.1928, -5.92149), Vector2(58.5182, -36.5739), Vector2(-2.43826, -36.9222)])
 
 [sub_resource type="Resource" id="trig_4"]
@@ -41,7 +37,6 @@ Size = Vector2(5.69821, 479.362)
 script = ExtResource("2")
 Kind = 5
 Position = Vector2(695.894, 291.321)
-Size = Vector2(16.0, 16.0)
 PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(0.712276, -4.27366), Vector2(-0.356138, -4.98593), Vector2(-1.78069, -5.69821), Vector2(-1.42455, -19.5876), Vector2(0.712276, -19.2315), Vector2(4.27366, -25.2858), Vector2(3.91752, -46.6541), Vector2(0.712276, -46.2979), Vector2(0.356138, -63.0364), Vector2(-1.42455, -63.3926), Vector2(-1.42455, -79.4188), Vector2(3.20524, -83.6924), Vector2(3.20524, -111.471), Vector2(0.356138, -111.471), Vector2(0, -127.854), Vector2(-1.06841, -127.854), Vector2(-1.78069, -141.031), Vector2(1.06841, -141.387), Vector2(4.98593, -148.51), Vector2(4.62979, -177.001), Vector2(0.356138, -177.001), Vector2(0.712276, -190.89), Vector2(-1.42455, -191.958), Vector2(-1.78069, -206.204), Vector2(-0.712276, -206.204), Vector2(3.91752, -211.546), Vector2(3.91752, -245.023), Vector2(0.356138, -244.311), Vector2(0.356138, -260.337), Vector2(-1.06841, -260.337), Vector2(-1.42455, -274.582), Vector2(1.06841, -274.939), Vector2(5.34207, -282.061), Vector2(11.7526, -282.061), Vector2(23.8612, -291.321), Vector2(23.5051, 9.61573), Vector2(0.712276, 9.97187)])
 
 [resource]
