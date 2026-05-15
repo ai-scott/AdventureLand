@@ -135,21 +135,38 @@ public partial class DialogueManager : CanvasLayer
         }
     }
 
-    /// <summary>Mobile tap-to-advance. Runs in _Input which fires BEFORE the
-    /// GUI sorts the event onto its deepest hit Control — so even though the
-    /// dialogue's FrameBg / Cameo / NameLabel children have default
-    /// MouseFilter=Stop and would otherwise swallow the event, we get first
-    /// crack. Hit-test against the dialogue box's global rect so taps
-    /// OUTSIDE the dialogue (HUD chips, dpad zone) keep their own behavior.
-    /// ProcessMode is set to Always in StartDialogue, so this fires while
-    /// the tree is paused mid-dialogue.</summary>
+    /// <summary>Tap / click / ESC to advance dialogue. Runs in _Input which
+    /// fires BEFORE the GUI sorts the event onto its deepest hit Control —
+    /// so even though the dialogue's FrameBg / Cameo / NameLabel children
+    /// have default MouseFilter=Stop and would otherwise swallow the event,
+    /// we get first crack. Hit-test against the dialogue box's global rect
+    /// so clicks OUTSIDE the dialogue (HUD chips, dpad zone) keep their
+    /// own behavior. ProcessMode is set to Always in StartDialogue, so
+    /// this fires while the tree is paused mid-dialogue.</summary>
     public override void _Input(InputEvent evt)
     {
-        if (!UiStyles.IsMobile) return;
         if (!IsActive) return;
         if (_dialogueBox == null || !_dialogueBox.Visible) return;
-        if (_currentResponses != null && _currentResponses.Count > 0) return;
+        // Name-entry / input nodes: LineEdit owns the keyboard, Chip button
+        // owns the submit click. Don't intercept anything.
         if (_waitingForInput) return;
+
+        // ESC advances like Space/Enter — fires the dialogue_advance action,
+        // which _Process routes correctly (confirms a highlighted response,
+        // auto-advances normal nodes, or closes on EndsDialogue). Handled
+        // before the response-screen early-return so ESC works on both
+        // normal text AND choice screens.
+        if (evt is InputEventKey k && k.Pressed && !k.Echo && k.Keycode == Key.Escape)
+        {
+            SynthAdvance();
+            GetViewport().SetInputAsHandled();
+            return;
+        }
+
+        // Skip click-anywhere-to-advance while response buttons are showing,
+        // so clicks reach the Button widgets and pick a specific response
+        // instead of auto-confirming the highlighted one.
+        if (_currentResponses != null && _currentResponses.Count > 0) return;
 
         Vector2? pos = evt switch
         {
@@ -326,8 +343,11 @@ public partial class DialogueManager : CanvasLayer
 
     // ---- Public API ----
 
-    /// <summary>Start a dialogue with an NPC. Returns false if already in dialogue.</summary>
-    public bool StartDialogue(DialogueData data)
+    /// <summary>Start a dialogue with an NPC. Returns false if already in dialogue.
+    /// Pass <paramref name="source"/> (NPC trigger node, sign, sea-monster body)
+    /// to snap the player to face it as the conversation opens — leaves the NPC
+    /// itself unrotated since most NPCs aren't authored for arbitrary facings.</summary>
+    public bool StartDialogue(DialogueData data, Node2D source = null)
     {
         GD.Print($"[Dialogue] StartDialogue called for '{data?.NpcId}' | IsActive={IsActive} | Paused={GetTree().Paused}");
         if (IsActive || data == null) return false;
@@ -341,7 +361,11 @@ public partial class DialogueManager : CanvasLayer
 
         // Lock player input as a backup (in case tree unpauses briefly).
         _player ??= GetTree().Root.FindChild("Player", true, false) as PlayerController;
-        if (_player != null) _player.InputLocked = true;
+        if (_player != null)
+        {
+            _player.InputLocked = true;
+            if (source != null) _player.FaceTarget(source.GlobalPosition);
+        }
 
         // Find the best starting node via priority + conditions.
         var startNode = FindBestNode();
@@ -390,7 +414,7 @@ public partial class DialogueManager : CanvasLayer
     }
 
     /// <summary>Legacy API — starts dialogue from an array of plain lines (no branching).</summary>
-    public void StartDialogue(string speakerName, string[] lines)
+    public void StartDialogue(string speakerName, string[] lines, Node2D source = null)
     {
         if (IsActive) return;
 
@@ -412,7 +436,7 @@ public partial class DialogueManager : CanvasLayer
             data.Nodes.Add(node);
         }
 
-        StartDialogue(data);
+        StartDialogue(data, source);
     }
 
     /// <summary>
@@ -922,7 +946,10 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.PlaySound:
-                    GD.Print($"[Dialogue] Play sound: {a.SoundId} (Phase 7)");
+                    if (!string.IsNullOrEmpty(a.SoundId))
+                    {
+                        SFXController.Instance?.Play(a.SoundId);
+                    }
                     break;
 
                 case DialogueAction.ActionType.TeleportPlayer:
@@ -1316,6 +1343,15 @@ public partial class DialogueManager : CanvasLayer
 
         _waitingForInput = false;
         _continueHint.Visible = true;
+
+        // Suppress one _Process tick of dialogue_advance: the Enter that
+        // submitted this LineEdit is still IsActionJustPressed("dialogue_
+        // advance") this frame, and if Advance() lands us on a response
+        // node (Penny's name gag — joke variant with two choices), the
+        // same Enter would confirm the default-selected response[0]
+        // before the player ever sees the options. Reusing _justStarted's
+        // one-tick skip keeps the input handler clean.
+        _justStarted = true;
 
         // Auto-advance (NavigateToNode will re-show _textLabel for the next node).
         Advance();

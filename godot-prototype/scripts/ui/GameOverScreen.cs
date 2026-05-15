@@ -34,6 +34,23 @@ public partial class GameOverScreen : CanvasLayer
     private Label _overMain;
     private VBoxContainer _menu;
 
+    // Built programmatically (no scene authoring) — single tip line that
+    // fades in below the menu, picked randomly per death from the pool
+    // below. Points the player at a shop or survival hint when they
+    // respawn so the death isn't pure punishment.
+    private Label _tipLabel;
+
+    private static readonly string[] Tips =
+    {
+        "Tip: You'll find good weapons at the Blacksmith.",
+        "Tip: The General Store sells clothes that protect against enemies.",
+        "Tip: The Adventure Shop has items to keep you alive out there.",
+        "Tip: Use food from your inventory (I) to restore health.",
+        "Tip: Talk to everyone — they all have something to share.",
+        "Tip: Penny's lost her cat. Help her find it.",
+        "Tip: The Sea Monster guards something valuable in the Bottomless Lake.",
+    };
+
     // Bg scroll: image rests at its authored Y=-180 (offscreen above) and
     // tweens down to Y=0 over 4s. Easing matches C3 Tween easeinoutquad.
     private const float BgEndY = 0f;
@@ -139,6 +156,13 @@ public partial class GameOverScreen : CanvasLayer
             GetTree().ChangeSceneToFile("res://scenes/ui/TitleScreen.tscn");
         }));
 
+        // Build (or refresh) the rotating tip line — anchored to the bottom
+        // of the viewport, faded in alongside the menu so the player has
+        // something to read while reaching for Try Again.
+        EnsureTipLabel();
+        _tipLabel.Text = Tips[(int)(GD.Randi() % (uint)Tips.Length)];
+        _tipLabel.Modulate = new Color(1, 1, 1, 0);
+
         // Auto-focus the first option so keyboard nav works immediately.
         CallDeferred(nameof(FocusFirstMenuOption));
 
@@ -197,6 +221,45 @@ public partial class GameOverScreen : CanvasLayer
         // alongside the bg scroll so the player isn't kept waiting.
         menuTween.TweenInterval(1.0);
         menuTween.TweenProperty(_menu, "modulate:a", 1.0f, 0.5);
+
+        // Tip fades in slightly after the menu so the eye lands on the
+        // action buttons first, then catches the hint underneath.
+        var tipTween = CreateTween();
+        tipTween.SetProcessMode(Tween.TweenProcessMode.Idle);
+        tipTween.TweenInterval(1.8);
+        tipTween.TweenProperty(_tipLabel, "modulate:a", 1.0f, 0.6);
+    }
+
+    /// <summary>Build the centered tip label on first use. Lives directly
+    /// under the CanvasLayer so it ignores the menu's VBox flow and
+    /// stays vertically anchored regardless of menu length.</summary>
+    private void EnsureTipLabel()
+    {
+        if (_tipLabel != null) return;
+        _tipLabel = new Label
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            AutowrapMode = TextServer.AutowrapMode.WordSmart,
+        };
+        // Sit just under the viewport's vertical centerline — above the
+        // bottom-anchored menu, below the "Adventure Over" wordmark — so
+        // the tip is the natural eye-rest between title and buttons.
+        // Generous horizontal margins let long tips wrap cleanly.
+        _tipLabel.AnchorLeft = 0f;
+        _tipLabel.AnchorRight = 1f;
+        _tipLabel.AnchorTop = 0.5f;
+        _tipLabel.AnchorBottom = 0.5f;
+        _tipLabel.OffsetLeft = 40f;
+        _tipLabel.OffsetRight = -40f;
+        _tipLabel.OffsetTop = 8f;
+        _tipLabel.OffsetBottom = 48f;
+        _tipLabel.AddThemeFontSizeOverride("font_size", 16);
+        _tipLabel.AddThemeColorOverride("font_color", DesignTokens.Paper);
+        _tipLabel.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.85f));
+        _tipLabel.AddThemeConstantOverride("shadow_offset_x", 1);
+        _tipLabel.AddThemeConstantOverride("shadow_offset_y", 1);
+        AddChild(_tipLabel);
     }
 
     private static Button MakeMenuButton(string text, System.Action onPressed)

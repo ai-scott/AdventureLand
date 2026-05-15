@@ -34,6 +34,18 @@ public partial class ItemTrigger : Area2D
     // with different TEXTUREs without quirks, so we duplicate per trigger).
     private static Shader _shineShader;
     private ShaderMaterial _shineMaterial;
+    /// <summary>Squared world-space radius for the proximity glint in
+    /// open-world scenes — the shine kicks in when the player is within
+    /// sqrt(this) px of the item. 64px keeps the highlight tight to
+    /// where the player is actually looking, avoiding the "everything in
+    /// the room glints" noise of always-on application.</summary>
+    private const float ShineRangeSqWorld = 64f * 64f;
+    /// <summary>Tighter range used inside shops, where items sit
+    /// shoulder-to-shoulder on shelves — 64px would light up most of the
+    /// inventory at once. 16px isolates the glint to the specific item
+    /// the player is brushing past.</summary>
+    private const float ShineRangeSqShop = 16f * 16f;
+    private bool _shining;
 
     public override void _Ready()
     {
@@ -65,6 +77,11 @@ public partial class ItemTrigger : Area2D
         }
 
         BuildShineMaterial();
+        // Shine is now proximity-gated (see UpdateShine in _Process): kept
+        // off until the player is within ShineRangeSq, then toggled in/out
+        // as they walk. Previous behavior was always-on for "JRPG glint
+        // across the room"; user pivoted to a tighter cue so the eye is
+        // drawn only to what's near.
         BodyEntered += OnBodyEntered;
         BodyExited  += OnBodyExited;
     }
@@ -96,10 +113,16 @@ public partial class ItemTrigger : Area2D
         _shineShader ??= GD.Load<Shader>("res://assets/shaders/item_shine.gdshader");
         if (_shineShader == null) return;
         _shineMaterial = new ShaderMaterial { Shader = _shineShader };
+        // Random phase per instance so a shelf of items doesn't glint in
+        // lockstep. cycle_period defaults to 1.6s — offset by up to that
+        // full window so neighbors are visibly out of sync.
+        _shineMaterial.SetShaderParameter("phase_offset", (float)GD.RandRange(0.0, 1.6));
     }
 
     public override void _Process(double delta)
     {
+        UpdateShine();
+
         // Opt-in pickup: the player must be in range AND press interact.
         // This replaces the old "bump = pickup" behavior so the player can
         // browse a shop's items without burning gems on the first one they
@@ -115,6 +138,27 @@ public partial class ItemTrigger : Area2D
         {
             TryTake();
         }
+    }
+
+    /// <summary>Toggle the shine shader on/off based on player distance.
+    /// Cheap: one DistanceSquaredTo per item per frame, plus a single
+    /// Material assignment only on the frame the in-range state flips.
+    /// Skips ShrineSparkle items (sprite is hidden) and collected items
+    /// (sprite is mid-fade-out).</summary>
+    private void UpdateShine()
+    {
+        if (_collected || _sprite == null || !_sprite.Visible || _shineMaterial == null) return;
+        var player = GetTree()?.GetFirstNodeInGroup("player") as Node2D;
+        if (player == null) return;
+        // Shops pack items tight on shelves; in those scenes the wider
+        // 64px world radius would glint half the room at once. ShopState
+        // is set on scene load by WorldMeta, so it's already the right
+        // value by the time _Process first ticks.
+        float rangeSq = ShopState.IsActive ? ShineRangeSqShop : ShineRangeSqWorld;
+        bool inRange = GlobalPosition.DistanceSquaredTo(player.GlobalPosition) <= rangeSq;
+        if (inRange == _shining) return;
+        _shining = inRange;
+        _sprite.Material = inRange ? _shineMaterial : null;
     }
 
     private void OnBodyEntered(Node2D body)
@@ -137,7 +181,9 @@ public partial class ItemTrigger : Area2D
         // offset so the hint panel sits just above the sprite rather than a
         // full sprite-height higher (the default is tuned for 32px NPCs).
         InteractHintManager.Instance?.Register(this, GetHintText, headOffsetY: -16f);
-        if (_sprite != null && _shineMaterial != null) _sprite.Material = _shineMaterial;
+        // Shine is no longer toggled here — UpdateShine drives it from
+        // distance each tick so the glint can fire before the Area2D
+        // overlap fires (or after, for items with tiny pickup radii).
     }
 
     /// <summary>Walk-on currency pickup for Money-category items. Adds the
@@ -170,7 +216,9 @@ public partial class ItemTrigger : Area2D
         if (!body.IsInGroup("player")) return;
         _playerInRange = false;
         InteractHintManager.Instance?.Unregister(this);
-        if (_sprite != null) _sprite.Material = null;
+        // Shine clearing happens in UpdateShine on the next tick the
+        // player crosses outside ShineRangeSq — no need to mirror it here
+        // since the Area2D radius and the shine radius can differ.
     }
 
     /// <summary>Hint text provider — reads live shop state so "Take" vs
