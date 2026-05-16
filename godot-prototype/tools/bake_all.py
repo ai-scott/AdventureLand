@@ -98,16 +98,9 @@ def bake_triggers(tmx_path):
 
 
 def bake_tile_csvs(tmx_path):
-    """Run the CSV emitter appropriate for the TMX flavor.
-
-    World_00_Village.tmx is special: its scene uses unprefixed CSV names
-    (Decor1PLevel.csv, etc.) authored by the hand-tuned tmx_to_godot.py
-    pipeline, so update_tile_csvs.py is the right tool. Every other world
-    TMX gets baked into prefixed CSVs by tmx_interior_to_csvs.py so
-    MapLoader can find {tmx_stem}_{layer}.csv at runtime.
-    """
-    if Path(tmx_path).name == "World_00_Village.tmx":
-        return _run("update_tile_csvs.py", tmx_path)
+    """Run the CSV emitter for any TMX. Every world TMX gets baked into
+    prefixed CSVs by tmx_interior_to_csvs.py — MapLoader finds them at
+    runtime as `{tmx_stem}_{layer}.csv`."""
     return _run("tmx_interior_to_csvs.py", tmx_path)
 
 

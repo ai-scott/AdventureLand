@@ -71,9 +71,8 @@ public partial class MapLoader : Node2D
 	/// Debug-only: warn if the source TMX is newer than the baked CSV. Mirrors
 	/// the staleness check in TriggerSpawner — catches TMX edits that landed
 	/// without bake_all.py running (autobake extension missing, git pull
-	/// without rebake, etc.). Layer names follow {tmx_stem}_{layer} for all
-	/// non-Village worlds; the lone Village exception uses unprefixed names
-	/// (Decor1PLevel, etc.) and shares World_00_Village.tmx.
+	/// without rebake, etc.). Every layer name follows {tmx_stem}_{layer}
+	/// (e.g. World_10_Lake_Decor1Plevel → World_10_Lake.tmx).
 	/// </summary>
 	private static void CheckCsvStaleness(string layerName, string csvPath)
 	{
@@ -98,8 +97,7 @@ public partial class MapLoader : Node2D
 	/// Walk back through the layer name's underscore-separated prefixes and
 	/// return the first matching TMX. Layer "World_10_Lake_Decor1Plevel" tries
 	/// "World_10_Lake.tmx" → "World_10.tmx" → "World.tmx" until one exists.
-	/// World_00_Village's unprefixed layers (e.g. "Decor1PLevel") fall through
-	/// and resolve to World_00_Village.tmx via the explicit fallback.
+	/// Returns null if no matching TMX is found (caller skips staleness check).
 	/// </summary>
 	private static string ResolveTmxForLayer(string layerName)
 	{
@@ -111,8 +109,7 @@ public partial class MapLoader : Node2D
 			if (FileAccess.FileExists(candidate)) return candidate;
 			cut = layerName.LastIndexOf('_', cut - 1);
 		}
-		string fallback = $"{TmxDir}World_00_Village.tmx";
-		return FileAccess.FileExists(fallback) ? fallback : null;
+		return null;
 	}
 
 	private int LoadLayerFromCsv(TileMapLayer layer, string csvPath)
