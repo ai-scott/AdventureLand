@@ -13,11 +13,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
+Id = "tree_000"
 Text = "The Secret of the Tree of AdventureLand is deeply mysterious."
 Speaker = "AL"
 Priority = 100
-AutoAdvance = "node_001"
+AutoAdvance = "tree_001"
 Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
@@ -27,11 +27,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
+Id = "tree_001"
 Text = "There are few who remember the living tree."
 Speaker = "AL"
 Priority = 99
-AutoAdvance = "node_002"
+AutoAdvance = "tree_002"
 Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
 
 [sub_resource type="Resource" id="cond_6"]
@@ -41,11 +41,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_5"]
 script = ExtResource("2")
-Id = "node_002"
+Id = "tree_002"
 Text = "The tree was cut down after poison overtook it."
 Speaker = "AL"
 Priority = 98
-AutoAdvance = "node_003"
+AutoAdvance = "tree_003"
 Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
 
 [sub_resource type="Resource" id="cond_8"]
@@ -55,11 +55,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_7"]
 script = ExtResource("2")
-Id = "node_003"
+Id = "tree_003"
 Text = "The whole forest is still in danger..."
 Speaker = "AL"
 Priority = 97
-AutoAdvance = "node_004"
+AutoAdvance = "tree_004"
 Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
 
 [sub_resource type="Resource" id="cond_10"]
@@ -69,11 +69,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_9"]
 script = ExtResource("2")
-Id = "node_004"
+Id = "tree_004"
 Text = "Unless a brave adventurer can find the source of the poison."
 Speaker = "AL"
 Priority = 96
-AutoAdvance = "node_005"
+AutoAdvance = "tree_005"
 Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
 
 [sub_resource type="Resource" id="act_13"]
@@ -88,7 +88,7 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_11"]
 script = ExtResource("2")
-Id = "node_005"
+Id = "tree_005"
 Text = "Is anyone up to the task of saving AdventureLand?"
 Speaker = "AL"
 Priority = 95
@@ -103,7 +103,7 @@ Status = "Read"
 
 [sub_resource type="Resource" id="node_14"]
 script = ExtResource("2")
-Id = "node_006"
+Id = "tree_006"
 Text = "Can anyone find the source of the poison and save AdventureLand?"
 Speaker = "AL"
 Priority = 94

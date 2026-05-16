@@ -13,11 +13,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
+Id = "lake_000"
 Text = "You've found the Bottomless Lake!"
 Speaker = "AL"
 Priority = 100
-AutoAdvance = "node_001"
+AutoAdvance = "lake_001"
 Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
@@ -27,11 +27,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
+Id = "lake_001"
 Text = "The waterfall always flows but the lake never floods."
 Speaker = "AL"
 Priority = 99
-AutoAdvance = "node_002"
+AutoAdvance = "lake_002"
 Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
 
 [sub_resource type="Resource" id="cond_6"]
@@ -41,11 +41,11 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_5"]
 script = ExtResource("2")
-Id = "node_002"
+Id = "lake_002"
 Text = "Rumor has it there's a Sea Monster in the lake keeping humans away..."
 Speaker = "AL"
 Priority = 98
-AutoAdvance = "node_003"
+AutoAdvance = "lake_003"
 Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
 
 [sub_resource type="Resource" id="act_9"]
@@ -60,7 +60,7 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_7"]
 script = ExtResource("2")
-Id = "node_003"
+Id = "lake_003"
 Text = "and protecting something very valuable in the depths of the lake."
 Speaker = "AL"
 Priority = 97
@@ -75,7 +75,7 @@ Status = "Complete"
 
 [sub_resource type="Resource" id="node_10"]
 script = ExtResource("2")
-Id = "node_004"
+Id = "lake_004"
 Text = "A Sea Monster is protecting something valuable in the depths of the Bottomless Lake."
 Speaker = "AL"
 Priority = 96

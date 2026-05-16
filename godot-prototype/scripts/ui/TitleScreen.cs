@@ -926,8 +926,8 @@ public partial class TitleScreen : Control
         var creditLines = new (string head, string body)[]
         {
             ("Game by",      "Penlock Games"),
-            ("Game Design",  "Penny Clay and Flylock"),
-            ("Developer",    "Flylock"),
+            ("Game Design",  "Penny Clay and Scott Addison Clay"),
+            ("Developer",    "Scott Addison Clay a.k.a. Flylock"),
             ("Music",        "Richard Furch"),
             ("Art",          "Penny, Mana Seed, Namatnieks, RunninBlood"),
         };
