@@ -23,6 +23,9 @@ uniform float shine_strength : hint_range(0.0, 4.0) = 1.3;
 uniform float cycle_period : hint_range(0.4, 6.0) = 1.6;
 uniform float sweep_fraction : hint_range(0.1, 1.0) = 0.55;
 uniform vec3 shine_color : source_color = vec3(1.0, 0.95, 0.7);
+// Per-instance phase offset (seconds). C# sets this from a random value at
+// _Ready so two pickups side-by-side don't sweep in lockstep.
+uniform float phase_offset : hint_range(0.0, 10.0) = 0.0;
 
 void fragment() {
     vec4 base = texture(TEXTURE, UV);
@@ -31,7 +34,7 @@ void fragment() {
     float diag = UV.x + UV.y;
 
     // Normalize time within the cycle, sweep only during the active window.
-    float t = mod(TIME, cycle_period) / cycle_period;
+    float t = mod(TIME + phase_offset, cycle_period) / cycle_period;
     float sweep_t = clamp(t / sweep_fraction, 0.0, 1.0);
     float active = step(t, sweep_fraction);
     float band_center = mix(-0.5, 2.5, sweep_t);
