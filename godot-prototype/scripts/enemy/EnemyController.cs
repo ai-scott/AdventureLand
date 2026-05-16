@@ -605,9 +605,9 @@ public partial class EnemyController : CharacterBody2D
 					break;
 
 				case EnemyAction.ActionType.Sound:
-					if (_executedActions.Add("sound:" + a.Sound))
+					if (_executedActions.Add("sound:" + a.Sound) && !string.IsNullOrEmpty(a.Sound))
 					{
-						GD.Print($"[Enemy sound:{a.Sound}] (Phase 7 will wire SFXController)");
+						SFXController.Instance?.Play(a.Sound);
 					}
 					break;
 
@@ -900,7 +900,7 @@ public partial class EnemyController : CharacterBody2D
 			_isHurt = true;
 		}
 
-		SFXController.Instance?.Play("enemy_hurt");
+		SFXController.Instance?.Play(string.IsNullOrEmpty(Data?.HurtSound) ? "enemy_hurt" : Data.HurtSound);
 		// Hurt flash — 2 white blinks, less intense than the player's 3-blink.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
@@ -950,7 +950,7 @@ public partial class EnemyController : CharacterBody2D
 
 	private void OnDied()
 	{
-		SFXController.Instance?.Play("enemy_destroy");
+		SFXController.Instance?.Play(string.IsNullOrEmpty(Data?.DeathSound) ? "enemy_destroy" : Data.DeathSound);
 		DropLoot();
 		// Brief fade, then remove.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");

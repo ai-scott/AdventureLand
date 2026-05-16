@@ -39,6 +39,11 @@ Type = 0
 Pattern = 7
 Speed = 35.0
 
+[sub_resource type="Resource" id="act_cranky_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "crab_chase"
+
 [sub_resource type="Resource" id="cond_cranky_in_sight"]
 script = ExtResource("4")
 Value = 150.0
@@ -55,7 +60,7 @@ DurationMin = 1.5
 DurationMax = 3.0
 Weight = 6.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move")])
+Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move"), SubResource("act_cranky_sound")])
 
 [sub_resource type="Resource" id="act_lurch_animate"]
 script = ExtResource("3")
@@ -96,6 +101,11 @@ Type = 0
 Pattern = 1
 Speed = 50.0
 
+[sub_resource type="Resource" id="act_attack_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "crab_attack"
+
 [sub_resource type="Resource" id="cond_attack_close"]
 script = ExtResource("4")
 Value = 30.0
@@ -107,7 +117,7 @@ DurationMin = 0.5
 DurationMax = 1.0
 Weight = 10.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_attack_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move")])
+Actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move"), SubResource("act_attack_sound")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
@@ -148,11 +158,6 @@ Type = 0
 Pattern = 2
 Speed = 80.0
 
-[sub_resource type="Resource" id="act_retreat_sound"]
-script = ExtResource("3")
-Type = 2
-Sound = "Crab_Retreat"
-
 [sub_resource type="Resource" id="cond_retreat_not_hurt"]
 script = ExtResource("4")
 Type = 4
@@ -172,7 +177,7 @@ DurationMax = 0.5
 Weight = 99.0
 Cooldown = 1.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")])
-Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move"), SubResource("act_retreat_sound")])
+Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move")])
 
 [resource]
 script = ExtResource("1")

@@ -56,7 +56,7 @@ Speed = 50.0
 [sub_resource type="Resource" id="act_hop_sound"]
 script = ExtResource("3")
 Type = 2
-Sound = "Slime_Jump"
+Sound = "slime_jump"
 
 [sub_resource type="Resource" id="cond_hop_distance"]
 script = ExtResource("4")
