@@ -310,6 +310,8 @@ public partial class SeaMonsterController : Node2D
         // around the SM and the leash kicks in mid-flight.
         GetTree().CurrentScene?.AddChild(ball);
         ball.GlobalPosition = spawn;
+        // Spit cue — fires from the SM's mouth as the ball launches.
+        SFXController.Instance?.Play("seamonster_spit");
     }
 
     private void UpdateWaterLineUniform()
@@ -373,7 +375,7 @@ public partial class SeaMonsterController : Node2D
         ClearBubbles();
         var dm = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
         if (dm == null || dm.IsActive) return;
-        dm.StartDialogue(Dialogue);
+        dm.StartDialogue(Dialogue, this);
     }
 
     private void ClearBubbles()

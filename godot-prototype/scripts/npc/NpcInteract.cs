@@ -80,12 +80,12 @@ public partial class NpcInteract : Area2D
 
 			if (Dialogue != null)
 			{
-				dialogueManager.StartDialogue(Dialogue);
+				dialogueManager.StartDialogue(Dialogue, this);
 				_suppressUntilExit = true;
 			}
 			else if (DialogueLines.Length > 0)
 			{
-				dialogueManager.StartDialogue(NpcName, DialogueLines);
+				dialogueManager.StartDialogue(NpcName, DialogueLines, this);
 				_suppressUntilExit = true;
 			}
 		}
