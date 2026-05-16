@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="Mana_Interiors" tilewidth="16" tileheight="16" tilecount="6784" columns="128">
   <image source="../spritesheets/Mana_Seed_Interiors.png" width="2048" height="848"/>
  </tileset>
- <layer id="1" name="Ground &amp; Walls" width="15" height="12">
+ <layer id="1" name="Ground 3 - under P" width="15" height="12">
   <data encoding="csv">
 356,357,357,357,357,357,357,357,357,357,357,357,357,358,359,
 452,847,973,974,972,847,974,973,972,847,972,973,974,842,487,
@@ -19,7 +19,7 @@
 0,0,0,0,0,0,0,1252,1254,1254,0,0,1254,1254,1255
 </data>
  </layer>
- <layer id="2" name="Furniture &amp; Decor" width="15" height="12">
+ <layer id="2" name="Decor 1 - P level" width="15" height="12">
   <data encoding="csv">
 0,2349,2349,2349,0,0,0,0,0,0,0,0,0,0,0,
 0,2477,2215,2609,2482,2481,1839,1838,0,0,0,0,0,0,0,
@@ -35,7 +35,7 @@
 0,0,0,0,0,0,0,0,0,0,3287,3288,0,0,0
 </data>
  </layer>
- <layer id="3" name="Items" width="15" height="12">
+ <layer id="3" name="Decor 2 - over P" width="15" height="12">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

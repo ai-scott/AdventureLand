@@ -1,0 +1,11 @@
+{
+  "Environment - Ground - UnderP":      "Ground 3 - under P",
+  "Environment - Overground - UnderP":  "Ground 2 - under P",
+  "Decorations 0 - UnderP":             "Ground 1 - under P",
+  "Objects - Player level":             "Objects - P level",
+  "Decorations 1 - OverP":              "Decor 2 - over P",
+  "Decorations 2 - OverP":              "Decor 3 - over P",
+  "Decorations 3 - OverP":              "Decor 4 - over P",
+  "Object Layer 1":                     "Triggers",
+  "Walls":                              "Walls"
+}
