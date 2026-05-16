@@ -574,13 +574,29 @@ public partial class PlayerController : CharacterBody2D
 		_state.Travel(AttackAnimName);
 		Attacking = true;
 
-		SFXController.Instance?.Play("player_sword");
+		// Per-weapon swing SFX. The three starter Blacksmith weapons (Axe=1,
+		// Sword=2, Pike=3) each have their own port from Player_Sword_1/2/3.
+		// Trident's own swing cue is fired inside PlayTridentSwing below;
+		// suppress the generic swing for it so the magic-weapon path stays
+		// distinct.
+		int equippedWeaponId = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id ?? 0;
+		bool isTrident = equippedWeaponId == MagicTridentItemId;
+		if (!isTrident)
+		{
+			string swingSfx = equippedWeaponId switch
+			{
+				1 => "player_axe",
+				2 => "player_sword",
+				3 => "player_pike",
+				_ => "player_sword",
+			};
+			SFXController.Instance?.Play(swingSfx);
+		}
 
 		// Show the weapon immediately. Don't wait on animation_state_started
 		// from MSCA — on rapid re-presses the state machine is mid-exit from
 		// the previous attack and the "started" signal can skip-fire, leaving
 		// the weapon invisible for the whole second swing.
-		bool isTrident = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
 		if (_weaponSprite != null) _weaponSprite.Visible = !isTrident || DebugShowMscaWeaponDuringTridentSwing;
 		if (isTrident) PlayTridentSwing();
 
