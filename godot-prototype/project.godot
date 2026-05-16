@@ -29,6 +29,7 @@ SFXController="*res://scripts/systems/audio/SFXController.cs"
 MusicController="*res://scripts/systems/audio/MusicController.cs"
 VOController="*res://scripts/systems/audio/VOController.cs"
 EnemyMusicDriver="*res://scripts/systems/audio/EnemyMusicDriver.cs"
+HelpOverlay="*res://scripts/systems/HelpOverlay.cs"
 
 [display]
 
