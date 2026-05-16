@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1")
 Id = 3
-Name = "Pike"
-Description = "A long reaching weapon when you want to stay away from an enemy."
+Name = "Nail Bat"
+Description = "A wooden bat with nine-inch nails driven straight through. Brutal."
 Category = 0
 Strength = 5
 Cost = 10

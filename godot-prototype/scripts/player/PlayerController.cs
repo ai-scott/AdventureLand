@@ -520,17 +520,43 @@ public partial class PlayerController : CharacterBody2D
 
 	public override void _Input(InputEvent @event)
 	{
+		if (@event is not InputEventKey key) return;
+		if (!key.Pressed || key.Echo || !key.ShiftPressed) return;
+
 		// Shift+T — dump current trident beat values to the Output console
 		// in C# MakeDefault*Beats() format. Workflow: tune live in the
 		// Remote Inspector tab, hit Shift+T when happy, copy the printed
 		// block, paste into PlayerController.cs replacing the matching
 		// MakeDefault*Beats() body. Survives Inspector clears + scene
 		// resets without manual transcription.
-		if (@event is InputEventKey key && key.Pressed && !key.Echo
-			&& key.Keycode == Key.T && key.ShiftPressed)
+		if (key.Keycode == Key.T)
 		{
 			DumpTridentBeats();
 		}
+		// Shift+G — grant every weapon item (Ids 1-8) for in-engine testing.
+		else if (key.Keycode == Key.G)
+		{
+			DebugGrantAllWeapons();
+		}
+	}
+
+	private static void DebugGrantAllWeapons()
+	{
+		var inv = Inventory.Instance;
+		if (inv == null) { GD.PushWarning("[Debug] Shift+G: Inventory.Instance is null"); return; }
+		int granted = 0;
+		for (int id = 1; id <= 8; id++)
+		{
+			var item = Inventory.GetItem(id);
+			if (item == null) continue;
+			if (item.Category != ItemData.ItemCategory.Weapon) continue;
+			if (inv.AddItem(id, 1))
+			{
+				granted++;
+				GD.Print($"[Debug] Granted {item.Name} (id={id}, sheet={item.WeaponSheet}, str={item.Strength})");
+			}
+		}
+		GD.Print($"[Debug] Shift+G complete: {granted} weapon(s) added.");
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
