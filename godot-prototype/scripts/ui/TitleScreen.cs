@@ -43,6 +43,10 @@ public partial class TitleScreen : Control
     // Slot selection state.
     private bool _slotModeNewGame;
     private int _selectedSlot = -1;
+    // Last slot that received focus — Continue mirrors this and acts on it
+    // when clicked. Stays set even after focus moves to Back, so clicking
+    // Continue always confirms the slot the user was last viewing.
+    private int _focusedSlot = -1;
 
     // Save-slot UI scaffolding (built lazily in ShowSlotSelect).
     private ColorRect _dimmer;
@@ -557,6 +561,7 @@ public partial class TitleScreen : Control
         _state = State.SlotSelect;
         _slotModeNewGame = newGame;
         _selectedSlot = -1;
+        _focusedSlot = -1;
         // Reset the slot-confirm guard on every entry into the slot screen.
         // Without this, a player who backs out of slot select after the
         // guard latched (Continue → click slot → OnSlotChosen → fade-out
@@ -626,8 +631,13 @@ public partial class TitleScreen : Control
                 row.Pressed += () => OnSlotConfirmed(slot);
             }
             // Mirror focus into Back/Continue: when this slot is focused,
-            // Continue takes the gold "press Enter" border.
-            row.FocusEntered += () => UpdateActionMirror(slotFocused: true);
+            // Continue takes the gold "press Enter" border AND remembers this
+            // slot so a Continue click confirms it.
+            row.FocusEntered += () =>
+            {
+                UpdateActionMirror(slotFocused: true);
+                _focusedSlot = slot;
+            };
 
             _slotList.AddChild(row);
         }
@@ -648,13 +658,20 @@ public partial class TitleScreen : Control
         _backBtn.Pressed += ShowMain;
         bottomRow.AddChild(_backBtn);
 
-        // Continue is a visual indicator only — not focusable, not mouse
-        // clickable. The user confirms by hitting Enter on the focused slot.
-        // Its gold border mirrors the slot's "this is what Enter does" state.
+        // Continue mirrors the focused slot's "press Enter" gold border and
+        // is clickable as a shortcut for that confirm action. Not keyboard-
+        // focusable (Enter routes through the slot row's own Pressed), but
+        // mouse users get the chip + pointing-hand cursor they expect.
         _continueBtn = BuildChipButton("Continue", "↵", UiFrames.ApplyPrimaryButton);
         _continueBtn.CustomMinimumSize = new Vector2(180, 40);
         _continueBtn.FocusMode = Control.FocusModeEnum.None;
-        _continueBtn.MouseFilter = Control.MouseFilterEnum.Ignore;
+        _continueBtn.Pressed += () =>
+        {
+            if (_focusedSlot < 0 || _focusedSlot >= _slotButtons.Count) return;
+            var slotBtn = _slotButtons[_focusedSlot];
+            if (slotBtn == null || slotBtn.Disabled) return;
+            slotBtn.EmitSignal(BaseButton.SignalName.Pressed);
+        };
         bottomRow.AddChild(_continueBtn);
 
         _slotPanel.Visible = true;

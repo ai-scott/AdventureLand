@@ -230,26 +230,22 @@ public partial class InteractHintManager : CanvasLayer
     {
         _panel = new PanelContainer();
         _panel.ProcessMode = ProcessModeEnum.Always;
-        // Mobile: panel itself becomes the tap target (synthesizes "interact"
-        // so the source's existing IsActionJustPressed path fires unchanged).
-        // Desktop: ignore mouse so clicks pass through to the world.
-        _panel.MouseFilter = UiStyles.IsMobile
-            ? Control.MouseFilterEnum.Stop
-            : Control.MouseFilterEnum.Ignore;
-        if (UiStyles.IsMobile)
+        // Panel itself becomes a click/tap target — synthesizes "interact" so
+        // the source's existing IsActionJustPressed path fires unchanged.
+        // Originally mobile-only; desktop now also clicks the hint to interact
+        // (matches the pointing-hand cursor users expect on any chip).
+        UiFrames.MakeClickable(_panel);
+        _panel.GuiInput += evt =>
         {
-            _panel.GuiInput += evt =>
-            {
-                if (!_panel.Visible) return;
-                bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
-                              || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
-                if (!tapped) return;
-                var press = new InputEventAction { Action = "interact", Pressed = true };
-                Input.ParseInputEvent(press);
-                var release = new InputEventAction { Action = "interact", Pressed = false };
-                Input.ParseInputEvent(release);
-            };
-        }
+            if (!_panel.Visible) return;
+            bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
+                          || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
+            if (!tapped) return;
+            var press = new InputEventAction { Action = "interact", Pressed = true };
+            Input.ParseInputEvent(press);
+            var release = new InputEventAction { Action = "interact", Pressed = false };
+            Input.ParseInputEvent(release);
+        };
 
         // Design-system mossy bevel with corner gaps. Asymmetric vertical
         // content margins: a normal top, a much smaller bottom so the

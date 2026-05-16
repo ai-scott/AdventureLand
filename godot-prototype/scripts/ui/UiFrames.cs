@@ -186,6 +186,17 @@ public static class UiFrames
         return btn;
     }
 
+    /// <summary>Mark a non-Button Control as a clickable hit area: stops
+    /// mouse events and shows the pointing-hand cursor on hover. Use for
+    /// inventory grid cells, equipment slots, and any other Control where
+    /// GuiInput is wired but no Button is involved — keeps the cursor
+    /// behavior consistent with BuildChipButton.</summary>
+    public static void MakeClickable(Control c)
+    {
+        c.MouseFilter = Control.MouseFilterEnum.Stop;
+        c.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+    }
+
 
     /// <summary>Compact stat chip used inside item dialogs — mossy panel
     /// with text followed by an optional icon (e.g. "+3" + sword,

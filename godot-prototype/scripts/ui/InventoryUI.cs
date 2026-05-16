@@ -531,7 +531,7 @@ public partial class InventoryUI : CanvasLayer
 		var attackRow = GetNodeOrNull<Control>("Panel/Frame/AbilityRow0");
 		if (attackRow != null)
 		{
-			attackRow.MouseFilter = Control.MouseFilterEnum.Stop;
+			UiFrames.MakeClickable(attackRow);
 			attackRow.GuiInput += evt => OnEquippedSlotTapped(evt, ItemData.ItemCategory.Weapon, attackRow);
 		}
 
@@ -544,7 +544,7 @@ public partial class InventoryUI : CanvasLayer
 			// move the yellow cursor onto the clicked slot.
 			var slotNode = GetNode<Control>($"Panel/Frame/AppearanceSlot{i}");
 			_appearanceSlots[i] = slotNode;
-			slotNode.MouseFilter = Control.MouseFilterEnum.Stop;
+			UiFrames.MakeClickable(slotNode);
 			var cat = AppearanceCategories[i]; // capture for closure
 			slotNode.GuiInput += evt => OnEquippedSlotTapped(evt, cat, slotNode);
 		}
@@ -738,6 +738,7 @@ public partial class InventoryUI : CanvasLayer
 		{
 			var btn = arrows[i];
 			if (btn == null) continue;
+			btn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
 			var icon = btn.GetNodeOrNull<TextureRect>("Icon");
 			if (icon == null) continue;
 
@@ -1204,7 +1205,7 @@ public partial class InventoryUI : CanvasLayer
 			// double-tap on the cell. Wired on every build, not just mobile,
 			// so desktop mouse users get it too — keyboard nav still works
 			// in parallel.
-			cell.MouseFilter = Control.MouseFilterEnum.Stop;
+			UiFrames.MakeClickable(cell);
 			int slotIndex = i; // capture for closure
 			cell.GuiInput += evt => OnCellTapped(evt, slotIndex);
 		}

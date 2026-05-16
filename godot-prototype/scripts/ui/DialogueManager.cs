@@ -601,6 +601,7 @@ public partial class DialogueManager : CanvasLayer
                 row.AddChild(pointer);
 
                 var btn = new Button();
+                btn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
                 btn.Text = SubstituteVariables(resp.Text);
                 btn.Pressed += () => OnResponseChosen(idx);
                 // Hover (or finger-drag on touch — Godot emits MouseEntered

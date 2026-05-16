@@ -432,7 +432,7 @@ vertical_alignment = 1
 
 [node name="AppearanceSlot1" type="Control" parent="Panel/Frame" unique_id=1957828004]
 anchors_preset = 0
-offset_left = 226.0
+offset_left = 202.0
 offset_top = 320.0
 offset_right = 356.0
 offset_bottom = 360.0
@@ -440,8 +440,7 @@ offset_bottom = 360.0
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot1" unique_id=1983167368]
 texture_filter = 1
 layout_mode = 0
-offset_left = -24.0
-offset_right = 16.0
+offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -463,9 +462,9 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot1" unique_id=261448191]
 layout_mode = 0
-offset_left = 30.0
+offset_left = 54.0
 offset_top = 10.0
-offset_right = 114.0
+offset_right = 138.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
@@ -516,7 +515,7 @@ vertical_alignment = 1
 
 [node name="AppearanceSlot3" type="Control" parent="Panel/Frame" unique_id=949604934]
 anchors_preset = 0
-offset_left = 226.0
+offset_left = 202.0
 offset_top = 362.0
 offset_right = 356.0
 offset_bottom = 402.0
@@ -524,8 +523,7 @@ offset_bottom = 402.0
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot3" unique_id=1151444534]
 texture_filter = 1
 layout_mode = 0
-offset_left = -24.0
-offset_right = 16.0
+offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -547,9 +545,9 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot3" unique_id=1611026648]
 layout_mode = 0
-offset_left = 30.0
+offset_left = 54.0
 offset_top = 10.0
-offset_right = 114.0
+offset_right = 138.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
@@ -601,7 +599,7 @@ vertical_alignment = 1
 
 [node name="AppearanceSlot5" type="Control" parent="Panel/Frame" unique_id=954722887]
 anchors_preset = 0
-offset_left = 226.0
+offset_left = 202.0
 offset_top = 404.0
 offset_right = 356.0
 offset_bottom = 444.0
@@ -609,8 +607,7 @@ offset_bottom = 444.0
 [node name="Chip" type="TextureRect" parent="Panel/Frame/AppearanceSlot5" unique_id=222644010]
 texture_filter = 1
 layout_mode = 0
-offset_left = -24.0
-offset_right = 16.0
+offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5")
@@ -632,9 +629,9 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Panel/Frame/AppearanceSlot5" unique_id=1542914296]
 layout_mode = 0
-offset_left = 30.0
+offset_left = 54.0
 offset_top = 10.0
-offset_right = 114.0
+offset_right = 138.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.23529412, 0.4117647, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("18")
