@@ -156,6 +156,11 @@ public partial class InventoryUI : CanvasLayer
 	// Entering from the grid lands on the right arrow (closer to the grid).
 	private bool _cyclerOnRightArrow = true;
 
+	// Accumulated HP restored from food eaten this inventory session. Spawned
+	// as a single "+N HP" floating number above the player after Close(),
+	// since the player can't see anything happening while the inventory is up.
+	private int _pendingHealAmount;
+
 	public override void _Ready()
 	{
 		Instance = this;
@@ -424,6 +429,21 @@ public partial class InventoryUI : CanvasLayer
 		_isOpen = false;
 		_panel.Visible = false;
 		GetTree().Paused = false;
+
+		// Flush any accumulated heal as a single "+N HP" toast above the
+		// player. Spawned after un-pausing so the drift/fade tweens animate
+		// instead of freezing on frame 0. DamageNumber lives in world-space
+		// so the camera carries it naturally.
+		if (_pendingHealAmount > 0)
+		{
+			var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+			if (player != null)
+			{
+				DamageNumber.Spawn(GetTree().CurrentScene, player.GlobalPosition,
+				                   _pendingHealAmount, DamageNumber.Kind.Heal);
+			}
+			_pendingHealAmount = 0;
+		}
 	}
 
 	private void OnAction()
@@ -453,7 +473,25 @@ public partial class InventoryUI : CanvasLayer
 		}
 		else if (item.IsConsumable)
 		{
-			inv.UseItem(_selectedSlot);
+			// Capture how much HP actually moved (capped by MaxHealth) so the
+			// post-close "+N HP" toast shows the real heal, not the food's
+			// nominal strength. Pre-fetch the health system before UseItem
+			// runs the heal so we can diff before/after.
+			int healed = 0;
+			if (item.Category == ItemData.ItemCategory.Food)
+			{
+				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
+				var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
+				int before = health?.CurrentHealth ?? 0;
+				inv.UseItem(_selectedSlot);
+				int after = health?.CurrentHealth ?? before;
+				healed = Mathf.Max(0, after - before);
+			}
+			else
+			{
+				inv.UseItem(_selectedSlot);
+			}
+			if (healed > 0) _pendingHealAmount += healed;
 		}
 		RefreshAll();
 	}
