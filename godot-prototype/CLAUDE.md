@@ -241,9 +241,10 @@ the Tiled layer name before producing the CSV filename. The Godot
 match — `MapLoader` looks for `{node.Name}.csv` and silently skips
 layers whose CSV doesn't exist.
 
-**Examples**: "Water Plants" → `World_10_Lake_WaterPlants` (not
-`World_10_Lake_Plants`); "Decor 1 - P level" → `World_10_Lake_Decor1Plevel`;
-"Ground 3 - under P" → `World_10_Lake_Ground3underP`.
+**Examples** (using the canonical names — see "Canonical map layer
+template" below): "Ground 3 - under P" → `World_10_Lake_Ground3underP`;
+"Decor 1 - P level" → `World_10_Lake_Decor1Plevel`; "WaterPlants -
+P level" → `World_10_Lake_WaterPlantsPlevel`.
 
 **Symptom**: `[MapLoader] Map data not found: res://assets/map_data/...`
 in Output, layer renders empty even though Tiled shows painted cells.
@@ -261,6 +262,63 @@ status line will show `Tilesets (N declared, M unique)` whenever
 **Cleanup in Tiled**: Map → Map Properties → Tilesets → select the
 embedded duplicate → minus button. Re-paint any cells that referenced
 the embedded gids using the external tileset.
+
+## Canonical map layer template
+
+Every TMX in `assets/tiles/tilemaps/` uses the same layer vocabulary —
+interior, exterior, and future maps all share one template. New maps
+should be copied from `assets/tiles/tilemaps/_TEMPLATE.tmx` (skipped by
+the baker via its underscore prefix). Full schema with sanitization and
+typical contents lives in `tools/layer_renames/README.md`; the short
+form:
+
+| Tiled layer name      | Sanitized        | z (.tscn) | y_sort | Typical contents                                          |
+|-----------------------|------------------|-----------|--------|-----------------------------------------------------------|
+| `Ground 3 - under P`  | `Ground3underP`  | -3        | off    | base terrain / wall back                                  |
+| `Ground 2 - under P`  | `Ground2underP`  | -2        | off    | overlay terrain / floor coverings                         |
+| `Ground 1 - under P`  | `Ground1underP`  | -1        | off    | ground decals / wall trim                                 |
+| `Objects - P level`   | `ObjectsPlevel`  |  0        | **on** | y-sortable player-level: NPCs, tall furniture, signs      |
+| `Decor 1 - P level`   | `Decor1Plevel`   |  0        | off    | flat same-plane decor: mats, low items, sign bases        |
+| `Decor 2 - over P`    | `Decor2overP`    |  1        | off    | canopies, awnings, shop-counter items                     |
+| `Decor 3 - over P`    | `Decor3overP`    |  2        | off    | treetops, ceiling, mid-canopy                             |
+| `Decor 4 - over P`    | `Decor4overP`    |  3        | off    | OPTIONAL — top-most clouds / dense canopy                 |
+| `Triggers` (obj)      | —                | —         | —      | class = door / spawn / edge / npc / item / mirror         |
+| `Walls` (obj)         | —                | —         | —      | class = wall only (collision rects / polys)               |
+
+Thematic layers (slot in where their z fits — the suffix tells you):
+
+| Tiled layer name           | Sanitized              | z  | Notes                                  |
+|----------------------------|------------------------|----|----------------------------------------|
+| `Water - under P`          | `WaterunderP`          | -1 | bulk water surface                     |
+| `WaterPlants - P level`    | `WaterPlantsPlevel`    |  0 | animated, paired with `TileAnimator`   |
+| `Beach - under P`          | `BeachunderP`          | -1 | sand / beach edge                      |
+| `RockyWater - P level`     | `RockyWaterPlevel`     |  0 | animated                               |
+| `Waterfall - over P`       | `WaterfalloverP`       |  1 | animated                               |
+
+**Authoring a new map**:
+
+1. `cp assets/tiles/tilemaps/_TEMPLATE.tmx assets/tiles/tilemaps/World_<XY>_<Name>.tmx`
+2. Open in Tiled → Map → Map Properties: resize to taste.
+3. Map → Tilesets → add your `.tsx` (or external PNG via "New Tileset").
+4. Paint.
+5. Save. Autobake regenerates `assets/map_data/World_<XY>_<Name>_<layer>.csv`
+   and `assets/map_data/triggers/World_<XY>_<Name>.tres`.
+6. Create `scenes/worlds/World_<XY>_<Name>.tscn` (or `World_<XY>.tscn` for a
+   bare-world scene). Add one `TileMapLayer` per painted layer, naming each
+   node `World_<XY>_<Name>_<sanitized layer>` so MapLoader finds the CSV
+   (Gotcha 9). Set z_index and y_sort_enabled per the table above.
+7. For animated thematic layers, add `TileAnimator` siblings (see
+   "Animated Tiles" below) with `TargetLayer` NodePaths pointing at the
+   matching layer nodes.
+
+**Why this template exists**: before 2026-05-16 the project had six
+different layer naming schemes (`Ground & Walls`, `Floor Coverings`,
+`Furniture & Decor`, `Items`, `Environment - Ground - UnderP`,
+`Decorations 1-3 - OverP`, etc.) drifting across interiors and
+exteriors. The history of that consolidation lives in commits
+`d80a933` and `39d9327`. If you're authoring map #2+ of a given type
+and find yourself wanting a different scheme, update this section
+*and* `tools/layer_renames/README.md` so they stay in sync.
 
 ## Data Resources (GlobalClass pattern)
 

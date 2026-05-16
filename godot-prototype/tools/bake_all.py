@@ -70,7 +70,9 @@ def find_tmxs(filter_name=None):
     if not TMX_DIR.exists():
         print(f"ERROR: {TMX_DIR} not found")
         return []
-    tmxs = sorted(TMX_DIR.glob("*.tmx"))
+    # Skip underscore-prefixed TMXs (e.g. _TEMPLATE.tmx) — these are
+    # authoring templates, not real maps, and have no scene to feed.
+    tmxs = sorted(t for t in TMX_DIR.glob("*.tmx") if not t.name.startswith("_"))
     if filter_name:
         tmxs = [t for t in tmxs if t.name == filter_name or t.stem == filter_name]
     return tmxs
