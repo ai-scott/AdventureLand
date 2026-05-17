@@ -738,8 +738,8 @@ Top-level progress markers — tick as phases complete:
 - [x] **Cluster 4b**: WorldMeta + NpcAnimator (small unblocked leaves) (`f71f3cd`, `port-cluster-4b-worldmeta-npcanim`)
 - [~] **Cluster 8 PREP**: 5 Dialogue Resource family .gd files written + baker updated (`7eb2623`, `port-cluster-8-prep`). Cutover deferred — needs DialogueManager port + .tres flips + consumer downgrades.
 - [x] **Cluster 5b**: QuestSystem promoted to autoload + facade (`214eb54`, `port-cluster-5b-questsystem`). Unblocks WorldManager + DoorTrigger + DialogueManager port.
-- [ ] **Cluster 8 cutover**: DialogueManager.gd (1,472 LOC) + delete .cs Resource files + flip 16 .tres files + downgrade NpcInteract / SeaMonsterController. **Pause point #2** lands here.
-- [ ] **Cluster 7b-3**: WorldManager (now fully unblocked once Cluster 8 cuts over)
+- [x] **Cluster 8 cutover**: Full Dialogue family + DialogueManager ported. 7 C# consumers downgraded. 16 .tres flipped. **PAUSE POINT #2 reached.** (`b753259`, `port-cluster-8-dialogue`)
+- [ ] **Cluster 7b-3**: WorldManager (now fully unblocked) — recommended next session target
 - [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — biggest single port, 1,169 LOC + 15 consumers
 - [ ] **Cluster 9**: SaveManager + SaveData (Resource family C)
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
