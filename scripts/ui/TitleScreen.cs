@@ -157,9 +157,9 @@ public partial class TitleScreen : Control
         // handler has no chance to fade back in (its lambda is freed
         // along with the world scene at ChangeSceneToFile). Without this
         // call the title screen renders behind opaque black.
-        if (FadeOverlay.Instance != null && FadeOverlay.Instance.IsOpaque)
+        if (FadeOverlay.IsOpaque)
         {
-            _ = FadeOverlay.Instance.FadeIn(0.5);
+            _ = FadeOverlay.FadeIn(0.5);
         }
     }
 

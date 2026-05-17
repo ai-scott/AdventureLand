@@ -2,35 +2,34 @@ using Godot;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Global shop-mode flag. Mirrors C3's ShopMode global var: true when the
-/// player is standing in a shop layout (Blacksmith, Adventure Shop, General
-/// Store, Penny's House). Item pickups branch on this to decide between a
-/// free collect and a purchase prompt.
-///
-/// Scene lifecycle:
-///   - WorldMeta._Ready sets IsActive = IsShop on scene load.
-///   - Scene unload clears it automatically (OnSceneLeaving).
-///
-/// Free-grant mechanic:
-///   The `NextItemFree` flag, set by a dialogue action (grantFreeItem), lets
-///   the next purchase in a shop be free. Consumed by ItemTrigger on pickup.
-///   One-shot, scene-scoped — resets on scene change so authors can't grant
-///   a free item "for use in a different shop".
-/// </summary>
+// Static C# facade over the GDScript ShopState autoload during the
+// C# → GDScript port. See SFXController.cs header for the pattern.
+//
+// Original was a `public static class` with two static bool fields.
+// Promoted to an autoload Node in GDScript so cross-language access is
+// uniform; this facade preserves the call-site shape `ShopState.IsActive`
+// and `ShopState.NextItemFree` (including assignment to NextItemFree).
 public static class ShopState
 {
-    public static bool IsActive { get; private set; }
+    private static GodotObject _node;
 
-    /// <summary>True if a dialogue has granted the player a single free
-    /// purchase. Consumed by the next successful pickup in a shop.</summary>
-    public static bool NextItemFree { get; set; }
-
-    /// <summary>Called by WorldMeta on scene load. `isShop=false` also clears
-    /// any pending NextItemFree so the grant doesn't leak between shops.</summary>
-    public static void SetActive(bool isShop)
+    private static GodotObject Get()
     {
-        IsActive = isShop;
-        if (!isShop) NextItemFree = false;
+        if (_node != null && GodotObject.IsInstanceValid(_node)) return _node;
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("ShopState");
+        return _node;
     }
+
+    public static bool IsActive
+        => Get()?.Get("is_active").AsBool() ?? false;
+
+    public static bool NextItemFree
+    {
+        get => Get()?.Get("next_item_free").AsBool() ?? false;
+        set => Get()?.Set("next_item_free", value);
+    }
+
+    public static void SetActive(bool isShop)
+        => Get()?.Call("set_active", isShop);
 }

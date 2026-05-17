@@ -129,10 +129,10 @@ public partial class SaveManager : Node
         // the same frame they click — see comment in Load() for rationale.
         // BannerLabel renders above FadeRect, so the text stays visible
         // as the title screen fades to black behind it.
-        if (FadeOverlay.Instance != null)
+        if (true)
         {
-            await FadeOverlay.Instance.ShowLoading();
-            await FadeOverlay.Instance.FadeOut(0.3);
+            await FadeOverlay.ShowLoading();
+            await FadeOverlay.FadeOut(0.3);
         }
 
         await TransitionToWorld(CurrentData.CurrentWorld);
@@ -208,10 +208,10 @@ public partial class SaveManager : Node
         // once the world was already black — read as unresponsive on
         // Try Again. BannerLabel renders above FadeRect, so the text
         // stays visible as the world fades to black behind it.
-        if (FadeOverlay.Instance != null)
+        if (true)
         {
-            await FadeOverlay.Instance.ShowLoading();
-            await FadeOverlay.Instance.FadeOut(0.3);
+            await FadeOverlay.ShowLoading();
+            await FadeOverlay.FadeOut(0.3);
         }
         await TransitionToWorld(CurrentData.CurrentWorld);
 
@@ -243,7 +243,7 @@ public partial class SaveManager : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
-        if (FadeOverlay.Instance != null)
+        if (true)
         {
             // Location banner on every Continue, not just first visit.
             // Mirrors NewGame's first-world banner pacing (0.3s fade in +
@@ -254,9 +254,9 @@ public partial class SaveManager : Node
             string displayName = !string.IsNullOrEmpty(meta?.WorldDisplayName)
                 ? meta.WorldDisplayName
                 : WorldDisplayName(CurrentData.CurrentWorld);
-            FadeOverlay.Instance.ShowBanner(displayName, 0.3, 1.2, 0.4);
+            FadeOverlay.ShowBanner(displayName, 0.3, 1.2, 0.4);
             await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
-            await FadeOverlay.Instance.FadeIn(0.3);
+            await FadeOverlay.FadeIn(0.3);
         }
     }
 

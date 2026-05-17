@@ -158,7 +158,7 @@ public partial class WorldManager : Node
         }
         GetTree().Paused = false;
 
-        await FadeOverlay.Instance.FadeOut(0.3);
+        await FadeOverlay.FadeOut(0.3);
 
         // Prime the first-visit banner if this is a new world.
         bool isFirstVisit = PrepareBannerIfFirstVisit(targetScene);
@@ -225,7 +225,7 @@ public partial class WorldManager : Node
         if (oldDialogue != null && oldDialogue.IsActive) oldDialogue.EndDialogue();
         GetTree().Paused = false;
 
-        await FadeOverlay.Instance.FadeOut(0.3);
+        await FadeOverlay.FadeOut(0.3);
 
         bool isFirstVisit = PrepareBannerIfFirstVisit(targetScene);
 
@@ -267,12 +267,12 @@ public partial class WorldManager : Node
             if (meta != null && !string.IsNullOrEmpty(meta.WorldDisplayName))
             {
                 // Show banner over black. Tighter timing: 0.3 fade in + 1.2 hold + 0.4 fade out = 1.9s.
-                FadeOverlay.Instance.ShowBanner(meta.WorldDisplayName, 0.3, 1.2, 0.4);
+                FadeOverlay.ShowBanner(meta.WorldDisplayName, 0.3, 1.2, 0.4);
                 await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
             }
         }
 
-        await FadeOverlay.Instance.FadeIn(0.3);
+        await FadeOverlay.FadeIn(0.3);
     }
 
     /// <summary>

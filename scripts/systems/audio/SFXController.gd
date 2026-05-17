@@ -95,13 +95,16 @@ static func _load_stream(sfx_name: String) -> AudioStream:
 	if _stream_cache.has(sfx_name):
 		return _stream_cache[sfx_name]
 
+	# Cache miss — disk I/O ahead. Perf-time JUST this branch so the
+	# (much hotter) cache-hit path doesn't pay measurement overhead.
+	var pid: int = PerfMonitor.perf_begin("sfx_load", sfx_name)
+	var stream: AudioStream = null
 	var path: String = "%s%s%s" % [SFX_ROOT, sfx_name, SFX_EXT]
-	if not ResourceLoader.exists(path):
+	if ResourceLoader.exists(path):
+		stream = load(path) as AudioStream
+	else:
 		push_warning("[SFXController] Missing SFX file: %s" % path)
-		# Cache the miss as null so we don't hammer the loader.
-		_stream_cache[sfx_name] = null
-		return null
-
-	var stream: AudioStream = load(path) as AudioStream
+	# Cache the result (including null misses — don't hammer the loader).
 	_stream_cache[sfx_name] = stream
+	PerfMonitor.perf_end(pid)
 	return stream

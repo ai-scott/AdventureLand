@@ -2,56 +2,41 @@ using Godot;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Per-device preferences (not per-save-slot) — UI mode, audio toggles, etc.
-/// Persisted to <c>user://prefs.cfg</c> via Godot's ConfigFile so changes survive
-/// across launches and across save slots.
-/// </summary>
+// Static C# facade over the GDScript UserPrefs autoload during the
+// C# → GDScript port. See SFXController.cs header for the pattern.
+//
+// Original was a `public static class` that called ConfigFile directly.
+// Promoted to an autoload Node in GDScript (UserPrefs.gd) so cross-language
+// access is uniform; this facade preserves the call-site shape
+// `UserPrefs.GetMuted()` for remaining C# consumers.
 public static class UserPrefs
 {
-    private const string Path = "user://prefs.cfg";
-    private const string SectionUi = "ui";
-    private const string KeyMobile = "mobile";
-    private const string SectionAudio = "audio";
-    private const string KeyMuted = "muted";
+    private static GodotObject _node;
 
-    /// <summary>Read the persisted mobile-mode preference, or <c>null</c> if
-    /// the user has never made a choice on this device. <c>null</c> tells the
-    /// caller to fall back to auto-detection.</summary>
+    private static GodotObject Get()
+    {
+        if (_node != null && GodotObject.IsInstanceValid(_node)) return _node;
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("UserPrefs");
+        return _node;
+    }
+
+    /// <summary>Read the persisted mobile-mode preference, or null if the
+    /// user has never made a choice on this device. null tells the caller
+    /// to fall back to auto-detection.</summary>
     public static bool? GetMobileOverride()
     {
-        var cfg = new ConfigFile();
-        if (cfg.Load(Path) != Error.Ok) return null;
-        if (!cfg.HasSectionKey(SectionUi, KeyMobile)) return null;
-        return (bool)cfg.GetValue(SectionUi, KeyMobile);
+        var v = Get()?.Call("get_mobile_override");
+        if (v == null || v.Value.VariantType == Variant.Type.Nil) return null;
+        return v.Value.AsBool();
     }
 
-    /// <summary>Persist the mobile-mode choice. Called once on title screen
-    /// after auto-detection, or anytime the user toggles it from a settings
-    /// screen.</summary>
     public static void SetMobileOverride(bool isMobile)
-    {
-        var cfg = new ConfigFile();
-        cfg.Load(Path); // ignore failure — first launch creates the file
-        cfg.SetValue(SectionUi, KeyMobile, isMobile);
-        cfg.Save(Path);
-    }
+        => Get()?.Call("set_mobile_override", isMobile);
 
-    /// <summary>Read the persisted mute state. Defaults to false (unmuted)
-    /// if no preference has ever been written.</summary>
     public static bool GetMuted()
-    {
-        var cfg = new ConfigFile();
-        if (cfg.Load(Path) != Error.Ok) return false;
-        if (!cfg.HasSectionKey(SectionAudio, KeyMuted)) return false;
-        return (bool)cfg.GetValue(SectionAudio, KeyMuted);
-    }
+        => Get()?.Call("get_muted").AsBool() ?? false;
 
     public static void SetMuted(bool muted)
-    {
-        var cfg = new ConfigFile();
-        cfg.Load(Path);
-        cfg.SetValue(SectionAudio, KeyMuted, muted);
-        cfg.Save(Path);
-    }
+        => Get()?.Call("set_muted", muted);
 }

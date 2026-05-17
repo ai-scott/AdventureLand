@@ -69,11 +69,14 @@ func play(speaker: String, node_id: String) -> void:
 	if _stream_cache.has(key):
 		stream = _stream_cache[key]
 	else:
+		# Cache miss — disk I/O. Measure just this branch.
+		var pid: int = PerfMonitor.perf_begin("vo_load", key)
 		var path: String = "%s%s/%s%s" % [VO_ROOT, folder, key, VO_EXT]
 		# ResourceLoader.exists is cheaper than load + null-check and
 		# doesn't print a [res] error for the unrecorded ~80% of nodes.
 		stream = (load(path) as AudioStream) if ResourceLoader.exists(path) else null
 		_stream_cache[key] = stream
+		PerfMonitor.perf_end(pid)
 	if stream == null:
 		return
 

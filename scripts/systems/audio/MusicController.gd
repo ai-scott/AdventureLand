@@ -223,8 +223,14 @@ static func _free_player(p: AudioStreamPlayer) -> void:
 static func _load_stream(track_name: String) -> AudioStream:
 	if track_name.is_empty():
 		return null
+	# Disk I/O — measure. Music loads are rare (per-world entry) so the
+	# measurement overhead is a non-issue.
+	var pid: int = PerfMonitor.perf_begin("music_load", track_name)
+	var stream: AudioStream = null
 	var path: String = "%s%s%s" % [MUSIC_ROOT, track_name, MUSIC_EXT]
-	if not ResourceLoader.exists(path):
+	if ResourceLoader.exists(path):
+		stream = load(path) as AudioStream
+	else:
 		push_warning("[MusicController] Missing music file: %s" % path)
-		return null
-	return load(path) as AudioStream
+	PerfMonitor.perf_end(pid)
+	return stream

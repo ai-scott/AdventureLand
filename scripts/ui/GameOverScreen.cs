@@ -99,9 +99,9 @@ public partial class GameOverScreen : CanvasLayer
         // + HUD before the GameOver screen reveals — without it, the body
         // crossfades with the bg scroll and reads as "two scenes layered"
         // instead of a clean cut.
-        if (FadeOverlay.Instance != null)
+        if (true)
         {
-            await FadeOverlay.Instance.FadeOut(0.8);
+            await FadeOverlay.FadeOut(0.8);
         }
 
         // NOW refill HP — under the black overlay, before the menu fades

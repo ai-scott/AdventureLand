@@ -16,7 +16,9 @@ config/features=PackedStringArray("4.6", "C#")
 
 [autoload]
 
-PerfMonitor="*res://scripts/systems/PerfMonitor.cs"
+PerfMonitor="*res://scripts/systems/PerfMonitor.gd"
+UserPrefs="*res://scripts/systems/UserPrefs.gd"
+ShopState="*res://scripts/systems/ShopState.gd"
 MobileBoot="*res://scripts/systems/MobileBoot.cs"
 SaveManager="*res://scripts/systems/SaveManager.cs"
 Inventory="*res://scripts/systems/Inventory.cs"
