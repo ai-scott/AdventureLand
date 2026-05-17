@@ -577,7 +577,7 @@ public partial class PlayerController : CharacterBody2D
 		// Suppress attack while an interactable hint is visible — Space goes
 		// to the prompt (Take/Talk/Look/Enter), not a swing. Player can step
 		// away from the hint range to attack.
-		if (InteractHintManager.Instance?.IsHintVisible == true) return;
+		if (InteractHintManager.IsHintVisible == true) return;
 
 		StartAttack();
 	}

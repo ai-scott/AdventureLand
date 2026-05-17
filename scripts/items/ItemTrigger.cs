@@ -88,7 +88,7 @@ public partial class ItemTrigger : Area2D
 
     public override void _ExitTree()
     {
-        InteractHintManager.Instance?.Unregister(this);
+        InteractHintManager.Unregister(this);
     }
 
     /// <summary>World-flag key for "this placement has been collected".
@@ -134,7 +134,7 @@ public partial class ItemTrigger : Area2D
         // the one closest to the player — rather than whichever ItemTrigger
         // happens to run first in scene-tree order.
         if (_playerInRange && !_collected && Input.IsActionJustPressed("interact")
-            && InteractHintManager.Instance?.ActiveSource == this)
+            && InteractHintManager.ActiveSource == this)
         {
             TryTake();
         }
@@ -180,7 +180,7 @@ public partial class ItemTrigger : Area2D
         // Items render at 16px, half the height of NPCs — pass a -16 head
         // offset so the hint panel sits just above the sprite rather than a
         // full sprite-height higher (the default is tuned for 32px NPCs).
-        InteractHintManager.Instance?.Register(this, GetHintText, headOffsetY: -16f);
+        InteractHintManager.Register(this, GetHintText, headOffsetY: -16f);
         // Shine is no longer toggled here — UpdateShine drives it from
         // distance each tick so the glint can fire before the Area2D
         // overlap fires (or after, for items with tiny pickup radii).
@@ -215,7 +215,7 @@ public partial class ItemTrigger : Area2D
     {
         if (!body.IsInGroup("player")) return;
         _playerInRange = false;
-        InteractHintManager.Instance?.Unregister(this);
+        InteractHintManager.Unregister(this);
         // Shine clearing happens in UpdateShine on the next tick the
         // player crosses outside ShineRangeSq — no need to mirror it here
         // since the Area2D radius and the shine radius can differ.

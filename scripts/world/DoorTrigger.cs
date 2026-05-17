@@ -50,21 +50,21 @@ public partial class DoorTrigger : Area2D
 
 	public override void _ExitTree()
 	{
-		InteractHintManager.Instance?.Unregister(this);
+		InteractHintManager.Unregister(this);
 	}
 
 	private void OnBodyEntered(Node2D body)
 	{
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = true;
-		InteractHintManager.Instance?.Register(this, GetHintText);
+		InteractHintManager.Register(this, GetHintText);
 	}
 
 	private void OnBodyExited(Node2D body)
 	{
 		if (!body.IsInGroup("player")) return;
 		_playerInRange = false;
-		InteractHintManager.Instance?.Unregister(this);
+		InteractHintManager.Unregister(this);
 	}
 
 	/// <summary>Hint text — returns empty while the door is quest-gated so the
@@ -101,7 +101,7 @@ public partial class DoorTrigger : Area2D
 		var dialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
 		if (dialogue != null && dialogue.IsActive) return;
 
-		InteractHintManager.Instance?.Unregister(this);
+		InteractHintManager.Unregister(this);
 		GetViewport().SetInputAsHandled();
 		_ = wm.GoToDoor(TargetScene, DoorId);
 	}

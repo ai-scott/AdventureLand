@@ -25,7 +25,7 @@ public partial class MirrorTrigger : Area2D
 
     public override void _ExitTree()
     {
-        InteractHintManager.Instance?.Unregister(this);
+        InteractHintManager.Unregister(this);
     }
 
     public override void _Process(double delta)
@@ -44,13 +44,13 @@ public partial class MirrorTrigger : Area2D
     {
         if (body is not PlayerController) return;
         _playerInRange = true;
-        InteractHintManager.Instance?.Register(this, () => "Look");
+        InteractHintManager.Register(this, () => "Look");
     }
 
     private void OnBodyExited(Node2D body)
     {
         if (body is not PlayerController) return;
         _playerInRange = false;
-        InteractHintManager.Instance?.Unregister(this);
+        InteractHintManager.Unregister(this);
     }
 }

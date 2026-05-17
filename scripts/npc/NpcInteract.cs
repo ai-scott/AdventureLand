@@ -149,7 +149,7 @@ public partial class NpcInteract : Area2D
 		if (body is PlayerController)
 		{
 			_playerInRange = true;
-			InteractHintManager.Instance?.Register(this, GetHintText);
+			InteractHintManager.Register(this, GetHintText);
 		}
 	}
 
@@ -159,13 +159,13 @@ public partial class NpcInteract : Area2D
 		{
 			_playerInRange = false;
 			_suppressUntilExit = false;
-			InteractHintManager.Instance?.Unregister(this);
+			InteractHintManager.Unregister(this);
 		}
 	}
 
 	public override void _ExitTree()
 	{
-		InteractHintManager.Instance?.Unregister(this);
+		InteractHintManager.Unregister(this);
 	}
 
 	/// <summary>Provider for the shared InteractHintManager. Suppressed while
