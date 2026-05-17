@@ -660,7 +660,7 @@ public partial class EnemyController : CharacterBody2D
 					string sound = a.Get("sound").AsString();
 					if (_executedActions.Add("sound:" + sound) && !string.IsNullOrEmpty(sound))
 					{
-						SFXController.Instance?.Play(sound);
+						SFXController.Play(sound);
 					}
 					break;
 				}
@@ -902,7 +902,7 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		string hurtSound = Data?.Get("hurt_sound").AsString() ?? "";
-		SFXController.Instance?.Play(string.IsNullOrEmpty(hurtSound) ? "enemy_hurt" : hurtSound);
+		SFXController.Play(string.IsNullOrEmpty(hurtSound) ? "enemy_hurt" : hurtSound);
 		// Hurt flash — 2 white blinks.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
@@ -948,7 +948,7 @@ public partial class EnemyController : CharacterBody2D
 	private void OnDied()
 	{
 		string deathSound = Data?.Get("death_sound").AsString() ?? "";
-		SFXController.Instance?.Play(string.IsNullOrEmpty(deathSound) ? "enemy_destroy" : deathSound);
+		SFXController.Play(string.IsNullOrEmpty(deathSound) ? "enemy_destroy" : deathSound);
 		DropLoot();
 		// Brief fade, then remove.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");

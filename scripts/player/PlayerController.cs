@@ -616,7 +616,7 @@ public partial class PlayerController : CharacterBody2D
 				3 => "player_pike",
 				_ => "player_sword",
 			};
-			SFXController.Instance?.Play(swingSfx);
+			SFXController.Play(swingSfx);
 		}
 
 		// Show the weapon immediately. Don't wait on animation_state_started
@@ -709,7 +709,7 @@ public partial class PlayerController : CharacterBody2D
 			// Gated on !IsDead so the death cue (handled separately by the
 			// game-over flow) doesn't double up with a damage beep on the
 			// killing blow.
-			SFXController.Instance?.Play("player_hurt");
+			SFXController.Play("player_hurt");
 		}
 	}
 
@@ -976,7 +976,7 @@ public partial class PlayerController : CharacterBody2D
 		// flicker between sequences mid-fall. Cardinal-only matches the
 		// per-direction frame mapping in PlayDeathSequence.
 		_facing = SnapToCardinal(_facing);
-		SFXController.Instance?.Play("player_hurt", -3f);
+		SFXController.Play("player_hurt", -3f);
 
 		InputLocked = true;
 		PlayDeathSequence();

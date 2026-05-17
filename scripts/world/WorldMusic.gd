@@ -30,14 +30,10 @@ func _ready() -> void:
 		return
 
 	# Mid + High both set = layered mix. Otherwise single track.
-	# MusicController is a C# autoload during the port — GDScript calls
-	# into C# must use the original PascalCase method names (no
-	# auto-conversion). When MusicController itself ports to GDScript
-	# (Cluster 2), rename these to snake_case.
 	if not mid_track.is_empty() and not high_track.is_empty():
-		MusicController.StartMix(base_track, mid_track, high_track)
+		MusicController.start_mix(base_track, mid_track, high_track)
 	else:
-		MusicController.StartTrack(base_track)
+		MusicController.start_track(base_track)
 
 func _exit_tree() -> void:
 	# The next world's WorldMusic will _ready before this one is freed
@@ -45,4 +41,4 @@ func _exit_tree() -> void:
 	# "free old → instance new" sequentially, so stopping here is safe
 	# and prevents leaks if the next scene has no WorldMusic at all
 	# (e.g. game over).
-	MusicController.StopMix()
+	MusicController.stop_mix()

@@ -314,7 +314,7 @@ public partial class Inventory : Node
             {
                 health.Heal(item.Strength);
                 GD.Print($"[Inventory] Used {item.Name} — healed {item.Strength} HP");
-                SFXController.Instance?.Play("potion");
+                SFXController.Play("potion");
             }
         }
 

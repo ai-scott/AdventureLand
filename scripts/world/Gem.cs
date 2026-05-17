@@ -120,15 +120,15 @@ public partial class Gem : Area2D
         {
             case Kind.Gem:
                 CurrencySystem.AddGems(10);
-                SFXController.Instance?.Play("collectible_pickup");
+                SFXController.Play("collectible_pickup");
                 break;
             case Kind.Gold:
                 CurrencySystem.AddGems(5);
-                SFXController.Instance?.Play("collectible_pickup");
+                SFXController.Play("collectible_pickup");
                 break;
             case Kind.Coin:
                 CurrencySystem.AddGems(1);
-                SFXController.Instance?.Play("collectible_pickup");
+                SFXController.Play("collectible_pickup");
                 break;
             case Kind.Heart:
                 if (_player is PlayerController pc)
@@ -136,7 +136,7 @@ public partial class Gem : Area2D
                     var hs = pc.GetNodeOrNull<HealthSystem>("HealthSystem");
                     hs?.Heal(2);
                 }
-                SFXController.Instance?.Play("heart");
+                SFXController.Play("heart");
                 break;
         }
     }

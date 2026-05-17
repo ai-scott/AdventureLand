@@ -151,7 +151,7 @@ public partial class SeaMonsterController : Node2D
         // show the angry face for the "Wow! my pearl!" line.
         if (_sprite != null && _idleTexture != null) _sprite.Texture = _idleTexture;
 
-        SFXController.Instance?.Play("seamonster_rise");
+        SFXController.Play("seamonster_rise");
         // Hold the burst for a beat and drop it 30 px lower than Retreat's
         // surface burst — the rise reads cleaner when the bubbles surface
         // *just below* the SM's incoming silhouette and a hair after the
@@ -229,9 +229,9 @@ public partial class SeaMonsterController : Node2D
         // Wipe danger music whenever the SM submerges, regardless of
         // whether it's a peaceful retreat or a hostile-leash retreat —
         // music shouldn't keep blaring "danger" once the threat is gone.
-        MusicController.Instance?.SetDesiredMode(MusicController.Mode.Base);
+        MusicController.SetDesiredMode(MusicController.Mode.Base);
         _state = State.Retreating;
-        SFXController.Instance?.Play("seamonster_rise"); // same bubble cue
+        SFXController.Play("seamonster_rise"); // same bubble cue
         EmitBubbleBurst();
 
         var tween = CreateTween();
@@ -265,7 +265,7 @@ public partial class SeaMonsterController : Node2D
         {
             _sprite.Texture = AttackTexture;
         }
-        MusicController.Instance?.SetDesiredMode(MusicController.Mode.High);
+        MusicController.SetDesiredMode(MusicController.Mode.High);
         _waterBallTimer = 0.6; // small delay so the first ball doesn't
                                // overlap the dialogue's last line audibly.
     }
@@ -285,7 +285,7 @@ public partial class SeaMonsterController : Node2D
         float dist = GlobalPosition.DistanceTo(player.GlobalPosition);
         if (dist > HostileLeashRadius)
         {
-            MusicController.Instance?.SetDesiredMode(MusicController.Mode.Base);
+            MusicController.SetDesiredMode(MusicController.Mode.Base);
             Retreat();
             return;
         }
@@ -311,7 +311,7 @@ public partial class SeaMonsterController : Node2D
         GetTree().CurrentScene?.AddChild(ball);
         ball.GlobalPosition = spawn;
         // Spit cue — fires from the SM's mouth as the ball launches.
-        SFXController.Instance?.Play("seamonster_spit");
+        SFXController.Play("seamonster_spit");
     }
 
     private void UpdateWaterLineUniform()

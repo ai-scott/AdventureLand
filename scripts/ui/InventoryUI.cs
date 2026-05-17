@@ -1030,7 +1030,7 @@ public partial class InventoryUI : CanvasLayer
 			inv.RemoveItem(item.Id, 1);
 			CurrencySystem.AddGems(sellPrice);
 			SaveManager.Instance?.Save();
-			SFXController.Instance?.Play("collectible_pickup");
+			SFXController.Play("collectible_pickup");
 			RefreshAll();
 		});
 	}

@@ -546,7 +546,7 @@ public partial class DialogueManager : CanvasLayer
         // Cut any in-flight VO and start the new line. Most nodes have no
         // recorded VO — the controller silently no-ops on missing files, so
         // we don't gate this on a registry. Cuts apply on auto-advance too.
-        VOController.Instance?.Play(speaker, node.Id);
+        VOController.Play(speaker, node.Id);
 
         UpdateSpeakerVisuals(speaker);
 
@@ -949,7 +949,7 @@ public partial class DialogueManager : CanvasLayer
                 case DialogueAction.ActionType.PlaySound:
                     if (!string.IsNullOrEmpty(a.SoundId))
                     {
-                        SFXController.Instance?.Play(a.SoundId);
+                        SFXController.Play(a.SoundId);
                     }
                     break;
 

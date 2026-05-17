@@ -135,7 +135,7 @@ public partial class GameOverScreen : CanvasLayer
 
         // Swap to the title-screen music — same dread-loop the title uses,
         // ties the death beat back to where the player will land next.
-        MusicController.Instance?.StartTrack("title_screens");
+        MusicController.StartTrack("title_screens");
 
         // Populate the menu. Try Again only when there's a save slot to reload.
         foreach (var child in _menu.GetChildren()) child.QueueFree();

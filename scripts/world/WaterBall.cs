@@ -71,7 +71,7 @@ public partial class WaterBall : Area2D
         Monitoring = false;
         // Impact cue — same sound for player-hit and timeout-on-ground so
         // every splash has audio presence.
-        SFXController.Instance?.Play("water_impact");
+        SFXController.Play("water_impact");
         if (_sprite == null) { QueueFree(); return; }
         // Keep flight rotation through the splash so droplets continue
         // outward in the direction of travel — resetting rotation to 0

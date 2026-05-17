@@ -203,7 +203,7 @@ public partial class ItemTrigger : Area2D
         }
 
         SaveManager.Instance?.Save();
-        SFXController.Instance?.Play("collectible_pickup");
+        SFXController.Play("collectible_pickup");
         SpawnSparkles();
 
         var tween = CreateTween();
@@ -277,7 +277,7 @@ public partial class ItemTrigger : Area2D
         // Heart for food, generic collectible chime for everything else.
         // Routed here (not in ShowTakePrompt's onAccept) so paid purchases
         // get the same audio feedback as free pickups.
-        SFXController.Instance?.Play(
+        SFXController.Play(
             Data.Category == ItemData.ItemCategory.Food ? "heart" : "collectible_pickup");
 
         if (Unique)
