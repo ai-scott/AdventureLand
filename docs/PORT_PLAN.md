@@ -609,18 +609,32 @@ Where it's safe to pause indefinitely:
 
 Top-level progress markers — tick as phases complete:
 
-- [ ] Phase A: Repo reorganization (`godot-prototype/` → root, C3 root files archived)
-- [ ] Phase 0: Scaffold + safety net
-- [ ] Phase 1: Leaf data Resources (10 files)
-- [ ] Phase 2: Parent data Resources + `.tres` flip (4 families)
+- [x] **Phase A**: Repo reorganization (`godot-prototype/` → root, C3 root files archived) — commit `b5c5c60`
+- [x] **Phase 0**: Scaffold + safety net — GUT v9.6.0 installed, baselines captured, plan doc landed
+- [x] **Phase 1+2 (partial)**: Self-contained data Resource families — `Tile*` (`9003fc2`), `Trigger*` (`ce8852b`), `Enemy*` (`de01af0`)
 - [ ] Phase 3: UI primitives (11 files)
 - [ ] Phase 4: World/map primitives (13 files)
 - [ ] Phase 5: NPC + Enemy controllers (8 files)
 - [ ] Phase 6: Audio autoloads (4 files)
-- [ ] Phase 7: State autoloads (10 files)
+- [ ] Phase 7: State autoloads (10 files) — also ports **SaveData** family (deferred from Phase 2)
 - [ ] Phase 8: Player + costume + shader (6 files)
-- [ ] Phase 9: Heavyweight UI + dialogue + title (6 files)
+- [ ] Phase 9: Heavyweight UI + dialogue + title (6 files) — also ports **DialogueData** + **ItemData** families (deferred from Phase 2)
 - [ ] Phase 10: Cutover → web export verified
+
+### Strategy adjustment — 2026-05-16, mid-Phase-2
+
+**Defer Dialogue / Item / Save data Resources to their consumer phases.**
+
+Original plan had Phase 2 port all parent Resources upfront with C# consumer downgrades. In practice the downgrade work for large consumers (DialogueManager 1,472 LOC with ~100 type/property touchpoints; InventoryUI 1,776 LOC at similar density; SaveManager 567 LOC) was proportional to the *port* work — throwaway code that would be deleted in the consumer's own port phase anyway.
+
+**What worked (kept in Phase 2):** TileAnimator (99 LOC consumer brought forward to GDScript), TriggerSpawner (311 LOC consumer downgrade — bearable), EnemyController (999 LOC with mirrored enums + `.Get()` accessors — still messy but bearable).
+
+**What was deferred:**
+- **DialogueData + Node + Response + Action + Condition** → Phase 9 alongside DialogueManager.gd port. 16 `.tres` files in `assets/data/dialogue/`.
+- **ItemData** → Phase 9 alongside InventoryUI.gd port. ~60 `.tres` files in `assets/data/items/`.
+- **SaveData** → Phase 7 alongside SaveManager.gd port.
+
+Net effect: Phase 2 ships 3 small families instead of 7. The deferred families pay for themselves cleanly in their consumer phases (consumer + Resources port in one go, no downgrade tax).
 
 ---
 
