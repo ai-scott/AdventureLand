@@ -733,10 +733,13 @@ Top-level progress markers — tick as phases complete:
 - [x] **Retroactive cleanup**: deleted dead EnemyMusicDriver.cs facade + flatten dead `if (true)/if (false)` conditionals (`02f20f7`)
 - [x] **Cluster 6**: Inventory autoload — **pause point #1 reached.** ItemData stays C# (defers to Cluster 10 with InventoryUI). Pattern I (C# event over GDScript signal) established. (`1cc0bea`, `port-cluster-6-inventory`)
 - [x] **Cluster 7a**: Costume sub-cluster — 4 files (PaletteSwapper, CostumePaletteRegistry, CharacterCustomization, CostumeController). 3 new autoloads. (`96f390d`, `port-cluster-7a-costume`)
-- [x] **Cluster 7b-1**: MapLoader (first of 5 Cluster-7b sub-chunks). Zero-consumer port. (`aa8be30`, `port-cluster-7b1-maploader`)
-- [ ] **Cluster 7b-2**: InteractHintManager + PinkShellInteract — resolves Func<string> blocker from Cluster 1
-- [ ] **Cluster 7b-3**: WorldManager + WorldMeta
+- [x] **Cluster 7b-1**: MapLoader (`aa8be30`, `port-cluster-7b1-maploader`)
+- [x] **Cluster 7b-2**: InteractHintManager + PinkShellInteract — resolved Func<string> blocker via Pattern L (`2615345`, `port-cluster-7b2-interacthint`)
+- [x] **Cluster 4b**: WorldMeta + NpcAnimator (small unblocked leaves) (`f71f3cd`, `port-cluster-4b-worldmeta-npcanim`)
+- [ ] **Cluster 8**: Dialogue Resource family + DialogueManager + 16 .tres — **pause point #2**. Recommend next session.
+- [ ] **Cluster 7b-3**: WorldManager (after Cluster 8 — WorldManager has strong-typed DialogueManager references)
 - [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — biggest single port, 1,169 LOC + 15 consumers
+- [ ] **Cluster 9**: SaveManager + SaveData (Resource family C)
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
 - [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
 - [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
