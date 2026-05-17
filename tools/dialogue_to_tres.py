@@ -113,26 +113,30 @@ class TresWriter:
         ctype = TS_CONDITION_MAP.get(c.get("type", "quest_status"), "QuestStatus")
         idx = CONDITION_TYPES.index(ctype)
 
-        props = [f'script = ExtResource("3")', f'Type = {idx}']
+        # GDScript port (Cluster 8): property names are snake_case;
+        # ext_resource paths are .gd. Enum integer values still mirror
+        # the C# declaration order — do not reorder ACTION_TYPES or
+        # CONDITION_TYPES above.
+        props = [f'script = ExtResource("3")', f'type = {idx}']
 
         negate = c.get("negate", False) or c.get("inverted", False)
         if negate:
-            props.append('Negate = true')
+            props.append('negate = true')
 
-        str_fields = [("questId", "QuestId"), ("status", "Status"), ("itemId", "ItemId"),
-                      ("flagKey", "FlagKey"), ("flagValue", "FlagValue"),
-                      ("npcId", "NpcId"), ("memoryKey", "MemoryKey"), ("memoryValue", "MemoryValue"),
-                      ("customCheck", "CustomCheck")]
-        int_fields = [("quantity", "Quantity"), ("level", "Level")]
+        str_fields = [("questId", "quest_id"), ("status", "status"), ("itemId", "item_id"),
+                      ("flagKey", "flag_key"), ("flagValue", "flag_value"),
+                      ("npcId", "npc_id"), ("memoryKey", "memory_key"), ("memoryValue", "memory_value"),
+                      ("customCheck", "custom_check")]
+        int_fields = [("quantity", "quantity"), ("level", "level")]
 
-        for ts_key, cs_key in str_fields:
+        for ts_key, tres_key in str_fields:
             v = c.get(ts_key)
             if v is not None and v != "":
-                props.append(f'{cs_key} = "{escape(str(v))}"')
-        for ts_key, cs_key in int_fields:
+                props.append(f'{tres_key} = "{escape(str(v))}"')
+        for ts_key, tres_key in int_fields:
             v = c.get(ts_key)
             if v is not None:
-                props.append(f'{cs_key} = {v}')
+                props.append(f'{tres_key} = {v}')
 
         self.sub_resources.append((sid, props))
         return sid
@@ -142,34 +146,34 @@ class TresWriter:
         atype = TS_ACTION_MAP.get(a.get("type", "set_quest_status"), "SetQuestStatus")
         idx = ACTION_TYPES.index(atype)
 
-        props = [f'script = ExtResource("4")', f'Type = {idx}']
+        props = [f'script = ExtResource("4")', f'type = {idx}']
 
-        str_fields = [("questId", "QuestId"), ("status", "Status"),
-                      ("itemId", "ItemId"), ("itemName", "ItemName"),
-                      ("flagKey", "FlagKey"), ("flagValue", "FlagValue"),
-                      ("npcId", "NpcId"), ("memoryKey", "MemoryKey"), ("memoryValue", "MemoryValue"),
-                      ("worldId", "WorldId"), ("soundId", "SoundId"), ("variable", "Variable"),
-                      ("customFunction", "CustomFunction"), ("reason", "Reason")]
-        int_fields = [("quantity", "Quantity")]
-        float_fields = [("x", "X"), ("y", "Y")]
-        bool_fields = [("destroyTrigger", "DestroyTrigger")]
+        str_fields = [("questId", "quest_id"), ("status", "status"),
+                      ("itemId", "item_id"), ("itemName", "item_name"),
+                      ("flagKey", "flag_key"), ("flagValue", "flag_value"),
+                      ("npcId", "npc_id"), ("memoryKey", "memory_key"), ("memoryValue", "memory_value"),
+                      ("worldId", "world_id"), ("soundId", "sound_id"), ("variable", "variable"),
+                      ("customFunction", "custom_function"), ("reason", "reason")]
+        int_fields = [("quantity", "quantity")]
+        float_fields = [("x", "x"), ("y", "y")]
+        bool_fields = [("destroyTrigger", "destroy_trigger")]
 
-        for ts_key, cs_key in str_fields:
+        for ts_key, tres_key in str_fields:
             v = a.get(ts_key)
             if v is not None and v != "":
-                props.append(f'{cs_key} = "{escape(str(v))}"')
-        for ts_key, cs_key in int_fields:
+                props.append(f'{tres_key} = "{escape(str(v))}"')
+        for ts_key, tres_key in int_fields:
             v = a.get(ts_key)
             if v is not None:
-                props.append(f'{cs_key} = {v}')
-        for ts_key, cs_key in float_fields:
+                props.append(f'{tres_key} = {v}')
+        for ts_key, tres_key in float_fields:
             v = a.get(ts_key)
             if v is not None:
-                props.append(f'{cs_key} = {float(v)}')
-        for ts_key, cs_key in bool_fields:
+                props.append(f'{tres_key} = {float(v)}')
+        for ts_key, tres_key in bool_fields:
             v = a.get(ts_key)
             if v:
-                props.append(f'{cs_key} = true')
+                props.append(f'{tres_key} = true')
 
         self.sub_resources.append((sid, props))
         return sid
@@ -177,18 +181,18 @@ class TresWriter:
     def write_response(self, r):
         sid = self.next_id("resp")
         props = [f'script = ExtResource("5")',
-                 f'Text = "{escape(r.get("text", ""))}"',
-                 f'LeadsTo = "{r.get("leads_to", "")}"']
+                 f'text = "{escape(r.get("text", ""))}"',
+                 f'leads_to = "{r.get("leads_to", "")}"']
 
         conds = r.get("conditions", [])
         if conds:
             cond_ids = [self.write_condition(c) for c in conds]
-            props.append(f'Conditions = {self.refs_array("3", cond_ids)}')
+            props.append(f'conditions = {self.refs_array("3", cond_ids)}')
 
         acts = r.get("actions", [])
         if acts:
             act_ids = [self.write_action(a) for a in acts]
-            props.append(f'Actions = {self.refs_array("4", act_ids)}')
+            props.append(f'actions = {self.refs_array("4", act_ids)}')
 
         self.sub_resources.append((sid, props))
         return sid
@@ -196,31 +200,31 @@ class TresWriter:
     def write_node(self, n):
         sid = self.next_id("node")
         props = [f'script = ExtResource("2")',
-                 f'Id = "{n.get("id", "")}"',
-                 f'Text = "{escape(n.get("text", ""))}"',
-                 f'Speaker = "{n.get("speaker", "")}"',
-                 f'Priority = {n.get("priority", 50)}']
+                 f'id = "{n.get("id", "")}"',
+                 f'text = "{escape(n.get("text", ""))}"',
+                 f'speaker = "{n.get("speaker", "")}"',
+                 f'priority = {n.get("priority", 50)}']
 
         auto = n.get("autoAdvance", "")
         if auto:
-            props.append(f'AutoAdvance = "{auto}"')
+            props.append(f'auto_advance = "{auto}"')
         if n.get("endsDialogue", False):
-            props.append('EndsDialogue = true')
+            props.append('ends_dialogue = true')
 
         conds = n.get("conditions", [])
         if conds:
             cond_ids = [self.write_condition(c) for c in conds]
-            props.append(f'Conditions = {self.refs_array("3", cond_ids)}')
+            props.append(f'conditions = {self.refs_array("3", cond_ids)}')
 
         resps = n.get("responses", [])
         if resps:
             resp_ids = [self.write_response(r) for r in resps]
-            props.append(f'Responses = {self.refs_array("5", resp_ids)}')
+            props.append(f'responses = {self.refs_array("5", resp_ids)}')
 
         acts = n.get("actions", [])
         if acts:
             act_ids = [self.write_action(a) for a in acts]
-            props.append(f'Actions = {self.refs_array("4", act_ids)}')
+            props.append(f'actions = {self.refs_array("4", act_ids)}')
 
         self.sub_resources.append((sid, props))
         return sid
@@ -241,11 +245,11 @@ def write_tres(npc_data, output_path):
     lines = []
     lines.append('[gd_resource type="Resource" script_class="DialogueData" format=3]')
     lines.append('')
-    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]')
-    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]')
-    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]')
-    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]')
-    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]')
+    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]')
+    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]')
+    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]')
+    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]')
+    lines.append('[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]')
     lines.append('')
 
     for sid, props in w.sub_resources:
@@ -256,17 +260,17 @@ def write_tres(npc_data, output_path):
 
     lines.append('[resource]')
     lines.append('script = ExtResource("1")')
-    lines.append(f'NpcId = "{npc_id}"')
-    lines.append(f'DisplayName = "{display_name}"')
-    lines.append(f'DefaultNode = "{default_node}"')
-    lines.append(f'WorldId = "{world_id}"')
+    lines.append(f'npc_id = "{npc_id}"')
+    lines.append(f'display_name = "{display_name}"')
+    lines.append(f'default_node = "{default_node}"')
+    lines.append(f'world_id = "{world_id}"')
 
     if quest_relations:
         qr = ", ".join(f'"{q}"' for q in quest_relations)
-        lines.append(f'QuestRelations = PackedStringArray({qr})')
+        lines.append(f'quest_relations = PackedStringArray({qr})')
 
     if node_ids:
-        lines.append(f'Nodes = {w.refs_array("2", node_ids)}')
+        lines.append(f'nodes = {w.refs_array("2", node_ids)}')
 
     lines.append('')
 
