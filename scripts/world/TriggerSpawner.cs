@@ -190,15 +190,19 @@ public partial class TriggerSpawner : Node2D
             GD.PushWarning("[TriggerSpawner] DoorScene not assigned");
             return null;
         }
-        var instance = DoorScene.Instantiate<DoorTrigger>();
+        // DoorTrigger is GDScript (Cluster 4c). C# Instantiate<T> can't
+        // strong-type to a GDScript class; use untyped Node2D + Variant
+        // Set for properties (Pattern G).
+        var instance = DoorScene.Instantiate() as Area2D;
+        if (instance == null) return null;
         int doorId = t.Get("door_id").AsInt32();
         instance.Name = $"Door_{doorId}";
         instance.Position = center;
-        instance.TargetScene = t.Get("target_scene").AsString();
-        instance.DoorId = doorId;
-        instance.RequiredQuestId = t.Get("required_quest_id").AsString();
-        instance.RequiredQuestStatus = t.Get("required_quest_status").AsString();
-        instance.RequiredWorldFlag = t.Get("required_world_flag").AsString();
+        instance.Set("target_scene", t.Get("target_scene").AsString());
+        instance.Set("door_id", doorId);
+        instance.Set("required_quest_id", t.Get("required_quest_id").AsString());
+        instance.Set("required_quest_status", t.Get("required_quest_status").AsString());
+        instance.Set("required_world_flag", t.Get("required_world_flag").AsString());
         ResizeCollision(instance, size);
         return instance;
     }
@@ -310,17 +314,22 @@ public partial class TriggerSpawner : Node2D
             GD.PushWarning("[TriggerSpawner] EdgeScene not assigned");
             return null;
         }
-        var instance = EdgeScene.Instantiate<EdgeTrigger>();
+        // EdgeTrigger is GDScript (Cluster 4c). Pattern G — untyped
+        // instantiate + Variant property setters. EdgeDirection enum
+        // mirrored in GDScript with same int values (East=0..South=3).
+        var instance = EdgeScene.Instantiate() as Area2D;
+        if (instance == null) return null;
         string exitEdgeStr = t.Get("exit_edge").AsString();
         instance.Name = $"Edge_{exitEdgeStr}";
         instance.Position = center;
-        instance.TargetScene = t.Get("target_scene").AsString();
-        // Parse exit edge string → enum
-        if (System.Enum.TryParse<EdgeTrigger.EdgeDirection>(
-                exitEdgeStr, ignoreCase: true, out var edge))
+        instance.Set("target_scene", t.Get("target_scene").AsString());
+        // Parse exit edge string → enum int (East=0, West=1, North=2, South=3).
+        int edgeInt = exitEdgeStr.ToLowerInvariant() switch
         {
-            instance.ExitEdge = edge;
-        }
+            "east" => 0, "west" => 1, "north" => 2, "south" => 3,
+            _ => 0,
+        };
+        instance.Set("exit_edge", edgeInt);
         ResizeCollision(instance, size);
         return instance;
     }

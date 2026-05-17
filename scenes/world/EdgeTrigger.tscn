@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bi0tewyto6sm3"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://bid3udrfbpmcf" path="res://scripts/world/EdgeTrigger.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/world/EdgeTrigger.gd" id="1"]
 
 [sub_resource type="RectangleShape2D" id="EdgeShape"]
 size = Vector2(720, 32)
