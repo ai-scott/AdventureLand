@@ -4,7 +4,7 @@
 **Project path (post-reorg):** `/Users/saclay/Documents/GitHub/AdventureLand/`
 **Engine:** Godot 4.6.2 .NET (mono build) → Godot 4.6.2 (GDScript-only) at end of port
 **Branch:** `port/gdscript` (single long-running, includes both reorg + port)
-**Estimated effort:** Repo reorg ~1–2 hours + GDScript port 20–40 hours = **22–42 hours total**
+**Estimated effort:** ~71 hours of AI-driven port work remaining (~100–120h wall clock with review/test cycles). Repo reorg already done — commit `b5c5c60`, tag `reorg-complete-2026-05-16`.
 **End state:** Clean repo root + 100% GDScript + web + stable mobile exports unlocked
 **Created:** 2026-05-16
 
@@ -38,30 +38,142 @@ The Adventure Land Godot port is currently 100% C# (~18,340 LOC across 75 `.cs` 
 
 ---
 
-## Architecture: 11 phases, one branch, mixed-mode coexistence
+## Architecture: 11 dependency-driven clusters, one branch, mixed-mode coexistence
 
-Godot 4.6 .NET supports both C# and GDScript scripts in the same project for native builds. We exploit this: the project stays compilable + runnable + smoke-testable at every commit. Only after the last `.cs` file is removed in Phase 10 do we strip the `[dotnet]` SDK and unlock Web export.
+Godot 4.6 .NET supports both C# and GDScript scripts in the same project for native builds. We exploit this: the project stays compilable + runnable + smoke-testable at every commit. Only after the last `.cs` file is removed in Cluster 11 do we strip the `[dotnet]` SDK and unlock Web export.
 
-Why single-branch + subsystem-batch beats big-bang and beats file-by-file: bisecting 18K LOC of regressions with no tests is unwinnable; file-by-file forces ping-pong `.tres` script-path updates because Resources touch dozens of `.tres` files each. Subsystem batches give natural commit boundaries with sharp internal cohesion.
+**Why cluster-based (NEW — supersedes original phase-based plan):** The original 10-phase plan assumed clean layering between "data" / "primitives" / "controllers" / "heavyweights." A mid-port dependency audit (see `Strategy adjustment` below) found this assumption wrong: most "leaf" utilities have 5-9 external C# consumers concentrated in the big late-phase files (HUD 757 LOC, TitleScreen 1375, DialogueManager 1472, InventoryUI 1776, PlayerController 1178, SaveManager 567). Porting a leaf creates downgrade tax across many consumers.
 
-**Why reorganize first:** Doing the `godot-prototype/` → repo-root move BEFORE the port means all 18K LOC of port commits land at the final clean paths. The reorg diff is reviewable in isolation. Plan checklist references the post-reorg paths throughout.
+**The real cost shape:** Downgrade-tax pain is concentrated in **3 Resource families** (Item, Dialogue, Save) where field-level property access is unavoidable. Everything else is cross-language calls (autoload syntax, cast-to-base, Resource.Call) which are mechanical. The right strategy is to port each Resource family **together with its primary consumer** (eliminates downgrade tax for that family) and ship leaves in parallel batches.
 
-### Phase summary
+**Why reorganize first:** Doing the `godot-prototype/` → repo-root move BEFORE the port means all 18K LOC of port commits land at the final clean paths. The reorg diff is reviewable in isolation.
 
-| # | Phase | Files | LOC | Risk |
-|---|-------|-------|-----|------|
-| **A** | **Repo reorganization** (`godot-prototype/` → repo root) | — | — | Low–Medium |
-| 0 | Scaffold + safety net | — | — | Low |
-| 1 | Leaf data Resources | 10 | ~600 | Low |
-| 2 | Parent data Resources + `.tres` flip | 4 families | ~1,200 | Medium |
-| 3 | UI primitives | 11 | ~1,500 | Low |
-| 4 | World/map primitives | 13 | ~1,800 | Low |
-| 5 | NPC + Enemy controllers | 8 | ~2,000 | Medium |
-| 6 | Audio autoloads | 4 | ~600 | Low |
-| 7 | State autoloads | 10 | ~3,500 | High |
-| 8 | Player + costume + shader bridge | 6 | ~2,500 | High |
-| 9 | Heavyweight UI + dialogue + title | 6 | ~4,000 | **Highest** |
-| 10 | Cutover — strip `[dotnet]`, verify web export | — | — | Low |
+### Cluster summary (revised 2026-05-17 after dependency audit)
+
+| # | Cluster | Files | LOC | Est hours | Notes |
+|---|---|---|---|---|---|
+| **A** | Repo reorganization (done — `b5c5c60`) | — | — | done | Tag `reorg-complete-2026-05-16` |
+| **0** | Scaffold + safety net (done — GUT, baselines, plan) | — | — | done | |
+| **Done** | Tile + Trigger + Enemy data Resources (3 small families) | 9 | ~700 | done | Commits `9003fc2`, `ce8852b`, `de01af0` |
+| 1 | **Leaves-A** — 6 files with 0 external consumers | 6 | ~440 | 1.5 | BuildingCollider, HelpOverlay, MobileBoot, PinkShellInteract, RosieAnimator, WorldMusic |
+| 2 | **Audio autoloads** + ~29 call sites | 4 | 651 | 2.5 | SFXController, MusicController, VOController, EnemyMusicDriver |
+| 3 | **UI utilities** + ~50 mechanical call sites | 5 | 823 | 3 | DesignTokens, UiFonts, UiFrames, UiStyles, BevelStyleBox |
+| 4 | **World/Map nodes** — finish Trigger/Enemy ports | 16 | ~2,900 | 8 | Incl. TriggerSpawner-from-downgrade, EnemyController-from-downgrade |
+| 5 | **Pure state autoloads** | 7 | ~900 | 4 | UserPrefs, CurrencySystem, HealthSystem, QuestSystem, ShopState, FadeOverlay, PerfMonitor |
+| 6 | **Inventory cluster (Resource family A)** + ~60 .tres | 5 + tres | ~2,000 | 10 | ItemData + Inventory + ItemTrigger + ItemPickupToast + CostumePaletteRegistry. **Best pause point #1.** |
+| 7a | **Costume sub-cluster** (safe pause point) | 4 | ~1,000 | 4 | CostumeController, CharacterCustomization, PaletteSwapper, TridentSwingBeat |
+| 7b | **Player core** | 4 | ~2,000 | 8 | PlayerController, InteractHintManager, WorldManager, MapLoader |
+| 8 | **Dialogue cluster (Resource family B)** + 16 .tres | 6 + tres | ~1,650 | 8 | DialogueManager + 5 dialogue classes. **Best pause point #2.** |
+| 9 | **Save cluster (Resource family C)** | 2 | 626 | 5 | SaveManager + SaveData |
+| 10 | **UI heavyweights** | 8 | ~4,600 | 16 | HUD, InventoryUI, TitleScreen, DamageNumber, HealthBar, CurrencyHUD, MobileDPad, GameOverScreen |
+| 11 | **Cutover** — strip `[dotnet]`, verify web export | — | — | 1 | |
+
+**Total remaining estimate:** ~71 hours of AI-driven port work, ~100–120 hours wall-clock with review/test cycles. Roughly 6–10 working sessions if averaging 4-hour chunks.
+
+### Ordering rationale (minimizes consumer touches)
+
+The order is chosen so each cluster ports against already-ported dependencies, avoiding rewrite waves:
+
+- Cluster 1 ships zero-consumer leaves (no rewrite ripple at all)
+- Clusters 2–3 ship infrastructure (audio, UI styles) — their many consumers update mechanically (autoload syntax, theme calls)
+- Cluster 4 ships the world/map node bulk, finishing the Trigger/Enemy half-ports
+- Cluster 5 ships small state autoloads (Quest/Currency/Health/Shop) so Resource families can port against them
+- Cluster 6 (Inventory) is FIRST of the 3 Resource families because ItemData fields are read by PlayerController, DialogueCondition, CostumeController, InventoryUI — porting Inventory first means PlayerController is written natively against GDScript ItemData (zero downgrade tax in cluster 7b)
+- Cluster 7 (Player) splits: 7a (costume system, testable via title-screen costume picker — natural pause) then 7b (Player core)
+- Cluster 8 (Dialogue) follows because DialogueCondition consumes ItemData (must be ported first)
+- Cluster 9 (Save) is last Resource family because SaveData reads fields from every state autoload (Inventory/Health/Currency/Quest/Shop/Costume/World) — needs all of them ported first
+- Cluster 10 (UI heavyweights) consumes everything; ports against fully-GDScript dependency graph
+- Cluster 11 strips `[dotnet]` and verifies web export
+
+### Hidden dependencies surfaced by audit
+
+- **TitleScreen is consumed by HUD, GameOverScreen, WorldManager, SaveManager, FadeOverlay, UiStyles** — not isolated. Lives in cluster 10 with the other heavyweights.
+- **InteractHintManager** consumes ItemTrigger + Inventory + HUD + UiStyles + PlayerController; it's a UI/Player coupler. Moved from "state autoloads" to cluster 7b.
+- **MapLoader** has bidirectional coupling to WorldManager. Both port in cluster 7b.
+- **CostumePaletteRegistry** crosses Inventory ↔ Player boundary. Included in cluster 6 (Inventory) since ItemData is the heavier dependency.
+- **TridentSwingBeat** lives in `data/` folder but is Player-internal (1 consumer = PlayerController). Moved into cluster 7a.
+- **DialogueCondition → ItemData** is a hidden Resource-to-Resource field read forcing cluster 6 before cluster 8.
+- **SaveData consumes 7 different state autoloads** — must port LAST among Resource families (cluster 9).
+
+### Cross-cutting work (NOT a cluster — handled within affected clusters)
+
+**1. Tools/ Python script updates.** 5 baker scripts in `tools/` hardcode `.cs` paths in their `.tres` output:
+
+| Script | Outputs | Cluster that fixes it |
+|---|---|---|
+| `tools/pack_animated_tiles.py` | AnimatedTileSet/Entry refs | **Retroactive fix needed** (Tile family ported but tool still writes `.cs`) |
+| `tools/tmx_triggers_to_tres.py` | WorldTriggers/TriggerData refs | **Retroactive fix needed** (Trigger family ported) |
+| `tools/items_to_tres.py` | ItemData ref | Cluster 6 (Inventory) |
+| `tools/dialogue_to_tres.py` | DialogueData/Node/Action/Response/Condition refs | Cluster 8 (Dialogue) |
+| `tools/tmx_to_godot.py` | Various script refs | Cluster 4 (World/Map) |
+
+**Action:** Each cluster that ports a Resource family must also update the corresponding tool in the same commit. Add a one-time retroactive fix-up commit before Cluster 1 for the two already-ported families.
+
+**2. Scene file (.tscn) script path updates.** 36 `.tscn` files reference `.cs` scripts via `ext_resource`. Handled per-cluster as the referenced scripts port. No separate cluster needed.
+
+**3. Documentation refresh at cutover (Cluster 11).** `CLAUDE.md`, `SETUP.md`, `EVALUATION_REPORT.md` contain C# patterns. Bulk-update at cutover.
+
+**4. Export preset authoring (POST-port, not in port scope).** Currently no `export_presets.cfg`; export templates aren't installed. Post-port work covered in `TODO.md`:
+- Install Godot Web export templates via Editor (~1 GB)
+- Author Mac, Win, Android, Web export presets
+- Test each export
+
+### Cross-system coverage: where Enemy AI + Combat live in the plan
+
+These two are the most playtest-critical systems and don't form clean clusters by themselves — they're distributed by dependency. Tracking explicitly:
+
+**Enemy AI** (all in Cluster 4 + already-ported Resources):
+- EnemyData/Behavior/Action/BehaviorCondition — pre-clusters ✅
+- EnemyController (currently downgraded) — Cluster 4 port
+- EnemyAnimatorBase + EnemyFolderAnimator + EnemySheetAnimator — Cluster 4
+- SeaMonsterController + WaterBall — Cluster 4
+- Gem (loot drop) — Cluster 4
+
+After Cluster 4, **enemy AI is fully GDScript**. Cluster 4 should land enemy behavior end-to-end in one commit.
+
+**Combat** (distributed across 5 clusters):
+- SFXController (combat sounds) — Cluster 2
+- Enemy hurt/death/AI/loot/projectile — Cluster 4
+- HealthSystem (damage logic, invuln) — Cluster 5
+- PlayerController (attack input, hitbox, knockback, trident) — Cluster 7b
+- DamageNumber (floating combat feedback) — Cluster 10
+
+Combat is GDScript end-to-end after **Cluster 7b** except for the floating damage numbers (DamageNumber lands in Cluster 10 with the UI heavyweights since it's used by both combat AND `+N HP` heal feedback).
+
+**Combat smoke-test per cluster:**
+| After | Combat verification |
+|---|---|
+| 2 | Sword swing SFX plays; enemy_hurt SFX plays on hit |
+| 4 | Enemy AI behaves identically (kill 1 ooze, 1 crab, 1 bat) |
+| 5 | HealthSystem signals fire (player takes damage, dies; recover) |
+| 7b | Full combat loop (attack, hurt, knockback, trident swing) |
+| 10 | Damage numbers + heal numbers float correctly |
+
+### Natural pause points (mixed C#/GDScript still ships native at every boundary)
+
+| After cluster | Tax remaining | Recommended pause? |
+|---|---|---|
+| 2 (Audio) | High | No — keep going |
+| 4 (World/Map) | Medium-high | OK |
+| 5 (State autoloads) | Medium | OK |
+| **6 (Inventory)** | **Medium-low — most painful Resource family done** | **Yes — best mid-port pause #1** |
+| 7a (Costume) | Medium-low | OK — testable via costume picker |
+| **8 (Dialogue)** | **Low — 2 of 3 Resource families done** | **Yes — best mid-port pause #2** |
+| 9 (Save) | Very low | OK |
+| 10 (UI heavies) | Trivial — only cutover left | Stop only if web isn't urgent |
+
+### Risk + mitigation
+
+**Biggest risk:** Cluster 7b (Player + WorldManager + InteractHintManager + MapLoader) is ~2,000 LOC with the highest consumer count (PlayerController = 15 external consumers, WorldManager = 8, InteractHintManager = 9). A subtle behavior regression breaks every map transition, interact prompt, and costume swap.
+
+**Mitigations:**
+- 7a (Costume) ships first as a safe pause point — costume picker tests it in isolation via title screen
+- Before 7b, write an autoload-driven smoke test that walks one map transition, picks up one item, talks to one NPC, swaps one costume
+- Port PlayerController **last** within 7b, after WorldManager + InteractHintManager + MapLoader are already GDScript
+
+**Secondary risk:** `.tres` files with `script = ExtResource` pointing to C# classes (~120 such files across the project). Each Resource family port requires bulk-flipping these. Mitigation: keep `class_name` identical to C# class name in `[GlobalClass]` so only file extension changes in the .tres `script` ExtResource path.
+
+**Tertiary risk:** C# event subscription (`+=`) vs GDScript signal subscription (`.connect(...)`) — needs explicit per-signal verification when newly-ported GDScript classes emit signals consumed by remaining-C# classes (and vice versa). Mitigation: signal connection wrapper helpers + smoke test the user-facing signal flows after each cluster.
 
 ---
 
@@ -609,32 +721,24 @@ Where it's safe to pause indefinitely:
 
 Top-level progress markers — tick as phases complete:
 
-- [x] **Phase A**: Repo reorganization (`godot-prototype/` → root, C3 root files archived) — commit `b5c5c60`
-- [x] **Phase 0**: Scaffold + safety net — GUT v9.6.0 installed, baselines captured, plan doc landed
-- [x] **Phase 1+2 (partial)**: Self-contained data Resource families — `Tile*` (`9003fc2`), `Trigger*` (`ce8852b`), `Enemy*` (`de01af0`)
-- [ ] Phase 3: UI primitives (11 files)
-- [ ] Phase 4: World/map primitives (13 files)
-- [ ] Phase 5: NPC + Enemy controllers (8 files)
-- [ ] Phase 6: Audio autoloads (4 files)
-- [ ] Phase 7: State autoloads (10 files) — also ports **SaveData** family (deferred from Phase 2)
-- [ ] Phase 8: Player + costume + shader (6 files)
-- [ ] Phase 9: Heavyweight UI + dialogue + title (6 files) — also ports **DialogueData** + **ItemData** families (deferred from Phase 2)
-- [ ] Phase 10: Cutover → web export verified
+- [x] **Phase A**: Repo reorganization — commit `b5c5c60`, tag `reorg-complete-2026-05-16`
+- [x] **Phase 0**: Scaffold (GUT v9.6.0, baselines, plan doc) — commits `a0145e8`, `da04dcd`, `5c99e34`
+- [x] **Pre-clusters**: 3 self-contained Resource families — Tile (`9003fc2`) + Trigger (`ce8852b`) + Enemy (`de01af0`)
+- [ ] **Cluster 0.5**: Retroactive tool fix-up — update `tools/pack_animated_tiles.py` + `tools/tmx_triggers_to_tres.py` to write `.gd` paths (~15min)
+- [ ] **Cluster 1**: Leaves-A — 6 files with 0 external consumers (~1.5h)
+- [ ] **Cluster 2**: Audio autoloads + ~29 call sites (~2.5h)
+- [ ] **Cluster 3**: UI utilities + ~50 mechanical call sites (~3h)
+- [ ] **Cluster 4**: World/Map nodes — finish Trigger/Enemy ports (~8h)
+- [ ] **Cluster 5**: Pure state autoloads (~4h)
+- [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
+- [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
+- [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
+- [ ] **Cluster 8**: Dialogue cluster (Resource family B) + 16 .tres — **pause point #2** (~8h)
+- [ ] **Cluster 9**: Save cluster (Resource family C) (~5h)
+- [ ] **Cluster 10**: UI heavyweights — biggest LOC (~16h)
+- [ ] **Cluster 11**: Cutover → web export verified (~1h)
 
-### Strategy adjustment — 2026-05-16, mid-Phase-2
-
-**Defer Dialogue / Item / Save data Resources to their consumer phases.**
-
-Original plan had Phase 2 port all parent Resources upfront with C# consumer downgrades. In practice the downgrade work for large consumers (DialogueManager 1,472 LOC with ~100 type/property touchpoints; InventoryUI 1,776 LOC at similar density; SaveManager 567 LOC) was proportional to the *port* work — throwaway code that would be deleted in the consumer's own port phase anyway.
-
-**What worked (kept in Phase 2):** TileAnimator (99 LOC consumer brought forward to GDScript), TriggerSpawner (311 LOC consumer downgrade — bearable), EnemyController (999 LOC with mirrored enums + `.Get()` accessors — still messy but bearable).
-
-**What was deferred:**
-- **DialogueData + Node + Response + Action + Condition** → Phase 9 alongside DialogueManager.gd port. 16 `.tres` files in `assets/data/dialogue/`.
-- **ItemData** → Phase 9 alongside InventoryUI.gd port. ~60 `.tres` files in `assets/data/items/`.
-- **SaveData** → Phase 7 alongside SaveManager.gd port.
-
-Net effect: Phase 2 ships 3 small families instead of 7. The deferred families pay for themselves cleanly in their consumer phases (consumer + Resources port in one go, no downgrade tax).
+**Total remaining: ~71h AI-driven, ~100–120h wall clock. Roughly 6–10 working sessions.**
 
 ---
 
@@ -656,20 +760,31 @@ Net effect: Phase 2 ships 3 small families instead of 7. The deferred families p
 
 ## Next action after plan approval
 
-**Phase A first** (the repo reorganization), then Phase 0, then port:
+Phases A + 0 + 3 small Resource families are done. Resume with **Cluster 1: Leaves-A** (6 files with 0 external consumers, ~1.5h).
 
-1. Tag `c3-legacy-2026-05-16` on current HEAD (preserves C3 history)
-2. Create `port/gdscript` branch
-3. Inventory + confirm C3 root files to delete (review with user)
-4. `git mv godot-prototype/*` to root
-5. Delete C3 root files
-6. Merge CLAUDE.md files (root + godot-prototype variant)
-7. Smoke test Godot still opens from new root
-8. Single big reorg commit + tag `reorg-complete-2026-05-16`
-9. Tag `port-baseline-2026-05-16` on the reorg-complete commit
-10. Capture PerfMonitor baseline + costume screenshots
-11. Copy this plan to `docs/PORT_PLAN.md` (now at repo root)
-12. Confirm Godot Web export templates are installed
-13. Begin Phase 1 (leaf Resources)
+**Cluster 0.5 (do FIRST):** Fix the already-stale baker tools:
+- `tools/pack_animated_tiles.py` — change line 212/213 from `AnimatedTileSet.cs`/`AnimatedTileEntry.cs` → `.gd`
+- `tools/tmx_triggers_to_tres.py` — change line 204/205 from `WorldTriggers.cs`/`TriggerData.cs` → `.gd`
 
-**Single-question pause before executing Phase A:** I'll inventory the C3 root files first and confirm with you which to delete vs preserve (some `docs/` content at root may already be Godot-relevant). Then execute the reorg as a single big commit.
+Single small commit, tag `port-cluster-0.5-tool-fixup`.
+
+**Cluster 1 file list:**
+- `scripts/maps/BuildingCollider.cs`
+- `scripts/systems/HelpOverlay.cs`
+- `scripts/systems/MobileBoot.cs`
+- `scripts/world/PinkShellInteract.cs`
+- `scripts/npc/RosieAnimator.cs`
+- `scripts/world/WorldMusic.cs`
+
+Per file:
+1. Read .cs
+2. Write .gd (snake_case + `class_name`)
+3. Update any `.tscn` ext_resource path (.cs → .gd) — usually 1 scene per file
+4. Delete .cs + .cs.uid
+5. Build + headless smoke
+
+Single commit at cluster end, tag `port-cluster-1-leaves-a`.
+
+Then Cluster 2 (Audio autoloads) — biggest cross-cutting impact, gets it out of the way early. See cluster summary table above for full sequence.
+
+**Pause-point reminder:** safe stop points are after Cluster 6 (Inventory done — pause #1) or Cluster 8 (Dialogue done — pause #2). Mixed C#/GDScript native build works at every cluster boundary.
