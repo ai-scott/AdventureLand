@@ -51,20 +51,24 @@ public partial class FollowCamera : Camera2D
 		var scene = GetTree().CurrentScene;
 		if (scene == null) return;
 
-		var meta = scene.FindChild("WorldMeta", true, false) as WorldMeta
-			?? scene as WorldMeta;
-		if (meta == null)
+		// WorldMeta is now GDScript (Cluster 4b). Access via Variant
+		// property dispatch — `as Node` cast + .Get("map_size") rather
+		// than the C# strong-typed reference.
+		var meta = scene.FindChild("WorldMeta", true, false) ?? scene;
+		var mapSizeVar = meta?.Get("map_size");
+		if (mapSizeVar == null || mapSizeVar.Value.VariantType == Variant.Type.Nil)
 		{
 			GD.Print($"[FollowCamera] No WorldMeta in {scene.Name} — camera bounds not set");
 			return;
 		}
+		var mapSize = mapSizeVar.Value.AsVector2I();
 
 		LimitLeft = 0;
 		LimitTop = 0;
-		LimitRight = meta.MapSize.X;
-		LimitBottom = meta.MapSize.Y;
+		LimitRight = mapSize.X;
+		LimitBottom = mapSize.Y;
 		LimitSmoothed = false;
-		GD.Print($"[FollowCamera] World bounds set from '{scene.Name}': map=({meta.MapSize.X}, {meta.MapSize.Y})");
+		GD.Print($"[FollowCamera] World bounds set from '{scene.Name}': map=({mapSize.X}, {mapSize.Y})");
 	}
 
 	public override void _PhysicsProcess(double delta)

@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="10"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="11"]
 [ext_resource type="Script" path="res://scripts/maps/MapLoader.gd" id="12"]
-[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="13"]
+[ext_resource type="Script" path="res://scripts/world/WorldMeta.gd" id="13"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="14"]
 [ext_resource type="Resource" uid="uid://dycgja2cho3gh" path="res://assets/map_data/triggers/World_03_GrayMistMountain.tres" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="16"]

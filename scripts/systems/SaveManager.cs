@@ -242,9 +242,10 @@ public partial class SaveManager : Node
         // 1.2s hold + 0.4s fade out = 1.9s of black + banner before
         // the world reveal). Uses WorldMeta if available, otherwise
         // the canonical name map keyed by scene filename.
-        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
-        string displayName = !string.IsNullOrEmpty(meta?.WorldDisplayName)
-            ? meta.WorldDisplayName
+        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false);
+        var metaName = meta?.Get("world_display_name").AsString();
+        string displayName = !string.IsNullOrEmpty(metaName)
+            ? metaName
             : WorldDisplayName(CurrentData.CurrentWorld);
         FadeOverlay.ShowBanner(displayName, 0.3, 1.2, 0.4);
         await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
@@ -412,17 +413,18 @@ public partial class SaveManager : Node
         // WorldManager.ComputeEntryPosition's "clamp later" sentinel
         // when you walk off the north edge). Without this, the player
         // ends up far below the visible viewport on Continue.
-        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
-        if (meta != null && meta.MapSize.X > 0 && meta.MapSize.Y > 0)
+        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false);
+        var mapSize = meta?.Get("map_size").AsVector2I() ?? Vector2I.Zero;
+        if (mapSize.X > 0 && mapSize.Y > 0)
         {
             const float EdgeMargin = 32f;
             var pos = player.GlobalPosition;
             var clamped = new Vector2(
-                Mathf.Clamp(pos.X, EdgeMargin, meta.MapSize.X - EdgeMargin),
-                Mathf.Clamp(pos.Y, EdgeMargin, meta.MapSize.Y - EdgeMargin));
+                Mathf.Clamp(pos.X, EdgeMargin, mapSize.X - EdgeMargin),
+                Mathf.Clamp(pos.Y, EdgeMargin, mapSize.Y - EdgeMargin));
             if (clamped != pos)
             {
-                GD.Print($"[SaveManager] Clamped player position {pos} → {clamped} (map={meta.MapSize})");
+                GD.Print($"[SaveManager] Clamped player position {pos} → {clamped} (map={mapSize})");
                 player.GlobalPosition = clamped;
                 CurrentData.PositionX = clamped.X;
                 CurrentData.PositionY = clamped.Y;

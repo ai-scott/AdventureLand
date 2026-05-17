@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://p4u51iifm4sd"]
 
 [ext_resource type="Script" uid="uid://cqhaokr70vjxb" path="res://scripts/npc/NpcInteract.cs" id="1"]
-[ext_resource type="Script" uid="uid://bgot7c7b0rq2g" path="res://scripts/npc/NpcAnimator.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/npc/NpcAnimator.gd" id="3"]
 [ext_resource type="Texture2D" uid="uid://bxw3evb4nclue" path="res://assets/sprites/npc/penny.png" id="3_xsig2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]

@@ -13,7 +13,7 @@
 [ext_resource type="Resource" uid="uid://dxve3qfxot7cj" path="res://assets/data/tile_animations/Rocks_32x32.tres" id="6_ffdga"]
 [ext_resource type="Script" path="res://scripts/maps/MapLoader.gd" id="7"]
 [ext_resource type="Resource" uid="uid://cbw8q8x5gd8cs" path="res://assets/data/tile_animations/Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.tres" id="7_c5b4o"]
-[ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="8"]
+[ext_resource type="Script" path="res://scripts/world/WorldMeta.gd" id="8"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="8_msv86"]
 [ext_resource type="Texture2D" uid="uid://daxrd37an5wdo" path="res://assets/tiles/spritesheets/Beach.png" id="8_pedmb"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="9_wti8o"]

@@ -262,10 +262,11 @@ public partial class WorldManager : Node
         if (isFirstVisit)
         {
             var meta = FindWorldMeta();
-            if (meta != null && !string.IsNullOrEmpty(meta.WorldDisplayName))
+            var displayName = meta?.Get("world_display_name").AsString();
+            if (!string.IsNullOrEmpty(displayName))
             {
                 // Show banner over black. Tighter timing: 0.3 fade in + 1.2 hold + 0.4 fade out = 1.9s.
-                FadeOverlay.ShowBanner(meta.WorldDisplayName, 0.3, 1.2, 0.4);
+                FadeOverlay.ShowBanner(displayName, 0.3, 1.2, 0.4);
                 await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
             }
         }
@@ -290,7 +291,8 @@ public partial class WorldManager : Node
         };
     }
 
-    /// <summary>Clamp player position using the target world's WorldMeta.MapSize.</summary>
+    /// <summary>Clamp player position using the target world's WorldMeta
+    /// map_size. WorldMeta is GDScript (Cluster 4b) — read via Variant.</summary>
     private void ClampPlayerToWorldBounds(string exitEdge, Vector2 exitPos)
     {
         var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
@@ -302,19 +304,20 @@ public partial class WorldManager : Node
             GD.PushWarning("[WorldManager] No WorldMeta in target scene — player position may be off-map");
             return;
         }
+        var mapSize = meta.Get("map_size").AsVector2I();
 
         Vector2 pos = player.GlobalPosition;
         switch (exitEdge)
         {
             case "east":  pos = new Vector2(EdgeMargin, exitPos.Y); break;
-            case "west":  pos = new Vector2(meta.MapSize.X - EdgeMargin, exitPos.Y); break;
-            case "north": pos = new Vector2(exitPos.X, meta.MapSize.Y - EdgeMargin); break;
+            case "west":  pos = new Vector2(mapSize.X - EdgeMargin, exitPos.Y); break;
+            case "north": pos = new Vector2(exitPos.X, mapSize.Y - EdgeMargin); break;
             case "south": pos = new Vector2(exitPos.X, EdgeMargin); break;
         }
 
         // Clamp perpendicular coord to target bounds.
-        pos.X = Mathf.Clamp(pos.X, EdgeMargin, meta.MapSize.X - EdgeMargin);
-        pos.Y = Mathf.Clamp(pos.Y, EdgeMargin, meta.MapSize.Y - EdgeMargin);
+        pos.X = Mathf.Clamp(pos.X, EdgeMargin, mapSize.X - EdgeMargin);
+        pos.Y = Mathf.Clamp(pos.Y, EdgeMargin, mapSize.Y - EdgeMargin);
 
         player.GlobalPosition = pos;
         // Edge re-entry can drop the player onto a tree/wall tile right at
@@ -334,12 +337,11 @@ public partial class WorldManager : Node
         }
     }
 
-    private WorldMeta FindWorldMeta()
+    private Node FindWorldMeta()
     {
         var scene = GetTree().CurrentScene;
         if (scene == null) return null;
-        return scene.FindChild("WorldMeta", true, false) as WorldMeta
-            ?? scene as WorldMeta; // in case WorldMeta is on the root
+        return scene.FindChild("WorldMeta", true, false) ?? scene;
     }
 
     /// <summary>Snap any Camera2D in the scene so the new world doesn't pan across.

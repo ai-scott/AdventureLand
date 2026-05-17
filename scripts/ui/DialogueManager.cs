@@ -1175,8 +1175,9 @@ public partial class DialogueManager : CanvasLayer
         // have an animator we silently continue with the position tween.
         if (penny != null)
         {
-            var animator = penny.GetNodeOrNull<NpcAnimator>("NpcAnimator");
-            animator?.PlayWalk("up");
+            // NpcAnimator is GDScript (Cluster 4b) — untyped Node + Variant Call.
+            var animator = penny.GetNodeOrNull<Node>("NpcAnimator");
+            animator?.Call("play_walk", "up");
 
             var tween = penny.CreateTween();
             // Just one tile-step toward the door — enough to read as
