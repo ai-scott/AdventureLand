@@ -732,6 +732,11 @@ Top-level progress markers — tick as phases complete:
 - [x] **Cluster 4a**: WaterBall (1 of 13 Cluster-4 files) (`4e3e4be`, `port-cluster-4a-waterball`). Remaining 12 Cluster-4 files defer to their natural dependency partners (see handoff §"Reality vs the plan").
 - [x] **Retroactive cleanup**: deleted dead EnemyMusicDriver.cs facade + flatten dead `if (true)/if (false)` conditionals (`02f20f7`)
 - [x] **Cluster 6**: Inventory autoload — **pause point #1 reached.** ItemData stays C# (defers to Cluster 10 with InventoryUI). Pattern I (C# event over GDScript signal) established. (`1cc0bea`, `port-cluster-6-inventory`)
+- [x] **Cluster 7a**: Costume sub-cluster — 4 files (PaletteSwapper, CostumePaletteRegistry, CharacterCustomization, CostumeController). 3 new autoloads. (`96f390d`, `port-cluster-7a-costume`)
+- [x] **Cluster 7b-1**: MapLoader (first of 5 Cluster-7b sub-chunks). Zero-consumer port. (`aa8be30`, `port-cluster-7b1-maploader`)
+- [ ] **Cluster 7b-2**: InteractHintManager + PinkShellInteract — resolves Func<string> blocker from Cluster 1
+- [ ] **Cluster 7b-3**: WorldManager + WorldMeta
+- [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — biggest single port, 1,169 LOC + 15 consumers
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
 - [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
 - [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
