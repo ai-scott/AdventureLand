@@ -1,110 +1,110 @@
-[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://dfirehwbf0ak0"]
+[gd_resource type="Resource" script_class="EnemyData" format=3]
 
-[ext_resource type="Script" uid="uid://cswd5pnccdbfw" path="res://scripts/data/EnemyData.cs" id="1"]
-[ext_resource type="Script" uid="uid://dtyxcwgtetrn1" path="res://scripts/data/EnemyBehavior.cs" id="2"]
-[ext_resource type="Script" uid="uid://d2ipy27s0pyt6" path="res://scripts/data/EnemyAction.cs" id="3"]
-[ext_resource type="Script" uid="uid://vvsh3nt3i8kp" path="res://scripts/data/BehaviorCondition.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.gd" id="4"]
 
 [sub_resource type="Resource" id="act_idle_animate"]
 script = ExtResource("3")
-AnimName = "Idle_{direction}"
+anim_name = "Idle_{direction}"
 
 [sub_resource type="Resource" id="act_idle_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 3
-Speed = 20.0
+type = 0
+pattern = 3
+speed = 20.0
 
 [sub_resource type="Resource" id="cond_idle_distance"]
 script = ExtResource("4")
-Operator = 1
-Value = 200.0
+operator = 1
+value = 200.0
 
 [sub_resource type="Resource" id="beh_idle"]
 script = ExtResource("2")
-Name = "idle"
-Weight = 4.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_idle_distance")])
-Actions = Array[ExtResource("3")]([SubResource("act_idle_animate"), SubResource("act_idle_move")])
+name = "idle"
+weight = 4.0
+conditions = Array[ExtResource("4")]([SubResource("cond_idle_distance")])
+actions = Array[ExtResource("3")]([SubResource("act_idle_animate"), SubResource("act_idle_move")])
 
 [sub_resource type="Resource" id="act_wait_animate"]
 script = ExtResource("3")
-AnimName = "Idle_{direction}"
+anim_name = "Idle_{direction}"
 
 [sub_resource type="Resource" id="act_wait_stop"]
 script = ExtResource("3")
-Type = 0
-Pattern = 4
+type = 0
+pattern = 4
 
 [sub_resource type="Resource" id="beh_wait"]
 script = ExtResource("2")
-Name = "wait"
-DurationMin = 0.3
-DurationMax = 0.5
-Actions = Array[ExtResource("3")]([SubResource("act_wait_animate"), SubResource("act_wait_stop")])
+name = "wait"
+duration_min = 0.3
+duration_max = 0.5
+actions = Array[ExtResource("3")]([SubResource("act_wait_animate"), SubResource("act_wait_stop")])
 
 [sub_resource type="Resource" id="act_hop_animate"]
 script = ExtResource("3")
-AnimName = "Hop_{direction}"
+anim_name = "Hop_{direction}"
 
 [sub_resource type="Resource" id="act_hop_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 1
-Speed = 50.0
+type = 0
+pattern = 1
+speed = 50.0
 
 [sub_resource type="Resource" id="act_hop_sound"]
 script = ExtResource("3")
-Type = 2
-Sound = "slime_jump"
+type = 2
+sound = "slime_jump"
 
 [sub_resource type="Resource" id="cond_hop_distance"]
 script = ExtResource("4")
-Value = 200.0
+value = 200.0
 
 [sub_resource type="Resource" id="beh_hop"]
 script = ExtResource("2")
-Name = "hop"
-DurationMin = 0.8
-DurationMax = 1.2
-Weight = 6.0
-Cooldown = 0.5
-Conditions = Array[ExtResource("4")]([SubResource("cond_hop_distance")])
-Actions = Array[ExtResource("3")]([SubResource("act_hop_animate"), SubResource("act_hop_move"), SubResource("act_hop_sound")])
+name = "hop"
+duration_min = 0.8
+duration_max = 1.2
+weight = 6.0
+cooldown = 0.5
+conditions = Array[ExtResource("4")]([SubResource("cond_hop_distance")])
+actions = Array[ExtResource("3")]([SubResource("act_hop_animate"), SubResource("act_hop_move"), SubResource("act_hop_sound")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
-AnimName = "Hurt_{direction}"
+anim_name = "Hurt_{direction}"
 
 [sub_resource type="Resource" id="act_hurt_stop"]
 script = ExtResource("3")
-Type = 0
-Pattern = 4
+type = 0
+pattern = 4
 
 [sub_resource type="Resource" id="act_hurt_invuln"]
 script = ExtResource("3")
-Type = 3
-Duration = 1.0
+type = 3
+duration = 1.0
 
 [sub_resource type="Resource" id="cond_hurt"]
 script = ExtResource("4")
-Type = 4
-Operator = 4
-Value = 1.0
+type = 4
+operator = 4
+value = 1.0
 
 [sub_resource type="Resource" id="beh_hurt"]
 script = ExtResource("2")
-Name = "hurt"
-DurationMin = 0.5
-DurationMax = 0.5
-Weight = 0.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_hurt")])
-Actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
+name = "hurt"
+duration_min = 0.5
+duration_max = 0.5
+weight = 0.0
+conditions = Array[ExtResource("4")]([SubResource("cond_hurt")])
+actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
 
 [resource]
 script = ExtResource("1")
-Type = "Ooze"
-Health = 5
-Speed = 15.0
-WanderRadius = 100.0
-Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_wait"), SubResource("beh_hop"), SubResource("beh_hurt")])
+type = "Ooze"
+health = 5
+speed = 15.0
+wander_radius = 100.0
+behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_wait"), SubResource("beh_hop"), SubResource("beh_hurt")])

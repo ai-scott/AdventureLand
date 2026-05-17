@@ -5,14 +5,15 @@ using System.Collections.Generic;
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Runtime port of scripts/systems/enemy/enemy-ai.ts. Consumes an EnemyData Resource
-/// (e.g., assets/data/enemies/ooze.tres) and drives the enemy via weighted behavior
-/// selection + condition gating + per-tick action execution.
+/// Runtime port of scripts/systems/enemy/enemy-ai.ts. Consumes an EnemyData
+/// Resource (e.g., assets/data/enemies/ooze.tres) and drives the enemy via
+/// weighted behavior selection + condition gating + per-tick action execution.
 ///
-/// Phase 1 scope: Ooze-only, supports Move/Animate/Invulnerable/Sound actions with
-/// MovePatterns TowardPlayer/AwayFromPlayer/Random/Stop. Crab-specific CrabTowardPlayer
-/// and Bat-specific SwoopToPlayer/FleeToNearestTree/IdleInTree are stubs that fall back
-/// to Stop — implement in Phase 6 when those enemies are needed.
+/// Phase 1 scope: Ooze-only, supports Move/Animate/Invulnerable/Sound actions
+/// with MovePatterns TowardPlayer/AwayFromPlayer/Random/Stop. Crab-specific
+/// CrabTowardPlayer and Bat-specific SwoopToPlayer/FleeToNearestTree/IdleInTree
+/// are stubs that fall back to Stop — implement in Phase 6 when those enemies
+/// are needed.
 ///
 /// Scene structure expected:
 ///   Enemy (CharacterBody2D, this script)
@@ -21,10 +22,66 @@ namespace AdventureLandPrototype;
 ///   ├── Hitbox (Area2D, layer=8 "enemy_hurtbox")
 ///   ├── HealthSystem (damage intake)
 ///   └── EnemyAnimator (sheet → SpriteFrames)
+///
+/// PORT NOTE (2026-05-16): EnemyData / EnemyBehavior / EnemyAction /
+/// BehaviorCondition ported to GDScript in Phase 2; this consumer stays C#
+/// until Phase 5 ports it to GDScript too. During mixed mode the data
+/// classes are accessed as plain Resource with .Get("snake_case_name")
+/// returning Variant. The enums below mirror the GDScript enums by integer
+/// value (matched against TriggerData.gd / EnemyAction.gd / BehaviorCondition.gd
+/// declarations). Don't reorder either side.
 /// </summary>
 public partial class EnemyController : CharacterBody2D
 {
-	[Export] public EnemyData Data;
+	// Mirrors BehaviorCondition.gd's ConditionType. Integer values MUST stay
+	// aligned (Distance=0..Invulnerable=5).
+	private enum ConditionType
+	{
+		Distance = 0,
+		Health = 1,
+		Timer = 2,
+		Random = 3,
+		Hurt = 4,
+		Invulnerable = 5,
+	}
+
+	// Mirrors BehaviorCondition.gd's ComparisonOp.
+	private enum ComparisonOp
+	{
+		LessThan = 0,
+		GreaterThan = 1,
+		LessOrEqual = 2,
+		GreaterOrEqual = 3,
+		Equal = 4,
+	}
+
+	// Mirrors EnemyAction.gd's ActionType.
+	private enum ActionType
+	{
+		Move = 0,
+		Animate = 1,
+		Sound = 2,
+		Invulnerable = 3,
+		SetEffect = 4,
+	}
+
+	// Mirrors EnemyAction.gd's MovePattern.
+	private enum MovePattern
+	{
+		None = 0,
+		TowardPlayer = 1,
+		AwayFromPlayer = 2,
+		Random = 3,
+		Stop = 4,
+		SidewaysLeft = 5,
+		SidewaysRight = 6,
+		CrabTowardPlayer = 7,
+		SwoopToPlayer = 8,
+		FleeToNearestTree = 9,
+		IdleInTree = 10,
+	}
+
+	[Export] public Resource Data;
 	[Export] public NodePath AnimatorPath;
 	[Export] public NodePath HealthSystemPath;
 	[Export] public NodePath HitboxPath;
@@ -62,7 +119,9 @@ public partial class EnemyController : CharacterBody2D
 	private Area2D _hitbox;
 	private Node2D _player;
 
-	private EnemyBehavior _currentBehavior;
+	// _currentBehavior is now a Resource (GDScript EnemyBehavior). Access its
+	// fields via .Get("name") / .Get("cooldown") etc.
+	private Resource _currentBehavior;
 	private double _behaviorTimer;   // counts down to 0
 	private double _behaviorTotal;   // rolled duration
 	private readonly Dictionary<string, double> _cooldowns = new(); // behavior name → remaining cooldown
@@ -129,6 +188,11 @@ public partial class EnemyController : CharacterBody2D
 	private const float BatShadowOffsetHurt = 30f;      // shadow offset during hurt
 	private const float BatSwoopRefDistance = 200f;     // distance scale for the swoop offset lerp
 
+	// ---- Resource helpers (mixed-mode interop with GDScript data classes) ----
+
+	private string DataType => Data?.Get("type").AsString() ?? "";
+	private string CurrentBehaviorName => _currentBehavior?.Get("name").AsString() ?? "";
+
 	public override void _Ready()
 	{
 		if (Data == null)
@@ -157,7 +221,7 @@ public partial class EnemyController : CharacterBody2D
 
 		if (_health != null)
 		{
-			_health.MaxHealth = Data.Health; // use config-driven HP
+			_health.MaxHealth = Data.Get("health").AsInt32(); // use config-driven HP
 			_health.FullReset();
 			_health.Hurt += OnHurt;
 			_health.Died += OnDied;
@@ -220,13 +284,13 @@ public partial class EnemyController : CharacterBody2D
 				query.Transform = new Transform2D(0f, candidate);
 				if (space.IntersectShape(query, 1).Count == 0)
 				{
-					GD.Print($"[EnemyController] {Data?.Type} unstuck {GlobalPosition} → {candidate}");
+					GD.Print($"[EnemyController] {DataType} unstuck {GlobalPosition} → {candidate}");
 					GlobalPosition = candidate;
 					return;
 				}
 			}
 		}
-		GD.PushWarning($"[EnemyController] {Data?.Type} could not unstuck from walls at {GlobalPosition}");
+		GD.PushWarning($"[EnemyController] {DataType} could not unstuck from walls at {GlobalPosition}");
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -239,25 +303,14 @@ public partial class EnemyController : CharacterBody2D
 		// If the player is dead, treat as absent for the rest of this tick so
 		// behaviors fall through to patrol/wander instead of locking us onto
 		// the corpse and ping-ponging the contact-damage check across it.
-		// Re-fetched next tick (same group lookup) and re-cleared if still
-		// dead — minor overhead, but keeps every consumer of `_player` in
-		// this file honest without having to thread an "alive?" check
-		// through every behavior/condition path.
 		if (_player is PlayerController pcAlive && pcAlive.IsDead)
 		{
 			_player = null;
 		}
 
-		// Defer the spawn-on-wall unstuck to the first physics tick so the
-		// TriggerSpawner walls (StaticBody2Ds spawned in its _Ready) are
-		// already in the physics world. Same scene-tree-ordering reason as
-		// the player lookup above. The Bat's home position capture below
-		// runs *after* the unstuck so its perch reflects the corrected pos.
 		TryUnstickFromWalls();
 
-		// Snapshot the spawn pose once on the first tick so any
-		// scene-construction repositioning has settled. This is the bat's
-		// "tree" for FleeToNearestTree.
+		// Snapshot the spawn pose once on the first tick.
 		if (!_homePositionCaptured)
 		{
 			_homePosition = GlobalPosition;
@@ -285,14 +338,16 @@ public partial class EnemyController : CharacterBody2D
 			{
 				if (_currentBehavior != null)
 				{
-					if (_currentBehavior.Cooldown > 0)
+					float cooldown = _currentBehavior.Get("cooldown").AsSingle();
+					string currentName = CurrentBehaviorName;
+					if (cooldown > 0)
 					{
-						_cooldowns[_currentBehavior.Name] = _currentBehavior.Cooldown;
+						_cooldowns[currentName] = cooldown;
 					}
 					// Bat: completing a swoop forces a flee-back. Mirrors C3's
 					// `justSwooped` flag — without this, the bat keeps swooping
 					// and never returns to its perch.
-					if (Data?.Type == "Bat" && _currentBehavior.Name == "swoop_attack")
+					if (DataType == "Bat" && currentName == "swoop_attack")
 					{
 						_forcedNextBehavior = "flee_to_tree";
 					}
@@ -304,7 +359,6 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		// Continuous contact damage — distance-based check each tick.
-		// GetOverlappingBodies was unreliable (Godot defers physics state updates).
 		if (_player != null)
 		{
 			float dist = GlobalPosition.DistanceTo(_player.GlobalPosition);
@@ -332,26 +386,15 @@ public partial class EnemyController : CharacterBody2D
 		UpdateShadow(delta);
 	}
 
-	/// <summary>Bats are flying creatures — at perch/flee altitude they shouldn't
-	/// be physically blocked by tree-trunk walls. Drop wall collision while
-	/// idle_hanging or flee_to_tree; restore for swoop_attack/hurt_flash so
-	/// the bat still feels like it occupies the world during combat. Without
-	/// this, a bat returning home behind a thick line of tree colliders gets
-	/// pinned and never reaches its perch.</summary>
 	private void ApplyFlyingPhasePass()
 	{
-		if (Data?.Type != "Bat") return;
-		string b = _currentBehavior?.Name ?? "";
+		if (DataType != "Bat") return;
+		string b = CurrentBehaviorName;
 		bool flying = b == "flee_to_tree" || b == "idle_hanging";
 		uint target = flying ? (_defaultCollisionMask & ~WallCollisionMask) : _defaultCollisionMask;
 		if (CollisionMask != target) CollisionMask = target;
 	}
 
-	/// <summary>Eases the shadow Y offset toward the target dictated by the
-	/// current behavior. Called every physics tick when ShadowPath is set;
-	/// no-op otherwise. The Y-only offset is in local space, so the shadow
-	/// rides with the bat horizontally and "falls behind" vertically as the
-	/// bat gains altitude.</summary>
 	private void UpdateShadow(double delta)
 	{
 		if (_shadow == null) return;
@@ -363,7 +406,7 @@ public partial class EnemyController : CharacterBody2D
 
 	private float TargetShadowOffset()
 	{
-		string b = _currentBehavior?.Name ?? "";
+		string b = CurrentBehaviorName;
 		switch (b)
 		{
 			case "idle_hanging":
@@ -371,11 +414,9 @@ public partial class EnemyController : CharacterBody2D
 				return BatShadowOffsetIdle;
 			case "swoop_attack":
 			{
-				// Lerp 50→15 as distance to player shrinks 200→0. Out of swoop
-				// range (no player or no bat behavior), default to far.
 				if (_player == null) return BatShadowOffsetSwoopFar;
 				float d = Mathf.Clamp(GlobalPosition.DistanceTo(_player.GlobalPosition), 0f, BatSwoopRefDistance);
-				float t = d / BatSwoopRefDistance; // 0=close, 1=far
+				float t = d / BatSwoopRefDistance;
 				return Mathf.Lerp(BatShadowOffsetSwoopNear, BatShadowOffsetSwoopFar, t);
 			}
 			case "hurt_flash":
@@ -389,7 +430,8 @@ public partial class EnemyController : CharacterBody2D
 	{
 		_executedActions.Clear();
 
-		if (Data == null || Data.Behaviors == null || Data.Behaviors.Count == 0)
+		var behaviors = Data?.Get("behaviors").AsGodotArray<Resource>();
+		if (behaviors == null || behaviors.Count == 0)
 		{
 			_currentBehavior = null;
 			return;
@@ -403,14 +445,13 @@ public partial class EnemyController : CharacterBody2D
 			_forcedNextBehavior = null;
 			if (named != null)
 			{
-				_cooldowns.Remove(named.Name);
+				_cooldowns.Remove(named.Get("name").AsString());
 				EnterBehavior(named);
 				return;
 			}
 		}
 
 		// Priority: any behavior with a hurt/invuln condition that currently matches takes weight over normal selection.
-		// (This mirrors the C3 pattern where "hurt" behaviors with weight=0 still fire via conditions.)
 		var forced = FindForcedBehavior();
 		if (forced != null)
 		{
@@ -419,26 +460,29 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		// Weighted roll over eligible (conditions met + not on cooldown + weight > 0) behaviors.
-		var eligible = new List<EnemyBehavior>();
+		var eligible = new List<Resource>();
 		float totalWeight = 0f;
 
-		foreach (var b in Data.Behaviors)
+		foreach (var b in behaviors)
 		{
 			if (b == null) continue;
-			if (b.Weight <= 0) continue;
-			if (_cooldowns.ContainsKey(b.Name)) continue;
+			float weight = b.Get("weight").AsSingle();
+			if (weight <= 0) continue;
+			if (_cooldowns.ContainsKey(b.Get("name").AsString())) continue;
 			if (!ConditionsMet(b)) continue;
 
 			eligible.Add(b);
-			totalWeight += b.Weight;
+			totalWeight += weight;
 		}
 
 		if (eligible.Count == 0 || totalWeight <= 0)
 		{
 			// Fallback to first behavior with no conditions, to avoid deadlock.
-			foreach (var b in Data.Behaviors)
+			foreach (var b in behaviors)
 			{
-				if (b != null && (b.Conditions == null || b.Conditions.Count == 0))
+				if (b == null) continue;
+				var conditions = b.Get("conditions").AsGodotArray<Resource>();
+				if (conditions == null || conditions.Count == 0)
 				{
 					EnterBehavior(b);
 					return;
@@ -452,7 +496,7 @@ public partial class EnemyController : CharacterBody2D
 		float accum = 0f;
 		foreach (var b in eligible)
 		{
-			accum += b.Weight;
+			accum += b.Get("weight").AsSingle();
 			if (roll <= accum)
 			{
 				EnterBehavior(b);
@@ -463,41 +507,45 @@ public partial class EnemyController : CharacterBody2D
 		EnterBehavior(eligible[eligible.Count - 1]); // safety
 	}
 
-	private EnemyBehavior FindBehaviorByName(string name)
+	private Resource FindBehaviorByName(string name)
 	{
-		if (Data?.Behaviors == null) return null;
-		foreach (var b in Data.Behaviors)
+		var behaviors = Data?.Get("behaviors").AsGodotArray<Resource>();
+		if (behaviors == null) return null;
+		foreach (var b in behaviors)
 		{
-			if (b != null && b.Name == name) return b;
+			if (b == null) continue;
+			if (b.Get("name").AsString() == name) return b;
 		}
 		return null;
 	}
 
-	private EnemyBehavior FindForcedBehavior()
+	private Resource FindForcedBehavior()
 	{
 		// Priority order: weight=0 (forced-only) behaviors whose conditions currently match.
-		// Examples: "hurt" (when _isHurt), "retreat" (post-hurt invuln).
 		// CRITICAL: a weight=0 behavior with NO conditions is name-only — it
 		// must be invoked via _forcedNextBehavior, never via the generic forced
-		// scan. Skipping these here prevents the bat's flee_to_tree (weight 0,
-		// no conditions) from latching on tick 1 and spinning forever.
-		foreach (var b in Data.Behaviors)
+		// scan.
+		var behaviors = Data?.Get("behaviors").AsGodotArray<Resource>();
+		if (behaviors == null) return null;
+		foreach (var b in behaviors)
 		{
 			if (b == null) continue;
-			if (b.Weight != 0) continue;
-			if (b.Conditions == null || b.Conditions.Count == 0) continue;
-			if (_cooldowns.ContainsKey(b.Name)) continue;
+			if (b.Get("weight").AsSingle() != 0) continue;
+			var conditions = b.Get("conditions").AsGodotArray<Resource>();
+			if (conditions == null || conditions.Count == 0) continue;
+			if (_cooldowns.ContainsKey(b.Get("name").AsString())) continue;
 			if (!ConditionsMet(b)) continue;
 			return b;
 		}
 		return null;
 	}
 
-	private bool ConditionsMet(EnemyBehavior behavior)
+	private bool ConditionsMet(Resource behavior)
 	{
-		if (behavior.Conditions == null || behavior.Conditions.Count == 0) return true;
+		var conditions = behavior.Get("conditions").AsGodotArray<Resource>();
+		if (conditions == null || conditions.Count == 0) return true;
 
-		foreach (var c in behavior.Conditions)
+		foreach (var c in conditions)
 		{
 			if (c == null) continue;
 			if (!EvaluateCondition(c)) return false;
@@ -505,89 +553,92 @@ public partial class EnemyController : CharacterBody2D
 		return true;
 	}
 
-	private bool EvaluateCondition(BehaviorCondition c)
+	private bool EvaluateCondition(Resource c)
 	{
 		float lhs = 0f;
-		switch (c.Type)
+		var condType = (ConditionType)c.Get("type").AsInt32();
+		switch (condType)
 		{
-			case BehaviorCondition.ConditionType.Distance:
+			case ConditionType.Distance:
 				lhs = _player != null ? GlobalPosition.DistanceTo(_player.GlobalPosition) : float.MaxValue;
 				break;
-			case BehaviorCondition.ConditionType.Health:
+			case ConditionType.Health:
 				lhs = _health != null ? _health.CurrentHealth : 0f;
 				break;
-			case BehaviorCondition.ConditionType.Timer:
+			case ConditionType.Timer:
 				lhs = (float)(_behaviorTotal - _behaviorTimer);
 				break;
-			case BehaviorCondition.ConditionType.Random:
+			case ConditionType.Random:
 				lhs = (float)GD.RandRange(0f, 1f);
 				break;
-			case BehaviorCondition.ConditionType.Hurt:
+			case ConditionType.Hurt:
 				lhs = _isHurt ? 1f : 0f;
 				break;
-			case BehaviorCondition.ConditionType.Invulnerable:
+			case ConditionType.Invulnerable:
 				lhs = (_health != null && _health.Invulnerable) ? 1f : 0f;
 				break;
 		}
 
-		return c.Operator switch
+		float value = c.Get("value").AsSingle();
+		var op = (ComparisonOp)c.Get("operator").AsInt32();
+		return op switch
 		{
-			BehaviorCondition.ComparisonOp.LessThan       => lhs <  c.Value,
-			BehaviorCondition.ComparisonOp.GreaterThan    => lhs >  c.Value,
-			BehaviorCondition.ComparisonOp.LessOrEqual    => lhs <= c.Value,
-			BehaviorCondition.ComparisonOp.GreaterOrEqual => lhs >= c.Value,
-			BehaviorCondition.ComparisonOp.Equal          => Math.Abs(lhs - c.Value) < 0.001f,
+			ComparisonOp.LessThan       => lhs <  value,
+			ComparisonOp.GreaterThan    => lhs >  value,
+			ComparisonOp.LessOrEqual    => lhs <= value,
+			ComparisonOp.GreaterOrEqual => lhs >= value,
+			ComparisonOp.Equal          => Math.Abs(lhs - value) < 0.001f,
 			_ => false,
 		};
 	}
 
-	private void EnterBehavior(EnemyBehavior b)
+	private void EnterBehavior(Resource b)
 	{
 		_currentBehavior = b;
-		_behaviorTotal = GD.RandRange(b.DurationMin, b.DurationMax);
+		float durMin = b.Get("duration_min").AsSingle();
+		float durMax = b.Get("duration_max").AsSingle();
+		_behaviorTotal = GD.RandRange(durMin, durMax);
 		_behaviorTimer = _behaviorTotal;
 		_executedActions.Clear();
 		// clear _isHurt after entering the hurt behavior (one-shot)
-		if (b.Name == "hurt" || b.Name == "hurt_flash") _isHurt = false;
+		string name = b.Get("name").AsString();
+		if (name == "hurt" || name == "hurt_flash") _isHurt = false;
 	}
 
 	private void ExecuteActions(double delta)
 	{
-		if (_currentBehavior == null || _currentBehavior.Actions == null) return;
+		if (_currentBehavior == null) return;
+		var actions = _currentBehavior.Get("actions").AsGodotArray<Resource>();
+		if (actions == null) return;
 
 		// Reset the per-tick facing lock so ComputeMove can opt-in to forcing
-		// facing this tick (CrabTowardPlayer does this so the scaled scuttle
-		// vector doesn't override "face the actual player").
+		// facing this tick.
 		_facingLockedThisTick = false;
 
 		Vector2 desired = Vector2.Zero;
 		float desiredSpeed = 0f;
 
-		foreach (var a in _currentBehavior.Actions)
+		foreach (var a in actions)
 		{
 			if (a == null) continue;
 
-			switch (a.Type)
+			var actType = (ActionType)a.Get("type").AsInt32();
+			switch (actType)
 			{
-				case EnemyAction.ActionType.Move:
-					desired = ComputeMove(a.Pattern);
-					desiredSpeed = a.Speed;
+				case ActionType.Move:
+					var pattern = (MovePattern)a.Get("pattern").AsInt32();
+					desired = ComputeMove(pattern);
+					desiredSpeed = a.Get("speed").AsSingle();
 					break;
 
-				case EnemyAction.ActionType.Animate:
+				case ActionType.Animate:
 				{
-					// Always re-resolve {direction} and call Play. The animator
-					// itself early-returns when the requested anim matches the
-					// currently playing one, so the per-tick call is cheap and
-					// avoids the latch-bug from caching resolved names in a set
-					// (facing flipping right→up→right would block the second
-					// "right" because it was already added on the first flip).
-					var resolved = a.AnimName.Replace("{direction}", _facing).ToLowerInvariant();
+					string animName = a.Get("anim_name").AsString();
+					var resolved = animName.Replace("{direction}", _facing).ToLowerInvariant();
 					// Bat bite: during swoop, swap to attack anim once the bat
-					// is within bite range. Mirrors C3's per-tick override in
-					// executeMovementAction (see enemy-ai.ts:574-595).
-					if (Data?.Type == "Bat"
-						&& _currentBehavior?.Name == "swoop_attack"
+					// is within bite range.
+					if (DataType == "Bat"
+						&& CurrentBehaviorName == "swoop_attack"
 						&& _player != null
 						&& GlobalPosition.DistanceTo(_player.GlobalPosition) < BatBiteRange)
 					{
@@ -597,21 +648,24 @@ public partial class EnemyController : CharacterBody2D
 					break;
 				}
 
-				case EnemyAction.ActionType.Invulnerable:
+				case ActionType.Invulnerable:
 					if (_executedActions.Add("invuln"))
 					{
-						_health?.StartInvulnerability(a.Duration);
+						_health?.StartInvulnerability(a.Get("duration").AsSingle());
 					}
 					break;
 
-				case EnemyAction.ActionType.Sound:
-					if (_executedActions.Add("sound:" + a.Sound) && !string.IsNullOrEmpty(a.Sound))
+				case ActionType.Sound:
+				{
+					string sound = a.Get("sound").AsString();
+					if (_executedActions.Add("sound:" + sound) && !string.IsNullOrEmpty(sound))
 					{
-						SFXController.Instance?.Play(a.Sound);
+						SFXController.Instance?.Play(sound);
 					}
 					break;
+				}
 
-				case EnemyAction.ActionType.SetEffect:
+				case ActionType.SetEffect:
 					// No-op in Phase 1. Effects land with VFX pass later.
 					break;
 			}
@@ -636,9 +690,7 @@ public partial class EnemyController : CharacterBody2D
 		}
 
 		// Flying bats heading home phase through walls (see ApplyFlyingPhasePass)
-		// — running the avoidance probes would just steer them off-course around
-		// obstacles they're going to fly straight over anyway.
-		if (Data?.Type == "Bat" && _currentBehavior?.Name == "flee_to_tree")
+		if (DataType == "Bat" && CurrentBehaviorName == "flee_to_tree")
 		{
 			_avoidanceBias = Vector2.Zero;
 			_avoidanceTimer = 0;
@@ -657,13 +709,6 @@ public partial class EnemyController : CharacterBody2D
 		var from = GlobalPosition;
 		var exclude = new Godot.Collections.Array<Rid> { GetRid() };
 
-		// Probe with the normalized move direction so the look-ahead is a
-		// uniform WallProbeLength regardless of how the AI scaled the
-		// desired vector (the crab's CrabTowardPlayer pattern returns a
-		// 1.5×/0.7× non-unit vector — without this, the forward probe goes
-		// ~23 px in a tilted direction and the side probes are stretched
-		// the same way, making the avoidance read like the crab is
-		// looking off-axis).
 		var dir = desired.Normalized();
 		// Forward probe — is a wall in our path?
 		var qFwd = PhysicsRayQueryParameters2D.Create(from, from + dir * WallProbeLength, WallCollisionMask, exclude);
@@ -688,7 +733,6 @@ public partial class EnemyController : CharacterBody2D
 		else if (rightClear && !leftClear) bias = right;
 		else if (leftClear && rightClear)
 		{
-			// Both sides clear — pick the one whose direction projects closer to the player.
 			if (_player != null)
 			{
 				var toPlayer = (_player.GlobalPosition - from).Normalized();
@@ -699,7 +743,6 @@ public partial class EnemyController : CharacterBody2D
 				bias = GD.Randf() < 0.5f ? left : right;
 			}
 		}
-		// else: pinned in a corner — let MoveAndSlide handle it this frame.
 
 		if (bias != Vector2.Zero)
 		{
@@ -711,7 +754,7 @@ public partial class EnemyController : CharacterBody2D
 		return desired;
 	}
 
-	private Vector2 ComputeMove(EnemyAction.MovePattern pattern)
+	private Vector2 ComputeMove(MovePattern pattern)
 	{
 		if (_player == null) return Vector2.Zero;
 
@@ -719,44 +762,40 @@ public partial class EnemyController : CharacterBody2D
 
 		switch (pattern)
 		{
-			case EnemyAction.MovePattern.TowardPlayer:
+			case MovePattern.TowardPlayer:
 				return toPlayer.Length() > 0.001f ? toPlayer.Normalized() : Vector2.Zero;
 
-			case EnemyAction.MovePattern.AwayFromPlayer:
+			case MovePattern.AwayFromPlayer:
 				return toPlayer.Length() > 0.001f ? -toPlayer.Normalized() : Vector2.Zero;
 
-			case EnemyAction.MovePattern.Random:
+			case MovePattern.Random:
 				if (_sidewaysDirection == Vector2.Zero)
 				{
 					var angle = GD.RandRange(0f, Mathf.Tau);
 					_sidewaysDirection = new Vector2(Mathf.Cos((float)angle), Mathf.Sin((float)angle));
 				}
 				// Wander leash: if we've drifted past WanderRadius from spawn,
-				// override the random direction with a beeline home for this
-				// tick. Prevents idle enemies (ooze, crab patrol) from walking
-				// off the map. WanderRadius=0 disables — chase patterns aren't
-				// affected since they don't go through this branch.
-				if (Data != null && Data.WanderRadius > 0f && _homePositionCaptured)
+				// override the random direction with a beeline home for this tick.
+				if (Data != null && _homePositionCaptured)
 				{
-					var fromHome = GlobalPosition - _homePosition;
-					if (fromHome.Length() > Data.WanderRadius)
+					float wanderRadius = Data.Get("wander_radius").AsSingle();
+					if (wanderRadius > 0f)
 					{
-						return (-fromHome).Normalized();
+						var fromHome = GlobalPosition - _homePosition;
+						if (fromHome.Length() > wanderRadius)
+						{
+							return (-fromHome).Normalized();
+						}
 					}
 				}
 				return _sidewaysDirection;
 
-			case EnemyAction.MovePattern.Stop:
-			case EnemyAction.MovePattern.None:
+			case MovePattern.Stop:
+			case MovePattern.None:
 				return Vector2.Zero;
 
-			// Crab scuttle: chase the player but bias horizontal travel — matches
-			// the C3 moveCrabTowardPlayer scaling (1.5x horizontal, 0.7x vertical).
-			// Magnitude is intentionally non-unit so the speed multiplier in
-			// ApplyMove yields the same effective velocity as C3.
-			// Facing uses the *un-scaled* normal so the crab still faces straight
-			// up when the player is above (the scaled vector biases horizontal).
-			case EnemyAction.MovePattern.CrabTowardPlayer:
+			// Crab scuttle: chase the player but bias horizontal travel.
+			case MovePattern.CrabTowardPlayer:
 			{
 				if (toPlayer.Length() <= 0.001f) return Vector2.Zero;
 				var n = toPlayer.Normalized();
@@ -764,30 +803,19 @@ public partial class EnemyController : CharacterBody2D
 				return new Vector2(n.X * 1.5f, n.Y * 0.7f);
 			}
 
-			// Strafe perpendicular to the player. Sign convention matches
-			// moveSideways in enemy-utils.ts (right = +perp, left = -perp).
-			case EnemyAction.MovePattern.SidewaysLeft:
-			case EnemyAction.MovePattern.SidewaysRight:
+			case MovePattern.SidewaysLeft:
+			case MovePattern.SidewaysRight:
 			{
 				if (toPlayer.Length() <= 0.001f) return Vector2.Zero;
 				var n = toPlayer.Normalized();
 				var perp = new Vector2(-n.Y, n.X);
-				return pattern == EnemyAction.MovePattern.SidewaysLeft ? -perp : perp;
+				return pattern == MovePattern.SidewaysLeft ? -perp : perp;
 			}
 
-			// Bat: simple direct flight toward the player. The C3 reference
-			// uses a parabolic bezier curve here ("dramatic swoop") — for
-			// the prototype we settle for straight-line tracking, which still
-			// reads as a swoop because it's faster than the player can dodge
-			// and the bat returns home afterward via FleeToNearestTree.
-			case EnemyAction.MovePattern.SwoopToPlayer:
+			case MovePattern.SwoopToPlayer:
 				return toPlayer.Length() > 0.001f ? toPlayer.Normalized() : Vector2.Zero;
 
-			// Bat: head back to the spawn perch. End the behavior the moment
-			// we're inside HomeArrivalRadius so the bat doesn't oscillate
-			// around the perch. Setting _behaviorTimer = 0 lets the next
-			// SelectNextBehavior pick up — typically idle_hanging.
-			case EnemyAction.MovePattern.FleeToNearestTree:
+			case MovePattern.FleeToNearestTree:
 			{
 				if (!_homePositionCaptured) return Vector2.Zero;
 				var toHome = _homePosition - GlobalPosition;
@@ -799,9 +827,7 @@ public partial class EnemyController : CharacterBody2D
 				return toHome.Normalized();
 			}
 
-			// Bat: hang. The bat's idle_hanging behavior pairs this with the
-			// "Idle" anim — no motion, just resting at the perch.
-			case EnemyAction.MovePattern.IdleInTree:
+			case MovePattern.IdleInTree:
 				return Vector2.Zero;
 		}
 
@@ -810,7 +836,6 @@ public partial class EnemyController : CharacterBody2D
 
 	private void ApplyMove(Vector2 direction, float speed)
 	{
-		// Reset sideways-random when not in a random behavior.
 		if (direction == Vector2.Zero) _sidewaysDirection = Vector2.Zero;
 
 		_currentSpeed = speed;
@@ -829,9 +854,6 @@ public partial class EnemyController : CharacterBody2D
 		ApplyMirror();
 	}
 
-	/// <summary>Set facing from <paramref name="dir"/> and lock it for the
-	/// remainder of this tick — used by player-aware move patterns whose
-	/// scaled velocity would otherwise mislead UpdateFacing.</summary>
 	private void ForceFacing(Vector2 dir)
 	{
 		if (dir == Vector2.Zero) return;
@@ -843,33 +865,19 @@ public partial class EnemyController : CharacterBody2D
 		ApplyMirror();
 	}
 
-	/// <summary>Whether this enemy is currently in a hittable state. Default
-	/// true; bats override based on altitude — invulnerable in idle/flee,
-	/// invulnerable during the high-altitude portion of a swoop. Player sword
-	/// checks this before applying damage so hits at the wrong moment whiff
-	/// silently (the floating damage number is suppressed in PlayerController
-	/// when this returns false).</summary>
 	public bool CanBeHit()
 	{
-		if (Data?.Type != "Bat") return true;
-		string b = _currentBehavior?.Name ?? "";
-		// Perched or returning to perch — always out of reach.
+		if (DataType != "Bat") return true;
+		string b = CurrentBehaviorName;
 		if (b == "idle_hanging" || b == "flee_to_tree") return false;
-		// Mid-swoop: vulnerable only when low (close to player). Mirrors the
-		// C3 shadow-altitude check (offset < 40 px ⇔ distance < ~143 px).
 		if (b == "swoop_attack")
 		{
 			if (_player == null) return false;
 			return GlobalPosition.DistanceTo(_player.GlobalPosition) < BatVulnerableSwoopRadius;
 		}
-		// hurt_flash and any non-bat-listed behavior: vulnerable.
 		return true;
 	}
 
-	/// <summary>If MirrorHorizontally is enabled, flip the Sprite2D so a
-	/// left-only spritesheet (e.g. bat, which only ships fly_left/hurt_left)
-	/// can face right. The Sprite2D may be a regular Sprite2D or
-	/// AnimatedSprite2D — both expose FlipH the same way via the property.</summary>
 	private void ApplyMirror()
 	{
 		if (!MirrorHorizontally) return;
@@ -881,17 +889,10 @@ public partial class EnemyController : CharacterBody2D
 
 	private void OnHurt()
 	{
-		// Bats skip the hurt_flash behavior entirely and dive back to the
-		// perch — the brief invuln + height-based invuln during the flee
-		// covers the i-frame window. Other enemies use the standard isHurt
-		// path which trips their hurt_flash via cond_is_hurt.
-		bool isBat = Data?.Type == "Bat";
+		bool isBat = DataType == "Bat";
 		if (isBat)
 		{
 			_forcedNextBehavior = "flee_to_tree";
-			// C3 wipes both cooldowns on hit so the bat can flee even if
-			// flee_to_tree just rolled off — otherwise a bat hit mid-swoop
-			// would idle in mid-air for a tick before fleeing.
 			_cooldowns.Remove("flee_to_tree");
 			_cooldowns.Remove("swoop_attack");
 		}
@@ -900,8 +901,9 @@ public partial class EnemyController : CharacterBody2D
 			_isHurt = true;
 		}
 
-		SFXController.Instance?.Play(string.IsNullOrEmpty(Data?.HurtSound) ? "enemy_hurt" : Data.HurtSound);
-		// Hurt flash — 2 white blinks, less intense than the player's 3-blink.
+		string hurtSound = Data?.Get("hurt_sound").AsString() ?? "";
+		SFXController.Instance?.Play(string.IsNullOrEmpty(hurtSound) ? "enemy_hurt" : hurtSound);
+		// Hurt flash — 2 white blinks.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
 		if (sprite != null)
 		{
@@ -913,7 +915,6 @@ public partial class EnemyController : CharacterBody2D
 			}
 		}
 
-		// Force immediate re-evaluation so the hurt behavior fires this tick instead of waiting.
 		_behaviorTimer = 0;
 	}
 
@@ -925,14 +926,12 @@ public partial class EnemyController : CharacterBody2D
 
 		if (body is PlayerController pc)
 		{
-			// Knockback always applies (even during player invuln) to separate them.
 			ApplyContactKnockback(pc);
 			pc.TakeDamage(ContactDamage);
 			_contactDamageTimer = ContactDamageCooldown;
 		}
 	}
 
-	/// <summary>Apply a knockback impulse. Stuns the AI for KnockbackDuration.</summary>
 	public void ApplyKnockback(Vector2 force)
 	{
 		_knockbackVelocity = force;
@@ -943,14 +942,13 @@ public partial class EnemyController : CharacterBody2D
 	{
 		var dir = (pc.GlobalPosition - GlobalPosition).Normalized();
 		if (dir == Vector2.Zero) dir = Vector2.Down;
-
-		// Only push the player away — enemy doesn't get knocked back from its own attack.
 		pc.ApplyKnockback(dir * ContactKnockbackForce);
 	}
 
 	private void OnDied()
 	{
-		SFXController.Instance?.Play(string.IsNullOrEmpty(Data?.DeathSound) ? "enemy_destroy" : Data.DeathSound);
+		string deathSound = Data?.Get("death_sound").AsString() ?? "";
+		SFXController.Instance?.Play(string.IsNullOrEmpty(deathSound) ? "enemy_destroy" : deathSound);
 		DropLoot();
 		// Brief fade, then remove.
 		var sprite = GetNodeOrNull<CanvasItem>("Sprite2D");
@@ -966,12 +964,6 @@ public partial class EnemyController : CharacterBody2D
 		}
 	}
 
-	/// <summary>Spawn 2-3 random loot drops at the death position. Mirrors
-	/// C3's dropLoot function (eGameRoom.json:6858+) — random count
-	/// `int(2 + random(2))` and equal-weight Gem/Gold/Coin/Heart roll, with
-	/// each drop launched at a random 360° angle so the pile fans outward.
-	/// PackedScene loaded once and cached on first kill — avoids ResourceLoader
-	/// hits on every monster death.</summary>
 	private static PackedScene _gemScene;
 	private void DropLoot()
 	{
@@ -979,14 +971,8 @@ public partial class EnemyController : CharacterBody2D
 		if (_gemScene == null) return;
 		var scene = GetTree().CurrentScene;
 		if (scene == null) return;
-		// Prefer the y-sorted "Entities" container that the player + NPCs
-		// live under — without it, gems parent at the world root which has
-		// no y_sort_enabled, so they always render above (or below) the
-		// player regardless of position. Fall back to the scene root if
-		// the world doesn't follow the convention, so loot still spawns.
 		var parent = scene.FindChild("Entities", recursive: false, owned: false) ?? scene;
 
-		// `int(2 + random(2))` in C3 yields 2 or 3 (random returns 0..2 exclusive).
 		int count = GD.RandRange(2, 3);
 		for (int i = 0; i < count; i++)
 		{

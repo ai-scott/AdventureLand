@@ -1,188 +1,188 @@
-[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://b8puj7oqdhmxy"]
+[gd_resource type="Resource" script_class="EnemyData" format=3]
 
-[ext_resource type="Script" uid="uid://cswd5pnccdbfw" path="res://scripts/data/EnemyData.cs" id="1"]
-[ext_resource type="Script" uid="uid://dtyxcwgtetrn1" path="res://scripts/data/EnemyBehavior.cs" id="2"]
-[ext_resource type="Script" uid="uid://d2ipy27s0pyt6" path="res://scripts/data/EnemyAction.cs" id="3"]
-[ext_resource type="Script" uid="uid://vvsh3nt3i8kp" path="res://scripts/data/BehaviorCondition.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.gd" id="4"]
 
 [sub_resource type="Resource" id="act_patrol_animate"]
 script = ExtResource("3")
-AnimName = "Walk_{direction}"
+anim_name = "Walk_{direction}"
 
 [sub_resource type="Resource" id="act_patrol_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 3
-Speed = 15.0
+type = 0
+pattern = 3
+speed = 15.0
 
 [sub_resource type="Resource" id="cond_patrol_far"]
 script = ExtResource("4")
-Operator = 1
-Value = 150.0
+operator = 1
+value = 150.0
 
 [sub_resource type="Resource" id="beh_patrol"]
 script = ExtResource("2")
-Name = "patrol"
-DurationMin = 2.0
-DurationMax = 4.0
-Weight = 3.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_patrol_far")])
-Actions = Array[ExtResource("3")]([SubResource("act_patrol_animate"), SubResource("act_patrol_move")])
+name = "patrol"
+duration_min = 2.0
+duration_max = 4.0
+weight = 3.0
+conditions = Array[ExtResource("4")]([SubResource("cond_patrol_far")])
+actions = Array[ExtResource("3")]([SubResource("act_patrol_animate"), SubResource("act_patrol_move")])
 
 [sub_resource type="Resource" id="act_cranky_animate"]
 script = ExtResource("3")
-AnimName = "Cranky_{direction}"
+anim_name = "Cranky_{direction}"
 
 [sub_resource type="Resource" id="act_cranky_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 7
-Speed = 35.0
+type = 0
+pattern = 7
+speed = 35.0
 
 [sub_resource type="Resource" id="act_cranky_sound"]
 script = ExtResource("3")
-Type = 2
-Sound = "crab_chase"
+type = 2
+sound = "crab_chase"
 
 [sub_resource type="Resource" id="cond_cranky_in_sight"]
 script = ExtResource("4")
-Value = 150.0
+value = 150.0
 
 [sub_resource type="Resource" id="cond_cranky_not_close"]
 script = ExtResource("4")
-Operator = 1
-Value = 30.0
+operator = 1
+value = 30.0
 
 [sub_resource type="Resource" id="beh_cranky"]
 script = ExtResource("2")
-Name = "cranky_chase"
-DurationMin = 1.5
-DurationMax = 3.0
-Weight = 6.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move"), SubResource("act_cranky_sound")])
+name = "cranky_chase"
+duration_min = 1.5
+duration_max = 3.0
+weight = 6.0
+conditions = Array[ExtResource("4")]([SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")])
+actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move"), SubResource("act_cranky_sound")])
 
 [sub_resource type="Resource" id="act_lurch_animate"]
 script = ExtResource("3")
-AnimName = "Attack_{direction}"
+anim_name = "Attack_{direction}"
 
 [sub_resource type="Resource" id="act_lurch_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 1
-Speed = 120.0
+type = 0
+pattern = 1
+speed = 120.0
 
 [sub_resource type="Resource" id="cond_lurch_in_range"]
 script = ExtResource("4")
-Value = 60.0
+value = 60.0
 
 [sub_resource type="Resource" id="cond_lurch_not_close"]
 script = ExtResource("4")
-Operator = 1
-Value = 30.0
+operator = 1
+value = 30.0
 
 [sub_resource type="Resource" id="beh_lurch"]
 script = ExtResource("2")
-Name = "lurch_attack"
-DurationMin = 0.4
-DurationMax = 0.4
-Weight = 8.0
-Cooldown = 2.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_lurch_in_range"), SubResource("cond_lurch_not_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_lurch_animate"), SubResource("act_lurch_move")])
+name = "lurch_attack"
+duration_min = 0.4
+duration_max = 0.4
+weight = 8.0
+cooldown = 2.0
+conditions = Array[ExtResource("4")]([SubResource("cond_lurch_in_range"), SubResource("cond_lurch_not_close")])
+actions = Array[ExtResource("3")]([SubResource("act_lurch_animate"), SubResource("act_lurch_move")])
 
 [sub_resource type="Resource" id="act_attack_animate"]
 script = ExtResource("3")
-AnimName = "Attack_{direction}"
+anim_name = "Attack_{direction}"
 
 [sub_resource type="Resource" id="act_attack_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 1
-Speed = 50.0
+type = 0
+pattern = 1
+speed = 50.0
 
 [sub_resource type="Resource" id="act_attack_sound"]
 script = ExtResource("3")
-Type = 2
-Sound = "crab_attack"
+type = 2
+sound = "crab_attack"
 
 [sub_resource type="Resource" id="cond_attack_close"]
 script = ExtResource("4")
-Value = 30.0
+value = 30.0
 
 [sub_resource type="Resource" id="beh_attack"]
 script = ExtResource("2")
-Name = "attack"
-DurationMin = 0.5
-DurationMax = 1.0
-Weight = 10.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_attack_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move"), SubResource("act_attack_sound")])
+name = "attack"
+duration_min = 0.5
+duration_max = 1.0
+weight = 10.0
+conditions = Array[ExtResource("4")]([SubResource("cond_attack_close")])
+actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move"), SubResource("act_attack_sound")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
-AnimName = "Hurt"
+anim_name = "Hurt"
 
 [sub_resource type="Resource" id="act_hurt_stop"]
 script = ExtResource("3")
-Type = 0
-Pattern = 4
+type = 0
+pattern = 4
 
 [sub_resource type="Resource" id="act_hurt_invuln"]
 script = ExtResource("3")
-Type = 3
-Duration = 0.7
+type = 3
+duration = 0.7
 
 [sub_resource type="Resource" id="cond_is_hurt"]
 script = ExtResource("4")
-Type = 4
-Operator = 4
-Value = 1.0
+type = 4
+operator = 4
+value = 1.0
 
 [sub_resource type="Resource" id="beh_hurt"]
 script = ExtResource("2")
-Name = "hurt_flash"
-DurationMin = 0.2
-DurationMax = 0.2
-Weight = 0.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
-Actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
+name = "hurt_flash"
+duration_min = 0.2
+duration_max = 0.2
+weight = 0.0
+conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
+actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
 
 [sub_resource type="Resource" id="act_retreat_animate"]
 script = ExtResource("3")
-AnimName = "Retreat_{direction}"
+anim_name = "Retreat_{direction}"
 
 [sub_resource type="Resource" id="act_retreat_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 2
-Speed = 80.0
+type = 0
+pattern = 2
+speed = 80.0
 
 [sub_resource type="Resource" id="cond_retreat_not_hurt"]
 script = ExtResource("4")
-Type = 4
-Operator = 4
+type = 4
+operator = 4
 
 [sub_resource type="Resource" id="cond_retreat_invuln"]
 script = ExtResource("4")
-Type = 5
-Operator = 4
-Value = 1.0
+type = 5
+operator = 4
+value = 1.0
 
 [sub_resource type="Resource" id="beh_retreat"]
 script = ExtResource("2")
-Name = "retreat"
-DurationMin = 0.5
-DurationMax = 0.5
-Weight = 99.0
-Cooldown = 1.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")])
-Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move")])
+name = "retreat"
+duration_min = 0.5
+duration_max = 0.5
+weight = 99.0
+cooldown = 1.0
+conditions = Array[ExtResource("4")]([SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")])
+actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move")])
 
 [resource]
 script = ExtResource("1")
-Type = "Crab"
-Health = 10
-ViewDistance = 150.0
-AttackDistance = 30.0
-Behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_lurch"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])
+type = "Crab"
+health = 10
+view_distance = 150.0
+attack_distance = 30.0
+behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_lurch"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])

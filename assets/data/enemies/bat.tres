@@ -1,101 +1,101 @@
-[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://bluksc4gf0jgx"]
+[gd_resource type="Resource" script_class="EnemyData" format=3]
 
-[ext_resource type="Script" uid="uid://cswd5pnccdbfw" path="res://scripts/data/EnemyData.cs" id="1"]
-[ext_resource type="Script" uid="uid://dtyxcwgtetrn1" path="res://scripts/data/EnemyBehavior.cs" id="2"]
-[ext_resource type="Script" uid="uid://d2ipy27s0pyt6" path="res://scripts/data/EnemyAction.cs" id="3"]
-[ext_resource type="Script" uid="uid://vvsh3nt3i8kp" path="res://scripts/data/BehaviorCondition.cs" id="4"]
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.gd" id="4"]
 
 [sub_resource type="Resource" id="act_idle_animate"]
 script = ExtResource("3")
-AnimName = "Idle"
+anim_name = "Idle"
 
 [sub_resource type="Resource" id="act_idle_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 10
+type = 0
+pattern = 10
 
 [sub_resource type="Resource" id="beh_idle"]
 script = ExtResource("2")
-Name = "idle_hanging"
-Actions = Array[ExtResource("3")]([SubResource("act_idle_animate"), SubResource("act_idle_move")])
+name = "idle_hanging"
+actions = Array[ExtResource("3")]([SubResource("act_idle_animate"), SubResource("act_idle_move")])
 
 [sub_resource type="Resource" id="act_swoop_animate"]
 script = ExtResource("3")
-AnimName = "Fly_Left"
+anim_name = "Fly_Left"
 
 [sub_resource type="Resource" id="act_swoop_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 8
-Speed = 64.0
+type = 0
+pattern = 8
+speed = 64.0
 
 [sub_resource type="Resource" id="cond_swoop_close"]
 script = ExtResource("4")
-Value = 180.0
+value = 180.0
 
 [sub_resource type="Resource" id="beh_swoop"]
 script = ExtResource("2")
-Name = "swoop_attack"
-DurationMin = 2.0
-DurationMax = 2.5
-Weight = 15.0
-Cooldown = 5.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_swoop_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_swoop_animate"), SubResource("act_swoop_move")])
+name = "swoop_attack"
+duration_min = 2.0
+duration_max = 2.5
+weight = 15.0
+cooldown = 5.0
+conditions = Array[ExtResource("4")]([SubResource("cond_swoop_close")])
+actions = Array[ExtResource("3")]([SubResource("act_swoop_animate"), SubResource("act_swoop_move")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
-AnimName = "Hurt_Left"
+anim_name = "Hurt_Left"
 
 [sub_resource type="Resource" id="act_hurt_stop"]
 script = ExtResource("3")
-Type = 0
-Pattern = 4
+type = 0
+pattern = 4
 
 [sub_resource type="Resource" id="act_hurt_invuln"]
 script = ExtResource("3")
-Type = 3
-Duration = 0.2
+type = 3
+duration = 0.2
 
 [sub_resource type="Resource" id="cond_is_hurt"]
 script = ExtResource("4")
-Type = 4
-Operator = 4
-Value = 1.0
+type = 4
+operator = 4
+value = 1.0
 
 [sub_resource type="Resource" id="beh_hurt"]
 script = ExtResource("2")
-Name = "hurt_flash"
-DurationMin = 0.1
-DurationMax = 0.1
-Weight = 0.0
-Conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
-Actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
+name = "hurt_flash"
+duration_min = 0.1
+duration_max = 0.1
+weight = 0.0
+conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
+actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
 
 [sub_resource type="Resource" id="act_flee_animate"]
 script = ExtResource("3")
-AnimName = "Fly_Left"
+anim_name = "Fly_Left"
 
 [sub_resource type="Resource" id="act_flee_move"]
 script = ExtResource("3")
-Type = 0
-Pattern = 9
-Speed = 48.0
+type = 0
+pattern = 9
+speed = 48.0
 
 [sub_resource type="Resource" id="beh_flee"]
 script = ExtResource("2")
-Name = "flee_to_tree"
-DurationMin = 10.0
-DurationMax = 10.0
-Weight = 0.0
-Actions = Array[ExtResource("3")]([SubResource("act_flee_animate"), SubResource("act_flee_move")])
+name = "flee_to_tree"
+duration_min = 10.0
+duration_max = 10.0
+weight = 0.0
+actions = Array[ExtResource("3")]([SubResource("act_flee_animate"), SubResource("act_flee_move")])
 
 [resource]
 script = ExtResource("1")
-Type = "Bat"
-Health = 12
-Speed = 32.0
-ViewDistance = 202.0
-AttackDistance = 88.0
-DeathSound = "bat_destroy"
-Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_swoop"), SubResource("beh_hurt"), SubResource("beh_flee")])
+type = "Bat"
+health = 12
+speed = 32.0
+view_distance = 202.0
+attack_distance = 88.0
+death_sound = "bat_destroy"
+behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_swoop"), SubResource("beh_hurt"), SubResource("beh_flee")])
