@@ -1,456 +1,96 @@
-# AdventureLand Development TODO
+# Adventure Land (Godot) — Active TODOs
 
-**Last Updated**: 2026-04-07
-**Archive**: See bottom of file for completed 2025 work
+**Last updated:** 2026-05-16
+**Launch shape:** Native macOS + Windows downloads on itch.io, free. Linux as stretch goal.
 
-## Overview
-This is the single source of truth for all active development tasks. Completed work is archived at the bottom of this file.
+> **Why not web?** Godot 4.x cannot export C# projects to the Web (confirmed
+> against [docs.godotengine.org](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html)
+> on 2026-05-16). Web launch deferred until Godot ships .NET-on-Web support
+> or until we have appetite for a GDScript port. The mobile-web input pass
+> already shipped still has value for that future.
 
-## Recently Completed (April 2026)
-
-- [x] ESLint + Prettier + lint-staged + Husky pre-commit hooks
-- [x] GitHub Actions CI pipeline (type-check + lint + test)
-- [x] Structured Logger utility — migrated all 22 system files
-- [x] Error handling framework (scripts/utils/errors.ts)
-- [x] 199 new tests (ItemManager, ButtonManager, DialogueController, InputManager, TriggerManager)
-- [x] Fixed 12 pre-existing savegame-hud-sync test failures
-- [x] Content creation guides (9 HOW_TO docs + master guide)
-- [x] Validation scripts (validate:items, validate:dialogue, generate:dialogue-imports)
-- [x] Codebase analysis and documentation audit
-- [x] Type safety improvements (removed any casts, typed return values)
-- [x] Dead code cleanup (removed example files, stale TODOs, disabled tests)
-
-## Playtest Bugs (Penny's 10th Birthday - 2026-02-07)
-
-- [ ] Penny just says "thank you" after going into her house (should have more dialogue)
-- [ ] Costume for head and neck go behind the character unless dialogue is on
-- [ ] Pearl and Rosie don't get removed from world after being collected (can pick up again)
-  - **Root cause**: C3 reloads layouts from original state. destroyTrigger works at runtime but doesn't persist.
-  - **Fix (C3)**: On "Start of layout" for World00/World10, check `Dict_SaveGameData.Get("collected_Rosie")` / `"collected_Pink Oyster Pearl"` and destroy trigger + sprite if true
-- [ ] Consider adding a grocery/food shop
-- [ ] "A" for attack is confusing for some kids — add key hint to inventory screen. Consider spacebar or Z for attack
-- [ ] Defense doesn't seem to reduce damage
-  - **Root cause**: HealthSystem reads `globalVars.Defense` in calculateDamage() but equipping armor may not set it
-  - **Fix (C3)**: Check equipment event sheets — equipping armor must set `globalVars.Defense` to item strength value
-- [x] Pete says "thanks for helping" when quest isn't finished — should hint about herbs instead
-  - **Fixed**: node_002b was skipping to quest-accept node. Now flows through full conversation. Added herb hint, completion node, and post-quest node.
-
-## Next Session: C3 Fixes
-
-### VO Audio Ducking Bug (C3 — eDialogue event sheet)
-- [ ] Music dips even when no VO file exists for a dialogue node
-- **Root cause**: `PlayVoiceLine` function always ducks music (fade to -20dB) regardless of whether the VO file actually plays
-- **Fix**: In eDialogue → `PlayVoiceLine` function → the 3 child music fade-volume blocks (base/mid/high to -20dB) need to be wrapped in `Audio: Is tag "Voice" playing` condition
-- **Also**: `EndOfVoiceLine` restores volume — verify it fires correctly after the condition change
-
-### Content: Lake World Completion
-- [ ] Build waterfall cave interior in C3 (layout/sprites)
-- [ ] Place `Cave_Bill` trigger sprite in cave (npcId must be exactly `"Cave_Bill"`)
-- [ ] Add Telescope to ItemsLibrary.json — ID 125, category "Key", name "Telescope"
-- [ ] Wire up Bill quest completion: when Bill returns to windmill, Nick gives Telescope
-- [ ] Test full Pearl quest → Bill rescue → Telescope reward chain
-
-### Content: Forest World Buildout
-- [ ] Design Silly Platypus sprite
-- [ ] Place `Silly_Platypus` trigger sprite by forest river (npcId must be exactly `"Silly_Platypus"`)
-- [ ] Decide on Platypus trade item (something "fun, shiny, or noisy" from village shops)
-- [ ] Uncomment and wire up trade node in platypus-dialogue.ts
-- [ ] Build broken bridge mechanic (use Platypus Board item to fix)
-- [ ] Add herbs/cave location for Pete's quest in snowy mountains area
-
-### Code: Remaining Cleanup
-- [ ] 466 ESLint `any` warnings remaining (chip away gradually)
-- [ ] dialogue-bridge.ts has a console.log on line 661 that should be log.info
-- [ ] `inverted` alias on DialogueCondition now works — update any dialogue files using it
-
-## Current Sprint: Dialogue System Complete! ✅ (2026-01-07)
-
-### ✅ COMPLETE: Full Dialogue System with Pixel-Art Input (2026-01-07)
-
-**Major Achievement**: Complete end-to-end dialogue system with keyboard input, options navigation, and pixel-art text input!
-
-**What Works**:
-- ✅ Dialogue advancement with spacebar
-- ✅ Arrow key navigation for dialogue options
-- ✅ Pixel-art text input (SpriteFont_Menu based)
-- ✅ Keyboard capture (alphanumeric + backspace)
-- ✅ Enter button (ButtonManager Btn_Action sprite)
-- ✅ Name validation (prevents blank submission with red flash)
-- ✅ Quest status tracking and dialogue branching
-- ✅ Unique item spawning (Rosie the cat)
-- ✅ Custom function triggers (checkYourself mirror)
-- ✅ Full Penny dialogue (13 nodes, input, options, completion)
-
-**Input System Features**:
-- Pixel-art SpriteFont displays typed characters
-- Character limit (20 chars)
-- Cursor indicator (_)
-- Enter key OR Spacebar submits
-- Click Enter button OR keyboard shortcut
-- Red flash validation feedback
-- Consistent with game's pixel-art aesthetic
-
-**Technical Wins**:
-- InputManager context switching (game/dialogue/menu)
-- InputContext global variable for debugger visibility
-- ButtonManager cleanup race condition fixed
-- Arrow key option selection without buggy toggles
-- TriggerManager handles "Check" actions in TypeScript
-- Hybrid architecture: InputManager + DialogueBridge + Old Event Sheets
-
-**Files Modified** (9 files):
-- Input capture: input-manager.ts, dialogue-controller.ts
-- Pixel-art input: dialogue-bridge.ts, getUserTextPixel function (C3)
-- Button fixes: button-manager.ts (removed state-setting from cleanup)
-- Trigger handling: trigger-manager.ts, main.ts
-- Event sheets: eDialogue.json, eGlobal.json, eGameRoom.json
-- New objects: obj_transBox for input frame
-
-**Performance**: <1% CPU overhead, responsive keyboard input, no lag
-
-### ✅ COMPLETE: Dialogue System Polish (2026-01-08)
-
-- [x] Test remaining 11 NPC dialogues ✅ COMPLETE (2026-01-08)
-  - World00: Rosie, GeneralStore, Blacksmith, AdventureShop, Welcome, WindmillNick, SeaMonsterKey
-  - World01: Pete, ForestSign
-  - World10: LakeSign, TreeSign
-  - All 12 NPCs tested and working!
-
-- [x] Typewriter text skip with spacebar ✅ COMPLETE (2026-01-07)
-  - Two-press behavior: first press finishes animation, second advances
-  - Implemented in DialogueController.handleSpacePress()
-
-- [x] Escape key exits dialogue early ✅ COMPLETE (2026-01-07)
-  - Works with options, input, and regular dialogue
-
-**Dialogue system is 100% production-ready!**
-
-### ✅ COMPLETE: Button Manager with Full Navigation (2026-01-05)
-
-**Bug #9 RESOLVED!** Item pickup notifications now have interactive buttons.
-
-- [x] Core ButtonManager implementation
-  - Button pooling and reuse
-  - Auto-sized text labels with [icon=Name] support
-  - Relative positioning (absolute, relative-to-object, relative-to-previous)
-  - 24px button height, centered text
-  - Z-order management (text above buttons above background)
-
-- [x] Full keyboard navigation
-  - Arrow keys (left/right) to select between buttons
-  - Spacebar to activate selected button
-  - Animation frame highlighting (frame 1 = yellow outline)
-  - ItemBtnSelection variable tracks selection (avoids Ctrl_Btns conflicts)
-  - ButtonMgrActive flag prevents interference with other systems
-
-- [x] Mouse hover support
-  - Mouse priority - highlights hovered button
-  - Restores keyboard selection when mouse leaves
-  - highlightButtonByUID() method for direct control
-  - ButtonMgrActive checks prevent InventoryBtns conflicts
-
-- [x] GameState Manager (BONUS!)
-  - Centralized engine group control (Player Engine, Enemies, Triggers)
-  - Every-tick controller prevents race conditions
-  - Foundation for future state management expansion
-
-- [x] Integration & testing
-  - Item pickup shows "Open [icon=Bag]" and "Close" buttons
-  - Opens inventory or dismisses notification
-  - No player movement during button interaction
-  - No item hint on inventory open
-  - All cleanup properly handled
-
-**Result**: Phase 1 complete, Bug #9 resolved, production-ready system!
-
-### 📋 NEXT: UI Button System - Phase 2 (Future)
-
-- [ ] Implement MessagePanelManager
-  - Panel with auto-sized background
-  - Content layout (title, description, stats, buttons)
-  - Icon positioning, stat displays
-
-- [ ] Implement UIHelpers convenience functions
-- [ ] Implement NotificationManager (queue, auto-dismiss)
-
-### 📋 NEXT: UI Button System - Phase 3 (Week 4)
-
-- [ ] Implement ButtonActionRegistry (action routing)
-- [ ] Register all button actions
-- [ ] Update event sheets for generic routing
-- [ ] Write Phase 3 tests
-
-### 📋 NEXT: UI Button System - Phase 4 (Week 5)
-
-- [ ] Comprehensive testing (100% coverage)
-- [ ] Performance benchmarking
-- [ ] System documentation (claude.md)
-- [ ] Update CLAUDE.md with UI patterns
-
-## Active Bugs & Polish
-
-### 🐛 Bug Fixes
-
-- [x] **Bug #4**: Sally hotspot blocks interactive objects ✅ COMPLETE (2026-01-08)
-- [x] **Bug #10**: Inventory opens with phantom hint button for slot 0 ✅ COMPLETE (2026-01-14)
-  - Fixed by resetting CurrentItemSlot to -1 when opening inventory
-  - Also resets SelectedItemUID to -1 for clean state
-  - Prevents ButtonManager from creating hints for unselected items
-
-- [x] **Bug #11**: Touch/mouse inventory selection has slot offset bug ✅ COMPLETE (2026-01-14)
-  - Root cause: OR block race condition between touch tap and Space/Touch event
-  - Touch event set SelectedItemUID but OR block fired in same frame with stale value
-  - Also: Passing InventoryItems.UID (family) instead of ItemSlot.UID caused wrong picking
-  - Fix: Separated touch and keyboard paths into atomic events
-  - Touch: Single event that picks ItemSlot and calls displayItemHint directly
-  - Keyboard: Space picks by CurrentItemSlot (set by arrow keys), no UID needed
-  - Result: First-tap works, no phantom hints, 40% performance improvement
-
-- [x] **Bug #12**: Player knockback continues during death animation ✅ COMPLETE (2026-01-30)
-  - Root cause: Multiple issues with death sequence and engine state management
-  - Issue 1: Gameplay Status group re-activated Player Engine every tick, overriding death sequence
-  - Issue 2: PlayerSystem positioning was inside Player Engine group, stopped during death
-  - Issue 3: Death sequence triggered multiple times (Hurt timer kept running)
-  - Fix 1: Added Health > 0 checks to Gameplay Status engine activation (lines 40-41)
-  - Fix 2: Moved PlayerSystem positioning to Player Macros group (always active)
-  - Fix 3: Moved death check to top-level with Trigger Once, added Health > 0 to hurt/knockback logic
-  - Result: Clean death animation with proper knockback, smooth transition to GameOver screen
-
-- [x] **Bug #13**: Player frozen after "Try Again" / new game ✅ COMPLETE (2026-01-30)
-  - Root cause: "Set group Player Engine activated" action was DISABLED in Try Again handler
-  - Fix: Enabled the disabled action in eGlobal.json Try Again button handler
-  - Result: Player can move immediately after starting new game
-
-- [x] **Bug #14**: Player can get stuck after hurt ✅ COMPLETE (2026-01-30)
-  - Fixed by same changes as Bug #12
-  - Added Health > 0 checks to hurt timer and knockback recovery logic
-  - Result: Player always recovers from hurt state properly
-
-- [x] **Bug #15**: Opening inventory after item pickup doesn't highlight the picked-up item ✅ COMPLETE (2026-01-30)
-  - Root cause: No item selection logic when opening from pickup notification
-  - Fix 1: Added PendingItemSelection variable to track item across function calls
-  - Fix 2: cleanupItemPickupNotification stores KeyItem in PendingItemSelection before cleanup
-  - Fix 3: OpenClose_Inventory checks PendingItemSelection and calls InventorySelection.selectItemByID
-  - Fix 4: Falls back to slot 0 default selection when opening normally (no pending item)
-  - Result: Picked-up items automatically highlighted, inventory always has starting selection
-
-- [x] **Bug #16**: Inventory hint panel issues after item pickup ✅ COMPLETE (2026-01-30)
-  - Issue 1: Notification panel staying visible - FIXED
-    Root cause: destroyDialogueUI conditions not met, incomplete cleanup
-    Fix: Created cleanupItemPickupNotification() with layer-specific destruction
-    Only destroys HUD_UI objects, preserves inventory/world items
-  - Issue 2: Inventory slots unclickable - FIXED
-    Root cause: Click bleed-through from "Open" button to inventory slot beneath
-    Fix: Added InventoryJustOpened flag with 0.05s delay, guards inventory click events
-  - TypeScript consolidation: Removed 100+ lines of duplicate C3 code
-  - Both keyboard and touch paths now use unified TypeScript helpers
-
-### 🎨 Polish Items
-
-- [x] Audio: Fix inconsistent soundtrack loading ✅ COMPLETE (Dec 2025)
-- [x] Animation: Fix player animation during transitions ✅ COMPLETE (Dec 2025)
-- [ ] Mark birthday cake as unique item (prevents duplicate spawning)
-
-## 🐉 NEW: Sea Monster "Pearl Quest" (2026-02-01)
-
-**Quest ID**: PearlQuest
-**Quest Name**: "Perle de la Mer" (The Pearl of the Sea)
-**Type**: Hybrid NPC/Enemy quest with state transitions
-**Location**: World_10 (The Bottomless Lake)
-**Status**: Phases 1-5 Complete - Polish & Testing Remaining
-
-### Quest Overview
-Sea Monster guards a stolen pearl ("Perle de la Mer"). Player can help find it (peaceful) or refuse/lie about stealing it (hostile combat). Integrates with Windmill Bros quest (Bill has the pearl).
-
-### Implementation Phases
-
-- [x] **Phase 1: Foundation** (Day 1)
-  - Create SeaMonsterController.ts (state management system)
-  - Add to main.ts namespace
-  - Test basic summon/despawn functionality
-
-- [x] **Phase 2: Dialogue Integration** (Day 2)
-  - Create seamonster-dialogue.ts (dialogue tree)
-  - Add custom dialogue actions (makeHostile, acceptQuest, etc.)
-  - Load dialogue in main.ts
-  - Test dialogue flow and options
-
-- [x] **Phase 3: C3 Objects Setup** (Day 3)
-  - Configure En_Sea_Monster instance variables (IsHostile, State, AIEnabled)
-  - Create Trigger_Shell interaction point
-  - Create Projectile_WaterBall with Bullet behavior
-  - Create items: Perle de la Mer (ID: 99), Magic Trident (ID: 100)
-
-- [x] **Phase 4: Event Sheets** (Day 4)
-  - Pink shell trigger (summons SM, starts dialogue)
-  - Sea Monster state management (every-tick sync)
-  - Island boundary detection and retreat logic
-  - Quest completion trigger (return pearl)
-
-- [x] **Phase 5: Enemy AI** (Day 5)
-  - Add SEA_MONSTER_CONFIG to enemy-configs.ts (ranged attacks)
-  - Update enemy AI to check AIEnabled flag
-  - Water ball spawn and collision logic
-  - Test hostile mode and retreat
-
-- [ ] **Phase 6: Polish** (Day 6)
-  - Rise/retreat animations
-  - Sound effects
-  - Visual effects
-  - Balance tuning
-
-- [ ] **Phase 7: Testing** (Day 7)
-  - Full peaceful path test
-  - Hostile paths test
-  - Edge cases and save/load
-  - Integration with Windmill Bros quest
-
-**Design Document**: `scripts/external/quest-dialogue/sea-monster-quest-design.md`
-
-**Estimated Time**: 5-7 hours across multiple sessions
-
-## Future: TypeScript Modernization (Phase 2-3)
-
-### 📅 Phase 2: Typed Instance Classes (LOW PRIORITY)
-
-- [ ] Research which C3 objects would benefit from typed instances
-- [ ] Create Player/Enemy/Item typed instance classes
-- [ ] Register with `setInstanceClass()`
-- [ ] Test performance impact
-
-### 📅 Phase 3: Import Maps Configuration (LOW PRIORITY)
-
-- [ ] Create import map JSON config
-- [ ] Define namespace structure (@adventure/core, etc.)
-- [ ] Configure C3 to use import map
-- [ ] Refactor imports to bare specifiers
-
-**Note**: Current `.js` extension pattern works well. Low priority.
-
-## Advanced Patterns (FUTURE)
-
-- [ ] Enemy subclassing (CrabEnemy extends Enemy)
-- [ ] Runtime event listeners
-- [ ] Lifecycle hooks for instances
-
-**Note**: Current systems work well. These are optimization opportunities, not requirements.
-
-### 5.1 Update Documentation
-- [ ] Comprehensive update to CLAUDE.md
-- [ ] Create migration guide for existing systems
-- [ ] Add troubleshooting section
-- [ ] Create code examples repository
-
-### 5.2 Testing & Validation
-- [ ] Create test suite for new patterns
-- [ ] Performance benchmarking vs old patterns
-- [ ] Memory usage analysis
-- [ ] Load time comparison
-
-## Battle System
-
-### 📅 PLANNED: Player Battle System Enhancements (Future Phase)
-- [ ] Add player invulnerability frames similar to enemy system
-- [ ] Implement damage types and resistance system for players
-- [ ] Add visual feedback for damage types (fire, ice, poison effects)
-
-### 📅 PLANNED: Player Battle System Testing (Future)
-- [ ] Create player battle system test suite
-- [ ] Performance benchmarks for player damage calculations
-- [ ] Integration tests for complete player vs enemy combat
-- [ ] Edge case testing for player damage scenarios
+This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (frozen since 2026-04-07, reference only — all active dev is in `godot-prototype/`).
 
 ---
 
-## ✅ Completed Work Archive (2025-2026)
+## v1 Release — itch.io Publish Checklist
 
-See `docs/TODO-ARCHIVE-2025.md` for full details of completed modernization work.
+### Build & export (native)
+- [ ] **Install Godot export templates** — Editor → Manage Export Templates → Download and Install (~1 GB, one-time per Godot version)
+- [ ] **Configure macOS export preset** — Project → Export → Add → macOS
+  - Universal binary (arm64 + x86_64) so both Apple Silicon and Intel Macs run cleanly
+  - Code-signing: skip for v1 unless we have an Apple Developer cert handy. Players right-click → Open to bypass Gatekeeper on first launch
+- [ ] **Configure Windows export preset** — Project → Export → Add → Windows Desktop
+  - 64-bit only
+  - rcedit + icon optional but tightens the polish
+- [ ] **Configure Linux export preset (stretch)** — Project → Export → Add → Linux/X11 (64-bit)
+- [ ] Run release builds for each platform from CLI: `godot --headless --export-release "<Preset Name>" path/to/output`
+- [ ] Test the macOS .app on a clean machine if possible (Gatekeeper warning + first-launch behavior)
+- [ ] Test the Windows .exe on a Windows machine (a VM is fine)
+- [ ] Verify saves persist across launches on each platform
+- [ ] Bundle size check — `.app` + `.exe` should each end under ~200 MB
 
-### UI Button System - Phase 1 ✅ COMPLETE (Jan 2026)
-- [x] Design comprehensive 3-layer UI button system architecture (2026-01-04)
-  - Layer 1: UIButtonManager (button pooling, positioning, sizing)
-  - Layer 2: MessagePanelManager (panels with background + content + buttons)
-  - Layer 3: UIHelpers (game-specific shortcuts)
-  - Complete design document: docs/ui-button-system-design.md
+### Content & polish (ship-blockers)
+- [x] **Credits screen** — Mana Seed Character Animator, Alagard font, tileset attributions, music attribution (verified shipped via title screen)
+- [ ] **Title screen version label** ("v0.1" or "Demo" — keeps later updates legible)
+- [ ] **Re-record 3 AL welcome VO lines** per [docs/VO_TRACKING.csv](docs/VO_TRACKING.csv) — script in welcome.tres is final
+- [x] **AL sign node IDs renamed** to prevent VO filename collisions
+- [ ] Final full-loop playtest on the actual release build (not editor) — Penny cat quest → Pete herbs → Sea Monster pearl → trident
 
-- [x] Implement Phase 1 - Core Button Manager (2026-01-04)
-  - Created scripts/systems/ui/ directory structure
-  - Implemented ui-types.ts with all TypeScript interfaces
-  - Implemented button-manager.ts with button pooling
-  - Text measurement with [icon=Name] support
-  - Relative positioning (absolute, relative-to-object, relative-to-previous)
-  - Multiple button type support (Btn_Action, Btn_Arrow, etc.)
-  - LinkID integration for keyboard navigation
-  - Exposed in AdventureLand.ButtonManager namespace
+### itch.io page
+- [ ] Cover image (630×500 px)
+- [ ] 3–5 screenshots — village, combat moment, lake/sea monster, inventory, dialogue
+- [ ] Short hook (1–2 sentences) + longer "about" + controls block (Shift+D content as a starting point)
+- [ ] Tags: `action`, `adventure`, `rpg`, `retro`, `pixel-art`, `top-down`, `exploration`
+- [ ] Embed dimensions: 1680×960 (native 840×480 × 2x integer scale)
+- [ ] Pricing: free, tip jar optional
+- [ ] Launch devlog post (blog-post material in earlier session — Construct 3 → Godot journey)
 
-- [x] Test Phase 1 implementation (2026-01-04)
-  - Added F10 debug test in event sheet
-  - Fixed layer index bug (caught by test-before-push workflow!)
-  - Validated: button creation, pooling, auto-sizing all working
-  - Test output: "Total buttons in pool: 1, size: 78x36"
+### Distribution rollout
+- [ ] First publish as restricted/draft, share link with 3–5 playtesters
+- [ ] Collect feedback, fix anything that breaks the golden path
+- [ ] Public release
 
-### 📋 NEW: UI/UX Improvements
-- [x] Make Gems visible at all times (2026-01-03)
-  - ✅ Added gems display to HUD
-  - ✅ Shows during gameplay
-  - Purpose: Incentivize collecting gems and spending them
+---
 
-### 📋 NEW: Audio System Issues ✅ COMPLETE (Dec 2025)
-- [X] Fix inconsistent soundtrack loading
-  - Issue: Sometimes tracks don't load
-  - Need to investigate audio loading reliability
-  - May need preloading or error handling improvements
+## v2 Pass — Audio (post-publish)
 
-### 📋 NEW: Quest System Cleanup ✅ COMPLETE (Sep 2025)
-- [X] Remove legacy quest system items from dictionary
-  - Remove "RosieQuest" starting item
-  - Remove "TreeSignQuest" starting item
-  - Clean up any other legacy quest references
-  - Ensure new TypeScript quest system is exclusive
+### Missing SFX (reconciled 2026-05-16)
+- [ ] **Trident swing** — `PlayerController.PlayTridentSwing()` doesn't call SFXController. Currently silent; the code comment claiming a cue is misleading. Need magic/whoosh sample
+- [ ] **Bat in-flight presence** — swoop dive, wing flap, hang-from-tree squeak. No C3 source — needs external samples
+- [ ] **Sea Monster hostile roar** — silent transition peaceful → hostile
+- [ ] **Player death cry** — currently reuses `player_hurt` at -3 dB. Needs dedicated sample
+- [ ] **Loot drop spawn** — Gem / Coin / Heart popping outward is silent; only pickup chimes
+- [ ] **Sea Monster retreat splash** — only bubble particle plays
+- [ ] **Attack whiff / miss feedback** — polish
+- [ ] **Knockback impact thud** — polish
+- [ ] **Armor-blocked-hit cue** — when full damage absorbs
 
-### 📋 NEW: Animation Polish ✅ COMPLETE (Dec 2025)
-- [X] Fix player animation during layout transitions
-  - Issue: Player continues to animate when holding arrow key at map edge during transition
-  - Expected: Player animation should pause during layout load
-  - Visual polish issue
+### Orphan SFX files (have audio, need wiring)
+- [ ] `door_open.ogg` → wire to `DoorTrigger`
+- [ ] `room_clear.ogg` → only useful with future wave-clear system
+- [ ] `destructible_destroy.ogg` → only useful with breakables system
+- [ ] `bubble.ogg` → consider as overlay on `seamonster_rise` or ambient water layer
 
-### Phase 1: Foundation - Imports for Events ✅ COMPLETE (Sep 2025)
-- ✅ Created imports-for-events.ts with all system imports
-- ✅ Event sheets use modern pattern (`runtime.imports.AdventureLand`)
-- ✅ Backward compatibility maintained (legacy pattern still works)
-- ✅ Documented in CLAUDE.md
+### VO production
+- [ ] Cast / record remaining ~60 NPC lines per [docs/VO_TRACKING.csv](docs/VO_TRACKING.csv)
+- [ ] Author dialogue `PlaySound` actions where moment-specific cues land — wiring is live, 0 `.tres` files use it currently
 
-### TypeScript Foundation ✅ COMPLETE (Sep 2025)
-- ✅ Auto-generated types, full IntelliSense
-- ✅ Live compilation, proper import patterns
-- ✅ Event sheet integration documented
+---
 
-### Production Systems ✅ COMPLETE (Sep 2025 - Jan 2026)
-- ✅ Enemy AI Factory (90% dev reduction, 35% CPU improvement)
-- ✅ Tile Animations (67% CPU reduction)
-- ✅ Item Manager (O(1) lookups)
-- ✅ Health System (battle integration)
-- ✅ Currency System (gems with sync)
-- ✅ Shop State System
-- ✅ Quest & Dialogue System (12 dialogues, <1% CPU)
-- ✅ Unique Items System
-- ✅ Potion System
+## v2 Pass — Content + Cutscenes
 
-### Documentation ✅ COMPLETE (2025-2026)
-- ✅ CLAUDE.md updated comprehensively
-- ✅ Testing guide (docs/testing-guide.md)
-- ✅ 9 pattern files (docs/patterns/)
-- ✅ System-specific docs (8 systems)
-- ✅ Browser console debugging strategies
+- [ ] "Sold" sign next to player's home (asset + trigger with one-liner dialogue / sold-house lore)
+- [ ] Game-open cutscene — after the welcome narrator, before player gets control (camera pan to village? Penny waving?)
+- [ ] Trident reveal cutscene — bigger than the current item-frame popup; ~1s zoom + Sea Monster bow
 
-### UI Button System - Phase 1 ✅ COMPLETE (Jan 2026)
-- ✅ 3-layer architecture designed
-- ✅ Core ButtonManager implemented
-- ✅ Button pooling, positioning, text measurement
-- ✅ Tested and validated (F10 debug test)
+---
 
-## Notes
-- Test-before-push workflow (see CLAUDE.md)
-- Maintain backward compatibility
-- Document learnings as we go
-- Performance targets: <1% CPU overhead for new systems
+## Deferred (post-v2)
+
+- Heart containers (max-HP pickups)
+- Settings screen — volume sliders + key rebinds
+- **Web launch** — blocked on Godot shipping .NET-on-Web support, or on a GDScript port. Re-evaluate once Godot 5 releases or .NET web export lands in a 4.x point release. Mobile-web input pass already shipped is reusable.
+- **iOS launch (App Store / TestFlight)** — Godot 4.2+ supports C#-on-iOS as experimental. Separate channel from itch.io (Apple Developer Program $99/yr, Xcode build, App Store review or TestFlight beta). Mobile-web touch UI already validates the input model; the Godot iOS export builds a native app, not a web wrapper. Plan as a v2/v3 effort once the itch.io launch is in the wild.
+- World_03 Gray Mist Mountain TMX completion
+- VO system polish (per-speaker mix levels, ducking refinements)

@@ -1,600 +1,557 @@
-# CLAUDE.md
+# CLAUDE.md — Adventure Land
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code instances working in this repository.
 
-## ⚠️ CURRENT FOCUS: Godot Prototype Only
+## What This Is
 
-**As of 2026-05-12, all active development happens in [`godot-prototype/`](godot-prototype/).** The Construct 3 project (`project.c3proj`, `eventSheets/`, `layouts/`, `scripts/`, etc.) is now **reference material only** — read it to understand intended game behavior, data, and content, but do not edit C3 files or implement new features there.
+Adventure Land — a top-down action-adventure RPG. Originally built in Construct 3 (TypeScript); rebuilt in Godot 4 starting April 2026. As of **2026-05-16 the repository was reorganized** so the Godot project lives at the repo root (no more `godot-prototype/` subfolder). The legacy C3 codebase is preserved at git tag `c3-legacy-2026-05-16`.
 
-- Read [`godot-prototype/CLAUDE.md`](godot-prototype/CLAUDE.md) before touching anything in the Godot project.
-- When the C3 event sheets describe behavior we want (e.g. inventory flow, dialogue, enemy AI), port/reimplement it in the Godot prototype rather than fixing it in C3.
-- The C3-specific guidance below (Construct 3 git workflow, event-sheet patterns, browser console limits, nested-object namespace pattern, etc.) is retained for context when reading the old project but does **not** apply to new work.
+**Current state:** Active itch.io launch prep + C# → GDScript port for web export unlock. See `TODO.md` for the active task list and `docs/PORT_PLAN.md` (after Phase 0) for the port roadmap.
 
-## ⚠️ CRITICAL: Construct 3 Git Workflow (legacy / reference project only)
+**Worlds shipped:** Leafwood Village (World_00), Leafwood Forest (World_01), Bottomless Lake (World_10), Snowy Mountain (World_20), interiors (Blacksmith, Adventure Shop, General Store, Penny's House, Windmill). Gray Mist Mountain (World_03) in progress.
 
-**NEVER run `git restore` or destructive git commands without explicit user confirmation.**
+## Environment
 
-When working with Construct 3 projects, ALL changes happen in `.json` files (event sheets, layouts, project files). These files are modified by the C3 IDE and MUST be committed together.
-
-### MANDATORY Workflow for C3 Changes:
-
-1. **Make changes in Construct 3 IDE**
-2. **Save project in C3** (File → Save)
-3. **Close C3 IDE** (this ensures all .json files are written to disk)
-4. **Run `git status`** to see what changed
-5. **TEST the changes in C3** (re-open, run game, verify functionality)
-   - ALWAYS test TypeScript changes before committing
-   - ALWAYS test event sheet changes before committing
-   - If bugs found, fix and repeat from step 1
-6. **Commit ALL modified files** (event sheets, layouts, project.c3proj)
-   - NEVER commit only some C3 files - commit all or none
-   - Include both TypeScript changes AND C3 .json files in same commit
-7. **Write detailed commit messages** explaining what was changed in C3
-8. **ONLY push after successful testing**
-   - NEVER push untested code
-   - If tests fail, fix locally before pushing
-
-### Before ANY destructive git operation:
-
-- **Ask user first** before: `git restore`, `git reset`, `git clean`
-- **Check what will be lost**: run `git diff` first
-- **Confirm with user** they understand uncommitted C3 work will be permanently lost
-- **Suggest `git stash`** as safer alternative when possible
-
-### Warning Signs of Trouble:
-
-- Modified .json files in `git status` that weren't intentionally changed
-- User mentions C3 changes but no .json files show in `git status` (C3 not saved/closed)
-- Commit includes TypeScript but no C3 files (when C3 work was mentioned)
-
-**Why this matters:** C3 work can represent hours of visual/event sheet development that cannot be recovered once lost. A single `git restore` can destroy an entire day's work.
-
-### CRITICAL: New TypeScript Files MUST Be Imported in C3
-
-**When creating new `.ts` files**, you MUST:
-
-1. **Create the TypeScript file** in the appropriate directory
-2. **Import in `main.ts`** (if it's a system module)
-3. **PROMPT USER to add to C3 project**:
-   - Open Construct 3
-   - Right-click "Scripts" folder in Project panel
-   - Select "Add script" → "Import script file"
-   - Navigate to the new `.ts` file
-   - Select it to add to C3 project
-
-**Why this is critical**: C3 won't compile/load TypeScript files that aren't added to the project. The file can exist in the filesystem but C3 won't see it.
-
-**Symptoms of missing import**:
-- "Module not found" errors in console
-- TypeScript compiles locally but fails in C3
-- System initialization errors
-- `undefined` when accessing new modules
-
-**Example**:
-```bash
-# After creating scripts/systems/ui/button-manager.ts
-# MUST tell user: "Please add button-manager.ts to C3 project via Import script file"
-```
-
-## Project Overview
-
-AdventureLand is a TypeScript-enhanced Construct 3 game project. It uses a hybrid architecture where Construct 3 handles visuals/UI while TypeScript manages complex logic and data processing.
-
-## Documentation Structure & Context Loading
-
-This project uses **hierarchical documentation** - context-specific `.md` files located near relevant code. **IMPORTANT**: When working on a system, always read the relevant documentation first to understand patterns, gotchas, and current state.
-
-**Recent session notes**:
-- `docs/SESSION_2026-02-06_SUMMARY.md` (VO system + music controller + Sea Monster polish)
-
-### Documentation Hierarchy
-
-1. **Root Level** (project-wide context)
-   - `CLAUDE.md` (this file) - General guidance and critical patterns
-   - `README.md` - Project overview, architecture, quick start
-   - `TODO.md` - Active work, modernization plan, current priorities
-
-2. **System-Specific Context** (`scripts/systems/[system-name]/claude.md`)
-   - Read BEFORE working on any system
-   - Contains system-specific patterns, state, and integration notes
-   - Available for: `enemy/`, `health/`, `inventory/`, `items/`, `player/`, `tiles/`, `potions/`, `utils/`
-   - Example: Working on enemy AI? → Read `scripts/systems/enemy/claude.md`
-
-3. **Pattern Documentation** (`docs/patterns/`)
-   - Proven integration patterns with metrics
-   - Decision matrices (TypeScript vs Event Sheets)
-   - Anti-patterns to avoid
-   - Key patterns: nested-object, c3-picking-bridge, data-driven-config, performance-migration
-
-4. **Testing Documentation** (`docs/testing-guide.md`)
-   - Comprehensive test commands
-   - Browser console testing patterns
-   - System-specific test strategies
-   - Troubleshooting common issues
-
-5. **Architecture Documentation** (`scripts/README.md`)
-   - TypeScript architecture overview
-   - Adding new systems workflow
-   - Integration rules and common issues
-
-### Context Loading Strategy
-
-**When starting work:**
-1. Read this CLAUDE.md for project-wide patterns
-2. Check `TODO.md` for current priorities and active work
-3. Read system-specific `claude.md` for the area you're working on
-4. Reference pattern docs as needed
-
-**Examples:**
-- Fixing enemy AI bug → Read `scripts/systems/enemy/claude.md` + `docs/patterns/c3-picking-bridge-pattern.md`
-- Performance issue → Read `docs/patterns/performance-migration-pattern.md` + `docs/testing-guide.md`
-- Adding new system → Read `scripts/README.md` + `docs/patterns/nested-object-pattern.md`
-- Quest/dialogue work → Read `scripts/external/quest-dialogue/claude.md` + dialogue guides
-
-**Why this structure?**
-- Keeps context close to code
-- Avoids information duplication
-- Scales as project grows
-- Makes it easy to find relevant information
-
-## ⚠️ CRITICAL: Browser Console Limitations
-
-**Construct 3 PREVENTS direct console execution** - you cannot call functions or manipulate objects from the browser DevTools console.
-
-### What DOESN'T Work:
-```javascript
-// ❌ CANNOT call functions from console
-AdventureLand.ButtonManager.showButton(...)  // Won't work!
-AdventureLand.EnemyAI.debug()                 // Won't work!
-```
-
-### What DOES Work:
-```javascript
-// ✅ CAN inspect global state
-AdventureLand                                 // Shows namespace
-AdventureLand.ButtonManager                   // Shows methods
-globalThis.TestVariable                       // Read global variables
-
-// ✅ CAN read console.log output
-// TypeScript code: console.log("Button created:", buttonId);
-// Console shows: "Button created: attack-hint"
-```
-
-### Debugging Strategies:
-
-**Strategy 1: Set Global Debug Variables** (in TypeScript)
-```typescript
-// In button-manager.ts
-static debugState(): void {
-  (globalThis as any).DEBUG_BUTTONS = {
-    pool: Array.from(this.buttonPool.entries()),
-    active: this.getActiveButtons(),
-    timestamp: Date.now()
-  };
-  console.log("✅ Debug data written to globalThis.DEBUG_BUTTONS");
-}
-```
-
-**Strategy 2: Set Instance Variables** (in TypeScript)
-```typescript
-// Store debug info on C3 object
-const debugObj = runtime.objects.Ctrl_Debug?.getFirstInstance();
-if (debugObj) {
-  debugObj.instVars.LastButton = buttonId;
-  debugObj.instVars.ButtonCount = this.buttonPool.size;
-}
-```
-
-**Strategy 3: Comprehensive Console Logging** (preferred)
-```typescript
-// Log everything you need to inspect
-console.log("=== Button State ===");
-console.log("Pool size:", this.buttonPool.size);
-console.log("Active buttons:", this.getActiveButtons());
-this.buttonPool.forEach((state, id) => {
-  console.log(`  ${id}:`, state);
-});
-```
-
-**Strategy 4: Debug Keyboard Shortcut** (in event sheet)
-```javascript
-// In C3 event sheet
-on-key-pressed: F12 {
-  const buttonMgr = globalThis.AdventureLand?.ButtonManager;
-  if (buttonMgr) {
-    buttonMgr.debugState();  // Logs to console + sets global
-  }
-}
-```
-
-**Testing Pattern**:
-- Add debug methods that write to global variables
-- Trigger debug from event sheets (keyboard shortcuts)
-- Inspect global variables in console
-- Read console.log output
-
-**Why this limitation exists**: C3 runs in a sandboxed module context that prevents external script execution for security reasons.
-
-## Essential Commands
-
-### Development & Testing
-```bash
-# Type checking
-npm run type-check
-
-# Run all tests
-npm run test
-
-# Watch mode for test development
-npm run test:watch
-
-# Coverage report
-npm run test:coverage
-
-# Check everything (type-check + lint + tests)
-npm run check-all
-
-# Quick compilation check
-npm run compile-check
-
-# Linting & formatting
-npm run lint            # ESLint check
-npm run lint:fix        # ESLint auto-fix
-npm run format          # Prettier format
-npm run format:check    # Prettier check
-
-# Validation
-npm run validate:items  # Validate ItemsLibrary.json
-npm run validate:dialogue # Validate dialogue files
-```
-
-### Specialized Test Commands
-```bash
-# Test specific areas
-npm run test:configs    # Enemy configuration tests
-npm run test:utils      # Utility function tests  
-npm run test:systems    # System integration tests
-```
+- **Godot 4.6.2 .NET** on macOS (Apple Silicon)
+- **C# now** → **GDScript after the port** (see `docs/PORT_PLAN.md` once it lands)
+- **.NET 8 SDK** required
+- User's TypeScript background — framework-literate, not C#-literate. Be explicit about C# idioms.
 
 ## Architecture Overview
 
-### Core Structure
-- **Construct 3 Project**: Main game engine in `project.c3proj`
-- **TypeScript Source**: All code in `scripts/` directory
-- **Test Suite**: Comprehensive tests in `tests/` directory
-- **Assets**: Game assets organized in `eventSheets/`, `families/`, `files/`, `images/`
-
-### Key TypeScript Integration Pattern
-The codebase uses a "nested object pattern" to expose TypeScript functionality to Construct 3:
-
-```typescript
-// In main.ts - This is the ONLY place where TypeScript casting is used
-(globalThis as any).AdventureLand = {
-    EnemyAI: { /* methods */ },
-    ItemManager: { /* methods */ },
-    TileAnimations: { /* methods */ }
-    // 20+ namespaces registered — see main.ts for full list
-};
+```
+World_00.tscn (main scene — Leafwood Village exterior)
+├── GrassBackground (Sprite2D, repeating, z=-10)
+├── Ground3underP (TileMapLayer, z=-3)  ← 337 tiles
+├── Ground2underP (TileMapLayer, z=-2)  ← 252 tiles
+├── Ground1underP (TileMapLayer, z=-1)  ← 92 tiles
+├── Objects        (TileMapLayer, z=0)  ← 219 tiles
+├── Decor1PLevel   (TileMapLayer, z=0)  ← 276 tiles
+├── Decor2overP    (TileMapLayer, z=1)  ← 231 tiles
+├── Decor3overP    (TileMapLayer, z=2)  ← 23 tiles
+├── Buildings/ (8 Sprite2D children at Tiled offsets)
+├── Player (CharacterBody2D with PlayerController.cs)
+│   ├── SpriteLayers (MSCA-generated: AnimationTree + AnimationPlayer + 20+ layers)
+│   ├── CostumeController (paper-doll layer swap)
+│   └── Camera (Camera2D, 2x zoom, smooth follow)
+├── VillageNpc (Area2D + StaticBody2D + NpcAnimator)
+└── DialogueManager (CanvasLayer)
 ```
 
-This pattern is **required** - direct function exports cause runtime errors in Construct 3.
+**Z-index convention matches Tiled layer names:** "under P" = below player (z<0), "P level" = same layer, "over P" = above player (z>0).
 
-### TypeScript Architecture
-- **Root Directory**: `scripts/` (configured in tsconfig.json)
-- **Main Entry**: `main.ts` - sets up the global AdventureLand namespace
-- **External Modules**: `scripts/external/` - individual system modules
-- **Type Definitions**: `scripts/types/` - comprehensive Construct 3 type definitions
-- **Runtime Facade**: `c3-runtime-facade.ts` - bridges TypeScript and C3 runtime
+### World naming convention (grid)
 
-### Critical Integration Rules
+Worlds follow a `World_XY` grid naming convention inherited from the C3 project, where X = column (east), Y = row (south):
 
-1. **TypeScript works with UIDs, not instances** - C3 object instances cannot be directly manipulated from TypeScript
-2. **Event sheets call TypeScript** - TypeScript returns data that C3 uses to update objects
-3. **JSON data access** - Use runtime objects to access AJAX/Dictionary data
-4. **Namespace Access in Event Sheets** - Always use `globalThis.AdventureLand?.SystemName` in C3 event sheets, NOT TypeScript casting (causes runtime bugs)
+- `World_00.tscn` — Leafwood Village (start, origin of the grid)
+- `World_10.tscn` — tile one step east of origin
+- `World_01.tscn` — tile one step south of origin
+- `World_00_Blacksmith.tscn` — interior of the Blacksmith inside World_00
+- `World_00_Pennys_House.tscn` — interior of Penny's house inside World_00
 
-## ⚠️ CRITICAL: TypeScript Event Sheet Bug
+All world scenes live in `scenes/worlds/`. Interiors use the `World_XY_Name` suffix pattern. When adding a new world, update `scripts/maps/WorldManager.cs` (Phase 5) so scene transitions know where to send the player. The user has existing **numbered door triggers** from C3 (1, 2, 3…) that pair with matching spawn points — reuse the ID scheme when porting interior↔exterior transitions.
 
-**DO NOT use `(globalThis as any)` in event sheets** - Using TypeScript casting multiple times causes runtime errors and breaks system access.
+## Critical Gotchas
 
-**✅ CORRECT Pattern** (JavaScript with optional chaining):
-```javascript
-const enemyAI = globalThis.AdventureLand?.EnemyAI;
-if (enemyAI) {
-    enemyAI.methodName(parameters);
-}
+### 1. TileSetAtlasSource requires CreateTile()
+
+In Godot 4, `TileMapLayer.SetCell(coord, sourceId, atlasCoord)` **silently fails** if the atlas tile at `atlasCoord` hasn't been created yet. The tileset has 9200 cells — creating them all up-front is insane.
+
+**Solution (in `scripts/maps/MapLoader.cs`):** We call `atlasSource.CreateTile(atlasCoord)` lazily as each unique atlas position is first encountered, tracked in a HashSet to avoid duplicates.
+
+**If tiles stop rendering:** Check Godot's Output panel for "Map loaded: N tiles across M unique atlas positions". If M is 0, the CreateTile call is broken.
+
+### 2. Player uses MSCA plugin — AnimationTree, not custom animator
+
+The player animation runs entirely through the [MSCA plugin](https://github.com/feendrache/Godot4_msca) (installed at `addons/msca/`). MSCA generates the player scene at editor time: a `CharacterBody2D` with a `SpriteLayers` child that contains `AnimationPlayer`, `AnimationTree` (state machine + BlendSpace2D per state), and 20+ `Sprite2D` paper-doll layers (01body, 13hair, 14head, etc.).
+
+**Do not hand-roll animation code.** Drive the AnimationTree from C# via `StateMachinePlayback.Travel()` + `blend_position` Vector2 — see `scripts/player/PlayerController.cs` for the pattern.
+
+**Full integration notes:** `docs/MSCA_INTEGRATION.md`. Key points:
+- MSCA state names are PascalCase: `Idle`, `Walk`, `Run`, `Jump`, etc.
+- Direction vectors: `(0, 1)`=Down `(1, 0)`=Right `(0, -1)`=Up `(-1, 0)`=Left
+- BlendSpace2D is DISCRETE mode — input should be snapped to cardinals
+- `MSCAFarmerSpriteLayers.gd` stays on the SpriteLayers node (animation keyframes call its signal-emit methods)
+- Combat hitbox timing is already authored into Seliel's animations — subscribe to `animation_set_hitbox` signal when we do combat
+
+**Paper-doll costume swap:** `scripts/player/CostumeController.cs` is the Inspector-driven entry point. Layers are named per Mana Seed convention (`13hair`, `14head`, `05shrt`, etc.). `Sprite2D.Visible = false` to hide, `Sprite2D.Texture = ...` to swap.
+
+**Palette recoloring:** `scripts/player/PaletteSwapper.cs` builds `ShaderMaterial` from 8-color ramps using `addons/msca/shader/simple_ramp_shader.gdshader`. Color ramps come from `_supporting files/palettes/` in Seliel's Farmer Base download.
+
+### 3. NPC uses AnimatedSprite2D + runtime SpriteFrames
+
+Penny's node is `AnimatedSprite2D` (named `Sprite2D` in the scene — don't rename, NpcAnimator hardcodes the path). `NpcAnimator.cs` builds `SpriteFrames` at runtime from the `[Export] Texture2D Sheet` property set in the Inspector. NPCs don't need the full MSCA layered system because they don't change costume.
+
+**AnimatedSprite2D has no `.Texture` property** — the texture lives in `SpriteFrames`. Always use `[Export] Texture2D Sheet` and pass it into `AtlasTexture.Atlas` during frame construction.
+
+**Penny sheet layout** (128×256, 32×32 frames, 4 columns):
+| Row | Animation | StartCol | FrameCount |
+|-----|-----------|----------|------------|
+| 0 | walk_down | 0 | 4 |
+| 1 | walk_right | 0 | 4 |
+| 2 | walk_up | 0 | 4 |
+| 3 | walk_left | 0 | 4 |
+| 4 | idle | **1** | 2 |
+
+**Idle starts at column 1**, not 0 — columns 0 and 3 in the idle row are blank. Getting this wrong causes flickering.
+
+### 4. TileSet `tile_size` AND per-source `texture_region_size`
+
+**Root cause of "jangled" / flickering tile rendering:** Two separate
+size fields, both required, both default to wrong values silently.
+
+The TileSet sub-resource needs `tile_size`. **Each individual atlas
+source** also needs its own `texture_region_size` matching the source
+PNG's tile dimensions — they are NOT inherited from the TileSet. When
+omitted, Godot defaults the source region to 16×16, which only "works"
+for 16-px tilesets by accident; a 32×32 atlas with default 16×16
+region samples quarter-tiles and animations cycle through misaligned
+fragments (visible flicker).
+
+```
+[sub_resource type="TileSet" id="TileSet_1"]
+tile_size = Vector2i(16, 16)             ← REQUIRED on TileSet
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("...")
+texture_region_size = Vector2i(16, 16)   ← REQUIRED on every source
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_water_plants"]
+texture = ExtResource("...")
+texture_region_size = Vector2i(32, 32)   ← MATCH the source PNG's tile dims
 ```
 
-**❌ WRONG Pattern** (TypeScript casting - causes bugs):
-```javascript
-// This pattern BREAKS when used multiple times - use safe pattern instead
-globalThis.AdventureLand?.EnemyAI.methodName(); // Safe JavaScript pattern
+**Set in editor**: TileSet panel → click the source → Setup section →
+Texture Region Size.
+
+These can be silently stripped during git merges. If tiles look
+jangled or animated tiles flicker, check these first.
+
+### 5. TMX converter ignores wangsets and rebuilds the scene
+
+`tools/tmx_to_godot.py` regenerates `scenes/worlds/World_00.tscn` from scratch. **Running it will wipe manual scene edits.** Only run when tile/layer data changes.
+
+**To update tile data without touching the scene**, use instead:
+```bash
+python3 tools/update_tile_csvs.py assets/tiles/tilemaps/World_00_Village.tmx
+```
+This writes only the CSV files. MapLoader reads them at runtime — just restart the game.
+
+The TMX is at `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles total).
+
+`tools/add_decor_layers.py` has embedded raw CSV data — used once, safe to leave as reference.
+
+### 6. TMX trigger data must be baked — do not parse at runtime
+
+Triggers (doors, spawn markers, edge transitions, NPCs, items) are authored
+in Tiled's Object Layer, then baked into `.tres` files by
+`tools/tmx_triggers_to_tres.py`. The Godot runtime (`TriggerSpawner.cs`) loads
+the `.tres`, never the TMX. This keeps shipped builds free of XML parsing and
+Python dependencies.
+
+**Tile authoring → `.tres` flow:**
+1. User edits TMX in Tiled → saves.
+2. Tiled's `autobake.js` extension (installed per `tools/README.md`) runs
+   `tools/bake_all.py` automatically on save.
+3. `bake_all.py` calls `tmx_triggers_to_tres.py` for every TMX → regenerates
+   `assets/map_data/triggers/{TMX_name}.tres`.
+4. Godot reads the `.tres` at play time via `TriggerSpawner`.
+
+**When working on maps/triggers/interiors:**
+- **Before recommending the user hit Play, verify the auto-bake is live.** Ask
+  them whether `AutoBake: armed.` shows up in Tiled's console on startup, or
+  whether the extension is installed. If not, run `python3 tools/bake_all.py`
+  yourself so the `.tres` matches the TMX.
+- **If you edit a TMX directly (rare — user usually edits in Tiled)**, run
+  `python3 tools/bake_all.py` yourself immediately. The staleness check in
+  `TriggerSpawner.CheckStaleness()` will warn at runtime, but the bake is what
+  actually fixes things.
+- **Never add runtime TMX parsing to shipped code.** If you need TMX data at
+  runtime, extend the baker to emit a new `.tres` type.
+
+**Debug-build safety net:** `TriggerSpawner` compares mtimes of the source TMX
+and the baked `.tres`, and pushes a warning if the TMX is newer. If you see a
+`[TriggerSpawner] STALE:` warning in the Output panel, rebake.
+
+### 7. Inherited-instance overrides — edit the .tscn, not the Inspector
+
+NPC scenes (Sally, Sophie, Sarah, Nick, etc. inside the world `.tscn` files) are
+**instances** of `scenes/npc/Npc.tscn` with their `NpcAnimator` child's
+`Sheet` overridden per-instance to a different sprite. Two failure modes
+to know about:
+
+**Failure 1 — editing the inherited child cascades to all NPCs.** Selecting
+the inherited `NpcAnimator` in the Godot scene tree and changing `Sheet` in
+the Inspector edits **the base `Npc.tscn`**, not the instance — so every
+shopkeeper turns into Penny. Godot only creates a per-instance override if
+one already exists; without that, the change writes to the base scene. To
+force an override, right-click the property in the Inspector → "Make
+Editable" / "Override", *or* edit the world `.tscn` directly (preferred —
+fewer surprises).
+
+**Failure 2 — format=3 → format=4 upgrade silently drops the override.**
+When Godot resaves a `format=3` scene as `format=4` (e.g. after the
+editor opens it for the first time in 4.6), the
+`[node name="NpcAnimator" parent="<Npc>" index="1"] Sheet = ExtResource(...)`
+override block can vanish along with its `[ext_resource]`. Diff against
+git (`git diff <scene>.tscn`) before saving and look for missing
+`shopkeeper_*.png` ext_resources.
+
+**The override pattern (paste into world `.tscn` — never via the
+Inspector):**
+
+```
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sally.png" id="12_sheet"]
+...
+[node name="Sally" parent="." instance=ExtResource("11_npc")]
+NpcName = "Sally"
+
+[node name="NpcAnimator" parent="Sally" index="1"]
+Sheet = ExtResource("12_sheet")
 ```
 
-This bug has been reported multiple times - TypeScript casting can only be used ONCE in the entire codebase before it breaks runtime access.
+`index="1"` matches NpcAnimator's position inside the base `Npc.tscn`; the
+`12_sheet` id is just convention — any unused id in the scene works.
 
-## Production Systems
+### 8. Bake assigns Godot TileSet source IDs sequentially by TMX firstgid
 
-### Enemy AI Factory with Battle System (`enemy-ai.ts`, `enemy-configs.ts`)
-- Data-driven enemy behavior system with complete battle integration
-- 90% reduction in development time, 35% CPU reduction during battle
-- Features: weighted behaviors, conditional logic, state management
-- **Invulnerability System**: Prevents damage spam with configurable immunity frames
-- **Battle Integration**: notifyHurt, notifyRecovery, notifyDeath callbacks
-- **Physics Coordination**: Smooth knockback with C3 8Direction behavior
-- **Visual Synchronization**: TypeScript state coordinated with C3 visual effects
+`tmx_interior_to_csvs.py` walks the TMX's `<tileset firstgid="...">`
+entries in order and assigns each one a sequential source index
+(0, 1, 2, …), deduped by image. The CSV's 5th column emits this
+index as the source id. The Godot scene's TileSet sub-resource MUST
+have a source registered at the matching id — IDs are not auto-aligned.
 
-### Tile Animation Manager (`tile-animation-manager.ts`)
-- High-performance tile animation system  
-- 67% CPU reduction (30% → 10%)
-- Handles water, fire, lava animations with special waterfall logic
+**Symptoms of misalignment**:
+- `[MapLoader] Layer 'X': TileSet has no source with id=N` in Output.
+- Painted Tiled cells silently render empty in-game.
+- Animator runs against the wrong texture (e.g. WaterPlants .tres
+  programming the Beach atlas).
 
-### Item Manager (`item-manager.ts`)
-- Currently O(n) item lookups (ready for O(1) optimization)
-- Manages 150+ game items
-- Integration with inventory system
+**To check**: `awk -F, '{print $5}' assets/map_data/{world}_{layer}.csv | sort -u`
+shows source ids actually used. Cross-reference with the Godot TileSet
+panel — each source has an "ID" field at the top of its Setup section.
+If the CSV says id=3 but the texture is at id=4, click the "ID" field
+and renumber.
 
-### Quest & Dialogue System (`scripts/external/quest-dialogue/`)
-- TypeScript dialogue system with bridge pattern for C3 integration
-- Data-driven quest and dialogue management
-- 14 dialogue files across 3 worlds (World00: 8 NPCs, World01: 2, World10: 4)
-- Race condition prevention with immediate InDialogue flag setting
-- Performance: <1% CPU overhead, negligible impact on game performance
-- **Bridge Pattern**: DialogueBridge connects TypeScript logic to C3 event sheets
-- **Enemy Integration**: Automatic enemy pause/resume during dialogue
-- **Quest Tracking**: triggerUID tracking prevents duplicate dialogue triggers
-- **Event Sheet Safety**: Uses safe JavaScript pattern with InDialogue checks
+### 9. Tiled layer names → CSV filenames are sanitized
 
-### SFX Controller (`scripts/systems/audio/sfx-controller.ts`)
-- Convention-based sound effect system
-- Naming: `{character/object}_{action}` (e.g., `seamonster_rise`, `door_open`, `item_pickup`)
-- Uses C3 Audio resource names (no path, no extension)
-- Optional volume parameter in dB (0 = normal, negative = quieter, positive = louder)
-- Does NOT duck music (unlike VO system)
-- **Usage in TypeScript**: `SFXController.play("seamonster_rise", -5)`
-- **Usage in Event Sheets**: `globalThis.AdventureLand?.SFX?.play("door_open", 0)`
-- **C3 Integration**: Requires `PlaySFX(soundName, volume)` function in event sheets
-- **Convenience methods**: `playBubble(volume)` for common water/bubble effects
+`sanitize_layer_name()` strips spaces and non-alphanumeric chars from
+the Tiled layer name before producing the CSV filename. The Godot
+`TileMapLayer` node MUST be named `{tmx_stem}_{sanitized_layer}` to
+match — `MapLoader` looks for `{node.Name}.csv` and silently skips
+layers whose CSV doesn't exist.
 
-## Testing Structure
+**Examples** (using the canonical names — see "Canonical map layer
+template" below): "Ground 3 - under P" → `World_10_Lake_Ground3underP`;
+"Decor 1 - P level" → `World_10_Lake_Decor1Plevel`; "WaterPlants -
+P level" → `World_10_Lake_WaterPlantsPlevel`.
 
-### Test Organization
-- `tests/configs/` - Configuration validation tests
-- `tests/utils/` - Utility function tests
-- `tests/systems/` - System integration tests
-- `tests/setup.ts` - Jest test environment setup
+**Symptom**: `[MapLoader] Map data not found: res://assets/map_data/...`
+in Output, layer renders empty even though Tiled shows painted cells.
 
-### Test Configuration
-- Uses ts-jest with custom TypeScript config
-- Covers `scripts/**/*.ts` excluding main.ts and type definitions
-- Includes mock setup for Construct 3 runtime objects
+### 10. Same-image tilesets in a TMX dedupe to one Godot source
 
-## Documentation Maintenance
+If Tiled adds an embedded `tm_water` tileset when you drag the PNG in,
+and you later add the external `LakeWaterfall.tsx` pointing at the
+same PNG, the TMX has **two** `<tileset>` declarations with the same
+image. The baker collapses them to one Godot source (so the scene's
+TileSet doesn't need a redundant source). Functional, but messy — the
+status line will show `Tilesets (N declared, M unique)` whenever
+`N > M`.
 
-**When adding or modifying systems, keep these docs in sync:**
+**Cleanup in Tiled**: Map → Map Properties → Tilesets → select the
+embedded duplicate → minus button. Re-paint any cells that referenced
+the embedded gids using the external tileset.
 
-1. **README.md** — Update production systems table, world status (Playable/Planned), and key metrics
-2. **CLAUDE.md** — Update "Current System Status" and "Production Systems" sections
-3. **scripts/README.md** — Update the namespace table and directory tree
-4. **CONTENT_CREATION_GUIDE.md** — Add to the quick reference table if the new system enables new content types
-5. **TODO.md** — Mark completed items and add new planned work
-6. **System-specific claude.md** — Create `scripts/systems/[name]/claude.md` for any new system
+## Canonical map layer template
 
-**When adding new npm scripts**, update the "Essential Commands" section in this file.
+Every TMX in `assets/tiles/tilemaps/` uses the same layer vocabulary —
+interior, exterior, and future maps all share one template. New maps
+should be copied from `assets/tiles/tilemaps/_TEMPLATE.tmx` (skipped by
+the baker via its underscore prefix). Full schema with sanitization and
+typical contents lives in `tools/layer_renames/README.md`; the short
+form:
 
-**When adding new dialogue files**, update the dialogue file counts and world assignments in this file and in README.md.
+| Tiled layer name      | Sanitized        | z (.tscn) | y_sort | Typical contents                                          |
+|-----------------------|------------------|-----------|--------|-----------------------------------------------------------|
+| `Ground 3 - under P`  | `Ground3underP`  | -3        | off    | base terrain / wall back                                  |
+| `Ground 2 - under P`  | `Ground2underP`  | -2        | off    | overlay terrain / floor coverings                         |
+| `Ground 1 - under P`  | `Ground1underP`  | -1        | off    | ground decals / wall trim                                 |
+| `Objects - P level`   | `ObjectsPlevel`  |  0        | **on** | y-sortable player-level: NPCs, tall furniture, signs      |
+| `Decor 1 - P level`   | `Decor1Plevel`   |  0        | off    | flat same-plane decor: mats, low items, sign bases        |
+| `Decor 2 - over P`    | `Decor2overP`    |  1        | off    | canopies, awnings, shop-counter items                     |
+| `Decor 3 - over P`    | `Decor3overP`    |  2        | off    | treetops, ceiling, mid-canopy                             |
+| `Decor 4 - over P`    | `Decor4overP`    |  3        | off    | OPTIONAL — top-most clouds / dense canopy                 |
+| `Triggers` (obj)      | —                | —         | —      | class = door / spawn / edge / npc / item / mirror         |
+| `Walls` (obj)         | —                | —         | —      | class = wall only (collision rects / polys)               |
 
-**When a new world becomes playable**, move it from "Planned" to "Playable" in README.md and update NPC counts.
+Thematic layers (slot in where their z fits — the suffix tells you):
 
-## Development Patterns
+| Tiled layer name           | Sanitized              | z  | Notes                                  |
+|----------------------------|------------------------|----|----------------------------------------|
+| `Water - under P`          | `WaterunderP`          | -1 | bulk water surface                     |
+| `WaterPlants - P level`    | `WaterPlantsPlevel`    |  0 | animated, paired with `TileAnimator`   |
+| `Beach - under P`          | `BeachunderP`          | -1 | sand / beach edge                      |
+| `RockyWater - P level`     | `RockyWaterPlevel`     |  0 | animated                               |
+| `Waterfall - over P`       | `WaterfalloverP`       |  1 | animated                               |
 
-### Adding New Systems
-1. Create module in `scripts/` (TypeScript files)
-2. Create documentation in `scripts/external/system-name/` (markdown files)
-3. Export functions with clear TypeScript interfaces
-4. Add to main.ts nested object pattern
-5. Create corresponding tests
-6. Use .js extensions in imports (required for C3)
+**Authoring a new map**:
 
-### System Initialization Pattern
-```typescript
-// In main.ts - initialize after item system loads
-al.Potions.initialize();
-console.log("✅ Potion system initialized!");
+1. `cp assets/tiles/tilemaps/_TEMPLATE.tmx assets/tiles/tilemaps/World_<XY>_<Name>.tmx`
+2. Open in Tiled → Map → Map Properties: resize to taste.
+3. Map → Tilesets → add your `.tsx` (or external PNG via "New Tileset").
+4. Paint.
+5. Save. Autobake regenerates `assets/map_data/World_<XY>_<Name>_<layer>.csv`
+   and `assets/map_data/triggers/World_<XY>_<Name>.tres`.
+6. Create `scenes/worlds/World_<XY>_<Name>.tscn` (or `World_<XY>.tscn` for a
+   bare-world scene). Add one `TileMapLayer` per painted layer, naming each
+   node `World_<XY>_<Name>_<sanitized layer>` so MapLoader finds the CSV
+   (Gotcha 9). Set z_index and y_sort_enabled per the table above.
+7. For animated thematic layers, add `TileAnimator` siblings (see
+   "Animated Tiles" below) with `TargetLayer` NodePaths pointing at the
+   matching layer nodes.
 
-// Systems that need runtime access
-SystemName.initialize({
-    // config options
-});
+**Why this template exists**: before 2026-05-16 the project had six
+different layer naming schemes (`Ground & Walls`, `Floor Coverings`,
+`Furniture & Decor`, `Items`, `Environment - Ground - UnderP`,
+`Decorations 1-3 - OverP`, etc.) drifting across interiors and
+exteriors. The history of that consolidation lives in commits
+`d80a933` and `39d9327`. If you're authoring map #2+ of a given type
+and find yourself wanting a different scheme, update this section
+*and* `tools/layer_renames/README.md` so they stay in sync.
 
-// Set up namespace for event sheet access (TypeScript setup only)
-// This casting pattern is only used ONCE in main.ts, never in event sheets
-(globalThis as any).AdventureLand.SystemName = {
-    method1: (param: any) => SystemName.method1(param),
-    method2: () => SystemName.method2()
-};
+## Data Resources (GlobalClass pattern)
+
+Game data (enemy stats, items, dialogue) lives in `.tres` files as `[GlobalClass]` Resource subclasses. **Do not hardcode game data in C#.** Edit stats in the Godot Inspector; the files are plain text and diff cleanly in git.
+
+### When to use a Resource
+
+- Anything the user might want to tune without a rebuild (stats, behavior weights, prices)
+- Anything with ≥3 instances sharing a schema (enemies, items, dialogues, quests)
+- Anything currently living as TypeScript `const FOO_CONFIG = {...}` in the C3 codebase — it should become a `.tres`
+
+### File layout
+
+```
+scripts/data/
+├── EnemyData.cs           ← [GlobalClass] Resource, references Array<EnemyBehavior>
+├── EnemyBehavior.cs       ← one weighted behavior slot
+├── EnemyAction.cs         ← Move/Animate/Sound/Invulnerable action
+├── BehaviorCondition.cs   ← distance/hurt/invuln gating
+├── ItemData.cs            ← mirrors ItemsLibrary.json entries
+├── DialogueData.cs        ← mirrors quest-dialogue files
+├── TriggerData.cs         ← one TMX object: Door/Spawn/Edge/Npc/Item
+└── WorldTriggers.cs       ← array of TriggerData baked from one TMX
+
+assets/data/
+├── enemies/
+│   ├── ooze.tres, crab.tres, bat.tres
+├── items/                 ← from items_to_tres.py
+└── dialogue/              ← from dialogue_to_tres.py
+
+assets/map_data/triggers/  ← baked from TMX ObjectLayer by tmx_triggers_to_tres.py
+├── World_00_Village.tres
+├── World_00_Blacksmith.tres
+└── ...
 ```
 
-### Utility Modules
-- `scripts/utils/logger.ts` — structured logging with `Logger.create("ModuleName")` for consistent, filterable output
-- `scripts/utils/errors.ts` — typed error classes for system-specific error handling
+### The pattern
 
-### Performance Guidelines
-- Migrate heavy calculations to TypeScript
-- Keep visual effects in Construct 3 event sheets
-- Use timers for periodic operations
-- Batch operations where possible
+1. **Define the Resource class** in `scripts/data/`:
+   ```csharp
+   [GlobalClass]
+   public partial class EnemyData : Resource
+   {
+       [Export] public string Type { get; set; } = "";
+       [ExportGroup("Base Stats")]
+       [Export] public int Health { get; set; } = 1;
+       [ExportGroup("Behaviors")]
+       [Export] public Array<EnemyBehavior> Behaviors { get; set; } = new();
+   }
+   ```
 
-### Data-Driven Configuration
-Systems use configuration objects rather than hardcoded logic:
-```typescript
-export const ENEMY_CONFIG: EnemyConfig = {
-    type: "Crab",
-    baseStats: { health: 3, speed: 20 },
-    behaviors: [/* weighted behavior definitions */]
-};
-```
+2. **User builds in Godot** (Ctrl+Cmd+B) — this is what makes the `[GlobalClass]` register in the Inspector. A fresh `.tres` written before build will fail to load.
 
-## Common Issues
+3. **Create `.tres` by hand or via FileSystem → New Resource** in Godot. Text format is stable, safe to edit directly once you know the schema.
 
-### "Cannot read property of undefined"
-- **Cause**: Accessing C3 objects before they exist
-- **Solution**: Initialize in "On start of layout" events
+4. **Load at runtime** in enemy spawn code:
+   ```csharp
+   var data = GD.Load<EnemyData>("res://assets/data/enemies/crab.tres");
+   ```
 
-### "Module not found" errors  
-- **Cause**: Missing .js extension in imports
-- **Solution**: Always use .js extension, even for .ts files
+### Gotchas
 
-### Performance degradation
-- **Cause**: Every-tick operations in TypeScript
-- **Solution**: Use timers, batch operations, or move to event sheets
+- **Enums serialize as integers** in `.tres` files based on declaration order. If you reorder enum values, existing `.tres` files silently misdescribe. Add new values at the **end** of the enum; never reorder.
+- **Nested Array<Resource> syntax in .tres**: use `[SubResource("id1"), SubResource("id2")]` — not `Array[Resource]([...])` and not typed arrays. Godot normalizes format on next save.
+- **`[Export] Array<T>` with `= new()` default** avoids null reference errors when the Resource is first loaded from a `.tres` that doesn't set the array.
+- **Resource scripts must be in `scripts/data/`** (convention) — this keeps `scripts/maps/`, `scripts/player/`, etc. free of pure-data types and makes discovery easy.
 
-### RuntimeFacade type errors
-- **Cause**: Trying to use methods not exposed by the facade
-- **Solution**: Either extend the facade interface or use the existing runtime access patterns (avoid multiple TypeScript casts)
+### Reference implementations
 
-### Dictionary access in TypeScript
-- **Pattern**: Use `dict.getDataMap().get('key')` not `dict.get('key')`
-- **Example**:
-```typescript
-const dict = runtime.objects.Dict_SaveGameData.getFirstInstance();
-const health = dict?.getDataMap().get('Health');
-```
+- `scripts/data/EnemyData.cs` + `EnemyBehavior.cs` + `EnemyAction.cs` + `BehaviorCondition.cs`
+- `.tres` files: `assets/data/enemies/ooze.tres`, `crab.tres`, `bat.tres`
+- Source of truth these translate: `../scripts/systems/enemy/enemy-configs.ts` (C3 project)
 
-### C3 Picking Scope Bug (CRITICAL)
-- **Problem**: `For each Object` picks ALL instances globally, including unrelated objects on other layers
-- **Symptom**: Modifying inventory UI accidentally affects world triggers/objects with same type
-- **Solution**: ALWAYS add layer/scope conditions to `For each` loops
+### Flat vs polymorphic action design
 
-**❌ WRONG - Picks everything:**
-```javascript
-// In C3 Event Sheet
-For each InventoryItems
-  → Set animation frame to 0  // Affects inventory UI AND world items!
-```
+`EnemyAction.cs` uses a **flat parameter layout** (all possible fields on one class, read only what Type needs). The alternative — one subclass per action type (`MoveAction`, `AnimateAction`, etc.) — is cleaner typed but requires more boilerplate and forces `.tres` to pick the concrete subclass. Flat was chosen because:
+1. It mirrors the TypeScript `ActionConfig` union 1:1, making the translation verifiable
+2. Godot Inspector shows all fields under `ExportGroup`s — user sees everything at once
+3. Runtime dispatch is `switch (action.Type)` — easy to port from the TS `switch (action.type)`
 
-**✅ CORRECT - Scoped to layer:**
-```javascript
-// In C3 Event Sheet
-For each InventoryItems
-  InventoryItems: Is on layer "Inventory"  // Only affects UI layer
-  → Set animation frame to 0
-```
+If action types diverge significantly later (e.g., compound actions, conditional actions), refactor to subclasses.
 
-**Real bug example**: Auto-selecting X button after equipping caused world item triggers to disappear because `For each InventoryItems` was picking world triggers too.
+## Animated Tiles
 
-**Best practice**: Always scope `For each` loops with:
-- Layer condition: `Is on layer "LayerName"`
-- Family filter: Pick by family membership
-- Variable check: `InstanceVar = value`
-- Position check: `X > value`, `Is overlapping`, etc.
+Lake water, beach edges, waterfall, and decorative water plants use
+Godot's native per-tile animation on `TileSetAtlasSource` — the
+renderer cycles frames automatically with no per-frame C# tick. A
+small runtime node programs the animation parameters from a `.tres`
+config so authoring stays out of the editor UI.
 
-## File Extensions and Imports
-- Always use `.js` extensions in imports, even when importing `.ts` files
-- This is required for Construct 3's module system compatibility
+### Architecture
 
-## Integration Philosophy
-TypeScript enhances Construct 3 but doesn't replace it. Use TypeScript for logic/data processing and Construct 3 for visuals/UI.
+- **`scripts/maps/TileAnimator.cs`** — runtime-only `Node`. One per
+  `(TileSet source, .tres)` pair. `_Ready` programs frame count,
+  duration, separation, and columns onto each declared atlas tile.
+  Sibling nodes can share a TileMapLayer (multiple animators per
+  layer, each handling a different atlas source).
+- **`scripts/data/AnimatedTileSet.cs`** — `[GlobalClass]` Resource
+  holding `Array<AnimatedTileEntry>`.
+- **`scripts/data/AnimatedTileEntry.cs`** — per-base-tile animation
+  params: `AtlasCoord`, `FrameCount`, `FrameDuration`,
+  `FrameSeparation`, `FrameColumns`.
+- **`tools/pack_animated_tiles.py`** — converts Mana Seed asset
+  folders into packed atlas PNG + `.tsx` (for Tiled) + `.tres` (for
+  TileAnimator).
 
-## Documentation Standards
+### Convention: column-based atlases
 
-### Code Blocks in Markdown
-- Use `jsx` instead of `javascript` for better Notion compatibility
-- Use `tsx` instead of `typescript` for better Notion compatibility
-- This ensures proper line breaks when importing to Notion
+Every packer output is **column-based** — each atlas COLUMN is one
+base tile, with that tile's frames stacked vertically downward. The
+matching `.tres` uses `FrameColumns=1` so Godot cycles frames down
+through the column. **In Tiled, paint only from row 0**; cells beneath
+are the animation frames and should never be painted directly.
 
-### Implementation Guides
-- Always clarify WHERE code goes (Event Sheet vs TypeScript file)
-- Specify "In a Script action" for Event Sheet code
-- Use safe JavaScript pattern in event sheet examples: `globalThis.AdventureLand?.SystemName`
+The packer handles two source layouts and normalizes both to this:
+- **Convention A** — single horizontal frame strip per file
+  (e.g. `32x32_Waterfall_Left.png` = one tile × N frames). Each strip
+  becomes one atlas column.
+- **Convention B** — Mana Seed playbook (`Name.png` lookbook +
+  `Name_1.png ... Name_N.png` per-tile strips, N tile types). Each
+  per-tile strip becomes one atlas column.
 
-## Adventure Land Specific Gotchas
+### Wiring a new animated tileset
 
-### Inventory System Specifics
-- **CurrentItemSlot must default to -1, not 0** (causes phantom items)
-- **SaveGameData must not call other functions** (causes circular dependencies)
-- **Equipment operations need careful state management** to prevent item loss
+1. **Pack**: `python3 tools/pack_animated_tiles.py <source-folder>
+   [--frame-duration 0.15]`. Generates PNG/TSX/TRES.
+2. **Register**: add the `.tsx` to `tools/tileset_registry.py` with
+   `columns` = number of distinct base tiles (atlas tile-column
+   count, NOT frame count).
+3. **Tiled**: Map → Tilesets → add the `.tsx`. Add a tile layer.
+   Paint from row 0. Save → autobake regenerates the CSV.
+4. **Godot scene**:
+   - Add a `TileMapLayer` node named to match the CSV (see Gotcha 9
+     for sanitization rules).
+   - In TileSet panel, add an Atlas source for the new PNG. **Set
+     `texture_region_size`** to match the source tile dims (Gotcha 4).
+     The source ID must match the bake-assigned id (Gotcha 8).
+   - Add a `TileAnimator` sibling node: `TargetLayer` → the new
+     layer, `SourceId` → the bake-assigned id, `Animations` → the
+     `.tres`.
+5. Run. Expect log line: `[TileAnimator] {Name}: N ok, 0 failed →
+   source S on {LayerName}`.
 
-### C3 Picking Bridge Pattern
-When passing data from Construct 3 event sheets to TypeScript:
-```javascript
-// In event sheet - MUST use local variables
-→ For each Enemy
-  → Local number enemyUID = 0
-  → Set enemyUID to Enemy.UID
-  → Execute JavaScript:
-    const enemyAI = globalThis.AdventureLand?.EnemyAI;
-    if (enemyAI) enemyAI.update(localVars.enemyUID);
-```
+### Animator gotchas
 
-### Event Sheet Namespace Access Pattern
-```javascript
-// ❌ WRONG - Will cause errors in event sheets
-AdventureLand.HealthSystem.takeDamage(...)
+- **Runtime-only on purpose.** `[Tool]` was tried — mutates the
+  shared TileSet sub-resource at editor load and persists noise into
+  the scene file. Animator stays runtime-only; the editor view will
+  not animate, only the running game does.
+- **`SetTileAnimationFramesCount` silently fails** to resize when any
+  frame cell is occupied by another tile registration. TileAnimator's
+  `RemoveTile` cleanup handles atlas cells auto-registered by Godot's
+  "Setup tiles automatically" — frees the column the animation needs
+  to occupy before extending.
+- **Order matters**: set `animation_columns` and `animation_separation`
+  BEFORE `animation_frames_count`, or the resize validates against
+  the wrong layout footprint and stays at 1 frame.
+- **C# `[Export]` defaults don't always apply on `.tres` deserialize**
+  — the packer writes every field explicitly to avoid silent
+  zero-default fallthroughs.
+- **Frame-cell math depends on `FrameColumns`**: with `0`, frames
+  extend right; with `1`, frames extend down. The cleanup loop in
+  TileAnimator computes frame positions per Godot's actual layout
+  formula — change with care.
 
-// ✅ CORRECT - Required pattern for event sheets
-const healthSystem = globalThis.AdventureLand?.HealthSystem;
-if (healthSystem) {
-    healthSystem.takeDamage(...);
-}
+## Asset Expectations
 
-// ✅ OK - Console testing only (browser console)
-AdventureLand.HealthSystem.debug()
-```
+User drops files into `assets/`:
+- `tilesets/FantasyForest_Combo.png` (1600x1472)
+- `tilesets/Light_Grass_BG.png` (16x16, repeating)
+- `buildings/*.png` (8 structure sprites per TMX `<imagelayer>` offsets)
+- `sprites/player/fbas_01body_human_00a.png` (1024x1024, Mana Seed base body)
+- `sprites/npc/penny.png` (128x256)
 
-### Import Pattern Example
-```typescript
-// ✅ CORRECT - Always .js even for TypeScript files
-import * as EnemyAI from "./enemy-ai.js";
-import { EnemyConfig } from "./enemy-configs.js";
+All are referenced via `res://assets/...` paths in the scene files.
 
-// ❌ WRONG - These will fail in Construct 3
-import * as EnemyAI from "./enemy-ai.ts";
-import * as EnemyAI from "./enemy-ai";
-```
+## Input Map
 
-### Dialogue System Race Condition Prevention
-**CRITICAL Pattern for Event Sheets**:
-```jsx
-// In event sheet - ALWAYS check InDialogue BEFORE triggering
-Player: On collision with Trigger_NPC
-System: InDialogue = false  // MUST check this first!
-→ Execute JavaScript:
-  const dialogue = globalThis.AdventureLand?.DialogueBridge;
-  if (dialogue) {
-    dialogue.startDialogue("NPCName", runtime, localVars.triggerUID);
-  }
-```
+Defined in `project.godot`:
+- `move_up/down/left/right` → WASD + arrows
+- `interact` → Space and Enter (opens dialogue, picks up items, opens doors)
+- `dialogue_advance` → Space and Enter (advances/closes dialogue)
+- `attack` → Space (fires a weapon swing; only active when a weapon is equipped)
+- `cancel` → Z and Escape (closes prompts, declines purchases)
+- `inventory_toggle` → I and Tab
+- Debug: backtick (`` ` ``) toggles collision-shape visualization at runtime.
 
-**WHY this pattern is required**:
-- Collision checks can fire multiple times per frame
-- Without InDialogue check, dialogue can trigger twice
-- Bridge sets `InDialogue = true` IMMEDIATELY (before async operations)
-- triggerUID tracking prevents same trigger from re-triggering dialogue
+### UI/prompt text convention
 
-**Dialogue System Integration Points**:
-1. **Dialogue ↔ Enemy AI**: `EnemyPause.pause("dialogue")` during conversations
-2. **Dialogue ↔ Quest System**: Automatic quest status updates via actions
-3. **Dialogue ↔ SaveGame**: Quest states persist in Dict_SaveGameData
-4. **Dialogue ↔ Event Sheets**: Bridge pattern with safe JavaScript access
+**Never use "[E]" or "Press E" in prompts or docs.** The project sticks to:
+- **Space / Enter (↵)** — "confirm / forward / interact / advance"
+- **Z** — "cancel / back / close / skip"
 
-**Dialogue File Organization by World**:
-- **World00 (Leafwood Village)**: penny, rosie, generalstore, blacksmith, adventureshop, welcome, treesign, windmillnick (8 NPCs)
-- **World01 (Leafwood Forest)**: pete, forestsign (2 NPCs)
-- **World10 (Bottomless Lake)**: seamonsterkey, lakesign, sea-monster, pearl (4 NPCs)
+Prompts render the `↵` glyph (not the letter `E`). When authoring dialogue
+buttons or floating prompts, use `↵ <verb>` (e.g. `↵ Take`, `↵ Buy`). For
+two-option prompts use `[Space] <primary>    [Z] <cancel>`.
 
-### Current System Status
-- **Production Ready**: Enemy AI with Battle System, Tile Animations, Quest & Dialogue System, Health System, Currency System, Potions, Shop State, Input Manager, Trigger Manager, Dialogue Controller, Button Manager, Game State Manager, Sea Monster Controller
-- **In Migration**: Inventory Optimization
-- **Planned**: World Builder Tools (debug utilities exist in `scripts/utils/`)
+## How User Prefers to Work
 
-### Performance Benchmarks
-- **Enemy AI Factory**: 90% development time reduction
-- **Enemy Battle System**: 35% CPU reduction during immunity frames
-- **Tile Animation System**: 67% CPU reduction (30% → 10%)
-- **Dialogue System**: <1% CPU overhead, console.log cleanup reduced debug noise
-- **Target for new systems**: Similar performance gains
+- **Test-and-iterate over plan-and-execute.** User iterates frequently.
+  - Build: **Ctrl+Cmd+B** (hammer icon) — not F5
+  - Run: **Cmd+B** (reload icon) — not F5
+- **Flag plugin requirements immediately** — user explicitly said this in the opening brief.
+- **Explicit editor instructions** when Godot UI clicks are needed (e.g., "Project → Tools → C# → Create C# Solution").
+- **No scope creep.** If it wasn't in the original brief, confirm before adding.
+- **Git flow:** user pulls from `claude/godot-prototype-evaluation-TX1Cj` branch on `ai-scott/adventureland`. Working copy is `godot-prototype/` subfolder.
 
-- you cannot change .json files as they are written by the C3 IDE
-- if there's a change you want to make that you see in an event sheet .json, you need to instruct the user on where to make that change in the IDE
-- remember that we need to use JS in our event sheets, so the proper way to instantiate our classes is: const enemyAI = globalThis.AdventureLand?.EnemyAI;
+## Known Open Issues
+
+- **Player scene must be regenerated via MSCA plugin** — legacy `Player.tscn` was deleted during the MSCA cutover. See `docs/MSCA_INTEGRATION.md` Phase 2.
+- **Player doesn't face NPC during dialogue** — `PlayerController.FaceTarget()` exists but isn't wired up yet. NpcInteract could call it on trigger.
+- **No collision with buildings** — player walks through walls. Buildings are plain `Sprite2D`, need `StaticBody2D` + `CollisionShape2D` per building if we want collision.
+- **No exit from dialogue via ESC** — only E/Enter/Space advances/closes.
+
+## File Paths for Reference
+
+- Animation guide: `assets/sprites/player/docs/farmer base animation guide.png`
+- Mana Seed cell reference: user has locally, not in repo (too large / copyrighted)
+- TMX source: `assets/tiles/tilemaps/World_00_Village.tmx` (full 7-layer version, 1430 tiles)
+
+## Docs in this folder
+
+- **`docs/GODOT_PRIMER.md`** — Godot core concepts (nodes, scenes, signals, `[Export]`, NodePath, collision layers, Resources, running scenes) with concrete examples from our project. Read before first editor session.
+- **`docs/GODOT_TRANSITION_PLAN.md`** — the strategic migration roadmap for porting the full C3 Adventure Land to Godot. Phase-by-phase, with risks, stopping points, and system → phase cross-reference. Read once per phase.
+- **`docs/PHASE_1_SETUP.md`** — current-phase Godot-editor walkthrough (Input Map, scene wiring, Ooze spawn, Y-sort verification).
+- `docs/EVALUATION_REPORT.md` — initial Godot evaluation outcome; justifies the migrate decision.
+- `docs/MSCA_INTEGRATION.md` — Mana Seed Character Animator plugin integration details.
+- `docs/ASSET_CATALOG.md` — Mana Seed kit inventory and organization reference.
+
+## Don't Do
+
+- Don't restructure the project without asking — user is evaluating Godot *vs* Construct 3, and simplicity matters for the evaluation.
+- Don't add GDScript. C# only.
+- Don't add plugins without flagging first. Current plugins: none. Aseprite Wizard and a Tiled importer were considered and deferred.
+- Don't touch anything outside `godot-prototype/` — the parent repo is the active Construct 3 game.
