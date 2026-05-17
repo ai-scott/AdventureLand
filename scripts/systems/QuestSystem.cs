@@ -3,176 +3,70 @@ using Godot.Collections;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Quest state tracker. Reads/writes quest statuses, world flags, and NPC memory
-/// to the active SaveData via SaveManager. No autoload needed — called directly
-/// by DialogueManager when evaluating conditions and executing actions.
-/// </summary>
+// Static C# facade over the GDScript QuestSystem autoload during the
+// C# → GDScript port. See SFXController.cs header for the pattern.
+//
+// Original was a `public static class` with quest/flag/memory accessors
+// + condition evaluation. Promoted to an autoload Node in GDScript so
+// cross-language access is uniform. This facade preserves the call-site
+// shape `QuestSystem.HasWorldFlag(x)` for remaining C# consumers
+// (DialogueManager, DoorTrigger, EdgeTrigger, WorldManager, etc.).
 public static class QuestSystem
 {
-    private static SaveManager Mgr => SaveManager.Instance;
+    private static GodotObject _node;
+
+    private static GodotObject Get()
+    {
+        if (_node != null && GodotObject.IsInstanceValid(_node)) return _node;
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("QuestSystem");
+        return _node;
+    }
 
     // ---- Quest Status ----
-
     public static string GetQuestStatus(string questId)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null || !data.QuestStatuses.ContainsKey(questId)) return "Not_Started";
-        return data.QuestStatuses[questId];
-    }
+        => Get()?.Call("get_quest_status", questId).AsString() ?? "Not_Started";
 
     public static void SetQuestStatus(string questId, string status)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null) return;
-        data.QuestStatuses[questId] = status;
-        GD.Print($"[Quest] {questId} → {status}");
-    }
+        => Get()?.Call("set_quest_status", questId, status);
 
     public static void StartQuest(string questId)
-    {
-        SetQuestStatus(questId, "Active");
-    }
+        => Get()?.Call("start_quest", questId);
 
     public static void CompleteQuest(string questId)
-    {
-        // Dialogue conditions throughout the project (pete.tres,
-        // sea-monster.tres, etc) check for Status == "Complete". An
-        // earlier "Completed" mismatch silently kept the post-quest
-        // node_complete and node_post_complete branches from ever
-        // matching after a CompleteQuest action fired.
-        SetQuestStatus(questId, "Complete");
-    }
+        => Get()?.Call("complete_quest", questId);
 
     // ---- World Flags ----
-
     public static string GetWorldFlag(string key)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null || !data.WorldFlags.ContainsKey(key)) return "";
-        return data.WorldFlags[key];
-    }
+        => Get()?.Call("get_world_flag", key).AsString() ?? "";
 
     public static void SetWorldFlag(string key, string value)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null) return;
-        data.WorldFlags[key] = value;
-    }
+        => Get()?.Call("set_world_flag", key, value);
 
     public static bool HasWorldFlag(string key)
-    {
-        var data = Mgr?.CurrentData;
-        return data != null && data.WorldFlags.ContainsKey(key);
-    }
+        => Get()?.Call("has_world_flag", key).AsBool() ?? false;
 
     // ---- NPC Memory ----
-
     public static string GetNpcMemory(string npcId, string key)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null) return "";
-        var combined = $"{npcId}:{key}";
-        if (!data.NpcMemory.ContainsKey(combined)) return "";
-        return data.NpcMemory[combined];
-    }
+        => Get()?.Call("get_npc_memory", npcId, key).AsString() ?? "";
 
     public static void SetNpcMemory(string npcId, string key, string value)
-    {
-        var data = Mgr?.CurrentData;
-        if (data == null) return;
-        data.NpcMemory[$"{npcId}:{key}"] = value;
-    }
+        => Get()?.Call("set_npc_memory", npcId, key, value);
 
     // ---- Unique Items ----
-    // Phase 4: route through real Inventory when available, fall back to world flags.
-
     public static bool HasUniqueItem(string itemName)
-    {
-        if (true && Inventory.HasItemByName(itemName)) return true;
-        // Fallback for pre-Phase 4 saves.
-        return HasWorldFlag($"UniqueItem_{itemName}");
-    }
+        => Get()?.Call("has_unique_item", itemName).AsBool() ?? false;
 
     public static void GrantUniqueItem(string itemName)
-    {
-        if (true && Inventory.AddItemByName(itemName))
-        {
-            GD.Print($"[Quest] Unique item granted via inventory: {itemName}");
-            return;
-        }
-        // Fallback: store as world flag.
-        SetWorldFlag($"UniqueItem_{itemName}", "true");
-        GD.Print($"[Quest] Unique item granted via flag: {itemName}");
-    }
+        => Get()?.Call("grant_unique_item", itemName);
 
     public static void RemoveUniqueItem(string itemName)
-    {
-        Inventory.RemoveItemByName(itemName);
-        // Also clean up the flag if it exists.
-        var data = Mgr?.CurrentData;
-        if (data == null) return;
-        var key = $"UniqueItem_{itemName}";
-        if (data.WorldFlags.ContainsKey(key))
-            data.WorldFlags.Remove(key);
-    }
-
-    // ---- Inventory-backed condition helper ----
-
-    /// <summary>True if the player has any item of the named ItemCategory
-    /// currently equipped. Parses the string against ItemData.ItemCategory;
-    /// returns false on invalid category name so bad authoring just fails
-    /// the condition instead of crashing.</summary>
-    private static bool HasEquippedCategory(string categoryName)
-    {
-        if (string.IsNullOrEmpty(categoryName)) return false;
-        if (!System.Enum.TryParse<ItemData.ItemCategory>(categoryName, ignoreCase: true, out var cat))
-            return false;
-        return Inventory.GetEquippedId(cat) > 0;
-    }
+        => Get()?.Call("remove_unique_item", itemName);
 
     // ---- Condition Evaluation ----
-
     public static bool EvaluateCondition(DialogueCondition c)
-    {
-        bool result = c.Type switch
-        {
-            DialogueCondition.ConditionType.QuestStatus =>
-                GetQuestStatus(c.QuestId) == c.Status,
+        => Get()?.Call("evaluate_condition", c).AsBool() ?? false;
 
-            DialogueCondition.ConditionType.HasItem =>
-                HasUniqueItem(c.ItemId), // Phase 4 will add inventory quantity checks
-
-            DialogueCondition.ConditionType.WorldFlag =>
-                GetWorldFlag(c.FlagKey) == c.FlagValue,
-
-            DialogueCondition.ConditionType.NpcMemory =>
-                GetNpcMemory(c.NpcId, c.MemoryKey) == c.MemoryValue,
-
-            DialogueCondition.ConditionType.PlayerLevel =>
-                false, // Phase 6 — no player levels yet
-
-            DialogueCondition.ConditionType.Custom =>
-                false, // Custom checks stubbed
-
-            DialogueCondition.ConditionType.EquippedCategory =>
-                HasEquippedCategory(c.Category),
-
-            _ => false
-        };
-
-        return c.Negate ? !result : result;
-    }
-
-    /// <summary>Evaluate all conditions on a node (AND logic).</summary>
-    public static bool AllConditionsMet(Godot.Collections.Array<DialogueCondition> conditions)
-    {
-        if (conditions == null || conditions.Count == 0) return true;
-        foreach (var c in conditions)
-        {
-            if (c == null) continue;
-            if (!EvaluateCondition(c)) return false;
-        }
-        return true;
-    }
+    public static bool AllConditionsMet(Array<DialogueCondition> conditions)
+        => Get()?.Call("all_conditions_met", conditions).AsBool() ?? true;
 }

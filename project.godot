@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.6", "C#")
 PerfMonitor="*res://scripts/systems/PerfMonitor.gd"
 UserPrefs="*res://scripts/systems/UserPrefs.gd"
 ShopState="*res://scripts/systems/ShopState.gd"
+QuestSystem="*res://scripts/systems/QuestSystem.gd"
 PaletteSwapper="*res://scripts/player/PaletteSwapper.gd"
 CostumePaletteRegistry="*res://scripts/player/CostumePaletteRegistry.gd"
 CharacterCustomization="*res://scripts/player/CharacterCustomization.gd"
