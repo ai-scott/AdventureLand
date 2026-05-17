@@ -1,7 +1,13 @@
 # Adventure Land (Godot) — Active TODOs
 
 **Last updated:** 2026-05-16
-**Launch shape:** Web-only on itch.io, free. Native exports deferred to v2 unless demand warrants.
+**Launch shape:** Native macOS + Windows downloads on itch.io, free. Linux as stretch goal.
+
+> **Why not web?** Godot 4.x cannot export C# projects to the Web (confirmed
+> against [docs.godotengine.org](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html)
+> on 2026-05-16). Web launch deferred until Godot ships .NET-on-Web support
+> or until we have appetite for a GDScript port. The mobile-web input pass
+> already shipped still has value for that future.
 
 This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (frozen since 2026-04-07, reference only — all active dev is in `godot-prototype/`).
 
@@ -9,24 +15,27 @@ This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (froz
 
 ## v1 Release — itch.io Publish Checklist
 
-### Build & export
-- [ ] Configure Godot Web export preset (Project → Export → Add → Web)
-- [ ] Decide on custom HTML shell vs default (branded loading screen is nice but adds work)
-- [ ] Set VRAM texture compression so bundle stays under itch's free hosting limit
-- [ ] Resolve SharedArrayBuffer / threads question — itch's free-tier hosts may not send the right COOP/COEP headers; if not, disable threads in the export preset
-- [ ] Run web export locally (`godot --export-release "Web" build/index.html`) and test
-- [ ] Test in Chrome, Firefox, Safari (desktop)
-- [ ] Test on mobile Chrome (Android) and Safari (iOS) — touch UI lives behind Shift+M / auto-detect already
-- [ ] Verify saves persist across page reloads (Godot 4 maps `user://` → IndexedDB on web)
-- [ ] Verify audio unlocks on first user input (Godot 4 web autoplay policy — title-screen click should be enough)
-- [ ] Measure first-paint + time-to-interactive; if >10s, reduce assets
+### Build & export (native)
+- [ ] **Install Godot export templates** — Editor → Manage Export Templates → Download and Install (~1 GB, one-time per Godot version)
+- [ ] **Configure macOS export preset** — Project → Export → Add → macOS
+  - Universal binary (arm64 + x86_64) so both Apple Silicon and Intel Macs run cleanly
+  - Code-signing: skip for v1 unless we have an Apple Developer cert handy. Players right-click → Open to bypass Gatekeeper on first launch
+- [ ] **Configure Windows export preset** — Project → Export → Add → Windows Desktop
+  - 64-bit only
+  - rcedit + icon optional but tightens the polish
+- [ ] **Configure Linux export preset (stretch)** — Project → Export → Add → Linux/X11 (64-bit)
+- [ ] Run release builds for each platform from CLI: `godot --headless --export-release "<Preset Name>" path/to/output`
+- [ ] Test the macOS .app on a clean machine if possible (Gatekeeper warning + first-launch behavior)
+- [ ] Test the Windows .exe on a Windows machine (a VM is fine)
+- [ ] Verify saves persist across launches on each platform
+- [ ] Bundle size check — `.app` + `.exe` should each end under ~200 MB
 
 ### Content & polish (ship-blockers)
-- [ ] **Credits screen** — Mana Seed Character Animator, Alagard font, tileset attributions, music attribution
+- [x] **Credits screen** — Mana Seed Character Animator, Alagard font, tileset attributions, music attribution (verified shipped via title screen)
 - [ ] **Title screen version label** ("v0.1" or "Demo" — keeps later updates legible)
 - [ ] **Re-record 3 AL welcome VO lines** per [docs/VO_TRACKING.csv](docs/VO_TRACKING.csv) — script in welcome.tres is final
-- [ ] **Rename AL sign node IDs** to avoid `al__node_000.ogg` filename collisions across TreeSign/ForestSign/LakeSign before recording any sign VO
-- [ ] Final full-loop playtest on the actual web build (not editor) — Penny cat quest → Pete herbs → Sea Monster pearl → trident
+- [x] **AL sign node IDs renamed** to prevent VO filename collisions
+- [ ] Final full-loop playtest on the actual release build (not editor) — Penny cat quest → Pete herbs → Sea Monster pearl → trident
 
 ### itch.io page
 - [ ] Cover image (630×500 px)
@@ -81,6 +90,7 @@ This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (froz
 
 - Heart containers (max-HP pickups)
 - Settings screen — volume sliders + key rebinds
-- Native macOS / Windows exports (if web playtest reveals demand)
+- **Web launch** — blocked on Godot shipping .NET-on-Web support, or on a GDScript port. Re-evaluate once Godot 5 releases or .NET web export lands in a 4.x point release. Mobile-web input pass already shipped is reusable.
+- **iOS launch (App Store / TestFlight)** — Godot 4.2+ supports C#-on-iOS as experimental. Separate channel from itch.io (Apple Developer Program $99/yr, Xcode build, App Store review or TestFlight beta). Mobile-web touch UI already validates the input model; the Godot iOS export builds a native app, not a web wrapper. Plan as a v2/v3 effort once the itch.io launch is in the wild.
 - World_03 Gray Mist Mountain TMX completion
 - VO system polish (per-speaker mix levels, ducking refinements)
