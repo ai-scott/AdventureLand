@@ -129,11 +129,8 @@ public partial class SaveManager : Node
         // the same frame they click — see comment in Load() for rationale.
         // BannerLabel renders above FadeRect, so the text stays visible
         // as the title screen fades to black behind it.
-        if (true)
-        {
-            await FadeOverlay.ShowLoading();
-            await FadeOverlay.FadeOut(0.3);
-        }
+        await FadeOverlay.ShowLoading();
+        await FadeOverlay.FadeOut(0.3);
 
         await TransitionToWorld(CurrentData.CurrentWorld);
 
@@ -208,11 +205,8 @@ public partial class SaveManager : Node
         // once the world was already black — read as unresponsive on
         // Try Again. BannerLabel renders above FadeRect, so the text
         // stays visible as the world fades to black behind it.
-        if (true)
-        {
-            await FadeOverlay.ShowLoading();
-            await FadeOverlay.FadeOut(0.3);
-        }
+        await FadeOverlay.ShowLoading();
+        await FadeOverlay.FadeOut(0.3);
         await TransitionToWorld(CurrentData.CurrentWorld);
 
         // Wait for the new scene + Player._Ready to land. The await above
@@ -243,21 +237,18 @@ public partial class SaveManager : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
-        if (true)
-        {
-            // Location banner on every Continue, not just first visit.
-            // Mirrors NewGame's first-world banner pacing (0.3s fade in +
-            // 1.2s hold + 0.4s fade out = 1.9s of black + banner before
-            // the world reveal). Uses WorldMeta if available, otherwise
-            // the canonical name map keyed by scene filename.
-            var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
-            string displayName = !string.IsNullOrEmpty(meta?.WorldDisplayName)
-                ? meta.WorldDisplayName
-                : WorldDisplayName(CurrentData.CurrentWorld);
-            FadeOverlay.ShowBanner(displayName, 0.3, 1.2, 0.4);
-            await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
-            await FadeOverlay.FadeIn(0.3);
-        }
+        // Location banner on every Continue, not just first visit.
+        // Mirrors NewGame's first-world banner pacing (0.3s fade in +
+        // 1.2s hold + 0.4s fade out = 1.9s of black + banner before
+        // the world reveal). Uses WorldMeta if available, otherwise
+        // the canonical name map keyed by scene filename.
+        var meta = GetTree().CurrentScene?.FindChild("WorldMeta", true, false) as WorldMeta;
+        string displayName = !string.IsNullOrEmpty(meta?.WorldDisplayName)
+            ? meta.WorldDisplayName
+            : WorldDisplayName(CurrentData.CurrentWorld);
+        FadeOverlay.ShowBanner(displayName, 0.3, 1.2, 0.4);
+        await ToSignal(GetTree().CreateTimer(1.9), Timer.SignalName.Timeout);
+        await FadeOverlay.FadeIn(0.3);
     }
 
     /// <summary>Delete a save slot.</summary>

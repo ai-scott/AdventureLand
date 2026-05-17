@@ -99,10 +99,7 @@ public partial class GameOverScreen : CanvasLayer
         // + HUD before the GameOver screen reveals — without it, the body
         // crossfades with the bg scroll and reads as "two scenes layered"
         // instead of a clean cut.
-        if (true)
-        {
-            await FadeOverlay.FadeOut(0.8);
-        }
+        await FadeOverlay.FadeOut(0.8);
 
         // NOW refill HP — under the black overlay, before the menu fades
         // in. The HUD repaint is invisible until the next session starts
