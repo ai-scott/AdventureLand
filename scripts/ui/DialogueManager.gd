@@ -930,15 +930,11 @@ func _run_penny_opens_home_cutscene() -> void:
 	# Flip "Penny is home" flag before scene swap.
 	QuestSystem.set_world_flag("penny_home", "true")
 
-	# WorldManager handles fade/swap/spawn. WorldManager is still C#
-	# autoload — the autoload Node IS the WorldManager (Pattern K — no
-	# `.Instance` indirection). GoToDoor is a C# async Task method;
-	# GDScript can't await a Task across the language boundary, so fire-
-	# and-forget. The input-unlock that follows may run slightly before
-	# the new scene is fully set up, but the fade-out from FadeOverlay
-	# covers the gap visually. Restore the await when WorldManager
-	# itself ports to GDScript (Cluster 7b-3).
-	WorldManager.GoToDoor("res://scenes/worlds/World_00_PennysHouse.tscn", 4)
+	# WorldManager handles fade/swap/spawn. WorldManager is GDScript
+	# now (Cluster 7b-3) — snake_case call via autoload name (Pattern D),
+	# AND it's a coroutine, so we can await it directly without the
+	# Task↔await bridge that the C# version required.
+	await WorldManager.go_to_door("res://scenes/worlds/World_00_PennysHouse.tscn", 4)
 
 	# Unlock the post-transition player.
 	var new_player := get_tree().get_first_node_in_group("player") if get_tree() != null else null

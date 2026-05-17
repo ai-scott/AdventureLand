@@ -95,13 +95,12 @@ public partial class DoorTrigger : Area2D
 
 		if (!IsUnlocked()) return;
 
-		var wm = WorldManager.Instance;
-		if (wm == null || wm.IsTransitioning) return;
+		if (WorldManager.IsTransitioning) return;
 
 		if (DialogueManager.IsActive) return;
 
 		InteractHintManager.Unregister(this);
 		GetViewport().SetInputAsHandled();
-		_ = wm.GoToDoor(TargetScene, DoorId);
+		_ = WorldManager.GoToDoor(TargetScene, DoorId);
 	}
 }

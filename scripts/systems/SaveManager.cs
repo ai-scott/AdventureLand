@@ -136,7 +136,7 @@ public partial class SaveManager : Node
 
         // Show the first-world banner ("Leafwood Village") over the black fade,
         // then fade in the new scene. Fire-and-forget — don't block NewGame's caller.
-        _ = WorldManager.Instance?.ShowFirstWorldBanner(CurrentData.CurrentWorld);
+        _ = WorldManager.ShowFirstWorldBanner(CurrentData.CurrentWorld);
     }
 
     /// <summary>Save current game state. Reads live data from the scene.</summary>
@@ -477,7 +477,7 @@ public partial class SaveManager : Node
         // the scene defaulted to. Also re-applies WorldMeta bounds — every
         // world has different limits, and the camera carries over stale
         // values from the previous scene otherwise.
-        WorldManager.Instance?.SnapCamera(player);
+        WorldManager.SnapCamera(player);
 
         // Auto-save on every world entry — die → retry puts you at world start with full HP.
         Save();
@@ -489,7 +489,11 @@ public partial class SaveManager : Node
     /// Same shape/mask the player uses for movement, so we resolve to a
     /// position they can actually navigate from rather than bumping out
     /// into another collider on the first frame.</summary>
-    public static void UnstickPlayer(CharacterBody2D player)
+    // Was `public static` — promoted to instance method during the
+    // WorldManager port (Cluster 7b-3). GDScript can't call C# static
+    // methods (Pattern K), so the GDScript WorldManager.gd needs to
+    // dispatch via the SaveManager autoload Node instance.
+    public void UnstickPlayer(CharacterBody2D player)
     {
         var shape = player.GetNodeOrNull<CollisionShape2D>("CollisionShape2D")?.Shape;
         if (shape == null) return;

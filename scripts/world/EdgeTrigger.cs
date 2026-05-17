@@ -44,13 +44,12 @@ public partial class EdgeTrigger : Area2D
             return;
         }
 
-        var wm = WorldManager.Instance;
-        if (wm == null || wm.IsTransitioning) return;
+        if (WorldManager.IsTransitioning) return;
 
         // Don't fire during dialogue.
         if (DialogueManager.IsActive) return;
 
         string edgeStr = ExitEdge.ToString().ToLowerInvariant();
-        await wm.GoToEdge(TargetScene, edgeStr, body.GlobalPosition);
+        await WorldManager.GoToEdge(TargetScene, edgeStr, body.GlobalPosition);
     }
 }
