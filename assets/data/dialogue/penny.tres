@@ -1,430 +1,430 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://btcjgotpmsqup"]
 
-[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
-Text = "Hi there adventurer! I’m Penny."
-Speaker = "Penny"
-Priority = 100
-AutoAdvance = "node_001"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+id = "node_000"
+text = "Hi there adventurer! I’m Penny."
+speaker = "Penny"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
-Text = "What's your name?"
-Speaker = "Penny"
-Priority = 99
-AutoAdvance = "node_002"
-Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+id = "node_001"
+text = "What's your name?"
+speaker = "Penny"
+priority = 99
+auto_advance = "node_002"
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
 
 [sub_resource type="Resource" id="act_7"]
 script = ExtResource("4")
-Type = 11
-Variable = "PennyName"
+type = 11
+variable = "PennyName"
 
 [sub_resource type="Resource" id="cond_6"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_5"]
 script = ExtResource("2")
-Id = "node_002"
-Speaker = "You"
-Priority = 98
-AutoAdvance = "penny_name_check"
-Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
-Actions = Array[ExtResource("4")]([SubResource("act_7")])
+id = "node_002"
+speaker = "You"
+priority = 98
+auto_advance = "penny_name_check"
+conditions = Array[ExtResource("3")]([SubResource("cond_6")])
+actions = Array[ExtResource("4")]([SubResource("act_7")])
 
 [sub_resource type="Resource" id="cond_pn_ns_a"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="cond_pn_yes"]
 script = ExtResource("3")
-Type = 2
-FlagKey = "PennyNameMatches"
-FlagValue = "true"
+type = 2
+flag_key = "PennyNameMatches"
+flag_value = "true"
 
 [sub_resource type="Resource" id="node_pn_skip"]
 script = ExtResource("2")
-Id = "penny_name_check"
-Speaker = "Penny"
-Priority = 100
-AutoAdvance = "node_003"
-Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_a"), SubResource("cond_pn_yes")])
+id = "penny_name_check"
+speaker = "Penny"
+priority = 100
+auto_advance = "node_003"
+conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_a"), SubResource("cond_pn_yes")])
 
 [sub_resource type="Resource" id="cond_pn_ns_b"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="cond_pn_no"]
 script = ExtResource("3")
-Type = 2
-FlagKey = "PennyNameMatches"
-FlagValue = "false"
+type = 2
+flag_key = "PennyNameMatches"
+flag_value = "false"
 
 [sub_resource type="Resource" id="act_pn_adopt"]
 script = ExtResource("4")
-Type = 12
-CustomFunction = "adoptPennyName"
+type = 12
+custom_function = "adoptPennyName"
 
 [sub_resource type="Resource" id="resp_pn_jk"]
 script = ExtResource("5")
-Text = "Just kidding — it's |PlayerName|."
-LeadsTo = "node_003"
+text = "Just kidding — it's |PlayerName|."
+leads_to = "node_003"
 
 [sub_resource type="Resource" id="resp_pn_act"]
 script = ExtResource("5")
-Text = "Actually, it really is |PennyName|."
-LeadsTo = "node_003"
-Actions = Array[ExtResource("4")]([SubResource("act_pn_adopt")])
+text = "Actually, it really is |PennyName|."
+leads_to = "node_003"
+actions = Array[ExtResource("4")]([SubResource("act_pn_adopt")])
 
 [sub_resource type="Resource" id="node_pn_joke"]
 script = ExtResource("2")
-Id = "penny_name_check"
-Text = "Oh — the villagers said your name was |PlayerName|. But maybe it's not. Which is it?"
-Speaker = "Penny"
-Priority = 99
-AutoAdvance = "penny_name_response"
-Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_b"), SubResource("cond_pn_no")])
+id = "penny_name_check"
+text = "Oh — the villagers said your name was |PlayerName|. But maybe it's not. Which is it?"
+speaker = "Penny"
+priority = 99
+auto_advance = "penny_name_response"
+conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_b"), SubResource("cond_pn_no")])
 
 [sub_resource type="Resource" id="cond_pn_ns_c"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="cond_pn_no_b"]
 script = ExtResource("3")
-Type = 2
-FlagKey = "PennyNameMatches"
-FlagValue = "false"
+type = 2
+flag_key = "PennyNameMatches"
+flag_value = "false"
 
 [sub_resource type="Resource" id="node_pn_response"]
 script = ExtResource("2")
-Id = "penny_name_response"
-Speaker = "You"
-Priority = 99
-Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_c"), SubResource("cond_pn_no_b")])
-Responses = Array[ExtResource("5")]([SubResource("resp_pn_jk"), SubResource("resp_pn_act")])
+id = "penny_name_response"
+speaker = "You"
+priority = 99
+conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_c"), SubResource("cond_pn_no_b")])
+responses = Array[ExtResource("5")]([SubResource("resp_pn_jk"), SubResource("resp_pn_act")])
 
 [sub_resource type="Resource" id="act_10"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="cond_9"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Not_Started"
+quest_id = "rescue_cat_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_8"]
 script = ExtResource("2")
-Id = "node_003"
-Text = "Cool name!"
-Speaker = "Penny"
-Priority = 97
-AutoAdvance = "node_004"
-Conditions = Array[ExtResource("3")]([SubResource("cond_9")])
-Actions = Array[ExtResource("4")]([SubResource("act_10")])
+id = "node_003"
+text = "Cool name!"
+speaker = "Penny"
+priority = 97
+auto_advance = "node_004"
+conditions = Array[ExtResource("3")]([SubResource("cond_9")])
+actions = Array[ExtResource("4")]([SubResource("act_10")])
 
 [sub_resource type="Resource" id="cond_12"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="node_11"]
 script = ExtResource("2")
-Id = "node_004"
-Text = "|PlayerName|, could you please help me find my cat?"
-Speaker = "Penny"
-Priority = 96
-AutoAdvance = "node_005"
-Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+id = "node_004"
+text = "|PlayerName|, could you please help me find my cat?"
+speaker = "Penny"
+priority = 96
+auto_advance = "node_005"
+conditions = Array[ExtResource("3")]([SubResource("cond_12")])
 
 [sub_resource type="Resource" id="cond_14"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="node_13"]
 script = ExtResource("2")
-Id = "node_005"
-Text = "I think she’s somewhere in the village."
-Speaker = "Penny"
-Priority = 95
-AutoAdvance = "node_006"
-Conditions = Array[ExtResource("3")]([SubResource("cond_14")])
+id = "node_005"
+text = "I think she’s somewhere in the village."
+speaker = "Penny"
+priority = 95
+auto_advance = "node_006"
+conditions = Array[ExtResource("3")]([SubResource("cond_14")])
 
 [sub_resource type="Resource" id="act_17"]
 script = ExtResource("4")
-Type = 13
-ItemName = "Rosie"
+type = 13
+item_name = "Rosie"
 
 [sub_resource type="Resource" id="cond_16"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="node_15"]
 script = ExtResource("2")
-Id = "node_006"
-Text = "I'll give you anything if you can bring her back. Please can you try to find her?"
-Speaker = "Penny"
-Priority = 94
-AutoAdvance = "node_007"
-Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
-Actions = Array[ExtResource("4")]([SubResource("act_17")])
+id = "node_006"
+text = "I'll give you anything if you can bring her back. Please can you try to find her?"
+speaker = "Penny"
+priority = 94
+auto_advance = "node_007"
+conditions = Array[ExtResource("3")]([SubResource("cond_16")])
+actions = Array[ExtResource("4")]([SubResource("act_17")])
 
 [sub_resource type="Resource" id="cond_19"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="resp_20"]
 script = ExtResource("5")
-Text = "Sure, I’ll help you find your cat."
-LeadsTo = "node_008"
+text = "Sure, I’ll help you find your cat."
+leads_to = "node_008"
 
 [sub_resource type="Resource" id="resp_21"]
 script = ExtResource("5")
-Text = "Sorry, I don’t have time."
-LeadsTo = "node_009"
+text = "Sorry, I don’t have time."
+leads_to = "node_009"
 
 [sub_resource type="Resource" id="node_18"]
 script = ExtResource("2")
-Id = "node_007"
-Speaker = "You"
-Priority = 93
-Conditions = Array[ExtResource("3")]([SubResource("cond_19")])
-Responses = Array[ExtResource("5")]([SubResource("resp_20"), SubResource("resp_21")])
+id = "node_007"
+speaker = "You"
+priority = 93
+conditions = Array[ExtResource("3")]([SubResource("cond_19")])
+responses = Array[ExtResource("5")]([SubResource("resp_20"), SubResource("resp_21")])
 
 [sub_resource type="Resource" id="act_24"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "Start_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="act_25"]
 script = ExtResource("4")
-Type = 13
-ItemName = "Rosie"
+type = 13
+item_name = "Rosie"
 
 [sub_resource type="Resource" id="cond_23"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="node_22"]
 script = ExtResource("2")
-Id = "node_008"
-Text = "Great! Her name is Rosie, which is on her tag."
-Speaker = "Penny"
-Priority = 92
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_23")])
-Actions = Array[ExtResource("4")]([SubResource("act_24"), SubResource("act_25")])
+id = "node_008"
+text = "Great! Her name is Rosie, which is on her tag."
+speaker = "Penny"
+priority = 92
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_23")])
+actions = Array[ExtResource("4")]([SubResource("act_24"), SubResource("act_25")])
 
 [sub_resource type="Resource" id="act_28"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "Start_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="act_29"]
 script = ExtResource("4")
-Type = 13
-ItemName = "Rosie"
+type = 13
+item_name = "Rosie"
 
 [sub_resource type="Resource" id="cond_27"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Meet_Penny"
+quest_id = "rescue_cat_quest"
+status = "Meet_Penny"
 
 [sub_resource type="Resource" id="node_26"]
 script = ExtResource("2")
-Id = "node_009"
-Text = "It's okay. I hope I find her someday."
-Speaker = "Penny"
-Priority = 91
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
-Actions = Array[ExtResource("4")]([SubResource("act_28"), SubResource("act_29")])
+id = "node_009"
+text = "It's okay. I hope I find her someday."
+speaker = "Penny"
+priority = 91
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_27")])
+actions = Array[ExtResource("4")]([SubResource("act_28"), SubResource("act_29")])
 
 [sub_resource type="Resource" id="cond_31"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Start_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="node_30"]
 script = ExtResource("2")
-Id = "node_010"
-Text = "Please find Rosie if you can. She likes climbing trees."
-Speaker = "Penny"
-Priority = 90
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_31")])
+id = "node_010"
+text = "Please find Rosie if you can. She likes climbing trees."
+speaker = "Penny"
+priority = 90
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_31")])
 
 [sub_resource type="Resource" id="cond_33"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Start_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="node_32"]
 script = ExtResource("2")
-Id = "node_011"
-Text = "Have you found my cat, |PlayerName|?"
-Speaker = "Penny"
-Priority = 89
-AutoAdvance = "node_012"
-Conditions = Array[ExtResource("3")]([SubResource("cond_33")])
+id = "node_011"
+text = "Have you found my cat, |PlayerName|?"
+speaker = "Penny"
+priority = 89
+auto_advance = "node_012"
+conditions = Array[ExtResource("3")]([SubResource("cond_33")])
 
 [sub_resource type="Resource" id="cond_35"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Start_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="resp_36"]
 script = ExtResource("5")
-Text = "Yes! Here’s Rosie"
-LeadsTo = "node_013"
+text = "Yes! Here’s Rosie"
+leads_to = "node_013"
 
 [sub_resource type="Resource" id="resp_37"]
 script = ExtResource("5")
-Text = "Not yet."
-LeadsTo = "node_011"
+text = "Not yet."
+leads_to = "node_011"
 
 [sub_resource type="Resource" id="node_34"]
 script = ExtResource("2")
-Id = "node_012"
-Speaker = "You"
-Priority = 88
-Conditions = Array[ExtResource("3")]([SubResource("cond_35")])
-Responses = Array[ExtResource("5")]([SubResource("resp_36"), SubResource("resp_37")])
+id = "node_012"
+speaker = "You"
+priority = 88
+conditions = Array[ExtResource("3")]([SubResource("cond_35")])
+responses = Array[ExtResource("5")]([SubResource("resp_36"), SubResource("resp_37")])
 
 [sub_resource type="Resource" id="act_40"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "Rosie_Found"
+quest_id = "rescue_cat_quest"
+status = "Rosie_Found"
 
 [sub_resource type="Resource" id="act_41"]
 script = ExtResource("4")
-Type = 4
-ItemId = "Rosie"
+type = 4
+item_id = "Rosie"
 
 [sub_resource type="Resource" id="cond_39"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Rosie_Found"
+quest_id = "rescue_cat_quest"
+status = "Rosie_Found"
 
 [sub_resource type="Resource" id="node_38"]
 script = ExtResource("2")
-Id = "node_013"
-Text = "ROSIE!!! "
-Speaker = "Penny:Rosie"
-Priority = 87
-AutoAdvance = "node_014"
-Conditions = Array[ExtResource("3")]([SubResource("cond_39")])
-Actions = Array[ExtResource("4")]([SubResource("act_40"), SubResource("act_41")])
+id = "node_013"
+text = "ROSIE!!! "
+speaker = "Penny:Rosie"
+priority = 87
+auto_advance = "node_014"
+conditions = Array[ExtResource("3")]([SubResource("cond_39")])
+actions = Array[ExtResource("4")]([SubResource("act_40"), SubResource("act_41")])
 
 [sub_resource type="Resource" id="act_44"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "End_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "End_Cat_Quest"
 
 [sub_resource type="Resource" id="act_45"]
 script = ExtResource("4")
-Type = 12
-CustomFunction = "PennyOpensHome"
+type = 12
+custom_function = "PennyOpensHome"
 
 [sub_resource type="Resource" id="cond_43"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "Rosie_Found"
+quest_id = "rescue_cat_quest"
+status = "Rosie_Found"
 
 [sub_resource type="Resource" id="node_42"]
 script = ExtResource("2")
-Id = "node_014"
-Text = "Thank you so much! I've got a reward for you in my house."
-Speaker = "Penny"
-Priority = 86
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_43")])
-Actions = Array[ExtResource("4")]([SubResource("act_44"), SubResource("act_45")])
+id = "node_014"
+text = "Thank you so much! I've got a reward for you in my house."
+speaker = "Penny"
+priority = 86
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_43")])
+actions = Array[ExtResource("4")]([SubResource("act_44"), SubResource("act_45")])
 
 [sub_resource type="Resource" id="cond_47"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "End_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "End_Cat_Quest"
 
 [sub_resource type="Resource" id="node_46"]
 script = ExtResource("2")
-Id = "node_015"
-Text = "I’m so happy Rosie is home!"
-Speaker = "Penny"
-Priority = 85
-AutoAdvance = "node_016"
-Conditions = Array[ExtResource("3")]([SubResource("cond_47")])
+id = "node_015"
+text = "I’m so happy Rosie is home!"
+speaker = "Penny"
+priority = 85
+auto_advance = "node_016"
+conditions = Array[ExtResource("3")]([SubResource("cond_47")])
 
 [sub_resource type="Resource" id="act_50"]
 script = ExtResource("4")
-QuestId = "rescue_cat_quest"
-Status = "After_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "After_Cat_Quest"
 
 [sub_resource type="Resource" id="act_51"]
 script = ExtResource("4")
-Type = 12
-CustomFunction = "grantFreeItem"
+type = 12
+custom_function = "grantFreeItem"
 
 [sub_resource type="Resource" id="cond_49"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "End_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "End_Cat_Quest"
 
 [sub_resource type="Resource" id="node_48"]
 script = ExtResource("2")
-Id = "node_016"
-Text = "Please take anything you would like, but only take one thing."
-Speaker = "Penny"
-Priority = 84
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_49")])
-Actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_51")])
+id = "node_016"
+text = "Please take anything you would like, but only take one thing."
+speaker = "Penny"
+priority = 84
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_49")])
+actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_51")])
 
 [sub_resource type="Resource" id="cond_53"]
 script = ExtResource("3")
-QuestId = "rescue_cat_quest"
-Status = "After_Cat_Quest"
+quest_id = "rescue_cat_quest"
+status = "After_Cat_Quest"
 
 [sub_resource type="Resource" id="node_52"]
 script = ExtResource("2")
-Id = "node_017"
-Text = "Thanks again! Bye!"
-Speaker = "Penny"
-Priority = 83
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_53")])
+id = "node_017"
+text = "Thanks again! Bye!"
+speaker = "Penny"
+priority = 83
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_53")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Penny"
-DisplayName = "Penny"
-WorldId = "World00"
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_pn_skip"), SubResource("node_pn_joke"), SubResource("node_pn_response"), SubResource("node_8"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_18"), SubResource("node_22"), SubResource("node_26"), SubResource("node_30"), SubResource("node_32"), SubResource("node_34"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_52")])
+npc_id = "Penny"
+display_name = "Penny"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_pn_skip"), SubResource("node_pn_joke"), SubResource("node_pn_response"), SubResource("node_8"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_18"), SubResource("node_22"), SubResource("node_26"), SubResource("node_30"), SubResource("node_32"), SubResource("node_34"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_52")])

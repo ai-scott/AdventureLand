@@ -48,8 +48,7 @@ public partial class EdgeTrigger : Area2D
         if (wm == null || wm.IsTransitioning) return;
 
         // Don't fire during dialogue.
-        var dialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-        if (dialogue != null && dialogue.IsActive) return;
+        if (DialogueManager.IsActive) return;
 
         string edgeStr = ExitEdge.ToString().ToLowerInvariant();
         await wm.GoToEdge(TargetScene, edgeStr, body.GlobalPosition);

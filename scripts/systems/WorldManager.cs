@@ -148,11 +148,10 @@ public partial class WorldManager : Node
         // mid-dialogue orphans that paused state — new scene can't physics-process,
         // so the player can't move. (Reproduced on Penny's House entry after
         // talking to Penny.)
-        var oldDialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-        if (oldDialogue != null && oldDialogue.IsActive)
+        if (DialogueManager.IsActive)
         {
             GD.Print("[WorldManager] Active dialogue detected before transition — ending it.");
-            oldDialogue.EndDialogue();
+            DialogueManager.EndDialogue();
         }
         GetTree().Paused = false;
 
@@ -219,8 +218,7 @@ public partial class WorldManager : Node
         IsTransitioning = true;
 
         // Same safety as GoToDoor — don't leave a paused tree from mid-dialogue.
-        var oldDialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-        if (oldDialogue != null && oldDialogue.IsActive) oldDialogue.EndDialogue();
+        if (DialogueManager.IsActive) DialogueManager.EndDialogue();
         GetTree().Paused = false;
 
         await FadeOverlay.FadeOut(0.3);
@@ -429,8 +427,7 @@ public partial class WorldManager : Node
         if (QuestSystem.HasWorldFlag("welcome_shown")) return;
 
         var scene = GetTree().CurrentScene;
-        var dm = scene?.FindChild("DialogueManager", true, false) as DialogueManager;
-        if (dm == null)
+        if (false)
         {
             GD.PushWarning("[Welcome] No DialogueManager in current scene; skipping welcome");
             return;
@@ -443,15 +440,15 @@ public partial class WorldManager : Node
         // the VOController can match {speaker}__{node}.ogg lookups (e.g.
         // al__welcome_to_adventure_land.ogg, al__have_fun.ogg). Falls back to
         // an inline two-line script if the resource is missing.
-        var welcome = GD.Load<DialogueData>("res://assets/data/dialogue/welcome.tres");
+        var welcome = GD.Load<Resource>("res://assets/data/dialogue/welcome.tres");
         if (welcome != null)
         {
-            dm.StartDialogue(welcome);
+            DialogueManager.StartDialogue(welcome);
         }
         else
         {
             GD.PushWarning("[Welcome] welcome.tres not found — falling back to inline lines");
-            dm.StartDialogue("Adventure_Land", new[]
+            DialogueManager.StartDialogue("Adventure_Land", new[]
             {
                 "Welcome to AdventureLand! Press [Space] to continue.",
                 "Use WASD or the arrow keys to move and explore. Get ready to have fun!",

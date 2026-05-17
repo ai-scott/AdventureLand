@@ -1,38 +1,38 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="act_2"]
 script = ExtResource("4")
-Type = 3
-ItemId = "Pink Oyster Pearl"
-Quantity = 1
-DestroyTrigger = true
+type = 3
+item_id = "Pink Oyster Pearl"
+quantity = 1
+destroy_trigger = true
 
 [sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
-Type = 2
-QuestId = "pearl_quest"
-Status = "Pearl_Found"
+type = 2
+quest_id = "pearl_quest"
+status = "Pearl_Found"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "collect_pearl"
-Text = "You found the Perle de la Mer!"
-Speaker = "AL"
-Priority = 100
-EndsDialogue = true
-Actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
+id = "collect_pearl"
+text = "You found the Perle de la Mer!"
+speaker = "AL"
+priority = 100
+ends_dialogue = true
+actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "PinkOysterPearl"
-DisplayName = "Pink Oyster Pearl"
-DefaultNode = "collect_pearl"
-WorldId = "World10"
-QuestRelations = PackedStringArray("pearl_quest")
-Nodes = Array[ExtResource("2")]([SubResource("node_1")])
+npc_id = "PinkOysterPearl"
+display_name = "Pink Oyster Pearl"
+default_node = "collect_pearl"
+world_id = "World10"
+quest_relations = PackedStringArray("pearl_quest")
+nodes = Array[ExtResource("2")]([SubResource("node_1")])

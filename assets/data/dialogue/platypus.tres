@@ -1,228 +1,228 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
-Text = "Cowabunga, dude! Check me out, I'm surfing! Isn't this board RADICAL?!"
-Speaker = "Silly Platypus"
-Priority = 100
-AutoAdvance = "node_001"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+id = "node_000"
+text = "Cowabunga, dude! Check me out, I'm surfing! Isn't this board RADICAL?!"
+speaker = "Silly Platypus"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_5"]
 script = ExtResource("5")
-Text = "That's a door, not a surfboard."
-LeadsTo = "node_its_a_door"
+text = "That's a door, not a surfboard."
+leads_to = "node_its_a_door"
 
 [sub_resource type="Resource" id="resp_6"]
 script = ExtResource("5")
-Text = "I need that board to fix the bridge!"
-LeadsTo = "node_need_board"
+text = "I need that board to fix the bridge!"
+leads_to = "node_need_board"
 
 [sub_resource type="Resource" id="resp_7"]
 script = ExtResource("5")
-Text = "Nice moves!"
-LeadsTo = "node_compliment"
+text = "Nice moves!"
+leads_to = "node_compliment"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
-Text = "Found this sweet board just floating in the river. Finders keepers, am I right?"
-Speaker = "Silly Platypus"
-Priority = 99
-Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
-Responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6"), SubResource("resp_7")])
+id = "node_001"
+text = "Found this sweet board just floating in the river. Finders keepers, am I right?"
+speaker = "Silly Platypus"
+priority = 99
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6"), SubResource("resp_7")])
 
 [sub_resource type="Resource" id="cond_9"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_10"]
 script = ExtResource("5")
-Text = "I need it to fix the bridge. Can I have it?"
-LeadsTo = "node_need_board"
+text = "I need it to fix the bridge. Can I have it?"
+leads_to = "node_need_board"
 
 [sub_resource type="Resource" id="node_8"]
 script = ExtResource("2")
-Id = "node_its_a_door"
-Text = "A door?! Pfft, no way. It's clearly a premium surfboard. Look at the... the doorknob... er, the grip!"
-Speaker = "Silly Platypus"
-Priority = 98
-Conditions = Array[ExtResource("3")]([SubResource("cond_9")])
-Responses = Array[ExtResource("5")]([SubResource("resp_10")])
+id = "node_its_a_door"
+text = "A door?! Pfft, no way. It's clearly a premium surfboard. Look at the... the doorknob... er, the grip!"
+speaker = "Silly Platypus"
+priority = 98
+conditions = Array[ExtResource("3")]([SubResource("cond_9")])
+responses = Array[ExtResource("5")]([SubResource("resp_10")])
 
 [sub_resource type="Resource" id="cond_12"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_13"]
 script = ExtResource("5")
-Text = "I actually need that board to fix the bridge nearby."
-LeadsTo = "node_need_board"
+text = "I actually need that board to fix the bridge nearby."
+leads_to = "node_need_board"
 
 [sub_resource type="Resource" id="node_11"]
 script = ExtResource("2")
-Id = "node_compliment"
-Text = "Right?! I've been practicing all day. Well, all week. Okay, I've been at this for a month."
-Speaker = "Silly Platypus"
-Priority = 98
-Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
-Responses = Array[ExtResource("5")]([SubResource("resp_13")])
+id = "node_compliment"
+text = "Right?! I've been practicing all day. Well, all week. Okay, I've been at this for a month."
+speaker = "Silly Platypus"
+priority = 98
+conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+responses = Array[ExtResource("5")]([SubResource("resp_13")])
 
 [sub_resource type="Resource" id="cond_15"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_14"]
 script = ExtResource("2")
-Id = "node_need_board"
-Text = "Give up my board?! That's my whole LIFE! ...But I guess the bridge IS pretty important. Everyone's been complaining about it."
-Speaker = "Silly Platypus"
-Priority = 97
-AutoAdvance = "node_deal"
-Conditions = Array[ExtResource("3")]([SubResource("cond_15")])
+id = "node_need_board"
+text = "Give up my board?! That's my whole LIFE! ...But I guess the bridge IS pretty important. Everyone's been complaining about it."
+speaker = "Silly Platypus"
+priority = 97
+auto_advance = "node_deal"
+conditions = Array[ExtResource("3")]([SubResource("cond_15")])
 
 [sub_resource type="Resource" id="cond_17"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_18"]
 script = ExtResource("5")
-Text = "Deal! I'll find you something."
-LeadsTo = "node_accept"
+text = "Deal! I'll find you something."
+leads_to = "node_accept"
 
 [sub_resource type="Resource" id="resp_19"]
 script = ExtResource("5")
-Text = "What kind of thing do you want exactly?"
-LeadsTo = "node_hint"
+text = "What kind of thing do you want exactly?"
+leads_to = "node_hint"
 
 [sub_resource type="Resource" id="node_16"]
 script = ExtResource("2")
-Id = "node_deal"
-Text = "Tell you what — bring me something even MORE fun to play with and I'll trade you the board. Something shiny, or tasty, or... ooh, something that makes noise!"
-Speaker = "Silly Platypus"
-Priority = 96
-Conditions = Array[ExtResource("3")]([SubResource("cond_17")])
-Responses = Array[ExtResource("5")]([SubResource("resp_18"), SubResource("resp_19")])
+id = "node_deal"
+text = "Tell you what — bring me something even MORE fun to play with and I'll trade you the board. Something shiny, or tasty, or... ooh, something that makes noise!"
+speaker = "Silly Platypus"
+priority = 96
+conditions = Array[ExtResource("3")]([SubResource("cond_17")])
+responses = Array[ExtResource("5")]([SubResource("resp_18"), SubResource("resp_19")])
 
 [sub_resource type="Resource" id="cond_21"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_22"]
 script = ExtResource("5")
-Text = "Alright, I'll find something good."
-LeadsTo = "node_accept"
+text = "Alright, I'll find something good."
+leads_to = "node_accept"
 
 [sub_resource type="Resource" id="node_20"]
 script = ExtResource("2")
-Id = "node_hint"
-Text = "I dunno! Surprise me! Something from the village maybe? Those shops have lots of cool stuff."
-Speaker = "Silly Platypus"
-Priority = 95
-Conditions = Array[ExtResource("3")]([SubResource("cond_21")])
-Responses = Array[ExtResource("5")]([SubResource("resp_22")])
+id = "node_hint"
+text = "I dunno! Surprise me! Something from the village maybe? Those shops have lots of cool stuff."
+speaker = "Silly Platypus"
+priority = 95
+conditions = Array[ExtResource("3")]([SubResource("cond_21")])
+responses = Array[ExtResource("5")]([SubResource("resp_22")])
 
 [sub_resource type="Resource" id="cond_24"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Not_Started"
+type = 0
+quest_id = "fix_bridge"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="act_25"]
 script = ExtResource("4")
-Type = 2
-QuestId = "fix_bridge"
-Status = "Active"
+type = 2
+quest_id = "fix_bridge"
+status = "Active"
 
 [sub_resource type="Resource" id="node_23"]
 script = ExtResource("2")
-Id = "node_accept"
-Text = "Awesome! I'll be right here, shredding the waves. Don't take too long, dude!"
-Speaker = "Silly Platypus"
-Priority = 94
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_24")])
-Actions = Array[ExtResource("4")]([SubResource("act_25")])
+id = "node_accept"
+text = "Awesome! I'll be right here, shredding the waves. Don't take too long, dude!"
+speaker = "Silly Platypus"
+priority = 94
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_24")])
+actions = Array[ExtResource("4")]([SubResource("act_25")])
 
 [sub_resource type="Resource" id="cond_27"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Active"
+type = 0
+quest_id = "fix_bridge"
+status = "Active"
 
 [sub_resource type="Resource" id="node_26"]
 script = ExtResource("2")
-Id = "node_waiting"
-Text = "Dude! Did you find me something awesome yet? I'm getting pretty good at surfing while I wait!"
-Speaker = "Silly Platypus"
-Priority = 80
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
+id = "node_waiting"
+text = "Dude! Did you find me something awesome yet? I'm getting pretty good at surfing while I wait!"
+speaker = "Silly Platypus"
+priority = 80
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_27")])
 
 [sub_resource type="Resource" id="cond_29"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Has_Board"
+type = 0
+quest_id = "fix_bridge"
+status = "Has_Board"
 
 [sub_resource type="Resource" id="node_28"]
 script = ExtResource("2")
-Id = "node_post_trade"
-Text = "This new toy is SO much better! Good luck with the bridge, dude!"
-Speaker = "Silly Platypus"
-Priority = 70
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_29")])
+id = "node_post_trade"
+text = "This new toy is SO much better! Good luck with the bridge, dude!"
+speaker = "Silly Platypus"
+priority = 70
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_29")])
 
 [sub_resource type="Resource" id="cond_31"]
 script = ExtResource("3")
-Type = 0
-QuestId = "fix_bridge"
-Status = "Complete"
+type = 0
+quest_id = "fix_bridge"
+status = "Complete"
 
 [sub_resource type="Resource" id="node_30"]
 script = ExtResource("2")
-Id = "node_bridge_done"
-Text = "Whoa, you fixed the bridge! Everyone can cross now! You're a legend, dude!"
-Speaker = "Silly Platypus"
-Priority = 60
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_31")])
+id = "node_bridge_done"
+text = "Whoa, you fixed the bridge! Everyone can cross now! You're a legend, dude!"
+speaker = "Silly Platypus"
+priority = 60
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_31")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Silly_Platypus"
-DisplayName = "Silly Platypus"
-DefaultNode = "node_000"
-WorldId = "World01"
-QuestRelations = PackedStringArray("fix_bridge")
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_8"), SubResource("node_11"), SubResource("node_14"), SubResource("node_16"), SubResource("node_20"), SubResource("node_23"), SubResource("node_26"), SubResource("node_28"), SubResource("node_30")])
+npc_id = "Silly_Platypus"
+display_name = "Silly Platypus"
+default_node = "node_000"
+world_id = "World01"
+quest_relations = PackedStringArray("fix_bridge")
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_8"), SubResource("node_11"), SubResource("node_14"), SubResource("node_16"), SubResource("node_20"), SubResource("node_23"), SubResource("node_26"), SubResource("node_28"), SubResource("node_30")])

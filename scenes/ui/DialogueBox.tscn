@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dialogue001"]
 
-[ext_resource type="Script" uid="uid://dw2d2xag04406" path="res://scripts/ui/DialogueManager.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/DialogueManager.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://x0q8aslfyrgd" path="res://assets/sprites/ui/dialogue/frame_bg_name.png" id="2_frame"]
 [ext_resource type="Texture2D" uid="uid://s2xkykov00er" path="res://assets/sprites/ui/dialogue/cameo_al.png" id="3_cameo"]
 [ext_resource type="Texture2D" uid="uid://dhg6p6ot33u7n" path="res://assets/sprites/ui/dialogue/text_item_frame.png" id="4_item_frame"]

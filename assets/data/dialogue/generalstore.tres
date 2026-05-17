@@ -1,42 +1,42 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://bwhdgd048e1p5"]
 
-[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-QuestId = "general_store_intro"
-Status = "Not_Started"
+quest_id = "general_store_intro"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
-Text = "Welcome to the General Store. We have the best clothes in town."
-Speaker = "Shopkeeper_Sarah"
-Priority = 100
-AutoAdvance = "node_001"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+id = "node_000"
+text = "Welcome to the General Store. We have the best clothes in town."
+speaker = "Shopkeeper_Sarah"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
 script = ExtResource("3")
-QuestId = "general_store_intro"
-Status = "Complete"
+quest_id = "general_store_intro"
+status = "Complete"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
-Text = " Some may even help with those weird green goos."
-Speaker = "Shopkeeper_Sarah"
-Priority = 99
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+id = "node_001"
+text = " Some may even help with those weird green goos."
+speaker = "Shopkeeper_Sarah"
+priority = 99
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Shopkeeper_Sarah"
-DisplayName = "Shopkeeper_Sarah"
-WorldId = "World00"
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])
+npc_id = "Shopkeeper_Sarah"
+display_name = "Shopkeeper_Sarah"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])

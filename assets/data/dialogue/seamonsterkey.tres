@@ -1,38 +1,38 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="act_2"]
 script = ExtResource("4")
-Type = 2
-QuestId = "Waterfall_Bill"
-Status = "SeaMonsterKeyFound"
+type = 2
+quest_id = "Waterfall_Bill"
+status = "SeaMonsterKeyFound"
 
 [sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
-Type = 3
-ItemId = "Sea Monster Key"
-Quantity = 1
-DestroyTrigger = true
+type = 3
+item_id = "Sea Monster Key"
+quantity = 1
+destroy_trigger = true
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "SeaMonsterKey_Found"
-Text = "You found a Sea Monster Key! "
-Speaker = "AL"
-Priority = 100
-EndsDialogue = true
-Actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
+id = "SeaMonsterKey_Found"
+text = "You found a Sea Monster Key! "
+speaker = "AL"
+priority = 100
+ends_dialogue = true
+actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Shrine"
-DisplayName = "Shrine"
-DefaultNode = "node_000"
-WorldId = "World10"
-QuestRelations = PackedStringArray("Waterfall_Bill")
-Nodes = Array[ExtResource("2")]([SubResource("node_1")])
+npc_id = "Shrine"
+display_name = "Shrine"
+default_node = "node_000"
+world_id = "World10"
+quest_relations = PackedStringArray("Waterfall_Bill")
+nodes = Array[ExtResource("2")]([SubResource("node_1")])

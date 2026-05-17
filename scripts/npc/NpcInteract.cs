@@ -15,8 +15,11 @@ public partial class NpcInteract : Area2D
 	/// Signs override to "Look" via the base TreeSign.tscn.</summary>
 	[Export] public string InteractVerb = "Talk";
 
-	/// <summary>Data-driven dialogue (Phase 3+). Set via Inspector or code.</summary>
-	[Export] public DialogueData Dialogue;
+	/// <summary>Data-driven dialogue (Phase 3+). Set via Inspector or code.
+	/// Resource type (was strong-typed DialogueData) — DialogueData is
+	/// GDScript now (Cluster 8), so the C# strong-type is dropped.
+	/// Inspector still accepts it as a Resource slot.</summary>
+	[Export] public Resource Dialogue;
 
 	/// <summary>Legacy plain-text lines. Used if Dialogue is null.</summary>
 	[Export] public string[] DialogueLines = System.Array.Empty<string>();
@@ -75,17 +78,20 @@ public partial class NpcInteract : Area2D
 
 		if (_playerInRange && !_suppressUntilExit && Input.IsActionJustPressed("interact"))
 		{
-			var dialogueManager = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-			if (dialogueManager == null || dialogueManager.IsActive) return;
+			// DialogueManager is now a GDScript-backed static facade
+			// (Cluster 8). IsActive returns false when no DialogueManager
+			// is in the current scene, so the dual null/IsActive guard
+			// collapses to a single IsActive check.
+			if (DialogueManager.IsActive) return;
 
 			if (Dialogue != null)
 			{
-				dialogueManager.StartDialogue(Dialogue, this);
+				DialogueManager.StartDialogue(Dialogue, this);
 				_suppressUntilExit = true;
 			}
 			else if (DialogueLines.Length > 0)
 			{
-				dialogueManager.StartDialogue(NpcName, DialogueLines, this);
+				DialogueManager.StartDialogue(NpcName, DialogueLines, this);
 				_suppressUntilExit = true;
 			}
 		}

@@ -64,9 +64,11 @@ public static class QuestSystem
         => Get()?.Call("remove_unique_item", itemName);
 
     // ---- Condition Evaluation ----
-    public static bool EvaluateCondition(DialogueCondition c)
+    // DialogueCondition is GDScript (Cluster 8) — accept as Resource
+    // from C# call sites; the GDScript autoload does the actual eval.
+    public static bool EvaluateCondition(Resource c)
         => Get()?.Call("evaluate_condition", c).AsBool() ?? false;
 
-    public static bool AllConditionsMet(Array<DialogueCondition> conditions)
+    public static bool AllConditionsMet(Array<Resource> conditions)
         => Get()?.Call("all_conditions_met", conditions).AsBool() ?? true;
 }

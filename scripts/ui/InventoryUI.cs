@@ -196,7 +196,7 @@ public partial class InventoryUI : CanvasLayer
 			// The HUD touch button can synthesize inventory_toggle from a
 			// ProcessMode-Always layer, so guard against opening over a
 			// dialogue.
-			bool dialogueOpen = DialogueManager.Instance?.IsActive ?? false;
+			bool dialogueOpen = DialogueManager.IsActive;
 			if (dialogueOpen) return;
 
 			if (_isOpen) Close();

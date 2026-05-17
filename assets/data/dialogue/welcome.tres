@@ -1,68 +1,68 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="cond_1"]
 script = ExtResource("3")
-Type = 0
-QuestId = "welcome_quest"
-Status = "Not_Started"
+type = 0
+quest_id = "welcome_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "WelcomeToAdventureLand"
-Text = "Welcome to your new home in AdventureLand! You've just moved in, and the townsfolk are eager to meet you."
-Speaker = "AL"
-Priority = 100
-AutoAdvance = "StrangeCreatures"
-Conditions = Array[ExtResource("3")]([SubResource("cond_1")])
+id = "WelcomeToAdventureLand"
+text = "Welcome to your new home in AdventureLand! You've just moved in, and the townsfolk are eager to meet you."
+speaker = "AL"
+priority = 100
+auto_advance = "StrangeCreatures"
+conditions = Array[ExtResource("3")]([SubResource("cond_1")])
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-Type = 0
-QuestId = "welcome_quest"
-Status = "Not_Started"
+type = 0
+quest_id = "welcome_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_2"]
 script = ExtResource("2")
-Id = "StrangeCreatures"
-Text = "Word is there are some strange creatures around this town, too. Keep your wits about you."
-Speaker = "AL"
-Priority = 99
-AutoAdvance = "HaveFun"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+id = "StrangeCreatures"
+text = "Word is there are some strange creatures around this town, too. Keep your wits about you."
+speaker = "AL"
+priority = 99
+auto_advance = "HaveFun"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_3"]
 script = ExtResource("3")
-Type = 0
-QuestId = "welcome_quest"
-Status = "Not_Started"
+type = 0
+quest_id = "welcome_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="act_3"]
 script = ExtResource("4")
-Type = 2
-QuestId = "welcome_quest"
-Status = "Complete"
+type = 2
+quest_id = "welcome_quest"
+status = "Complete"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "HaveFun"
-Text = "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!"
-Speaker = "AL"
-Priority = 98
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_3")])
-Actions = Array[ExtResource("4")]([SubResource("act_3")])
+id = "HaveFun"
+text = "Use the arrows[icon=UpArrow][icon=DownArrow][icon=LeftArrow][icon=RightArrow] to move and explore. Get ready to have fun!"
+speaker = "AL"
+priority = 98
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_3")])
+actions = Array[ExtResource("4")]([SubResource("act_3")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Welcome"
-DisplayName = "AdventureLand"
-DefaultNode = "node_000"
-WorldId = "World00"
-QuestRelations = PackedStringArray("welcome_quest")
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_2"), SubResource("node_3")])
+npc_id = "Welcome"
+display_name = "AdventureLand"
+default_node = "node_000"
+world_id = "World00"
+quest_relations = PackedStringArray("welcome_quest")
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_2"), SubResource("node_3")])

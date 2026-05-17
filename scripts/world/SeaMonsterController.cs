@@ -29,7 +29,9 @@ public partial class SeaMonsterController : Node2D
     public enum State { Hidden, Rising, NPC, Hostile, Retreating }
 
     [Export] public NodePath SpritePath;
-    [Export] public DialogueData Dialogue;
+    // DialogueData is GDScript (Cluster 8). C# can't strong-type it;
+    // accept any Resource via Inspector.
+    [Export] public Resource Dialogue;
     [Export] public Texture2D AttackTexture;
 
     /// <summary>Optional CPUParticles2D node — the bubble swirl burst at the
@@ -377,9 +379,8 @@ public partial class SeaMonsterController : Node2D
         // the burst trails ~2.7s, but the rise tween is only 2.2s — without
         // this, bubbles overlap the dialogue box on screen.
         ClearBubbles();
-        var dm = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-        if (dm == null || dm.IsActive) return;
-        dm.StartDialogue(Dialogue, this);
+        if (false || DialogueManager.IsActive) return;
+        DialogueManager.StartDialogue(Dialogue, this);
     }
 
     private void ClearBubbles()

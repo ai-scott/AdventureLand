@@ -98,8 +98,7 @@ public partial class DoorTrigger : Area2D
 		var wm = WorldManager.Instance;
 		if (wm == null || wm.IsTransitioning) return;
 
-		var dialogue = GetTree().Root.FindChild("DialogueManager", true, false) as DialogueManager;
-		if (dialogue != null && dialogue.IsActive) return;
+		if (DialogueManager.IsActive) return;
 
 		InteractHintManager.Unregister(this);
 		GetViewport().SetInputAsHandled();

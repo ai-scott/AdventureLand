@@ -1,207 +1,207 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://dnm7ybst6tubi"]
 
-[ext_resource type="Script" uid="uid://rb632nbwtuw7" path="res://scripts/data/DialogueData.cs" id="1"]
-[ext_resource type="Script" uid="uid://cxefmuvathvva" path="res://scripts/data/DialogueNode.cs" id="2"]
-[ext_resource type="Script" uid="uid://crneotqd4yurn" path="res://scripts/data/DialogueCondition.cs" id="3"]
-[ext_resource type="Script" uid="uid://ckm00xl20x4ua" path="res://scripts/data/DialogueAction.cs" id="4"]
-[ext_resource type="Script" uid="uid://2lvsgoppaylj" path="res://scripts/data/DialogueResponse.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
 
 [sub_resource type="Resource" id="cond_2"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
-Id = "node_000"
-Text = "Hello."
-Speaker = "Windmill_Nick"
-Priority = 100
-AutoAdvance = "node_001"
-Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+id = "node_000"
+text = "Hello."
+speaker = "Windmill_Nick"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 
 [sub_resource type="Resource" id="cond_4"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_5"]
 script = ExtResource("5")
-Text = "Are you looking for something?"
-LeadsTo = "node_002"
+text = "Are you looking for something?"
+leads_to = "node_002"
 
 [sub_resource type="Resource" id="resp_6"]
 script = ExtResource("5")
-Text = "Is that a telescope?"
-LeadsTo = "node_003"
+text = "Is that a telescope?"
+leads_to = "node_003"
 
 [sub_resource type="Resource" id="node_3"]
 script = ExtResource("2")
-Id = "node_001"
-Speaker = "You"
-Priority = 99
-Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
-Responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6")])
+id = "node_001"
+speaker = "You"
+priority = 99
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6")])
 
 [sub_resource type="Resource" id="cond_8"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_7"]
 script = ExtResource("2")
-Id = "node_002"
-Text = "My brother Bill is lost and I'm trying to find him."
-Speaker = "Windmill_Nick"
-Priority = 98
-AutoAdvance = "node_006"
-Conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+id = "node_002"
+text = "My brother Bill is lost and I'm trying to find him."
+speaker = "Windmill_Nick"
+priority = 98
+auto_advance = "node_006"
+conditions = Array[ExtResource("3")]([SubResource("cond_8")])
 
 [sub_resource type="Resource" id="cond_10"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_9"]
 script = ExtResource("2")
-Id = "node_003"
-Text = "Obviously it is."
-Speaker = "Windmill_Nick"
-Priority = 97
-AutoAdvance = "node_004"
-Conditions = Array[ExtResource("3")]([SubResource("cond_10")])
+id = "node_003"
+text = "Obviously it is."
+speaker = "Windmill_Nick"
+priority = 97
+auto_advance = "node_004"
+conditions = Array[ExtResource("3")]([SubResource("cond_10")])
 
 [sub_resource type="Resource" id="cond_12"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_13"]
 script = ExtResource("5")
-Text = "What are you trying to find?"
-LeadsTo = "node_002"
+text = "What are you trying to find?"
+leads_to = "node_002"
 
 [sub_resource type="Resource" id="resp_14"]
 script = ExtResource("5")
-Text = "Don't be rude!"
-LeadsTo = "node_005"
+text = "Don't be rude!"
+leads_to = "node_005"
 
 [sub_resource type="Resource" id="node_11"]
 script = ExtResource("2")
-Id = "node_004"
-Speaker = "You"
-Priority = 96
-Conditions = Array[ExtResource("3")]([SubResource("cond_12")])
-Responses = Array[ExtResource("5")]([SubResource("resp_13"), SubResource("resp_14")])
+id = "node_004"
+speaker = "You"
+priority = 96
+conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+responses = Array[ExtResource("5")]([SubResource("resp_13"), SubResource("resp_14")])
 
 [sub_resource type="Resource" id="cond_16"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_15"]
 script = ExtResource("2")
-Id = "node_005"
-Text = "Okay, okay! My brother Bill is missing and I'm very upset."
-Speaker = "Windmill_Nick"
-Priority = 95
-AutoAdvance = "node_006"
-Conditions = Array[ExtResource("3")]([SubResource("cond_16")])
+id = "node_005"
+text = "Okay, okay! My brother Bill is missing and I'm very upset."
+speaker = "Windmill_Nick"
+priority = 95
+auto_advance = "node_006"
+conditions = Array[ExtResource("3")]([SubResource("cond_16")])
 
 [sub_resource type="Resource" id="cond_18"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_17"]
 script = ExtResource("2")
-Id = "node_006"
-Text = "I last saw him at the Shrine to the East of the Village."
-Speaker = "Windmill_Nick"
-Priority = 94
-AutoAdvance = "node_007"
-Conditions = Array[ExtResource("3")]([SubResource("cond_18")])
+id = "node_006"
+text = "I last saw him at the Shrine to the East of the Village."
+speaker = "Windmill_Nick"
+priority = 94
+auto_advance = "node_007"
+conditions = Array[ExtResource("3")]([SubResource("cond_18")])
 
 [sub_resource type="Resource" id="cond_20"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="resp_21"]
 script = ExtResource("5")
-Text = "Can I help you find him?"
-LeadsTo = "node_008"
+text = "Can I help you find him?"
+leads_to = "node_008"
 
 [sub_resource type="Resource" id="resp_22"]
 script = ExtResource("5")
-Text = "Oh, that's too bad."
-LeadsTo = "node_009"
+text = "Oh, that's too bad."
+leads_to = "node_009"
 
 [sub_resource type="Resource" id="node_19"]
 script = ExtResource("2")
-Id = "node_007"
-Speaker = "You"
-Priority = 93
-Conditions = Array[ExtResource("3")]([SubResource("cond_20")])
-Responses = Array[ExtResource("5")]([SubResource("resp_21"), SubResource("resp_22")])
+id = "node_007"
+speaker = "You"
+priority = 93
+conditions = Array[ExtResource("3")]([SubResource("cond_20")])
+responses = Array[ExtResource("5")]([SubResource("resp_21"), SubResource("resp_22")])
 
 [sub_resource type="Resource" id="act_25"]
 script = ExtResource("4")
-QuestId = "find_bill_quest"
-Status = "FindBill"
+quest_id = "find_bill_quest"
+status = "FindBill"
 
 [sub_resource type="Resource" id="cond_24"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_23"]
 script = ExtResource("2")
-Id = "node_008"
-Text = "You'd do that for me? Thank you. "
-Speaker = "Windmill_Nick"
-Priority = 92
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_24")])
-Actions = Array[ExtResource("4")]([SubResource("act_25")])
+id = "node_008"
+text = "You'd do that for me? Thank you. "
+speaker = "Windmill_Nick"
+priority = 92
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_24")])
+actions = Array[ExtResource("4")]([SubResource("act_25")])
 
 [sub_resource type="Resource" id="act_28"]
 script = ExtResource("4")
-QuestId = "find_bill_quest"
-Status = "FindBill"
+quest_id = "find_bill_quest"
+status = "FindBill"
 
 [sub_resource type="Resource" id="cond_27"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "Not_Started"
+quest_id = "find_bill_quest"
+status = "Not_Started"
 
 [sub_resource type="Resource" id="node_26"]
 script = ExtResource("2")
-Id = "node_009"
-Text = "Yeah it is. I'll search for my brother from here. "
-Speaker = "Windmill_Nick"
-Priority = 91
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_27")])
-Actions = Array[ExtResource("4")]([SubResource("act_28")])
+id = "node_009"
+text = "Yeah it is. I'll search for my brother from here. "
+speaker = "Windmill_Nick"
+priority = 91
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_27")])
+actions = Array[ExtResource("4")]([SubResource("act_28")])
 
 [sub_resource type="Resource" id="cond_30"]
 script = ExtResource("3")
-QuestId = "find_bill_quest"
-Status = "FindBill"
+quest_id = "find_bill_quest"
+status = "FindBill"
 
 [sub_resource type="Resource" id="node_29"]
 script = ExtResource("2")
-Id = "node_010"
-Text = "I'll search for Bill from here. You could travel East to the Shrine."
-Speaker = "Windmill_Nick"
-Priority = 90
-EndsDialogue = true
-Conditions = Array[ExtResource("3")]([SubResource("cond_30")])
+id = "node_010"
+text = "I'll search for Bill from here. You could travel East to the Shrine."
+speaker = "Windmill_Nick"
+priority = 90
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_30")])
 
 [resource]
 script = ExtResource("1")
-NpcId = "Windmill_Nick"
-DisplayName = "Windmill_Nick"
-WorldId = "World00"
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_29")])
+npc_id = "Windmill_Nick"
+display_name = "Windmill_Nick"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_15"), SubResource("node_17"), SubResource("node_19"), SubResource("node_23"), SubResource("node_26"), SubResource("node_29")])

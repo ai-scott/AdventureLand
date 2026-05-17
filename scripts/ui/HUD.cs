@@ -252,7 +252,7 @@ public partial class HUD : CanvasLayer
         // scene swap.
         var player = GetTree()?.GetFirstNodeInGroup("player") as Node2D;
         bool inWorld = player != null;
-        bool inDialogue = DialogueManager.Instance?.IsActive ?? false;
+        bool inDialogue = DialogueManager.IsActive;
 
         SetWorldHudVisible(inWorld);
         // Hide the action chips (and let attack/inventory ignore the synth
