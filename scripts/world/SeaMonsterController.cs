@@ -301,11 +301,15 @@ public partial class SeaMonsterController : Node2D
     private void FireWaterBall(Node2D player)
     {
         if (WaterBallScene == null) return;
-        var ball = WaterBallScene.Instantiate<WaterBall>();
+        // WaterBall is now GDScript — C# can't strong-type the instance,
+        // so we cast to Node2D (for GlobalPosition) and set the GDScript
+        // `direction` property via Variant Set.
+        var ball = WaterBallScene.Instantiate() as Node2D;
+        if (ball == null) return;
         Vector2 spawn = GlobalPosition + WaterBallSpawnOffset;
         var to = (player.GlobalPosition - spawn);
         if (to.Length() <= 0.001f) return;
-        ball.Direction = to.Normalized();
+        ball.Set("direction", to.Normalized());
         // Add to the world root so the ball persists if the player darts
         // around the SM and the leash kicks in mid-flight.
         GetTree().CurrentScene?.AddChild(ball);
