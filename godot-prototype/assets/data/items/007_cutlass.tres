@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://crnk58vjy8b7f" path="res://assets/sprites/items/itemshowcase-animation 1-007.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = 7
+Name = "Cutlass"
+Description = "A curved blade favored by pirates. Short, sharp, and quick to draw."
+Category = 0
+Strength = 2
+Cost = 4
+Icon = ExtResource("2")
+WeaponSheet = 5

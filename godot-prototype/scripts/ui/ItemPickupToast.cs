@@ -17,6 +17,10 @@ public partial class ItemPickupToast : CanvasLayer
 {
     private PanelContainer _panel;
     private VBoxContainer _content;
+    // Deep-wood banner straddling the panel's top edge — used by the
+    // button-confirm flows (Take / Buy / Compare). Repositioned whenever
+    // the panel resizes so the banner stays centered on its top border.
+    private PanelContainer _banner;
 
     private ItemData _newItem;
     private ItemData _oldItem;
@@ -24,13 +28,22 @@ public partial class ItemPickupToast : CanvasLayer
     private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
 
+    // Process-wide count of toasts currently in their "waiting for choice"
+    // (modal) state. Lets PlayerController gate input even on the same frame
+    // that a modal closes, and prevents toast #1's Close from unpausing the
+    // tree out from under a chained toast #2 (purchase → compare flow).
+    private static int _activeModalCount;
+    public static bool IsAnyModalActive => _activeModalCount > 0;
+
     // Take/Purchase mode callback — invoked when the player accepts.
     private Action _onAccept;
     private bool _purchaseAffordable;
 
     // Choice-button selection state. Keyboard arrow keys move between the
-    // primary (Take/Equip/Buy) and cancel buttons, and Space confirms
-    // whichever is highlighted. Mouse hover also drives selection, so the
+    // primary (Take/Equip/Buy) and cancel buttons. Space confirms
+    // whichever is highlighted (via the focused button's ui_accept), while
+    // Return always fires the primary action regardless of focus — see the
+    // _Input override. Mouse hover also drives selection, so the
     // yellow-bordered "selected" stylebox stays in sync regardless of input.
     private Button _primaryBtn;
     private Button _cancelBtn;
@@ -38,7 +51,12 @@ public partial class ItemPickupToast : CanvasLayer
 
     public override void _Ready()
     {
-        Layer = 11; // above dialogue (10) and inventory (9)
+        // Above InventoryUI (layer=100 in its .tscn) and DialogueManager
+        // (layer=10). Sell-confirm spawns from the inventory, so the toast
+        // MUST sit above 100 or the player can't see it. FadeOverlay
+        // (layer=100) only covers the screen during scene transitions, so
+        // any conflict with this layer is benign.
+        Layer = 110;
         ProcessMode = ProcessModeEnum.Always;
     }
 
@@ -47,22 +65,25 @@ public partial class ItemPickupToast : CanvasLayer
         if (_waitingForChoice)
         {
             // Arrow / WASD horizontally toggle which button is highlighted.
-            // Up/Down also work since the buttons are side-by-side and many
-            // players reach for vertical nav by reflex.
+            // Cancel sits on the LEFT, Primary on the RIGHT (see
+            // AddChoiceButtons row order), so move_left selects cancel and
+            // move_right selects primary. The previous mapping was swapped,
+            // which left _cancelSelected out of sync with focus and forced
+            // a second arrow press to swap buttons. Up/Down also work
+            // since the buttons are side-by-side and many players reach
+            // for vertical nav by reflex.
             if (Input.IsActionJustPressed("move_left") || Input.IsActionJustPressed("move_up"))
-            {
-                SetCancelSelected(false);
-            }
-            else if (Input.IsActionJustPressed("move_right") || Input.IsActionJustPressed("move_down"))
             {
                 SetCancelSelected(true);
             }
-            // Space confirms the highlighted button (mirrors clicking it).
-            // Z is a hard-cancel shortcut regardless of which is highlighted.
-            else if (Input.IsActionJustPressed("dialogue_advance"))
+            else if (Input.IsActionJustPressed("move_right") || Input.IsActionJustPressed("move_down"))
             {
-                if (_cancelSelected) Cancel(); else Accept();
+                SetCancelSelected(false);
             }
+            // Space presses whichever button is focused via the button's
+            // built-in ui_accept handling — no extra polling needed. Return
+            // always fires Accept (primary) and is intercepted in _Input.
+            // Z is a hard-cancel shortcut regardless of which is highlighted.
             else if (Input.IsActionJustPressed("cancel"))
             {
                 Cancel();
@@ -75,15 +96,37 @@ public partial class ItemPickupToast : CanvasLayer
         }
     }
 
+    /// <summary>Intercept Return so it always fires the primary (Take / Equip /
+    /// Buy) action regardless of which button currently holds focus. Space
+    /// continues to flow through the focused button's ui_accept and presses
+    /// whatever is highlighted — that asymmetry is the contract with the user
+    /// (↵ = accept, Space = "do the highlighted thing"). Runs in _Input so
+    /// the event is consumed before the focused button can also respond.</summary>
+    public override void _Input(InputEvent @event)
+    {
+        if (!_waitingForChoice) return;
+        if (@event is InputEventKey key && key.Pressed && !key.Echo)
+        {
+            if (key.Keycode == Key.Enter || key.Keycode == Key.KpEnter)
+            {
+                if (_primaryBtn != null && !_primaryBtn.Disabled)
+                {
+                    Accept();
+                    GetViewport().SetInputAsHandled();
+                }
+            }
+        }
+    }
+
     /// <summary>Move the highlight to the cancel (true) or primary (false)
-    /// button. Re-applies the panel button stylebox so the yellow selection
-    /// border lands on whichever is selected.</summary>
+    /// button by grabbing focus — the chip buttons' focus stylebox handles
+    /// the gold-border swap automatically.</summary>
     private void SetCancelSelected(bool cancel)
     {
         if (_cancelSelected == cancel) return;
         _cancelSelected = cancel;
-        if (_primaryBtn != null) UiStyles.RestyleButton(_primaryBtn, highlighted: !cancel);
-        if (_cancelBtn != null)  UiStyles.RestyleButton(_cancelBtn,  highlighted:  cancel);
+        var target = cancel ? _cancelBtn : _primaryBtn;
+        if (target != null && !target.Disabled) target.GrabFocus();
     }
 
     /// <summary>Show a shop purchase prompt — "Buy {name} for N gems?". Pauses
@@ -97,7 +140,11 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = CurrencySystem.GetGems() >= cost;
         BuildPurchaseToast(item, cost);
         _waitingForChoice = true;
+        _activeModalCount++;
         GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        // Same frame guard as Close — covers the press that just opened us.
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Same confirm/cancel flow as ShowPurchase but for free pickups.
@@ -111,13 +158,52 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = true; // always, no cost
         BuildTakeToast(item);
         _waitingForChoice = true;
+        _activeModalCount++;
         GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+    }
+
+    /// <summary>Confirm overlay for selling an inventory item back to a shop.
+    /// Shows the item card with a "Sell N [gem] ↵" primary chip; on accept,
+    /// the caller (InventoryUI) deducts the item, credits gems, and saves.
+    /// Mirrors ShowPurchase's pause + input-lock pattern so the inventory
+    /// stays open underneath but stops responding to nav input until the
+    /// confirm closes.</summary>
+    public void ShowSell(ItemData item, int sellPrice, Action onAccept)
+    {
+        _newItem = item;
+        _onAccept = onAccept;
+        _purchaseAffordable = true; // always — selling never fails on funds
+        BuildSellToast(item, sellPrice);
+        _waitingForChoice = true;
+        _activeModalCount++;
+        GetTree().Paused = true;
+        SetPlayerInputLocked(true);
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Show the pickup toast for the given item. Call after adding to inventory.</summary>
     public void Show(ItemData item)
     {
         _newItem = item;
+
+        // Quest items short-circuit the equip/compare prompt — story rewards
+        // (Magic Trident etc.) read as "you got the trident!" feedback, not
+        // an inventory-management decision. Auto-equip silently when the
+        // slot is free; if a comparable item is already equipped, just add
+        // to the inventory and let the player swap from the menu later.
+        if (item.QuestItem)
+        {
+            if (item.IsEquippable)
+            {
+                int equippedId = Inventory.Instance?.GetEquippedId(item.Category) ?? -1;
+                if (equippedId <= 0) DoEquip(item);
+            }
+            BuildSimpleToast(item, "Quest item received!");
+            _autoCloseTimer = 2.5;
+            return;
+        }
 
         if (item.IsEquippable)
         {
@@ -138,7 +224,10 @@ public partial class ItemPickupToast : CanvasLayer
                 _isUpgrade = item.Strength > _oldItem.Strength;
                 BuildCompareToast(item, _oldItem);
                 _waitingForChoice = true;
+                _activeModalCount++;
                 GetTree().Paused = true;
+                SetPlayerInputLocked(true);
+                PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
             }
         }
         else if (item.IsConsumable)
@@ -157,55 +246,25 @@ public partial class ItemPickupToast : CanvasLayer
 
     private void BuildAutoEquipToast(ItemData item)
     {
-        InitPanel();
+        InitToastPanel();
 
         var row = new HBoxContainer();
-        // Separation = IconRightPadding so the title/description column
-        // starts at IconColumnWidth from the panel-content edge. The
-        // bottom row (stat block + tutorial hint) uses the same column,
-        // so everything lines up under the icon.
-        row.AddThemeConstantOverride("separation", IconRightPadding);
+        row.AddThemeConstantOverride("separation", 10);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: IconSize);
+        AddIcon(row, item.Icon, size: 32);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name);
-        AddBodyLabel(textVbox, "Equipped!", UiStyles.GoodGreen);
+        AddTitleLabel(textVbox, item.Name, fontSize: 18);
+        AddBodyLabel(textVbox, "Equipped!", DesignTokens.Paper, fontSize: 20);
 
-        // Auto-equip is non-interactive (auto-closes on a timer), so the
-        // bottom row mirrors the *prompt* toast layout but swaps the
-        // button cluster for either a tutorial hint (first weapon) or
-        // nothing. The stat block stays anchored under the icon either
-        // way so the player's eye lands on the same spot.
-        var stat = BuildStatBlock(item, equipped: null);
+        // First-weapon tutorial — render the hint centered under the
+        // icon+copy row so the SPC + Attack cue reads as a footer to
+        // the whole toast, not a hanging child of the right column.
         var tutorial = BuildAttackTutorialHint(item);
-
-        if (stat != null || tutorial != null)
+        if (tutorial != null)
         {
-            AddSpacer(4);
-            var bottom = new HBoxContainer();
-            bottom.AddThemeConstantOverride("separation", 0);
-            _content.AddChild(bottom);
-
-            if (stat != null)
-            {
-                stat.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
-                bottom.AddChild(stat);
-            }
-            else
-            {
-                // No stat (non-equippable shouldn't reach here, but be safe):
-                // add an icon-column-width spacer so the tutorial still
-                // lines up where the buttons would normally sit.
-                bottom.AddChild(new Control { CustomMinimumSize = new Vector2(IconColumnWidth, 0) });
-            }
-
-            if (tutorial != null)
-            {
-                tutorial.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
-                tutorial.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-                bottom.AddChild(tutorial);
-            }
+            tutorial.SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter;
+            _content.AddChild(tutorial);
         }
     }
 
@@ -224,27 +283,30 @@ public partial class ItemPickupToast : CanvasLayer
         save.WorldFlags["seen_attack_tutorial"] = "true";
         _autoCloseTimer = 4.0;
 
-        // Centred row: a small panel-styled "Space" key chip + "Attack!"
-        // verb. Reuses MakePanelStylebox so the chip reads as the same
-        // material as the toast/dialogue panels — the tutorial belongs
-        // to the same UI family rather than feeling tacked on.
+        // Centred row: pixel-art Space-key icon + "Attack!" verb. Uses
+        // the design-system gold so the cue reads as a hint, not a body
+        // line — the spc icon mirrors the InteractHintManager treatment.
         var row = new HBoxContainer();
         row.Alignment = BoxContainer.AlignmentMode.Center;
-        row.AddThemeConstantOverride("separation", 8);
+        row.AddThemeConstantOverride("separation", 6);
 
-        var keyChip = new PanelContainer();
-        keyChip.AddThemeStyleboxOverride("panel", UiStyles.MakePanelStylebox(contentPadding: 6));
-        keyChip.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
-        var keyLabel = new Label { Text = "Space" };
-        keyLabel.AddThemeFontSizeOverride("font_size", 16);
-        keyLabel.AddThemeColorOverride("font_color", UiStyles.Cream);
-        keyLabel.AddThemeConstantOverride("shadow_offset_x", 0);
-        keyLabel.AddThemeConstantOverride("shadow_offset_y", 0);
-        keyChip.AddChild(keyLabel);
-        row.AddChild(keyChip);
+        var spaceIcon = new TextureRect
+        {
+            Texture = UiStyles.Space,
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        if (UiStyles.Space != null)
+        {
+            spaceIcon.CustomMinimumSize = UiStyles.Space.GetSize() * 2f;
+        }
+        row.AddChild(spaceIcon);
 
-        AddBodyLabel(row, "Attack!", new Color(1f, 0.9f, 0.4f, 1),
-            fontSize: 22, verticalCenter: true);
+        AddBodyLabel(row, "Attack!", DesignTokens.Gold,
+            fontSize: 18, verticalCenter: true);
 
         return row;
     }
@@ -252,34 +314,41 @@ public partial class ItemPickupToast : CanvasLayer
     private void BuildCompareToast(ItemData newItem, ItemData oldItem)
     {
         InitPanel();
+        SetItemBanner("New Gear");
+
+        // Top spacer reserves room for the straddling banner overlap.
+        AddSpacer(10);
 
         var row = new HBoxContainer();
-        row.AddThemeConstantOverride("separation", 10);
+        row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
         AddIcon(row, newItem.Icon, size: IconSize);
         var textVbox = AddTextColumn(row);
         AddTitleLabel(textVbox, newItem.Name);
         if (!string.IsNullOrEmpty(newItem.Description))
-            AddBodyLabel(textVbox, newItem.Description, UiStyles.Cream, autowrap: true);
+            AddBodyLabel(textVbox, newItem.Description, DesignTokens.Paper, autowrap: true);
 
-        AddSpacer(4);
+        var chips = BuildItemChips(newItem);
+        if (chips != null) textVbox.AddChild(chips);
+
+        AddSpacer(8);
         // Space confirms the *recommended* action: equip if upgrade, keep if not.
         AddChoiceButtons(
             primaryLabel: _isUpgrade ? "Equip" : "Keep",
-            cancelLabel:  _isUpgrade ? "Cancel" : "Equip",
-            statBlock: BuildStatBlock(newItem, oldItem));
+            cancelLabel:  _isUpgrade ? "Cancel" : "Equip");
     }
 
     private void BuildTakeToast(ItemData item)
     {
         InitPanel();
+        SetItemBanner("Found");
+
+        AddSpacer(10);
 
         var row = new HBoxContainer();
         // Separation = IconRightPadding so the title/description column
-        // starts at IconColumnWidth from the panel-content edge. The
-        // bottom row (stat block + buttons) uses the same column, so the
-        // buttons line up exactly with the title's left edge.
+        // starts at IconColumnWidth from the panel-content edge.
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
@@ -287,27 +356,83 @@ public partial class ItemPickupToast : CanvasLayer
         var textVbox = AddTextColumn(row);
         AddTitleLabel(textVbox, item.Name);
         if (!string.IsNullOrEmpty(item.Description))
-            AddBodyLabel(textVbox, item.Description, UiStyles.Cream, autowrap: true);
+            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
 
-        var equipped = item.IsEquippable ? Inventory.Instance?.GetEquipped(item.Category) : null;
-        if (equipped?.Id == item.Id) equipped = null; // already wearing this exact item
+        var chips = BuildItemChips(item);
+        if (chips != null) textVbox.AddChild(chips);
 
-        AddSpacer(4);
+        AddSpacer(8);
         AddChoiceButtons(
             primaryLabel: "Take",
-            cancelLabel: "Cancel",
-            statBlock: BuildStatBlock(item, equipped));
+            cancelLabel: "Leave it");
+    }
+
+    private void BuildSellToast(ItemData item, int sellPrice)
+    {
+        InitPanel();
+        SetItemBanner("Sell");
+
+        AddSpacer(10);
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", IconRightPadding);
+        _content.AddChild(row);
+
+        AddIcon(row, item.Icon, size: IconSize);
+        var textVbox = AddTextColumn(row);
+        AddTitleLabel(textVbox, item.Name);
+        if (!string.IsNullOrEmpty(item.Description))
+            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
+
+        // Chip row: stat (with up/down arrow only if the item ISN'T the one
+        // currently equipped in this slot — so the player can compare what
+        // they'd be missing out on) + the gems they'll receive in gold.
+        var chipRow = new HBoxContainer();
+        chipRow.AddThemeConstantOverride("separation", 6);
+        chipRow.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        if (item.IsEquippable || item.IsConsumable)
+        {
+            var icon = CategoryIcon(item.Category);
+            if (icon != null)
+            {
+                int displayValue = item.IsConsumable
+                    ? Mathf.CeilToInt(item.Strength / 2f)
+                    : item.Strength;
+                var sign = displayValue >= 0 ? "+" : "";
+                var statChip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
+                if (item.IsEquippable)
+                {
+                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    if (equipped != null && equipped.Id != item.Id)
+                    {
+                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        if (arrow != null && statChip.GetChild(0) is HBoxContainer chipInnerRow)
+                        {
+                            chipInnerRow.AddChild(arrow);
+                        }
+                    }
+                }
+                chipRow.AddChild(statChip);
+            }
+        }
+        chipRow.AddChild(UiFrames.BuildStatChip($"+{sellPrice}", UiStyles.Gem, DesignTokens.Gold));
+        textVbox.AddChild(chipRow);
+
+        AddSpacer(8);
+        AddChoiceButtons(
+            primaryLabel: $"Sell for {sellPrice}",
+            cancelLabel: "Keep it");
     }
 
     private void BuildPurchaseToast(ItemData item, int cost)
     {
         InitPanel();
+        SetItemBanner("Buy");
+
+        AddSpacer(10);
 
         var row = new HBoxContainer();
-        // Separation = IconRightPadding so the title/description column
-        // starts at IconColumnWidth from the panel-content edge. The
-        // bottom row (stat block + buttons) uses the same column, so the
-        // buttons line up exactly with the title's left edge.
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
@@ -315,44 +440,93 @@ public partial class ItemPickupToast : CanvasLayer
         var textVbox = AddTextColumn(row);
         AddTitleLabel(textVbox, item.Name);
         if (!string.IsNullOrEmpty(item.Description))
-            AddBodyLabel(textVbox, item.Description, UiStyles.Cream, autowrap: true);
+            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
 
-        int gems = CurrencySystem.GetGems();
-        var priceColor = _purchaseAffordable
-            ? new Color(1f, 0.85f, 0.35f, 1)  // gold
-            : UiStyles.BadRed;                 // red, can't afford
-        AddBodyLabel(textVbox, $"{cost} gems  (you have {gems})", priceColor);
+        var chips = BuildItemChips(item, cost);
+        if (chips != null) textVbox.AddChild(chips);
 
-        var equipped = item.IsEquippable ? Inventory.Instance?.GetEquipped(item.Category) : null;
-        if (equipped?.Id == item.Id) equipped = null;
+        if (!_purchaseAffordable)
+        {
+            int gems = CurrencySystem.GetGems();
+            AddBodyLabel(textVbox, $"You have {gems} gems.", DesignTokens.Danger);
+        }
 
-        AddSpacer(4);
+        AddSpacer(8);
         AddChoiceButtons(
             primaryLabel: _purchaseAffordable ? "Buy" : "Can't afford",
-            cancelLabel:  "Cancel",
-            primaryEnabled: _purchaseAffordable,
-            statBlock: BuildStatBlock(item, equipped));
+            cancelLabel:  "Leave it",
+            primaryEnabled: _purchaseAffordable);
     }
 
     private void BuildSimpleToast(ItemData item, string message)
     {
-        InitPanel();
+        InitToastPanel();
 
         var row = new HBoxContainer();
-        // Separation = IconRightPadding so the title/description column
-        // starts at IconColumnWidth from the panel-content edge. The
-        // bottom row (stat block + buttons) uses the same column, so the
-        // buttons line up exactly with the title's left edge.
-        row.AddThemeConstantOverride("separation", IconRightPadding);
+        row.AddThemeConstantOverride("separation", 10);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: IconSize);
+        AddIcon(row, item.Icon, size: 32);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name);
-        AddBodyLabel(textVbox, message, UiStyles.Cream);
+        AddTitleLabel(textVbox, item.Name, fontSize: 18);
+        AddBodyLabel(textVbox, message, DesignTokens.Paper, fontSize: 20);
     }
 
     // ---- Stat / category row ----
+
+    /// <summary>Design-system stat chips: small mossy panels listing the
+    /// item's stat contribution (and optional gem price). Replaces the old
+    /// 'absolute + diff' BuildStatBlock layout — the Equip / Keep / Take
+    /// labels carry the comparison signal now, so chips can stay
+    /// minimalist per the handoff reference.</summary>
+    private Control BuildItemChips(ItemData item, int? gemCost = null)
+    {
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", 6);
+        row.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        bool any = false;
+        if (item.IsEquippable || item.IsConsumable)
+        {
+            var icon = CategoryIcon(item.Category);
+            if (icon != null)
+            {
+                // Food's Strength is HP units — convert to hearts (1 heart = 2 HP)
+                // so the chip reads in the same currency as the HUD heart row.
+                int displayValue = item.IsConsumable
+                    ? Mathf.CeilToInt(item.Strength / 2f)
+                    : item.Strength;
+                var sign = displayValue >= 0 ? "+" : "";
+                var chip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
+                // Arrow tucks INSIDE the chip's HBox so it shares the dark
+                // mossy frame with the value + ability icon — reads as one
+                // composite badge instead of two adjacent UI atoms.
+                if (item.IsEquippable)
+                {
+                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    if (equipped != null && equipped.Id != item.Id)
+                    {
+                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        if (arrow != null && chip.GetChild(0) is HBoxContainer chipRow)
+                        {
+                            chipRow.AddChild(arrow);
+                        }
+                    }
+                }
+                row.AddChild(chip);
+                any = true;
+            }
+        }
+
+        if (gemCost.HasValue)
+        {
+            var color = _purchaseAffordable ? DesignTokens.Paper : DesignTokens.Danger;
+            row.AddChild(UiFrames.BuildStatChip(gemCost.Value.ToString(), UiStyles.Gem, color));
+            any = true;
+        }
+
+        return any ? row : null;
+    }
 
     /// <summary>Compact "what does this do to my stats" block that floats
     /// under the item icon. Two stacked rows so it reads at a glance:
@@ -423,16 +597,56 @@ public partial class ItemPickupToast : CanvasLayer
         return col;
     }
 
+    /// <summary>Bouncing green-up / red-down arrow indicating whether the
+    /// new item is a stat upgrade vs what's currently equipped. Wrapper +
+    /// inner-anchored TextureRect so the bounce tween isn't clobbered by
+    /// the parent HBox's resort each layout pass.</summary>
+    private static Control BuildDirectionArrow(int diff)
+    {
+        if (diff == 0) return null;
+        bool up = diff > 0;
+        var wrapper = new Control
+        {
+            Name = "DirectionArrow",
+            CustomMinimumSize = new Vector2(14, 22),
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+        };
+        var arrow = new TextureRect
+        {
+            Texture = up ? UiStyles.ArrowUp : UiStyles.ArrowDown,
+            Modulate = up ? new Color(0.42f, 0.82f, 0.36f) : new Color(0.92f, 0.32f, 0.28f),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        arrow.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        wrapper.AddChild(arrow);
+
+        wrapper.TreeEntered += () =>
+        {
+            float bounce = up ? -3f : 3f;
+            var tween = wrapper.CreateTween().SetLoops();
+            tween.TweenProperty(arrow, "position:y", bounce, 0.4)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            tween.TweenProperty(arrow, "position:y", 0f, 0.4)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+        };
+        return wrapper;
+    }
+
     private static Texture2D CategoryIcon(ItemData.ItemCategory cat) => cat switch
     {
         ItemData.ItemCategory.Food   => UiStyles.Heart,
         ItemData.ItemCategory.Weapon => UiStyles.Sword,
-        // Until shield/boot icons are imported, equippable categories fall
-        // back to the bag — still communicates "this goes in a slot".
+        ItemData.ItemCategory.Boot   => UiStyles.BootStat,
+        // Clothing all rolls into Defense — same shield as the inventory
+        // panel uses, so the shop and the inventory speak the same icons.
         ItemData.ItemCategory.Head or ItemData.ItemCategory.Neck or
         ItemData.ItemCategory.Body or ItemData.ItemCategory.Hand or
-        ItemData.ItemCategory.Legs or ItemData.ItemCategory.Boot or
-        ItemData.ItemCategory.Hair => UiStyles.Bag,
+        ItemData.ItemCategory.Legs or ItemData.ItemCategory.Hair => UiStyles.Shield,
         _ => null,
     };
 
@@ -467,6 +681,21 @@ public partial class ItemPickupToast : CanvasLayer
     /// most item descriptions onto 2-3 lines.</summary>
     private const int PanelWidth = 400;
 
+    /// <summary>Compact toast width — auto-close 'Equipped!' / 'Added to
+    /// inventory' panels anchor to the top-right corner so they don't
+    /// obscure the world. Tight default width; PanelContainer expands
+    /// to fit longer item names.</summary>
+    private const int ToastPanelWidth = 180;
+    private const float ToastEdgeMargin = 12f;
+    /// <summary>Vertical offset from the top edge — matches the mute button's
+    /// 14 px top margin (HUD.ButtonEdgeMargin) so the toast slots into the
+    /// same top-right corner as the music icon. The toast briefly overlaps
+    /// the mute button while it's visible (≈2.5 s), which the design pass
+    /// approved as the right tradeoff: pickups are short, transient events
+    /// and stealing the mute slot for that window keeps them in the
+    /// player's natural field of view.</summary>
+    private const float ToastTopOffset = 14f;
+
     // ---- Buttons ----
 
     /// <summary>Build the standard "primary / cancel" button row with the
@@ -476,53 +705,36 @@ public partial class ItemPickupToast : CanvasLayer
     /// (built by <see cref="BuildStatBlock"/>) is prepended to the row so the
     /// "what changes if I take this" summary sits immediately left of the
     /// primary button — visually tying the action to its stat consequence.</summary>
-    private void AddChoiceButtons(string primaryLabel, string cancelLabel, bool primaryEnabled = true, Control statBlock = null)
+    private void AddChoiceButtons(string primaryLabel, string cancelLabel, bool primaryEnabled = true)
     {
         var row = new HBoxContainer();
+        row.Alignment = BoxContainer.AlignmentMode.Center;
+        row.AddThemeConstantOverride("separation", 12);
         _content.AddChild(row);
 
-        if (statBlock != null)
-        {
-            // Anchor the row to the panel-left so the stat block sits
-            // under the icon column. Row separation is 0 because the
-            // stat block's CustomMinimumSize already includes the icon's
-            // right padding — the next sibling lands exactly at
-            // panel-padding + IconColumnWidth, which is the same X as the
-            // title in the header row.
-            row.Alignment = BoxContainer.AlignmentMode.Begin;
-            row.AddThemeConstantOverride("separation", 0);
-            // Top-align so the stat rows sit at the same baseline as the
-            // button (not pushed down to centre against the [Space] hint).
-            statBlock.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
-            row.AddChild(statBlock);
-        }
-        else
-        {
-            // Plain two-button prompt — keep the old centred layout so
-            // it stays symmetric.
-            row.Alignment = BoxContainer.AlignmentMode.Center;
-            row.AddThemeConstantOverride("separation", 16);
-        }
+        // Cancel left, primary right — matches Save Slots / Name Entry
+        // (140×40 secondary, 160×40 primary). ProcessMode=Always so the
+        // focused button still receives ui_accept (Space/Enter) while the
+        // tree is paused — without this, only Enter (via the toast's
+        // _Process polling) confirms; Space would silently do nothing.
+        var cancelBtn = UiFrames.BuildChipButton(cancelLabel, "z", UiFrames.ApplySecondaryButton);
+        cancelBtn.CustomMinimumSize = new Vector2(140, 40);
+        cancelBtn.ProcessMode = ProcessModeEnum.Always;
+        cancelBtn.Pressed += Cancel;
+        row.AddChild(cancelBtn);
 
-        // Buttons live in their own cluster so we can give them an
-        // internal 16px gap independent of the row's outer separation.
-        var btnCluster = new HBoxContainer();
-        btnCluster.AddThemeConstantOverride("separation", 16);
-        btnCluster.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
-        row.AddChild(btnCluster);
-
-        var (primaryWrap, primaryBtn) = UiStyles.CreateActionButtonWithHint(
-            primaryLabel, "[Space]", Accept, highlighted: true);
+        // Primary takes the ↵ hint — Return always fires it (see _Input
+        // override). Space presses whichever button currently holds focus.
+        var primaryBtn = UiFrames.BuildChipButton(primaryLabel, "↵", UiFrames.ApplyPrimaryButton);
+        primaryBtn.CustomMinimumSize = new Vector2(160, 40);
+        primaryBtn.ProcessMode = ProcessModeEnum.Always;
+        primaryBtn.Pressed += Accept;
         if (!primaryEnabled)
         {
             primaryBtn.Disabled = true;
-            primaryWrap.Modulate = new Color(1, 1, 1, 0.5f);
+            primaryBtn.Modulate = new Color(1, 1, 1, 0.5f);
         }
-        btnCluster.AddChild(primaryWrap);
-
-        var (cancelWrap, cancelBtn) = UiStyles.CreateActionButtonWithHint(
-            cancelLabel, "[Z]", Cancel, highlighted: false);
-        btnCluster.AddChild(cancelWrap);
+        row.AddChild(primaryBtn);
 
         // Stash refs so keyboard nav can re-style on selection toggle.
         _primaryBtn = primaryBtn;
@@ -533,6 +745,17 @@ public partial class ItemPickupToast : CanvasLayer
         // highlight always matches what Space would confirm.
         primaryBtn.MouseEntered += () => SetCancelSelected(false);
         cancelBtn.MouseEntered += () => SetCancelSelected(true);
+
+        // Initial highlight state — primary (Take/Buy/Equip) is the
+        // recommended action when the prompt opens. When the primary is
+        // disabled (e.g. Can't afford), focus falls back to cancel so
+        // Space still has a target to confirm.
+        if (primaryEnabled) primaryBtn.GrabFocus();
+        else
+        {
+            cancelBtn.GrabFocus();
+            _cancelSelected = true;
+        }
     }
 
     private void Accept()
@@ -564,6 +787,39 @@ public partial class ItemPickupToast : CanvasLayer
 
     // ---- Panel + layout helpers ----
 
+    /// <summary>Compact top-right panel for autoclose toasts (Equipped!,
+    /// Added to inventory, Quest item). Anchors at (1, 0) with margin so
+    /// the panel hugs the top-right corner without obscuring the
+    /// world.</summary>
+    private void InitToastPanel()
+    {
+        _panel = new PanelContainer();
+        _panel.AnchorLeft = 1f;
+        _panel.AnchorRight = 1f;
+        _panel.AnchorTop = 0f;
+        _panel.AnchorBottom = 0f;
+        _panel.GrowHorizontal = Control.GrowDirection.Begin;
+        _panel.GrowVertical = Control.GrowDirection.End;
+        _panel.OffsetRight = -ToastEdgeMargin;
+        _panel.OffsetTop = ToastTopOffset;
+        _panel.OffsetLeft = -(ToastPanelWidth + ToastEdgeMargin);
+        // Bottom offset auto-adjusts as content sizes (PanelContainer expands
+        // downward thanks to GrowDirection.End).
+        _panel.OffsetBottom = ToastTopOffset;
+        _panel.ProcessMode = ProcessModeEnum.Always;
+        _panel.CustomMinimumSize = new Vector2(ToastPanelWidth, 0);
+
+        // Tight padding so the toast hugs its content — top-right
+        // corner shouldn't carry visual weight while the player's
+        // attention is on the world.
+        UiFrames.ApplyMossyPanel(_panel, padding: 6);
+
+        _content = new VBoxContainer();
+        _content.AddThemeConstantOverride("separation", 2);
+        _panel.AddChild(_content);
+        AddChild(_panel);
+    }
+
     private void InitPanel()
     {
         _panel = new PanelContainer();
@@ -582,14 +838,62 @@ public partial class ItemPickupToast : CanvasLayer
         // lines next to the big icon, which reads better.
         _panel.CustomMinimumSize = new Vector2(PanelWidth, 0);
 
-        // Plain pixel-art panel — nine-slices cleanly at any size, no curl
-        // distortion. Same stylebox used by the title-screen panels.
-        _panel.AddThemeStyleboxOverride("panel", UiStyles.MakePanelStylebox(contentPadding: 14));
+        // Design-system mossy frame with bevel.
+        UiFrames.ApplyMossyPanel(_panel, padding: 14);
 
         _content = new VBoxContainer();
         _content.AddThemeConstantOverride("separation", 4);
         _panel.AddChild(_content);
         AddChild(_panel);
+    }
+
+    /// <summary>Build (once) and label the deep-wood banner that straddles
+    /// the top of the panel. Called by the button-confirm flows; auto-toasts
+    /// skip this so the simple toast keeps its original lightweight look.</summary>
+    private void SetItemBanner(string text)
+    {
+        if (_banner == null)
+        {
+            _banner = new PanelContainer();
+            _banner.AddThemeStyleboxOverride("panel", UiFrames.DeepWoodBanner(padding: 8));
+            _banner.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+            var label = new Label
+            {
+                Name = "BannerLabel",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            };
+            label.AddThemeFontSizeOverride("font_size", 22);
+            label.AddThemeColorOverride("font_color", DesignTokens.Paper);
+            _banner.AddChild(label);
+
+            AddChild(_banner);
+            // Reposition whenever either the panel or the banner resizes.
+            _panel.Resized += RepositionBanner;
+            _banner.Resized += RepositionBanner;
+        }
+        _banner.GetNode<Label>("BannerLabel").Text = text;
+        _banner.Visible = true;
+        // Defer until layout settles so the banner has a measured size.
+        CallDeferred(nameof(RepositionBanner));
+    }
+
+    private void RepositionBanner()
+    {
+        if (_banner == null || _panel == null) return;
+        if (!_banner.IsInsideTree() || !_panel.IsInsideTree()) return;
+        var panelRect = _panel.GetGlobalRect();
+        var bannerSize = _banner.Size;
+        if (bannerSize.X <= 0 || bannerSize.Y <= 0)
+        {
+            CallDeferred(nameof(RepositionBanner));
+            return;
+        }
+        _banner.GlobalPosition = new Vector2(
+            panelRect.GetCenter().X - bannerSize.X / 2f,
+            panelRect.Position.Y - bannerSize.Y / 2f);
     }
 
     private static VBoxContainer AddTextColumn(Control parent)
@@ -644,32 +948,28 @@ public partial class ItemPickupToast : CanvasLayer
         _content.AddChild(new Control { CustomMinimumSize = new Vector2(0, height) });
     }
 
-    /// <summary>Title labels use the theme default (alagard) at 18 — bigger
-    /// than body text, same cream as everything else for palette unity.</summary>
-    private static void AddTitleLabel(Control parent, string text)
+    /// <summary>Title labels: design-system Alagard, gold (#F2C84B) per
+    /// spec §3 — display face for item names. Default 24 for the dialog
+    /// flows; toasts pass a smaller size.</summary>
+    private static void AddTitleLabel(Control parent, string text, int fontSize = 24)
     {
         var label = new Label();
         label.Text = text;
-        label.AddThemeFontSizeOverride("font_size", 18);
-        label.AddThemeColorOverride("font_color", UiStyles.Cream);
+        label.AddThemeFontSizeOverride("font_size", fontSize);
+        label.AddThemeColorOverride("font_color", DesignTokens.Gold);
         label.AddThemeConstantOverride("shadow_offset_x", 0);
         label.AddThemeConstantOverride("shadow_offset_y", 0);
         parent.AddChild(label);
     }
 
-    /// <summary>Body / stat / hint labels — alagard at <paramref name="fontSize"/>
-    /// (default 16), default cream so the toast reads as the same voice as
-    /// the dialogue body. Pass color to override for emphasis (gold price,
-    /// red can't-afford, green stronger). Pass <paramref name="autowrap"/>
-    /// for description copy so it wraps inside the constrained panel width
-    /// instead of blowing the panel out horizontally. Pass
-    /// <paramref name="verticalCenter"/> when the label sits next to taller
-    /// siblings (icons in the stat block) and needs to baseline against
-    /// them rather than top-align.</summary>
-    private static Label AddBodyLabel(Control parent, string text, Color color, bool autowrap = false, int fontSize = 16, bool verticalCenter = false)
+    /// <summary>Body / stat / hint labels — Jersey 15 (UI face) at
+    /// <paramref name="fontSize"/> (default 20, the design-system body
+    /// size and what the slot-screen location info uses).</summary>
+    private static Label AddBodyLabel(Control parent, string text, Color color, bool autowrap = false, int fontSize = 20, bool verticalCenter = false)
     {
         var label = new Label();
         label.Text = text;
+        label.AddThemeFontOverride("font", UiFonts.Body);
         label.AddThemeFontSizeOverride("font_size", fontSize);
         label.AddThemeColorOverride("font_color", color);
         label.AddThemeConstantOverride("shadow_offset_x", 0);
@@ -712,10 +1012,32 @@ public partial class ItemPickupToast : CanvasLayer
     {
         if (_waitingForChoice)
         {
-            GetTree().Paused = false;
+            // Only unpause / unlock when this is the LAST modal closing —
+            // the purchase → compare chain spawns toast #2 from inside
+            // toast #1's Accept handler, so toast #1's Close would
+            // otherwise yank the pause out from under toast #2.
+            _activeModalCount = System.Math.Max(0, _activeModalCount - 1);
+            if (_activeModalCount == 0)
+            {
+                GetTree().Paused = false;
+                SetPlayerInputLocked(false);
+            }
         }
         _waitingForChoice = false;
         _onAccept = null;
+        // Tell PlayerController to skip the attack input on the closing
+        // frame — Space-to-confirm shouldn't fall through to a swing.
+        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
         QueueFree();
+    }
+
+    /// <summary>Belt-and-suspenders for the modal flows: pause should be
+    /// enough on its own (player's _PhysicsProcess inherits pause), but if
+    /// any node up the player's parent chain ever gets ProcessMode.Always,
+    /// pause stops catching it. InputLocked zeros input regardless.</summary>
+    private void SetPlayerInputLocked(bool locked)
+    {
+        var player = GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        if (player != null) player.InputLocked = locked;
     }
 }

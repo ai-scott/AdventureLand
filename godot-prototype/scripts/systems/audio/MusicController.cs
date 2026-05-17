@@ -229,6 +229,7 @@ public partial class MusicController : Node
     private static AudioStream LoadStream(string name)
     {
         if (string.IsNullOrEmpty(name)) return null;
+        using var _perf = PerfMonitor.Measure("music_load", name);
         string path = $"{MusicRoot}{name}{MusicExt}";
         if (!ResourceLoader.Exists(path))
         {

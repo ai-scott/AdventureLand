@@ -22,7 +22,7 @@ Id = "node_000"
 Text = "Meow"
 Speaker = "Rosie"
 Priority = 100
-AutoAdvance = "node_001"
+AutoAdvance = "rosie_caught"
 Conditions = Array[ExtResource("3")]([SubResource("cond_2")])
 Actions = Array[ExtResource("4")]([SubResource("act_3")])
 
@@ -44,7 +44,7 @@ Status = "Not_Started"
 
 [sub_resource type="Resource" id="node_4"]
 script = ExtResource("2")
-Id = "node_001"
+Id = "rosie_caught"
 Text = "You caught Rosie!"
 Speaker = "AL"
 Priority = 99

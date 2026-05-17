@@ -12,6 +12,8 @@ public static class UserPrefs
     private const string Path = "user://prefs.cfg";
     private const string SectionUi = "ui";
     private const string KeyMobile = "mobile";
+    private const string SectionAudio = "audio";
+    private const string KeyMuted = "muted";
 
     /// <summary>Read the persisted mobile-mode preference, or <c>null</c> if
     /// the user has never made a choice on this device. <c>null</c> tells the
@@ -32,6 +34,24 @@ public static class UserPrefs
         var cfg = new ConfigFile();
         cfg.Load(Path); // ignore failure — first launch creates the file
         cfg.SetValue(SectionUi, KeyMobile, isMobile);
+        cfg.Save(Path);
+    }
+
+    /// <summary>Read the persisted mute state. Defaults to false (unmuted)
+    /// if no preference has ever been written.</summary>
+    public static bool GetMuted()
+    {
+        var cfg = new ConfigFile();
+        if (cfg.Load(Path) != Error.Ok) return false;
+        if (!cfg.HasSectionKey(SectionAudio, KeyMuted)) return false;
+        return (bool)cfg.GetValue(SectionAudio, KeyMuted);
+    }
+
+    public static void SetMuted(bool muted)
+    {
+        var cfg = new ConfigFile();
+        cfg.Load(Path);
+        cfg.SetValue(SectionAudio, KeyMuted, muted);
         cfg.Save(Path);
     }
 }

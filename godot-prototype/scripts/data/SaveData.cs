@@ -35,6 +35,18 @@ public partial class SaveData : Resource
     [ExportGroup("Equipment")]
     [Export] public Dictionary<string, int> EquippedItems { get; set; } = new();
 
+    [ExportGroup("Customization")]
+    /// <summary>Index into the hair-style roster (sheets/13hair).
+    /// -1 means "use the player scene's default hair", which lets brand-new
+    /// saves inherit whatever the Inspector authored.</summary>
+    [Export] public int HairStyleIndex { get; set; } = -1;
+    /// <summary>Index into the hair color ramp roster (mana seed hair ramps).
+    /// -1 means no palette swap applied.</summary>
+    [Export] public int HairColorIndex { get; set; } = -1;
+    /// <summary>Index into the skin color ramp roster (mana seed skin ramps).
+    /// -1 means no palette swap applied.</summary>
+    [Export] public int SkinIndex { get; set; } = -1;
+
     [ExportGroup("Currency")]
     /// <summary>Gems — the game's single currency. Earned from pickups/sales,
     /// spent in shops. CurrencySystem reads/writes this through SaveManager.</summary>

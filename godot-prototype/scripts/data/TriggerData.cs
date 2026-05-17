@@ -30,6 +30,7 @@ public partial class TriggerData : Resource
         Npc,
         Item,
         Wall,
+        Mirror,
     }
 
     [Export] public TriggerKind Kind { get; set; } = TriggerKind.Door;
@@ -47,6 +48,10 @@ public partial class TriggerData : Resource
     /// <summary>If set, Door/Edge only fires when QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus.</summary>
     [Export] public string RequiredQuestId { get; set; } = "";
     [Export] public string RequiredQuestStatus { get; set; } = "";
+    /// <summary>If set, Door/Edge only fires when QuestSystem.HasWorldFlag(RequiredWorldFlag).
+    /// Useful for one-way unlocks tied to a cutscene flag (e.g., the Penny's
+    /// House door opens once <c>penny_home</c> is set).</summary>
+    [Export] public string RequiredWorldFlag { get; set; } = "";
 
     [ExportGroup("NPC")]
     [Export] public string NpcName { get; set; } = "";

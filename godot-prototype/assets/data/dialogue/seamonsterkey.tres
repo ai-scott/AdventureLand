@@ -33,6 +33,6 @@ script = ExtResource("1")
 NpcId = "Shrine"
 DisplayName = "Shrine"
 DefaultNode = "node_000"
-WorldId = "World00"
+WorldId = "World10"
 QuestRelations = PackedStringArray("Waterfall_Bill")
 Nodes = Array[ExtResource("2")]([SubResource("node_1")])

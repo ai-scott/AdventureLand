@@ -3,8 +3,9 @@ using Godot;
 namespace AdventureLandPrototype;
 
 /// <summary>
-/// Interior door / portal. Player must walk into the Area2D and press Enter
-/// to transition. Shows a floating "Enter" prompt while in range.
+/// Interior door / portal. Player must walk into the Area2D and press the
+/// interact action (Space or Enter) to transition. Shows a floating
+/// "Enter" prompt while in range.
 ///
 /// Used for:
 /// - Exterior entrance to interior (e.g., village → blacksmith)
@@ -13,10 +14,9 @@ namespace AdventureLandPrototype;
 /// Target scene must have a Marker2D named "SpawnFromDoor_{DoorId}"
 /// at the desired spawn position.
 ///
-/// We key specifically on the Enter keycode (not the `interact` action)
-/// because that action also binds Space, which conflicts with `attack`.
-/// Enter is a kid-friendly explicit confirmation that won't fire when the
-/// player is mashing attack near a door.
+/// Listens on the `interact` action — InteractHintManager.IsHintVisible
+/// suppresses PlayerController's attack swing while a door prompt is up,
+/// so Space goes to the door instead of the sword.
 /// </summary>
 public partial class DoorTrigger : Area2D
 {
@@ -27,12 +27,18 @@ public partial class DoorTrigger : Area2D
 	[Export] public int DoorId = 1;
 
 	/// <summary>Prompt text shown while the player is standing in the door's area.</summary>
-	[Export] public string PromptText = "↵ Enter";
+	[Export] public string PromptText = "Enter";
 
 	/// <summary>If set, the door only fires when QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus.
 	/// Used for quest-gated entries (e.g., Penny's House only opens after the cat quest).</summary>
 	[Export] public string RequiredQuestId = "";
 	[Export] public string RequiredQuestStatus = "";
+
+	/// <summary>If set, the door only fires when QuestSystem.HasWorldFlag(RequiredWorldFlag).
+	/// World flags survive save/load reliably (set in cutscenes via
+	/// SetWorldFlag actions) — preferred over the quest gate for "one-way
+	/// unlock" doors.</summary>
+	[Export] public string RequiredWorldFlag = "";
 
 	private bool _playerInRange;
 
@@ -68,6 +74,10 @@ public partial class DoorTrigger : Area2D
 
 	private bool IsUnlocked()
 	{
+		// World flag gate — most-reliable post-cutscene unlock check.
+		if (!string.IsNullOrEmpty(RequiredWorldFlag)
+			&& !QuestSystem.HasWorldFlag(RequiredWorldFlag))
+			return false;
 		if (string.IsNullOrEmpty(RequiredQuestId)) return true;
 		return QuestSystem.GetQuestStatus(RequiredQuestId) == RequiredQuestStatus;
 	}
@@ -75,8 +85,7 @@ public partial class DoorTrigger : Area2D
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (!_playerInRange) return;
-		if (@event is not InputEventKey key || !key.Pressed || key.Echo) return;
-		if (key.Keycode != Key.Enter && key.Keycode != Key.KpEnter) return;
+		if (!@event.IsActionPressed("interact")) return;
 
 		if (string.IsNullOrEmpty(TargetScene))
 		{

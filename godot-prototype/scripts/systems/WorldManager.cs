@@ -48,6 +48,20 @@ public partial class WorldManager : Node
     public override void _Input(InputEvent @event)
     {
         if (@event is not InputEventKey key || !key.Pressed || key.Echo) return;
+
+        // F1 — dev shortcut to bail back to the title screen without
+        // needing to die or rebuild. Intentionally does NOT save first; the
+        // intent is to abandon the current run for testing, not check-point
+        // it. Hits ChangeSceneToFile directly so it works mid-dialogue
+        // (DialogueManager.Paused state would otherwise eat key inputs).
+        if (key.Keycode == Key.F1)
+        {
+            GD.Print("[Debug] F1 — returning to TitleScreen");
+            GetTree().Paused = false;
+            GetTree().ChangeSceneToFile("res://scenes/ui/TitleScreen.tscn");
+            return;
+        }
+
         if (key.Keycode != Key.Quoteleft) return;
 
         DebugVisible = !DebugVisible;
@@ -60,6 +74,56 @@ public partial class WorldManager : Node
         if (tree?.CurrentScene != null) RepaintShapes(tree.CurrentScene);
 
         GD.Print($"[Debug] Collision shapes {(DebugVisible ? "ON" : "OFF")}");
+
+        // Debug loadout — grant the highest-Strength item per equip slot
+        // (plus the Magic Trident as the dev weapon) and auto-equip them so
+        // the dev can sprint + tank + one-shot enemies while poking at
+        // collision shapes. Only granted on the toggle-ON edge so a second
+        // backtick press doesn't keep duplicating items.
+        if (DebugVisible) GrantDebugLoadout();
+    }
+
+    private void GrantDebugLoadout()
+    {
+        var inv = Inventory.Instance;
+        if (inv == null) return;
+        // CostumeController is the bridge from "_equipped dict" to "actual
+        // sprite layers swapped on the player". Inventory.Equip only mutates
+        // the data model — without an EquipItem call on the costume, the
+        // gear shows in the inventory grid but the player still wears the
+        // starter outfit. InventoryUI does both calls in tandem; we mirror
+        // that here so the dev loadout actually looks like the dev loadout.
+        var player = GetTree().GetFirstNodeInGroup("player") as Node;
+        var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
+
+        // Best-in-slot per category — IDs lifted from assets/data/items/.
+        // If a tie existed (e.g., Big Red Boots vs Forest Green Boots both
+        // at Str 3), the lower ID wins. Update if a stronger item is added.
+        TryAddAndEquip(inv, costume, itemId: 4);   // Magic Trident   (Weapon, Str 6)
+        TryAddAndEquip(inv, costume, itemId: 54);  // The Wrangler    (Head,   Str 3)
+        TryAddAndEquip(inv, costume, itemId: 62);  // Cloak of Billowing (Neck,  Str 3)
+        TryAddAndEquip(inv, costume, itemId: 73);  // Sunset Vest and Top (Body, Str 3)
+        TryAddAndEquip(inv, costume, itemId: 81);  // Gold + Purple Ring (Hand,  Str 2)
+        TryAddAndEquip(inv, costume, itemId: 96);  // Bluejean Overalls (Legs,  Str 3)
+        TryAddAndEquip(inv, costume, itemId: 102); // Big Red Boots    (Boot,   Str 3)
+    }
+
+    private static void TryAddAndEquip(Inventory inv, CostumeController costume, int itemId)
+    {
+        if (!inv.HasItem(itemId))
+        {
+            if (!inv.AddItem(itemId)) return;
+        }
+        for (int i = 0; i < Inventory.SlotCount; i++)
+        {
+            if (inv.GetSlotItemId(i) == itemId)
+            {
+                inv.Equip(i);
+                var item = inv.GetSlotItem(i);
+                if (item != null) costume?.EquipItem(item);
+                break;
+            }
+        }
     }
 
     private static void RepaintShapes(Node root)
@@ -101,9 +165,11 @@ public partial class WorldManager : Node
 
         // Change scene via SaveManager so HP/inventory/costume restore.
         // Don't set PendingSpawnPosition yet — we compute it after the scene loads.
-        SaveManager.Instance?.TransitionToWorld(targetScene);
+        // The await keeps the fade animating while ResourceLoader threads the load.
+        if (SaveManager.Instance != null)
+            await SaveManager.Instance.TransitionToWorld(targetScene);
 
-        // Wait a few frames for the new scene + Player._Ready to run.
+        // Wait a few frames for Player._Ready to run after the scene swap.
         for (int i = 0; i < 30; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -119,11 +185,19 @@ public partial class WorldManager : Node
             if (player != null)
             {
                 player.GlobalPosition = marker.GlobalPosition;
+                // Door markers can land on tree/wall colliders if the
+                // exterior tile layout shifts — nudge to nearest clear spot
+                // so the player isn't immobilized in a tree on entry.
+                if (player is CharacterBody2D body) SaveManager.UnstickPlayer(body);
                 SnapCamera(player);
                 if (SaveManager.Instance?.CurrentData != null)
                 {
-                    SaveManager.Instance.CurrentData.PositionX = marker.GlobalPosition.X;
-                    SaveManager.Instance.CurrentData.PositionY = marker.GlobalPosition.Y;
+                    SaveManager.Instance.CurrentData.PositionX = player.GlobalPosition.X;
+                    SaveManager.Instance.CurrentData.PositionY = player.GlobalPosition.Y;
+                    // ApplySaveToPlayer auto-saved the OLD saved position
+                    // already (before this marker override ran). Re-save
+                    // with the marker position so disk matches in-memory.
+                    SaveManager.Instance.Save();
                 }
             }
         }
@@ -164,9 +238,10 @@ public partial class WorldManager : Node
         if (SaveManager.Instance != null)
             SaveManager.Instance.PendingSpawnPosition = entryPos;
 
-        SaveManager.Instance?.TransitionToWorld(targetScene);
+        if (SaveManager.Instance != null)
+            await SaveManager.Instance.TransitionToWorld(targetScene);
 
-        // Wait for scene ready.
+        // Wait a few frames for Player._Ready to run after the scene swap.
         for (int i = 0; i < 30; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -244,12 +319,20 @@ public partial class WorldManager : Node
         pos.Y = Mathf.Clamp(pos.Y, EdgeMargin, meta.MapSize.Y - EdgeMargin);
 
         player.GlobalPosition = pos;
+        // Edge re-entry can drop the player onto a tree/wall tile right at
+        // the opposite border — unstick before saving so the persisted
+        // position is the navigable one.
+        if (player is CharacterBody2D body) SaveManager.UnstickPlayer(body);
         SnapCamera(player);
 
         if (SaveManager.Instance?.CurrentData != null)
         {
-            SaveManager.Instance.CurrentData.PositionX = pos.X;
-            SaveManager.Instance.CurrentData.PositionY = pos.Y;
+            SaveManager.Instance.CurrentData.PositionX = player.GlobalPosition.X;
+            SaveManager.Instance.CurrentData.PositionY = player.GlobalPosition.Y;
+            // ApplySaveToPlayer just auto-saved the (X, 9999) placeholder
+            // PendingSpawnPosition. Re-save with the clamped value so the
+            // next Continue doesn't reload off-map.
+            SaveManager.Instance.Save();
         }
     }
 
@@ -263,7 +346,7 @@ public partial class WorldManager : Node
 
     /// <summary>Snap any Camera2D in the scene so the new world doesn't pan across.
     /// Also re-apply WorldMeta bounds since they may differ per world.</summary>
-    private void SnapCamera(Node2D player)
+    public void SnapCamera(Node2D player)
     {
         var scene = GetTree().CurrentScene;
         if (scene == null) return;
@@ -356,14 +439,24 @@ public partial class WorldManager : Node
         // Short beat after banner fade-in so the player sees the world before the prompt.
         await ToSignal(GetTree().CreateTimer(0.3), Timer.SignalName.Timeout);
 
-        var lines = new[]
+        // Use the data-driven welcome.tres so each node carries its Id and
+        // the VOController can match {speaker}__{node}.ogg lookups (e.g.
+        // al__welcome_to_adventure_land.ogg, al__have_fun.ogg). Falls back to
+        // an inline two-line script if the resource is missing.
+        var welcome = GD.Load<DialogueData>("res://assets/data/dialogue/welcome.tres");
+        if (welcome != null)
         {
-            "Welcome to AdventureLand! Press [Space] to continue.",
-            "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
-        };
-        // Underscore → space in PrettifySpeaker. The cameo falls back to
-        // cameo_al.png since cameo_adventure_land.png doesn't exist.
-        dm.StartDialogue("Adventure_Land", lines);
+            dm.StartDialogue(welcome);
+        }
+        else
+        {
+            GD.PushWarning("[Welcome] welcome.tres not found — falling back to inline lines");
+            dm.StartDialogue("Adventure_Land", new[]
+            {
+                "Welcome to AdventureLand! Press [Space] to continue.",
+                "Use WASD or the arrow keys to move and explore. Get ready to have fun!",
+            });
+        }
 
         QuestSystem.SetWorldFlag("welcome_shown", "true");
         SaveManager.Instance?.Save();

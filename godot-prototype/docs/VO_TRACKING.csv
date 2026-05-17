@@ -1,0 +1,78 @@
+Speaker,DisplayName,World,Source File,Node ID,VO Filename,Text,In Folder?,Voice Actor,Recorded?,In Game?,Notes
+AL,AdventureLand,World00,welcome,WelcomeToAdventureLand,al__welcome_to_adventure_land.ogg,"Welcome to your new home in AdventureLand! You've just moved in, and the townsfolk are eager to meet you.",Yes,,,Yes,Re-record — script updated
+AL,AdventureLand,World00,welcome,StrangeCreatures,al__strange_creatures.ogg,"Word is there are some strange creatures around this town, too. Keep your wits about you.",No,,,No,New line — never recorded
+AL,AdventureLand,World00,welcome,HaveFun,al__have_fun.ogg,"Use the arrows to move and explore. Get ready to have fun!",Yes,,,Yes,Re-record — script updated; arrow icons render in dialogue box only
+AL,Pink Oyster Pearl,World10,pearl,collect_pearl,al__collect_pearl.ogg,You found the Perle de la Mer!,No,,,No,Pickup line (narrator)
+AL,Rosie,World00,rosie,node_001,al__node_001.ogg,You caught Rosie!,No,,,No,⚠️ Node ID collision risk — see Notes section in companion doc
+AL,SeaMonster,World10,sea-monster,trident_received,al__trident_received.ogg,You got a Magic Trident!,No,,,No,Narrator line inside sea-monster.tres
+AL,TreeSign,World00,treesign,node_000,al__node_000.ogg,The Secret of the Tree of AdventureLand is deeply mysterious.,No,,,No,⚠️ Node ID collision — multiple AL signs share node_000..004
+AL,TreeSign,World00,treesign,node_001,al__node_001.ogg,There are few who remember the living tree.,No,,,No,⚠️ Collision with rosie node_001
+AL,TreeSign,World00,treesign,node_002,al__node_002.ogg,The tree was cut down after poison overtook it.,No,,,No,⚠️ Collision
+AL,TreeSign,World00,treesign,node_003,al__node_003.ogg,The whole forest is still in danger...,No,,,No,⚠️ Collision
+AL,TreeSign,World00,treesign,node_004,al__node_004.ogg,Unless a brave adventurer can find the source of the poison.,No,,,No,⚠️ Collision
+AL,TreeSign,World00,treesign,node_005,al__node_005.ogg,Is anyone up to the task of saving AdventureLand?,No,,,No,
+AL,TreeSign,World00,treesign,node_006,al__node_006.ogg,Can anyone find the source of the poison and save AdventureLand?,No,,,No,
+AL,ForestSign,World01,forestsign,node_000,al__node_000.ogg,Welcome to Leafwood Forest.,No,,,No,⚠️ Collision with treesign node_000
+AL,ForestSign,World01,forestsign,node_001,al__node_001.ogg,A dark blight has taken over much of these ancient woods.,No,,,No,⚠️ Collision
+AL,ForestSign,World01,forestsign,node_002,al__node_002.ogg,Poisoned creatures now patrol the blighted areas.,No,,,No,⚠️ Collision
+AL,ForestSign,World01,forestsign,node_003,al__node_003.ogg,"Tread carefully, brave adventurer.",No,,,No,⚠️ Collision
+AL,ForestSign,World01,forestsign,node_004,al__node_004.ogg,The blight spreads through Leafwood Forest. Be careful.,No,,,No,⚠️ Collision
+AL,LakeSign,World10,lakesign,node_000,al__node_000.ogg,You've found the Bottomless Lake!,No,,,No,⚠️ Collision
+AL,LakeSign,World10,lakesign,node_001,al__node_001.ogg,The waterfall always flows but the lake never floods.,No,,,No,⚠️ Collision
+AL,LakeSign,World10,lakesign,node_002,al__node_002.ogg,Rumor has it there's a Sea Monster in the lake keeping humans away...,No,,,No,⚠️ Collision
+AL,LakeSign,World10,lakesign,node_003,al__node_003.ogg,and protecting something very valuable in the depths of the lake.,No,,,No,⚠️ Collision
+AL,LakeSign,World10,lakesign,node_004,al__node_004.ogg,A Sea Monster is protecting something valuable in the depths of the Bottomless Lake.,No,,,No,⚠️ Collision
+Penny,Penny,World00,penny,node_000,penny__node_000.ogg,Hi there adventurer! I'm Penny.,No,,,No,
+Penny,Penny,World00,penny,node_001,penny__node_001.ogg,What's your name?,No,,,No,
+Penny,Penny,World00,penny,node_003,penny__node_003.ogg,Cool name!,No,,,No,
+Penny,Penny,World00,penny,node_004,penny__node_004.ogg,"|PlayerName|, could you please help me find my cat?",No,,,No,⚠️ |PlayerName| token — dynamic substitution
+Penny,Penny,World00,penny,node_005,penny__node_005.ogg,I think she's somewhere in the village.,No,,,No,
+Penny,Penny,World00,penny,node_006,penny__node_006.ogg,I'll give you anything if you can bring her back. Please can you try to find her?,No,,,No,
+Penny,Penny,World00,penny,node_008,penny__node_008.ogg,"Great! Her name is Rosie, which is on her tag.",No,,,No,
+Penny,Penny,World00,penny,node_009,penny__node_009.ogg,It's okay. I hope I find her someday.,No,,,No,
+Penny,Penny,World00,penny,node_010,penny__node_010.ogg,Please find Rosie if you can. She likes climbing trees.,No,,,No,
+Penny,Penny,World00,penny,node_011,penny__node_011.ogg,"Have you found my cat, |PlayerName|?",No,,,No,⚠️ |PlayerName| token
+Penny,Penny,World00,penny,node_014,penny__node_014.ogg,Thank you so much! I've got a reward for you in my house.,No,,,No,
+Penny,Penny,World00,penny,node_015,penny__node_015.ogg,I'm so happy Rosie is home!,No,,,No,
+Penny,Penny,World00,penny,node_016,penny__node_016.ogg,"Please take anything you would like, but only take one thing.",No,,,No,
+Penny,Penny,World00,penny,node_017,penny__node_017.ogg,Thanks again! Bye!,No,,,No,
+Penny,Penny,World00,penny,penny_name_check,penny__penny_name_check.ogg,Oh — the villagers said your name was |PlayerName|. But maybe it's not. Which is it?,No,,,No,⚠️ |PlayerName| token; also duplicate node_id within file
+Penny:Rosie,Penny,World00,penny,node_013,penny:rosie__node_013.ogg,ROSIE!!!,No,,,No,⚠️ Compound speaker — VOController will not resolve to a valid folder. Normalize or skip.
+Rosie,Rosie,World00,rosie,node_000,rosie__node_000.ogg,Meow,No,,,No,
+Rosie,Rosie,World00,rosie,node_002,rosie__node_002.ogg,Meow. Purr....,No,,,No,
+Shopkeeper_Sally,Shopkeeper_Sally,World00,blacksmith,node_000,shopkeeper_sally__node_000.ogg,Welcome to the Blacksmith shop.,No,,,No,
+Shopkeeper_Sally,Shopkeeper_Sally,World00,blacksmith,node_001,shopkeeper_sally__node_001.ogg,"If you'll protect our town, you may choose a weapon from the table.",No,,,No,
+Shopkeeper_Sally,Shopkeeper_Sally,World00,blacksmith,node_002,shopkeeper_sally__node_002.ogg,I hope that weapon serves you well in protecting our town.,No,,,No,
+Shopkeeper_Sally,Shopkeeper_Sally,World00,blacksmith,node_003,shopkeeper_sally__node_003.ogg,"Take a weapon from the table. It's yours, free of charge.",No,,,No,
+Shopkeeper_Sarah,Shopkeeper_Sarah,World00,generalstore,node_000,shopkeeper_sarah__node_000.ogg,Welcome to the General Store. We have the best clothes in town.,No,,,No,
+Shopkeeper_Sarah,Shopkeeper_Sarah,World00,generalstore,node_001,shopkeeper_sarah__node_001.ogg,Some may even help with those weird green goos.,No,,,No,
+Shopkeeper_Sophie,Shopkeeper_Sophie,World00,adventureshop,node_000,shopkeeper_sophie__node_000.ogg,Welcome to the Adventure shop.,No,,,No,
+Shopkeeper_Sophie,Shopkeeper_Sophie,World00,adventureshop,node_001,shopkeeper_sophie__node_001.ogg,"The slimy goos keep coming, but there are worse things outside our village.",No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_000,windmill_nick__node_000.ogg,Hello.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_002,windmill_nick__node_002.ogg,My brother Bill is lost and I'm trying to find him.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_003,windmill_nick__node_003.ogg,Obviously it is.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_005,windmill_nick__node_005.ogg,"Okay, okay! My brother Bill is missing and I'm very upset.",No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_006,windmill_nick__node_006.ogg,I last saw him at the Shrine to the East of the Village.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_008,windmill_nick__node_008.ogg,You'd do that for me? Thank you.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_009,windmill_nick__node_009.ogg,Yeah it is. I'll search for my brother from here.,No,,,No,
+Windmill_Nick,Windmill_Nick,World00,windmillnick,node_010,windmill_nick__node_010.ogg,I'll search for Bill from here. You could travel East to the Shrine.,No,,,No,
+Pete,Pete,World01,pete,node_000,pete__node_000.ogg,"Hi there! I'm Pete, the prospector. I could use a little help.",No,,,No,
+Pete,Pete,World01,pete,node_002,pete__node_002.ogg,"I've been feeling pretty sick lately. Usually I get herbs from the mountains to the south, but the bridge broke!",No,,,No,
+Pete,Pete,World01,pete,node_003,pete__node_003.ogg,"Oh, I pan for gold in the rivers and streams. Been pretty lucky over the years.",No,,,No,
+Pete,Pete,World01,pete,node_005,pete__node_005.ogg,"It's a living, except I can't get to my house because the bridge broke.",No,,,No,
+Pete,Pete,World01,pete,node_006,pete__node_006.ogg,And I'm too sick to cross the river.,No,,,No,
+Pete,Pete,World01,pete,node_006b,pete__node_006b.ogg,Could you help me?,No,,,No,
+Pete,Pete,World01,pete,node_008,pete__node_008.ogg,I really appreciate the help! I'll have a reward for you after I can get back home.,No,,,No,
+Pete,Pete,World01,pete,node_010,pete__node_010.ogg,Any luck with those herbs? They grow in caves in the snowy mountains to the south. Look for the green leafy ones!,No,,,No,
+Pete,Pete,World01,pete,node_complete,pete__node_complete.ogg,"You found the herbs! I'm feeling better already. Thank ye kindly! Here, take this for your trouble.",No,,,No,
+Pete,Pete,World01,pete,node_post_complete,pete__node_post_complete.ogg,"Hello again, adventurer! Thanks to you, I'm feeling right. If you ever need anything, you know where to find me!",No,,,No,
+SeaMonster,SeaMonster,World10,sea-monster,greeting,seamonster__greeting.ogg,Step away from that shell. Did you steal my pearl?,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,explain_pearl,seamonster__explain_pearl.ogg,"Someone stole my precious pearl, the jewel of the lake. Will you help find it?",Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,accept_quest,seamonster__accept_quest.ogg,Thank you! Once you have it touch the shell and I'll come back up.,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,refuse_quest,seamonster__refuse_quest.ogg,YOU DARE REFUSE ME? THEN FACE MY WRATH!,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,player_taunts,seamonster__player_taunts.ogg,GIVE ME MY PEARL OR FACE MY WRATH!,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,hostile_encounter,seamonster__hostile_encounter.ogg,YOU DARE RETURN WITHOUT MY PEARL?! FACE MY WRATH!,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,quest_in_progress,seamonster__quest_in_progress.ogg,"Have you found my pearl yet? Remember, touch the shell when you have it.",Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,return_with_pearl,seamonster__return_with_pearl.ogg,Wow! My pearl! I've been waiting so long for this moment.,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,give_trident,seamonster__give_trident.ogg,I found this magical weapon in the lake. Take it for being so kind to me.,Yes,,,Yes,
+SeaMonster,SeaMonster,World10,sea-monster,already_complete,seamonster__already_complete.ogg,Thank you again for returning my pearl. The lake is at peace.,Yes,,,Yes,

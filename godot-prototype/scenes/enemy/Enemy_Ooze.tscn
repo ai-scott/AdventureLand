@@ -16,6 +16,7 @@ collision_layer = 16
 collision_mask = 2
 script = ExtResource("1")
 Data = ExtResource("2_pskue")
+ContactDamage = 4
 AnimatorPath = NodePath("EnemyAnimator")
 HealthSystemPath = NodePath("HealthSystem")
 HitboxPath = NodePath("Hitbox")
@@ -40,5 +41,5 @@ FramesFolder = "res://assets/sprites/enemies/ooze/"
 
 [node name="HealthSystem" type="Node" parent="." unique_id=369404657]
 script = ExtResource("3")
-MaxHealth = 2
+MaxHealth = 5
 InvulnerabilityDuration = 0.7

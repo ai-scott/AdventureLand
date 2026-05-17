@@ -28,3 +28,7 @@ obj/
 # OS
 .DS_Store
 Thumbs.db
+
+# TMX backups produced by tools/strip_tmx_crosses.py — first-run safety
+# net for the user's Tiled work. Recreated on demand, never edited.
+*.tmx.bak

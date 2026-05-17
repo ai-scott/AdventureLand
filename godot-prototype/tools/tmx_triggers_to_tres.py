@@ -10,7 +10,7 @@ Tiled schema
 In Tiled, add an Object Layer (any name — "Triggers" recommended) and place
 rectangle objects. Each object must have:
 
-  class  (a.k.a. "Type"): one of "door" | "spawn" | "edge" | "npc" | "item"
+  class  (a.k.a. "Type"): one of "door" | "spawn" | "edge" | "npc" | "item" | "wall" | "mirror"
 
 And these custom properties (set via the Properties panel), per class:
 
@@ -22,6 +22,8 @@ And these custom properties (set via the Properties panel), per class:
   npc:    npc_name      (string)
   item:   item_id       (int)
           requires_purchase (bool, optional — defaults false)
+  wall:   (no props — rect bounds; optional <polygon> child for non-rect shapes)
+  mirror: (no props — rect bounds; spawns a MirrorTrigger Area2D)
 
 The object's rectangle x/y/width/height become Position/Size on the trigger.
 Tiled uses top-left anchoring for rectangles; we preserve that and let the
@@ -53,6 +55,7 @@ KIND_MAP = {
     "npc": 3,
     "item": 4,
     "wall": 5,
+    "mirror": 6,
 }
 
 
@@ -104,12 +107,30 @@ def parse_object_properties(obj_elem):
     return props
 
 
+def is_tile_collision_cross(points):
+    """Detect Tiled's auto-generated '+' tile-collision shape — 12 vertices
+    inside a single tile, produced by 'Add objects from tile' for tiles with
+    no real collision authored. Signature: 12 points confined to the tile
+    interior (all coords roughly in [0, 16]). Real authored walls often
+    extend negative or past the tile (chair tops anchored at the bottom
+    edge, slanted building corners, etc.) and survive this filter."""
+    if len(points) != 12:
+        return False
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
+    return (
+        min(xs) >= 0 and min(ys) >= 0
+        and max(xs) <= 16 and max(ys) <= 16
+    )
+
+
 def parse_tmx_objects(tmx_path):
     """Parse TMX, return a list of trigger dicts."""
     tree = ET.parse(tmx_path)
     root = tree.getroot()
 
     triggers = []
+    skipped_nonrect = 0
     for group in root.findall("objectgroup"):
         for obj in group.findall("object"):
             # Tiled's "class" attribute was "type" before 1.9 — accept both.
@@ -127,16 +148,32 @@ def parse_tmx_objects(tmx_path):
             h = float(obj.get("height", 16))
             props = parse_object_properties(obj)
 
-            # Walls may carry a <polygon points="..."> child for non-rect shapes.
+            # Walls may carry a <polygon points="..."> child describing a
+            # non-rectangular shape (slanted building edges, tree trunks,
+            # curved walls). We preserve these as CollisionPolygon2D points
+            # at runtime. The only polygons we drop are Tiled's auto-generated
+            # tile-collision '+' crosses left over from "Add objects from
+            # tile" — those are placeholders for tiles with no real collision
+            # and would create junk plus-shaped colliders if kept.
             polygon = None
             poly_elem = obj.find("polygon")
+            polyline_elem = obj.find("polyline")
+            ellipse_elem = obj.find("ellipse")
             if poly_elem is not None:
                 pts_raw = poly_elem.get("points", "").strip()
                 if pts_raw:
-                    polygon = []
+                    pts = []
                     for pair in pts_raw.split():
                         xs, ys = pair.split(",")
-                        polygon.append((float(xs), float(ys)))
+                        pts.append((float(xs), float(ys)))
+                    if kind_str == "wall" and is_tile_collision_cross(pts):
+                        skipped_nonrect += 1
+                        continue
+                    polygon = pts
+            elif polyline_elem is not None or ellipse_elem is not None:
+                if kind_str == "wall":
+                    skipped_nonrect += 1
+                    continue
 
             triggers.append({
                 "kind": kind_str,
@@ -147,6 +184,8 @@ def parse_tmx_objects(tmx_path):
                 "id": obj.get("id"),
             })
 
+    if skipped_nonrect:
+        print(f"  Skipped {skipped_nonrect} non-rect wall(s) (crosses, diagonals, freeform)")
     return triggers
 
 
@@ -196,10 +235,13 @@ def write_tres(triggers, source_tmx_relpath, output_path):
         if t["kind"] in ("door", "edge"):
             rq_id = str(props.get("required_quest_id", ""))
             rq_status = str(props.get("required_quest_status", ""))
+            rq_flag = str(props.get("required_world_flag", ""))
             if rq_id:
                 lines.append(f'RequiredQuestId = "{escape_tres_string(rq_id)}"')
             if rq_status:
                 lines.append(f'RequiredQuestStatus = "{escape_tres_string(rq_status)}"')
+            if rq_flag:
+                lines.append(f'RequiredWorldFlag = "{escape_tres_string(rq_flag)}"')
         # NPC
         if t["kind"] == "npc":
             npc_name = str(props.get("npc_name", "") or t["name"])

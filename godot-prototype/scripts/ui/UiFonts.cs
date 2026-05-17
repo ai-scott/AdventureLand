@@ -8,24 +8,41 @@ namespace AdventureLandPrototype;
 /// <para><b>Title</b> — alagard (native 16px). Use for item names, NPC names,
 /// world banners. Pixel-perfect at 16, acceptable at 14.</para>
 ///
-/// <para><b>Body</b> — romulus (native 8px). Use for stat lines, descriptions,
-/// key hints, prompts. Pixel-perfect at 8 / 16 / 24 only — intermediate sizes
-/// render mushy because pixel TTFs need integer multiples of their native size.
-/// Prefer <b>16</b> everywhere (2× native) until we add a 10px-native font.</para>
+/// <para><b>Body</b> — Jersey 15 if installed at
+/// <c>assets/fonts/Jersey15-Regular.ttf</c>, otherwise romulus as a
+/// fallback. Jersey 15 is the design-system spec secondary face
+/// (handoff/design-spec.md §3); Romulus is the pre-handoff stand-in.
+/// Use for stat lines, descriptions, key hints, prompts, kbd chips. To
+/// install Jersey 15, download from
+/// <c>https://fonts.google.com/specimen/Jersey+15</c> and place the
+/// regular .ttf in <c>assets/fonts/</c>.</para>
 ///
 /// Global Theme (assets/fonts/UiTheme.tres) sets alagard as default_font, so
 /// any label that isn't explicitly overridden picks up a title-style font.
 /// Call <c>label.AddThemeFontOverride("font", UiFonts.Body)</c> to opt into
-/// romulus for body text.
+/// the secondary face for body text.
 /// </summary>
 public static class UiFonts
 {
+    private const string JerseyPath = "res://assets/fonts/Jersey15-Regular.ttf";
+    private const string RomulusPath = "res://assets/fonts/romulus_by_pix3m-d6aokem.ttf";
+
     private static Font _body;
     private static Font _title;
     private static Font _pixel;
+    private static Font _display;
 
-    public static Font Body =>
-        _body ??= GD.Load<Font>("res://assets/fonts/romulus_by_pix3m-d6aokem.ttf");
+    public static Font Body
+    {
+        get
+        {
+            if (_body != null) return _body;
+            _body = ResourceLoader.Exists(JerseyPath)
+                ? GD.Load<Font>(JerseyPath)
+                : GD.Load<Font>(RomulusPath);
+            return _body;
+        }
+    }
 
     public static Font Title =>
         _title ??= GD.Load<Font>("res://assets/fonts/alagard_by_pix3m-d6awiwp.ttf");
@@ -35,4 +52,10 @@ public static class UiFonts
     /// alagard title face.</summary>
     public static Font Pixel =>
         _pixel ??= GD.Load<Font>("res://assets/fonts/Font_Fantasy.ttf");
+
+    /// <summary>NES-style block pixel font (PressStart2P). Use for screen-spanning
+    /// hero text — the GAME OVER stinger is the canonical caller. Uppercase only;
+    /// renders pixel-perfect at multiples of 8 (16, 24, 48, 96).</summary>
+    public static Font Display =>
+        _display ??= GD.Load<Font>("res://assets/fonts/PressStart2P-Regular.ttf");
 }

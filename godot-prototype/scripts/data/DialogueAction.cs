@@ -27,7 +27,8 @@ public partial class DialogueAction : Resource
         SummonSeaMonster,
         MakeSeaMonsterHostile,
         SeaMonsterAcceptQuest,
-        SeaMonsterQuestComplete
+        SeaMonsterQuestComplete,
+        SeaMonsterRetreat
     }
 
     [Export] public ActionType Type { get; set; } = ActionType.SetQuestStatus;

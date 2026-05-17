@@ -97,4 +97,5 @@ Health = 12
 Speed = 32.0
 ViewDistance = 202.0
 AttackDistance = 88.0
+DeathSound = "bat_destroy"
 Behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_swoop"), SubResource("beh_hurt"), SubResource("beh_flee")])

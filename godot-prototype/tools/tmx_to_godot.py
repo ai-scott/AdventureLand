@@ -50,15 +50,17 @@ MAP_WIDTH = 45
 MAP_HEIGHT = 30
 TILESET_IMAGE = "res://assets/tiles/spritesheets/FantasyForest_Combo.png"
 
-# Layer name -> z-index mapping (player is at z=0)
+# Layer name -> z-index mapping (player is at z=0).
+# Matches the canonical layer template documented in tools/layer_renames/README.md.
 LAYER_Z_INDEX = {
     "Ground 3 - under P": -3,
     "Ground 2 - under P": -2,
     "Ground 1 - under P": -1,
-    "Objects": 0,
-    "Decor 1 - P level": 0,
-    "Decor 2 - over P": 1,
-    "Decor 3 - over P": 2,
+    "Objects - P level":  0,
+    "Decor 1 - P level":  0,
+    "Decor 2 - over P":   1,
+    "Decor 3 - over P":   2,
+    "Decor 4 - over P":   3,
 }
 
 # Building image layers from the TMX

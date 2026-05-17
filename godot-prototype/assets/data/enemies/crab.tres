@@ -39,6 +39,11 @@ Type = 0
 Pattern = 7
 Speed = 35.0
 
+[sub_resource type="Resource" id="act_cranky_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "crab_chase"
+
 [sub_resource type="Resource" id="cond_cranky_in_sight"]
 script = ExtResource("4")
 Value = 150.0
@@ -46,7 +51,7 @@ Value = 150.0
 [sub_resource type="Resource" id="cond_cranky_not_close"]
 script = ExtResource("4")
 Operator = 1
-Value = 32.0
+Value = 30.0
 
 [sub_resource type="Resource" id="beh_cranky"]
 script = ExtResource("2")
@@ -55,7 +60,36 @@ DurationMin = 1.5
 DurationMax = 3.0
 Weight = 6.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_cranky_in_sight"), SubResource("cond_cranky_not_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move")])
+Actions = Array[ExtResource("3")]([SubResource("act_cranky_animate"), SubResource("act_cranky_move"), SubResource("act_cranky_sound")])
+
+[sub_resource type="Resource" id="act_lurch_animate"]
+script = ExtResource("3")
+AnimName = "Attack_{direction}"
+
+[sub_resource type="Resource" id="act_lurch_move"]
+script = ExtResource("3")
+Type = 0
+Pattern = 1
+Speed = 120.0
+
+[sub_resource type="Resource" id="cond_lurch_in_range"]
+script = ExtResource("4")
+Value = 60.0
+
+[sub_resource type="Resource" id="cond_lurch_not_close"]
+script = ExtResource("4")
+Operator = 1
+Value = 30.0
+
+[sub_resource type="Resource" id="beh_lurch"]
+script = ExtResource("2")
+Name = "lurch_attack"
+DurationMin = 0.4
+DurationMax = 0.4
+Weight = 8.0
+Cooldown = 2.0
+Conditions = Array[ExtResource("4")]([SubResource("cond_lurch_in_range"), SubResource("cond_lurch_not_close")])
+Actions = Array[ExtResource("3")]([SubResource("act_lurch_animate"), SubResource("act_lurch_move")])
 
 [sub_resource type="Resource" id="act_attack_animate"]
 script = ExtResource("3")
@@ -67,9 +101,14 @@ Type = 0
 Pattern = 1
 Speed = 50.0
 
+[sub_resource type="Resource" id="act_attack_sound"]
+script = ExtResource("3")
+Type = 2
+Sound = "crab_attack"
+
 [sub_resource type="Resource" id="cond_attack_close"]
 script = ExtResource("4")
-Value = 32.0
+Value = 30.0
 
 [sub_resource type="Resource" id="beh_attack"]
 script = ExtResource("2")
@@ -78,7 +117,7 @@ DurationMin = 0.5
 DurationMax = 1.0
 Weight = 10.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_attack_close")])
-Actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move")])
+Actions = Array[ExtResource("3")]([SubResource("act_attack_animate"), SubResource("act_attack_move"), SubResource("act_attack_sound")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
@@ -117,12 +156,7 @@ AnimName = "Retreat_{direction}"
 script = ExtResource("3")
 Type = 0
 Pattern = 2
-Speed = 100.0
-
-[sub_resource type="Resource" id="act_retreat_sound"]
-script = ExtResource("3")
-Type = 2
-Sound = "Crab_Retreat"
+Speed = 80.0
 
 [sub_resource type="Resource" id="cond_retreat_not_hurt"]
 script = ExtResource("4")
@@ -138,16 +172,17 @@ Value = 1.0
 [sub_resource type="Resource" id="beh_retreat"]
 script = ExtResource("2")
 Name = "retreat"
-DurationMin = 2.0
+DurationMin = 0.5
+DurationMax = 0.5
 Weight = 99.0
 Cooldown = 1.0
 Conditions = Array[ExtResource("4")]([SubResource("cond_retreat_not_hurt"), SubResource("cond_retreat_invuln")])
-Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move"), SubResource("act_retreat_sound")])
+Actions = Array[ExtResource("3")]([SubResource("act_retreat_animate"), SubResource("act_retreat_move")])
 
 [resource]
 script = ExtResource("1")
 Type = "Crab"
-Health = 3
+Health = 10
 ViewDistance = 150.0
-AttackDistance = 32.0
-Behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])
+AttackDistance = 30.0
+Behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_lurch"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])

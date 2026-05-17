@@ -37,7 +37,7 @@ Conditions = Array[ExtResource("3")]([SubResource("cond_4")])
 [sub_resource type="Resource" id="act_7"]
 script = ExtResource("4")
 Type = 11
-Variable = "PlayerName"
+Variable = "PennyName"
 
 [sub_resource type="Resource" id="cond_6"]
 script = ExtResource("3")
@@ -49,9 +49,83 @@ script = ExtResource("2")
 Id = "node_002"
 Speaker = "You"
 Priority = 98
-AutoAdvance = "node_003"
+AutoAdvance = "penny_name_check"
 Conditions = Array[ExtResource("3")]([SubResource("cond_6")])
 Actions = Array[ExtResource("4")]([SubResource("act_7")])
+
+[sub_resource type="Resource" id="cond_pn_ns_a"]
+script = ExtResource("3")
+QuestId = "rescue_cat_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="cond_pn_yes"]
+script = ExtResource("3")
+Type = 2
+FlagKey = "PennyNameMatches"
+FlagValue = "true"
+
+[sub_resource type="Resource" id="node_pn_skip"]
+script = ExtResource("2")
+Id = "penny_name_check"
+Speaker = "Penny"
+Priority = 100
+AutoAdvance = "node_003"
+Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_a"), SubResource("cond_pn_yes")])
+
+[sub_resource type="Resource" id="cond_pn_ns_b"]
+script = ExtResource("3")
+QuestId = "rescue_cat_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="cond_pn_no"]
+script = ExtResource("3")
+Type = 2
+FlagKey = "PennyNameMatches"
+FlagValue = "false"
+
+[sub_resource type="Resource" id="act_pn_adopt"]
+script = ExtResource("4")
+Type = 12
+CustomFunction = "adoptPennyName"
+
+[sub_resource type="Resource" id="resp_pn_jk"]
+script = ExtResource("5")
+Text = "Just kidding — it's |PlayerName|."
+LeadsTo = "node_003"
+
+[sub_resource type="Resource" id="resp_pn_act"]
+script = ExtResource("5")
+Text = "Actually, it really is |PennyName|."
+LeadsTo = "node_003"
+Actions = Array[ExtResource("4")]([SubResource("act_pn_adopt")])
+
+[sub_resource type="Resource" id="node_pn_joke"]
+script = ExtResource("2")
+Id = "penny_name_check"
+Text = "Oh — the villagers said your name was |PlayerName|. But maybe it's not. Which is it?"
+Speaker = "Penny"
+Priority = 99
+AutoAdvance = "penny_name_response"
+Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_b"), SubResource("cond_pn_no")])
+
+[sub_resource type="Resource" id="cond_pn_ns_c"]
+script = ExtResource("3")
+QuestId = "rescue_cat_quest"
+Status = "Not_Started"
+
+[sub_resource type="Resource" id="cond_pn_no_b"]
+script = ExtResource("3")
+Type = 2
+FlagKey = "PennyNameMatches"
+FlagValue = "false"
+
+[sub_resource type="Resource" id="node_pn_response"]
+script = ExtResource("2")
+Id = "penny_name_response"
+Speaker = "You"
+Priority = 99
+Conditions = Array[ExtResource("3")]([SubResource("cond_pn_ns_c"), SubResource("cond_pn_no_b")])
+Responses = Array[ExtResource("5")]([SubResource("resp_pn_jk"), SubResource("resp_pn_act")])
 
 [sub_resource type="Resource" id="act_10"]
 script = ExtResource("4")
@@ -353,4 +427,4 @@ script = ExtResource("1")
 NpcId = "Penny"
 DisplayName = "Penny"
 WorldId = "World00"
-Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_8"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_18"), SubResource("node_22"), SubResource("node_26"), SubResource("node_30"), SubResource("node_32"), SubResource("node_34"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_52")])
+Nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_pn_skip"), SubResource("node_pn_joke"), SubResource("node_pn_response"), SubResource("node_8"), SubResource("node_11"), SubResource("node_13"), SubResource("node_15"), SubResource("node_18"), SubResource("node_22"), SubResource("node_26"), SubResource("node_30"), SubResource("node_32"), SubResource("node_34"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_52")])

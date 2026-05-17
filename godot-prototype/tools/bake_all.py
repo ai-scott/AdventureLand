@@ -70,7 +70,9 @@ def find_tmxs(filter_name=None):
     if not TMX_DIR.exists():
         print(f"ERROR: {TMX_DIR} not found")
         return []
-    tmxs = sorted(TMX_DIR.glob("*.tmx"))
+    # Skip underscore-prefixed TMXs (e.g. _TEMPLATE.tmx) — these are
+    # authoring templates, not real maps, and have no scene to feed.
+    tmxs = sorted(t for t in TMX_DIR.glob("*.tmx") if not t.name.startswith("_"))
     if filter_name:
         tmxs = [t for t in tmxs if t.name == filter_name or t.stem == filter_name]
     return tmxs
@@ -97,14 +99,11 @@ def bake_triggers(tmx_path):
     return _run("tmx_triggers_to_tres.py", tmx_path)
 
 
-def bake_tile_csvs(tmx_path, flavor):
-    """Run the CSV emitter appropriate for the TMX flavor."""
-    if flavor in ("interior", "multi"):
-        return _run("tmx_interior_to_csvs.py", tmx_path)
-    # Village flavor: update_tile_csvs.py. Historically skipped in bake_all
-    # because it overwrites World_00.tscn's CSVs that are already hand-tuned.
-    # Still useful on demand, but not auto-run by default to avoid surprises.
-    return True
+def bake_tile_csvs(tmx_path):
+    """Run the CSV emitter for any TMX. Every world TMX gets baked into
+    prefixed CSVs by tmx_interior_to_csvs.py — MapLoader finds them at
+    runtime as `{tmx_stem}_{layer}.csv`."""
+    return _run("tmx_interior_to_csvs.py", tmx_path)
 
 
 def main():
@@ -122,7 +121,7 @@ def main():
     for tmx in tmxs:
         flavor = classify_tmx(tmx)
         print(f"\n{tmx.name}  [{flavor}]")
-        step1 = bake_tile_csvs(tmx, flavor)
+        step1 = bake_tile_csvs(tmx)
         step2 = bake_triggers(tmx)
         if step1 and step2:
             ok += 1

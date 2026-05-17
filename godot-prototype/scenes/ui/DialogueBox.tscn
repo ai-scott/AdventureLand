@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://dw2d2xag04406" path="res://scripts/ui/DialogueManager.cs" id="1"]
 [ext_resource type="Texture2D" uid="uid://x0q8aslfyrgd" path="res://assets/sprites/ui/dialogue/frame_bg_name.png" id="2_frame"]
 [ext_resource type="Texture2D" uid="uid://s2xkykov00er" path="res://assets/sprites/ui/dialogue/cameo_al.png" id="3_cameo"]
+[ext_resource type="Texture2D" uid="uid://dhg6p6ot33u7n" path="res://assets/sprites/ui/dialogue/text_item_frame.png" id="4_item_frame"]
+[ext_resource type="Texture2D" uid="uid://d1geixaq01i55" path="res://assets/sprites/ui/dialogue/text_name_frame.png" id="5_extender"]
 
 [node name="DialogueManager" type="CanvasLayer" unique_id=736270774]
 layer = 10
@@ -29,6 +31,21 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 texture = ExtResource("2_frame")
+
+[node name="NameExtender" type="NinePatchRect" parent="DialogueBox" unique_id=-122037285]
+texture_filter = 1
+layout_mode = 0
+offset_left = 260.38458
+offset_top = 32.0
+offset_right = 292.76917
+offset_bottom = 78.263695
+scale = Vector2(2.6308389, 1.8410932)
+texture = ExtResource("5_extender")
+region_rect = Rect2(39, 19, 145, 50)
+patch_margin_left = 14
+patch_margin_top = 4
+patch_margin_right = 14
+patch_margin_bottom = 4
 
 [node name="Cameo" type="TextureRect" parent="DialogueBox" unique_id=1833434789]
 texture_filter = 1
@@ -70,21 +87,61 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="TextLabel" type="Label" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1217893458]
+[node name="TextLabel" type="RichTextLabel" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1217893458]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.984, 1, 0.741, 1)
-theme_override_constants/line_spacing = 2
-theme_override_constants/paragraph_spacing = 2
-theme_override_constants/shadow_offset_x = 0
-theme_override_font_sizes/font_size = 24
-text = "Dialogue text goes here, sometimes it can be longer than the width of the page..."
-autowrap_mode = 2
+theme_override_colors/default_color = Color(0.984, 1, 0.741, 1)
+theme_override_constants/line_separation = 2
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "Dialogue text goes here."
+fit_content = true
+scroll_active = false
 
 [node name="ResponseContainer" type="VBoxContainer" parent="DialogueBox/TextArea/VBoxContainer" unique_id=1853054451]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 2
+
+[node name="ItemReveal" type="Control" parent="DialogueBox" unique_id=281100001]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ItemRevealFrame" type="TextureRect" parent="DialogueBox/ItemReveal" unique_id=281100002]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -345.00003
+offset_top = -66.0
+offset_right = 364.65506
+offset_bottom = 284.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("4_item_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemRevealIcon" type="TextureRect" parent="DialogueBox/ItemReveal" unique_id=281100003]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 195.99997
+offset_top = 90.0
+offset_right = 255.99997
+offset_bottom = 150.0
+grow_horizontal = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ContinueHint" type="Label" parent="DialogueBox" unique_id=574857519]
 layout_mode = 1

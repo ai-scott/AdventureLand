@@ -495182,10 +495182,14 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 size = Vector2(10, 10)
 
 [node name="Player" type="CharacterBody2D" unique_id=1472698308]
+y_sort_enabled = true
 collision_mask = 10
 script = ExtResource("1")
 DebugDumpHairRamps = true
 DebugRecolorHairToRow = 82
+TridentSwingOffsetDown = Vector2(0, -7)
+TridentSwingOffsetLeft = Vector2(5, 0)
+TridentSwingOffsetRight = Vector2(-5, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=491845693]
 position = Vector2(0, 5)
@@ -495206,6 +495210,7 @@ position = Vector2(0, 4)
 script = ExtResource("3_ov1oi")
 
 [node name="shadow" type="Sprite2D" parent="SpriteLayers" unique_id=418024077]
+z_index = -1
 texture = ExtResource("4_rn7t0")
 offset = Vector2(0, 1)
 hframes = 8
@@ -495347,6 +495352,7 @@ vframes = 6
 frame = 35
 
 [node name="farmer_1h_weapon" type="Sprite2D" parent="SpriteLayers" unique_id=484406235]
+visible = false
 texture = ExtResource("6_ejd4k")
 offset = Vector2(0, -10)
 hframes = 4
@@ -495488,8 +495494,10 @@ parameters/WorkAtDesk2/blend_position = Vector2(0, 0)
 script = ExtResource("19_pi3ps")
 
 [node name="AttackHitbox" type="Area2D" parent="." unique_id=2073815912]
+visible = false
 collision_layer = 4
 collision_mask = 8
+monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox" unique_id=1602477189]
 shape = SubResource("RectangleShape2D_kswpp")

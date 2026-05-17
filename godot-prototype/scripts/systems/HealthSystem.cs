@@ -14,7 +14,7 @@ namespace AdventureLandPrototype;
 public partial class HealthSystem : Node
 {
     [Export] public int MaxHealth = 10;
-    [Export] public float InvulnerabilityDuration = 0.5f;
+    [Export] public float InvulnerabilityDuration = 1.0f;
 
     [Signal] public delegate void HealthChangedEventHandler(int current, int max);
     [Signal] public delegate void HurtEventHandler();

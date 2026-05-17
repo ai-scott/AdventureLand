@@ -11,6 +11,10 @@ public partial class NpcInteract : Area2D
 {
 	[Export] public string NpcName = "Villager";
 
+	/// <summary>Verb shown in the floating hint ("Talk", "Look", "Read", …).
+	/// Signs override to "Look" via the base TreeSign.tscn.</summary>
+	[Export] public string InteractVerb = "Talk";
+
 	/// <summary>Data-driven dialogue (Phase 3+). Set via Inspector or code.</summary>
 	[Export] public DialogueData Dialogue;
 
@@ -76,12 +80,12 @@ public partial class NpcInteract : Area2D
 
 			if (Dialogue != null)
 			{
-				dialogueManager.StartDialogue(Dialogue);
+				dialogueManager.StartDialogue(Dialogue, this);
 				_suppressUntilExit = true;
 			}
 			else if (DialogueLines.Length > 0)
 			{
-				dialogueManager.StartDialogue(NpcName, DialogueLines);
+				dialogueManager.StartDialogue(NpcName, DialogueLines, this);
 				_suppressUntilExit = true;
 			}
 		}
@@ -169,6 +173,6 @@ public partial class NpcInteract : Area2D
 	/// on top of the dialogue box.</summary>
 	private string GetHintText()
 	{
-		return _suppressUntilExit ? "" : "↵ Talk";
+		return _suppressUntilExit ? "" : InteractVerb;
 	}
 }

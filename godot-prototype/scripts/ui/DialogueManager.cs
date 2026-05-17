@@ -21,6 +21,11 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class DialogueManager : CanvasLayer
 {
+    /// <summary>Latest live DialogueManager. Set in _Ready, cleared in
+    /// _ExitTree. Used by other UIs (HUD, InventoryUI) to gate input while
+    /// a dialogue is open without needing a node lookup every frame.</summary>
+    public static DialogueManager Instance { get; private set; }
+
     public bool IsActive { get; private set; }
 
     private DialogueData _npcData;
@@ -30,13 +35,34 @@ public partial class DialogueManager : CanvasLayer
     // UI nodes — bound in _Ready from DialogueBox.tscn.
     private Control _dialogueBox;
     private TextureRect _frameBg;
+    private NinePatchRect _nameExtender;
     private TextureRect _cameo;
     private Label _nameLabel;
-    private Label _textLabel;
+    private RichTextLabel _textLabel;
     private Label _continueHint;
     private VBoxContainer _responseContainer;
 
+    // Mobile-only "tap to continue" affordance — pointer icon + label pinned
+    // to the top-right of the dialogue box, replacing the desktop ContinueHint.
+    private Control _mobileContinueHint;
+
+    // Key-item reveal overlay — curly TextItemFrame + large item icon that
+    // pops up when an "AL"-spoken node grants a quest item (Sea Monster Key,
+    // Pearl, Magic Trident, etc.). Built once in _Ready, toggled per-node.
+    // Mirrors C3's obj_TextItemFrame + ItemShowcase pair from eDialogue.json.
+    private Control _itemRevealRoot;
+    private TextureRect _itemRevealFrame;
+    private TextureRect _itemRevealIcon;
+
     private PlayerController _player;
+
+    /// <summary>One-shot callback fired after the dialogue overlay actually
+    /// closes. Used for SeaMonster retreat: the tree is paused while the
+    /// reveal is up, so the SM's bubble particles + descend tween freeze
+    /// even though the bubble SFX (un-paused audio bus) plays. Deferring
+    /// the whole retreat until EndDialogue keeps the bubble cue in sync
+    /// with the visual.</summary>
+    private System.Action _pendingPostClose;
     private bool _waitingForInput;
     private string _inputVariable;
     private bool _justStarted; // prevent E from advancing on the same frame it opened
@@ -52,11 +78,14 @@ public partial class DialogueManager : CanvasLayer
 
     public override void _Ready()
     {
+        Instance = this;
+
         _dialogueBox = GetNode<Control>("DialogueBox");
         _frameBg = GetNode<TextureRect>("DialogueBox/FrameBg");
+        _nameExtender = GetNodeOrNull<NinePatchRect>("DialogueBox/NameExtender");
         _cameo = GetNode<TextureRect>("DialogueBox/Cameo");
         _nameLabel = GetNode<Label>("DialogueBox/NameLabel");
-        _textLabel = GetNode<Label>("DialogueBox/TextArea/VBoxContainer/TextLabel");
+        _textLabel = GetNode<RichTextLabel>("DialogueBox/TextArea/VBoxContainer/TextLabel");
         // ContinueHint lives as a direct child of DialogueBox so it can be
         // pinned to the bottom-right of the frame instead of riding the
         // VBoxContainer — otherwise tall wrapped body text pushes it offscreen.
@@ -70,7 +99,206 @@ public partial class DialogueManager : CanvasLayer
         _texFrameBg ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg.png");
         _texFrameBgName ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg_name.png");
 
+        BuildItemRevealOverlay();
+
+        // On mobile, taps anywhere on the dialogue panel synthesize the
+        // dialogue_advance action — same code path as Space/Enter on desktop.
+        // Skipped on desktop so a stray click in the dialogue area doesn't
+        // race the keyboard. ProcessMode.Always so taps register while the
+        // tree is paused (dialogues pause the game).
+        // Mobile-only "tap anywhere on dialogue to advance" — top-right
+        // pointer hint built here; tap detection lives in _Input (see below)
+        // because gui_input on _dialogueBox doesn't fire — the FrameBg
+        // child's default MouseFilter=Stop consumes the GUI event first.
+        if (UiStyles.IsMobile)
+        {
+            BuildMobileContinueHint();
+        }
+        // React to runtime mobile-mode toggles (Shift+M) — build/destroy
+        // the mobile pointer hint so it matches the current mode without
+        // requiring a scene reload.
+        UiStyles.MobileChanged += OnMobileChanged;
+
         _dialogueBox.Visible = false;
+    }
+
+    private void OnMobileChanged()
+    {
+        if (UiStyles.IsMobile && _mobileContinueHint == null)
+        {
+            BuildMobileContinueHint();
+        }
+        else if (!UiStyles.IsMobile && _mobileContinueHint != null)
+        {
+            _mobileContinueHint.QueueFree();
+            _mobileContinueHint = null;
+        }
+    }
+
+    /// <summary>Tap / click / ESC to advance dialogue. Runs in _Input which
+    /// fires BEFORE the GUI sorts the event onto its deepest hit Control —
+    /// so even though the dialogue's FrameBg / Cameo / NameLabel children
+    /// have default MouseFilter=Stop and would otherwise swallow the event,
+    /// we get first crack. Hit-test against the dialogue box's global rect
+    /// so clicks OUTSIDE the dialogue (HUD chips, dpad zone) keep their
+    /// own behavior. ProcessMode is set to Always in StartDialogue, so
+    /// this fires while the tree is paused mid-dialogue.</summary>
+    public override void _Input(InputEvent evt)
+    {
+        if (!IsActive) return;
+        if (_dialogueBox == null || !_dialogueBox.Visible) return;
+        // Name-entry / input nodes: LineEdit owns the keyboard, Chip button
+        // owns the submit click. Don't intercept anything.
+        if (_waitingForInput) return;
+
+        // ESC advances like Space/Enter — fires the dialogue_advance action,
+        // which _Process routes correctly (confirms a highlighted response,
+        // auto-advances normal nodes, or closes on EndsDialogue). Handled
+        // before the response-screen early-return so ESC works on both
+        // normal text AND choice screens.
+        if (evt is InputEventKey k && k.Pressed && !k.Echo && k.Keycode == Key.Escape)
+        {
+            SynthAdvance();
+            GetViewport().SetInputAsHandled();
+            return;
+        }
+
+        // Skip click-anywhere-to-advance while response buttons are showing,
+        // so clicks reach the Button widgets and pick a specific response
+        // instead of auto-confirming the highlighted one.
+        if (_currentResponses != null && _currentResponses.Count > 0) return;
+
+        Vector2? pos = evt switch
+        {
+            InputEventScreenTouch t when t.Pressed => t.Position,
+            InputEventMouseButton m when m.Pressed && m.ButtonIndex == MouseButton.Left => m.Position,
+            _ => null,
+        };
+        if (pos == null) return;
+        if (!_dialogueBox.GetGlobalRect().HasPoint(pos.Value)) return;
+
+        SynthAdvance();
+        GetViewport().SetInputAsHandled();
+    }
+
+    /// <summary>Mobile replacement for the "[Space] Continue" label — same
+    /// bottom-right slot inside the dialogue box as the desktop ContinueHint,
+    /// rendered as: pointer icon + "to continue". The pointer texture is the
+    /// same cursor glyph the dialogue body uses for [icon=Pointer], so the
+    /// hint visually matches inline cues like "Tap [pointer] to continue".</summary>
+    private void BuildMobileContinueHint()
+    {
+        // Pull the cursor glyph from the same atlas the body text uses
+        // (see IconPaths above — "pointer" key maps to empty.png because
+        // the C3 extraction was off-by-one). Cached as a static so we
+        // don't reload the resource for every dialogue.
+        _pointerGlyph ??= GD.Load<Texture2D>("res://assets/sprites/ui/text_icons/empty.png");
+
+        var row = new HBoxContainer
+        {
+            Name = "MobileContinueHint",
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            Visible = false,
+        };
+        row.AddThemeConstantOverride("separation", 4);
+
+        // Match the scene-authored ContinueHint position — bottom-right of
+        // the dialogue box, ~58px in from the right edge, ~136px up from the
+        // bottom. Numbers come from DialogueBox.tscn ContinueHint offsets.
+        row.AnchorLeft = 1f;
+        row.AnchorRight = 1f;
+        row.AnchorTop = 1f;
+        row.AnchorBottom = 1f;
+        row.GrowHorizontal = Control.GrowDirection.Begin;
+        row.GrowVertical = Control.GrowDirection.Begin;
+        row.OffsetRight = -58f;
+        row.OffsetBottom = -136f;
+
+        var pointer = new TextureRect
+        {
+            Texture = _pointerGlyph,
+            CustomMinimumSize = _pointerGlyph != null ? _pointerGlyph.GetSize() : new Vector2(22, 22),
+            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        row.AddChild(pointer);
+
+        var label = new Label
+        {
+            Text = "to continue",
+            VerticalAlignment = VerticalAlignment.Center,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        label.AddThemeFontSizeOverride("font_size", 14);
+        label.AddThemeColorOverride("font_color", new Color(0.9882353f, 0.9411765f, 0.78039217f, 1f));
+        label.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.85f));
+        label.AddThemeConstantOverride("shadow_offset_x", 1);
+        label.AddThemeConstantOverride("shadow_offset_y", 1);
+        row.AddChild(label);
+
+        _dialogueBox.AddChild(row);
+        _mobileContinueHint = row;
+    }
+
+    private static Texture2D _pointerGlyph;
+
+    private static void SynthAdvance()
+    {
+        var press = new InputEventAction { Action = "dialogue_advance", Pressed = true };
+        Input.ParseInputEvent(press);
+        var release = new InputEventAction { Action = "dialogue_advance", Pressed = false };
+        Input.ParseInputEvent(release);
+    }
+
+    /// <summary>Bind the scene-authored key-item reveal nodes (ItemReveal +
+    /// ItemRevealFrame + ItemRevealIcon — see DialogueBox.tscn). Position +
+    /// size live in the scene so they can be tweaked visually in the Godot
+    /// editor; this method only grabs node references and confirms the
+    /// curly frame texture loaded.</summary>
+    private void BuildItemRevealOverlay()
+    {
+        _itemRevealRoot = _dialogueBox.GetNodeOrNull<Control>("ItemReveal");
+        _itemRevealFrame = _dialogueBox.GetNodeOrNull<TextureRect>("ItemReveal/ItemRevealFrame");
+        _itemRevealIcon = _dialogueBox.GetNodeOrNull<TextureRect>("ItemReveal/ItemRevealIcon");
+        if (_itemRevealRoot == null || _itemRevealFrame == null || _itemRevealIcon == null)
+        {
+            GD.PushWarning("[Dialogue] ItemReveal nodes missing from DialogueBox.tscn — key-item reveal disabled.");
+            return;
+        }
+        _itemRevealRoot.Visible = false;
+    }
+
+    private void ShowItemReveal(ItemData item)
+    {
+        if (_itemRevealRoot == null || item?.Icon == null) return;
+        _itemRevealIcon.Texture = item.Icon;
+        _itemRevealRoot.Visible = true;
+        // Fade in only — no scale tween. The previous elastic 0.6 → 1.0
+        // scale read as "the icon snapped into position" because scaling
+        // from the Control's pivot offset visibly translated the frame +
+        // icon from their final layout spot. Keeping scale fixed at 1.0
+        // means they appear exactly where they belong, just fading from
+        // transparent to fully opaque.
+        _itemRevealRoot.Scale = Vector2.One;
+        _itemRevealRoot.Modulate = new Color(1, 1, 1, 0);
+        var tween = CreateTween();
+        tween.TweenProperty(_itemRevealRoot, "modulate:a", 1.0f, 0.18);
+    }
+
+    private void HideItemReveal()
+    {
+        if (_itemRevealRoot == null || !_itemRevealRoot.Visible) return;
+        _itemRevealRoot.Visible = false;
+        _itemRevealIcon.Texture = null;
+    }
+
+    public override void _ExitTree()
+    {
+        UiStyles.MobileChanged -= OnMobileChanged;
+        if (Instance == this) Instance = null;
     }
 
     public override void _Process(double delta)
@@ -115,8 +343,11 @@ public partial class DialogueManager : CanvasLayer
 
     // ---- Public API ----
 
-    /// <summary>Start a dialogue with an NPC. Returns false if already in dialogue.</summary>
-    public bool StartDialogue(DialogueData data)
+    /// <summary>Start a dialogue with an NPC. Returns false if already in dialogue.
+    /// Pass <paramref name="source"/> (NPC trigger node, sign, sea-monster body)
+    /// to snap the player to face it as the conversation opens — leaves the NPC
+    /// itself unrotated since most NPCs aren't authored for arbitrary facings.</summary>
+    public bool StartDialogue(DialogueData data, Node2D source = null)
     {
         GD.Print($"[Dialogue] StartDialogue called for '{data?.NpcId}' | IsActive={IsActive} | Paused={GetTree().Paused}");
         if (IsActive || data == null) return false;
@@ -130,7 +361,11 @@ public partial class DialogueManager : CanvasLayer
 
         // Lock player input as a backup (in case tree unpauses briefly).
         _player ??= GetTree().Root.FindChild("Player", true, false) as PlayerController;
-        if (_player != null) _player.InputLocked = true;
+        if (_player != null)
+        {
+            _player.InputLocked = true;
+            if (source != null) _player.FaceTarget(source.GlobalPosition);
+        }
 
         // Find the best starting node via priority + conditions.
         var startNode = FindBestNode();
@@ -179,7 +414,7 @@ public partial class DialogueManager : CanvasLayer
     }
 
     /// <summary>Legacy API — starts dialogue from an array of plain lines (no branching).</summary>
-    public void StartDialogue(string speakerName, string[] lines)
+    public void StartDialogue(string speakerName, string[] lines, Node2D source = null)
     {
         if (IsActive) return;
 
@@ -201,7 +436,7 @@ public partial class DialogueManager : CanvasLayer
             data.Nodes.Add(node);
         }
 
-        StartDialogue(data);
+        StartDialogue(data, source);
     }
 
     /// <summary>
@@ -224,7 +459,8 @@ public partial class DialogueManager : CanvasLayer
         _fontOverride = font;
         if (font == null) return;
         _nameLabel?.AddThemeFontOverride("font", font);
-        _textLabel?.AddThemeFontOverride("font", font);
+        // RichTextLabel keys font overrides by the per-style name, not "font".
+        _textLabel?.AddThemeFontOverride("normal_font", font);
         _continueHint?.AddThemeFontOverride("font", font);
     }
 
@@ -234,7 +470,7 @@ public partial class DialogueManager : CanvasLayer
         // Scene labels carry no font override, so clearing falls back to the
         // global theme (alagard) — exactly what we want for NPC dialogue.
         _nameLabel?.RemoveThemeFontOverride("font");
-        _textLabel?.RemoveThemeFontOverride("font");
+        _textLabel?.RemoveThemeFontOverride("normal_font");
         _continueHint?.RemoveThemeFontOverride("font");
         _fontOverride = null;
     }
@@ -264,19 +500,60 @@ public partial class DialogueManager : CanvasLayer
     private void NavigateToNode(DialogueNode node)
     {
         _currentNode = node;
+        // Trace where we land for debugging dialogue jumps.
+        GD.Print($"[Dialogue] → {node.Id} (pri={node.Priority}, speaker={node.Speaker}, autoAdv={node.AutoAdvance ?? ""}, text=\"{(node.Text?.Length > 40 ? node.Text.Substring(0, 40) + "…" : node.Text)}\")");
+
+        // Reset any reveal from the previous node before this one's actions
+        // run — keeps consecutive reveals from stacking visually and avoids
+        // a stale icon flashing if this node has no reveal of its own.
+        HideItemReveal();
 
         // Execute node actions.
         ExecuteActions(node.Actions);
 
-        // Variable substitution.
-        var text = SubstituteVariables(node.Text);
+        // Key-item reveal: if this is an AL-narrated node that grants a
+        // quest item ("You got X!" pattern from welcome.tres / pearl quest /
+        // SeaMonster key flow), surface the curly TextItemFrame popup with
+        // the item's icon. C3 calls this obj_TextItemFrame + ItemShowcase
+        // and triggers it from the same speaker="AL" + give_item action shape.
+        var revealItem = ResolveRevealItem(node);
+        if (revealItem != null) ShowItemReveal(revealItem);
+
+        // "System" / silent action-carrier nodes — empty text, no responses,
+        // an autoAdvance to the real line. C3's `return_summon` and
+        // `hostile_encounter_summon` use this pattern to fire side effects
+        // (summon_sea_monster, make_sea_monster_hostile) before the visible
+        // dialogue node runs. Showing the empty box reads as a UI bug and
+        // forces the player to press Space through nothing — auto-advance
+        // straight to the next node instead.
+        // GUARD: skip the auto-skip when the actions left us waiting for
+        // input (Penny's "What's your name?" → empty You-node with an Input
+        // action → "Cool name!"). Without the guard we tear past the input
+        // UI and the player never gets to type their name.
+        bool hasResponses = node.Responses != null && node.Responses.Count > 0;
+        if (string.IsNullOrEmpty(node.Text) && !hasResponses
+            && !string.IsNullOrEmpty(node.AutoAdvance)
+            && !_waitingForInput)
+        {
+            var next = FindNodeById(node.AutoAdvance);
+            if (next != null) { NavigateToNode(next); return; }
+        }
+
+        // Variable substitution + inline icon markup ([icon=UpArrow] etc).
+        var text = SubstituteIcons(SubstituteVariables(node.Text));
         var speaker = node.Speaker;
+
+        // Cut any in-flight VO and start the new line. Most nodes have no
+        // recorded VO — the controller silently no-ops on missing files, so
+        // we don't gate this on a registry. Cuts apply on auto-advance too.
+        VOController.Instance?.Play(speaker, node.Id);
 
         UpdateSpeakerVisuals(speaker);
 
         // Underscores are used in speaker IDs to keep them identifier-safe
         // in .tres files (e.g., "Shopkeeper_Sally"). Render as spaces.
         _nameLabel.Text = PrettifySpeaker(speaker);
+        LayoutNameExtender();
         _textLabel.Text = text;
         // Hide the body label when the node has no text (response-only nodes)
         // so the ResponseContainer flows up to the top of the text area.
@@ -293,6 +570,7 @@ public partial class DialogueManager : CanvasLayer
             SetPlayerSpeakingVisuals();
             _responseContainer.Visible = true;
             _continueHint.Visible = false;
+            if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
 
             for (int i = 0; i < validResponses.Count; i++)
             {
@@ -309,21 +587,29 @@ public partial class DialogueManager : CanvasLayer
                 row.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
 
                 // Pointing-hand icon from the C3 TextIcons sheet (Arrow tag).
-                // 18x18 pixel-art sprite, lives in a fixed 24px column so toggling
-                // its visibility doesn't shift the response text.
+                // 18x18 native; scaled ~1.3x via KeepAspectCentered into a 24x24
+                // square so the arrow reads more clearly. Column is fixed-width so
+                // toggling visibility doesn't shift the response text.
                 var pointer = new TextureRect();
                 pointer.Name = "Pointer";
                 pointer.Texture = UiStyles.Arrow;
                 pointer.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
-                pointer.StretchMode = TextureRect.StretchModeEnum.Keep;
-                pointer.CustomMinimumSize = new Vector2(24, 0);
+                pointer.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+                pointer.CustomMinimumSize = new Vector2(24, 24);
                 pointer.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
                 pointer.Modulate = new Color(1, 1, 1, 0); // hidden; shown on selection
                 row.AddChild(pointer);
 
                 var btn = new Button();
+                btn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
                 btn.Text = SubstituteVariables(resp.Text);
                 btn.Pressed += () => OnResponseChosen(idx);
+                // Hover (or finger-drag on touch — Godot emits MouseEntered
+                // for the Control under an active touch when emulate_touch_
+                // from_mouse is on) drives the pointer to the option the
+                // user is currently over. On release Pressed fires on
+                // whichever option ends up under their finger.
+                btn.MouseEntered += () => SelectResponse(idx);
                 btn.ProcessMode = ProcessModeEnum.Always;
                 btn.FocusMode = Control.FocusModeEnum.None; // we handle focus manually
                 // Match the body TextLabel: 24px, cream, no shadow.
@@ -333,8 +619,12 @@ public partial class DialogueManager : CanvasLayer
                 btn.Flat = true;
                 btn.Alignment = HorizontalAlignment.Left;
                 btn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-                btn.AddThemeColorOverride("font_color", new Color(0.99f, 0.94f, 0.78f, 1));
-                btn.AddThemeColorOverride("font_focus_color", new Color(0.99f, 0.94f, 0.78f, 1));
+                // Match the dialogue body TextLabel cream (#FBFFBD) exactly —
+                // the prior #FCF0C7 read as a slightly different warm tone
+                // next to the body copy.
+                var bodyCream = new Color(0.984f, 1f, 0.741f, 1);
+                btn.AddThemeColorOverride("font_color", bodyCream);
+                btn.AddThemeColorOverride("font_focus_color", bodyCream);
                 btn.AddThemeColorOverride("font_hover_color", new Color(1f, 1f, 0.9f, 1));
                 row.AddChild(btn);
 
@@ -347,9 +637,18 @@ public partial class DialogueManager : CanvasLayer
         else
         {
             _responseContainer.Visible = false;
-            _continueHint.Visible = true;
-            _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
-                !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
+            // Mobile gets a pointer-icon + "to continue" chip pinned top-right
+            // (built in _Ready); desktop keeps the bottom-right keyboard hint.
+            _continueHint.Visible = !UiStyles.IsMobile;
+            if (UiStyles.IsMobile)
+            {
+                if (_mobileContinueHint != null) _mobileContinueHint.Visible = true;
+            }
+            else
+            {
+                _continueHint.Text = _currentNode.EndsDialogue ? "[Space] Close" :
+                    !string.IsNullOrEmpty(_currentNode.AutoAdvance) ? "[Space] Continue" : "[Space] Close";
+            }
             _selectedResponseIndex = -1;
         }
     }
@@ -392,6 +691,51 @@ public partial class DialogueManager : CanvasLayer
         _frameBg.Texture = _texFrameBg;
         _cameo.Visible = false;
         _nameLabel.Visible = false;
+        if (_nameExtender != null) _nameExtender.Visible = false;
+    }
+
+    /// <summary>Show the hearts_frame.png extender behind the speaker name
+    /// when the rendered text overflows the small plate baked into
+    /// frame_bg_name.png. The existing plate fits ~170px of text starting at
+    /// NameLabel.OffsetLeft (110); long names like "Shopkeeper Sophie" or
+    /// "Adventure Land" run off the right end without this widener.
+    ///
+    /// Honors the scene-authored OffsetLeft / Scale / vertical offsets so
+    /// the extender's rounded left end stays tucked into the existing plate
+    /// where the user placed it — only the right edge is stretched at
+    /// runtime to clear the rendered name + a small pad.</summary>
+    private void LayoutNameExtender()
+    {
+        if (_nameExtender == null) return;
+        if (_nameLabel == null || !_nameLabel.Visible || string.IsNullOrEmpty(_nameLabel.Text))
+        {
+            _nameExtender.Visible = false;
+            return;
+        }
+
+        var font = _nameLabel.GetThemeFont("font");
+        int fontSize = _nameLabel.GetThemeFontSize("font_size");
+        if (font == null) { _nameExtender.Visible = false; return; }
+        float textWidth = font.GetStringSize(_nameLabel.Text, HorizontalAlignment.Left, -1, fontSize).X;
+
+        const float plateWidth = 170f;
+        if (textWidth <= plateWidth)
+        {
+            _nameExtender.Visible = false;
+            return;
+        }
+
+        // Rendered right edge of the extender = OffsetLeft + Size.X * Scale.X,
+        // where Size.X = OffsetRight - OffsetLeft. Solve for the OffsetRight
+        // that puts the rendered edge past (NameLabel.OffsetLeft + textWidth)
+        // by a small pad. This keeps the authored Scale (1.55x in the scene)
+        // intact so the texture's rounded ends still read correctly.
+        const float rightPadding = 24f;
+        float scaleX = _nameExtender.Scale.X;
+        if (scaleX <= 0f) scaleX = 1f;
+        float targetRight = _nameLabel.OffsetLeft + textWidth + rightPadding;
+        _nameExtender.OffsetRight = _nameExtender.OffsetLeft + (targetRight - _nameExtender.OffsetLeft) / scaleX;
+        _nameExtender.Visible = true;
     }
 
 
@@ -409,6 +753,14 @@ public partial class DialogueManager : CanvasLayer
     private static string PrettifySpeaker(string speaker)
     {
         if (string.IsNullOrEmpty(speaker)) return "";
+        // "Penny:Rosie" → "Penny". Authors append ":QuestName" to a speaker
+        // when the same NPC plays a different beat per quest — only the
+        // name belongs in the UI; the suffix stays for content routing.
+        int colon = speaker.IndexOf(':');
+        if (colon > 0) speaker = speaker.Substring(0, colon);
+        // "AL" → "Adventure Land" — the narrator/world voice abbreviation
+        // shouldn't render as a 2-letter shorthand to the player.
+        if (speaker == "AL") return "Adventure Land";
         // "Shopkeeper_Sally" → "Shopkeeper Sally". Speaker IDs keep
         // underscores in .tres files to stay identifier-safe.
         return speaker.Replace('_', ' ');
@@ -438,6 +790,8 @@ public partial class DialogueManager : CanvasLayer
 
         ClearResponses();
         RemoveFontOverride();
+        HideItemReveal();
+        if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
         _currentNode = null;
         _currentResponses = null;
         _npcData = null;
@@ -448,6 +802,15 @@ public partial class DialogueManager : CanvasLayer
         // Input stays locked until the fade completes so the player can't
         // bump an NPC and retrigger dialogue mid-fade.
         GetTree().Paused = false;
+
+        // Run any post-close hook (currently used by SeaMonster retreat to
+        // sync bubble SFX with the visual descend — see the action handler
+        // for the full reasoning). Cleared after firing so a stale callback
+        // can't leak into the next dialogue.
+        var postClose = _pendingPostClose;
+        _pendingPostClose = null;
+        postClose?.Invoke();
+
         FadeOut(() =>
         {
             if (_player != null) _player.InputLocked = false;
@@ -478,14 +841,25 @@ public partial class DialogueManager : CanvasLayer
         return FindNodeById(_npcData.DefaultNode);
     }
 
+    /// <summary>Resolve a node by Id, picking the highest-priority variant
+    /// whose conditions currently pass. Falls back to the first node with
+    /// the Id if none pass — preserves single-node behavior so existing
+    /// dialogues aren't affected. Lets multiple nodes share an Id to act as
+    /// a conditional branch off an AutoAdvance/LeadsTo (e.g. Penny's name
+    /// gag jumps to either the joke variant or a silent passthrough).</summary>
     private DialogueNode FindNodeById(string id)
     {
         if (string.IsNullOrEmpty(id) || _npcData?.Nodes == null) return null;
+        DialogueNode best = null;
+        DialogueNode firstWithId = null;
         foreach (var n in _npcData.Nodes)
         {
-            if (n != null && n.Id == id) return n;
+            if (n == null || n.Id != id) continue;
+            firstWithId ??= n;
+            if (!QuestSystem.AllConditionsMet(n.Conditions)) continue;
+            if (best == null || n.Priority > best.Priority) best = n;
         }
-        return null;
+        return best ?? firstWithId;
     }
 
     private Array<DialogueResponse> FilterResponses(Array<DialogueResponse> responses)
@@ -532,6 +906,11 @@ public partial class DialogueManager : CanvasLayer
                     if (!string.IsNullOrEmpty(giveId))
                     {
                         QuestSystem.GrantUniqueItem(giveId);
+                        // Toast the player so dialogue rewards (Magic Trident,
+                        // herbs, etc.) feel like loot — without this the line
+                        // "I give you the Magic Trident" passes without any
+                        // visual confirmation of the actual item gain.
+                        ShowGiveItemToast(giveId);
                         if (a.DestroyTrigger) DestroyCurrentNpcTrigger();
                     }
                     break;
@@ -541,11 +920,17 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SpawnUniqueItem:
-                    // In C3 this deploys an NPC into the world.
-                    // For now, show/unhide the NPC node if it exists in the scene.
+                    // C3 deploys an NPC OR reveals a quest pickup. We support
+                    // both: first try unhiding an Area2D pickup (matches the
+                    // pearl_quest flow — pearl ItemTrigger lives placed-but-
+                    // hidden at the waterfall). Falls back to ShowNpcInScene
+                    // for legacy NPC-deploy semantics.
                     var spawnName = a.ItemName ?? a.ItemId;
-                    GD.Print($"[Dialogue] Deploy NPC: {spawnName}");
-                    ShowNpcInScene(spawnName);
+                    GD.Print($"[Dialogue] Spawn unique: {spawnName}");
+                    if (!RevealQuestPickup(spawnName))
+                    {
+                        ShowNpcInScene(spawnName);
+                    }
                     break;
 
                 case DialogueAction.ActionType.SetFlag:
@@ -562,7 +947,10 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.PlaySound:
-                    GD.Print($"[Dialogue] Play sound: {a.SoundId} (Phase 7)");
+                    if (!string.IsNullOrEmpty(a.SoundId))
+                    {
+                        SFXController.Instance?.Play(a.SoundId);
+                    }
                     break;
 
                 case DialogueAction.ActionType.TeleportPlayer:
@@ -578,13 +966,141 @@ public partial class DialogueManager : CanvasLayer
                     break;
 
                 case DialogueAction.ActionType.SummonSeaMonster:
+                {
+                    var smc = FindSeaMonster();
+                    if (smc != null && !smc.IsBusy && smc.GetState() == SeaMonsterController.State.Hidden)
+                    {
+                        smc.Summon();
+                    }
+                    // Already-risen branches (re-summon during the same convo)
+                    // are no-ops — the dialogue already drives the right node.
+                    break;
+                }
+
                 case DialogueAction.ActionType.MakeSeaMonsterHostile:
+                    FindSeaMonster()?.MakeHostile();
+                    break;
+
                 case DialogueAction.ActionType.SeaMonsterAcceptQuest:
                 case DialogueAction.ActionType.SeaMonsterQuestComplete:
-                    GD.Print($"[Dialogue] Sea monster action: {a.Type} (Phase 6)");
+                case DialogueAction.ActionType.SeaMonsterRetreat:
+                    // Hold the retreat until the overlay closes — the tree
+                    // is paused while the dialogue/reveal is up, so kicking
+                    // off the tween here would freeze the bubble particles
+                    // and Y-descend until the player dismisses (while the
+                    // un-paused bubble SFX plays immediately, breaking
+                    // sync). EndDialogue fires _pendingPostClose right
+                    // after unpausing so SFX, particles, and descend all
+                    // hit together.
+                    _pendingPostClose = SeaMonsterRetreat;
                     break;
             }
         }
+    }
+
+    // ---- Sea-monster + pickup helpers ----
+
+    /// <summary>Pull an ItemData out of a node's GiveItem actions if the
+    /// node is shaped like a "You got X!" reveal: speaker == "AL" and at
+    /// least one give_item action with a resolvable item. Mirrors C3's
+    /// trigger for obj_TextItemFrame — same shape catches Sea Monster Key,
+    /// Pearl, Magic Trident, Rosie, Cake, etc. Returns null when the node
+    /// is a regular line, so the reveal popup stays hidden.</summary>
+    private static ItemData ResolveRevealItem(DialogueNode node)
+    {
+        if (node == null || node.Actions == null) return null;
+        // Speaker check is intentionally permissive — "AL" is canonical, but
+        // "Adventure_Land" / "AdventureLand" / case differences slip through
+        // from authoring. Dropping the check entirely would surface a frame
+        // for NPC-given mundane items (e.g. shopkeeper hands you a freebie),
+        // which we don't want — keep the AL gate but match loosely.
+        var speaker = (node.Speaker ?? "").Replace("_", "").Replace(" ", "");
+        bool isAL = speaker.Equals("AL", System.StringComparison.OrdinalIgnoreCase)
+                 || speaker.Equals("AdventureLand", System.StringComparison.OrdinalIgnoreCase);
+        if (!isAL) return null;
+
+        foreach (var a in node.Actions)
+        {
+            if (a == null || a.Type != DialogueAction.ActionType.GiveItem) continue;
+            var key = a.ItemId ?? a.ItemName;
+            if (string.IsNullOrEmpty(key)) continue;
+            ItemData item = null;
+            if (int.TryParse(key, out int id)) item = Inventory.GetItem(id);
+            item ??= Inventory.GetItemByName(key);
+            if (item?.Icon != null) return item;
+        }
+        return null;
+    }
+
+    /// <summary>Mirror of ItemTrigger.ShowPickupToast for dialogue-given
+    /// items. Resolves the item by ID first (numeric keys preferred for
+    /// reliability) then by name. Falls through silently for unknown items
+    /// so dialogue can still grant world-flag-only quest tokens without
+    /// crashing.</summary>
+    private void ShowGiveItemToast(string itemKey)
+    {
+        if (string.IsNullOrEmpty(itemKey)) return;
+        ItemData item = null;
+        if (int.TryParse(itemKey, out int id)) item = Inventory.GetItem(id);
+        item ??= Inventory.GetItemByName(itemKey);
+        if (item == null) return;
+        var toast = new ItemPickupToast();
+        GetTree().CurrentScene.AddChild(toast);
+        toast.Show(item);
+    }
+
+    private SeaMonsterController FindSeaMonster()
+    {
+        var scene = GetTree().CurrentScene;
+        return scene == null ? null : FindFirstByType<SeaMonsterController>(scene);
+    }
+
+    private void SeaMonsterRetreat()
+    {
+        FindSeaMonster()?.Retreat();
+    }
+
+    /// <summary>Reveal a placed-but-hidden quest pickup by Item name. Walks
+    /// the scene for an ItemTrigger whose Data.Name matches and toggles
+    /// Visible + Monitoring on. Returns true if one was unhidden — letting
+    /// SpawnUniqueItem fall through to the legacy NPC-deploy path otherwise.</summary>
+    private bool RevealQuestPickup(string itemName)
+    {
+        if (string.IsNullOrEmpty(itemName)) return false;
+        var scene = GetTree().CurrentScene;
+        if (scene == null) return false;
+        var trigger = FindFirstMatching<ItemTrigger>(scene, t => t.Data?.Name == itemName);
+        if (trigger == null) return false;
+        trigger.Visible = true;
+        trigger.Monitoring = true;
+        // Restore the pickup mask we zeroed in the scene to keep it dormant
+        // until the dialogue spawned it. Layer 1 = player.
+        trigger.CollisionMask = 1;
+        return true;
+    }
+
+    private static T FindFirstByType<T>(Node from) where T : Node
+    {
+        if (from == null) return null;
+        if (from is T match) return match;
+        foreach (var c in from.GetChildren())
+        {
+            var r = FindFirstByType<T>(c);
+            if (r != null) return r;
+        }
+        return null;
+    }
+
+    private static T FindFirstMatching<T>(Node from, System.Predicate<T> pred) where T : Node
+    {
+        if (from == null) return null;
+        if (from is T match && pred(match)) return match;
+        foreach (var c in from.GetChildren())
+        {
+            var r = FindFirstMatching<T>(c, pred);
+            if (r != null) return r;
+        }
+        return null;
     }
 
     // ---- Custom dialogue actions ----
@@ -608,6 +1124,21 @@ public partial class DialogueManager : CanvasLayer
                 // closes before the cutscene begins.
                 _ = RunPennyOpensHomeCutscene();
                 break;
+            case "adoptPennyName":
+            {
+                // The player picked the "Actually, it really is X." response in
+                // Penny's name gag. Promote what they typed at her into the
+                // canonical PlayerName so HUD, save data, and every later
+                // |PlayerName| substitution use the new spelling.
+                var data = SaveManager.Instance?.CurrentData;
+                var given = QuestSystem.GetWorldFlag("PennyName");
+                if (data != null && !string.IsNullOrWhiteSpace(given))
+                {
+                    data.PlayerName = given.Trim();
+                    GD.Print($"[Dialogue] adoptPennyName -> '{data.PlayerName}'");
+                }
+                break;
+            }
             default:
                 GD.PushWarning($"[Dialogue] Unknown custom action: '{a.CustomFunction}'");
                 break;
@@ -648,8 +1179,11 @@ public partial class DialogueManager : CanvasLayer
             animator?.PlayWalk("up");
 
             var tween = penny.CreateTween();
-            var target = penny.GlobalPosition + new Vector2(0, -48);
-            tween.TweenProperty(penny, "global_position", target, 1.2f)
+            // Just one tile-step toward the door — enough to read as
+            // "she's heading inside" without burning seconds on a long
+            // tween before the fade.
+            var target = penny.GlobalPosition + new Vector2(0, -16);
+            tween.TweenProperty(penny, "global_position", target, 0.4f)
                  .SetTrans(Tween.TransitionType.Linear);
             await ToSignal(tween, Tween.SignalName.Finished);
         }
@@ -714,6 +1248,7 @@ public partial class DialogueManager : CanvasLayer
         _waitingForInput = true;
         _inputVariable = variable;
         _continueHint.Visible = false;
+        if (_mobileContinueHint != null) _mobileContinueHint.Visible = false;
         _responseContainer.Visible = false;
         // Hide the body text — the "What's your name?" node already showed
         // on the previous beat, and the input row replaces the dialogue body.
@@ -757,16 +1292,14 @@ public partial class DialogueManager : CanvasLayer
         inputBox.AddThemeStyleboxOverride("read_only", inputBg);
         row.AddChild(inputBox);
 
-        // Boxed "Enter" button — uses the C3 Btn_Action sprite (frame 0 normal,
-        // frame 1 hover). Nine-sliced via texture_margin so the same style can
-        // be reused at any size throughout the UI.
-        var okBtn = new Button();
+        // Design-system primary button with a ↵ kbd chip — matches the
+        // Title-screen Name Entry "Let's go!" button. Space can't double
+        // as the submit key here because the LineEdit captures it as
+        // input; Enter is the only path.
+        var okBtn = UiFrames.BuildChipButton("Enter", "↵", UiFrames.ApplyPrimaryButton);
         okBtn.Name = "DialogueInputOk";
-        okBtn.Text = "Enter";
         okBtn.ProcessMode = ProcessModeEnum.Always;
-        okBtn.CustomMinimumSize = new Vector2(70, 36); // native sprite size
-        okBtn.AddThemeFontSizeOverride("font_size", 22);
-        UiStyles.ApplyBtnActionStyle(okBtn);
+        okBtn.CustomMinimumSize = new Vector2(140, 40);
         okBtn.Pressed += () => SubmitInput(inputBox.Text);
         row.AddChild(okBtn);
 
@@ -789,6 +1322,19 @@ public partial class DialogueManager : CanvasLayer
             QuestSystem.SetWorldFlag(_inputVariable, text);
         }
 
+        // Penny gag: the title screen already captured a name. If the player
+        // tells Penny something different, the next node should tease them
+        // about the mismatch. Stash the comparison as a world flag so the
+        // shared-Id "penny_name_check" pair can branch on it.
+        if (_inputVariable == "PennyName")
+        {
+            var titleName = SaveManager.Instance?.CurrentData?.PlayerName ?? "";
+            bool matches = string.IsNullOrWhiteSpace(titleName)
+                           || string.Equals(titleName.Trim(), text.Trim(),
+                                            System.StringComparison.OrdinalIgnoreCase);
+            QuestSystem.SetWorldFlag("PennyNameMatches", matches ? "true" : "false");
+        }
+
         GD.Print($"[Dialogue] Input '{_inputVariable}' = '{text}'");
 
         // Remove the input UI we injected in HandleInput.
@@ -798,6 +1344,15 @@ public partial class DialogueManager : CanvasLayer
 
         _waitingForInput = false;
         _continueHint.Visible = true;
+
+        // Suppress one _Process tick of dialogue_advance: the Enter that
+        // submitted this LineEdit is still IsActionJustPressed("dialogue_
+        // advance") this frame, and if Advance() lands us on a response
+        // node (Penny's name gag — joke variant with two choices), the
+        // same Enter would confirm the default-selected response[0]
+        // before the player ever sees the options. Reusing _justStarted's
+        // one-tick skip keeps the input handler clean.
+        _justStarted = true;
 
         // Auto-advance (NavigateToNode will re-show _textLabel for the next node).
         Advance();
@@ -816,7 +1371,65 @@ public partial class DialogueManager : CanvasLayer
             text = text.Replace("|CurrentWorld|", data.CurrentWorld);
         }
 
+        // Penny gag: the name the player typed at her stays in a world flag
+        // until they confirm which name to keep. Substitute it directly so
+        // her response options can show "Actually, it really is <typed>."
+        text = text.Replace("|PennyName|", QuestSystem.GetWorldFlag("PennyName"));
+
         return text;
+    }
+
+    /// <summary>Convert C3-style inline icon markers like [icon=UpArrow] into
+    /// RichTextLabel BBCode `[img]` tags. Unknown markers are stripped so
+    /// they don't render as literal text. The TextLabel is RichTextLabel +
+    /// bbcode_enabled so the [img] tags resolve to inline pixmaps sized to
+    /// the body font (24 px). Each glyph gets a leading space to keep it
+    /// from kerning into adjacent letters.</summary>
+    private static readonly System.Text.RegularExpressions.Regex IconMarker =
+        new(@"\[icon=([^\]]+)\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    // Maps the C3 [icon=...] markup tags to the corresponding C3 TextIcons
+    // glyphs. The PNG files in <c>assets/sprites/ui/text_icons/</c> were
+    // extracted from the C3 atlas with their frame indices off by one —
+    // each file's actual *content* is the icon for the NEXT name in the
+    // atlas order. So <c>empty.png</c> contains the pointer cursor,
+    // <c>pointer.png</c> contains the SPC chip, etc. Rather than rename
+    // the asset files (which other systems may reference by path), we
+    // map each tag here to whichever file actually contains the right
+    // visual.
+    private static readonly Dictionary<string, string> IconPaths = new()
+    {
+        ["pointer"]    = "res://assets/sprites/ui/text_icons/empty.png",   // empty.png contains the cursor
+        ["spc"]        = "res://assets/sprites/ui/text_icons/pointer.png", // pointer.png contains the SPC chip
+        ["space"]      = "res://assets/sprites/ui/text_icons/pointer.png",
+        ["esc"]        = "res://assets/sprites/ui/text_icons/spc.png",     // spc.png contains the ESC chip
+        ["uparrow"]    = "res://assets/sprites/ui/text_icons/up_arrow.png",
+        ["downarrow"]  = "res://assets/sprites/ui/text_icons/down_arrow.png",
+        ["leftarrow"]  = "res://assets/sprites/ui/text_icons/left_arrow.png",
+        ["rightarrow"] = "res://assets/sprites/ui/text_icons/right_arrow.png",
+        ["heart"]      = "res://assets/sprites/ui/text_icons/sword.png",   // sword.png contains the heart
+        ["bag"]        = "res://assets/sprites/ui/text_icons/heart.png",   // heart.png contains the bag
+        ["gem"]        = "res://assets/sprites/ui/text_icons/bag.png",     // bag.png contains the gem
+        ["sword"]      = "res://assets/sprites/ui/text_icons/sword.png",   // no clean source — sword.png itself shows a heart; revisit when we re-extract the atlas
+    };
+    private const int IconHeightPx = 22; // ~= body font 24, leaves 1px breathing room top/bottom
+
+    private string SubstituteIcons(string text)
+    {
+        if (string.IsNullOrEmpty(text) || !text.Contains("[icon=")) return text;
+        return IconMarker.Replace(text, m =>
+        {
+            string key = m.Groups[1].Value.Trim().ToLowerInvariant();
+            if (!IconPaths.TryGetValue(key, out var path))
+            {
+                GD.PushWarning($"[Dialogue] Unknown icon marker '{m.Value}' — stripped");
+                return "";
+            }
+            // Empty width arg + height keeps aspect ratio. The leading space
+            // separates the icon from the preceding word ("spacebar[icon=Spc]"
+            // → "spacebar ␣" rather than letters touching the icon edge).
+            return $" [img=,{IconHeightPx}]{path}[/img]";
+        });
     }
 
     // ---- UI Helpers ----
@@ -836,7 +1449,7 @@ public partial class DialogueManager : CanvasLayer
         {
             if (_responseContainer.GetChild(i) is HBoxContainer row)
             {
-                var pointer = row.GetNodeOrNull<Label>("Pointer");
+                var pointer = row.GetNodeOrNull<TextureRect>("Pointer");
                 if (pointer != null)
                 {
                     // Pointer lives in a fixed column; we toggle alpha so the

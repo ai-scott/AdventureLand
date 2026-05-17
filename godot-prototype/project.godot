@@ -16,7 +16,9 @@ config/features=PackedStringArray("4.6", "C#")
 
 [autoload]
 
-SaveManager="*uid://daec4527688be"
+PerfMonitor="*res://scripts/systems/PerfMonitor.cs"
+MobileBoot="*res://scripts/systems/MobileBoot.cs"
+SaveManager="*res://scripts/systems/SaveManager.cs"
 Inventory="*res://scripts/systems/Inventory.cs"
 WorldManager="*res://scripts/systems/WorldManager.cs"
 FadeOverlay="*res://scenes/ui/FadeOverlay.tscn"
@@ -25,15 +27,18 @@ InventoryUI="*res://scenes/ui/InventoryUI.tscn"
 InteractHintManager="*res://scripts/systems/InteractHintManager.cs"
 SFXController="*res://scripts/systems/audio/SFXController.cs"
 MusicController="*res://scripts/systems/audio/MusicController.cs"
+VOController="*res://scripts/systems/audio/VOController.cs"
 EnemyMusicDriver="*res://scripts/systems/audio/EnemyMusicDriver.cs"
+HelpOverlay="*res://scripts/systems/HelpOverlay.cs"
 
 [display]
 
-window/size/viewport_width=720
+window/size/viewport_width=840
 window/size/viewport_height=480
-window/size/window_width_override=1440
+window/size/window_width_override=1680
 window/size/window_height_override=960
 window/stretch/mode="viewport"
+window/stretch/scale_mode="integer"
 
 [dotnet]
 
@@ -102,6 +107,10 @@ inventory_toggle={
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194306,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
