@@ -1,595 +1,595 @@
 [gd_resource type="Resource" script_class="WorldTriggers" load_steps=86 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]
 
 [sub_resource type="Resource" id="trig_0"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(235.627, 306.405)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_Blacksmith.tscn"
-DoorId = 1
+kind = 0
+position = Vector2(235.627, 306.405)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_Blacksmith.tscn"
+door_id = 1
 
 [sub_resource type="Resource" id="trig_1"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(244.752, 317.421)
-Size = Vector2(16.0, 16.0)
-DoorId = 1
+kind = 1
+position = Vector2(244.752, 317.421)
+size = Vector2(16.0, 16.0)
+door_id = 1
 
 [sub_resource type="Resource" id="trig_2"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(278.86, 326.383)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_Blacksmith.tscn"
-DoorId = 2
+kind = 0
+position = Vector2(278.86, 326.383)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_Blacksmith.tscn"
+door_id = 2
 
 [sub_resource type="Resource" id="trig_3"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(286.547, 338.685)
-Size = Vector2(16.0, 16.0)
-DoorId = 2
+kind = 1
+position = Vector2(286.547, 338.685)
+size = Vector2(16.0, 16.0)
+door_id = 2
 
 [sub_resource type="Resource" id="trig_4"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(132.559, 129.041)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_Home.tscn"
-DoorId = 3
+kind = 0
+position = Vector2(132.559, 129.041)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_Home.tscn"
+door_id = 3
 
 [sub_resource type="Resource" id="trig_5"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(139.694, 145.843)
-Size = Vector2(16.0, 16.0)
-DoorId = 3
+kind = 1
+position = Vector2(139.694, 145.843)
+size = Vector2(16.0, 16.0)
+door_id = 3
 
 [sub_resource type="Resource" id="trig_6"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(45.5666, 337.171)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_PennysHouse.tscn"
-DoorId = 4
-RequiredWorldFlag = "penny_home"
+kind = 0
+position = Vector2(45.5666, 337.171)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_PennysHouse.tscn"
+door_id = 4
+required_world_flag = "penny_home"
 
 [sub_resource type="Resource" id="trig_7"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(53.55, 352.106)
-Size = Vector2(16.0, 16.0)
-DoorId = 4
+kind = 1
+position = Vector2(53.55, 352.106)
+size = Vector2(16.0, 16.0)
+door_id = 4
 
 [sub_resource type="Resource" id="trig_8"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(403.802, 164.903)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_GeneralStore.tscn"
-DoorId = 5
+kind = 0
+position = Vector2(403.802, 164.903)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_GeneralStore.tscn"
+door_id = 5
 
 [sub_resource type="Resource" id="trig_9"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(411.375, 178.625)
-Size = Vector2(16.0, 16.0)
-DoorId = 5
+kind = 1
+position = Vector2(411.375, 178.625)
+size = Vector2(16.0, 16.0)
+door_id = 5
 
 [sub_resource type="Resource" id="trig_10"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(531.361, 198.198)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_AdventureShop.tscn"
-DoorId = 6
+kind = 0
+position = Vector2(531.361, 198.198)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_AdventureShop.tscn"
+door_id = 6
 
 [sub_resource type="Resource" id="trig_11"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(539.503, 212.781)
-Size = Vector2(16.0, 16.0)
-DoorId = 6
+kind = 1
+position = Vector2(539.503, 212.781)
+size = Vector2(16.0, 16.0)
+door_id = 6
 
 [sub_resource type="Resource" id="trig_12"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(264.851, 168.917)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_Windmill_GroundFloor.tscn"
-DoorId = 7
+kind = 0
+position = Vector2(264.851, 168.917)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_Windmill_GroundFloor.tscn"
+door_id = 7
 
 [sub_resource type="Resource" id="trig_13"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(271.569, 181.639)
-Size = Vector2(16.0, 16.0)
-DoorId = 7
+kind = 1
+position = Vector2(271.569, 181.639)
+size = Vector2(16.0, 16.0)
+door_id = 7
 
 [sub_resource type="Resource" id="trig_14"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(360.627, 145.95)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_GeneralStore.tscn"
-DoorId = 9
+kind = 0
+position = Vector2(360.627, 145.95)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_GeneralStore.tscn"
+door_id = 9
 
 [sub_resource type="Resource" id="trig_15"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(368.783, 156.323)
-Size = Vector2(16.0, 16.0)
-DoorId = 9
+kind = 1
+position = Vector2(368.783, 156.323)
+size = Vector2(16.0, 16.0)
+door_id = 9
 
 [sub_resource type="Resource" id="trig_16"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(489.976, 181.793)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_00_AdventureShop.tscn"
-DoorId = 10
+kind = 0
+position = Vector2(489.976, 181.793)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_00_AdventureShop.tscn"
+door_id = 10
 
 [sub_resource type="Resource" id="trig_17"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(497.506, 192.636)
-Size = Vector2(16.0, 16.0)
-DoorId = 10
+kind = 1
+position = Vector2(497.506, 192.636)
+size = Vector2(16.0, 16.0)
+door_id = 10
 
 [sub_resource type="Resource" id="trig_18"]
 script = ExtResource("2")
-Kind = 4
-Position = Vector2(104.0, 232.0)
-Size = Vector2(16.0, 16.0)
-ItemId = 1
+kind = 4
+position = Vector2(104.0, 232.0)
+size = Vector2(16.0, 16.0)
+item_id = 1
 
 [sub_resource type="Resource" id="trig_19"]
 script = ExtResource("2")
-Kind = 4
-Position = Vector2(72.0, 174.0)
-Size = Vector2(16.0, 16.0)
-ItemId = 22
+kind = 4
+position = Vector2(72.0, 174.0)
+size = Vector2(16.0, 16.0)
+item_id = 22
 
 [sub_resource type="Resource" id="trig_20"]
 script = ExtResource("2")
-Kind = 4
-Position = Vector2(696.0, 408.0)
-Size = Vector2(16.0, 16.0)
-ItemId = 23
+kind = 4
+position = Vector2(696.0, 408.0)
+size = Vector2(16.0, 16.0)
+item_id = 23
 
 [sub_resource type="Resource" id="trig_21"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(0.0, 96.956)
-Size = Vector2(6.75903, 383.044)
+kind = 5
+position = Vector2(0.0, 96.956)
+size = Vector2(6.75903, 383.044)
 
 [sub_resource type="Resource" id="trig_22"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(672.0, 96.0)
-Size = Vector2(8.67096, 135.715)
+kind = 5
+position = Vector2(672.0, 96.0)
+size = Vector2(8.67096, 135.715)
 
 [sub_resource type="Resource" id="trig_23"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(672.0, 278.459)
-Size = Vector2(47.4344, 41.7259)
+kind = 5
+position = Vector2(672.0, 278.459)
+size = Vector2(47.4344, 41.7259)
 
 [sub_resource type="Resource" id="trig_24"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(656.0, 304.0)
-Size = Vector2(16.0, 16.0)
+kind = 5
+position = Vector2(656.0, 304.0)
+size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_25"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(704.0, 320.0)
-Size = Vector2(16.0, 16.0)
+kind = 5
+position = Vector2(704.0, 320.0)
+size = Vector2(16.0, 16.0)
 
 [sub_resource type="Resource" id="trig_26"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(96.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(96.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_27"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(112.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(112.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_28"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(128.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(128.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_29"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(144.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(144.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_30"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(160.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(160.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_31"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(176.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(176.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_32"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(192.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(192.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_33"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(208.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(208.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_34"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(224.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(224.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_35"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(240.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(240.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_36"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(256.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(256.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_37"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(272.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(272.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_38"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(288.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(288.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_39"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(304.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(304.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_40"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(320.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(320.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_41"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(336.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(336.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_42"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(352.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(352.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_43"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(368.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(368.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_44"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(384.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(384.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_45"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(400.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(400.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_46"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(416.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(416.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_47"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(432.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(432.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_48"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(448.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(448.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_49"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(464.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(464.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_50"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(480.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(480.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_51"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(496.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(496.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_52"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(512.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(512.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_53"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(528.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(528.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_54"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(544.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(544.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_55"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(560.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(560.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_56"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(576.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(576.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_57"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(592.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(592.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_58"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(608.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(608.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_59"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(624.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(624.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_60"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(640.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(640.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_61"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(656.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(656.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_62"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(672.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(672.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_63"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(688.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(688.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_64"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(704.0, 48.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(704.0, 48.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(16, 8), Vector2(16, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_65"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(672.0, 80.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(6.69173, 7.96635), Vector2(17.5933, 1.27462), Vector2(16.956, 7.77981), Vector2(8.1425, 15.0104), Vector2(-0.318654, 14.6917)])
+kind = 5
+position = Vector2(672.0, 80.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(6.69173, 7.96635), Vector2(17.5933, 1.27462), Vector2(16.956, 7.77981), Vector2(8.1425, 15.0104), Vector2(-0.318654, 14.6917)])
 
 [sub_resource type="Resource" id="trig_66"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(688.0, 80.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(1.27462, 1.62692), Vector2(32.2514, 0.0336499), Vector2(31.9327, 6.75903), Vector2(0.955962, 8.3523)])
+kind = 5
+position = Vector2(688.0, 80.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(1.27462, 1.62692), Vector2(32.2514, 0.0336499), Vector2(31.9327, 6.75903), Vector2(0.955962, 8.3523)])
 
 [sub_resource type="Resource" id="trig_67"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(7.21229, 96.0)
-Size = Vector2(56.7877, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 8), Vector2(56.7877, 8), Vector2(56.7877, 16), Vector2(0, 16)])
+kind = 5
+position = Vector2(7.21229, 96.0)
+size = Vector2(56.7877, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 8), Vector2(56.7877, 8), Vector2(56.7877, 16), Vector2(0, 16)])
 
 [sub_resource type="Resource" id="trig_68"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(672.0, 320.0)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(16, 0), Vector2(16, 16), Vector2(13, 16), Vector2(0, 9)])
+kind = 5
+position = Vector2(672.0, 320.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(16, 0), Vector2(16, 16), Vector2(13, 16), Vector2(0, 9)])
 
 [sub_resource type="Resource" id="trig_69"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(688.0, 303.635)
-Size = Vector2(16.0, 32.3653)
-PolygonPoints = Array[Vector2]([Vector2(0, 16.1826), Vector2(16, 16.1826), Vector2(16, 32.3653), Vector2(0, 32.3653)])
+kind = 5
+position = Vector2(688.0, 303.635)
+size = Vector2(16.0, 32.3653)
+polygon_points = Array[Vector2]([Vector2(0, 16.1826), Vector2(16, 16.1826), Vector2(16, 32.3653), Vector2(0, 32.3653)])
 
 [sub_resource type="Resource" id="trig_70"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(369.0, 290.0)
-Size = Vector2(44.0, 52.0)
-PolygonPoints = Array[Vector2]([Vector2(8.13964, 15.6221), Vector2(38.0635, 14.8428), Vector2(39.5996, 21.3789), Vector2(38.5184, 38.0478), Vector2(36.2169, 43.0846), Vector2(35.772, 49.6029), Vector2(29.386, 56.158), Vector2(16.8309, 55.5073), Vector2(10.6618, 49.1691), Vector2(8.69854, 39.1802), Vector2(7.63967, 27.8787), Vector2(4.38601, 21.625), Vector2(6.80468, 19.3945)])
+kind = 5
+position = Vector2(369.0, 290.0)
+size = Vector2(44.0, 52.0)
+polygon_points = Array[Vector2]([Vector2(8.13964, 15.6221), Vector2(38.0635, 14.8428), Vector2(39.5996, 21.3789), Vector2(38.5184, 38.0478), Vector2(36.2169, 43.0846), Vector2(35.772, 49.6029), Vector2(29.386, 56.158), Vector2(16.8309, 55.5073), Vector2(10.6618, 49.1691), Vector2(8.69854, 39.1802), Vector2(7.63967, 27.8787), Vector2(4.38601, 21.625), Vector2(6.80468, 19.3945)])
 
 [sub_resource type="Resource" id="trig_71"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(213.0, 227.0)
-Size = Vector2(120.0, 112.0)
-PolygonPoints = Array[Vector2]([Vector2(107.631, 38.7555), Vector2(108.509, 88.7471), Vector2(105.494, 92.8605), Vector2(105.549, 114.967), Vector2(95.5837, 114.579), Vector2(90.5702, 103.951), Vector2(72.367, 103.776), Vector2(66.3163, 113.84), Vector2(47.4898, 114.413), Vector2(46.5881, 104.772), Vector2(57.0868, 102.635), Vector2(48.3953, 82.3322), Vector2(25.2461, 83.0218), Vector2(17.2207, 102.308), Vector2(30.6879, 104.303), Vector2(30.25, 113.264), Vector2(0.142421, 113.715), Vector2(0.543215, 67.2774), Vector2(17.921, 66.9262), Vector2(18.5712, 37.2318)])
+kind = 5
+position = Vector2(213.0, 227.0)
+size = Vector2(120.0, 112.0)
+polygon_points = Array[Vector2]([Vector2(107.631, 38.7555), Vector2(108.509, 88.7471), Vector2(105.494, 92.8605), Vector2(105.549, 114.967), Vector2(95.5837, 114.579), Vector2(90.5702, 103.951), Vector2(72.367, 103.776), Vector2(66.3163, 113.84), Vector2(47.4898, 114.413), Vector2(46.5881, 104.772), Vector2(57.0868, 102.635), Vector2(48.3953, 82.3322), Vector2(25.2461, 83.0218), Vector2(17.2207, 102.308), Vector2(30.6879, 104.303), Vector2(30.25, 113.264), Vector2(0.142421, 113.715), Vector2(0.543215, 67.2774), Vector2(17.921, 66.9262), Vector2(18.5712, 37.2318)])
 
 [sub_resource type="Resource" id="trig_72"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(465.0, 100.0)
-Size = Vector2(120.0, 112.0)
-PolygonPoints = Array[Vector2]([Vector2(108.104, 48.9021), Vector2(108.811, 85.8744), Vector2(106, 92.8707), Vector2(104.78, 114.801), Vector2(94.7527, 114.064), Vector2(91.0713, 105.411), Vector2(73.2395, 105.317), Vector2(70.1841, 114.173), Vector2(48.7011, 115.272), Vector2(48.0555, 104.729), Vector2(58.2226, 103.833), Vector2(53.6021, 85.6321), Vector2(26.4227, 85.4509), Vector2(17.2446, 103.641), Vector2(31.3093, 104.605), Vector2(31.7584, 114.268), Vector2(10.7921, 113.664), Vector2(11.1746, 69.3875), Vector2(18.7174, 68.3927), Vector2(18.5826, 51.1544)])
+kind = 5
+position = Vector2(465.0, 100.0)
+size = Vector2(120.0, 112.0)
+polygon_points = Array[Vector2]([Vector2(108.104, 48.9021), Vector2(108.811, 85.8744), Vector2(106, 92.8707), Vector2(104.78, 114.801), Vector2(94.7527, 114.064), Vector2(91.0713, 105.411), Vector2(73.2395, 105.317), Vector2(70.1841, 114.173), Vector2(48.7011, 115.272), Vector2(48.0555, 104.729), Vector2(58.2226, 103.833), Vector2(53.6021, 85.6321), Vector2(26.4227, 85.4509), Vector2(17.2446, 103.641), Vector2(31.3093, 104.605), Vector2(31.7584, 114.268), Vector2(10.7921, 113.664), Vector2(11.1746, 69.3875), Vector2(18.7174, 68.3927), Vector2(18.5826, 51.1544)])
 
 [sub_resource type="Resource" id="trig_73"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(228.0, 61.0)
-Size = Vector2(102.0, 112.0)
-PolygonPoints = Array[Vector2]([Vector2(72.8556, 54.5504), Vector2(73.4075, 117.137), Vector2(28.4841, 118.159), Vector2(28.8297, 55.6188)])
+kind = 5
+position = Vector2(228.0, 61.0)
+size = Vector2(102.0, 112.0)
+polygon_points = Array[Vector2]([Vector2(72.8556, 54.5504), Vector2(73.4075, 117.137), Vector2(28.4841, 118.159), Vector2(28.8297, 55.6188)])
 
 [sub_resource type="Resource" id="trig_74"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(342.0, 67.0)
-Size = Vector2(120.0, 112.0)
-PolygonPoints = Array[Vector2]([Vector2(103.316, 48.7736), Vector2(102.686, 86.9909), Vector2(100.459, 93.9847), Vector2(100.498, 113.11), Vector2(89.7087, 113.51), Vector2(86.1992, 103.636), Vector2(67.731, 103.207), Vector2(65.5827, 113.328), Vector2(53.7497, 113.808), Vector2(44.6299, 112.917), Vector2(44.3509, 103.655), Vector2(54.32, 103.497), Vector2(49.1204, 82.89), Vector2(18.6731, 82.792), Vector2(11.0608, 102.888), Vector2(27.0544, 103.528), Vector2(26.4638, 111.328), Vector2(6.50917, 112.821), Vector2(6.2152, 67.3149), Vector2(14.907, 66.4907), Vector2(13.7635, 51.424)])
+kind = 5
+position = Vector2(342.0, 67.0)
+size = Vector2(120.0, 112.0)
+polygon_points = Array[Vector2]([Vector2(103.316, 48.7736), Vector2(102.686, 86.9909), Vector2(100.459, 93.9847), Vector2(100.498, 113.11), Vector2(89.7087, 113.51), Vector2(86.1992, 103.636), Vector2(67.731, 103.207), Vector2(65.5827, 113.328), Vector2(53.7497, 113.808), Vector2(44.6299, 112.917), Vector2(44.3509, 103.655), Vector2(54.32, 103.497), Vector2(49.1204, 82.89), Vector2(18.6731, 82.792), Vector2(11.0608, 102.888), Vector2(27.0544, 103.528), Vector2(26.4638, 111.328), Vector2(6.50917, 112.821), Vector2(6.2152, 67.3149), Vector2(14.907, 66.4907), Vector2(13.7635, 51.424)])
 
 [sub_resource type="Resource" id="trig_75"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(37.45, 227.184)
-Size = Vector2(48.0, 129.317)
-PolygonPoints = Array[Vector2]([Vector2(44.6833, 79.4629), Vector2(44.9909, 122.073), Vector2(31.8003, 122.402), Vector2(31.3541, 115.782), Vector2(15.0862, 115.719), Vector2(13.6998, 123.346), Vector2(3.60788, 122.603), Vector2(0, 79.207)])
+kind = 5
+position = Vector2(37.45, 227.184)
+size = Vector2(48.0, 129.317)
+polygon_points = Array[Vector2]([Vector2(44.6833, 79.4629), Vector2(44.9909, 122.073), Vector2(31.8003, 122.402), Vector2(31.3541, 115.782), Vector2(15.0862, 115.719), Vector2(13.6998, 123.346), Vector2(3.60788, 122.603), Vector2(0, 79.207)])
 
 [sub_resource type="Resource" id="trig_76"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(119.0, 54.0)
-Size = Vector2(48.0, 80.0)
-PolygonPoints = Array[Vector2]([Vector2(48.8075, 47.8165), Vector2(47.1154, 86.3502), Vector2(6.41893, 86.2698), Vector2(4.3533, 47.8883)])
+kind = 5
+position = Vector2(119.0, 54.0)
+size = Vector2(48.0, 80.0)
+polygon_points = Array[Vector2]([Vector2(48.8075, 47.8165), Vector2(47.1154, 86.3502), Vector2(6.41893, 86.2698), Vector2(4.3533, 47.8883)])
 
 [sub_resource type="Resource" id="trig_77"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(459.598, 231.204)
-Size = Vector2(52.0, 53.7343)
-PolygonPoints = Array[Vector2]([Vector2(51.7227, 27.3709), Vector2(50, 39.4051), Vector2(45, 51.3461), Vector2(43, 53.7343), Vector2(7, 52.5402), Vector2(2, 39.4051), Vector2(0.27636, 27.666)])
+kind = 5
+position = Vector2(459.598, 231.204)
+size = Vector2(52.0, 53.7343)
+polygon_points = Array[Vector2]([Vector2(51.7227, 27.3709), Vector2(50, 39.4051), Vector2(45, 51.3461), Vector2(43, 53.7343), Vector2(7, 52.5402), Vector2(2, 39.4051), Vector2(0.27636, 27.666)])
 
 [sub_resource type="Resource" id="trig_78"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(79.6635, 72.3345)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-1.27462, -0.955962), Vector2(8.285, 10.8342), Vector2(16.2514, -7.6477), Vector2(21.9871, -7.01039), Vector2(13.7021, 16.8887), Vector2(1.27462, 20.7125), Vector2(-2.86789, 32.8214), Vector2(-14.6581, 39.1944), Vector2(-16.57, 15.9327)])
+kind = 5
+position = Vector2(79.6635, 72.3345)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(-1.27462, -0.955962), Vector2(8.285, 10.8342), Vector2(16.2514, -7.6477), Vector2(21.9871, -7.01039), Vector2(13.7021, 16.8887), Vector2(1.27462, 20.7125), Vector2(-2.86789, 32.8214), Vector2(-14.6581, 39.1944), Vector2(-16.57, 15.9327)])
 
 [sub_resource type="Resource" id="trig_79"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(232.261, 157.793)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(47.8955, -28.5405), Vector2(95.7911, 4.26467), Vector2(82.669, 17.7148), Vector2(56.2863, 19.1831), Vector2(53.7251, 11.6617), Vector2(40.9609, 11.7263), Vector2(39.5866, 18.9882), Vector2(14.1062, 19.6831), Vector2(0, 5.57688)])
+kind = 5
+position = Vector2(232.261, 157.793)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(47.8955, -28.5405), Vector2(95.7911, 4.26467), Vector2(82.669, 17.7148), Vector2(56.2863, 19.1831), Vector2(53.7251, 11.6617), Vector2(40.9609, 11.7263), Vector2(39.5866, 18.9882), Vector2(14.1062, 19.6831), Vector2(0, 5.57688)])
 
 [sub_resource type="Resource" id="trig_80"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(644.404, 207.057)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(-5.61683, 1.53186), Vector2(-16.8505, 14.808), Vector2(-17.1058, 22.4673), Vector2(-6.12745, 26.5523), Vector2(13.2761, 27.0629), Vector2(-36.2541, 52.3386), Vector2(-35.2328, 57.4449), Vector2(29.3607, 25.531), Vector2(26.8076, -3.31904)])
+kind = 5
+position = Vector2(644.404, 207.057)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(-5.61683, 1.53186), Vector2(-16.8505, 14.808), Vector2(-17.1058, 22.4673), Vector2(-6.12745, 26.5523), Vector2(13.2761, 27.0629), Vector2(-36.2541, 52.3386), Vector2(-35.2328, 57.4449), Vector2(29.3607, 25.531), Vector2(26.8076, -3.31904)])
 
 [sub_resource type="Resource" id="trig_81"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(609.937, 295.139)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(60.7639, -31.9138), Vector2(71.4869, -25.531), Vector2(71.9975, -16.8505), Vector2(53.6152, 26.0417), Vector2(40.0837, 32.4244), Vector2(23.7439, 28.0842), Vector2(18.6377, 20.9355), Vector2(19.9142, 14.5527), Vector2(24.2545, 10.723), Vector2(23.9992, 5.61683), Vector2(4.08497, 5.61683)])
+kind = 5
+position = Vector2(609.937, 295.139)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(60.7639, -31.9138), Vector2(71.4869, -25.531), Vector2(71.9975, -16.8505), Vector2(53.6152, 26.0417), Vector2(40.0837, 32.4244), Vector2(23.7439, 28.0842), Vector2(18.6377, 20.9355), Vector2(19.9142, 14.5527), Vector2(24.2545, 10.723), Vector2(23.9992, 5.61683), Vector2(4.08497, 5.61683)])
 
 [sub_resource type="Resource" id="trig_82"]
 script = ExtResource("2")
-Kind = 5
-Position = Vector2(182.503, 321.553)
-Size = Vector2(16.0, 16.0)
-PolygonPoints = Array[Vector2]([Vector2(0, 0), Vector2(15.1281, 0.321875), Vector2(15.7719, -1.93125), Vector2(20.2781, -2.25312), Vector2(20.2781, 19.9562), Vector2(21.2437, 28.325), Vector2(13.8406, 29.9343), Vector2(14.1625, 19.9562), Vector2(15.45, 19.9562), Vector2(15.45, 5.47187), Vector2(10.6702, 5.70996), Vector2(10.6702, 7.02585), Vector2(12.5125, 7.28903), Vector2(12.7757, 14.658), Vector2(0.53787, 14.658), Vector2(0.53787, 17.0266), Vector2(-1.83074, 16.6319), Vector2(-5.77842, 12.421), Vector2(-5.77842, 10.3156), Vector2(-0.778024, 5.97313), Vector2(-0.383256, 7.42062), Vector2(0.274691, 7.28903), Vector2(0.274691, 4.65724), Vector2(-1.69915, 3.47294), Vector2(-1.30438, 0.0516141)])
+kind = 5
+position = Vector2(182.503, 321.553)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(15.1281, 0.321875), Vector2(15.7719, -1.93125), Vector2(20.2781, -2.25312), Vector2(20.2781, 19.9562), Vector2(21.2437, 28.325), Vector2(13.8406, 29.9343), Vector2(14.1625, 19.9562), Vector2(15.45, 19.9562), Vector2(15.45, 5.47187), Vector2(10.6702, 5.70996), Vector2(10.6702, 7.02585), Vector2(12.5125, 7.28903), Vector2(12.7757, 14.658), Vector2(0.53787, 14.658), Vector2(0.53787, 17.0266), Vector2(-1.83074, 16.6319), Vector2(-5.77842, 12.421), Vector2(-5.77842, 10.3156), Vector2(-0.778024, 5.97313), Vector2(-0.383256, 7.42062), Vector2(0.274691, 7.28903), Vector2(0.274691, 4.65724), Vector2(-1.69915, 3.47294), Vector2(-1.30438, 0.0516141)])
 
 [resource]
 script = ExtResource("1")
-SourceTmx = "assets/tiles/tilemaps/World_00_Village.tmx"
-Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60"), SubResource("trig_61"), SubResource("trig_62"), SubResource("trig_63"), SubResource("trig_64"), SubResource("trig_65"), SubResource("trig_66"), SubResource("trig_67"), SubResource("trig_68"), SubResource("trig_69"), SubResource("trig_70"), SubResource("trig_71"), SubResource("trig_72"), SubResource("trig_73"), SubResource("trig_74"), SubResource("trig_75"), SubResource("trig_76"), SubResource("trig_77"), SubResource("trig_78"), SubResource("trig_79"), SubResource("trig_80"), SubResource("trig_81"), SubResource("trig_82")])
+source_tmx = "assets/tiles/tilemaps/World_00_Village.tmx"
+triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15"), SubResource("trig_16"), SubResource("trig_17"), SubResource("trig_18"), SubResource("trig_19"), SubResource("trig_20"), SubResource("trig_21"), SubResource("trig_22"), SubResource("trig_23"), SubResource("trig_24"), SubResource("trig_25"), SubResource("trig_26"), SubResource("trig_27"), SubResource("trig_28"), SubResource("trig_29"), SubResource("trig_30"), SubResource("trig_31"), SubResource("trig_32"), SubResource("trig_33"), SubResource("trig_34"), SubResource("trig_35"), SubResource("trig_36"), SubResource("trig_37"), SubResource("trig_38"), SubResource("trig_39"), SubResource("trig_40"), SubResource("trig_41"), SubResource("trig_42"), SubResource("trig_43"), SubResource("trig_44"), SubResource("trig_45"), SubResource("trig_46"), SubResource("trig_47"), SubResource("trig_48"), SubResource("trig_49"), SubResource("trig_50"), SubResource("trig_51"), SubResource("trig_52"), SubResource("trig_53"), SubResource("trig_54"), SubResource("trig_55"), SubResource("trig_56"), SubResource("trig_57"), SubResource("trig_58"), SubResource("trig_59"), SubResource("trig_60"), SubResource("trig_61"), SubResource("trig_62"), SubResource("trig_63"), SubResource("trig_64"), SubResource("trig_65"), SubResource("trig_66"), SubResource("trig_67"), SubResource("trig_68"), SubResource("trig_69"), SubResource("trig_70"), SubResource("trig_71"), SubResource("trig_72"), SubResource("trig_73"), SubResource("trig_74"), SubResource("trig_75"), SubResource("trig_76"), SubResource("trig_77"), SubResource("trig_78"), SubResource("trig_79"), SubResource("trig_80"), SubResource("trig_81"), SubResource("trig_82")])

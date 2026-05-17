@@ -18,10 +18,30 @@ namespace AdventureLandPrototype;
 ///
 /// Spawned scenes are added as children of this node so they inherit the
 /// world scene's transform and are easy to inspect in the remote scene tree.
+///
+/// PORT NOTE (2026-05-16): WorldTriggers + TriggerData ported to GDScript
+/// in Phase 1; this consumer stays C# until Phase 4 (TriggerSpawner.gd port).
+/// During mixed-mode, the .tres files load as plain Resource and we access
+/// fields via .Get("snake_case_name") — see TriggerData.gd / WorldTriggers.gd
+/// for the property layout. The Kind enum below mirrors TriggerData.gd's
+/// TriggerKind by integer value; don't reorder either side.
 /// </summary>
 public partial class TriggerSpawner : Node2D
 {
-    [Export] public WorldTriggers TriggersResource;
+    // Mirrors TriggerData.gd's TriggerKind enum. Integer values MUST match
+    // the GDScript enum's declaration order (Door=0, Spawn=1, ...).
+    private enum TriggerKind
+    {
+        Door = 0,
+        Spawn = 1,
+        Edge = 2,
+        Npc = 3,
+        Item = 4,
+        Wall = 5,
+        Mirror = 6,
+    }
+
+    [Export] public Resource TriggersResource;
 
     // Scene templates — each trigger kind instances one of these.
     [Export] public PackedScene DoorScene;
@@ -49,14 +69,15 @@ public partial class TriggerSpawner : Node2D
     private void CheckStaleness()
     {
         if (!OS.IsDebugBuild()) return;
-        if (string.IsNullOrEmpty(TriggersResource.SourceTmx)) return;
+        string sourceTmx = TriggersResource.Get("source_tmx").AsString();
+        if (string.IsNullOrEmpty(sourceTmx)) return;
 
         string tresPath = TriggersResource.ResourcePath;
         if (string.IsNullOrEmpty(tresPath)) return;
 
-        // SourceTmx is stored as a project-relative path (e.g.
+        // source_tmx is stored as a project-relative path (e.g.
         // "assets/tiles/tilemaps/World_00_Blacksmith.tmx"). Resolve to res://.
-        string tmxResPath = "res://" + TriggersResource.SourceTmx;
+        string tmxResPath = "res://" + sourceTmx;
 
         if (!FileAccess.FileExists(tmxResPath)) return; // TMX moved/renamed — nothing to compare
 
@@ -66,7 +87,7 @@ public partial class TriggerSpawner : Node2D
         if (tmxTime > tresTime)
         {
             GD.PushWarning(
-                $"[TriggerSpawner] STALE: {TriggersResource.SourceTmx} is newer than {tresPath}. " +
+                $"[TriggerSpawner] STALE: {sourceTmx} is newer than {tresPath}. " +
                 $"Run: python3 tools/bake_all.py"
             );
         }
@@ -74,9 +95,11 @@ public partial class TriggerSpawner : Node2D
 
     private void SpawnAll()
     {
+        var triggers = TriggersResource.Get("triggers").AsGodotArray<Resource>();
         int spawned = 0;
-        foreach (var t in TriggersResource.Triggers)
+        foreach (var t in triggers)
         {
+            if (t == null) continue;
             var node = Spawn(t);
             if (node != null)
             {
@@ -84,61 +107,65 @@ public partial class TriggerSpawner : Node2D
                 spawned++;
             }
         }
-        GD.Print($"[TriggerSpawner] {spawned}/{TriggersResource.Triggers.Count} triggers spawned from {TriggersResource.ResourcePath.GetFile()}");
+        GD.Print($"[TriggerSpawner] {spawned}/{triggers.Count} triggers spawned from {TriggersResource.ResourcePath.GetFile()}");
     }
 
-    private Node Spawn(TriggerData t)
+    private Node Spawn(Resource t)
     {
         // Tiled anchors rectangles at top-left; triggers want center-of-rect
         // as their position (CollisionShape2D inside the Area2D is centered).
-        Vector2 center = t.Position + t.Size / 2f;
+        var position = t.Get("position").AsVector2();
+        var size = t.Get("size").AsVector2();
+        Vector2 center = position + size / 2f;
+        var kind = (TriggerKind)t.Get("kind").AsInt32();
 
-        switch (t.Kind)
+        switch (kind)
         {
-            case TriggerData.TriggerKind.Door:
-                return MakeDoor(t, center);
-            case TriggerData.TriggerKind.Spawn:
+            case TriggerKind.Door:
+                return MakeDoor(t, center, size);
+            case TriggerKind.Spawn:
                 return MakeSpawn(t, center);
-            case TriggerData.TriggerKind.Edge:
-                return MakeEdge(t, center);
-            case TriggerData.TriggerKind.Npc:
-                GD.Print($"[TriggerSpawner] NPC spawning not yet wired — skipping '{t.NpcName}'");
+            case TriggerKind.Edge:
+                return MakeEdge(t, center, size);
+            case TriggerKind.Npc:
+                GD.Print($"[TriggerSpawner] NPC spawning not yet wired — skipping '{t.Get("npc_name").AsString()}'");
                 return null;
-            case TriggerData.TriggerKind.Item:
-                return MakeItem(t, center);
-            case TriggerData.TriggerKind.Wall:
-                return MakeWall(t);
-            case TriggerData.TriggerKind.Mirror:
-                return MakeMirror(t, center);
+            case TriggerKind.Item:
+                return MakeItem(t, center, position);
+            case TriggerKind.Wall:
+                return MakeWall(t, position, size);
+            case TriggerKind.Mirror:
+                return MakeMirror(t, center, size);
             default:
-                GD.PushWarning($"[TriggerSpawner] Unknown kind {t.Kind}");
+                GD.PushWarning($"[TriggerSpawner] Unknown kind {kind}");
                 return null;
         }
     }
 
     /// <summary>
-    /// Spawn a StaticBody2D at the wall object's position. If PolygonPoints is
-    /// empty, the body gets a RectangleShape2D matching Size. Otherwise it
-    /// gets a CollisionPolygon2D with the provided points (Tiled local coords).
+    /// Spawn a StaticBody2D at the wall object's position. If polygon_points is
+    /// empty, the body gets a RectangleShape2D matching size. Otherwise it gets
+    /// a CollisionPolygon2D with the provided points (Tiled local coords).
     /// CollisionLayer=2 to match the rest of the world-obstacle physics layer.
     /// </summary>
-    private Node MakeWall(TriggerData t)
+    private Node MakeWall(Resource t, Vector2 position, Vector2 size)
     {
         var body = new StaticBody2D
         {
-            Name = $"Wall_{t.Position.X:F0}_{t.Position.Y:F0}",
+            Name = $"Wall_{position.X:F0}_{position.Y:F0}",
             CollisionLayer = 2,
             CollisionMask = 0,
         };
 
-        if (t.PolygonPoints != null && t.PolygonPoints.Count >= 3)
+        var polygonPoints = t.Get("polygon_points").AsGodotArray<Vector2>();
+        if (polygonPoints != null && polygonPoints.Count >= 3)
         {
             // Polygon wall — Tiled polygon points are offsets from the object's
             // top-left anchor. Position the body at the anchor; polygon points
             // are used as-is.
-            body.Position = t.Position;
-            var pts = new Vector2[t.PolygonPoints.Count];
-            for (int i = 0; i < pts.Length; i++) pts[i] = t.PolygonPoints[i];
+            body.Position = position;
+            var pts = new Vector2[polygonPoints.Count];
+            for (int i = 0; i < pts.Length; i++) pts[i] = polygonPoints[i];
             var poly = new CollisionPolygon2D { Polygon = pts };
             body.AddChild(poly);
         }
@@ -146,17 +173,17 @@ public partial class TriggerSpawner : Node2D
         {
             // Rectangle wall — Tiled rect anchored at top-left, CollisionShape
             // is centered, so offset body to the rect's center.
-            body.Position = t.Position + t.Size / 2f;
+            body.Position = position + size / 2f;
             var shape = new CollisionShape2D
             {
-                Shape = new RectangleShape2D { Size = t.Size },
+                Shape = new RectangleShape2D { Size = size },
             };
             body.AddChild(shape);
         }
         return body;
     }
 
-    private Node MakeDoor(TriggerData t, Vector2 center)
+    private Node MakeDoor(Resource t, Vector2 center, Vector2 size)
     {
         if (DoorScene == null)
         {
@@ -164,24 +191,25 @@ public partial class TriggerSpawner : Node2D
             return null;
         }
         var instance = DoorScene.Instantiate<DoorTrigger>();
-        instance.Name = $"Door_{t.DoorId}";
+        int doorId = t.Get("door_id").AsInt32();
+        instance.Name = $"Door_{doorId}";
         instance.Position = center;
-        instance.TargetScene = t.TargetScene;
-        instance.DoorId = t.DoorId;
-        instance.RequiredQuestId = t.RequiredQuestId;
-        instance.RequiredQuestStatus = t.RequiredQuestStatus;
-        instance.RequiredWorldFlag = t.RequiredWorldFlag;
-        ResizeCollision(instance, t.Size);
+        instance.TargetScene = t.Get("target_scene").AsString();
+        instance.DoorId = doorId;
+        instance.RequiredQuestId = t.Get("required_quest_id").AsString();
+        instance.RequiredQuestStatus = t.Get("required_quest_status").AsString();
+        instance.RequiredWorldFlag = t.Get("required_world_flag").AsString();
+        ResizeCollision(instance, size);
         return instance;
     }
 
-    private Node MakeSpawn(TriggerData t, Vector2 center)
+    private Node MakeSpawn(Resource t, Vector2 center)
     {
         // Spawn markers are Marker2D named "SpawnFromDoor_{id}" — matched by
         // WorldManager.GoToDoor after scene load.
         var marker = new Marker2D
         {
-            Name = $"SpawnFromDoor_{t.DoorId}",
+            Name = $"SpawnFromDoor_{t.Get("door_id").AsInt32()}",
             Position = center,
         };
         return marker;
@@ -191,30 +219,31 @@ public partial class TriggerSpawner : Node2D
     /// Spawn an ItemTrigger at the item object's center. Looks up ItemData by
     /// item_id from Inventory's database and sets it on the instance. Each
     /// placement gets a TriggerID derived from its position so the "already
-    /// collected" flag is stable across loads without requiring manual IDs
-    /// in Tiled.
+    /// collected" flag is stable across loads without requiring manual IDs in
+    /// Tiled.
     ///
     /// Purchase-gated items are skipped until the shop flow is implemented —
-    /// authors can drop RequiresPurchase items in Tiled without them leaking
+    /// authors can drop requires_purchase items in Tiled without them leaking
     /// into the world as free pickups.
     /// </summary>
-    private Node MakeItem(TriggerData t, Vector2 center)
+    private Node MakeItem(Resource t, Vector2 center, Vector2 position)
     {
-        if (t.ItemId <= 0)
+        int itemId = t.Get("item_id").AsInt32();
+        if (itemId <= 0)
         {
-            GD.PushWarning($"[TriggerSpawner] Item trigger at {t.Position} has no item_id");
+            GD.PushWarning($"[TriggerSpawner] Item trigger at {position} has no item_id");
             return null;
         }
-        if (t.RequiresPurchase)
+        if (t.Get("requires_purchase").AsBool())
         {
-            GD.Print($"[TriggerSpawner] Skipping shop item {t.ItemId} at {t.Position} (RequiresPurchase; shop UI not wired yet)");
+            GD.Print($"[TriggerSpawner] Skipping shop item {itemId} at {position} (requires_purchase; shop UI not wired yet)");
             return null;
         }
 
-        var data = Inventory.GetItem(t.ItemId);
+        var data = Inventory.GetItem(itemId);
         if (data == null)
         {
-            GD.PushWarning($"[TriggerSpawner] Item id {t.ItemId} not found in database");
+            GD.PushWarning($"[TriggerSpawner] Item id {itemId} not found in database");
             return null;
         }
 
@@ -226,7 +255,7 @@ public partial class TriggerSpawner : Node2D
         }
 
         var instance = scene.Instantiate<ItemTrigger>();
-        instance.Name = $"Item_{t.ItemId}_{(int)t.Position.X}_{(int)t.Position.Y}";
+        instance.Name = $"Item_{itemId}_{(int)position.X}_{(int)position.Y}";
         instance.Position = center;
         instance.Data = data;
         // Pack (x, y) into a per-placement TriggerID. Worlds are ≤720×480 so
@@ -234,7 +263,7 @@ public partial class TriggerSpawner : Node2D
         // scene — ItemTrigger.CollectFlagKey() prefixes the world name so two
         // items on the same tile in different scenes don't share state.
         // Moving an item in Tiled effectively resets its collected state.
-        instance.TriggerID = ((int)t.Position.X << 16) | ((int)t.Position.Y & 0xFFFF);
+        instance.TriggerID = ((int)position.X << 16) | ((int)position.Y & 0xFFFF);
         instance.Unique = true;
         return instance;
     }
@@ -243,36 +272,38 @@ public partial class TriggerSpawner : Node2D
     /// sized to the Tiled rect. Authors place these in Tiled with
     /// class="mirror" — data-driven so per-scene mirror positions live
     /// alongside the rest of the map data instead of in scene files.</summary>
-    private Node MakeMirror(TriggerData t, Vector2 center)
+    private Node MakeMirror(Resource t, Vector2 center, Vector2 size)
     {
         var scene = MirrorScene ?? GD.Load<PackedScene>("res://scenes/world/MirrorTrigger.tscn");
         if (scene != null)
         {
             var instance = scene.Instantiate<Area2D>();
-            instance.Name = $"Mirror_{(int)t.Position.X}_{(int)t.Position.Y}";
+            var position = t.Get("position").AsVector2();
+            instance.Name = $"Mirror_{(int)position.X}_{(int)position.Y}";
             instance.Position = center;
-            ResizeCollision(instance, t.Size);
+            ResizeCollision(instance, size);
             return instance;
         }
 
         // Fallback: build the Area2D in code if no scene exists yet. Lets
         // the trigger work even before we ship MirrorTrigger.tscn.
+        var pos = t.Get("position").AsVector2();
         var area = new Area2D
         {
-            Name = $"Mirror_{(int)t.Position.X}_{(int)t.Position.Y}",
+            Name = $"Mirror_{(int)pos.X}_{(int)pos.Y}",
             CollisionLayer = 0,
             Position = center,
         };
         area.SetScript(GD.Load<Script>("res://scripts/world/MirrorTrigger.cs"));
         var shapeNode = new CollisionShape2D
         {
-            Shape = new RectangleShape2D { Size = t.Size },
+            Shape = new RectangleShape2D { Size = size },
         };
         area.AddChild(shapeNode);
         return area;
     }
 
-    private Node MakeEdge(TriggerData t, Vector2 center)
+    private Node MakeEdge(Resource t, Vector2 center, Vector2 size)
     {
         if (EdgeScene == null)
         {
@@ -280,16 +311,17 @@ public partial class TriggerSpawner : Node2D
             return null;
         }
         var instance = EdgeScene.Instantiate<EdgeTrigger>();
-        instance.Name = $"Edge_{t.ExitEdge}";
+        string exitEdgeStr = t.Get("exit_edge").AsString();
+        instance.Name = $"Edge_{exitEdgeStr}";
         instance.Position = center;
-        instance.TargetScene = t.TargetScene;
+        instance.TargetScene = t.Get("target_scene").AsString();
         // Parse exit edge string → enum
         if (System.Enum.TryParse<EdgeTrigger.EdgeDirection>(
-                t.ExitEdge, ignoreCase: true, out var edge))
+                exitEdgeStr, ignoreCase: true, out var edge))
         {
             instance.ExitEdge = edge;
         }
-        ResizeCollision(instance, t.Size);
+        ResizeCollision(instance, size);
         return instance;
     }
 

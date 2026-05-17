@@ -1,81 +1,81 @@
 [gd_resource type="Resource" script_class="WorldTriggers" load_steps=13 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]
 
 [sub_resource type="Resource" id="trig_0"]
 script = ExtResource("2")
-Kind = 2
-Position = Vector2(0.0, 0.0)
-Size = Vector2(720.0, 32.0)
-TargetScene = "res://scenes/worlds/World_01.tscn"
-ExitEdge = "north"
+kind = 2
+position = Vector2(0.0, 0.0)
+size = Vector2(720.0, 32.0)
+target_scene = "res://scenes/worlds/World_01.tscn"
+exit_edge = "north"
 
 [sub_resource type="Resource" id="trig_1"]
 script = ExtResource("2")
-Kind = 0
-Position = Vector2(16.0, 224.0)
-Size = Vector2(32.0, 16.0)
-TargetScene = "res://scenes/worlds/World_03_CaveEntrance.tscn"
-DoorId = 1
+kind = 0
+position = Vector2(16.0, 224.0)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_03_CaveEntrance.tscn"
+door_id = 1
 
 [sub_resource type="Resource" id="trig_2"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(56.0, 232.0)
-Size = Vector2(16.0, 16.0)
-DoorId = 1
+kind = 1
+position = Vector2(56.0, 232.0)
+size = Vector2(16.0, 16.0)
+door_id = 1
 
 [sub_resource type="Resource" id="trig_3"]
 script = ExtResource("2")
-Kind = 1
-Position = Vector2(352.0, 40.0)
-Size = Vector2(16.0, 16.0)
-DoorId = 2
+kind = 1
+position = Vector2(352.0, 40.0)
+size = Vector2(16.0, 16.0)
+door_id = 2
 
 [sub_resource type="Resource" id="trig_4"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(280.0, 176.0)
-Size = Vector2(32.0, 32.0)
-NpcName = "IceWolf"
+kind = 3
+position = Vector2(280.0, 176.0)
+size = Vector2(32.0, 32.0)
+npc_name = "IceWolf"
 
 [sub_resource type="Resource" id="trig_5"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(336.0, 192.0)
-Size = Vector2(32.0, 32.0)
-NpcName = "IceWolf"
+kind = 3
+position = Vector2(336.0, 192.0)
+size = Vector2(32.0, 32.0)
+npc_name = "IceWolf"
 
 [sub_resource type="Resource" id="trig_6"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(528.0, 128.0)
-Size = Vector2(32.0, 32.0)
-NpcName = "FrostBat"
+kind = 3
+position = Vector2(528.0, 128.0)
+size = Vector2(32.0, 32.0)
+npc_name = "FrostBat"
 
 [sub_resource type="Resource" id="trig_7"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(624.0, 224.0)
-Size = Vector2(32.0, 32.0)
-NpcName = "FrostBat"
+kind = 3
+position = Vector2(624.0, 224.0)
+size = Vector2(32.0, 32.0)
+npc_name = "FrostBat"
 
 [sub_resource type="Resource" id="trig_8"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(200.0, 304.0)
-Size = Vector2(32.0, 32.0)
-NpcName = "SnowCrab"
+kind = 3
+position = Vector2(200.0, 304.0)
+size = Vector2(32.0, 32.0)
+npc_name = "SnowCrab"
 
 [sub_resource type="Resource" id="trig_9"]
 script = ExtResource("2")
-Kind = 3
-Position = Vector2(502.0, 22.0)
-Size = Vector2(52.0, 45.0)
-NpcName = "MountainSign"
+kind = 3
+position = Vector2(502.0, 22.0)
+size = Vector2(52.0, 45.0)
+npc_name = "MountainSign"
 
 [resource]
 script = ExtResource("1")
-SourceTmx = "assets/tiles/tilemaps/World_03_GrayMistMountain.tmx"
-Triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9")])
+source_tmx = "assets/tiles/tilemaps/World_03_GrayMistMountain.tmx"
+triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9")])
