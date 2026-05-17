@@ -727,9 +727,9 @@ Top-level progress markers — tick as phases complete:
 - [x] **Cluster 0.5**: Retroactive tool fix-up (`cb7479b`, `port-cluster-0.5-tool-fixup`)
 - [x] **Cluster 1**: Leaves-A — **3 files shipped** (BuildingCollider, RosieAnimator, WorldMusic). PinkShellInteract deferred to Cluster 4 per handoff fallback. (`743b7db`, `port-cluster-1-leaves-a`)
 - [x] **Cluster 2**: Audio autoloads (4 files) + facade pattern + 22 call sites (`0ce9a56`, `port-cluster-2-audio`)
-- [ ] **Cluster 3**: UI utilities — **DEFERRED to Cluster 10** per session 2 strategy adjustment (250+ call sites, static-class friction). See `docs/PORT_HANDOFF.md` §"Strategy adjustments".
-- [ ] **Cluster 5**: Pure state autoloads — **SWAPPED before Cluster 4** (state autoloads are consumed by every world/map node, port them first)
-- [ ] **Cluster 4**: World/Map nodes — finish Trigger/Enemy ports incl. PinkShellInteract + SeaMonsterController. Recommend splitting 4a (triggers) / 4b (enemies) / 4c (sea monster).
+- [ ] **Cluster 3**: UI utilities — **DEFERRED to Cluster 10** (250+ call sites, static-class friction). See `docs/PORT_HANDOFF.md`.
+- [x] **Cluster 5**: State autoloads — **4 of 7 shipped** (UserPrefs, ShopState, FadeOverlay, PerfMonitor). HealthSystem + CurrencySystem + QuestSystem deferred (consumer chains). (`6e55131`, `port-cluster-5-state-autoloads`)
+- [x] **Cluster 4a**: WaterBall (1 of 13 Cluster-4 files) (`4e3e4be`, `port-cluster-4a-waterball`). Remaining 12 Cluster-4 files defer to their natural dependency partners (see handoff §"Reality vs the plan").
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
 - [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
 - [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
