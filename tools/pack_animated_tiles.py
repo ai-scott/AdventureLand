@@ -209,8 +209,8 @@ def write_tres(tres_path, n_tiles, n_frames, frame_duration, vertical=False):
         f'[gd_resource type="Resource" script_class="AnimatedTileSet" '
         f'load_steps={n_tiles + 2} format=3]',
         '',
-        '[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.cs" id="1"]',
-        '[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.cs" id="2"]',
+        '[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.gd" id="1"]',
+        '[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]',
         '',
     ]
     ids = []

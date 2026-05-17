@@ -201,8 +201,8 @@ def write_tres(triggers, source_tmx_relpath, output_path):
     lines = [
         f'[gd_resource type="Resource" script_class="WorldTriggers" load_steps={load_steps} format=3]',
         '',
-        '[ext_resource type="Script" path="res://scripts/data/WorldTriggers.cs" id="1"]',
-        '[ext_resource type="Script" path="res://scripts/data/TriggerData.cs" id="2"]',
+        '[ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]',
+        '[ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]',
         '',
     ]
 
