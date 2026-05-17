@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bvb65ve0k5muv"]
 
 [ext_resource type="Script" uid="uid://cnbrf46y1r6sx" path="res://scripts/player/PlayerController.cs" id="1"]
-[ext_resource type="Script" uid="uid://c03mik5bxc8sp" path="res://scripts/player/CostumeController.cs" id="2_180ig"]
+[ext_resource type="Script" path="res://scripts/player/CostumeController.gd" id="2_180ig"]
 [ext_resource type="Texture2D" uid="uid://tqlkqmj7bx61" path="res://assets/sprites/player/farmer/sheets/13hair/fbas_13hair_bob1_00.png" id="3_2xrq6"]
 [ext_resource type="Script" uid="uid://cls58huixvvuu" path="res://addons/msca/scripts/msca_farmer_sprite_layers.gd" id="3_ov1oi"]
 [ext_resource type="Texture2D" uid="uid://b1u20yp7j04fw" path="res://assets/sprites/player/farmer/sheets/14head/fbas_14head_boaterhat_00d.png" id="4_pi3ps"]

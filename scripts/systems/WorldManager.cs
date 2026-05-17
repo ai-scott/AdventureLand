@@ -92,7 +92,7 @@ public partial class WorldManager : Node
         // starter outfit. InventoryUI does both calls in tandem; we mirror
         // that here so the dev loadout actually looks like the dev loadout.
         var player = GetTree().GetFirstNodeInGroup("player") as Node;
-        var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
+        var costume = player?.GetNodeOrNull<Node>("CostumeController");
 
         // Best-in-slot per category — IDs lifted from assets/data/items/.
         // If a tie existed (e.g., Big Red Boots vs Forest Green Boots both
@@ -106,7 +106,7 @@ public partial class WorldManager : Node
         TryAddAndEquip(costume, itemId: 102); // Big Red Boots    (Boot,   Str 3)
     }
 
-    private static void TryAddAndEquip(CostumeController costume, int itemId)
+    private static void TryAddAndEquip(Node costume, int itemId)
     {
         if (!Inventory.HasItem(itemId))
         {
@@ -118,7 +118,7 @@ public partial class WorldManager : Node
             {
                 Inventory.Equip(i);
                 var item = Inventory.GetSlotItem(i);
-                if (item != null) costume?.EquipItem(item);
+                if (item != null) costume?.Call("equip_item", item);
                 break;
             }
         }

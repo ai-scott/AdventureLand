@@ -452,17 +452,17 @@ public partial class InventoryUI : CanvasLayer
 			// SPC toggles equip/unequip — pressing the chip when an item is
 			// already equipped should take it off, not re-equip.
 			var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
-			var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
+			var costume = player?.GetNodeOrNull<Node>("CostumeController");
 			if (Inventory.IsEquipped(item.Id))
 			{
 				Inventory.Unequip(item.Category);
 				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
-					costume.UnequipLayer(item.CostumeLayer);
+					costume.Call("unequip_layer", item.CostumeLayer);
 			}
 			else
 			{
 				Inventory.Equip(_selectedSlot);
-				costume?.EquipItem(item);
+				costume?.Call("equip_item", item);
 			}
 		}
 		else if (item.IsConsumable)
@@ -1014,9 +1014,9 @@ public partial class InventoryUI : CanvasLayer
 			{
 				Inventory.Unequip(item.Category);
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
-				var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
+				var costume = player?.GetNodeOrNull<Node>("CostumeController");
 				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
-					costume.UnequipLayer(item.CostumeLayer);
+					costume.Call("unequip_layer", item.CostumeLayer);
 			}
 
 			Inventory.RemoveItem(item.Id, 1);

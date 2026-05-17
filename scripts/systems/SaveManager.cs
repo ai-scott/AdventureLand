@@ -460,10 +460,10 @@ public partial class SaveManager : Node
         Inventory.LoadFrom(CurrentData);
 
         // Restore equipped costume visuals.
-        var costume = player.GetNodeOrNull<CostumeController>("CostumeController");
+        var costume = player.GetNodeOrNull<Node>("CostumeController");
         if (costume != null && true)
         {
-            costume.RestoreEquipment();
+            costume.Call("restore_equipment");
         }
 
         // Customization (hair style / hair color / skin) is now applied

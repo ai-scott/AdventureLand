@@ -1001,8 +1001,8 @@ public partial class ItemPickupToast : CanvasLayer
 
         SaveManager.Instance?.Save();
         var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
-        var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
-        costume?.EquipItem(item);
+        var costume = player?.GetNodeOrNull<Node>("CostumeController");
+        costume?.Call("equip_item", item);
     }
 
     private void Close()
