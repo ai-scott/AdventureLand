@@ -742,18 +742,17 @@ Top-level progress markers — tick as phases complete:
 - [x] **Cluster 7b-3**: WorldManager ported + Pattern E Task↔signal bridge. SaveManager.UnstickPlayer promoted to instance. (`ceb9b86`, `port-cluster-7b3-worldmanager`)
 - [x] **Cluster 4c**: DoorTrigger + EdgeTrigger + MirrorTrigger + FollowCamera. (`4e00bdd`, `port-cluster-4c-triggers`)
 - [x] **Cluster 4d**: NpcInteract + Gem + CurrencySystem (5c promotion). (`17d04c1`, `port-cluster-4d-npc-gem-currency`)
-- [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — recommended next target
-- [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — biggest single port, 1,169 LOC + 15 consumers
-- [ ] **Cluster 9**: SaveManager + SaveData (Resource family C)
-- [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
-- [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
-- [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
-- [ ] **Cluster 8**: Dialogue cluster (Resource family B) + 16 .tres — **pause point #2** (~8h)
-- [ ] **Cluster 9**: Save cluster (Resource family C) (~5h)
-- [ ] **Cluster 10**: UI heavyweights — biggest LOC (~16h)
-- [ ] **Cluster 11**: Cutover → web export verified (~1h)
+- [ ] **Cluster 7b-4 + 5**: PlayerController (1,169 LOC, 15 consumers — plan's "highest-risk single cluster") + TridentSwingBeat — **recommended next session target**
+- [ ] **Cluster 4 tail**: SeaMonsterController + TriggerSpawner + 3 Enemy animators + EnemyController (985 LOC). Unblocked once 7b-4 lands.
+- [ ] **Cluster 9**: SaveManager (567 LOC) + SaveData. Resource family C.
+- [ ] **Cluster 10**: UI heavyweights (HUD, InventoryUI, TitleScreen, etc.) + UI utilities (Cluster 3 contents — DesignTokens/UiFonts/UiFrames/UiStyles/BevelStyleBox) + ItemData + ItemTrigger + ItemPickupToast + HealthSystem + HelpOverlay + MobileBoot. Biggest LOC concentration.
+- [ ] **Cluster 11**: Cutover — strip `[dotnet]`, install Web export templates, verify build/export
 
-**Total remaining: ~71h AI-driven, ~100–120h wall clock. Roughly 6–10 working sessions.**
+**Session 2 progress: 67% of file count ported (50 of ~75 .cs files now GDScript).**
+
+**Remaining estimate after Cluster 4d: ~25 .cs files, roughly 3-4 focused sessions to cutover.** Cluster 7b-4 (PlayerController) is the single biggest remaining port. Cluster 10 is the largest by LOC (~4,600+ across 18 files) but mechanically straightforward once UI utilities promote alongside.
+
+See `docs/PORT_HANDOFF.md` for the full state snapshot and `docs/NEXT_SESSION_PROMPT.md` for the resume-from-cold prompt.
 
 ---
 
