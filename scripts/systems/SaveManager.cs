@@ -111,8 +111,8 @@ public partial class SaveManager : Node
         ActiveSlot = slot;
 
         // Grant starter equipment and snapshot it into the save data.
-        Inventory.Instance?.GrantStarterEquipment();
-        Inventory.Instance?.SaveTo(CurrentData);
+        Inventory.GrantStarterEquipment();
+        Inventory.SaveTo(CurrentData);
 
         // Pick a random hair style + color + skin tone so each fresh hero
         // looks distinct out of the gate. Player can re-roll later via the
@@ -163,7 +163,7 @@ public partial class SaveManager : Node
         CurrentData.CurrentWorld = GetTree().CurrentScene.SceneFilePath;
 
         // Snapshot inventory state.
-        Inventory.Instance?.SaveTo(CurrentData);
+        Inventory.SaveTo(CurrentData);
 
         var err = ResourceSaver.Save(CurrentData, SlotPath(slot));
         if (err != Error.Ok)
@@ -295,7 +295,7 @@ public partial class SaveManager : Node
         // still empty since nothing has loaded it. Snapshotting that empty
         // dict would overwrite the saved EquippedItems before LoadFrom
         // gets a chance to read them, resetting the player to nothing.
-        if (livePlayer != null) Inventory.Instance?.SaveTo(CurrentData);
+        if (livePlayer != null) Inventory.SaveTo(CurrentData);
 
         bool swapped = await TryThreadedSceneSwapAsync(scenePath);
         if (!swapped)
@@ -457,11 +457,11 @@ public partial class SaveManager : Node
         }
 
         // Restore inventory state.
-        Inventory.Instance?.LoadFrom(CurrentData);
+        Inventory.LoadFrom(CurrentData);
 
         // Restore equipped costume visuals.
         var costume = player.GetNodeOrNull<CostumeController>("CostumeController");
-        if (costume != null && Inventory.Instance != null)
+        if (costume != null && true)
         {
             costume.RestoreEquipment();
         }

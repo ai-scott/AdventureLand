@@ -174,13 +174,9 @@ public partial class InventoryUI : CanvasLayer
 
 		_panel.Visible = false;
 
-		var inv = Inventory.Instance;
-		if (inv != null)
-		{
-			inv.InventoryChanged += RefreshGrid;
-			inv.ItemEquipped += (id, cat) => RefreshAll();
-			inv.ItemUnequipped += (cat) => RefreshAll();
-		}
+		Inventory.InventoryChanged += RefreshGrid;
+		Inventory.ItemEquipped += (id, cat) => RefreshAll();
+		Inventory.ItemUnequipped += (cat) => RefreshAll();
 	}
 
 	public override void _Input(InputEvent @event)
@@ -227,7 +223,7 @@ public partial class InventoryUI : CanvasLayer
 			// Enter on a sellable grid item in a shop opens the sell
 			// confirm — matches the [↵] hint on the Sell chip. Space
 			// still falls through to NavConfirm for equip/use.
-			var item = Inventory.Instance?.GetSlotItem(_selectedSlot);
+			var item = Inventory.GetSlotItem(_selectedSlot);
 			if (_enterPressedThisFrame
 				&& _focusZone == FocusZone.Grid
 				&& item != null
@@ -448,9 +444,7 @@ public partial class InventoryUI : CanvasLayer
 
 	private void OnAction()
 	{
-		var inv = Inventory.Instance;
-		if (inv == null) return;
-		var item = inv.GetSlotItem(_selectedSlot);
+		var item = Inventory.GetSlotItem(_selectedSlot);
 		if (item == null) return;
 
 		if (item.IsEquippable)
@@ -459,15 +453,15 @@ public partial class InventoryUI : CanvasLayer
 			// already equipped should take it off, not re-equip.
 			var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 			var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
-			if (inv.IsEquipped(item.Id))
+			if (Inventory.IsEquipped(item.Id))
 			{
-				inv.Unequip(item.Category);
+				Inventory.Unequip(item.Category);
 				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
 					costume.UnequipLayer(item.CostumeLayer);
 			}
 			else
 			{
-				inv.Equip(_selectedSlot);
+				Inventory.Equip(_selectedSlot);
 				costume?.EquipItem(item);
 			}
 		}
@@ -483,13 +477,13 @@ public partial class InventoryUI : CanvasLayer
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 				var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
 				int before = health?.CurrentHealth ?? 0;
-				inv.UseItem(_selectedSlot);
+				Inventory.UseItem(_selectedSlot);
 				int after = health?.CurrentHealth ?? before;
 				healed = Mathf.Max(0, after - before);
 			}
 			else
 			{
-				inv.UseItem(_selectedSlot);
+				Inventory.UseItem(_selectedSlot);
 			}
 			if (healed > 0) _pendingHealAmount += healed;
 		}
@@ -1013,21 +1007,19 @@ public partial class InventoryUI : CanvasLayer
 		};
 		toast.ShowSell(item, sellPrice, onAccept: () =>
 		{
-			var inv = Inventory.Instance;
-			if (inv == null) return;
 
 			// Auto-unequip if the player is selling the gear they're wearing,
 			// then strip the costume layer so the live preview refreshes.
-			if (inv.IsEquipped(item.Id))
+			if (Inventory.IsEquipped(item.Id))
 			{
-				inv.Unequip(item.Category);
+				Inventory.Unequip(item.Category);
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 				var costume = player?.GetNodeOrNull<CostumeController>("CostumeController");
 				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
 					costume.UnequipLayer(item.CostumeLayer);
 			}
 
-			inv.RemoveItem(item.Id, 1);
+			Inventory.RemoveItem(item.Id, 1);
 			CurrencySystem.AddGems(sellPrice);
 			SaveManager.Instance?.Save();
 			SFXController.Play("collectible_pickup");
@@ -1275,16 +1267,14 @@ public partial class InventoryUI : CanvasLayer
 					  || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
 		if (!tapped) return;
 
-		var inv = Inventory.Instance;
-		if (inv == null) return;
 
-		int equippedId = inv.GetEquippedId(category);
+		int equippedId = Inventory.GetEquippedId(category);
 		if (equippedId <= 0) return; // nothing equipped in this slot
 
 		int gridSlot = -1;
 		for (int i = 0; i < Inventory.SlotCount; i++)
 		{
-			if (inv.GetSlotItemId(i) == equippedId) { gridSlot = i; break; }
+			if (Inventory.GetSlotItemId(i) == equippedId) { gridSlot = i; break; }
 		}
 		if (gridSlot < 0) return; // equipped item not present in the grid
 
@@ -1437,20 +1427,18 @@ public partial class InventoryUI : CanvasLayer
 
 	private void RefreshAbilities()
 	{
-		var inv = Inventory.Instance;
-		if (inv == null) return;
 		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
 		var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
 
-		var weapon = inv.GetEquipped(ItemData.ItemCategory.Weapon);
+		var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
 		int attack = weapon?.Strength ?? 0;
 		int maxHearts = (health?.MaxHealth ?? 0) / 2;
-		int defense = StrengthOf(inv, ItemData.ItemCategory.Head)
-					+ StrengthOf(inv, ItemData.ItemCategory.Neck)
-					+ StrengthOf(inv, ItemData.ItemCategory.Body)
-					+ StrengthOf(inv, ItemData.ItemCategory.Hand)
-					+ StrengthOf(inv, ItemData.ItemCategory.Legs);
-		int speed = StrengthOf(inv, ItemData.ItemCategory.Boot);
+		int defense = StrengthOf(ItemData.ItemCategory.Head)
+					+ StrengthOf(ItemData.ItemCategory.Neck)
+					+ StrengthOf(ItemData.ItemCategory.Body)
+					+ StrengthOf(ItemData.ItemCategory.Hand)
+					+ StrengthOf(ItemData.ItemCategory.Legs);
+		int speed = StrengthOf(ItemData.ItemCategory.Boot);
 
 		_abilityValues[0].Text = attack.ToString();
 		_abilityValues[1].Text = maxHearts.ToString();
@@ -1469,16 +1457,15 @@ public partial class InventoryUI : CanvasLayer
 	}
 	private Texture2D _defaultAttackIcon;
 
-	private static int StrengthOf(Inventory inv, ItemData.ItemCategory cat)
-		=> inv.GetEquipped(cat)?.Strength ?? 0;
+	private static int StrengthOf(ItemData.ItemCategory cat)
+		=> Inventory.GetEquipped(cat)?.Strength ?? 0;
 
 	private void RefreshAppearance()
 	{
-		var inv = Inventory.Instance;
 		for (int i = 0; i < AppearanceCategories.Length; i++)
 		{
 			if (_appearanceIcons[i] == null) continue;
-			var item = inv?.GetEquipped(AppearanceCategories[i]);
+			var item = Inventory.GetEquipped(AppearanceCategories[i]);
 			_appearanceIcons[i].Texture = item?.Icon ?? GD.Load<Texture2D>(
 				$"res://assets/sprites/ui/inventory/equipslot_{EquipPlaceholderIndex[i]}.png");
 		}
@@ -1486,11 +1473,10 @@ public partial class InventoryUI : CanvasLayer
 
 	private void RefreshGrid()
 	{
-		var inv = Inventory.Instance;
 		for (int i = 0; i < Inventory.SlotCount; i++)
 		{
-			var item = inv?.GetSlotItem(i);
-			var qty = inv?.GetSlotQuantity(i) ?? 0;
+			var item = Inventory.GetSlotItem(i);
+			var qty = Inventory.GetSlotQuantity(i);
 			if (item != null)
 			{
 				_slotIcons[i].Texture = item.Icon;
@@ -1517,8 +1503,7 @@ public partial class InventoryUI : CanvasLayer
 
 	private void RefreshDetails()
 	{
-		var inv = Inventory.Instance;
-		var item = inv?.GetSlotItem(_selectedSlot);
+		var item = Inventory.GetSlotItem(_selectedSlot);
 
 		foreach (var c in _detailsStats.GetChildren()) c.QueueFree();
 
@@ -1537,7 +1522,7 @@ public partial class InventoryUI : CanvasLayer
 			return;
 		}
 
-		bool equipped = inv.IsEquipped(item.Id);
+		bool equipped = Inventory.IsEquipped(item.Id);
 		// Equipped state is communicated by the live preview (item visible
 		// on the character) and the chip's "Unequip" label. Key / quest
 		// items get a "★ Quest Item" line in the stat row instead of a
@@ -1570,7 +1555,7 @@ public partial class InventoryUI : CanvasLayer
 				Control arrow = null;
 				if (item.IsEquippable && !equipped)
 				{
-					var current = inv.GetEquipped(item.Category);
+					var current = Inventory.GetEquipped(item.Category);
 					if (current != null) arrow = BuildDirectionArrow(item.Strength - current.Strength);
 				}
 				// Pass arrow to the stat builder so it nests tight against

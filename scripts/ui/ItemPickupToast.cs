@@ -197,7 +197,7 @@ public partial class ItemPickupToast : CanvasLayer
         {
             if (item.IsEquippable)
             {
-                int equippedId = Inventory.Instance?.GetEquippedId(item.Category) ?? -1;
+                int equippedId = Inventory.GetEquippedId(item.Category);
                 if (equippedId <= 0) DoEquip(item);
             }
             BuildSimpleToast(item, "Quest item received!");
@@ -207,8 +207,7 @@ public partial class ItemPickupToast : CanvasLayer
 
         if (item.IsEquippable)
         {
-            var inv = Inventory.Instance;
-            int equippedId = inv?.GetEquippedId(item.Category) ?? -1;
+            int equippedId = Inventory.GetEquippedId(item.Category);
             _oldItem = equippedId > 0 ? Inventory.GetItem(equippedId) : null;
 
             if (_oldItem == null)
@@ -403,7 +402,7 @@ public partial class ItemPickupToast : CanvasLayer
                 var statChip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
                 if (item.IsEquippable)
                 {
-                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    var equipped = Inventory.GetEquipped(item.Category);
                     if (equipped != null && equipped.Id != item.Id)
                     {
                         var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
@@ -503,7 +502,7 @@ public partial class ItemPickupToast : CanvasLayer
                 // composite badge instead of two adjacent UI atoms.
                 if (item.IsEquippable)
                 {
-                    var equipped = Inventory.Instance?.GetEquipped(item.Category);
+                    var equipped = Inventory.GetEquipped(item.Category);
                     if (equipped != null && equipped.Id != item.Id)
                     {
                         var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
@@ -990,14 +989,12 @@ public partial class ItemPickupToast : CanvasLayer
 
     private void DoEquip(ItemData item)
     {
-        var inv = Inventory.Instance;
-        if (inv == null) return;
 
         for (int i = 0; i < Inventory.SlotCount; i++)
         {
-            if (inv.GetSlotItemId(i) == item.Id)
+            if (Inventory.GetSlotItemId(i) == item.Id)
             {
-                inv.Equip(i);
+                Inventory.Equip(i);
                 break;
             }
         }

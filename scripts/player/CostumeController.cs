@@ -247,8 +247,6 @@ public partial class CostumeController : Node
     /// categories the inventory has unequipped.</summary>
     public void RestoreEquipment()
     {
-        var inv = Inventory.Instance;
-        if (inv == null) return;
 
         // Wipe every clothing layer to a clean slate. Skin (01body) and the
         // body-shape layers (00undr, etc.) are intentionally not touched —
@@ -273,7 +271,7 @@ public partial class CostumeController : Node
         };
         foreach (var cat in categories)
         {
-            var item = inv.GetEquipped(cat);
+            var item = Inventory.GetEquipped(cat);
             if (item != null) EquipItem(item);
         }
 

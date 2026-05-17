@@ -1,378 +1,124 @@
 using Godot;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Autoload singleton managing the player's inventory and equipment.
-///
-/// Item database: loaded once from assets/data/items/*.tres at startup.
-/// Inventory: 25 fixed slots (itemId + quantity pairs).
-/// Equipment: one item per category slot (Head, Body, Legs, etc.).
-///
-/// Register in Project → Project Settings → Autoload:
-///   Path: res://scripts/systems/Inventory.cs
-///   Name: Inventory
-///   Enable: checked
-/// </summary>
-public partial class Inventory : Node
+// Static C# facade over the GDScript Inventory autoload during the
+// C# → GDScript port. See SFXController.cs header for the basic facade
+// pattern. Inventory adds one new wrinkle: signal-bridging.
+//
+// Pattern I (new this cluster — Inventory): C# `event Action` over a
+// GDScript `signal`. The facade exposes a `public static event Action X`
+// that fires when the GDScript signal does, via a single Callable
+// connection established lazily on first Get(). Subscribers keep the
+// idiomatic C# `Inventory.InventoryChanged += handler;` shape.
+//
+// ItemData stays C# this cluster (deferred to Cluster 10 with InventoryUI
+// per strategy adjustment 01571f3). Inventory.gd loads .tres files that
+// still reference ItemData.cs; the .gd accesses C# Resource fields via
+// PascalCase property dispatch (item.Name, item.Cost, item.Category).
+public static class Inventory
 {
-    // 30 slots: 6 columns × 5 rows. Was 25 (5×5) — bumped when the
-    // Collection grid grew a column to align with the description.
     public const int SlotCount = 30;
 
-    public static Inventory Instance { get; private set; }
+    // ---- Signal bridges (Pattern I) ----
+    // C# subscribers do `Inventory.InventoryChanged += handler` exactly
+    // as before. The facade connects to the GDScript signal once and
+    // re-emits to all C# subscribers.
+    public static event Action InventoryChanged;
+    public static event Action<int, string> ItemEquipped;
+    public static event Action<string> ItemUnequipped;
 
-    // ---- Item Database ----
-    private static readonly Dictionary<int, ItemData> _db = new();
-    private static readonly Dictionary<string, ItemData> _dbByName = new(); // lowercase name → item
+    private static GodotObject _node;
+    private static bool _signalsBridged;
 
-    // ---- Inventory State ----
-    private readonly int[] _slotItemIds = new int[SlotCount];
-    private readonly int[] _slotQuantities = new int[SlotCount];
-
-    // ---- Equipment State ----
-    // Category name (e.g., "Head", "Body") → item ID.
-    private readonly Dictionary<string, int> _equipped = new();
-
-    // ---- Signals ----
-    [Signal] public delegate void InventoryChangedEventHandler();
-    [Signal] public delegate void ItemEquippedEventHandler(int itemId, string category);
-    [Signal] public delegate void ItemUnequippedEventHandler(string category);
-
-    // Starter equipment IDs from the C3 SaveGameData.json defaults. Hair
-    // intentionally omitted — hair style + color are now driven entirely by
-    // the inventory cyclers (HairStyleIndex / HairColorIndex on SaveData),
-    // not by item ownership, so a hair "item" would just take up a grid slot
-    // without serving the customization path.
-    private static readonly int[] StarterItemIds =
+    private static GodotObject Get()
     {
-        75,  // Body: Golden Tee-Shirt
-        95,  // Legs: Brown Shorts
-        101, // Boot: Blue Slippers
-    };
-
-    public override void _Ready()
-    {
-        Instance = this;
-        LoadDatabase();
-        GD.Print($"[Inventory] Database loaded: {_db.Count} items");
+        if (_node != null && GodotObject.IsInstanceValid(_node))
+        {
+            EnsureSignalsBridged();
+            return _node;
+        }
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("Inventory");
+        EnsureSignalsBridged();
+        return _node;
     }
 
-    /// <summary>
-    /// Grant starter equipment for a new game. Adds each starter item to
-    /// inventory and auto-equips it in its category slot.
-    /// </summary>
-    public void GrantStarterEquipment()
+    private static void EnsureSignalsBridged()
     {
-        // Clear current state so a fresh run doesn't keep stale gear.
-        for (int i = 0; i < SlotCount; i++)
-        {
-            _slotItemIds[i] = 0;
-            _slotQuantities[i] = 0;
-        }
-        _equipped.Clear();
-
-        foreach (int id in StarterItemIds)
-        {
-            var item = GetItem(id);
-            if (item == null)
-            {
-                GD.PushWarning($"[Inventory] Starter item ID {id} not found in database");
-                continue;
-            }
-
-            AddItem(id, 1);
-            _equipped[item.Category.ToString()] = id;
-        }
-        GD.Print($"[Inventory] Starter equipment granted: {_equipped.Count} items equipped");
-        EmitSignal(SignalName.InventoryChanged);
+        if (_signalsBridged || _node == null) return;
+        _node.Connect("inventory_changed",
+            Callable.From(() => InventoryChanged?.Invoke()));
+        _node.Connect("item_equipped",
+            Callable.From<int, string>((id, cat) => ItemEquipped?.Invoke(id, cat)));
+        _node.Connect("item_unequipped",
+            Callable.From<string>((cat) => ItemUnequipped?.Invoke(cat)));
+        _signalsBridged = true;
     }
 
     // ---- Database ----
-
-    private void LoadDatabase()
-    {
-        _db.Clear();
-        _dbByName.Clear();
-
-        var dir = DirAccess.Open("res://assets/data/items");
-        if (dir == null)
-        {
-            GD.PushWarning("[Inventory] Could not open assets/data/items/");
-            return;
-        }
-
-        dir.ListDirBegin();
-        string fileName;
-        while ((fileName = dir.GetNext()) != "")
-        {
-            if (!fileName.EndsWith(".tres")) continue;
-            var item = GD.Load<ItemData>($"res://assets/data/items/{fileName}");
-            if (item == null || string.IsNullOrEmpty(item.Name)) continue;
-
-            _db[item.Id] = item;
-            _dbByName[item.Name.ToLowerInvariant()] = item;
-        }
-        dir.ListDirEnd();
-    }
-
     public static ItemData GetItem(int id)
-    {
-        return _db.TryGetValue(id, out var item) ? item : null;
-    }
+        => Get()?.Call("get_item", id).As<ItemData>();
 
     public static ItemData GetItemByName(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return null;
-        return _dbByName.TryGetValue(name.ToLowerInvariant(), out var item) ? item : null;
-    }
+        => Get()?.Call("get_item_by_name", name).As<ItemData>();
 
-    // ---- Inventory Operations ----
+    // ---- Inventory ops ----
+    public static bool AddItem(int itemId, int quantity = 1)
+        => Get()?.Call("add_item", itemId, quantity).AsBool() ?? false;
 
-    /// <summary>Add an item by ID. Returns true if successfully added.</summary>
-    public bool AddItem(int itemId, int quantity = 1)
-    {
-        var item = GetItem(itemId);
-        if (item == null)
-        {
-            GD.PushWarning($"[Inventory] Unknown item ID: {itemId}");
-            return false;
-        }
+    public static bool AddItemByName(string name, int quantity = 1)
+        => Get()?.Call("add_item_by_name", name, quantity).AsBool() ?? false;
 
-        // Try to stack on an existing slot first.
-        if (item.Stackable)
-        {
-            for (int i = 0; i < SlotCount; i++)
-            {
-                if (_slotItemIds[i] == itemId)
-                {
-                    _slotQuantities[i] += quantity;
-                    GD.Print($"[Inventory] Stacked {item.Name} x{quantity} (now x{_slotQuantities[i]})");
-                    EmitSignal(SignalName.InventoryChanged);
-                    return true;
-                }
-            }
-        }
+    public static bool RemoveItem(int itemId, int quantity = 1)
+        => Get()?.Call("remove_item", itemId, quantity).AsBool() ?? false;
 
-        // Find an empty slot.
-        for (int i = 0; i < SlotCount; i++)
-        {
-            if (_slotItemIds[i] == 0)
-            {
-                _slotItemIds[i] = itemId;
-                _slotQuantities[i] = quantity;
-                GD.Print($"[Inventory] Added {item.Name} to slot {i}");
-                EmitSignal(SignalName.InventoryChanged);
-                return true;
-            }
-        }
+    public static bool RemoveItemByName(string name, int quantity = 1)
+        => Get()?.Call("remove_item_by_name", name, quantity).AsBool() ?? false;
 
-        GD.Print("[Inventory] Inventory full!");
-        return false;
-    }
+    public static bool HasItem(int itemId)
+        => Get()?.Call("has_item", itemId).AsBool() ?? false;
 
-    /// <summary>Add an item by name (for dialogue system integration).</summary>
-    public bool AddItemByName(string name, int quantity = 1)
-    {
-        var item = GetItemByName(name);
-        if (item == null)
-        {
-            GD.PushWarning($"[Inventory] Unknown item name: '{name}'");
-            return false;
-        }
-        return AddItem(item.Id, quantity);
-    }
+    public static bool HasItemByName(string name)
+        => Get()?.Call("has_item_by_name", name).AsBool() ?? false;
 
-    /// <summary>Remove quantity of an item. Returns true if successfully removed.</summary>
-    public bool RemoveItem(int itemId, int quantity = 1)
-    {
-        for (int i = 0; i < SlotCount; i++)
-        {
-            if (_slotItemIds[i] != itemId) continue;
+    public static int GetSlotItemId(int slot)
+        => Get()?.Call("get_slot_item_id", slot).AsInt32() ?? 0;
 
-            _slotQuantities[i] -= quantity;
-            if (_slotQuantities[i] <= 0)
-            {
-                var name = GetItem(itemId)?.Name ?? itemId.ToString();
-                GD.Print($"[Inventory] Removed {name} from slot {i}");
-                _slotItemIds[i] = 0;
-                _slotQuantities[i] = 0;
-            }
-            EmitSignal(SignalName.InventoryChanged);
-            return true;
-        }
-        return false;
-    }
+    public static int GetSlotQuantity(int slot)
+        => Get()?.Call("get_slot_quantity", slot).AsInt32() ?? 0;
 
-    /// <summary>Remove an item by name.</summary>
-    public bool RemoveItemByName(string name, int quantity = 1)
-    {
-        var item = GetItemByName(name);
-        return item != null && RemoveItem(item.Id, quantity);
-    }
-
-    /// <summary>Check if the player has at least one of this item.</summary>
-    public bool HasItem(int itemId)
-    {
-        for (int i = 0; i < SlotCount; i++)
-        {
-            if (_slotItemIds[i] == itemId && _slotQuantities[i] > 0) return true;
-        }
-        return false;
-    }
-
-    /// <summary>Check by name (for quest system).</summary>
-    public bool HasItemByName(string name)
-    {
-        var item = GetItemByName(name);
-        return item != null && HasItem(item.Id);
-    }
-
-    /// <summary>Get the item ID at a given slot (0 = empty).</summary>
-    public int GetSlotItemId(int slot) => slot >= 0 && slot < SlotCount ? _slotItemIds[slot] : 0;
-
-    /// <summary>Get the quantity at a given slot.</summary>
-    public int GetSlotQuantity(int slot) => slot >= 0 && slot < SlotCount ? _slotQuantities[slot] : 0;
-
-    /// <summary>Get the ItemData at a given slot (null if empty).</summary>
-    public ItemData GetSlotItem(int slot)
-    {
-        int id = GetSlotItemId(slot);
-        return id != 0 ? GetItem(id) : null;
-    }
+    public static ItemData GetSlotItem(int slot)
+        => Get()?.Call("get_slot_item", slot).As<ItemData>();
 
     // ---- Equipment ----
+    public static bool Equip(int slotIndex)
+        => Get()?.Call("equip", slotIndex).AsBool() ?? false;
 
-    /// <summary>Equip the item at inventory slot index. Returns true if equipped.</summary>
-    public bool Equip(int slotIndex)
-    {
-        var item = GetSlotItem(slotIndex);
-        if (item == null || !item.IsEquippable) return false;
+    public static bool Unequip(ItemData.ItemCategory category)
+        => Get()?.Call("unequip", (int)category).AsBool() ?? false;
 
-        var catName = item.Category.ToString();
+    public static int GetEquippedId(ItemData.ItemCategory category)
+        => Get()?.Call("get_equipped_id", (int)category).AsInt32() ?? -1;
 
-        // If something is already equipped in this slot, unequip it first.
-        if (_equipped.ContainsKey(catName))
-        {
-            Unequip(item.Category);
-        }
+    public static ItemData GetEquipped(ItemData.ItemCategory category)
+        => Get()?.Call("get_equipped", (int)category).As<ItemData>();
 
-        _equipped[catName] = item.Id;
-        GD.Print($"[Inventory] Equipped {item.Name} ({catName})");
-        EmitSignal(SignalName.ItemEquipped, item.Id, catName);
-        return true;
-    }
-
-    /// <summary>Unequip the item in the given category slot.</summary>
-    public bool Unequip(ItemData.ItemCategory category)
-    {
-        var catName = category.ToString();
-        if (!_equipped.ContainsKey(catName)) return false;
-
-        var itemId = _equipped[catName];
-        _equipped.Remove(catName);
-        GD.Print($"[Inventory] Unequipped {GetItem(itemId)?.Name ?? itemId.ToString()} ({catName})");
-        EmitSignal(SignalName.ItemUnequipped, catName);
-        return true;
-    }
-
-    /// <summary>Get the equipped item ID for a category (-1 if none).</summary>
-    public int GetEquippedId(ItemData.ItemCategory category)
-    {
-        return _equipped.TryGetValue(category.ToString(), out var id) ? id : -1;
-    }
-
-    /// <summary>Get the equipped ItemData for a category (null if none).</summary>
-    public ItemData GetEquipped(ItemData.ItemCategory category)
-    {
-        int id = GetEquippedId(category);
-        return id > 0 ? GetItem(id) : null;
-    }
-
-    /// <summary>Check if a specific item is currently equipped.</summary>
-    public bool IsEquipped(int itemId)
-    {
-        return _equipped.ContainsValue(itemId);
-    }
+    public static bool IsEquipped(int itemId)
+        => Get()?.Call("is_equipped", itemId).AsBool() ?? false;
 
     // ---- Consumables ----
+    public static bool UseItem(int slotIndex)
+        => Get()?.Call("use_item", slotIndex).AsBool() ?? false;
 
-    /// <summary>Use a consumable item at the given slot. Returns true if consumed.</summary>
-    public bool UseItem(int slotIndex)
-    {
-        var item = GetSlotItem(slotIndex);
-        if (item == null || !item.IsConsumable) return false;
+    // ---- Starter + Save ----
+    public static void GrantStarterEquipment()
+        => Get()?.Call("grant_starter_equipment");
 
-        // Food heals for Strength amount.
-        if (item.Category == ItemData.ItemCategory.Food)
-        {
-            var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
-            var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
-            if (health != null)
-            {
-                health.Heal(item.Strength);
-                GD.Print($"[Inventory] Used {item.Name} — healed {item.Strength} HP");
-                SFXController.Play("potion");
-            }
-        }
+    public static void SaveTo(SaveData data)
+        => Get()?.Call("save_to", data);
 
-        RemoveItem(item.Id, 1);
-        return true;
-    }
-
-    // ---- Save/Load Integration ----
-
-    /// <summary>Snapshot inventory state into SaveData.</summary>
-    public void SaveTo(SaveData data)
-    {
-        data.InventoryItemIds = new Godot.Collections.Array<int>();
-        data.InventoryQuantities = new Godot.Collections.Array<int>();
-
-        for (int i = 0; i < SlotCount; i++)
-        {
-            data.InventoryItemIds.Add(_slotItemIds[i]);
-            data.InventoryQuantities.Add(_slotQuantities[i]);
-        }
-
-        data.EquippedItems = new Godot.Collections.Dictionary<string, int>();
-        foreach (var kv in _equipped)
-        {
-            data.EquippedItems[kv.Key] = kv.Value;
-        }
-    }
-
-    /// <summary>Restore inventory state from SaveData.</summary>
-    public void LoadFrom(SaveData data)
-    {
-        // Clear current state.
-        for (int i = 0; i < SlotCount; i++)
-        {
-            _slotItemIds[i] = 0;
-            _slotQuantities[i] = 0;
-        }
-        _equipped.Clear();
-
-        if (data.InventoryItemIds != null)
-        {
-            int count = Mathf.Min(data.InventoryItemIds.Count, SlotCount);
-            for (int i = 0; i < count; i++)
-            {
-                _slotItemIds[i] = data.InventoryItemIds[i];
-                _slotQuantities[i] = i < data.InventoryQuantities.Count ? data.InventoryQuantities[i] : 1;
-            }
-        }
-
-        if (data.EquippedItems != null)
-        {
-            foreach (var kv in data.EquippedItems)
-            {
-                _equipped[kv.Key] = kv.Value;
-            }
-        }
-
-        GD.Print($"[Inventory] Loaded: {_slotItemIds.Count(id => id != 0)} items, {_equipped.Count} equipped");
-        EmitSignal(SignalName.InventoryChanged);
-    }
+    public static void LoadFrom(SaveData data)
+        => Get()?.Call("load_from", data);
 }

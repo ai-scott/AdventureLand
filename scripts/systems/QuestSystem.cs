@@ -89,16 +89,14 @@ public static class QuestSystem
 
     public static bool HasUniqueItem(string itemName)
     {
-        var inv = Inventory.Instance;
-        if (inv != null && inv.HasItemByName(itemName)) return true;
+        if (true && Inventory.HasItemByName(itemName)) return true;
         // Fallback for pre-Phase 4 saves.
         return HasWorldFlag($"UniqueItem_{itemName}");
     }
 
     public static void GrantUniqueItem(string itemName)
     {
-        var inv = Inventory.Instance;
-        if (inv != null && inv.AddItemByName(itemName))
+        if (true && Inventory.AddItemByName(itemName))
         {
             GD.Print($"[Quest] Unique item granted via inventory: {itemName}");
             return;
@@ -110,11 +108,7 @@ public static class QuestSystem
 
     public static void RemoveUniqueItem(string itemName)
     {
-        var inv = Inventory.Instance;
-        if (inv != null)
-        {
-            inv.RemoveItemByName(itemName);
-        }
+        Inventory.RemoveItemByName(itemName);
         // Also clean up the flag if it exists.
         var data = Mgr?.CurrentData;
         if (data == null) return;
@@ -132,10 +126,9 @@ public static class QuestSystem
     private static bool HasEquippedCategory(string categoryName)
     {
         if (string.IsNullOrEmpty(categoryName)) return false;
-        if (Inventory.Instance == null) return false;
         if (!System.Enum.TryParse<ItemData.ItemCategory>(categoryName, ignoreCase: true, out var cat))
             return false;
-        return Inventory.Instance.GetEquippedId(cat) > 0;
+        return Inventory.GetEquippedId(cat) > 0;
     }
 
     // ---- Condition Evaluation ----

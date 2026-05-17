@@ -138,13 +138,10 @@ public partial class HUD : CanvasLayer
         // mobile — handled in ApplyChipActionButton via null kbdChip.
         SyncMobileDpadPresence();
 
-        if (Inventory.Instance != null)
-        {
-            Inventory.Instance.ItemEquipped += OnItemEquippedOrUnequipped;
-            Inventory.Instance.ItemUnequipped += OnItemUnequipped;
-            RefreshAttackButtonVisibility();
-            RefreshAttackIcon();
-        }
+        Inventory.ItemEquipped += OnItemEquippedOrUnequipped;
+        Inventory.ItemUnequipped += OnItemUnequipped;
+        RefreshAttackButtonVisibility();
+        RefreshAttackIcon();
     }
 
     /// <summary>Set up the low-HP warning visuals + audio: a red vignette
@@ -231,9 +228,9 @@ public partial class HUD : CanvasLayer
 
     private void RefreshAttackButtonVisibility()
     {
-        if (_attackButton == null || Inventory.Instance == null) return;
+        if (_attackButton == null || false) return;
         _attackButton.Visible =
-            Inventory.Instance.GetEquippedId(ItemData.ItemCategory.Weapon) != -1;
+            Inventory.GetEquippedId(ItemData.ItemCategory.Weapon) != -1;
     }
 
     /// <summary>Swap the attack chip's icon to the equipped weapon's
@@ -243,7 +240,7 @@ public partial class HUD : CanvasLayer
     private void RefreshAttackIcon()
     {
         if (_attackIcon == null) return;
-        var weapon = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon);
+        var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
         _attackIcon.Texture = weapon?.Icon ?? _defaultAttackIcon;
     }
 
@@ -291,7 +288,7 @@ public partial class HUD : CanvasLayer
         // Poll weapon equip state. Inventory.LoadFrom writes straight to the
         // equip dict without firing ItemEquipped, so the signal-based refresh
         // misses save loads — polling here is the reliable catch-all.
-        int weaponId = Inventory.Instance?.GetEquippedId(ItemData.ItemCategory.Weapon) ?? -1;
+        int weaponId = Inventory.GetEquippedId(ItemData.ItemCategory.Weapon);
         if (weaponId != _lastWeaponId)
         {
             _lastWeaponId = weaponId;

@@ -85,8 +85,6 @@ public partial class WorldManager : Node
 
     private void GrantDebugLoadout()
     {
-        var inv = Inventory.Instance;
-        if (inv == null) return;
         // CostumeController is the bridge from "_equipped dict" to "actual
         // sprite layers swapped on the player". Inventory.Equip only mutates
         // the data model — without an EquipItem call on the costume, the
@@ -99,27 +97,27 @@ public partial class WorldManager : Node
         // Best-in-slot per category — IDs lifted from assets/data/items/.
         // If a tie existed (e.g., Big Red Boots vs Forest Green Boots both
         // at Str 3), the lower ID wins. Update if a stronger item is added.
-        TryAddAndEquip(inv, costume, itemId: 4);   // Magic Trident   (Weapon, Str 6)
-        TryAddAndEquip(inv, costume, itemId: 54);  // The Wrangler    (Head,   Str 3)
-        TryAddAndEquip(inv, costume, itemId: 62);  // Cloak of Billowing (Neck,  Str 3)
-        TryAddAndEquip(inv, costume, itemId: 73);  // Sunset Vest and Top (Body, Str 3)
-        TryAddAndEquip(inv, costume, itemId: 81);  // Gold + Purple Ring (Hand,  Str 2)
-        TryAddAndEquip(inv, costume, itemId: 96);  // Bluejean Overalls (Legs,  Str 3)
-        TryAddAndEquip(inv, costume, itemId: 102); // Big Red Boots    (Boot,   Str 3)
+        TryAddAndEquip(costume, itemId: 4);   // Magic Trident   (Weapon, Str 6)
+        TryAddAndEquip(costume, itemId: 54);  // The Wrangler    (Head,   Str 3)
+        TryAddAndEquip(costume, itemId: 62);  // Cloak of Billowing (Neck,  Str 3)
+        TryAddAndEquip(costume, itemId: 73);  // Sunset Vest and Top (Body, Str 3)
+        TryAddAndEquip(costume, itemId: 81);  // Gold + Purple Ring (Hand,  Str 2)
+        TryAddAndEquip(costume, itemId: 96);  // Bluejean Overalls (Legs,  Str 3)
+        TryAddAndEquip(costume, itemId: 102); // Big Red Boots    (Boot,   Str 3)
     }
 
-    private static void TryAddAndEquip(Inventory inv, CostumeController costume, int itemId)
+    private static void TryAddAndEquip(CostumeController costume, int itemId)
     {
-        if (!inv.HasItem(itemId))
+        if (!Inventory.HasItem(itemId))
         {
-            if (!inv.AddItem(itemId)) return;
+            if (!Inventory.AddItem(itemId)) return;
         }
         for (int i = 0; i < Inventory.SlotCount; i++)
         {
-            if (inv.GetSlotItemId(i) == itemId)
+            if (Inventory.GetSlotItemId(i) == itemId)
             {
-                inv.Equip(i);
-                var item = inv.GetSlotItem(i);
+                Inventory.Equip(i);
+                var item = Inventory.GetSlotItem(i);
                 if (item != null) costume?.EquipItem(item);
                 break;
             }

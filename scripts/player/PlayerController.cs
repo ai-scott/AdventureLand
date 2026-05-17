@@ -239,17 +239,13 @@ public partial class PlayerController : CharacterBody2D
 		// boots returns to exactly the authored value.
 		_baseSpeed = Speed;
 
-		var inv = Inventory.Instance;
-		if (inv != null)
-		{
-			inv.ItemEquipped += (_, _) => RecomputeSpeed();
-			inv.ItemUnequipped += _ => RecomputeSpeed();
-			// InventoryChanged fires on bulk loads (LoadFrom) so a Continue
-			// gets the correct speed even if equipment is restored without
-			// going through Equip().
-			inv.InventoryChanged += RecomputeSpeed;
-			RecomputeSpeed();
-		}
+		Inventory.ItemEquipped += (_, _) => RecomputeSpeed();
+		Inventory.ItemUnequipped += _ => RecomputeSpeed();
+		// InventoryChanged fires on bulk loads (LoadFrom) so a Continue
+		// gets the correct speed even if equipment is restored without
+		// going through Equip().
+		Inventory.InventoryChanged += RecomputeSpeed;
+		RecomputeSpeed();
 
 		var animPlayer = GetNode<AnimationPlayer>("SpriteLayers/AnimationPlayer");
 		_tree = GetNode<AnimationTree>("SpriteLayers/AnimationTree");
@@ -542,15 +538,13 @@ public partial class PlayerController : CharacterBody2D
 
 	private static void DebugGrantAllWeapons()
 	{
-		var inv = Inventory.Instance;
-		if (inv == null) { GD.PushWarning("[Debug] Shift+G: Inventory.Instance is null"); return; }
 		int granted = 0;
 		for (int id = 1; id <= 8; id++)
 		{
 			var item = Inventory.GetItem(id);
 			if (item == null) continue;
 			if (item.Category != ItemData.ItemCategory.Weapon) continue;
-			if (inv.AddItem(id, 1))
+			if (Inventory.AddItem(id, 1))
 			{
 				granted++;
 				GD.Print($"[Debug] Granted {item.Name} (id={id}, sheet={item.WeaponSheet}, str={item.Strength})");
@@ -577,7 +571,7 @@ public partial class PlayerController : CharacterBody2D
 
 		// Gate attack on equipped weapon — no weapon, no swing. Avoids phantom
 		// attacks when the player has never picked up a weapon.
-		if (Inventory.Instance?.GetEquippedId(ItemData.ItemCategory.Weapon) is not > 0)
+		if (Inventory.GetEquippedId(ItemData.ItemCategory.Weapon) is not > 0)
 			return;
 
 		// Suppress attack while an interactable hint is visible — Space goes
@@ -605,7 +599,7 @@ public partial class PlayerController : CharacterBody2D
 		// Trident's own swing cue is fired inside PlayTridentSwing below;
 		// suppress the generic swing for it so the magic-weapon path stays
 		// distinct.
-		int equippedWeaponId = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id ?? 0;
+		int equippedWeaponId = Inventory.GetEquipped(ItemData.ItemCategory.Weapon)?.Id ?? 0;
 		bool isTrident = equippedWeaponId == MagicTridentItemId;
 		if (!isTrident)
 		{
@@ -656,8 +650,7 @@ public partial class PlayerController : CharacterBody2D
 	/// to footwear flows through automatically.</summary>
 	private void RecomputeSpeed()
 	{
-		var inv = Inventory.Instance;
-		int bootStr = inv?.GetEquipped(ItemData.ItemCategory.Boot)?.Strength ?? 0;
+		int bootStr = Inventory.GetEquipped(ItemData.ItemCategory.Boot)?.Strength ?? 0;
 		Speed = _baseSpeed + bootStr * SpeedPerBootPoint;
 	}
 
@@ -667,9 +660,7 @@ public partial class PlayerController : CharacterBody2D
 	/// Defense. Returns 0 if Inventory hasn't loaded yet.</summary>
 	private static int ComputeDefense()
 	{
-		var inv = Inventory.Instance;
-		if (inv == null) return 0;
-		int Sum(ItemData.ItemCategory cat) => inv.GetEquipped(cat)?.Strength ?? 0;
+		int Sum(ItemData.ItemCategory cat) => Inventory.GetEquipped(cat)?.Strength ?? 0;
 		return Sum(ItemData.ItemCategory.Head)
 			 + Sum(ItemData.ItemCategory.Neck)
 			 + Sum(ItemData.ItemCategory.Body)
@@ -1105,7 +1096,7 @@ public partial class PlayerController : CharacterBody2D
 			// trident's swing arc. StartAttack already hid it; this MSCA
 			// callback fires *after* StartAttack and was unconditionally
 			// re-enabling visibility.
-			bool isTrident = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
+			bool isTrident = Inventory.GetEquipped(ItemData.ItemCategory.Weapon)?.Id == MagicTridentItemId;
 			if (_weaponSprite != null) _weaponSprite.Visible = !isTrident || DebugShowMscaWeaponDuringTridentSwing;
 		}
 	}
@@ -1143,7 +1134,7 @@ public partial class PlayerController : CharacterBody2D
 		// Damage = equipped weapon's Strength, min 1. Attack input is gated on
 		// having a weapon equipped, so in practice the fallback only triggers
 		// if a weapon somehow has Strength=0 in its ItemData (authoring bug).
-		var weapon = Inventory.Instance?.GetEquipped(ItemData.ItemCategory.Weapon);
+		var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
 		int damage = weapon != null && weapon.Strength > 0 ? weapon.Strength : 1;
 		enemyHealth.TakeDamage(damage);
 		// Floating combat number — white over the enemy at the moment of hit.

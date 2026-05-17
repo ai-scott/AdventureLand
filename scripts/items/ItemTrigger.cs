@@ -261,10 +261,8 @@ public partial class ItemTrigger : Area2D
     /// flag collected, save, toast, sparkle, and fade out. No payment.</summary>
     private void CompletePickup()
     {
-        var inv = Inventory.Instance;
-        if (inv == null) return;
 
-        bool added = inv.AddItem(Data.Id, 1);
+        bool added = Inventory.AddItem(Data.Id, 1);
         if (!added)
         {
             GD.Print($"[ItemTrigger] Inventory full — couldn't pick up {Data.Name}");
