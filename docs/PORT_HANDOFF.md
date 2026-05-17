@@ -55,6 +55,7 @@ G. **Variant Set/Call instead of strong-typed Instantiate<T>** — Cluster 4a Wa
 H. **Don't port a parent class without strong-typed C# consumers** — defer pattern.
 I. **C# event Action over GDScript signal** — Cluster 6 Inventory. Lazy `node.Connect("snake_signal", Callable.From(handler))` at first Get().
 J. **BSD sed `\b` word boundary doesn't work** — use `([^a-zA-Z0-9_])` capture group.
+K. **GDScript cannot access C# static members** — surfaced Cluster 7a runtime. `SaveManager.Instance` (a C# `public static X Instance { get; }`) is invisible to GDScript Variant dispatch — only **instance** members of the Node are. From GDScript, the autoload name IS the Node; drop `.Instance` entirely and access instance properties directly (PascalCase, per Pattern C). E.g. `SaveManager.CurrentData` not `SaveManager.Instance?.CurrentData`. C# facades that need to expose the Instance to other C# code can keep the static accessor — it's a one-way C#-internal pattern. **Headless boot does not exercise all code paths** — code that only runs after a save loads (e.g. `CostumeController.restore_equipment()`) won't surface a `.Instance` mistake until runtime. Audit every .gd port with `grep -rn "Instance\b" --include="*.gd"` before declaring a cluster done.
 
 ## 7b-2 (InteractHintManager) — pre-port audit
 
