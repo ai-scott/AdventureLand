@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/npc/NpcInteract.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/npc/NpcInteract.gd" id="1"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/treesign.tres" id="2"]
 
 [sub_resource type="CircleShape2D" id="InteractShape"]

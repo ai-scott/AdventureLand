@@ -976,8 +976,13 @@ public partial class EnemyController : CharacterBody2D
 		int count = GD.RandRange(2, 3);
 		for (int i = 0; i < count; i++)
 		{
-			var gem = _gemScene.Instantiate<Gem>();
-			gem.Variant = Gem.RollKind();
+			// Gem is GDScript (Cluster 4d). Pattern G — untyped Node2D
+			// + Variant Set. roll_kind is a static GDScript func on
+			// Gem.gd, not directly callable from C#; randomize the
+			// variant int (Kind enum is 0..3) here instead.
+			var gem = _gemScene.Instantiate() as Node2D;
+			if (gem == null) continue;
+			gem.Set("variant", GD.RandRange(0, 3));
 			gem.GlobalPosition = GlobalPosition;
 			parent.AddChild(gem);
 		}

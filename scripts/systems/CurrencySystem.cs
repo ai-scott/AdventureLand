@@ -2,57 +2,35 @@ using Godot;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Gem wallet. Mirrors the C3 CurrencySystem pattern (gems as single currency)
-/// but lives as a static facade over SaveData, not an autoload — same model
-/// as QuestSystem so callers don't need to carry a singleton reference.
-///
-/// All mutations go through SaveManager.CurrentData.Gems so saves/loads
-/// persist automatically. No separate snapshot step needed.
-/// </summary>
+// Static C# facade over the GDScript CurrencySystem autoload during
+// the port. See SFXController.cs header for the basic facade pattern.
+//
+// Original was `public static class` reading SaveManager.Instance.
+// CurrentData.Gems. Promoted to autoload Node in GDScript so cross-
+// language access is uniform; this facade preserves the call-site
+// shape `CurrencySystem.AddGems(10)` for the remaining C# consumers
+// (InventoryUI, ItemPickupToast, HUD, CurrencyHUD, ItemTrigger).
 public static class CurrencySystem
 {
-    private const int MaxGems = 9999;
+    private static GodotObject _node;
 
-    [Signal] public delegate void GemsChangedEventHandler(int newAmount);
-
-    private static SaveManager Mgr => SaveManager.Instance;
+    private static GodotObject Get()
+    {
+        if (_node != null && GodotObject.IsInstanceValid(_node)) return _node;
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("CurrencySystem");
+        return _node;
+    }
 
     public static int GetGems()
-    {
-        return Mgr?.CurrentData?.Gems ?? 0;
-    }
+        => Get()?.Call("get_gems").AsInt32() ?? 0;
 
     public static bool CanAfford(int cost)
-    {
-        return cost <= 0 || GetGems() >= cost;
-    }
+        => Get()?.Call("can_afford", cost).AsBool() ?? false;
 
-    /// <summary>Grants gems (positive amount). Clamped to MaxGems. Returns
-    /// the amount actually added after clamp.</summary>
     public static int AddGems(int amount)
-    {
-        if (amount <= 0) return 0;
-        var data = Mgr?.CurrentData;
-        if (data == null) return 0;
+        => Get()?.Call("add_gems", amount).AsInt32() ?? 0;
 
-        int before = data.Gems;
-        data.Gems = System.Math.Min(MaxGems, before + amount);
-        int added = data.Gems - before;
-        if (added > 0) GD.Print($"[Currency] +{added} gems (→ {data.Gems})");
-        return added;
-    }
-
-    /// <summary>Spends gems (positive amount). Returns true if the player
-    /// had enough; false otherwise and nothing is deducted.</summary>
     public static bool RemoveGems(int amount)
-    {
-        if (amount <= 0) return true;
-        var data = Mgr?.CurrentData;
-        if (data == null || data.Gems < amount) return false;
-
-        data.Gems -= amount;
-        GD.Print($"[Currency] -{amount} gems (→ {data.Gems})");
-        return true;
-    }
+        => Get()?.Call("remove_gems", amount).AsBool() ?? false;
 }

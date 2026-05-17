@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b0gem001loot"]
 
-[ext_resource type="Script" path="res://scripts/world/Gem.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/world/Gem.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-000.png" id="g0"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-001.png" id="g1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/loot/gem-002.png" id="g2"]
