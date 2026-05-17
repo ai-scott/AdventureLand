@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bvb65ve0k5muv" path="res://scenes/player/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="3"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="4"]
-[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="5"]
+[ext_resource type="Script" path="res://scripts/maps/MapLoader.gd" id="5"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="6"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="7"]
 [ext_resource type="Resource" uid="uid://dibc2f7i03wyr" path="res://assets/map_data/triggers/World_00_Windmill_1stFloor.tres" id="8"]

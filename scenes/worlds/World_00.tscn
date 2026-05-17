@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="4_46npq"]
 [ext_resource type="PackedScene" uid="uid://dialogue001" path="res://scenes/ui/DialogueBox.tscn" id="5"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="6"]
-[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="7"]
+[ext_resource type="Script" path="res://scripts/maps/MapLoader.gd" id="7"]
 [ext_resource type="Texture2D" uid="uid://b8dfu6dwanwur" path="res://assets/buildings/Blacksmith.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://bpmu6r4wq6o5q" path="res://assets/buildings/Cabin1.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://b5tu6nd7avv8s" path="res://assets/buildings/Cabin2.png" id="10"]

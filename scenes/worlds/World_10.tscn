@@ -11,7 +11,7 @@
 [ext_resource type="Resource" uid="uid://dbaixio0hohtm" path="res://assets/data/tile_animations/Water_Plants_Colour2_16x16.tres" id="5_lnek1"]
 [ext_resource type="Script" uid="uid://deov0hlkhfcuc" path="res://scripts/camera/FollowCamera.cs" id="6"]
 [ext_resource type="Resource" uid="uid://dxve3qfxot7cj" path="res://assets/data/tile_animations/Rocks_32x32.tres" id="6_ffdga"]
-[ext_resource type="Script" uid="uid://dsjtpq02iyrj" path="res://scripts/maps/MapLoader.cs" id="7"]
+[ext_resource type="Script" path="res://scripts/maps/MapLoader.gd" id="7"]
 [ext_resource type="Resource" uid="uid://cbw8q8x5gd8cs" path="res://assets/data/tile_animations/Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.tres" id="7_c5b4o"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="8"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="8_msv86"]
