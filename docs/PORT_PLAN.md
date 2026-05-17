@@ -724,12 +724,12 @@ Top-level progress markers — tick as phases complete:
 - [x] **Phase A**: Repo reorganization — commit `b5c5c60`, tag `reorg-complete-2026-05-16`
 - [x] **Phase 0**: Scaffold (GUT v9.6.0, baselines, plan doc) — commits `a0145e8`, `da04dcd`, `5c99e34`
 - [x] **Pre-clusters**: 3 self-contained Resource families — Tile (`9003fc2`) + Trigger (`ce8852b`) + Enemy (`de01af0`)
-- [ ] **Cluster 0.5**: Retroactive tool fix-up — update `tools/pack_animated_tiles.py` + `tools/tmx_triggers_to_tres.py` to write `.gd` paths (~15min)
-- [ ] **Cluster 1**: Leaves-A — 6 files with 0 external consumers (~1.5h)
-- [ ] **Cluster 2**: Audio autoloads + ~29 call sites (~2.5h)
-- [ ] **Cluster 3**: UI utilities + ~50 mechanical call sites (~3h)
-- [ ] **Cluster 4**: World/Map nodes — finish Trigger/Enemy ports (~8h)
-- [ ] **Cluster 5**: Pure state autoloads (~4h)
+- [x] **Cluster 0.5**: Retroactive tool fix-up (`cb7479b`, `port-cluster-0.5-tool-fixup`)
+- [x] **Cluster 1**: Leaves-A — **3 files shipped** (BuildingCollider, RosieAnimator, WorldMusic). PinkShellInteract deferred to Cluster 4 per handoff fallback. (`743b7db`, `port-cluster-1-leaves-a`)
+- [x] **Cluster 2**: Audio autoloads (4 files) + facade pattern + 22 call sites (`0ce9a56`, `port-cluster-2-audio`)
+- [ ] **Cluster 3**: UI utilities — **DEFERRED to Cluster 10** per session 2 strategy adjustment (250+ call sites, static-class friction). See `docs/PORT_HANDOFF.md` §"Strategy adjustments".
+- [ ] **Cluster 5**: Pure state autoloads — **SWAPPED before Cluster 4** (state autoloads are consumed by every world/map node, port them first)
+- [ ] **Cluster 4**: World/Map nodes — finish Trigger/Enemy ports incl. PinkShellInteract + SeaMonsterController. Recommend splitting 4a (triggers) / 4b (enemies) / 4c (sea monster).
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
 - [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
 - [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)

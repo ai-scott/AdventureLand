@@ -1,191 +1,243 @@
 # Port Handoff — Context Snapshot for Next Session
 
-**Date:** 2026-05-17
-**Branch:** `port/gdscript` (pushed to origin)
-**Latest commit:** `cb7479b` — `chore(port): Cluster 0.5 — fix stale .cs refs in baker tools`
-**Latest tag:** `port-cluster-0.5-tool-fixup`
-**Working tree:** Clean (verified)
+**Date:** 2026-05-17 (session 2)
+**Branch:** `port/gdscript` (pushed to origin via prior session; local has 2 new commits to push)
+**Latest commit:** `0ce9a56` — `port: Cluster 2 — Audio autoloads (SFX/Music/VO/EnemyMusic)`
+**Latest tag:** `port-cluster-2-audio`
+**Working tree:** Clean
 
 ## TL;DR for the next session
 
-1. **Read [docs/PORT_PLAN.md](PORT_PLAN.md)** (the working copy of the approved plan) for the full cluster strategy
-2. **Read [.claude/plans/can-you-make-a-mighty-twilight.md](../.claude/plans/can-you-make-a-mighty-twilight.md)** for the same plan with the most recent revisions (deeper dependency analysis, hidden deps surfaced, cross-cutting work table)
-3. **Resume at Cluster 1** — 4 files (not 6 — see "key insight" below)
+1. **Read this file first.** It supersedes the prior handoff completely; session 2 made strategy adjustments that change the cluster order.
+2. **Resume at Cluster 5 (state autoloads) — NOT Cluster 3.** Cluster 3 (UI utilities) is deferred to Cluster 10; Cluster 4 (World/Map) is swapped to come AFTER Cluster 5. Rationale below.
+3. **Push branch when next session starts:** `git push` (2 unpushed commits: Cluster 1 + Cluster 2).
 
-## Where we are in the plan
+## Where we are in the plan (revised)
 
 ```
-[x] Phase A: Repo reorg (commit b5c5c60, tag reorg-complete-2026-05-16)
+[x] Phase A: Repo reorg (b5c5c60, reorg-complete-2026-05-16)
 [x] Phase 0: Scaffold (GUT, baselines, plan docs)
 [x] Pre-clusters: Tile + Trigger + Enemy Resource families (9003fc2, ce8852b, de01af0)
-[x] Cluster 0.5: Baker-tool retroactive fix (cb7479b) ← LAST COMMIT
-[ ] Cluster 1: Leaves-A (RESUME HERE — 4 files)
-[ ] Cluster 2: Audio autoloads
-[ ] Cluster 3: UI utilities + HelpOverlay + MobileBoot
-[ ] ... (8 more clusters, see PORT_PLAN.md)
+[x] Cluster 0.5: Baker-tool retroactive fix (cb7479b, port-cluster-0.5-tool-fixup)
+[x] Cluster 1: Leaves-A — 3 files (743b7db, port-cluster-1-leaves-a)
+[x] Cluster 2: Audio autoloads — 4 files (0ce9a56, port-cluster-2-audio)
+[ ] Cluster 3: UI utilities — DEFERRED to Cluster 10 (see strategy adjustment)
+[ ] Cluster 5: Pure state autoloads (RESUME HERE — swapped before Cluster 4)
+[ ] Cluster 4: World/Map nodes — finish Trigger/Enemy ports + PinkShellInteract
+[ ] ... (clusters 6-11 per PORT_PLAN.md)
 ```
 
-## Key insight from this session — IMPORTANT FOR CLUSTER 1
+## Strategy adjustments made this session
 
-**Cluster 1 was originally 6 files. It's actually 4.**
+### 1. Cluster 1 shipped 3 files (not the planned 4)
 
-Original list (from PORT_PLAN.md cluster table): BuildingCollider, HelpOverlay, MobileBoot, PinkShellInteract, RosieAnimator, WorldMusic.
+**PinkShellInteract deferred** to Cluster 4. Its `InteractHintManager.Register(this, () => "Touch")` call passes a `Func<string>` C# delegate that doesn't marshal from GDScript Callable. Also it type-checks `SeaMonsterController` (still C#). Both port together cleanly in Cluster 4. The prior handoff named this as a fallback; session 2 took the fallback.
 
-**Two of those (HelpOverlay, MobileBoot) consume C# static utilities (UiStyles, UiFrames, DesignTokens) that aren't accessible from GDScript without porting those utilities first.** Static C# classes (not [GlobalClass] Resources, not autoloads) cannot be called from GDScript via Godot's interop bridge.
+### 2. Cluster 3 (UI utilities) DEFERRED to Cluster 10
 
-→ **Defer HelpOverlay + MobileBoot to Cluster 3** (UI utilities cluster). The plan tracking checklist still says "6 files" — that's stale; the actual port is 4 files.
+**Original plan:** port DesignTokens + UiFonts + UiFrames + UiStyles + BevelStyleBox + HelpOverlay + MobileBoot in one cluster.
 
-### Cluster 1 actual file list (4 files)
+**Why deferred:**
+- Static C# classes are NOT accessible from GDScript directly (the prior handoff already established this).
+- Static C# classes have **~250 call sites**, not the planned ~50 — DesignTokens.Paper alone has 42 uses.
+- The `static event System.Action MobileChanged` doesn't have a clean cross-language path (signals replace events, but consumers in C# subscribe via `+= handler` which won't compile against a GDScript signal).
+- `UiFrames.BuildChipButton` takes `Action<Button>` — the same Func/Action interop barrier from PinkShellInteract.
 
-| File | Source | LOC | Notes |
+**Decision (mirroring the strategy adjustment commit `01571f3`):** port UI utilities WITH their consumers in Cluster 10 (HUD, InventoryUI, TitleScreen, DialogueManager). The Resource-families-with-consumers pattern proven by the Inventory/Dialogue/Save deferral applies equally to static-utilities-with-consumers.
+
+**HelpOverlay + MobileBoot** also defer to Cluster 10 (they consume the UI utilities).
+
+### 3. Cluster 4/5 SWAPPED — port state autoloads BEFORE World/Map nodes
+
+**Original plan:** Cluster 4 (World/Map) → Cluster 5 (state autoloads).
+
+**Why swapped:** Every world/map node consumes state autoloads:
+- `DoorTrigger.cs` uses `QuestSystem.HasWorldFlag`, `QuestSystem.GetQuestStatus`, `WorldManager.Instance`
+- `EdgeTrigger.cs` uses `WorldManager.Instance`
+- `MirrorTrigger.cs` uses `InventoryUI.Instance` (defers to Inventory cluster anyway)
+- `WorldMeta.cs` uses `ShopState.SetActive`
+- `EnemyController.cs` uses `HealthSystem`, `QuestSystem`
+- Plus PerfMonitor.Measure is used pervasively
+
+Porting World/Map first means heavy facade work for state autoloads that get deleted soon after. Porting state autoloads first makes World/Map ports clean. **Recommend: Cluster 5 → Cluster 4.**
+
+## Patterns established this session (CRITICAL — use these for every future cluster)
+
+### Pattern A: Autoload facade (Cluster 2 audio)
+
+When porting a C# autoload Node to GDScript while keeping C# consumers:
+
+1. **Write `Foo.gd`** with `extends Node` and the original logic in snake_case. **No `class_name`** (Godot rejects it as "hides autoload singleton" when class_name = autoload name).
+2. **Convert `Foo.cs`** from `partial class Foo : Node` to `public static class Foo` (NOT a Node, NOT [GlobalClass]). The static class is a thin facade.
+3. **Each public method on the facade dispatches via `Call`:**
+   ```csharp
+   public static class SFXController {
+       private static GodotObject _node;
+       private static GodotObject Get() {
+           if (_node != null && GodotObject.IsInstanceValid(_node)) return _node;
+           var tree = Engine.GetMainLoop() as SceneTree;
+           _node = tree?.Root?.GetNodeOrNull("SFXController");
+           return _node;
+       }
+       public static void Play(string name, float volumeDb = 0f)
+           => Get()?.Call("play", name, volumeDb);
+   }
+   ```
+4. **Mirror enums in both languages with matching int values.** Cross-language calls pass `(int)Mode.Base`. Never reorder.
+5. **Sed remaining C# call sites:** `\.Instance\?\.` → `.` and `\.Instance\.` → `.` for the ported autoload. Example for Cluster 2:
+   ```bash
+   sed -i '' -E 's/(SFXController|MusicController|VOController|EnemyMusicDriver)\.Instance\?\./\1./g; s/(SFXController|MusicController|VOController|EnemyMusicDriver)\.Instance\./\1./g' <files>
+   ```
+6. **Update `project.godot` autoload path** `.cs` → `.gd` (just the path; the autoload NAME stays identical).
+7. **Facade deletion deferred to Cluster 10 cutover** when all callers are GDScript.
+
+### Pattern B: Autoload-name parse error
+
+**Don't** put `class_name FooController extends Node` on an autoload script when the autoload is also named `FooController`. Parse error: "Class X hides an autoload singleton." Use bare `extends Node` instead — the autoload NAME is itself the global handle.
+
+### Pattern C: GDScript → C# autoload uses PascalCase
+
+**Correction:** the prior handoff said "case is auto-converted (`SFXController.play(...)` calls `SFXController.Play(...)`)." This is WRONG. GDScript calling INTO a C# autoload must use the original PascalCase method names. Empirically verified in Cluster 1: `MusicController.start_track(...)` failed with "Nonexistent function start_track on Node (MusicController.cs)"; `MusicController.StartTrack(...)` worked.
+
+The facade pattern (Pattern A) eliminates this concern from C# call sites permanently, since the facade exposes PascalCase regardless of the underlying language.
+
+### Pattern D: C# → GDScript autoload uses `.Call("snake_case", args)`
+
+The mirror of Pattern C. Use `.Call("method_name", arg1, arg2)` on the GodotObject returned by `GetNodeOrNull("AutoloadName")`. Centralize the GodotObject caching in the facade (Pattern A).
+
+## Cluster 2 detailed: 4 files + facades + 22 call sites
+
+| GDScript file | C# facade | Public API (PascalCase from C#, snake_case in .gd) |
+|---|---|---|
+| `scripts/systems/audio/SFXController.gd` | `SFXController.cs` (static class) | Play(name, volumeDb), Stop(name), StopAll() |
+| `scripts/systems/audio/MusicController.gd` | `MusicController.cs` (static class + Mode enum) | StartTrack(name), StartMix(b,m,h), StopMix(), SetDesiredMode(Mode, fadeSec), SetDuck(db), ClearDuck() |
+| `scripts/systems/audio/VOController.gd` | `VOController.cs` (static class) | Play(speaker, nodeId), Stop() |
+| `scripts/systems/audio/EnemyMusicDriver.gd` | `EnemyMusicDriver.cs` (mostly-empty facade — no C# call sites except itself) | Get() only |
+
+**Call-site sed updated:** InventoryUI, DialogueManager, GameOverScreen, SeaMonsterController, Gem, WaterBall, EnemyController, ItemTrigger, Inventory, PlayerController.
+
+**WorldMusic.gd updated** to call snake_case methods on the GDScript MusicController now that the autoload is GDScript.
+
+### Cluster 2 regression: PerfMonitor.Measure dropped from audio controllers
+
+The original `SFXController.cs::Play()` opened with `using var _perf = PerfMonitor.Measure("sfx_play", name);` (RAII timing via C# IDisposable). The GDScript port drops this because GDScript has no `using` block. Same for `MusicController.cs::LoadStream()` and `VOController.cs::Play()`.
+
+**To restore at Cluster 5 (or whenever PerfMonitor ports):**
+1. Add a non-Disposable `perf_start(label, key)` + `perf_end(label)` pair to the ported PerfMonitor.gd.
+2. Wrap the three audio methods that used `PerfMonitor.Measure`.
+3. Compare against `docs/baselines/perf_csharp_baseline.csv` to ensure no drift.
+
+Not a critical regression — perf monitoring still works for the (currently many) C# call paths.
+
+## Pre-Cluster-5 audit (next session reads this first)
+
+Cluster 5 files (7) total ~898 LOC:
+
+| File | LOC | Type | Friction notes |
 |---|---|---|---|
-| `scripts/maps/BuildingCollider.cs` | Pure Godot builtins | 56 | Trivial port — Node2D with hardcoded buildings array |
-| `scripts/npc/RosieAnimator.cs` | Pure Godot builtins | 89 | Trivial port — animation setup |
-| `scripts/world/WorldMusic.cs` | Uses MusicController autoload (cross-language) | 53 | Cross-language: `MusicController.start_track(name)` works |
-| `scripts/world/PinkShellInteract.cs` | Uses InteractHintManager autoload + SeaMonsterController + PlayerController | 81 | Verify Func<string>→Callable marshaling works |
+| `scripts/systems/UserPrefs.cs` | 57 | C# autoload (Node) | Standard facade pattern (Pattern A) |
+| `scripts/systems/CurrencySystem.cs` | 58 | C# autoload (Node) | Standard facade pattern |
+| `scripts/systems/HealthSystem.cs` | 103 | C# autoload (Node) | Standard facade pattern — signals carefully (player damage flow) |
+| `scripts/systems/QuestSystem.cs` | 185 | **STATIC C# class** (not a Node, not autoload) | Convert to autoload? Or keep static + mirror in GDScript? **Decide first.** |
+| `scripts/systems/ShopState.cs` | 36 | **STATIC C# class** | Same question as QuestSystem |
+| `scripts/systems/FadeOverlay.cs` | 118 | C# autoload (Node) | Standard facade pattern |
+| `scripts/systems/PerfMonitor.cs` | 341 | C# autoload (Node) + IDisposable struct | Convert `using var _perf = Measure(...)` API to start/end pair. Restore audio-controller timing as part of this. |
 
-### `.tscn` files needing ext_resource path updates
+**QuestSystem + ShopState are static classes.** Two options:
+- **Option A: Convert to autoloads.** Add to `[autoload]` in project.godot. All call sites change from `QuestSystem.HasWorldFlag(x)` to `QuestSystem.has_world_flag(x)` (GDScript) — but C# facades preserve the static-class shape. Same pattern as audio.
+- **Option B: Mirror in both languages.** GDScript autoload exposes the same API; C# static class stays as-is and keeps its own state. Two sources of truth — bad idea, dropping.
 
-- `scenes/world/PinkShell.tscn` — PinkShellInteract.cs
-- `scenes/npc/Rosie.tscn` — RosieAnimator.cs
-- 12 world scenes (.tscn files) reference `WorldMusic.cs`: TitleScreen.tscn, World_00_Home.tscn, World_00_Windmill_1stFloor.tscn, World_10.tscn, World_01.tscn, World_00_PennysHouse.tscn, World_00.tscn, World_00_GeneralStore.tscn, World_00_Windmill_GroundFloor.tscn, World_03.tscn, World_00_Blacksmith.tscn, World_00_AdventureShop.tscn
+→ **Recommend Option A** (matches Pattern A). The conversion is small (~36 LOC for ShopState).
 
-Bulk-flip pattern:
-```bash
-# After writing the 4 .gd files:
-sed -i '' 's|res://scripts/maps/BuildingCollider\.cs|res://scripts/maps/BuildingCollider.gd|g' scenes/**/*.tscn
-sed -i '' 's|res://scripts/npc/RosieAnimator\.cs|res://scripts/npc/RosieAnimator.gd|g' scenes/**/*.tscn
-sed -i '' 's|res://scripts/world/WorldMusic\.cs|res://scripts/world/WorldMusic.gd|g' scenes/**/*.tscn
-sed -i '' 's|res://scripts/world/PinkShellInteract\.cs|res://scripts/world/PinkShellInteract.gd|g' scenes/**/*.tscn
-# Also strip stale uid attributes:
-# Get current uids first: cat scripts/maps/BuildingCollider.cs.uid (etc) before deleting
-```
+## Pre-Cluster-4 audit (after Cluster 5 done)
 
-## Critical patterns established during this session
+Cluster 4 files (13) total ~2,638 LOC. Heavyweights:
 
-### 1. Port pattern (per-file workflow)
+| File | LOC | Friction notes |
+|---|---|---|
+| `scripts/world/WorldMeta.cs` | 33 | Small, easy — uses ShopState.SetActive |
+| `scripts/world/EdgeTrigger.cs` | 57 | Uses WorldManager (defer? — see below) |
+| `scripts/world/MirrorTrigger.cs` | 56 | Uses InventoryUI (DEFERS until Cluster 6) |
+| `scripts/world/DoorTrigger.cs` | 108 | Uses WorldManager (defer?) + QuestSystem + DialogueManager |
+| `scripts/world/WaterBall.cs` | 82 | Type-checks PlayerController (group check OK), uses SFXController (facade) |
+| `scripts/world/Gem.cs` | 150 | Type-checks PlayerController, calls SFXController |
+| `scripts/world/PinkShellInteract.cs` | 81 | Carry-over from Cluster 1 — port WITH SeaMonsterController |
+| `scripts/world/SeaMonsterController.cs` | 392 | Type-checks PlayerController, calls MusicController.SetDesiredMode, uses DialogueData |
+| `scripts/world/TriggerSpawner.cs` | 343 | Currently downgraded — re-port from Resource.Get patterns to typed GDScript |
+| `scripts/enemy/EnemyAnimatorBase.cs` | 21 | Trivial base |
+| `scripts/enemy/EnemyFolderAnimator.cs` | 196 | Animator |
+| `scripts/enemy/EnemySheetAnimator.cs` | 134 | Animator |
+| `scripts/enemy/EnemyController.cs` | **985** | **BIGGEST FILE.** Currently downgraded. Re-port from Resource.Get patterns. Consumes DialogueData, PlayerController, HealthSystem, QuestSystem |
 
-```
-Read X.cs → Write X.gd (snake_case + class_name) → sed .tscn ext_resource paths → git rm X.cs → rm X.cs.uid → dotnet build → godot --headless --quit → commit
-```
+**WorldManager port question:** WorldManager.cs is technically Cluster 7b in the plan. But DoorTrigger + EdgeTrigger consume it. Two options:
+- Port WorldManager early (move from 7b to 4 or 5)
+- Leave WorldManager C# + add facade
 
-### 2. Resource family pattern (per-family commit)
+**Recommend leaving WorldManager C# + adding facade** — WorldManager has bidirectional MapLoader coupling per the plan's risk section, and porting it standalone is risky.
 
-When a [GlobalClass] Resource has many consumers, **port it with its primary consumer** in one commit. The 3 Resource families ported so far each consolidated this way:
-- Tile family: ported with TileAnimator (small consumer brought forward)
-- Trigger family: TriggerSpawner.cs DOWNGRADED (kept as C# with `Resource` + `.Get("...")` patterns)
-- Enemy family: EnemyController.cs DOWNGRADED similarly
+**MirrorTrigger** consumes InventoryUI which doesn't port until Cluster 10. Defer MirrorTrigger to Cluster 10 OR keep it C# until Inventory.
 
-### 3. The downgrade pattern (mirrored enums + Resource.Get)
+**Cluster 4 should be split into 4a (world triggers) + 4b (enemy controllers) for sanity.**
 
-When a Resource family ports but its consumer stays C# (Phase 5+ consumer), update the consumer:
-- `[Export] FooData X;` → `[Export] Resource X;`
-- `X.PropertyName` → `X.Get("property_name").AsXxx()`
-- Enums: declare a `private enum` mirror inside the consumer with matching int values
-- `EnemyAction.ActionType.Move` → `ActionType.Move` (local enum)
+## Verification protocol per cluster (unchanged from prior handoff)
 
-See `scripts/enemy/EnemyController.cs` for the canonical downgrade example.
-
-### 4. Property name conversion in .tres files
-
-When porting a Resource class, the `.tres` files must update both:
-- The `ext_resource` path: `path="res://scripts/data/X.cs"` → `.gd`
-- The property names: `PropertyName = value` → `property_name = value`
-
-The C# `[Export] public int Health` serializes as `Health = 10` in C# but GDScript `@export var health: int = 10` serializes as `health = 10`. Mass-sed the .tres files at port time.
-
-Stale `uid="uid://abcdef"` attributes on `ext_resource` lines pointing to deleted .cs scripts must also be stripped.
-
-### 5. Cross-language gotchas surfaced so far
-
-- **GDScript → C# static classes**: NOT POSSIBLE directly. Workaround: port the static class to GDScript first, OR inline the helper logic.
-- **GDScript → C# autoload (Node-derived)**: Works via the autoload name. Case is auto-converted (`SFXController.play(...)` calls `SFXController.Play(...)`).
-- **C# → GDScript Resource**: Use `Resource` base type, `.Get("name").AsXxx()`, `.Set("name", value)`. Enums are integers; mirror locally for readability.
-- **C# Func<T> ↔ GDScript Callable**: Untested. PinkShellInteract.cs uses `InteractHintManager.Instance?.Register(this, () => "Touch")` — the `Func<string>` parameter. Verify in Cluster 1 smoke test whether GDScript Callable marshals correctly.
-
-### 6. Sed-able .tscn patterns
-
-Property accesses in .tscn for ported Node classes:
-- `PropertyName = value` → `property_name = value`
-- `node_paths=PackedStringArray("PropertyName")` → `node_paths=PackedStringArray("property_name")`
-
-The script `path=` attribute switches `.cs` → `.gd`. The `id=` and `script = ExtResource("id")` references stay the same.
-
-## Settings.local.json permissions (already added)
-
-The user added comprehensive bash patterns to `.claude/settings.local.json` to allow autonomous port work. Most common port commands auto-approve. If something prompts unexpectedly, the user's preference is to update `.claude/settings.local.json` rather than ask repeatedly.
-
-Patterns of note for the port:
-- `Bash(sed -i*)`, `Bash(grep:*)`, `Bash(find:*)`, `Bash(cd:*)`
-- `Bash(git rm:*)`, `Bash(git mv:*)`, `Bash(git status*)`, `Bash(git log:*)`, etc.
-- `Bash(/Applications/Godot_mono.app/Contents/MacOS/Godot:*)`, `Bash(dotnet build:*)`
-- `Bash(for f in *)` — for shell loops
-
-## User preferences captured
-
-From session memory ([feedback_bash_batching_per_phase.md](../../.claude/projects/-Users-saclay-Documents-GitHub-AdventureLand/memory/feedback_bash_batching_per_phase.md)):
-
-> User prefers **phase-boundary check-ins**, not per-bash-command approval, during long autonomous work like the port. Batch related bash operations into single chained commands. Reserve user-visible check-ins for phase boundaries (end of Cluster 6 / Cluster 8 are natural pause points).
-
-## Verification protocol
-
-After each cluster:
-1. `dotnet build` — must succeed clean (0 warnings, 0 errors)
-2. `/Applications/Godot_mono.app/Contents/MacOS/Godot --headless --quit` — must load clean (no parse errors)
+1. `dotnet build` — must succeed clean (0/0)
+2. `/Applications/Godot_mono.app/Contents/MacOS/Godot --headless --quit` — must load clean (no parse errors, no autoload-instantiate errors; exit-time `ObjectDB instances leaked` + `2 resources still in use` warnings are baseline noise)
 3. `grep -rln ".cs" assets/` for any Resource families just ported — must return 0
 4. Commit with descriptive message
-5. Tag the cluster exit
+5. Tag cluster exit
 
-For Cluster 1 specifically, also smoke-test in editor:
-- Walk into a building → BuildingCollider works
-- Visit Lake (World_10) → WorldMusic plays lake_track
-- Interact with the pink shell → PinkShellInteract still summons SM (this is the cross-language Callable test)
-
-## Plan files
-
-- **Working copy (in repo):** `docs/PORT_PLAN.md` — partially synced; lacks the most recent cluster revisions
-- **Source of truth:** `/Users/saclay/.claude/plans/can-you-make-a-mighty-twilight.md` — has the full revised cluster plan
-- **Recommended:** sync `docs/PORT_PLAN.md` from the .claude source-of-truth in next session
-
-## Recent commits on port/gdscript (full list)
+## Recent commits on port/gdscript
 
 ```
+0ce9a56 port: Cluster 2 — Audio autoloads (SFX/Music/VO/EnemyMusic)        ← LAST
+743b7db port: Cluster 1 — Leaves-A (BuildingCollider, RosieAnimator, WorldMusic)
+e74ea47 docs(port): handoff snapshot for next session + sync PORT_PLAN.md  (prior session's handoff)
 cb7479b chore(port): Cluster 0.5 — fix stale .cs refs in baker tools
 01571f3 docs(port): strategy adjustment — defer Dialogue/Item/Save to consumer phases
-de01af0 port: Enemy family Resources C# → GDScript
-ce8852b port: TriggerData + WorldTriggers Resources C# → GDScript
+de04dcd port: Enemy family Resources C# → GDScript
+ce8522b port: TriggerData + WorldTriggers Resources C# → GDScript
 9003fc2 port: AnimatedTileEntry/Set + TileAnimator C# → GDScript
-5c99e34 chore(port): capture C# baseline (golden path perf + costume screenshots)
-da04dcd chore(port): install GUT v9.6.0 for GDScript port regression tests
-a0145e8 chore(port): Phase 0 scaffold — port plan, tests folder, baselines
-b5c5c60 chore: reorganize Godot project to repo root, archive C3 at tag
-11d7c72 docs(godot-prototype): pivot TODO.md to native v1 (web blocked for C#)
-... (more pre-port commits)
 ```
 
 Tags:
-- `c3-legacy-2026-05-16` — pre-reorg C3 codebase snapshot
-- `reorg-complete-2026-05-16` — Godot project at repo root
-- `port-baseline-2026-05-16` — C# baseline for regression comparison
-- `port-phase-1-and-2-partial` — 3 small Resource families done
-- `port-cluster-0.5-tool-fixup` — baker tools updated
+- `c3-legacy-2026-05-16`
+- `reorg-complete-2026-05-16`
+- `port-baseline-2026-05-16`
+- `port-phase-1-and-2-partial`
+- `port-cluster-0.5-tool-fixup`
+- `port-cluster-1-leaves-a`     ← session 2
+- `port-cluster-2-audio`         ← session 2
+
+## User preferences captured this session
+
+From the rejected combined `git rm && rm && dotnet build` command:
+- **No combined-script bash commands** — even though chained-`&&` is allowed by settings.local.json, the user said "i REALLY don't want to approve bash scripts." Split into individual Bash calls. Multiple parallel Bash calls in one message are fine; long single-line `&&`-chains are not.
+- Per the existing `feedback_bash_batching_per_phase.md`: phase-boundary check-ins, not per-bash approval, during long autonomous work. Session 2 found these two preferences in mild tension — resolution: many small Bash calls in parallel beat fewer big chained ones.
 
 ## Immediate next action for the next session
 
 1. Read this file + `docs/PORT_PLAN.md` first
-2. Spot-check that the working tree is still clean (`git status`)
-3. Spot-check that the latest commit is `cb7479b` (Cluster 0.5)
-4. Start **Cluster 1: Leaves-A** — port the 4 files listed above
-5. Smoke test (`dotnet build` + headless Godot + manual editor verification of building collision, Lake music, pink shell interaction)
-6. Commit + tag `port-cluster-1-leaves-a`
-7. Move to Cluster 2 (Audio autoloads — 4 files + 29 call site updates)
+2. Verify working tree clean (`git status`)
+3. Verify HEAD is `0ce9a56` (Cluster 2)
+4. `git push` (2 unpushed commits on `port/gdscript`)
+5. **Decide on Option A** for QuestSystem + ShopState (convert from static class to autoload + facade)
+6. Start **Cluster 5: State autoloads** — UserPrefs, CurrencySystem, HealthSystem, FadeOverlay, ShopState, QuestSystem, PerfMonitor (7 files, ~898 LOC). Restore PerfMonitor timing in audio controllers as part of this cluster.
+7. Tag `port-cluster-5-state-autoloads`
+8. Then Cluster 4a (world triggers without WorldManager port — WorldManager gets a facade); then 4b (enemy controllers).
 
-Estimated effort for Cluster 1: ~1.5 hours. Cluster 2: ~2.5 hours. Both should fit in one session.
+Estimated remaining work after Cluster 5: very approximate ~30-40h AI-driven through Cluster 8 (Dialogue pause point #2). Pace is the same as prior handoff.
 
-## Caveats
+## Caveats / things to watch
 
-- **PinkShellInteract Func<string>→Callable risk**: If headless build flags an interop error, defer PinkShellInteract to Cluster 4 (with SeaMonsterController) and just ship 3 files in Cluster 1.
-- **WorldMusic.cs is referenced by 12 .tscn files** — most cross-scene port. Use the sed pattern above to update all at once.
-- **The plan estimates 71 hours of AI work + 100-120 hours wall clock** for the full port. Pace accordingly — the user prefers cluster boundaries as natural break points.
+1. **Static class conversions accumulate facade tax.** ShopState (static) → autoload + facade is fine for one file, but if every cluster keeps adding facades, the C# project at Cluster 9 will have ~15 facade files. They all delete at Cluster 10 cutover, but they add review surface.
+
+2. **PerfMonitor.Measure regression** in 3 audio controllers — restore in Cluster 5.
+
+3. **EnemyController is 985 LOC** — biggest non-UI file. Plan budgets it correctly within Cluster 4 but the wall time is real. Consider splitting Cluster 4 into 4a (triggers, 5 files, ~300 LOC) + 4b (enemy ports, 4 files, ~1,335 LOC) + 4c (PinkShell/SeaMonster, 2 files, ~473 LOC).
+
+4. **Cross-language signal subscriptions** — none surfaced yet in Clusters 1-2 (audio autoloads don't emit signals consumed by C#), but Cluster 5's HealthSystem emits damage/death signals consumed by HUD (C#) and PlayerController (C#). Pattern not yet established — likely C# subscribes via `node.Connect("signal_name", Callable.From(...))`.
+
+5. **Don't use `class_name` on autoload .gd files.** Critical — costs 1 minute of debugging if forgotten.
 
 Good luck.
