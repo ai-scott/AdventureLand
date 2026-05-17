@@ -1,105 +1,105 @@
 [gd_resource type="Resource" script_class="AnimatedTileSet" format=3 uid="uid://bhcvbowlujg2o"]
 
-[ext_resource type="Script" uid="uid://dtabuqpl8hvvl" path="res://scripts/data/AnimatedTileSet.cs" id="1"]
-[ext_resource type="Script" uid="uid://6prkt6apikef" path="res://scripts/data/AnimatedTileEntry.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
 
 [sub_resource type="Resource" id="E_0"]
 script = ExtResource("2")
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_1"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(1, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(1, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_2"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(2, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(2, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_3"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(3, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(3, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_4"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(4, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(4, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_5"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(5, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(5, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_6"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(6, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(6, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_7"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(7, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(7, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_8"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(8, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(8, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_9"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(9, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(9, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_10"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(10, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(10, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_11"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(11, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(11, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_12"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(12, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(12, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [sub_resource type="Resource" id="E_13"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(13, 0)
-FrameCount = 8
-FrameDuration = 0.2
-FrameColumns = 1
+atlas_coord = Vector2i(13, 0)
+frame_count = 8
+frame_duration = 0.2
+frame_columns = 1
 
 [resource]
 script = ExtResource("1")
-Entries = Array[ExtResource("2")]([SubResource("E_0"), SubResource("E_1"), SubResource("E_2"), SubResource("E_3"), SubResource("E_4"), SubResource("E_5"), SubResource("E_6"), SubResource("E_7"), SubResource("E_8"), SubResource("E_9"), SubResource("E_10"), SubResource("E_11"), SubResource("E_12"), SubResource("E_13")])
+entries = Array[ExtResource("2")]([SubResource("E_0"), SubResource("E_1"), SubResource("E_2"), SubResource("E_3"), SubResource("E_4"), SubResource("E_5"), SubResource("E_6"), SubResource("E_7"), SubResource("E_8"), SubResource("E_9"), SubResource("E_10"), SubResource("E_11"), SubResource("E_12"), SubResource("E_13")])

@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="AnimatedTileSet" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
 
 [sub_resource type="Resource" id="E_0"]
 script = ExtResource("2")
-AtlasCoord = Vector2i(0, 0)
-FrameCount = 6
-FrameDuration = 0.1
-FrameSeparation = Vector2i(0, 0)
-FrameColumns = 1
+atlas_coord = Vector2i(0, 0)
+frame_count = 6
+frame_duration = 0.1
+frame_separation = Vector2i(0, 0)
+frame_columns = 1
 
 [resource]
 script = ExtResource("1")
-Entries = Array[ExtResource("2")]([SubResource("E_0")])
+entries = Array[ExtResource("2")]([SubResource("E_0")])

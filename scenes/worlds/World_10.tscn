@@ -36,7 +36,7 @@
 [ext_resource type="Texture2D" uid="uid://cvqboxlgjya8v" path="res://assets/buildings/AL_LakeSign.png" id="21_lksgn"]
 [ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="22_signsc"]
 [ext_resource type="Resource" uid="uid://dkca0hfjo2d6a" path="res://assets/data/dialogue/lakesign.tres" id="23_lkdlg"]
-[ext_resource type="Script" uid="uid://ch1t3nk74wsmf" path="res://scripts/maps/TileAnimator.cs" id="25_fob5y"]
+[ext_resource type="Script" path="res://scripts/maps/TileAnimator.gd" id="25_fob5y"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -2467,47 +2467,47 @@ sources/8 = SubResource("TileSetAtlasSource_fyd5e")
 y_sort_enabled = true
 script = ExtResource("7")
 
-[node name="TileAnimator_Waterfall" type="Node" parent="." unique_id=1865011209 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_Waterfall" type="Node" parent="." unique_id=1865011209 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_WaterfalloverP")
-SourceId = 1
-Animations = ExtResource("3_fob5y")
+target_layer = NodePath("../World_10_Lake_WaterfalloverP")
+source_id = 1
+animations = ExtResource("3_fob5y")
 
-[node name="TileAnimator_WaterPlants_32x32" type="Node" parent="." unique_id=323803639 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_WaterPlants_32x32" type="Node" parent="." unique_id=323803639 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_WaterPlantsPlevel")
-SourceId = 3
-Animations = ExtResource("4_ymp4m")
+target_layer = NodePath("../World_10_Lake_WaterPlantsPlevel")
+source_id = 3
+animations = ExtResource("4_ymp4m")
 
-[node name="TileAnimator_WaterPlants_16x16" type="Node" parent="." unique_id=361048747 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_WaterPlants_16x16" type="Node" parent="." unique_id=361048747 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_WaterPlantsPlevel")
-SourceId = 4
-Animations = ExtResource("5_lnek1")
+target_layer = NodePath("../World_10_Lake_WaterPlantsPlevel")
+source_id = 4
+animations = ExtResource("5_lnek1")
 
-[node name="TileAnimator_WaterRocks_32x32" type="Node" parent="." unique_id=1872779618 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_WaterRocks_32x32" type="Node" parent="." unique_id=1872779618 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_WaterPlantsPlevel")
-SourceId = 5
-Animations = ExtResource("6_ffdga")
+target_layer = NodePath("../World_10_Lake_WaterPlantsPlevel")
+source_id = 5
+animations = ExtResource("6_ffdga")
 
-[node name="TileAnimator_RockyWater" type="Node" parent="." unique_id=585971239 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_RockyWater" type="Node" parent="." unique_id=585971239 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_RockyWaterPlevel")
-SourceId = 8
-Animations = ExtResource("7_c5b4o")
+target_layer = NodePath("../World_10_Lake_RockyWaterPlevel")
+source_id = 8
+animations = ExtResource("7_c5b4o")
 
-[node name="TileAnimator_SmallCliffGrass" type="Node" parent="." unique_id=355387182 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_SmallCliffGrass" type="Node" parent="." unique_id=355387182 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_RockyWaterPlevel")
-SourceId = 7
-Animations = ExtResource("7_c5b4o")
+target_layer = NodePath("../World_10_Lake_RockyWaterPlevel")
+source_id = 7
+animations = ExtResource("7_c5b4o")
 
-[node name="TileAnimator_Beach" type="Node" parent="." unique_id=1247436424 node_paths=PackedStringArray("TargetLayer")]
+[node name="TileAnimator_Beach" type="Node" parent="." unique_id=1247436424 node_paths=PackedStringArray("target_layer")]
 script = ExtResource("25_fob5y")
-TargetLayer = NodePath("../World_10_Lake_BeachunderP")
-SourceId = 2
-Animations = ExtResource("4_pl78f")
+target_layer = NodePath("../World_10_Lake_BeachunderP")
+source_id = 2
+animations = ExtResource("4_pl78f")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1585399365]
 script = ExtResource("8")
