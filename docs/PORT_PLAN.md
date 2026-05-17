@@ -738,8 +738,11 @@ Top-level progress markers — tick as phases complete:
 - [x] **Cluster 4b**: WorldMeta + NpcAnimator (small unblocked leaves) (`f71f3cd`, `port-cluster-4b-worldmeta-npcanim`)
 - [~] **Cluster 8 PREP**: 5 Dialogue Resource family .gd files written + baker updated (`7eb2623`, `port-cluster-8-prep`). Cutover deferred — needs DialogueManager port + .tres flips + consumer downgrades.
 - [x] **Cluster 5b**: QuestSystem promoted to autoload + facade (`214eb54`, `port-cluster-5b-questsystem`). Unblocks WorldManager + DoorTrigger + DialogueManager port.
-- [x] **Cluster 8 cutover**: Full Dialogue family + DialogueManager ported. 7 C# consumers downgraded. 16 .tres flipped. **PAUSE POINT #2 reached.** (`b753259`, `port-cluster-8-dialogue`)
-- [ ] **Cluster 7b-3**: WorldManager (now fully unblocked) — recommended next session target
+- [x] **Cluster 8 cutover**: Full Dialogue family + DialogueManager ported. (`b753259`, `port-cluster-8-dialogue`)
+- [x] **Cluster 7b-3**: WorldManager ported + Pattern E Task↔signal bridge. SaveManager.UnstickPlayer promoted to instance. (`ceb9b86`, `port-cluster-7b3-worldmanager`)
+- [x] **Cluster 4c**: DoorTrigger + EdgeTrigger + MirrorTrigger + FollowCamera. (`4e00bdd`, `port-cluster-4c-triggers`)
+- [x] **Cluster 4d**: NpcInteract + Gem + CurrencySystem (5c promotion). (`17d04c1`, `port-cluster-4d-npc-gem-currency`)
+- [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — recommended next target
 - [ ] **Cluster 7b-4 + 5**: PlayerController + TridentSwingBeat — biggest single port, 1,169 LOC + 15 consumers
 - [ ] **Cluster 9**: SaveManager + SaveData (Resource family C)
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
