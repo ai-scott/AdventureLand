@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/Penny.tscn" id="11_npc"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Rosie.tscn" id="12_npc"]
 [ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="13_mirror"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="14_s4bq0"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="14_s4bq0"]
 [ext_resource type="Resource" uid="uid://btcjgotpmsqup" path="res://assets/data/dialogue/penny.tres" id="15_pdlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
@@ -229,4 +229,4 @@ shape = SubResource("MirrorShape_Penny")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=2052455333]
 script = ExtResource("14_s4bq0")
-BaseTrack = "adventureland_calm"
+base_track = "adventureland_calm"

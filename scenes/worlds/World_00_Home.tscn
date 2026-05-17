@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="Script" uid="uid://e61jrwxtkqc5" path="res://scripts/world/MirrorTrigger.cs" id="11_mirror"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="12_gcqqw"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="12_gcqqw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -184,4 +184,4 @@ shape = SubResource("MirrorShape_Home")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=1170590716]
 script = ExtResource("12_gcqqw")
-BaseTrack = "adventureland_calm"
+base_track = "adventureland_calm"

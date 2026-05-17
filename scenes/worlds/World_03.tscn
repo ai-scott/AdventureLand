@@ -17,7 +17,7 @@
 [ext_resource type="Resource" uid="uid://dycgja2cho3gh" path="res://assets/map_data/triggers/World_03_GrayMistMountain.tres" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="16"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="17"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="18_f8e35"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="18_f8e35"]
 
 [sub_resource type="TileSetAtlasSource" id="TSA_0"]
 texture = ExtResource("1")
@@ -603,6 +603,6 @@ EdgeScene = ExtResource("17")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=1864947523]
 script = ExtResource("18_f8e35")
-BaseTrack = "adventureland_happy"
-MidTrack = "adventureland_stress"
-HighTrack = "adventureland_danger"
+base_track = "adventureland_happy"
+mid_track = "adventureland_stress"
+high_track = "adventureland_danger"

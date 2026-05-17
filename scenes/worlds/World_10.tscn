@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="8"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="8_msv86"]
 [ext_resource type="Texture2D" uid="uid://daxrd37an5wdo" path="res://assets/tiles/spritesheets/Beach.png" id="8_pedmb"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="9_wti8o"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="9_wti8o"]
 [ext_resource type="Texture2D" uid="uid://bjpd3a78m0k7x" path="res://assets/tiles/spritesheets/Water_Plants_Colour2_32x32.png" id="10_jayxm"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="10_tspwn"]
 [ext_resource type="Resource" uid="uid://bny55eiymy7h0" path="res://assets/map_data/triggers/World_10_Lake.tres" id="11_trres"]
@@ -2641,9 +2641,9 @@ Dialogue = ExtResource("23_lkdlg")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=187487132]
 script = ExtResource("9_wti8o")
-BaseTrack = "adventureland_happy"
-MidTrack = "adventureland_stress"
-HighTrack = "adventureland_danger"
+base_track = "adventureland_happy"
+mid_track = "adventureland_stress"
+high_track = "adventureland_danger"
 
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789752]
 script = ExtResource("10_tspwn")

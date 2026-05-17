@@ -10,7 +10,7 @@
 [ext_resource type="Resource" uid="uid://c1l8klhu0crba" path="res://assets/map_data/triggers/World_00_Windmill_GroundFloor.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="11_dn3c8"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="11_dn3c8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -148,4 +148,4 @@ EdgeScene = ExtResource("10")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=79686690]
 script = ExtResource("11_dn3c8")
-BaseTrack = "adventureland_interior"
+base_track = "adventureland_interior"

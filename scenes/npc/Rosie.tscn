@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/npc/NpcInteract.cs" id="1"]
-[ext_resource type="Script" path="res://scripts/npc/RosieAnimator.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/npc/RosieAnimator.gd" id="2"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/rosie_cat.png" id="3"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/rosie.tres" id="4"]
 
@@ -22,7 +22,7 @@ offset = Vector2(0, -16)
 
 [node name="RosieAnimator" type="Node" parent="."]
 script = ExtResource("2")
-Sheet = ExtResource("3")
+sheet = ExtResource("3")
 
 [node name="Body" type="StaticBody2D" parent="."]
 collision_layer = 2

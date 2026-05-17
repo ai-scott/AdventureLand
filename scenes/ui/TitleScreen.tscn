@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b8kw1jx01luas" path="res://scripts/ui/TitleScreen.cs" id="1"]
 [ext_resource type="Texture2D" uid="uid://bg3qb7xkbomte" path="res://assets/sprites/ui/screens/title_bg.png" id="2_bg"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="3_xnmwc"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="3_xnmwc"]
 
 [node name="TitleScreen" type="Control" unique_id=316489189]
 layout_mode = 3
@@ -105,4 +105,4 @@ text = "Back"
 
 [node name="WorldMusic" type="Node" parent="." unique_id=896036855]
 script = ExtResource("3_xnmwc")
-BaseTrack = "title_screens"
+base_track = "title_screens"

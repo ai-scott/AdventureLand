@@ -22,7 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://chripogr0qw8f" path="res://scenes/ui/GameOver.tscn" id="19_ujiax"]
 [ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="23_0vlwf"]
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="27_b4gdq"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="27_pi473"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="27_pi473"]
 [ext_resource type="Script" uid="uid://judqb7fpu0ri" path="res://scripts/world/WorldMeta.cs" id="32_6xkt4"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
 [ext_resource type="Script" uid="uid://b8de1f4lwhd3e" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
@@ -1444,6 +1444,6 @@ WorldDisplayName = "Leafwood Village"
 
 [node name="WorldMusic" type="Node" parent="." unique_id=505867836]
 script = ExtResource("27_pi473")
-BaseTrack = "adventureland_happy"
-MidTrack = "adventureland_stress"
-HighTrack = "adventureland_danger"
+base_track = "adventureland_happy"
+mid_track = "adventureland_stress"
+high_track = "adventureland_danger"

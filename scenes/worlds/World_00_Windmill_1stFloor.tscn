@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bi0tewyto6sm3" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://dvb5r6dfsrg7b" path="res://scenes/npc/Npc.tscn" id="11_npc"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
-[ext_resource type="Script" uid="uid://cg88m1ln6g27n" path="res://scripts/world/WorldMusic.cs" id="13_diy5c"]
+[ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="13_diy5c"]
 [ext_resource type="Resource" uid="uid://dnm7ybst6tubi" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
@@ -197,4 +197,4 @@ Sheet = ExtResource("12_sheet")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=797849896]
 script = ExtResource("13_diy5c")
-BaseTrack = "adventureland_interior"
+base_track = "adventureland_interior"
