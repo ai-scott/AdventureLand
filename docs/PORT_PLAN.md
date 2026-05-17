@@ -730,6 +730,8 @@ Top-level progress markers — tick as phases complete:
 - [ ] **Cluster 3**: UI utilities — **DEFERRED to Cluster 10** (250+ call sites, static-class friction). See `docs/PORT_HANDOFF.md`.
 - [x] **Cluster 5**: State autoloads — **4 of 7 shipped** (UserPrefs, ShopState, FadeOverlay, PerfMonitor). HealthSystem + CurrencySystem + QuestSystem deferred (consumer chains). (`6e55131`, `port-cluster-5-state-autoloads`)
 - [x] **Cluster 4a**: WaterBall (1 of 13 Cluster-4 files) (`4e3e4be`, `port-cluster-4a-waterball`). Remaining 12 Cluster-4 files defer to their natural dependency partners (see handoff §"Reality vs the plan").
+- [x] **Retroactive cleanup**: deleted dead EnemyMusicDriver.cs facade + flatten dead `if (true)/if (false)` conditionals (`02f20f7`)
+- [x] **Cluster 6**: Inventory autoload — **pause point #1 reached.** ItemData stays C# (defers to Cluster 10 with InventoryUI). Pattern I (C# event over GDScript signal) established. (`1cc0bea`, `port-cluster-6-inventory`)
 - [ ] **Cluster 6**: Inventory cluster (Resource family A) + 60 .tres — **pause point #1** (~10h)
 - [ ] **Cluster 7a**: Costume sub-cluster — safe pause point (~4h)
 - [ ] **Cluster 7b**: Player core — highest-risk single cluster (~8h)
