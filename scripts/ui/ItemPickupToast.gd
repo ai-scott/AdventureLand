@@ -292,7 +292,7 @@ func _build_attack_tutorial_hint(item: Resource) -> Control:
 	return row
 
 
-func _build_compare_toast(new_item: Resource, old_item: Resource) -> void:
+func _build_compare_toast(new_item: Resource, _old_item: Resource) -> void:
 	_init_panel()
 	_set_item_banner("New Gear")
 

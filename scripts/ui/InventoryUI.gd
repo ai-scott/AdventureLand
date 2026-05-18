@@ -306,7 +306,7 @@ func _is_dialogue_open() -> bool:
 	if get_tree() == null or get_tree().current_scene == null:
 		return false
 	var dm := get_tree().current_scene.find_child("DialogueManager", true, false)
-	return dm != null and bool(dm.get("is_active"))
+	return dm != null and dm.get("is_active") == true
 
 
 func _nav_up() -> void:
@@ -523,9 +523,9 @@ func _on_action() -> void:
 		var costume: Node = player.get_node_or_null("CostumeController") if player != null else null
 		if Inventory.is_equipped(int(item.id)):
 			Inventory.unequip(int(item.category))
-			var layer: String = String(item.costume_layer)
-			if costume != null and not layer.is_empty():
-				costume.call("unequip_layer", layer)
+			var costume_layer_name: String = String(item.costume_layer)
+			if costume != null and not costume_layer_name.is_empty():
+				costume.call("unequip_layer", costume_layer_name)
 		else:
 			Inventory.equip(_selected_slot)
 			if costume != null:
@@ -1066,9 +1066,9 @@ func _open_sell_toast(item: Resource, sell_price: int) -> void:
 			Inventory.unequip(int(item.category))
 			var player := get_tree().get_first_node_in_group("player") as CharacterBody2D
 			var costume: Node = player.get_node_or_null("CostumeController") if player != null else null
-			var layer: String = String(item.costume_layer)
-			if costume != null and not layer.is_empty():
-				costume.call("unequip_layer", layer)
+			var costume_layer_name: String = String(item.costume_layer)
+			if costume != null and not costume_layer_name.is_empty():
+				costume.call("unequip_layer", costume_layer_name)
 
 		Inventory.remove_item(int(item.id), 1)
 		CurrencySystem.add_gems(sell_price)
@@ -1593,7 +1593,7 @@ func _refresh_details() -> void:
 		var display_value: int = int(ceil(int(item.strength) / 2.0)) if bool(item.is_consumable()) else int(item.strength)
 		var icon: Texture2D = _stat_icon_for(int(item.category))
 		if icon != null:
-			var sign: String = "+" if display_value >= 0 else ""
+			var prefix: String = "+" if display_value >= 0 else ""
 			var arrow: Control = null
 			if bool(item.is_equippable()) and not equipped:
 				var current: Resource = Inventory.get_equipped(int(item.category))
@@ -1602,7 +1602,7 @@ func _refresh_details() -> void:
 			# Pass arrow to the stat builder so it nests tight
 			# against the icon (separation 1) instead of inheriting
 			# the wider 4 px text-icon spacing.
-			_details_stats.add_child(_build_inline_stat("%s%d" % [sign, display_value], icon, arrow))
+			_details_stats.add_child(_build_inline_stat("%s%d" % [prefix, display_value], icon, arrow))
 	elif bool(item.is_key_item()):
 		# "★ Quest Item" line -- slots into the same row as +N stat
 		# modifiers for normal gear. Gold star + moss-green label

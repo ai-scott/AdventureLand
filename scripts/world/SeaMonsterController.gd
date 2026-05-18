@@ -368,7 +368,7 @@ func _start_dialogue() -> void:
 	if dm == null:
 		push_warning("[SeaMonster] No DialogueManager in current scene")
 		return
-	if bool(dm.get("is_active")):
+	if dm.get("is_active") == true:
 		return
 	dm.call("start_dialogue", dialogue, self)
 

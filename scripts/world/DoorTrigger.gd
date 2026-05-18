@@ -86,7 +86,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Pattern AB). Access via tree.current_scene.find_child.
 	var scene := get_tree().current_scene
 	var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
-	if dm != null and bool(dm.get("is_active")):
+	if dm != null and dm.get("is_active") == true:
 		return
 
 	InteractHintManager.unregister(self)

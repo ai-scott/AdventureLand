@@ -234,7 +234,12 @@ func _process(delta: float) -> void:
 	var dm: Node = null
 	if get_tree() != null and get_tree().current_scene != null:
 		dm = get_tree().current_scene.find_child("DialogueManager", true, false)
-	var in_dialogue: bool = dm != null and bool(dm.get("is_active"))
+	# Use `== true` rather than bool(...) so we don't crash when
+	# dm.get("is_active") returns a non-bool Variant (e.g. when the
+	# scene's DialogueManager script failed to parse and the node has
+	# no is_active property -- bool(<unbindable variant>) raises
+	# "Nonexistent 'bool' constructor"; equality is total).
+	var in_dialogue: bool = dm != null and dm.get("is_active") == true
 
 	_set_world_hud_visible(in_world)
 	# Hide the action chips while a dialogue is on screen -- mute stays

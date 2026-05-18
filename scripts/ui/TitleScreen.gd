@@ -1297,11 +1297,11 @@ func _show_name_entry() -> void:
 
 
 func _on_name_confirmed() -> void:
-	var name: String = _name_input.text.strip_edges()
-	if name.is_empty():
-		name = "Hero"
+	var entered_name: String = _name_input.text.strip_edges()
+	if entered_name.is_empty():
+		entered_name = "Hero"
 
-	SaveManager.new_game(_selected_slot, name)
+	SaveManager.new_game(_selected_slot, entered_name)
 
 
 func _on_new_game_pressed() -> void:

@@ -119,7 +119,7 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 	# pattern (DialogueManager is a CanvasLayer on each world's scene,
 	# so use find_child + .call rather than direct autoload reference).
 	var dm := _find_dialogue_manager()
-	if dm != null and bool(dm.get("is_active")):
+	if dm != null and dm.get("is_active") == true:
 		print("[WorldManager] Active dialogue detected before transition — ending it.")
 		dm.call("end_dialogue")
 	get_tree().paused = false
@@ -181,7 +181,7 @@ func go_to_edge(target_scene: String, exit_edge: String, player_pos: Vector2) ->
 	# Same safety as go_to_door — don't leave a paused tree from
 	# mid-dialogue.
 	var dm := _find_dialogue_manager()
-	if dm != null and bool(dm.get("is_active")):
+	if dm != null and dm.get("is_active") == true:
 		dm.call("end_dialogue")
 	get_tree().paused = false
 

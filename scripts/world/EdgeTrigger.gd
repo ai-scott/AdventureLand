@@ -41,7 +41,7 @@ func _on_body_entered(body: Node) -> void:
 	# Don't fire during dialogue (per-scene autoload — Pattern AB).
 	var scene := get_tree().current_scene
 	var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
-	if dm != null and bool(dm.get("is_active")):
+	if dm != null and dm.get("is_active") == true:
 		return
 
 	var edge_str: String = EdgeDirection.keys()[exit_edge].to_lower()

@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 		# not a project autoload. Find by name in the current scene.
 		var scene := get_tree().current_scene
 		var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
-		if dm != null and bool(dm.get("is_active")):
+		if dm != null and dm.get("is_active") == true:
 			return
 
 		if dialogue != null and dm != null:
