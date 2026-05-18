@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.6", "C#")
 
 [autoload]
 
+DesignTokens="*res://scripts/ui/DesignTokens.gd"
+UiFonts="*res://scripts/ui/UiFonts.gd"
+UiStyles="*res://scripts/ui/UiStyles.gd"
+UiFrames="*res://scripts/ui/UiFrames.gd"
 PerfMonitor="*res://scripts/systems/PerfMonitor.gd"
 UserPrefs="*res://scripts/systems/UserPrefs.gd"
 ShopState="*res://scripts/systems/ShopState.gd"

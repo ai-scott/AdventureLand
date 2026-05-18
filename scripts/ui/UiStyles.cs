@@ -3,264 +3,101 @@ using System;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Shared UI styling helpers — one place for the project's pixel-art button
-/// style, dialogue/toast frame texture, and the cream/teal palette.
-///
-/// Keep this file the single source of truth: DialogueManager, ItemPickupToast,
-/// TitleScreen, etc. all call into here so a retheme touches one helper.
-/// </summary>
+// Static C# facade over the GDScript UiStyles autoload during the
+// C# → GDScript port. See SFXController.cs header for the basic facade
+// pattern. Pattern I (Inventory) for MobileChanged: the GDScript
+// `signal mobile_changed` is bridged to a C# `event Action MobileChanged`
+// via a lazy connect on first Get().
+//
+// Palette constants (Cream / CreamLit / etc.) are duplicated locally
+// — they're pure-data and `static readonly Color` reads avoid a Variant
+// dispatch on every label color override. The GDScript autoload owns
+// the same values for GDScript callers.
 public static class UiStyles
 {
-    // ---- Texture cache ----
+    private static GodotObject _node;
+    private static bool _signalsBridged;
 
-    private static Texture2D _texBtnNormal;
-    private static Texture2D _texBtnHover;
-    private static Texture2D _texPanelBg;
-    private static Texture2D _texFrameBg;
-    private static Texture2D _texArrow;
-    private static Texture2D _texArrowUp;
-    private static Texture2D _texArrowDown;
-    private static Texture2D _texHeart;
-    private static Texture2D _texSword;
-    private static Texture2D _texBag;
-    private static Texture2D _texShield;
-    private static Texture2D _texBootStat;
-    private static Texture2D _texGem;
-    private static Texture2D _texSpace;
-    private static Font _fontMenu;
+    // ---- Mobile signal bridge (Pattern I) ----
+    public static event Action MobileChanged;
 
-    /// <summary>Plain pixel-art button frame (16×16) — clean cream/teal,
-    /// no ornament, designed for clean nine-slicing at any size.</summary>
-    public static Texture2D BtnNormal => _texBtnNormal ??= GD.Load<Texture2D>("res://assets/sprites/ui/panel_btn_normal.png");
-    public static Texture2D BtnHover  => _texBtnHover  ??= GD.Load<Texture2D>("res://assets/sprites/ui/panel_btn_hover.png");
+    private static GodotObject Get()
+    {
+        if (_node != null && GodotObject.IsInstanceValid(_node))
+        {
+            EnsureSignalsBridged();
+            return _node;
+        }
+        var tree = Engine.GetMainLoop() as SceneTree;
+        _node = tree?.Root?.GetNodeOrNull("UiStyles");
+        EnsureSignalsBridged();
+        return _node;
+    }
 
-    /// <summary>Plain pixel-art panel frame (24×24) — replaces the ornate
-    /// curly frame_bg for non-dialogue UI surfaces (toasts, title menus).
-    /// Nine-slices cleanly to any size without distortion.</summary>
-    public static Texture2D PanelBg   => _texPanelBg   ??= GD.Load<Texture2D>("res://assets/sprites/ui/panel_bg.png");
+    private static void EnsureSignalsBridged()
+    {
+        if (_signalsBridged || _node == null) return;
+        _node.Connect("mobile_changed", Callable.From(() => MobileChanged?.Invoke()));
+        _signalsBridged = true;
+    }
 
-    /// <summary>The original ornate dialogue frame — keep for the in-game
-    /// dialogue box where the cameo + name strip are designed around it.
-    /// Don't use for resizable panels.</summary>
-    public static Texture2D FrameBg   => _texFrameBg   ??= GD.Load<Texture2D>("res://assets/sprites/ui/dialogue/frame_bg.png");
-    public static Texture2D Arrow     => _texArrow     ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_arrow.png");
-    public static Texture2D ArrowUp   => _texArrowUp   ??= GD.Load<Texture2D>("res://assets/sprites/ui/ui_hintarrow-up-000.png");
-    public static Texture2D ArrowDown => _texArrowDown ??= GD.Load<Texture2D>("res://assets/sprites/ui/ui_hintarrow-down-000.png");
-    public static Texture2D Heart     => _texHeart     ??= GD.Load<Texture2D>("res://assets/sprites/ui/heart_full.png");
-    public static Texture2D Sword     => _texSword     ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_sword.png");
-    public static Texture2D Bag       => _texBag       ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_bag.png");
-    /// <summary>Shield icon (stat_2) — Defense stat, used for any equippable
-    /// clothing slot (Head/Neck/Body/Hand/Legs).</summary>
-    public static Texture2D Shield    => _texShield    ??= GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_2.png");
-    /// <summary>Boot icon (stat_3) — Speed stat, used for the Boot slot.</summary>
-    public static Texture2D BootStat  => _texBootStat  ??= GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_3.png");
-    public static Texture2D Gem       => _texGem       ??= GD.Load<Texture2D>("res://assets/sprites/ui/gem.png");
-    public static Texture2D Space     => _texSpace     ??= GD.Load<Texture2D>("res://assets/sprites/ui/icon_space.png");
+    // ---- Texture getters ----
+    public static Texture2D BtnNormal => Get()?.Call("btn_normal").As<Texture2D>();
+    public static Texture2D BtnHover  => Get()?.Call("btn_hover").As<Texture2D>();
+    public static Texture2D PanelBg   => Get()?.Call("panel_bg").As<Texture2D>();
+    public static Texture2D FrameBg   => Get()?.Call("frame_bg").As<Texture2D>();
+    public static Texture2D Arrow     => Get()?.Call("arrow").As<Texture2D>();
+    public static Texture2D ArrowUp   => Get()?.Call("arrow_up").As<Texture2D>();
+    public static Texture2D ArrowDown => Get()?.Call("arrow_down").As<Texture2D>();
+    public static Texture2D Heart     => Get()?.Call("heart").As<Texture2D>();
+    public static Texture2D Sword     => Get()?.Call("sword").As<Texture2D>();
+    public static Texture2D Bag       => Get()?.Call("bag").As<Texture2D>();
+    public static Texture2D Shield    => Get()?.Call("shield").As<Texture2D>();
+    public static Texture2D BootStat  => Get()?.Call("boot_stat").As<Texture2D>();
+    public static Texture2D Gem       => Get()?.Call("gem").As<Texture2D>();
+    public static Texture2D Space     => Get()?.Call("space").As<Texture2D>();
+    public static Font MenuFont       => Get()?.Call("menu_font").As<Font>();
 
-    /// <summary>SpriteFont_Menu — the C3 bitmap font used for title-screen
-    /// labels and any copy that isn't sitting on a panel/button background.
-    /// Loaded from the .fnt generated by tools/gen_menu_font_fnt.py.</summary>
-    public static Font MenuFont => _fontMenu ??= GD.Load<Font>("res://assets/fonts/spritefont_menu.fnt");
-
-    // ---- Palette ----
-
-    // Locked palette: cream font (#fbffbd) on #cdb246 panel BG. Same pair
-    // is used by dialogue body, toast text, button labels, and any "copy on
-    // a panel" surface so the UI reads as one family.
-    public static readonly Color Cream    = new(0.984f, 1.000f, 0.741f, 1f); // #fbffbd — body text
-    public static readonly Color CreamLit = new(1.000f, 1.000f, 0.850f, 1f); // hover/active text
-    public static readonly Color CreamDim = new(0.78f, 0.78f, 0.55f, 1f);    // pressed text
-    public static readonly Color Gray     = new(0.55f, 0.55f, 0.55f, 1f); // inactive
-    public static readonly Color White    = new(1.00f, 1.00f, 1.00f, 1f); // titles / active selection
+    // ---- Palette (duplicated for hot-path reads) ----
+    public static readonly Color Cream     = new(0.984f, 1.000f, 0.741f, 1f);
+    public static readonly Color CreamLit  = new(1.000f, 1.000f, 0.850f, 1f);
+    public static readonly Color CreamDim  = new(0.78f, 0.78f, 0.55f, 1f);
+    public static readonly Color Gray      = new(0.55f, 0.55f, 0.55f, 1f);
+    public static readonly Color White     = new(1.00f, 1.00f, 1.00f, 1f);
     public static readonly Color GoodGreen = new(0.4f, 1f, 0.4f, 1f);
     public static readonly Color BadRed    = new(1f, 0.4f, 0.4f, 1f);
 
     // ---- Mobile detection ----
+    public static bool IsMobile => Get()?.Get("is_mobile").AsBool() ?? false;
+    public static bool DetectMobile() => Get()?.Call("detect_mobile").AsBool() ?? false;
+    public static void SetMobileOverride(bool mobile) => Get()?.Call("set_mobile_override", mobile);
 
-    /// <summary>True when running on a touch-first platform. Decided on title
-    /// screen via DetectMobile() and persisted; reads from SaveData if a manual
-    /// override has been set.</summary>
-    public static bool IsMobile { get; private set; }
-
-    /// <summary>Detect once at boot. True if either:
-    ///   • The build was exported for a mobile platform target (iOS / Android),
-    ///     in which case <c>OS.HasFeature("mobile")</c> is true, OR
-    ///   • The build is the HTML5 web target running on a touch device
-    ///     (mobile browser on a phone or tablet — the deploy target).
-    /// Desktop builds + the editor return false even when the host machine
-    /// happens to expose a touch surface (e.g., Mac trackpads report
-    /// <c>DisplayServer.IsTouchscreenAvailable() = true</c> on M-series chips).
-    /// Caller persists choice via <see cref="SetMobileOverride"/>.</summary>
-    public static bool DetectMobile()
-    {
-        bool platformMobile = OS.HasFeature("mobile");
-        bool touchOnWeb     = OS.HasFeature("web") && DisplayServer.IsTouchscreenAvailable();
-        IsMobile = platformMobile || touchOnWeb;
-        return IsMobile;
-    }
-
-    /// <summary>Hard-set the mobile flag. Used when SaveData has a stored
-    /// preference, or when the user toggles the choice from settings or the
-    /// Shift+M debug shortcut. Fires <see cref="MobileChanged"/> if the value
-    /// actually changed so autoload UIs (HUD dpad, InteractHintManager floating
-    /// panel, DialogueManager mobile continue hint) can rebuild without a
-    /// scene reload.</summary>
-    public static void SetMobileOverride(bool mobile)
-    {
-        if (IsMobile == mobile) return;
-        IsMobile = mobile;
-        MobileChanged?.Invoke();
-    }
-
-    /// <summary>Fires when <see cref="IsMobile"/> changes. Subscribed by any
-    /// autoload UI that builds mobile-specific elements in <c>_Ready</c> and
-    /// would otherwise stay frozen in its boot-time state when the user
-    /// toggles mode at runtime.</summary>
-    public static event System.Action MobileChanged;
-
-    // ---- Button style ----
-
-    /// <summary>Apply the project's standard pixel-art button style — frame 0
-    /// of C3's Btn_Action sprite for normal/pressed, frame 1 for hover/focus.
-    /// Nine-sliced via texture_margin = 4 so it scales to any button size.
-    /// </summary>
+    // ---- Button style dispatch ----
     public static void ApplyBtnActionStyle(Button btn)
-    {
-        const int margin = 4;
+        => Get()?.Call("apply_btn_action_style", btn);
 
-        var normal = MakeBtnStylebox(BtnNormal, margin);
-        var hover  = MakeBtnStylebox(BtnHover, margin);
-
-        btn.AddThemeStyleboxOverride("normal", normal);
-        btn.AddThemeStyleboxOverride("pressed", normal);
-        btn.AddThemeStyleboxOverride("hover", hover);
-        btn.AddThemeStyleboxOverride("focus", hover);
-        btn.AddThemeColorOverride("font_color", Cream);
-        btn.AddThemeColorOverride("font_hover_color", CreamLit);
-        btn.AddThemeColorOverride("font_pressed_color", CreamDim);
-    }
-
-    private static StyleBoxTexture MakeBtnStylebox(Texture2D tex, int margin)
-    {
-        var sb = new StyleBoxTexture
-        {
-            Texture = tex,
-            TextureMarginLeft = margin,
-            TextureMarginRight = margin,
-            TextureMarginTop = margin,
-            TextureMarginBottom = margin,
-            ContentMarginLeft = 12,
-            ContentMarginRight = 12,
-            ContentMarginTop = 6,
-            ContentMarginBottom = 6,
-        };
-        return sb;
-    }
-
-    /// <summary>Build the project-standard panel stylebox using panel_bg.png
-    /// (24×24). Patch margin = 5 captures the entire decorative border
-    /// (1px outline + 2px teal + 1px highlight + 1px lowlight) so all four
-    /// bands stay 1px thick when the panel stretches — only the solid cream
-    /// interior gets stretched.</summary>
     public static StyleBoxTexture MakePanelStylebox(int contentPadding = 16)
-    {
-        return new StyleBoxTexture
-        {
-            Texture = PanelBg,
-            TextureMarginLeft = 5,
-            TextureMarginRight = 5,
-            TextureMarginTop = 5,
-            TextureMarginBottom = 5,
-            ContentMarginLeft = contentPadding,
-            ContentMarginRight = contentPadding,
-            ContentMarginTop = contentPadding,
-            ContentMarginBottom = contentPadding,
-        };
-    }
+        => Get()?.Call("make_panel_stylebox", contentPadding).As<StyleBoxTexture>();
 
-    /// <summary>Force the "hover" style as the default — used to mark the
-    /// keyboard-selected button in a row of choices, since we manage focus
-    /// ourselves and Godot's `focus` state alone doesn't always render.</summary>
     public static void ApplyBtnActionStyleHighlighted(Button btn)
-    {
-        const int margin = 4;
-        var hover = MakeBtnStylebox(BtnHover, margin);
+        => Get()?.Call("apply_btn_action_style_highlighted", btn);
 
-        btn.AddThemeStyleboxOverride("normal", hover);
-        btn.AddThemeStyleboxOverride("pressed", hover);
-        btn.AddThemeStyleboxOverride("hover", hover);
-        btn.AddThemeStyleboxOverride("focus", hover);
-        btn.AddThemeColorOverride("font_color", CreamLit);
-    }
-
-    /// <summary>Toggle a button between the highlighted (yellow border,
-    /// dark teal interior) and idle (teal border, soft cream interior)
-    /// looks. Use to drive keyboard-selection state on a button that
-    /// already exists.</summary>
     public static void RestyleButton(Button btn, bool highlighted)
-    {
-        if (highlighted) ApplyBtnActionStyleHighlighted(btn);
-        else ApplyBtnActionStyle(btn);
-    }
+        => Get()?.Call("restyle_button", btn, highlighted);
 
-    // ---- Action button (button + key hint) ----
-
-    /// <summary>Build a panel-button with the primary label centered. Just
-    /// the button — call <see cref="CreateActionButtonWithHint"/> if you also
-    /// want the keyboard-hint label stacked below it.</summary>
     public static Button CreateActionButton(string label, Action onPressed, bool highlighted = false)
-    {
-        var btn = new Button { Text = label };
-        btn.ProcessMode = Node.ProcessModeEnum.Always;
-        btn.FocusMode = Control.FocusModeEnum.None;
-        btn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
-        btn.CustomMinimumSize = new Vector2(96, 36);
-        btn.AddThemeFontSizeOverride("font_size", 18);
-        // Belt-and-suspenders: explicit center alignment so the label sits
-        // visually centered regardless of theme defaults / icon offsets.
-        btn.Alignment = HorizontalAlignment.Center;
-        btn.IconAlignment = HorizontalAlignment.Center;
-        if (highlighted) ApplyBtnActionStyleHighlighted(btn);
-        else ApplyBtnActionStyle(btn);
-        btn.Pressed += () => onPressed?.Invoke();
-        return btn;
-    }
+        => Get()?.Call("create_action_button", label, Callable.From(() => onPressed?.Invoke()), highlighted).As<Button>();
 
-    /// <summary>Build a button + an optional keyboard-hint label stacked
-    /// below it. Returns the wrapping VBoxContainer (Button is its first
-    /// child). On mobile the hint is suppressed and only the button is
-    /// returned (still wrapped in a VBox so callers don't branch on layout).
-    /// </summary>
+    /// <summary>Returns (Wrapper, Button) — the GDScript autoload returns
+    /// a Dictionary { "wrapper", "button" } which we unpack here so call
+    /// sites keep the same tuple-deconstruct shape.</summary>
     public static (VBoxContainer Wrapper, Button Button) CreateActionButtonWithHint(
         string label, string keyHint, Action onPressed, bool highlighted = false)
     {
-        var wrapper = new VBoxContainer();
-        wrapper.AddThemeConstantOverride("separation", 4);
-        wrapper.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
-
-        var btn = CreateActionButton(label, onPressed, highlighted);
-        // Center the button inside the wrapper so the hint can be a wider
-        // text label without offsetting the button's horizontal position.
-        var btnRow = new HBoxContainer();
-        btnRow.Alignment = BoxContainer.AlignmentMode.Center;
-        btnRow.AddChild(btn);
-        wrapper.AddChild(btnRow);
-
-        if (!IsMobile && !string.IsNullOrEmpty(keyHint))
-        {
-            var hint = new Label
-            {
-                Text = keyHint,
-                HorizontalAlignment = HorizontalAlignment.Center,
-            };
-            hint.AddThemeFontSizeOverride("font_size", 14);
-            hint.AddThemeColorOverride("font_color", new Color(Cream.R, Cream.G, Cream.B, 0.85f));
-            hint.AddThemeConstantOverride("shadow_offset_x", 0);
-            hint.AddThemeConstantOverride("shadow_offset_y", 0);
-            wrapper.AddChild(hint);
-        }
-
-        return (wrapper, btn);
+        var node = Get();
+        if (node == null) return (null, null);
+        var dict = node.Call("create_action_button_with_hint", label, keyHint,
+                Callable.From(() => onPressed?.Invoke()), highlighted).AsGodotDictionary();
+        return (dict["wrapper"].As<VBoxContainer>(), dict["button"].As<Button>());
     }
 }

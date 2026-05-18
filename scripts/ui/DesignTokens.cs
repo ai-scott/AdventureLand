@@ -2,19 +2,17 @@ using Godot;
 
 namespace AdventureLandPrototype;
 
-/// <summary>
-/// Adventure Land design-system tokens — palette + typography sizes mirrored
-/// from <c>handoff/tokens.json</c>. Single source of truth so call sites pull
-/// from semantic names (DesignTokens.Gold) rather than hand-typed hex.
-///
-/// Foundation only — Phase B of the design-system rollout. Per-screen
-/// adoption (mossy frames, gold-border-swap buttons, etc.) lands later as
-/// each screen is individually confirmed.
-///
-/// When a token changes in the handoff, update it here too. Keep colors
-/// authored as float triplets — Godot's Color ctor takes [0..1], so the
-/// conversion happens once here.
-/// </summary>
+// Static C# facade over the GDScript DesignTokens autoload during the
+// C# → GDScript port. See SFXController.cs header for the basic facade
+// pattern. Unlike the runtime-data facades, DesignTokens is pure
+// constant data so we duplicate the values locally — no Variant
+// dispatch needed at every read. The duplication is intentional: the
+// GDScript autoload exists for GDScript callers (InteractHintManager,
+// DialogueManager, etc. that previously inlined hex strings); the C#
+// constants here serve C# call sites (UiFrames helpers, screens) until
+// Cluster 11 cutover deletes them.
+//
+// Keep the two files lockstep — both must update on any token edit.
 public static class DesignTokens
 {
     // === Surface ===
@@ -31,8 +29,7 @@ public static class DesignTokens
     public static readonly Color StoneHi      = Hex("#BFC9C7");
     public static readonly Color StoneLo      = Hex("#5A6463");
 
-    // Translucent variant of the mossy field, used over painted backgrounds.
-    public static readonly Color MossyFieldTranslucent = new(0.122f, 0.188f, 0.149f, 0.82f); // rgba(31,48,38,0.82)
+    public static readonly Color MossyFieldTranslucent = new(0.122f, 0.188f, 0.149f, 0.82f);
 
     // === Ink / text ===
     public static readonly Color Ink      = Hex("#10180F");
@@ -44,7 +41,7 @@ public static class DesignTokens
     public static readonly Color Teal     = Hex("#3FA3A8");
     public static readonly Color TealHi   = Hex("#6BC8CC");
     public static readonly Color TealLo   = Hex("#1F5C60");
-    public static readonly Color Gold     = Hex("#F2C84B"); // Selection / focus border swap.
+    public static readonly Color Gold     = Hex("#F2C84B");
     public static readonly Color GoldDeep = Hex("#B58A1C");
 
     // === Status ===
@@ -64,7 +61,7 @@ public static class DesignTokens
 
     public static class Ui
     {
-        public const string Family = "Jersey 15"; // Pending: download Jersey15.ttf into assets/fonts/.
+        public const string Family = "Jersey 15";
         public const int Body    = 20;
         public const int Button  = 22;
         public const int Small   = 16;
@@ -78,7 +75,5 @@ public static class DesignTokens
     public const int SectionGapPx   = 24;
     public const int PanelPaddingPx = 16;
 
-    /// <summary>Parse a #RRGGBB string into a Color. Token files are authored
-    /// in hex; this keeps the constants above readable and 1:1 with the spec.</summary>
     private static Color Hex(string rgb) => new(rgb);
 }
