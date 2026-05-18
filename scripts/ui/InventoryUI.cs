@@ -995,20 +995,26 @@ public partial class InventoryUI : CanvasLayer
 	/// the tree itself; we set _overlayActive so our own _Process skips
 	/// keyboard nav while it's up, and re-pause on close (the toast unpauses
 	/// unconditionally, which would otherwise unpause the inventory beneath).</summary>
+	// ItemPickupToast is GDScript (Cluster 10d-2) -- instantiate via the
+	// script Resource (Pattern O). Cached once on first use.
+	private static GDScript _toastScript;
+
 	private void OpenSellToast(Resource item, int sellPrice)
 	{
-		var toast = new ItemPickupToast();
+		_toastScript ??= GD.Load<GDScript>("res://scripts/ui/ItemPickupToast.gd");
+		var toast = _toastScript.New().As<CanvasLayer>();
 		GetTree().CurrentScene.AddChild(toast);
 		_overlayActive = true;
 		toast.TreeExited += () =>
 		{
 			_overlayActive = false;
-			// Toast.Close() unpauses the tree on the way out. If the
+			// Toast._close() unpauses the tree on the way out. If the
 			// inventory is still open, restore its pause so the world
 			// behind it stays frozen.
 			if (_isOpen && IsInstanceValid(this)) GetTree().Paused = true;
 		};
-		toast.ShowSell(item, sellPrice, onAccept: () =>
+		// GDScript method names are snake_case.
+		toast.Call("show_sell", item, sellPrice, Callable.From(() =>
 		{
 
 			// Auto-unequip if the player is selling the gear they're wearing,
@@ -1027,7 +1033,7 @@ public partial class InventoryUI : CanvasLayer
 			SaveManager.Save();
 			SFXController.Play("collectible_pickup");
 			RefreshAll();
-		});
+		}));
 	}
 
 	private void WireSignals()

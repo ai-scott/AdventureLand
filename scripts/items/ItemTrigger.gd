@@ -21,11 +21,9 @@ class_name ItemTrigger extends Area2D
 # particle on the Shrine instead of the item itself.
 @export var shrine_sparkle: bool = false
 
-# ItemPickupToast is still C# (defers to Cluster 10d) -- preload it as
-# a CSharpScript via the script Resource so GDScript can `.new()`
-# instances on demand. Once 10d ports the toast to .gd this flips to
-# `const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")`.
-const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.cs")
+# ItemPickupToast is GDScript (Cluster 10d-2). Preload-by-path to avoid
+# the class_name registration dance (Pattern O).
+const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")
 
 var _collected: bool = false
 var _player_in_range: bool = false
@@ -233,13 +231,9 @@ func _try_take() -> void:
 
 
 func _show_take_prompt(consumes_free_grant: bool) -> void:
-	# ItemPickupToast is still C# this cluster (defers to 10d) --
-	# instantiate via the loaded CSharpScript. Its ShowTake takes
-	# PascalCase method name; the data param is now ItemData GDScript
-	# Resource which the C# code reads via Variant Get.
-	var toast: CanvasLayer = _ToastScript.new()
+	var toast: ItemPickupToast = _ToastScript.new()
 	get_tree().current_scene.add_child(toast)
-	toast.call("ShowTake", data, func() -> void:
+	toast.show_take(data, func() -> void:
 		if consumes_free_grant:
 			ShopState.next_item_free = false
 		_complete_pickup()
@@ -278,11 +272,11 @@ func _complete_pickup() -> void:
 
 
 func _show_purchase_prompt() -> void:
-	var toast: CanvasLayer = _ToastScript.new()
+	var toast: ItemPickupToast = _ToastScript.new()
 	get_tree().current_scene.add_child(toast)
-	toast.call("ShowPurchase", data, int(data.cost), func() -> void:
+	toast.show_purchase(data, int(data.cost), func() -> void:
 		# Double-check gems at confirm time (toast caches affordability
-		# at Show time, but be defensive in case state changed). Only
+		# at show time, but be defensive in case state changed). Only
 		# proceed to _complete_pickup if payment succeeded.
 		if not CurrencySystem.remove_gems(int(data.cost)):
 			print("[ItemTrigger] Payment failed for %s" % data.name)
@@ -292,10 +286,10 @@ func _show_purchase_prompt() -> void:
 
 
 func _show_pickup_toast() -> void:
-	var toast: CanvasLayer = _ToastScript.new()
+	var toast: ItemPickupToast = _ToastScript.new()
 	# Add to scene root so it persists after this node is freed.
 	get_tree().current_scene.add_child(toast)
-	toast.call("Show", data)
+	toast.show(data)
 
 
 # Build an in-place ping-pong sparkle that loops while the trigger is

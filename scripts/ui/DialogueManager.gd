@@ -806,19 +806,24 @@ func _resolve_reveal_item(node: DialogueNode) -> Resource:
 			return item
 	return null
 
-# Mirror of ItemTrigger.ShowPickupToast for dialogue-given items.
-# ItemPickupToast is a C# class instantiated via `new` in C#; from
-# GDScript we can't `new` it. Log + skip for now — restore when
-# ItemPickupToast ports in Cluster 10.
+# Mirror of ItemTrigger.show_pickup_toast for dialogue-given items.
+# ItemPickupToast is GDScript (Cluster 10d-2) -- spawn it directly and
+# call its show() method.
 func _show_give_item_toast(item_key: String) -> void:
 	if item_key.is_empty():
 		return
-	# TODO(Cluster 10): instantiate ItemPickupToast and call its Show
-	# method once ItemPickupToast is GDScript or has a .tscn we can
-	# instance. Until then, the dialogue grant still happens via
-	# QuestSystem.grant_unique_item — only the floating toast feedback
-	# is suppressed.
-	pass
+	# Mirror the inline lookup used by _find_giveable_item_for_toast: try
+	# numeric ID first, then fall back to lookup-by-name.
+	var item: Resource = null
+	if item_key.is_valid_int():
+		item = Inventory.get_item(int(item_key))
+	if item == null:
+		item = Inventory.get_item_by_name(item_key)
+	if item == null:
+		return
+	var toast := ItemPickupToast.new()
+	get_tree().current_scene.add_child(toast)
+	toast.show(item)
 
 func _find_sea_monster() -> Node:
 	var scene := get_tree().current_scene
