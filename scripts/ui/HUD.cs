@@ -29,7 +29,9 @@ public partial class HUD : CanvasLayer
     private Node _health;
     private TextureRect[] _hearts;
     private Label _gemLabel;
-    private MobileDPad _mobileDpad;
+    // MobileDPad is GDScript (Cluster 10d) — Node + Variant access.
+    private Control _mobileDpad;
+    private static GDScript _mobileDpadScript;
     private Control _attackButton;
     private TextureRect _attackIcon;
     private Texture2D _defaultAttackIcon;
@@ -310,7 +312,12 @@ public partial class HUD : CanvasLayer
 
         if (wantDpad)
         {
-            _mobileDpad = new MobileDPad { Name = "MobileDPad", Visible = false };
+            // MobileDPad is GDScript (Cluster 10d) — instantiate via the
+            // script Resource (Pattern G/O). Loaded once and cached.
+            _mobileDpadScript ??= GD.Load<GDScript>("res://scripts/ui/MobileDPad.gd");
+            _mobileDpad = _mobileDpadScript.New().As<Control>();
+            _mobileDpad.Name = "MobileDPad";
+            _mobileDpad.Visible = false;
             AddChild(_mobileDpad);
         }
         else

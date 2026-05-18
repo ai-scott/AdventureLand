@@ -28,7 +28,7 @@ CurrencySystem="*res://scripts/systems/CurrencySystem.gd"
 PaletteSwapper="*res://scripts/player/PaletteSwapper.gd"
 CostumePaletteRegistry="*res://scripts/player/CostumePaletteRegistry.gd"
 CharacterCustomization="*res://scripts/player/CharacterCustomization.gd"
-MobileBoot="*res://scripts/systems/MobileBoot.cs"
+MobileBoot="*res://scripts/systems/MobileBoot.gd"
 SaveManager="*res://scripts/systems/SaveManager.gd"
 Inventory="*res://scripts/systems/Inventory.gd"
 WorldManager="*res://scripts/systems/WorldManager.gd"
@@ -40,7 +40,7 @@ SFXController="*res://scripts/systems/audio/SFXController.gd"
 MusicController="*res://scripts/systems/audio/MusicController.gd"
 VOController="*res://scripts/systems/audio/VOController.gd"
 EnemyMusicDriver="*res://scripts/systems/audio/EnemyMusicDriver.gd"
-HelpOverlay="*res://scripts/systems/HelpOverlay.cs"
+HelpOverlay="*res://scripts/systems/HelpOverlay.gd"
 
 [display]
 

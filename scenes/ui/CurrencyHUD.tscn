@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dqr8n3qxfwrc7"]
 
-[ext_resource type="Script" path="res://scripts/ui/CurrencyHUD.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/CurrencyHUD.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/gem.png" id="2_gem"]
 
 [node name="CurrencyHUD" type="CanvasLayer"]

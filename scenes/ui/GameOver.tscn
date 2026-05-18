@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://chripogr0qw8f"]
 
-[ext_resource type="Script" uid="uid://cmyo2hh8d5h3a" path="res://scripts/ui/GameOverScreen.cs" id="1"]
+[ext_resource type="Script" uid="uid://cmyo2hh8d5h3a" path="res://scripts/ui/GameOverScreen.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://f78vr6tsej8m" path="res://assets/sprites/ui/screens/gameover_bg.jpg" id="2_bg"]
 
 [node name="GameOver" type="CanvasLayer" unique_id=1658446202]
