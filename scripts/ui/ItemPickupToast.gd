@@ -40,6 +40,20 @@ var _primary_btn: Button
 var _cancel_btn: Button
 var _cancel_selected: bool = false  # false = primary, true = cancel
 
+# Mirror integer constants for ItemData.ItemCategory (Pattern O) --
+# avoids parse-time identifier lookup of the ItemData class_name on
+# fresh clones / headless smoke. Don't reorder -- .tres files have
+# these baked as ints.
+const ITEM_CATEGORY_WEAPON: int = 0
+const ITEM_CATEGORY_FOOD: int = 1
+const ITEM_CATEGORY_HEAD: int = 3
+const ITEM_CATEGORY_NECK: int = 4
+const ITEM_CATEGORY_BODY: int = 5
+const ITEM_CATEGORY_HAND: int = 6
+const ITEM_CATEGORY_LEGS: int = 7
+const ITEM_CATEGORY_BOOT: int = 8
+const ITEM_CATEGORY_HAIR: int = 11
+
 # Item icon size for header -- the actual rendered sprite.
 const ICON_SIZE: int = 64
 
@@ -173,7 +187,7 @@ func show_sell(item: Resource, sell_price: int, on_accept: Callable) -> void:
 
 
 # Show the pickup toast for the given item. Call after adding to inventory.
-func show(item: Resource) -> void:
+func show_pickup(item: Resource) -> void:
 	_new_item = item
 
 	# Quest items short-circuit the equip/compare prompt -- story rewards
@@ -243,7 +257,7 @@ func _build_auto_equip_toast(item: Resource) -> void:
 # buttons. The flag is stored in SaveData.world_flags so the hint fires
 # once per save.
 func _build_attack_tutorial_hint(item: Resource) -> Control:
-	if int(item.category) != ItemData.ItemCategory.WEAPON:
+	if int(item.category) != ITEM_CATEGORY_WEAPON:
 		return null
 	var save: Resource = SaveManager.current_data
 	if save == null:
@@ -487,15 +501,15 @@ static func _build_direction_arrow(diff: int) -> Control:
 
 func _category_icon(cat: int) -> Texture2D:
 	match cat:
-		ItemData.ItemCategory.FOOD:   return UiStyles.heart()
-		ItemData.ItemCategory.WEAPON: return UiStyles.sword()
-		ItemData.ItemCategory.BOOT:   return UiStyles.boot_stat()
+		ITEM_CATEGORY_FOOD:   return UiStyles.heart()
+		ITEM_CATEGORY_WEAPON: return UiStyles.sword()
+		ITEM_CATEGORY_BOOT:   return UiStyles.boot_stat()
 		# Clothing all rolls into Defense -- same shield as the
 		# inventory panel uses, so the shop and the inventory speak
 		# the same icons.
-		ItemData.ItemCategory.HEAD, ItemData.ItemCategory.NECK, \
-		ItemData.ItemCategory.BODY, ItemData.ItemCategory.HAND, \
-		ItemData.ItemCategory.LEGS, ItemData.ItemCategory.HAIR:
+		ITEM_CATEGORY_HEAD, ITEM_CATEGORY_NECK, \
+		ITEM_CATEGORY_BODY, ITEM_CATEGORY_HAND, \
+		ITEM_CATEGORY_LEGS, ITEM_CATEGORY_HAIR:
 			return UiStyles.shield()
 	return null
 

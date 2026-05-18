@@ -289,7 +289,7 @@ func _show_pickup_toast() -> void:
 	var toast: ItemPickupToast = _ToastScript.new()
 	# Add to scene root so it persists after this node is freed.
 	get_tree().current_scene.add_child(toast)
-	toast.show(data)
+	toast.show_pickup(data)
 
 
 # Build an in-place ping-pong sparkle that loops while the trigger is

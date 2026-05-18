@@ -19,14 +19,12 @@ func _process(_delta: float) -> void:
 	if not _player_in_range:
 		return
 	if Input.is_action_just_pressed("interact"):
-		# Inventory's Open is idempotent so a double-fire wouldn't break
-		# anything, but the hint should hide while the inventory is up.
-		# InventoryUI is C# autoload (Cluster 10 deferred); access the
-		# `Instance` accessor via Pattern K workaround — the autoload
-		# Node IS the InventoryUI singleton, but Instance is a C# static
-		# property invisible to GDScript. Use the autoload name directly
-		# + Pattern C PascalCase to call Open().
-		InventoryUI.Open()
+		# Inventory's open() is idempotent so a double-fire wouldn't
+		# break anything, but the hint should hide while the inventory
+		# is up. InventoryUI is the GDScript autoload (Cluster 10g);
+		# the autoload Node IS the singleton, so calling open() on it
+		# directly works.
+		InventoryUI.open()
 
 func _on_body_entered(body: Node) -> void:
 	# PlayerController is C# (still); duck-type via group.

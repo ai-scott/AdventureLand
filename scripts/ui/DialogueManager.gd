@@ -823,7 +823,7 @@ func _show_give_item_toast(item_key: String) -> void:
 		return
 	var toast := ItemPickupToast.new()
 	get_tree().current_scene.add_child(toast)
-	toast.show(item)
+	toast.show_pickup(item)
 
 func _find_sea_monster() -> Node:
 	var scene := get_tree().current_scene
