@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ehyrcgk8n6gi"]
 
-[ext_resource type="Script" uid="uid://b8kw1jx01luas" path="res://scripts/ui/TitleScreen.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/TitleScreen.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bg3qb7xkbomte" path="res://assets/sprites/ui/screens/title_bg.png" id="2_bg"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="3_xnmwc"]
 
