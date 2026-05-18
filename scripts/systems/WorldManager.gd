@@ -134,8 +134,8 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 	# can't await a Task across the boundary (Pattern N), so we fire-and-
 	# forget the call and poll for the scene swap via the player-in-group check.
 	# When SaveManager itself ports to GDScript (Cluster 9), make this an await.
-	if SaveManager.CurrentData != null:
-		SaveManager.TransitionToWorld(target_scene)
+	if SaveManager.current_data != null:
+		SaveManager.transition_to_world(target_scene)
 
 	# Wait a few frames for Player._ready to run after the scene swap.
 	for i in range(30):
@@ -155,15 +155,15 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 			# Door markers can land on tree/wall colliders — unstick.
 			# SaveManager.UnstickPlayer is now an instance method
 			# (promoted from static in Cluster 7b-3 for Pattern K).
-			if player is CharacterBody2D and SaveManager.CurrentData != null:
-				SaveManager.UnstickPlayer(player)
+			if player is CharacterBody2D and SaveManager.current_data != null:
+				SaveManager.unstick_player(player)
 			snap_camera(player)
-			var data: Resource = SaveManager.CurrentData
+			var data: Resource = SaveManager.current_data
 			if data != null:
 				data.set("position_x", player.global_position.x)
 				data.set("position_y", player.global_position.y)
 				# Re-save with the marker position so disk matches in-memory.
-				SaveManager.Save()
+				SaveManager.save()
 	else:
 		push_warning("[WorldManager] SpawnFromDoor_%d marker not found in %s" % [door_id, target_scene])
 
@@ -192,9 +192,9 @@ func go_to_edge(target_scene: String, exit_edge: String, player_pos: Vector2) ->
 	# Compute intended spawn position. We don't know the target's exact
 	# map size until it loads, so set a temporary value and clamp after.
 	var entry_pos: Vector2 = _compute_entry_position(exit_edge, player_pos)
-	if SaveManager.CurrentData != null:
-		SaveManager.PendingSpawnPosition = entry_pos
-		SaveManager.TransitionToWorld(target_scene)
+	if SaveManager.current_data != null:
+		SaveManager.pending_spawn_position = entry_pos
+		SaveManager.transition_to_world(target_scene)
 
 	# Wait a few frames for Player._ready to run.
 	for i in range(30):
@@ -256,16 +256,16 @@ func _clamp_player_to_world_bounds(exit_edge: String, exit_pos: Vector2) -> void
 	pos.y = clamp(pos.y, EDGE_MARGIN, map_size.y - EDGE_MARGIN)
 
 	player.global_position = pos
-	if player is CharacterBody2D and SaveManager.CurrentData != null:
-		SaveManager.UnstickPlayer(player)
+	if player is CharacterBody2D and SaveManager.current_data != null:
+		SaveManager.unstick_player(player)
 	snap_camera(player)
 
-	var data: Resource = SaveManager.CurrentData
+	var data: Resource = SaveManager.current_data
 	if data != null:
 		data.set("position_x", player.global_position.x)
 		data.set("position_y", player.global_position.y)
 		# ApplySaveToPlayer just auto-saved the (X, 9999) placeholder.
-		SaveManager.Save()
+		SaveManager.save()
 
 func _find_world_meta() -> Node:
 	var scene := get_tree().current_scene
@@ -297,14 +297,14 @@ func snap_camera(player: Node2D) -> void:
 	# FollowCamera is C# (Cluster 4 closeout). Duck-typed call via has_method
 	# instead of `is FollowCamera` since FollowCamera doesn't have
 	# [GlobalClass] and GDScript can't `is` against C# Node types.
-	if cam != null and cam.has_method("ApplyWorldBounds"):
-		cam.call("ApplyWorldBounds")
+	if cam != null and cam.has_method("apply_world_bounds"):
+		cam.call("apply_world_bounds")
 	if cam != null:
 		cam.reset_smoothing()
 
 # Returns true if this is the first visit (banner should show).
 func _prepare_banner_if_first_visit(scene_path: String) -> bool:
-	var data: Resource = SaveManager.CurrentData
+	var data: Resource = SaveManager.current_data
 	if data == null:
 		return false
 
@@ -330,7 +330,7 @@ static func _normalize_scene_path(scene_path: String) -> String:
 # Show the first-world banner after the initial scene load (called from
 # SaveManager's NewGame). Fades in banner, holds, then fades scene in.
 func show_first_world_banner(scene_path: String) -> void:
-	var data: Resource = SaveManager.CurrentData
+	var data: Resource = SaveManager.current_data
 	if data == null:
 		transition_completed.emit()
 		return
@@ -378,4 +378,4 @@ func _show_welcome_dialogue_if_needed() -> void:
 		])
 
 	QuestSystem.set_world_flag("welcome_shown", "true")
-	SaveManager.Save()
+	SaveManager.save()

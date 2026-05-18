@@ -198,13 +198,11 @@ func _deploy_pearl_if_needed() -> void:
 	_pearl_deployed = true
 
 
-# Walks the scene tree looking for an ItemTrigger whose .Data.Name matches.
-# ItemTrigger is still C# (Cluster 10) -- read its Data via Variant Get,
-# and ItemData's Name field is still PascalCase too (Cluster 10 too).
+# Walks the scene tree looking for an ItemTrigger whose .data.name matches.
 static func _find_first_item_trigger(from: Node, item_name: String) -> Area2D:
 	if from is Area2D:
-		var d: Variant = from.get("Data")
-		if d != null and String((d as Resource).get("Name")) == item_name:
+		var d: Variant = from.get("data")
+		if d != null and String((d as Resource).get("name")) == item_name:
 			return from as Area2D
 	for c in from.get_children():
 		var r := _find_first_item_trigger(c, item_name)

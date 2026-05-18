@@ -45,13 +45,11 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 	# PlayerController is still C# during the port. Use group membership
 	# instead of `body is PlayerController`, and dispatch hit methods via
-	# Call() — note user-defined C# method names are NOT auto-snake-aliased
-	# (Pattern M) so call them with their PascalCase name from GDScript.
 	if body.is_in_group("player"):
 		body.call("take_damage", damage)
 		# Light knockback away from the SM so a second ball doesn't
 		# trivially re-hit before the player's invuln frames clear.
-		body.call("ApplyKnockback", direction * 240.0)
+		body.call("apply_knockback", direction * 240.0)
 	_splash()
 
 func _splash() -> void:

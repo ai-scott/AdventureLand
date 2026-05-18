@@ -247,11 +247,7 @@ func restore_equipment() -> void:
 
 	# Apply persisted hair / hair-color / skin so the character looks
 	# the way the player chose at NewGame (random) or last save.
-	# SaveManager is still C# this cluster — the autoload NAME is the
-	# Node instance (no .Instance indirection from GDScript; that's
-	# a C# static accessor and isn't exposed via Variant). C# instance
-	# properties ARE accessible via PascalCase.
-	var save: Resource = SaveManager.CurrentData
+	var save: Resource = SaveManager.current_data
 	if save != null and _sprite_layers != null:
 		CharacterCustomization.apply(
 			_sprite_layers,

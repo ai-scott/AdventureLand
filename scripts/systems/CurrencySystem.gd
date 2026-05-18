@@ -15,7 +15,7 @@ const MAX_GEMS: int = 9999
 signal gems_changed(new_amount: int)
 
 func _get_data() -> Resource:
-	return SaveManager.CurrentData
+	return SaveManager.current_data
 
 func get_gems() -> int:
 	var data := _get_data()

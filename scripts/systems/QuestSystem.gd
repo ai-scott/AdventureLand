@@ -40,10 +40,10 @@ enum ConditionType {
 	EQUIPPED_CATEGORY = 6,
 }
 
-# Reach back into SaveManager (C# autoload) for the active SaveData.
-# Returns the C# SaveData Resource or null.
+# Reach back into SaveManager for the active SaveData. Returns the
+# SaveData Resource or null.
 func _get_data() -> Resource:
-	return SaveManager.CurrentData
+	return SaveManager.current_data
 
 # ---- Quest Status ----
 

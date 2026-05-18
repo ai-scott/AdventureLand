@@ -220,14 +220,14 @@ func _make_item(t: Resource, center: Vector2, position: Vector2) -> Node:
 		return null
 	instance.name = "Item_%d_%d_%d" % [item_id, int(position.x), int(position.y)]
 	instance.position = center
-	instance.set("Data", data)
-	# Pack (x, y) into a per-placement TriggerID. Worlds are <=720x480 so
+	instance.set("data", data)
+	# Pack (x, y) into a per-placement trigger_id. Worlds are <=720x480 so
 	# 16 bits per axis is plenty. NOTE: this is only unique *within* a
-	# scene -- ItemTrigger.CollectFlagKey() prefixes the world name so two
+	# scene -- ItemTrigger.collect_flag_key() prefixes the world name so two
 	# items on the same tile in different scenes don't share state.
 	# Moving an item in Tiled effectively resets its collected state.
-	instance.set("TriggerID", (int(position.x) << 16) | (int(position.y) & 0xFFFF))
-	instance.set("Unique", true)
+	instance.set("trigger_id", (int(position.x) << 16) | (int(position.y) & 0xFFFF))
+	instance.set("unique", true)
 	return instance
 
 

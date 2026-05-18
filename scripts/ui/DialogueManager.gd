@@ -286,9 +286,9 @@ func start_dialogue(data: DialogueData, source: Node2D = null) -> bool:
 	if _player == null:
 		_player = get_tree().root.find_child("Player", true, false)
 	if _player != null:
-		_player.set("InputLocked", true)
+		_player.set("input_locked", true)
 		if source != null:
-			_player.call("FaceTarget", source.global_position)
+			_player.call("face_target", source.global_position)
 
 	# Find the best starting node via priority + conditions.
 	var start_node := _find_best_node()
@@ -640,14 +640,12 @@ func end_dialogue() -> void:
 
 	_fade_out(func() -> void:
 		if _player != null:
-			_player.set("InputLocked", false)
+			_player.set("input_locked", false)
 	)
 
-	# Auto-save quest state. SaveManager is a C# autoload — the autoload
-	# Node IS the SaveManager (Pattern K — no `.Instance` indirection
-	# from GDScript; .Save() is a C# instance method accessed via
-	# Pattern C PascalCase Variant dispatch).
-	SaveManager.Save()
+	# Auto-save quest state. SaveManager is the GDScript autoload
+	# (Cluster 9); call save() directly.
+	SaveManager.save()
 
 # ---- Node Finding ----
 
@@ -762,13 +760,13 @@ func _execute_actions(actions: Array) -> void:
 				var smc := _find_sea_monster()
 				# SeaMonsterController is C# — Variant property access.
 				# State.Hidden enum value = 0 (first in enum declaration).
-				if smc != null and not bool(smc.IsBusy) and int(smc.call("GetState")) == 0:
-					smc.call("Summon")
+				if smc != null and not bool(smc.is_busy) and int(smc.call("get_state")) == 0:
+					smc.call("summon")
 
 			DialogueAction.ActionType.MAKE_SEA_MONSTER_HOSTILE:
 				var smc2 := _find_sea_monster()
 				if smc2 != null:
-					smc2.call("MakeHostile")
+					smc2.call("make_hostile")
 
 			DialogueAction.ActionType.SEA_MONSTER_ACCEPT_QUEST, \
 			DialogueAction.ActionType.SEA_MONSTER_QUEST_COMPLETE, \
@@ -829,12 +827,12 @@ func _find_sea_monster() -> Node:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return null
-	return _find_first_by_method(scene, "Summon")
+	return _find_first_by_method(scene, "summon")
 
 func _sea_monster_retreat() -> void:
 	var smc := _find_sea_monster()
 	if smc != null:
-		smc.call("Retreat")
+		smc.call("retreat")
 
 # Reveal a placed-but-hidden quest pickup by item name. Walks the scene
 # for an ItemTrigger whose Data.Name matches and toggles Visible +
@@ -849,9 +847,9 @@ func _reveal_quest_pickup(item_name: String) -> bool:
 	if trigger == null:
 		return false
 	trigger.visible = true
-	trigger.set("Monitoring", true)
+	trigger.set("monitoring", true)
 	# Restore the pickup mask we zeroed in the scene to keep it dormant.
-	trigger.set("CollisionMask", 1)
+	trigger.set("collision_mask", 1)
 	return true
 
 static func _find_first_by_method(from: Node, method_name: String) -> Node:
@@ -899,7 +897,7 @@ func _handle_custom_action(a: DialogueAction) -> void:
 			_run_penny_opens_home_cutscene()
 		"adoptPennyName":
 			# Promote what player typed at Penny into canonical PlayerName.
-			var data := SaveManager.CurrentData
+			var data := SaveManager.current_data
 			var given: String = QuestSystem.get_world_flag("PennyName")
 			if data != null and not given.strip_edges().is_empty():
 				data.set("player_name", given.strip_edges())
@@ -920,7 +918,7 @@ func _run_penny_opens_home_cutscene() -> void:
 
 	# Lock player for duration. PlayerController is C# — Variant Set.
 	if player != null:
-		player.set("InputLocked", true)
+		player.set("input_locked", true)
 
 	# Walk animation. NpcAnimator is GDScript (Cluster 4b) — use snake_case call.
 	if penny != null:
@@ -946,7 +944,7 @@ func _run_penny_opens_home_cutscene() -> void:
 	# Unlock the post-transition player.
 	var new_player := get_tree().get_first_node_in_group("player") if get_tree() != null else null
 	if new_player != null:
-		new_player.set("InputLocked", false)
+		new_player.set("input_locked", false)
 
 # ---- World Interaction ----
 
@@ -1054,7 +1052,7 @@ func _submit_input(text: String) -> void:
 
 	# Store input in SaveData.
 	if _input_variable == "PlayerName":
-		var data := SaveManager.CurrentData
+		var data := SaveManager.current_data
 		if data != null:
 			data.set("player_name", text)
 	else:
@@ -1062,7 +1060,7 @@ func _submit_input(text: String) -> void:
 
 	# Penny gag: stash comparison flag.
 	if _input_variable == "PennyName":
-		var save_data := SaveManager.CurrentData
+		var save_data := SaveManager.current_data
 		var title_name: String = String(save_data.player_name) if save_data != null else ""
 		var matches: bool = title_name.strip_edges().is_empty() \
 				or title_name.strip_edges().to_lower() == text.strip_edges().to_lower()
@@ -1091,7 +1089,7 @@ func _substitute_variables(text: String) -> String:
 	if text.is_empty():
 		return text
 
-	var data := SaveManager.CurrentData
+	var data := SaveManager.current_data
 	if data != null:
 		text = text.replace("|PlayerName|", String(data.player_name))
 		text = text.replace("|CurrentWorld|", String(data.current_world))
