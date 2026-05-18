@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-103.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 103
-Name = "Plain Brown Shoes"
-Description = "Standard and sturdy."
-Category = 8
-Strength = 2
-Cost = 6
-Icon = ExtResource("2")
-CostumeId = "103_fbas_03fot1_shoes_00a_brown"
-CostumeLayer = "03fot1"
+id = 103
+name = "Plain Brown Shoes"
+description = "Standard and sturdy."
+category = 8
+strength = 2
+cost = 6
+icon = ExtResource("2")
+costume_id = "103_fbas_03fot1_shoes_00a_brown"
+costume_layer = "03fot1"

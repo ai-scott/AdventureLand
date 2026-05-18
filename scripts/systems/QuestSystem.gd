@@ -168,15 +168,15 @@ func _has_equipped_category(category_name: String) -> bool:
 func evaluate_condition(c: Resource) -> bool:
 	if c == null:
 		return false
-	var c_type: int = c.Type
+	var c_type: int = c.type
 	var result: bool = false
 	match c_type:
 		ConditionType.QUEST_STATUS:
-			result = get_quest_status(String(c.QuestId)) == String(c.Status)
+			result = get_quest_status(String(c.quest_id)) == String(c.status)
 		ConditionType.HAS_ITEM:
-			result = has_unique_item(String(c.ItemId))  # Phase 4 will add inventory quantity checks
+			result = has_unique_item(String(c.item_id))  # Phase 4 will add inventory quantity checks
 		ConditionType.WORLD_FLAG:
-			result = get_world_flag(String(c.FlagKey)) == String(c.FlagValue)
+			result = get_world_flag(String(c.flag_key)) == String(c.flag_value)
 		ConditionType.NPC_MEMORY:
 			result = get_npc_memory(String(c.NpcId), String(c.MemoryKey)) == String(c.MemoryValue)
 		ConditionType.PLAYER_LEVEL:
@@ -184,9 +184,9 @@ func evaluate_condition(c: Resource) -> bool:
 		ConditionType.CUSTOM:
 			result = false  # Custom checks stubbed
 		ConditionType.EQUIPPED_CATEGORY:
-			result = _has_equipped_category(String(c.Category))
+			result = _has_equipped_category(String(c.category))
 
-	return not result if bool(c.Negate) else result
+	return not result if bool(c.negate) else result
 
 # Evaluate all conditions on a node (AND logic). `conditions` is an
 # Array<DialogueCondition> or null.

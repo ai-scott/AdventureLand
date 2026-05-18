@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-096.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 96
-Name = "Bluejean Overalls"
-Description = "Great for working down on the farm."
-Category = 7
-Strength = 3
-Cost = 10
-Icon = ExtResource("2")
-CostumeId = "96_fbas_06lwr2_overalls_00a_bluejeans"
-CostumeLayer = "06lwr2"
+id = 96
+name = "Bluejean Overalls"
+description = "Great for working down on the farm."
+category = 7
+strength = 3
+cost = 10
+icon = ExtResource("2")
+costume_id = "96_fbas_06lwr2_overalls_00a_bluejeans"
+costume_layer = "06lwr2"

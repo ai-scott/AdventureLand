@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-092.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 92
-Name = "Purple Heart Skort"
-Description = "Everyone will love you when you wear this."
-Category = 7
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
-CostumeId = "92_fbas_08lwr3_longskirt_00a_purple_heart"
-CostumeLayer = "08lwr3"
+id = 92
+name = "Purple Heart Skort"
+description = "Everyone will love you when you wear this."
+category = 7
+strength = 2
+cost = 7
+icon = ExtResource("2")
+costume_id = "92_fbas_08lwr3_longskirt_00a_purple_heart"
+costume_layer = "08lwr3"

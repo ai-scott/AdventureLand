@@ -242,7 +242,7 @@ public partial class HUD : CanvasLayer
     {
         if (_attackIcon == null) return;
         var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
-        _attackIcon.Texture = weapon?.Icon ?? _defaultAttackIcon;
+        _attackIcon.Texture = weapon?.Icon() ?? _defaultAttackIcon;
     }
 
     public override void _Process(double delta)

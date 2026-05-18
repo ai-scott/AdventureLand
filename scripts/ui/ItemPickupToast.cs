@@ -22,8 +22,8 @@ public partial class ItemPickupToast : CanvasLayer
     // the panel resizes so the banner stays centered on its top border.
     private PanelContainer _banner;
 
-    private ItemData _newItem;
-    private ItemData _oldItem;
+    private Resource _newItem;
+    private Resource _oldItem;
     private bool _waitingForChoice;
     private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
@@ -132,7 +132,7 @@ public partial class ItemPickupToast : CanvasLayer
     /// the game tree while open. `onAccept` is invoked on Accept *only if* the
     /// player can afford; otherwise the prompt closes quietly without firing
     /// the callback. Caller (ItemTrigger) deducts gems and adds the item.</summary>
-    public void ShowPurchase(ItemData item, int cost, Action onAccept)
+    public void ShowPurchase(Resource item, int cost, Action onAccept)
     {
         _newItem = item;
         _onAccept = onAccept;
@@ -150,7 +150,7 @@ public partial class ItemPickupToast : CanvasLayer
     /// Used for world items and for shop items that the player has a pending
     /// free-grant on (grantFreeItem from a dialogue action). Lets the player
     /// examine each item's description and strength before committing.</summary>
-    public void ShowTake(ItemData item, Action onAccept)
+    public void ShowTake(Resource item, Action onAccept)
     {
         _newItem = item;
         _onAccept = onAccept;
@@ -169,7 +169,7 @@ public partial class ItemPickupToast : CanvasLayer
     /// Mirrors ShowPurchase's pause + input-lock pattern so the inventory
     /// stays open underneath but stops responding to nav input until the
     /// confirm closes.</summary>
-    public void ShowSell(ItemData item, int sellPrice, Action onAccept)
+    public void ShowSell(Resource item, int sellPrice, Action onAccept)
     {
         _newItem = item;
         _onAccept = onAccept;
@@ -183,7 +183,7 @@ public partial class ItemPickupToast : CanvasLayer
     }
 
     /// <summary>Show the pickup toast for the given item. Call after adding to inventory.</summary>
-    public void Show(ItemData item)
+    public void Show(Resource item)
     {
         _newItem = item;
 
@@ -192,11 +192,11 @@ public partial class ItemPickupToast : CanvasLayer
         // an inventory-management decision. Auto-equip silently when the
         // slot is free; if a comparable item is already equipped, just add
         // to the inventory and let the player swap from the menu later.
-        if (item.QuestItem)
+        if (item.QuestItem())
         {
-            if (item.IsEquippable)
+            if (item.IsEquippable())
             {
-                int equippedId = Inventory.GetEquippedId(item.Category);
+                int equippedId = Inventory.GetEquippedId(item.Category());
                 if (equippedId <= 0) DoEquip(item);
             }
             BuildSimpleToast(item, "Quest item received!");
@@ -204,9 +204,9 @@ public partial class ItemPickupToast : CanvasLayer
             return;
         }
 
-        if (item.IsEquippable)
+        if (item.IsEquippable())
         {
-            int equippedId = Inventory.GetEquippedId(item.Category);
+            int equippedId = Inventory.GetEquippedId(item.Category());
             _oldItem = equippedId > 0 ? Inventory.GetItem(equippedId) : null;
 
             if (_oldItem == null)
@@ -219,7 +219,7 @@ public partial class ItemPickupToast : CanvasLayer
             else
             {
                 // Slot occupied — show compare prompt.
-                _isUpgrade = item.Strength > _oldItem.Strength;
+                _isUpgrade = item.Strength() > _oldItem.Strength();
                 BuildCompareToast(item, _oldItem);
                 _waitingForChoice = true;
                 InteractHintManager.NotifyModalOpened();
@@ -228,21 +228,21 @@ public partial class ItemPickupToast : CanvasLayer
                 InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
             }
         }
-        else if (item.IsConsumable)
+        else if (item.IsConsumable())
         {
             BuildSimpleToast(item, "Added to inventory");
             _autoCloseTimer = 2.0;
         }
         else
         {
-            BuildSimpleToast(item, item.QuestItem ? "Quest item received!" : "Added to inventory");
+            BuildSimpleToast(item, item.QuestItem() ? "Quest item received!" : "Added to inventory");
             _autoCloseTimer = 2.0;
         }
     }
 
     // ---- Build UI variants ----
 
-    private void BuildAutoEquipToast(ItemData item)
+    private void BuildAutoEquipToast(Resource item)
     {
         InitToastPanel();
 
@@ -250,9 +250,9 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", 10);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: 32);
+        AddIcon(row, item.Icon(), size: 32);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name, fontSize: 18);
+        AddTitleLabel(textVbox, item.Name(), fontSize: 18);
         AddBodyLabel(textVbox, "Equipped!", DesignTokens.Paper, fontSize: 20);
 
         // First-weapon tutorial — render the hint centered under the
@@ -271,9 +271,9 @@ public partial class ItemPickupToast : CanvasLayer
     /// the prompt buttons. The flag is stored in SaveData.WorldFlags so
     /// the hint fires once per save. Returns null when the tutorial
     /// shouldn't show (non-weapon, no save, already seen).</summary>
-    private Control BuildAttackTutorialHint(ItemData item)
+    private Control BuildAttackTutorialHint(Resource item)
     {
-        if (item.Category != ItemData.ItemCategory.Weapon) return null;
+        if (item.Category() != ItemData.ItemCategory.Weapon) return null;
         // SaveData is GDScript (Cluster 9) -- world_flags is a Dictionary
         // accessed via Variant Get / Set with snake_case key.
         var save = SaveManager.CurrentData;
@@ -313,7 +313,7 @@ public partial class ItemPickupToast : CanvasLayer
         return row;
     }
 
-    private void BuildCompareToast(ItemData newItem, ItemData oldItem)
+    private void BuildCompareToast(Resource newItem, Resource oldItem)
     {
         InitPanel();
         SetItemBanner("New Gear");
@@ -325,11 +325,11 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
-        AddIcon(row, newItem.Icon, size: IconSize);
+        AddIcon(row, newItem.Icon(), size: IconSize);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, newItem.Name);
-        if (!string.IsNullOrEmpty(newItem.Description))
-            AddBodyLabel(textVbox, newItem.Description, DesignTokens.Paper, autowrap: true);
+        AddTitleLabel(textVbox, newItem.Name());
+        if (!string.IsNullOrEmpty(newItem.Description()))
+            AddBodyLabel(textVbox, newItem.Description(), DesignTokens.Paper, autowrap: true);
 
         var chips = BuildItemChips(newItem);
         if (chips != null) textVbox.AddChild(chips);
@@ -341,7 +341,7 @@ public partial class ItemPickupToast : CanvasLayer
             cancelLabel:  _isUpgrade ? "Cancel" : "Equip");
     }
 
-    private void BuildTakeToast(ItemData item)
+    private void BuildTakeToast(Resource item)
     {
         InitPanel();
         SetItemBanner("Found");
@@ -354,11 +354,11 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: IconSize);
+        AddIcon(row, item.Icon(), size: IconSize);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name);
-        if (!string.IsNullOrEmpty(item.Description))
-            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
+        AddTitleLabel(textVbox, item.Name());
+        if (!string.IsNullOrEmpty(item.Description()))
+            AddBodyLabel(textVbox, item.Description(), DesignTokens.Paper, autowrap: true);
 
         var chips = BuildItemChips(item);
         if (chips != null) textVbox.AddChild(chips);
@@ -369,7 +369,7 @@ public partial class ItemPickupToast : CanvasLayer
             cancelLabel: "Leave it");
     }
 
-    private void BuildSellToast(ItemData item, int sellPrice)
+    private void BuildSellToast(Resource item, int sellPrice)
     {
         InitPanel();
         SetItemBanner("Sell");
@@ -380,11 +380,11 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: IconSize);
+        AddIcon(row, item.Icon(), size: IconSize);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name);
-        if (!string.IsNullOrEmpty(item.Description))
-            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
+        AddTitleLabel(textVbox, item.Name());
+        if (!string.IsNullOrEmpty(item.Description()))
+            AddBodyLabel(textVbox, item.Description(), DesignTokens.Paper, autowrap: true);
 
         // Chip row: stat (with up/down arrow only if the item ISN'T the one
         // currently equipped in this slot — so the player can compare what
@@ -393,22 +393,22 @@ public partial class ItemPickupToast : CanvasLayer
         chipRow.AddThemeConstantOverride("separation", 6);
         chipRow.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-        if (item.IsEquippable || item.IsConsumable)
+        if (item.IsEquippable() || item.IsConsumable())
         {
-            var icon = CategoryIcon(item.Category);
+            var icon = CategoryIcon(item.Category());
             if (icon != null)
             {
-                int displayValue = item.IsConsumable
-                    ? Mathf.CeilToInt(item.Strength / 2f)
-                    : item.Strength;
+                int displayValue = item.IsConsumable()
+                    ? Mathf.CeilToInt(item.Strength() / 2f)
+                    : item.Strength();
                 var sign = displayValue >= 0 ? "+" : "";
                 var statChip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
-                if (item.IsEquippable)
+                if (item.IsEquippable())
                 {
-                    var equipped = Inventory.GetEquipped(item.Category);
-                    if (equipped != null && equipped.Id != item.Id)
+                    var equipped = Inventory.GetEquipped(item.Category());
+                    if (equipped != null && equipped.Id() != item.Id())
                     {
-                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        var arrow = BuildDirectionArrow(item.Strength() - equipped.Strength());
                         if (arrow != null && statChip.GetChild(0) is HBoxContainer chipInnerRow)
                         {
                             chipInnerRow.AddChild(arrow);
@@ -427,7 +427,7 @@ public partial class ItemPickupToast : CanvasLayer
             cancelLabel: "Keep it");
     }
 
-    private void BuildPurchaseToast(ItemData item, int cost)
+    private void BuildPurchaseToast(Resource item, int cost)
     {
         InitPanel();
         SetItemBanner("Buy");
@@ -438,11 +438,11 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", IconRightPadding);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: IconSize);
+        AddIcon(row, item.Icon(), size: IconSize);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name);
-        if (!string.IsNullOrEmpty(item.Description))
-            AddBodyLabel(textVbox, item.Description, DesignTokens.Paper, autowrap: true);
+        AddTitleLabel(textVbox, item.Name());
+        if (!string.IsNullOrEmpty(item.Description()))
+            AddBodyLabel(textVbox, item.Description(), DesignTokens.Paper, autowrap: true);
 
         var chips = BuildItemChips(item, cost);
         if (chips != null) textVbox.AddChild(chips);
@@ -460,7 +460,7 @@ public partial class ItemPickupToast : CanvasLayer
             primaryEnabled: _purchaseAffordable);
     }
 
-    private void BuildSimpleToast(ItemData item, string message)
+    private void BuildSimpleToast(Resource item, string message)
     {
         InitToastPanel();
 
@@ -468,9 +468,9 @@ public partial class ItemPickupToast : CanvasLayer
         row.AddThemeConstantOverride("separation", 10);
         _content.AddChild(row);
 
-        AddIcon(row, item.Icon, size: 32);
+        AddIcon(row, item.Icon(), size: 32);
         var textVbox = AddTextColumn(row);
-        AddTitleLabel(textVbox, item.Name, fontSize: 18);
+        AddTitleLabel(textVbox, item.Name(), fontSize: 18);
         AddBodyLabel(textVbox, message, DesignTokens.Paper, fontSize: 20);
     }
 
@@ -481,34 +481,34 @@ public partial class ItemPickupToast : CanvasLayer
     /// 'absolute + diff' BuildStatBlock layout — the Equip / Keep / Take
     /// labels carry the comparison signal now, so chips can stay
     /// minimalist per the handoff reference.</summary>
-    private Control BuildItemChips(ItemData item, int? gemCost = null)
+    private Control BuildItemChips(Resource item, int? gemCost = null)
     {
         var row = new HBoxContainer();
         row.AddThemeConstantOverride("separation", 6);
         row.MouseFilter = Control.MouseFilterEnum.Ignore;
 
         bool any = false;
-        if (item.IsEquippable || item.IsConsumable)
+        if (item.IsEquippable() || item.IsConsumable())
         {
-            var icon = CategoryIcon(item.Category);
+            var icon = CategoryIcon(item.Category());
             if (icon != null)
             {
                 // Food's Strength is HP units — convert to hearts (1 heart = 2 HP)
                 // so the chip reads in the same currency as the HUD heart row.
-                int displayValue = item.IsConsumable
-                    ? Mathf.CeilToInt(item.Strength / 2f)
-                    : item.Strength;
+                int displayValue = item.IsConsumable()
+                    ? Mathf.CeilToInt(item.Strength() / 2f)
+                    : item.Strength();
                 var sign = displayValue >= 0 ? "+" : "";
                 var chip = UiFrames.BuildStatChip($"{sign}{displayValue}", icon);
                 // Arrow tucks INSIDE the chip's HBox so it shares the dark
                 // mossy frame with the value + ability icon — reads as one
                 // composite badge instead of two adjacent UI atoms.
-                if (item.IsEquippable)
+                if (item.IsEquippable())
                 {
-                    var equipped = Inventory.GetEquipped(item.Category);
-                    if (equipped != null && equipped.Id != item.Id)
+                    var equipped = Inventory.GetEquipped(item.Category());
+                    if (equipped != null && equipped.Id() != item.Id())
                     {
-                        var arrow = BuildDirectionArrow(item.Strength - equipped.Strength);
+                        var arrow = BuildDirectionArrow(item.Strength() - equipped.Strength());
                         if (arrow != null && chip.GetChild(0) is HBoxContainer chipRow)
                         {
                             chipRow.AddChild(arrow);
@@ -541,15 +541,15 @@ public partial class ItemPickupToast : CanvasLayer
     /// AddChoiceButtons so it omits the column when there's nothing to
     /// show.
     /// </summary>
-    private Control BuildStatBlock(ItemData item, ItemData equipped)
+    private Control BuildStatBlock(Resource item, Resource equipped)
     {
-        if (!item.IsEquippable) return null;
-        var statIcon = CategoryIcon(item.Category);
-        var abbr = StatAbbr(item.Category);
+        if (!item.IsEquippable()) return null;
+        var statIcon = CategoryIcon(item.Category());
+        var abbr = StatAbbr(item.Category());
         if (statIcon == null || abbr == null) return null;
 
-        int newVal = item.Strength;
-        int oldVal = equipped?.Strength ?? 0;
+        int newVal = item.Strength();
+        int oldVal = equipped?.Strength() ?? 0;
         int diff = newVal - oldVal;
 
         var col = new VBoxContainer();
@@ -990,12 +990,12 @@ public partial class ItemPickupToast : CanvasLayer
         return label;
     }
 
-    private void DoEquip(ItemData item)
+    private void DoEquip(Resource item)
     {
 
         for (int i = 0; i < Inventory.SlotCount; i++)
         {
-            if (Inventory.GetSlotItemId(i) == item.Id)
+            if (Inventory.GetSlotItemId(i) == item.Id())
             {
                 Inventory.Equip(i);
                 break;

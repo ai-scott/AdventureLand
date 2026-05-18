@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
-Id = 143
-Name = "Purple Bob"
-Description = ""
-Category = 11
-Strength = 0
-Cost = 0
-CostumeId = "fbas_13hair_bob1_00_violet_bob"
-CostumeLayer = "13hair"
+id = 143
+name = "Purple Bob"
+description = ""
+category = 11
+strength = 0
+cost = 0
+costume_id = "fbas_13hair_bob1_00_violet_bob"
+costume_layer = "13hair"

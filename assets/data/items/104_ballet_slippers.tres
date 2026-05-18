@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-104.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 104
-Name = "Ballet Slippers"
-Description = "These are the non-slip kind."
-Category = 8
-Strength = 1
-Cost = 5
-Icon = ExtResource("2")
-CostumeId = "104_fbas_03fot1_shoes_00a_ballet"
-CostumeLayer = "03fot1"
+id = 104
+name = "Ballet Slippers"
+description = "These are the non-slip kind."
+category = 8
+strength = 1
+cost = 5
+icon = ExtResource("2")
+costume_id = "104_fbas_03fot1_shoes_00a_ballet"
+costume_layer = "03fot1"

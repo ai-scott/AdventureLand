@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-004.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 4
-Name = "Magic Trident"
-Description = "The three spear tips glow with spectral energy."
-Category = 0
-Strength = 6
-Cost = 20
-Icon = ExtResource("2")
-WeaponSheet = 7
-QuestItem = true
+id = 4
+name = "Magic Trident"
+description = "The three spear tips glow with spectral energy."
+category = 0
+strength = 6
+cost = 20
+icon = ExtResource("2")
+weapon_sheet = 7
+quest_item = true

@@ -449,17 +449,17 @@ public partial class InventoryUI : CanvasLayer
 		var item = Inventory.GetSlotItem(_selectedSlot);
 		if (item == null) return;
 
-		if (item.IsEquippable)
+		if (item.IsEquippable())
 		{
 			// SPC toggles equip/unequip — pressing the chip when an item is
 			// already equipped should take it off, not re-equip.
 			var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 			var costume = player?.GetNodeOrNull<Node>("CostumeController");
-			if (Inventory.IsEquipped(item.Id))
+			if (Inventory.IsEquipped(item.Id()))
 			{
-				Inventory.Unequip(item.Category);
-				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
-					costume.Call("unequip_layer", item.CostumeLayer);
+				Inventory.Unequip(item.Category());
+				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer()))
+					costume.Call("unequip_layer", item.CostumeLayer());
 			}
 			else
 			{
@@ -467,14 +467,14 @@ public partial class InventoryUI : CanvasLayer
 				costume?.Call("equip_item", item);
 			}
 		}
-		else if (item.IsConsumable)
+		else if (item.IsConsumable())
 		{
 			// Capture how much HP actually moved (capped by MaxHealth) so the
 			// post-close "+N HP" toast shows the real heal, not the food's
 			// nominal strength. Pre-fetch the health system before UseItem
 			// runs the heal so we can diff before/after.
 			int healed = 0;
-			if (item.Category == ItemData.ItemCategory.Food)
+			if (item.Category() == ItemData.ItemCategory.Food)
 			{
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 				// HealthSystem is GDScript (Cluster 10b) — Variant Get.
@@ -627,7 +627,7 @@ public partial class InventoryUI : CanvasLayer
 		frame.AddChild(_detailsActionBtn);
 	}
 
-	private void UpdateActionButton(ItemData item, bool equipped)
+	private void UpdateActionButton(Resource item, bool equipped)
 	{
 		if (_detailsActionBtn == null) return;
 
@@ -646,9 +646,9 @@ public partial class InventoryUI : CanvasLayer
 		//    only for non-actionable items (quest items, etc).
 		string text = null;
 		System.Action<Button> equipStyle = UiFrames.ApplyPrimaryButton;
-		if (item.IsEquippable && !equipped) text = "Equip";
-		else if (item.IsEquippable && equipped) { text = "Unequip"; equipStyle = UiFrames.ApplySecondaryButton; }
-		else if (item.IsConsumable) text = "Use";
+		if (item.IsEquippable() && !equipped) text = "Equip";
+		else if (item.IsEquippable() && equipped) { text = "Unequip"; equipStyle = UiFrames.ApplySecondaryButton; }
+		else if (item.IsConsumable()) text = "Use";
 
 		if (text != null)
 		{
@@ -982,20 +982,20 @@ public partial class InventoryUI : CanvasLayer
 	/// <summary>Sell qualifier — non-quest, priced, and not a currency or key
 	/// item. Equipped gear is allowed (sell unequips first). Hair never lands
 	/// in inventory at all so it falls out via Cost == 0.</summary>
-	private static bool CanSell(ItemData item) =>
-		item != null && !item.QuestItem && item.Cost > 0
-		&& item.Category != ItemData.ItemCategory.Money
-		&& item.Category != ItemData.ItemCategory.Key;
+	private static bool CanSell(Resource item) =>
+		item != null && !item.QuestItem() && item.Cost() > 0
+		&& item.Category() != ItemData.ItemCategory.Money
+		&& item.Category() != ItemData.ItemCategory.Key;
 
 	/// <summary>Half of the buy price (rounded down, min 1). Tune the ratio
 	/// here if shops should pay more / less for resale.</summary>
-	private static int SellPriceFor(ItemData item) => System.Math.Max(1, item.Cost / 2);
+	private static int SellPriceFor(Resource item) => System.Math.Max(1, item.Cost() / 2);
 
 	/// <summary>Spawn a sell-confirm toast over the inventory. The toast pauses
 	/// the tree itself; we set _overlayActive so our own _Process skips
 	/// keyboard nav while it's up, and re-pause on close (the toast unpauses
 	/// unconditionally, which would otherwise unpause the inventory beneath).</summary>
-	private void OpenSellToast(ItemData item, int sellPrice)
+	private void OpenSellToast(Resource item, int sellPrice)
 	{
 		var toast = new ItemPickupToast();
 		GetTree().CurrentScene.AddChild(toast);
@@ -1013,16 +1013,16 @@ public partial class InventoryUI : CanvasLayer
 
 			// Auto-unequip if the player is selling the gear they're wearing,
 			// then strip the costume layer so the live preview refreshes.
-			if (Inventory.IsEquipped(item.Id))
+			if (Inventory.IsEquipped(item.Id()))
 			{
-				Inventory.Unequip(item.Category);
+				Inventory.Unequip(item.Category());
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 				var costume = player?.GetNodeOrNull<Node>("CostumeController");
-				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer))
-					costume.Call("unequip_layer", item.CostumeLayer);
+				if (costume != null && !string.IsNullOrEmpty(item.CostumeLayer()))
+					costume.Call("unequip_layer", item.CostumeLayer());
 			}
 
-			Inventory.RemoveItem(item.Id, 1);
+			Inventory.RemoveItem(item.Id(), 1);
 			CurrencySystem.AddGems(sellPrice);
 			SaveManager.Save();
 			SFXController.Play("collectible_pickup");
@@ -1441,7 +1441,7 @@ public partial class InventoryUI : CanvasLayer
 		var health = player?.GetNodeOrNull<Node>("HealthSystem");
 
 		var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
-		int attack = weapon?.Strength ?? 0;
+		int attack = weapon?.Strength() ?? 0;
 		int maxHearts = (health?.Get("max_health").AsInt32() ?? 0) / 2;
 		int defense = StrengthOf(ItemData.ItemCategory.Head)
 					+ StrengthOf(ItemData.ItemCategory.Neck)
@@ -1462,13 +1462,13 @@ public partial class InventoryUI : CanvasLayer
 		if (attackIcon != null)
 		{
 			_defaultAttackIcon ??= attackIcon.Texture;
-			attackIcon.Texture = weapon?.Icon ?? _defaultAttackIcon;
+			attackIcon.Texture = weapon?.Icon() ?? _defaultAttackIcon;
 		}
 	}
 	private Texture2D _defaultAttackIcon;
 
 	private static int StrengthOf(ItemData.ItemCategory cat)
-		=> Inventory.GetEquipped(cat)?.Strength ?? 0;
+		=> Inventory.GetEquipped(cat)?.Strength() ?? 0;
 
 	private void RefreshAppearance()
 	{
@@ -1476,7 +1476,7 @@ public partial class InventoryUI : CanvasLayer
 		{
 			if (_appearanceIcons[i] == null) continue;
 			var item = Inventory.GetEquipped(AppearanceCategories[i]);
-			_appearanceIcons[i].Texture = item?.Icon ?? GD.Load<Texture2D>(
+			_appearanceIcons[i].Texture = item?.Icon() ?? GD.Load<Texture2D>(
 				$"res://assets/sprites/ui/inventory/equipslot_{EquipPlaceholderIndex[i]}.png");
 		}
 	}
@@ -1489,7 +1489,7 @@ public partial class InventoryUI : CanvasLayer
 			var qty = Inventory.GetSlotQuantity(i);
 			if (item != null)
 			{
-				_slotIcons[i].Texture = item.Icon;
+				_slotIcons[i].Texture = item.Icon();
 				_slotQtyLabels[i].Text = qty > 1 ? $"x{qty}" : "";
 			}
 			else
@@ -1532,41 +1532,41 @@ public partial class InventoryUI : CanvasLayer
 			return;
 		}
 
-		bool equipped = Inventory.IsEquipped(item.Id);
+		bool equipped = Inventory.IsEquipped(item.Id());
 		// Equipped state is communicated by the live preview (item visible
 		// on the character) and the chip's "Unequip" label. Key / quest
 		// items get a "★ Quest Item" line in the stat row instead of a
 		// title prefix — same vertical slot the +N stat modifier uses for
 		// normal gear, so the layout stays balanced and the title doesn't
 		// shift right.
-		_detailsName.Text = item.Name;
-		_detailsDesc.Text = item.Description ?? "";
+		_detailsName.Text = item.Name();
+		_detailsDesc.Text = item.Description() ?? "";
 
 		// Big item icon next to the description, with a slot-cursor frame
 		// wrapping it so the top-right preview matches the gold-bordered
 		// highlight vocabulary the grid uses.
 		if (_detailsItemIcon != null)
 		{
-			_detailsItemIcon.Texture = item.Icon;
-			_detailsItemIcon.Visible = item.Icon != null;
+			_detailsItemIcon.Texture = item.Icon();
+			_detailsItemIcon.Visible = item.Icon() != null;
 		}
 		if (_detailsItemCursor != null)
 		{
-			_detailsItemCursor.Visible = item.Icon != null;
+			_detailsItemCursor.Visible = item.Icon() != null;
 		}
 
-		if (item.IsEquippable || item.IsConsumable)
+		if (item.IsEquippable() || item.IsConsumable())
 		{
-			int displayValue = item.IsConsumable ? Mathf.CeilToInt(item.Strength / 2f) : item.Strength;
-			var icon = StatIconFor(item.Category);
+			int displayValue = item.IsConsumable() ? Mathf.CeilToInt(item.Strength() / 2f) : item.Strength();
+			var icon = StatIconFor(item.Category());
 			if (icon != null)
 			{
 				var sign = displayValue >= 0 ? "+" : "";
 				Control arrow = null;
-				if (item.IsEquippable && !equipped)
+				if (item.IsEquippable() && !equipped)
 				{
-					var current = Inventory.GetEquipped(item.Category);
-					if (current != null) arrow = BuildDirectionArrow(item.Strength - current.Strength);
+					var current = Inventory.GetEquipped(item.Category());
+					if (current != null) arrow = BuildDirectionArrow(item.Strength() - current.Strength());
 				}
 				// Pass arrow to the stat builder so it nests tight against
 				// the icon (separation 1) instead of inheriting the wider
@@ -1574,7 +1574,7 @@ public partial class InventoryUI : CanvasLayer
 				_detailsStats.AddChild(BuildInlineStat($"{sign}{displayValue}", icon, arrow));
 			}
 		}
-		else if (item.IsKeyItem)
+		else if (item.IsKeyItem())
 		{
 			// "★ Quest Item" line — slots into the same row as +N stat
 			// modifiers for normal gear. Gold star + moss-green label so

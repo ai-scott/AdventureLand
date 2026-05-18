@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://dnyhe3n32lc4d" path="res://assets/sprites/items/itemshowcase-animation 1-005.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 5
-Name = "Magic Wand"
-Description = "A polished shaft topped with a crystal that hums with arcane power."
-Category = 0
-Strength = 3
-Cost = 10
-Icon = ExtResource("2")
-WeaponSheet = 3
+id = 5
+name = "Magic Wand"
+description = "A polished shaft topped with a crystal that hums with arcane power."
+category = 0
+strength = 3
+cost = 10
+icon = ExtResource("2")
+weapon_sheet = 3

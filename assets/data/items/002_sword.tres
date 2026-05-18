@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bbm4bib251e2"]
 
-[ext_resource type="Script" uid="uid://cjqsgn7vhsiem" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://d1u3lg4d8nmv3" path="res://assets/sprites/items/itemshowcase-animation 1-002.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 2
-Name = "Sword"
-Description = "A double-sided blade with a simple hilt. Straightforward and effective."
-Category = 0
-Strength = 4
-Cost = 8
-Icon = ExtResource("2")
-WeaponSheet = 1
+id = 2
+name = "Sword"
+description = "A double-sided blade with a simple hilt. Straightforward and effective."
+category = 0
+strength = 4
+cost = 8
+icon = ExtResource("2")
+weapon_sheet = 1

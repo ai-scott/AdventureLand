@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-106.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 106
-Name = "Red Curly-toed Shoes"
-Description = "Aladdin would love these."
-Category = 8
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
-CostumeId = "106_fbas_07fot2_curlytoeshoes_00a_red"
-CostumeLayer = "07fot2"
+id = 106
+name = "Red Curly-toed Shoes"
+description = "Aladdin would love these."
+category = 8
+strength = 2
+cost = 7
+icon = ExtResource("2")
+costume_id = "106_fbas_07fot2_curlytoeshoes_00a_red"
+costume_layer = "07fot2"

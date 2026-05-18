@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-091.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 91
-Name = "Black + Pink Checkered Pants"
-Description = "If you put your knee up, you can play chess on it."
-Category = 7
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
-CostumeId = "91_fbas_04lwr1_longpants_00a_pinkblack"
-CostumeLayer = "04lwr1"
+id = 91
+name = "Black + Pink Checkered Pants"
+description = "If you put your knee up, you can play chess on it."
+category = 7
+strength = 2
+cost = 7
+icon = ExtResource("2")
+costume_id = "91_fbas_04lwr1_longpants_00a_pinkblack"
+costume_layer = "04lwr1"

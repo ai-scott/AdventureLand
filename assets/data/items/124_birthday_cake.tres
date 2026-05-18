@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-124.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 124
-Name = "Birthday Cake!"
-Description = "Looks like the perfect thing for a young girl's 9th birthday."
-Category = 10
-Strength = 2
-Cost = 2
-Icon = ExtResource("2")
-QuestItem = true
+id = 124
+name = "Birthday Cake!"
+description = "Looks like the perfect thing for a young girl's 9th birthday."
+category = 10
+strength = 2
+cost = 2
+icon = ExtResource("2")
+quest_item = true

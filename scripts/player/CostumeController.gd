@@ -122,18 +122,18 @@ func equip_item(item: Resource) -> void:
 
 	# Weapons use a separate layer (farmer_1h_weapon) and the MSCA
 	# weapon sheets.
-	if int(item.Category) == ITEM_CATEGORY_WEAPON:
+	if int(item.category) == ITEM_CATEGORY_WEAPON:
 		_equip_weapon(item)
 		return
 
-	var costume_layer: String = String(item.CostumeLayer)
+	var costume_layer: String = String(item.costume_layer)
 	if costume_layer.is_empty():
-		print("[Costume] Item '%s' has no costume layer — stats-only equip" % item.Name)
+		print("[Costume] Item '%s' has no costume layer — stats-only equip" % item.name)
 		return
 
-	var tex := _resolve_base_sheet(costume_layer, String(item.CostumeId))
+	var tex := _resolve_base_sheet(costume_layer, String(item.costume_id))
 	if tex == null:
-		push_warning("[Costume] Could not resolve texture for '%s' layer=%s" % [item.Name, costume_layer])
+		push_warning("[Costume] Could not resolve texture for '%s' layer=%s" % [item.name, costume_layer])
 		return
 
 	# Handle mutual exclusion for leg-type and boot-type layers.
@@ -142,7 +142,7 @@ func equip_item(item: Resource) -> void:
 
 	set_layer(costume_layer, tex)
 	_apply_costume_palette(item)
-	print("[Costume] Equipped '%s' on layer %s" % [item.Name, costume_layer])
+	print("[Costume] Equipped '%s' on layer %s" % [item.name, costume_layer])
 
 	# If it's a hat, re-evaluate hair visibility.
 	if costume_layer == "14head":
@@ -153,7 +153,7 @@ func equip_item(item: Resource) -> void:
 				h.visible = false
 
 # Equip a weapon by swapping the farmer_1h_weapon sprite's texture to
-# the MSCA weapon sheet indicated by item.WeaponSheet (1-7).
+# the MSCA weapon sheet indicated by item.weapon_sheet (1-7).
 func _equip_weapon(item: Resource) -> void:
 	if _sprite_layers == null:
 		return
@@ -163,9 +163,9 @@ func _equip_weapon(item: Resource) -> void:
 		push_warning("[Costume] farmer_1h_weapon sprite not found")
 		return
 
-	var weapon_sheet: int = int(item.WeaponSheet)
+	var weapon_sheet: int = int(item.weapon_sheet)
 	if weapon_sheet <= 0:
-		print("[Costume] Weapon '%s' has no WeaponSheet — keeping default" % item.Name)
+		print("[Costume] Weapon '%s' has no WeaponSheet — keeping default" % item.name)
 		return
 
 	# Weapon sheet filenames: "farmer 1hwpn 00N 32x32 v00.png"
@@ -175,7 +175,7 @@ func _equip_weapon(item: Resource) -> void:
 		return
 
 	weapon_sprite.texture = load(path) as Texture2D
-	print("[Costume] Equipped weapon '%s' (sheet %d)" % [item.Name, weapon_sheet])
+	print("[Costume] Equipped weapon '%s' (sheet %d)" % [item.name, weapon_sheet])
 
 # Unequip the visual for a given layer.
 func unequip_layer(layer_name: String) -> void:
@@ -198,12 +198,12 @@ func unequip_layer(layer_name: String) -> void:
 func _apply_costume_palette(item: Resource) -> void:
 	if _sprite_layers == null:
 		return
-	var layer_name: String = String(item.CostumeLayer)
+	var layer_name: String = String(item.costume_layer)
 	var layer := _sprite_layers.get_node_or_null(layer_name) as Sprite2D
 	if layer == null:
 		return
 
-	var palette: Variant = CostumePaletteRegistry.get_palette(int(item.Id))
+	var palette: Variant = CostumePaletteRegistry.get_palette(int(item.id))
 	if palette == null:
 		layer.material = null
 		return

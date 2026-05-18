@@ -23,7 +23,7 @@ extends Node
 const SLOT_COUNT: int = 30
 
 # Mirrors ItemData.ItemCategory by integer value. While ItemData stays
-# C#, GDScript reads `item.Category` as an int and compares against
+# C#, GDScript reads `item.category` as an int and compares against
 # these. Don't reorder — .tres files have these baked as ints.
 enum ItemCategory {
 	WEAPON  = 0,
@@ -97,7 +97,7 @@ func grant_starter_equipment() -> void:
 			push_warning("[Inventory] Starter item ID %d not found in database" % id)
 			continue
 		add_item(id, 1)
-		var category_int: int = item.Category
+		var category_int: int = item.category
 		_equipped[CATEGORY_NAMES[category_int]] = id
 
 	print("[Inventory] Starter equipment granted: %d items equipped" % _equipped.size())
@@ -120,9 +120,9 @@ func _load_database() -> void:
 		if file_name.ends_with(".tres"):
 			var item: Resource = load("res://assets/data/items/%s" % file_name)
 			# Skip non-ItemData resources (shouldn't be any, but guard).
-			if item != null and item.get("Name") != null and item.Name != "":
-				_db[int(item.Id)] = item
-				_db_by_name[String(item.Name).to_lower()] = item
+			if item != null and item.get("name") != null and item.name != "":
+				_db[int(item.id)] = item
+				_db_by_name[String(item.name).to_lower()] = item
 		file_name = dir.get_next()
 	dir.list_dir_end()
 
@@ -142,14 +142,14 @@ func get_item_by_name(item_name: String) -> Resource:
 func _is_equippable(item: Resource) -> bool:
 	if item == null:
 		return false
-	var c: int = item.Category
+	var c: int = item.category
 	return c == ItemCategory.HEAD or c == ItemCategory.NECK \
 		or c == ItemCategory.BODY or c == ItemCategory.HAND \
 		or c == ItemCategory.LEGS or c == ItemCategory.BOOT \
 		or c == ItemCategory.HAIR or c == ItemCategory.WEAPON
 
 func _is_consumable(item: Resource) -> bool:
-	return item != null and int(item.Category) == ItemCategory.FOOD
+	return item != null and int(item.category) == ItemCategory.FOOD
 
 # ---- Inventory Operations ----
 
@@ -161,11 +161,11 @@ func add_item(item_id: int, quantity: int = 1) -> bool:
 		return false
 
 	# Try to stack on an existing slot first.
-	if bool(item.Stackable):
+	if bool(item.stackable):
 		for i in range(SLOT_COUNT):
 			if _slot_item_ids[i] == item_id:
 				_slot_quantities[i] += quantity
-				print("[Inventory] Stacked %s x%d (now x%d)" % [item.Name, quantity, _slot_quantities[i]])
+				print("[Inventory] Stacked %s x%d (now x%d)" % [item.name, quantity, _slot_quantities[i]])
 				inventory_changed.emit()
 				return true
 
@@ -174,7 +174,7 @@ func add_item(item_id: int, quantity: int = 1) -> bool:
 		if _slot_item_ids[i] == 0:
 			_slot_item_ids[i] = item_id
 			_slot_quantities[i] = quantity
-			print("[Inventory] Added %s to slot %d" % [item.Name, i])
+			print("[Inventory] Added %s to slot %d" % [item.name, i])
 			inventory_changed.emit()
 			return true
 
@@ -187,7 +187,7 @@ func add_item_by_name(item_name: String, quantity: int = 1) -> bool:
 	if item == null:
 		push_warning("[Inventory] Unknown item name: '%s'" % item_name)
 		return false
-	return add_item(int(item.Id), quantity)
+	return add_item(int(item.id), quantity)
 
 # Remove quantity of an item. Returns true if successfully removed.
 func remove_item(item_id: int, quantity: int = 1) -> bool:
@@ -197,7 +197,7 @@ func remove_item(item_id: int, quantity: int = 1) -> bool:
 		_slot_quantities[i] -= quantity
 		if _slot_quantities[i] <= 0:
 			var item := get_item(item_id)
-			var item_name: String = String(item.Name) if item != null else str(item_id)
+			var item_name: String = String(item.name) if item != null else str(item_id)
 			print("[Inventory] Removed %s from slot %d" % [item_name, i])
 			_slot_item_ids[i] = 0
 			_slot_quantities[i] = 0
@@ -207,7 +207,7 @@ func remove_item(item_id: int, quantity: int = 1) -> bool:
 
 func remove_item_by_name(item_name: String, quantity: int = 1) -> bool:
 	var item := get_item_by_name(item_name)
-	return item != null and remove_item(int(item.Id), quantity)
+	return item != null and remove_item(int(item.id), quantity)
 
 # Check if the player has at least one of this item.
 func has_item(item_id: int) -> bool:
@@ -218,7 +218,7 @@ func has_item(item_id: int) -> bool:
 
 func has_item_by_name(item_name: String) -> bool:
 	var item := get_item_by_name(item_name)
-	return item != null and has_item(int(item.Id))
+	return item != null and has_item(int(item.id))
 
 # Get the item ID at a given slot (0 = empty).
 func get_slot_item_id(slot: int) -> int:
@@ -241,16 +241,16 @@ func equip(slot_index: int) -> bool:
 	if item == null or not _is_equippable(item):
 		return false
 
-	var category_int: int = item.Category
+	var category_int: int = item.category
 	var cat_name: String = CATEGORY_NAMES[category_int]
 
 	# If something is already equipped in this slot, unequip it first.
 	if _equipped.has(cat_name):
 		unequip(category_int)
 
-	_equipped[cat_name] = int(item.Id)
-	print("[Inventory] Equipped %s (%s)" % [item.Name, cat_name])
-	item_equipped.emit(int(item.Id), cat_name)
+	_equipped[cat_name] = int(item.id)
+	print("[Inventory] Equipped %s (%s)" % [item.name, cat_name])
+	item_equipped.emit(int(item.id), cat_name)
 	return true
 
 # Unequip the item in the given category slot. Accepts int (the
@@ -262,7 +262,7 @@ func unequip(category: int) -> bool:
 	var item_id: int = _equipped[cat_name]
 	_equipped.erase(cat_name)
 	var item := get_item(item_id)
-	var item_name: String = String(item.Name) if item != null else str(item_id)
+	var item_name: String = String(item.name) if item != null else str(item_id)
 	print("[Inventory] Unequipped %s (%s)" % [item_name, cat_name])
 	item_unequipped.emit(cat_name)
 	return true
@@ -291,15 +291,15 @@ func use_item(slot_index: int) -> bool:
 
 	# Food heals for Strength amount. HealthSystem is still C# this
 	# cluster — call its Heal method via cross-language dispatch.
-	if int(item.Category) == ItemCategory.FOOD:
+	if int(item.category) == ItemCategory.FOOD:
 		var player := get_tree().get_first_node_in_group("player")
 		var health := player.get_node_or_null("HealthSystem") if player != null else null
 		if health != null:
-			health.call("heal", int(item.Strength))
-			print("[Inventory] Used %s — healed %d HP" % [item.Name, int(item.Strength)])
+			health.call("heal", int(item.strength))
+			print("[Inventory] Used %s — healed %d HP" % [item.name, int(item.strength)])
 			SFXController.play("potion")
 
-	remove_item(int(item.Id), 1)
+	remove_item(int(item.id), 1)
 	return true
 
 # ---- Save/Load Integration ----

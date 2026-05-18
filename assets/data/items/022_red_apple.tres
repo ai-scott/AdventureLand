@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-022.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 22
-Name = "Red Apple"
-Description = "One a day keeps the doctor away."
-Category = 1
-Strength = 4
-Cost = 4
-Icon = ExtResource("2")
-Stackable = true
+id = 22
+name = "Red Apple"
+description = "One a day keeps the doctor away."
+category = 1
+strength = 4
+cost = 4
+icon = ExtResource("2")
+stackable = true

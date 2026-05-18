@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-021.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 21
-Name = "Wild Mushroom"
-Description = "Simple food source from the forest. Cook before use."
-Category = 1
-Strength = 2
-Cost = 2
-Icon = ExtResource("2")
-Stackable = true
+id = 21
+name = "Wild Mushroom"
+description = "Simple food source from the forest. Cook before use."
+category = 1
+strength = 2
+cost = 2
+icon = ExtResource("2")
+stackable = true

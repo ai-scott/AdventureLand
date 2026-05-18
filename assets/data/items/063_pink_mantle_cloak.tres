@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-063.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 63
-Name = "Pink Mantle Cloak"
-Description = "A fluffy and comfy cape."
-Category = 4
-Strength = 2
-Cost = 6
-Icon = ExtResource("2")
-CostumeId = "63_fbas_11neck_cloakwithmantleplain_00b_pink"
-CostumeLayer = "11neck"
+id = 63
+name = "Pink Mantle Cloak"
+description = "A fluffy and comfy cape."
+category = 4
+strength = 2
+cost = 6
+icon = ExtResource("2")
+costume_id = "63_fbas_11neck_cloakwithmantleplain_00b_pink"
+costume_layer = "11neck"

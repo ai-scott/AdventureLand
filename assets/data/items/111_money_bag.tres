@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-111.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 111
-Name = "Money Bag"
-Description = "A big sack full of coins!"
-Category = 9
-Strength = 0
-Cost = 10
-Icon = ExtResource("2")
-Stackable = true
+id = 111
+name = "Money Bag"
+description = "A big sack full of coins!"
+category = 9
+strength = 0
+cost = 10
+icon = ExtResource("2")
+stackable = true

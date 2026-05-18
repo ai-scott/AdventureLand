@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-107.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 107
-Name = "Forest Green Boots"
-Description = "Don't get lost in the woods with these."
-Category = 8
-Strength = 3
-Cost = 10
-Icon = ExtResource("2")
-CostumeId = "107_fbas_07fot2_cuffedboots_00a_forest_green"
-CostumeLayer = "07fot2"
+id = 107
+name = "Forest Green Boots"
+description = "Don't get lost in the woods with these."
+category = 8
+strength = 3
+cost = 10
+icon = ExtResource("2")
+costume_id = "107_fbas_07fot2_cuffedboots_00a_forest_green"
+costume_layer = "07fot2"

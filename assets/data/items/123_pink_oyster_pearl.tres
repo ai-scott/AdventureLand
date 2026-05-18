@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-123.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 123
-Name = "Pink Oyster Pearl"
-Description = "In it, you see the depths of the sea."
-Category = 10
-Strength = 0
-Cost = 0
-Icon = ExtResource("2")
-QuestItem = true
+id = 123
+name = "Pink Oyster Pearl"
+description = "In it, you see the depths of the sea."
+category = 10
+strength = 0
+cost = 0
+icon = ExtResource("2")
+quest_item = true

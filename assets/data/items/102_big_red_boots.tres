@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-102.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 102
-Name = "Big Red Boots"
-Description = "If it's raining outside, put these on."
-Category = 8
-Strength = 3
-Cost = 10
-Icon = ExtResource("2")
-CostumeId = "102_fbas_07fot2_fbas_07fot2_cuffedboots_00a_red"
-CostumeLayer = "07fot2"
+id = 102
+name = "Big Red Boots"
+description = "If it's raining outside, put these on."
+category = 8
+strength = 3
+cost = 10
+icon = ExtResource("2")
+costume_id = "102_fbas_07fot2_fbas_07fot2_cuffedboots_00a_red"
+costume_layer = "07fot2"

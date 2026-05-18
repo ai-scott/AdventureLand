@@ -58,11 +58,13 @@ public static class Inventory
     }
 
     // ---- Database ----
-    public static ItemData GetItem(int id)
-        => Get()?.Call("get_item", id).As<ItemData>();
+    // ItemData is GDScript (Cluster 10c) -- typed return drops to
+    // Resource; callers read fields via Variant Get with snake_case.
+    public static Resource GetItem(int id)
+        => Get()?.Call("get_item", id).As<Resource>();
 
-    public static ItemData GetItemByName(string name)
-        => Get()?.Call("get_item_by_name", name).As<ItemData>();
+    public static Resource GetItemByName(string name)
+        => Get()?.Call("get_item_by_name", name).As<Resource>();
 
     // ---- Inventory ops ----
     public static bool AddItem(int itemId, int quantity = 1)
@@ -89,8 +91,8 @@ public static class Inventory
     public static int GetSlotQuantity(int slot)
         => Get()?.Call("get_slot_quantity", slot).AsInt32() ?? 0;
 
-    public static ItemData GetSlotItem(int slot)
-        => Get()?.Call("get_slot_item", slot).As<ItemData>();
+    public static Resource GetSlotItem(int slot)
+        => Get()?.Call("get_slot_item", slot).As<Resource>();
 
     // ---- Equipment ----
     public static bool Equip(int slotIndex)
@@ -102,8 +104,8 @@ public static class Inventory
     public static int GetEquippedId(ItemData.ItemCategory category)
         => Get()?.Call("get_equipped_id", (int)category).AsInt32() ?? -1;
 
-    public static ItemData GetEquipped(ItemData.ItemCategory category)
-        => Get()?.Call("get_equipped", (int)category).As<ItemData>();
+    public static Resource GetEquipped(ItemData.ItemCategory category)
+        => Get()?.Call("get_equipped", (int)category).As<Resource>();
 
     public static bool IsEquipped(int itemId)
         => Get()?.Call("is_equipped", itemId).AsBool() ?? false;

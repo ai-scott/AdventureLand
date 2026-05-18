@@ -193,7 +193,7 @@ const HAIR_RAMPS_PATH: String = "res://assets/sprites/player/farmer/palettes/man
 const HAIR_BASE_RAMP_PATH: String = "res://assets/sprites/player/farmer/palettes/base ramps/hair color base ramp.png"
 
 # ItemData is still C# (Cluster 10) -- mirror its ItemCategory enum
-# integer values for direct comparisons against `item.Category`.
+# integer values for direct comparisons against `item.category`.
 const ITEM_CATEGORY_WEAPON: int = 0
 const ITEM_CATEGORY_HEAD: int = 3
 const ITEM_CATEGORY_NECK: int = 4
@@ -488,12 +488,12 @@ static func _debug_grant_all_weapons() -> void:
 		var item: Resource = Inventory.get_item(id)
 		if item == null:
 			continue
-		if int(item.Category) != ITEM_CATEGORY_WEAPON:
+		if int(item.category) != ITEM_CATEGORY_WEAPON:
 			continue
 		if Inventory.add_item(id, 1):
 			granted += 1
 			print("[Debug] Granted %s (id=%d, sheet=%s, str=%s)" %
-					[item.Name, id, item.WeaponSheet, item.Strength])
+					[item.name, id, item.weapon_sheet, item.strength])
 	print("[Debug] Shift+G complete: %d weapon(s) added." % granted)
 
 
@@ -551,7 +551,7 @@ func _start_attack() -> void:
 	# suppress the generic swing for it so the magic-weapon path stays
 	# distinct.
 	var equipped_weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
-	var equipped_weapon_id: int = int(equipped_weapon.Id) if equipped_weapon != null else 0
+	var equipped_weapon_id: int = int(equipped_weapon.id) if equipped_weapon != null else 0
 	var is_trident := equipped_weapon_id == MAGIC_TRIDENT_ITEM_ID
 	if not is_trident:
 		var swing_sfx: String
@@ -604,7 +604,7 @@ func _start_attack() -> void:
 # automatically.
 func _recompute_speed() -> void:
 	var boot: Resource = Inventory.get_equipped(ITEM_CATEGORY_BOOT)
-	var boot_str: int = int(boot.Strength) if boot != null else 0
+	var boot_str: int = int(boot.strength) if boot != null else 0
 	speed = _base_speed + boot_str * speed_per_boot_point
 
 
@@ -622,7 +622,7 @@ static func _compute_defense() -> int:
 
 static func _category_strength(cat: int) -> int:
 	var item: Resource = Inventory.get_equipped(cat)
-	return int(item.Strength) if item != null else 0
+	return int(item.strength) if item != null else 0
 
 
 # Receives damage from an enemy's Hitbox. Subtracts equipped armor's
@@ -1047,7 +1047,7 @@ func _on_anim_state_started(state_name: String) -> void:
 		# callback fires *after* start_attack and was unconditionally
 		# re-enabling visibility.
 		var equipped: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
-		var is_trident: bool = equipped != null and int(equipped.Id) == MAGIC_TRIDENT_ITEM_ID
+		var is_trident: bool = equipped != null and int(equipped.id) == MAGIC_TRIDENT_ITEM_ID
 		if _weapon_sprite != null:
 			_weapon_sprite.visible = not is_trident or debug_show_msca_weapon_during_trident_swing
 
@@ -1090,7 +1090,7 @@ func _on_attack_hitbox_area_entered(other: Area2D) -> void:
 	# having a weapon equipped, so in practice the fallback only triggers
 	# if a weapon somehow has Strength=0 in its ItemData (authoring bug).
 	var weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
-	var weapon_str: int = int(weapon.Strength) if weapon != null else 0
+	var weapon_str: int = int(weapon.strength) if weapon != null else 0
 	var damage: int = weapon_str if weapon_str > 0 else 1
 	# HealthSystem is GDScript (Cluster 10b) -- snake_case methods.
 	enemy_health.call("take_damage", damage)

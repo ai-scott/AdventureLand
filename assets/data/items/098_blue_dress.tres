@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-098.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 98
-Name = "Blue Dress"
-Description = "Here comes the bride, all dressed in blue."
-Category = 7
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
-CostumeId = "fbas_08lwr3_longdress_00a_blue"
-CostumeLayer = "08lwr3"
+id = 98
+name = "Blue Dress"
+description = "Here comes the bride, all dressed in blue."
+category = 7
+strength = 2
+cost = 7
+icon = ExtResource("2")
+costume_id = "fbas_08lwr3_longdress_00a_blue"
+costume_layer = "08lwr3"

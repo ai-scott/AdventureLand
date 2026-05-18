@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-055.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 55
-Name = "Lavender Cloud Hat"
-Description = "Lightwight and stylish. Perfect for strolling about."
-Category = 3
-Strength = 1
-Cost = 4
-Icon = ExtResource("2")
-CostumeId = "55_fbas_14head_strawhat_00d_light"
-CostumeLayer = "14head"
+id = 55
+name = "Lavender Cloud Hat"
+description = "Lightwight and stylish. Perfect for strolling about."
+category = 3
+strength = 1
+cost = 4
+icon = ExtResource("2")
+costume_id = "55_fbas_14head_strawhat_00d_light"
+costume_layer = "14head"

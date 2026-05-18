@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-085.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 85
-Name = "Silver + Emerald Ring"
-Description = "The power of the forest is with you."
-Category = 6
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
+id = 85
+name = "Silver + Emerald Ring"
+description = "The power of the forest is with you."
+category = 6
+strength = 2
+cost = 7
+icon = ExtResource("2")

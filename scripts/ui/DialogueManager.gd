@@ -226,7 +226,7 @@ func _build_item_reveal_overlay() -> void:
 func _show_item_reveal(item: Resource) -> void:
 	if _item_reveal_root == null or item == null:
 		return
-	var icon: Texture2D = item.Icon
+	var icon: Texture2D = item.icon
 	if icon == null:
 		return
 	_item_reveal_icon.texture = icon
@@ -802,7 +802,7 @@ func _resolve_reveal_item(node: DialogueNode) -> Resource:
 			item = Inventory.get_item(int(key))
 		if item == null:
 			item = Inventory.get_item_by_name(key)
-		if item != null and item.Icon != null:
+		if item != null and item.icon != null:
 			return item
 	return null
 
@@ -864,10 +864,12 @@ static func _find_first_with_data_name(from: Node, item_name: String) -> Node:
 	if from == null:
 		return null
 	# Check this node — ItemTrigger has a Data property.
-	var data: Variant = from.get("Data")
+	# ItemTrigger (now GDScript, Cluster 10c) has `data` property holding
+	# an ItemData Resource with snake_case fields.
+	var data: Variant = from.get("data")
 	if data != null:
 		var data_resource: Resource = data
-		if data_resource != null and String(data_resource.Name) == item_name:
+		if data_resource != null and String(data_resource.name) == item_name:
 			return from
 	for c in from.get_children():
 		var r := _find_first_with_data_name(c, item_name)

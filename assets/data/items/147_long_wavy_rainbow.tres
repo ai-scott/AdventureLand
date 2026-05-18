@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
-Id = 147
-Name = "Long Wavy Rainbow"
-Description = ""
-Category = 11
-Strength = 0
-Cost = 0
-CostumeId = "fbas_13hair_longwavy_00_rainbow_waves"
-CostumeLayer = "13hair"
+id = 147
+name = "Long Wavy Rainbow"
+description = ""
+category = 11
+strength = 0
+cost = 0
+costume_id = "fbas_13hair_longwavy_00_rainbow_waves"
+costume_layer = "13hair"

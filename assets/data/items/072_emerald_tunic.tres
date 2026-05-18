@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/ItemData.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-072.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-Id = 72
-Name = "Emerald Tunic"
-Description = "It's so comfy you could wear it to bed."
-Category = 5
-Strength = 2
-Cost = 7
-Icon = ExtResource("2")
-CostumeId = "72_fbas_05shrt_longshirt_00a_emerald"
-CostumeLayer = "05shrt"
+id = 72
+name = "Emerald Tunic"
+description = "It's so comfy you could wear it to bed."
+category = 5
+strength = 2
+cost = 7
+icon = ExtResource("2")
+costume_id = "72_fbas_05shrt_longshirt_00a_emerald"
+costume_layer = "05shrt"
