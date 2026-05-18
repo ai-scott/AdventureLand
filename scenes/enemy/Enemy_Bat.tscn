@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/enemy/EnemyController.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/enemy/EnemyFolderAnimator.gd" id="2"]
 [ext_resource type="Resource" uid="uid://bluksc4gf0jgx" path="res://assets/data/enemies/bat.tres" id="2_bat"]
-[ext_resource type="Script" uid="uid://dtmt3uegoc48l" path="res://scripts/systems/HealthSystem.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/systems/HealthSystem.gd" id="3"]
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/bat/en_bat_mask-shadow-000.png" id="4_shadow"]
 
 [sub_resource type="RectangleShape2D" id="BodyShape"]

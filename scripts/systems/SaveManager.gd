@@ -182,8 +182,8 @@ func save(slot: int = -1) -> bool:
 		# HealthSystem is still C# (Cluster 10) -- PascalCase Variant read.
 		var hs := player.get_node_or_null("HealthSystem")
 		if hs != null:
-			current_data.health = int(hs.get("CurrentHealth"))
-			current_data.max_health = int(hs.get("MaxHealth"))
+			current_data.health = int(hs.get("current_health"))
+			current_data.max_health = int(hs.get("max_health"))
 
 	current_data.current_world = get_tree().current_scene.scene_file_path
 
@@ -303,8 +303,8 @@ func transition_to_world(scene_path: String) -> void:
 	var live_player := get_tree().get_first_node_in_group("player") as Node2D
 	var live_health: Node = live_player.get_node_or_null("HealthSystem") if live_player != null else null
 	if live_health != null and current_data != null:
-		current_data.health = int(live_health.get("CurrentHealth"))
-		current_data.max_health = int(live_health.get("MaxHealth"))
+		current_data.health = int(live_health.get("current_health"))
+		current_data.max_health = int(live_health.get("max_health"))
 	# Same problem applies to inventory: Equip/Unequip from the UI
 	# don't write to current_data, so without this snapshot the new
 	# scene's apply_save_to_player -> Inventory.load_from(current_data)
@@ -447,7 +447,7 @@ func _apply_save_to_player() -> void:
 		# beat ran. Reading off max_health directly here is the only
 		# place the saved value never leaks through.
 		var desired_health: int = current_data.max_health if _force_full_health_on_apply else current_data.health
-		health.call("RestoreState", desired_health, current_data.max_health)
+		health.call("restore_state", desired_health, current_data.max_health)
 		_force_full_health_on_apply = false
 
 	# Spawn-unstuck: if the saved/edge position lands on a solid (a

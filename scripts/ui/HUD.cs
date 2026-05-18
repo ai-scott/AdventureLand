@@ -25,7 +25,8 @@ namespace AdventureLandPrototype;
 /// </summary>
 public partial class HUD : CanvasLayer
 {
-    private HealthSystem _health;
+    // HealthSystem is GDScript (Cluster 10b) — Node + Variant access.
+    private Node _health;
     private TextureRect[] _hearts;
     private Label _gemLabel;
     private MobileDPad _mobileDpad;
@@ -334,11 +335,11 @@ public partial class HUD : CanvasLayer
 
     private void AttachToPlayerHealth(Node2D player)
     {
-        var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
+        var health = player?.GetNodeOrNull<Node>("HealthSystem");
         if (health == null) return;
 
         _health = health;
-        _health.HealthChanged += OnHealthChanged;
+        _health.Connect("health_changed", Callable.From<int, int>(OnHealthChanged));
         RefreshHearts();
     }
 
@@ -348,8 +349,8 @@ public partial class HUD : CanvasLayer
     {
         if (_health == null) return;
 
-        int current = _health.CurrentHealth;
-        int max = _health.MaxHealth;
+        int current = _health.Get("current_health").AsInt32();
+        int max = _health.Get("max_health").AsInt32();
         // Paper-style: 2 HP per heart (full / half / empty). 5 hearts = 10 HP,
         // which matches the starter MaxHealth. If MaxHealth later exceeds 10,
         // Phase 7's "heart containers" item grows the array; for now clamp.
@@ -649,11 +650,13 @@ public partial class HUD : CanvasLayer
     /// stop when HP recovers above the threshold OR the player dies.</summary>
     private void UpdateLowHpWarning(double delta, bool inWorld)
     {
+        int curHp = _health != null ? _health.Get("current_health").AsInt32() : 0;
+        bool isDead = _health != null && _health.Get("is_dead").AsBool();
         bool active = inWorld
             && _health != null && IsInstanceValid(_health)
-            && !_health.IsDead
-            && _health.CurrentHealth > 0
-            && _health.CurrentHealth <= LowHpHpThreshold;
+            && !isDead
+            && curHp > 0
+            && curHp <= LowHpHpThreshold;
 
         if (_lowHpVignette != null)
         {

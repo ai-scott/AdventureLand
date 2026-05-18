@@ -295,7 +295,7 @@ func use_item(slot_index: int) -> bool:
 		var player := get_tree().get_first_node_in_group("player")
 		var health := player.get_node_or_null("HealthSystem") if player != null else null
 		if health != null:
-			health.call("Heal", int(item.Strength))
+			health.call("heal", int(item.Strength))
 			print("[Inventory] Used %s — healed %d HP" % [item.Name, int(item.Strength)])
 			SFXController.play("potion")
 

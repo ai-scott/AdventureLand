@@ -477,10 +477,11 @@ public partial class InventoryUI : CanvasLayer
 			if (item.Category == ItemData.ItemCategory.Food)
 			{
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
-				var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
-				int before = health?.CurrentHealth ?? 0;
+				// HealthSystem is GDScript (Cluster 10b) — Variant Get.
+				var health = player?.GetNodeOrNull<Node>("HealthSystem");
+				int before = health?.Get("current_health").AsInt32() ?? 0;
 				Inventory.UseItem(_selectedSlot);
-				int after = health?.CurrentHealth ?? before;
+				int after = health?.Get("current_health").AsInt32() ?? before;
 				healed = Mathf.Max(0, after - before);
 			}
 			else
@@ -1407,16 +1408,19 @@ public partial class InventoryUI : CanvasLayer
 
 		foreach (var c in _heartRow.GetChildren()) c.QueueFree();
 		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
-		var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
+		// HealthSystem is GDScript (Cluster 10b) — Variant Get.
+		var health = player?.GetNodeOrNull<Node>("HealthSystem");
 		if (health == null) return;
 
 		const int hpPerHeart = 2;
-		int totalHearts = Mathf.Min((health.MaxHealth + hpPerHeart - 1) / hpPerHeart, 5);
+		int maxHp = health.Get("max_health").AsInt32();
+		int curHp = health.Get("current_health").AsInt32();
+		int totalHearts = Mathf.Min((maxHp + hpPerHeart - 1) / hpPerHeart, 5);
 		for (int i = 0; i < totalHearts; i++)
 		{
 			int heartCap = (i + 1) * hpPerHeart;
-			Texture2D tex = health.CurrentHealth >= heartCap ? UiStyles.Heart
-						  : health.CurrentHealth >= heartCap - 1 ? GD.Load<Texture2D>("res://assets/sprites/ui/heart_half.png")
+			Texture2D tex = curHp >= heartCap ? UiStyles.Heart
+						  : curHp >= heartCap - 1 ? GD.Load<Texture2D>("res://assets/sprites/ui/heart_half.png")
 						  : GD.Load<Texture2D>("res://assets/sprites/ui/heart_empty.png");
 			var heart = new TextureRect
 			{
@@ -1434,11 +1438,11 @@ public partial class InventoryUI : CanvasLayer
 	private void RefreshAbilities()
 	{
 		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
-		var health = player?.GetNodeOrNull<HealthSystem>("HealthSystem");
+		var health = player?.GetNodeOrNull<Node>("HealthSystem");
 
 		var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
 		int attack = weapon?.Strength ?? 0;
-		int maxHearts = (health?.MaxHealth ?? 0) / 2;
+		int maxHearts = (health?.Get("max_health").AsInt32() ?? 0) / 2;
 		int defense = StrengthOf(ItemData.ItemCategory.Head)
 					+ StrengthOf(ItemData.ItemCategory.Neck)
 					+ StrengthOf(ItemData.ItemCategory.Body)

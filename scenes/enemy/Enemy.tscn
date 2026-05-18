@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/enemy/EnemyController.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/enemy/EnemySheetAnimator.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/systems/HealthSystem.cs" id="3"]
+[ext_resource type="Script" path="res://scripts/systems/HealthSystem.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="BodyShape"]
 size = Vector2(10, 8)

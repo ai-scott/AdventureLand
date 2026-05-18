@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://cfwvlc0sx38tv" path="res://assets/sprites/player/farmer/effects/farmer animations 32x32 v00.png" id="10_v5i4m"]
 [ext_resource type="Texture2D" uid="uid://bk6ulte7qx003" path="res://assets/sprites/player/farmer/effects/farmer animations 64x64 v00.png" id="11_p1lr0"]
 [ext_resource type="Texture2D" uid="uid://b2lx1iv6i56x5" path="res://assets/sprites/player/farmer/effects/farmer slash effects 64x64.png" id="12_ro0t8"]
-[ext_resource type="Script" uid="uid://dtmt3uegoc48l" path="res://scripts/systems/HealthSystem.cs" id="19_pi3ps"]
+[ext_resource type="Script" path="res://scripts/systems/HealthSystem.gd" id="19_pi3ps"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cl4cn"]
 radius = 2.0

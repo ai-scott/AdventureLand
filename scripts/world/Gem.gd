@@ -99,7 +99,7 @@ func _apply_effect() -> void:
 			if _player != null:
 				var hs: Node = _player.get_node_or_null("HealthSystem")
 				if hs != null:
-					hs.call("Heal", 2)
+					hs.call("heal", 2)
 			SFXController.play("heart")
 
 # Roll a random drop type — equal weight across all four.

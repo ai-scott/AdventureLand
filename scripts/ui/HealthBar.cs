@@ -15,7 +15,9 @@ public partial class HealthBar : CanvasLayer
 
     private ProgressBar _bar;
     private Label _label;
-    private HealthSystem _health;
+    // HealthSystem is GDScript (Cluster 10b) — typed reference dropped
+    // to Node; properties read via Variant Get with snake_case.
+    private Node _health;
 
     public override void _Ready()
     {
@@ -29,30 +31,30 @@ public partial class HealthBar : CanvasLayer
             return;
         }
 
-        _health = GetNodeOrNull<HealthSystem>(HealthSystemPath);
+        _health = GetNodeOrNull<Node>(HealthSystemPath);
         if (_health == null)
         {
             GD.PrintErr($"[HealthBar] HealthSystem not found at path {HealthSystemPath}");
             return;
         }
 
-        _health.HealthChanged += OnHealthChanged;
-        // Prime display on first frame (HealthSystem._Ready sets CurrentHealth = MaxHealth).
+        _health.Connect("health_changed", Callable.From<int, int>(OnHealthChanged));
+        // Prime display on first frame (HealthSystem._ready sets current_health = max_health).
         CallDeferred(MethodName.RefreshFromSystem);
     }
 
     private void RefreshFromSystem()
     {
         if (_health == null) return;
-        OnHealthChanged(_health.CurrentHealth, _health.MaxHealth);
+        int cur = _health.Get("current_health").AsInt32();
+        int max = _health.Get("max_health").AsInt32();
+        OnHealthChanged(cur, max);
 
-        // SaveData is GDScript (Cluster 9) — facade access + Variant Get
-        // with snake_case key.
-        var data = SaveManager.CurrentData;
-        var playerName = data?.Get("player_name").AsString();
+        // SaveData is GDScript (Cluster 9) — facade access + Variant Get.
+        var playerName = SaveManager.CurrentData?.Get("player_name").AsString();
         if (!string.IsNullOrEmpty(playerName))
         {
-            _label.Text = $"{playerName}  {_health.CurrentHealth} / {_health.MaxHealth}";
+            _label.Text = $"{playerName}  {cur} / {max}";
         }
     }
 

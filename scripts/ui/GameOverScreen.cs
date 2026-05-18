@@ -24,7 +24,8 @@ public partial class GameOverScreen : CanvasLayer
 {
     [Export] public NodePath PlayerHealthPath;
 
-    private HealthSystem _health;
+    // HealthSystem is GDScript (Cluster 10b) — Node + Variant access.
+    private Node _health;
 
     // Scene-authored children (see GameOver.tscn). Nodes live in the tree
     // from load; the entry sequence fades/slides them in from modulate.a=0.
@@ -73,14 +74,14 @@ public partial class GameOverScreen : CanvasLayer
             return;
         }
 
-        _health = GetNodeOrNull<HealthSystem>(PlayerHealthPath);
+        _health = GetNodeOrNull<Node>(PlayerHealthPath);
         if (_health == null)
         {
             GD.PrintErr($"[GameOverScreen] HealthSystem not found at path {PlayerHealthPath}");
             return;
         }
 
-        _health.Died += OnPlayerDied;
+        _health.Connect("died", Callable.From(OnPlayerDied));
     }
 
     private async void OnPlayerDied()
@@ -109,7 +110,8 @@ public partial class GameOverScreen : CanvasLayer
         // held by the AnimationTree (PlayerController gates _PhysicsProcess
         // on its own IsDead flag, not HealthSystem's, so the refill here
         // doesn't kick the player back into Idle).
-        _health.RestoreState(_health.MaxHealth, _health.MaxHealth);
+        int maxHp = _health.Get("max_health").AsInt32();
+        _health.Call("restore_state", maxHp, maxHp);
 
         // The CanvasLayer is authored with visible=false so nothing in
         // it renders during normal play; turn it on now so the dim/bg/

@@ -274,7 +274,7 @@ func _ready() -> void:
 		# sequence (bg scroll + OVER flash + menu), so the player has
 		# time to fall + bounce before the menu becomes interactive.
 		# C# signal "Died" is PascalCase (Pattern C).
-		_health.connect("Died", _on_player_died)
+		_health.connect("died", _on_player_died)
 
 	# Subscribe to MSCA's animation_set_hitbox signal. This is a GDScript
 	# signal on the SpriteLayers node (MSCAFarmerSpriteLayers.gd). Signal
@@ -637,7 +637,7 @@ func take_damage(amount: int) -> void:
 		return
 	# HealthSystem is C# (Cluster 10): PascalCase property reads via
 	# Variant, methods via .call("PascalCase").
-	if bool(_health.Invulnerable) or bool(_health.IsDead):
+	if bool(_health.invulnerable) or bool(_health.is_dead):
 		return
 	var defense := _compute_defense()
 	# (defense + 1) / 2 with int math = ceil(defense / 2): defense 7 -> 4,
@@ -651,12 +651,10 @@ func take_damage(amount: int) -> void:
 		# fires (it's applied separately in EnemyController) so the
 		# player still feels the collision.
 		return
-	_health.call("TakeDamage", actual)
+	_health.call("take_damage", actual)
 	# Red floating number over the player to mirror what the enemy hits land.
-	# DamageNumber is still C# (Cluster 10) and has no GDScript bridge yet;
-	# restore once DamageNumber.gd ports.
-	# TODO(cluster-10): DamageNumber.spawn(get_tree().current_scene, global_position, actual, true)
-	if not bool(_health.IsDead):
+	DamageNumber.spawn(get_tree().current_scene, global_position, actual, DamageNumber.Kind.HURT)
+	if not bool(_health.is_dead):
 		_play_hurt_flash()
 		# Gated on !IsDead so the death cue (handled separately by the
 		# game-over flow) doesn't double up with a damage beep on the
@@ -1085,7 +1083,7 @@ func _on_attack_hitbox_area_entered(other: Area2D) -> void:
 	# out on a swoop). Skip damage AND the floating number -- the swing
 	# just passes through. EnemyController is still C# (Cluster 4 tail)
 	# -- duck-type via has_method.
-	if enemy_root.has_method("CanBeHit") and not bool(enemy_root.call("CanBeHit")):
+	if enemy_root.has_method("can_be_hit") and not bool(enemy_root.call("can_be_hit")):
 		return
 
 	# Damage = equipped weapon's Strength, min 1. Attack input is gated on
@@ -1094,21 +1092,20 @@ func _on_attack_hitbox_area_entered(other: Area2D) -> void:
 	var weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
 	var weapon_str: int = int(weapon.Strength) if weapon != null else 0
 	var damage: int = weapon_str if weapon_str > 0 else 1
-	# HealthSystem is C#: Pattern C -- PascalCase method via .call().
-	enemy_health.call("TakeDamage", damage)
+	# HealthSystem is GDScript (Cluster 10b) -- snake_case methods.
+	enemy_health.call("take_damage", damage)
 	# Floating combat number -- white over the enemy at the moment of hit.
-	# DamageNumber is still C# (Cluster 10) and has no GDScript bridge yet;
-	# restore once DamageNumber.gd ports.
-	# TODO(cluster-10): DamageNumber.spawn(get_tree().current_scene, enemy_root.global_position, damage)
+	if enemy_root is Node2D:
+		DamageNumber.spawn(get_tree().current_scene, (enemy_root as Node2D).global_position, damage)
 
 	# Knockback: push enemy away from player via their stun timer.
-	# EnemyController is C# -- ApplyKnockback is a PascalCase method.
-	if enemy_root is Node2D and enemy_root.has_method("ApplyKnockback"):
+	# EnemyController is GDScript (Cluster 4 tail) -- apply_knockback snake_case.
+	if enemy_root is Node2D and enemy_root.has_method("apply_knockback"):
 		var enemy_node := enemy_root as Node2D
 		var dir := (enemy_node.global_position - global_position).normalized()
 		if dir == Vector2.ZERO:
 			dir = _facing
-		enemy_root.call("ApplyKnockback", dir * 200.0)
+		enemy_root.call("apply_knockback", dir * 200.0)
 
 
 # ----- helpers -----

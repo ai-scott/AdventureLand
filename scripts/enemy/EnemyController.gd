@@ -211,10 +211,10 @@ func _ready() -> void:
 	if _health != null:
 		# HealthSystem is still C# (Cluster 10) -- PascalCase property
 		# write + method call via Variant (Pattern C / D).
-		_health.set("MaxHealth", int(data.get("health")))
-		_health.call("FullReset")
-		_health.connect("Hurt", _on_hurt)
-		_health.connect("Died", _on_died)
+		_health.set("max_health", int(data.get("health")))
+		_health.call("full_reset")
+		_health.connect("hurt", _on_hurt)
+		_health.connect("died", _on_died)
 
 	if _hitbox != null:
 		_hitbox.body_entered.connect(_on_hitbox_body_entered)
@@ -279,7 +279,7 @@ func _try_unstick_from_walls() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _health != null and bool(_health.get("IsDead")):
+	if _health != null and bool(_health.get("is_dead")):
 		return
 
 	# Lazy player lookup -- deferred from _ready to handle scene-tree ordering.
@@ -511,7 +511,7 @@ func _evaluate_condition(c: Resource) -> bool:
 			lhs = global_position.distance_to(_player.global_position) if _player != null else INF
 		ConditionType.HEALTH:
 			# HealthSystem.CurrentHealth is C# PascalCase.
-			lhs = float(_health.get("CurrentHealth")) if _health != null else 0.0
+			lhs = float(_health.get("current_health")) if _health != null else 0.0
 		ConditionType.TIMER:
 			lhs = _behavior_total - _behavior_timer
 		ConditionType.RANDOM:
@@ -519,7 +519,7 @@ func _evaluate_condition(c: Resource) -> bool:
 		ConditionType.HURT:
 			lhs = 1.0 if _is_hurt else 0.0
 		ConditionType.INVULNERABLE:
-			var inv: bool = _health != null and bool(_health.get("Invulnerable"))
+			var inv: bool = _health != null and bool(_health.get("invulnerable"))
 			lhs = 1.0 if inv else 0.0
 
 	var value := float(c.get("value"))
@@ -589,7 +589,7 @@ func _execute_actions(delta: float) -> void:
 					_executed_actions["invuln"] = true
 					if _health != null:
 						# HealthSystem is C# -- PascalCase method.
-						_health.call("StartInvulnerability", float(a.get("duration")))
+						_health.call("start_invulnerability", float(a.get("duration")))
 
 			ActionType.SOUND:
 				var sound := String(a.get("sound"))
@@ -812,7 +812,7 @@ func _on_hurt() -> void:
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
-	if _health != null and bool(_health.get("IsDead")):
+	if _health != null and bool(_health.get("is_dead")):
 		return
 	if not can_be_hit():
 		return
