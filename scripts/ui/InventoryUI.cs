@@ -38,11 +38,11 @@ public partial class InventoryUI : CanvasLayer
 
 	// Equipment categories shown in the Appearance grid (slot index 0..5).
 	// Hair lives separately in the center column's hair cycler.
-	private static readonly ItemData.ItemCategory[] AppearanceCategories =
+	private static readonly ItemDataC.ItemCategory[] AppearanceCategories =
 	{
-		ItemData.ItemCategory.Head, ItemData.ItemCategory.Hand,
-		ItemData.ItemCategory.Neck, ItemData.ItemCategory.Body,
-		ItemData.ItemCategory.Legs, ItemData.ItemCategory.Boot,
+		ItemDataC.ItemCategory.Head, ItemDataC.ItemCategory.Hand,
+		ItemDataC.ItemCategory.Neck, ItemDataC.ItemCategory.Body,
+		ItemDataC.ItemCategory.Legs, ItemDataC.ItemCategory.Boot,
 	};
 
 	// Per-slot placeholder PNG index aligned to AppearanceCategories order
@@ -474,7 +474,7 @@ public partial class InventoryUI : CanvasLayer
 			// nominal strength. Pre-fetch the health system before UseItem
 			// runs the heal so we can diff before/after.
 			int healed = 0;
-			if (item.Category() == ItemData.ItemCategory.Food)
+			if (item.Category() == ItemDataC.ItemCategory.Food)
 			{
 				var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
 				// HealthSystem is GDScript (Cluster 10b) — Variant Get.
@@ -529,7 +529,7 @@ public partial class InventoryUI : CanvasLayer
 		if (attackRow != null)
 		{
 			UiFrames.MakeClickable(attackRow);
-			attackRow.GuiInput += evt => OnEquippedSlotTapped(evt, ItemData.ItemCategory.Weapon, attackRow);
+			attackRow.GuiInput += evt => OnEquippedSlotTapped(evt, ItemDataC.ItemCategory.Weapon, attackRow);
 		}
 
 		for (int i = 0; i < 6; i++)
@@ -984,8 +984,8 @@ public partial class InventoryUI : CanvasLayer
 	/// in inventory at all so it falls out via Cost == 0.</summary>
 	private static bool CanSell(Resource item) =>
 		item != null && !item.QuestItem() && item.Cost() > 0
-		&& item.Category() != ItemData.ItemCategory.Money
-		&& item.Category() != ItemData.ItemCategory.Key;
+		&& item.Category() != ItemDataC.ItemCategory.Money
+		&& item.Category() != ItemDataC.ItemCategory.Key;
 
 	/// <summary>Half of the buy price (rounded down, min 1). Tune the ratio
 	/// here if shops should pay more / less for resale.</summary>
@@ -1274,7 +1274,7 @@ public partial class InventoryUI : CanvasLayer
 	/// "Unequip"), and moves the yellow slot cursor onto the clicked slot.
 	/// Does nothing if the slot is empty. Never unequips directly; that's
 	/// the chip's job (or a double-tap on the cell).</summary>
-	private void OnEquippedSlotTapped(InputEvent evt, ItemData.ItemCategory category, Control slotNode)
+	private void OnEquippedSlotTapped(InputEvent evt, ItemDataC.ItemCategory category, Control slotNode)
 	{
 		bool tapped = (evt is InputEventScreenTouch t && t.Pressed)
 					  || (evt is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left);
@@ -1446,15 +1446,15 @@ public partial class InventoryUI : CanvasLayer
 		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
 		var health = player?.GetNodeOrNull<Node>("HealthSystem");
 
-		var weapon = Inventory.GetEquipped(ItemData.ItemCategory.Weapon);
+		var weapon = Inventory.GetEquipped(ItemDataC.ItemCategory.Weapon);
 		int attack = weapon?.Strength() ?? 0;
 		int maxHearts = (health?.Get("max_health").AsInt32() ?? 0) / 2;
-		int defense = StrengthOf(ItemData.ItemCategory.Head)
-					+ StrengthOf(ItemData.ItemCategory.Neck)
-					+ StrengthOf(ItemData.ItemCategory.Body)
-					+ StrengthOf(ItemData.ItemCategory.Hand)
-					+ StrengthOf(ItemData.ItemCategory.Legs);
-		int speed = StrengthOf(ItemData.ItemCategory.Boot);
+		int defense = StrengthOf(ItemDataC.ItemCategory.Head)
+					+ StrengthOf(ItemDataC.ItemCategory.Neck)
+					+ StrengthOf(ItemDataC.ItemCategory.Body)
+					+ StrengthOf(ItemDataC.ItemCategory.Hand)
+					+ StrengthOf(ItemDataC.ItemCategory.Legs);
+		int speed = StrengthOf(ItemDataC.ItemCategory.Boot);
 
 		_abilityValues[0].Text = attack.ToString();
 		_abilityValues[1].Text = maxHearts.ToString();
@@ -1473,7 +1473,7 @@ public partial class InventoryUI : CanvasLayer
 	}
 	private Texture2D _defaultAttackIcon;
 
-	private static int StrengthOf(ItemData.ItemCategory cat)
+	private static int StrengthOf(ItemDataC.ItemCategory cat)
 		=> Inventory.GetEquipped(cat)?.Strength() ?? 0;
 
 	private void RefreshAppearance()
@@ -1737,13 +1737,13 @@ public partial class InventoryUI : CanvasLayer
 	/// <summary>Stat icon for item-details inline +N rows. Pulls from the
 	/// C3 UI_StateSprite frames (stat_0..stat_4): 0=sword (Attack), 1=heart
 	/// (Max Hearts), 2=shield (Defense), 3=boot (Speed), 4=spare.</summary>
-	private static Texture2D StatIconFor(ItemData.ItemCategory cat) => cat switch
+	private static Texture2D StatIconFor(ItemDataC.ItemCategory cat) => cat switch
 	{
-		ItemData.ItemCategory.Weapon => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_0.png"),
-		ItemData.ItemCategory.Food => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_1.png"),
-		ItemData.ItemCategory.Boot => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_3.png"),
-		ItemData.ItemCategory.Head or ItemData.ItemCategory.Neck or ItemData.ItemCategory.Body
-			or ItemData.ItemCategory.Hand or ItemData.ItemCategory.Legs
+		ItemDataC.ItemCategory.Weapon => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_0.png"),
+		ItemDataC.ItemCategory.Food => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_1.png"),
+		ItemDataC.ItemCategory.Boot => GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_3.png"),
+		ItemDataC.ItemCategory.Head or ItemDataC.ItemCategory.Neck or ItemDataC.ItemCategory.Body
+			or ItemDataC.ItemCategory.Hand or ItemDataC.ItemCategory.Legs
 			=> GD.Load<Texture2D>("res://assets/sprites/ui/inventory/stat_2.png"),
 		_ => null,
 	};

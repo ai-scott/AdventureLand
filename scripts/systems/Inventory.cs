@@ -98,13 +98,13 @@ public static class Inventory
     public static bool Equip(int slotIndex)
         => Get()?.Call("equip", slotIndex).AsBool() ?? false;
 
-    public static bool Unequip(ItemData.ItemCategory category)
+    public static bool Unequip(ItemDataC.ItemCategory category)
         => Get()?.Call("unequip", (int)category).AsBool() ?? false;
 
-    public static int GetEquippedId(ItemData.ItemCategory category)
+    public static int GetEquippedId(ItemDataC.ItemCategory category)
         => Get()?.Call("get_equipped_id", (int)category).AsInt32() ?? -1;
 
-    public static Resource GetEquipped(ItemData.ItemCategory category)
+    public static Resource GetEquipped(ItemDataC.ItemCategory category)
         => Get()?.Call("get_equipped", (int)category).As<Resource>();
 
     public static bool IsEquipped(int itemId)
