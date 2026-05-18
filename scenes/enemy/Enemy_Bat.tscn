@@ -16,13 +16,13 @@ size = Vector2(14, 12)
 collision_layer = 16
 collision_mask = 2
 script = ExtResource("1")
-Data = ExtResource("2_bat")
-ContactDamage = 5
-MirrorHorizontally = true
-ShadowPath = NodePath("Shadow")
-AnimatorPath = NodePath("EnemyAnimator")
-HealthSystemPath = NodePath("HealthSystem")
-HitboxPath = NodePath("Hitbox")
+data = ExtResource("2_bat")
+contact_damage = 5
+mirror_horizontally = true
+shadow_path = NodePath("Shadow")
+animator_path = NodePath("EnemyAnimator")
+health_system_path = NodePath("HealthSystem")
+hitbox_path = NodePath("Hitbox")
 
 [node name="Shadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.55)
@@ -45,9 +45,9 @@ shape = SubResource("HurtboxShape")
 
 [node name="EnemyAnimator" type="Node" parent="."]
 script = ExtResource("2")
-FramesFolder = "res://assets/sprites/enemies/bat/"
+frames_folder = "res://assets/sprites/enemies/bat/"
 
 [node name="HealthSystem" type="Node" parent="."]
 script = ExtResource("3")
-MaxHealth = 12
-InvulnerabilityDuration = 0.7
+max_health = 12
+invulnerability_duration = 0.7

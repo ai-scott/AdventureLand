@@ -495185,11 +495185,11 @@ size = Vector2(10, 10)
 y_sort_enabled = true
 collision_mask = 10
 script = ExtResource("1")
-DebugDumpHairRamps = true
-DebugRecolorHairToRow = 82
-TridentSwingOffsetDown = Vector2(0, -7)
-TridentSwingOffsetLeft = Vector2(5, 0)
-TridentSwingOffsetRight = Vector2(-5, 0)
+debug_dump_hair_ramps = true
+debug_recolor_hair_to_row = 82
+trident_swing_offset_down = Vector2(0, -7)
+trident_swing_offset_left = Vector2(5, 0)
+trident_swing_offset_right = Vector2(-5, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=491845693]
 position = Vector2(0, 5)
@@ -495198,12 +495198,12 @@ shape = SubResource("CapsuleShape2D_cl4cn")
 
 [node name="CostumeController" type="Node" parent="." unique_id=860554175]
 script = ExtResource("2_180ig")
-Hair = ExtResource("3_2xrq6")
-Hat = ExtResource("4_pi3ps")
-Shirt = ExtResource("5_kswpp")
-Pants = ExtResource("6_v5i4m")
-Shoes = ExtResource("7_p1lr0")
-Outerwear = ExtResource("8_ro0t8")
+hair = ExtResource("3_2xrq6")
+hat = ExtResource("4_pi3ps")
+shirt = ExtResource("5_kswpp")
+pants = ExtResource("6_v5i4m")
+shoes = ExtResource("7_p1lr0")
+outerwear = ExtResource("8_ro0t8")
 
 [node name="SpriteLayers" type="Node2D" parent="." unique_id=744283084]
 position = Vector2(0, 4)

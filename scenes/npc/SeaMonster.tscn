@@ -15,10 +15,10 @@ point_count = 3
 
 [node name="SeaMonster" type="Node2D"]
 script = ExtResource("1")
-SpritePath = NodePath("Sprite2D")
-AttackTexture = ExtResource("3_attack")
-BubblesPath = NodePath("Bubbles")
-WaterBallScene = ExtResource("5_wb")
+sprite_path = NodePath("Sprite2D")
+attack_texture = ExtResource("3_attack")
+bubbles_path = NodePath("Bubbles")
+water_ball_scene = ExtResource("5_wb")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 offset = Vector2(0, -32)

@@ -146,9 +146,9 @@ script = ExtResource("5")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1295468211]
 script = ExtResource("6")
-MapSize = Vector2i(240, 192)
-WorldDisplayName = "Adventure Shop"
-IsShop = true
+map_size = Vector2i(240, 192)
+world_display_name = "Adventure Shop"
+is_shop = true
 
 [node name="World_00_AdventureShop_Ground3underP" type="TileMapLayer" parent="." unique_id=790379598]
 z_index = -3
@@ -179,17 +179,17 @@ script = ExtResource("4")
 [node name="Triggers" type="Node2D" parent="." unique_id=2146975632]
 y_sort_enabled = true
 script = ExtResource("7")
-TriggersResource = ExtResource("8")
-DoorScene = ExtResource("9")
-EdgeScene = ExtResource("10")
+triggers_resource = ExtResource("8")
+door_scene = ExtResource("9")
+edge_scene = ExtResource("10")
 
 [node name="Sophie" parent="Entities" unique_id=900158436 instance=ExtResource("11_npc")]
 position = Vector2(23, 65)
-NpcName = "Sophie"
-Dialogue = ExtResource("13_dlg")
+npc_name = "Sophie"
+dialogue = ExtResource("13_dlg")
 
 [node name="NpcAnimator" parent="Entities/Sophie" index="1"]
-Sheet = ExtResource("12_sheet")
+sheet = ExtResource("12_sheet")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=1444742794]
 script = ExtResource("13_cxco8")

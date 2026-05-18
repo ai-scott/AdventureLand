@@ -15,11 +15,11 @@ size = Vector2(18, 14)
 collision_layer = 16
 collision_mask = 2
 script = ExtResource("1")
-Data = ExtResource("2_crab")
-ContactDamage = 5
-AnimatorPath = NodePath("EnemyAnimator")
-HealthSystemPath = NodePath("HealthSystem")
-HitboxPath = NodePath("Hitbox")
+data = ExtResource("2_crab")
+contact_damage = 5
+animator_path = NodePath("EnemyAnimator")
+health_system_path = NodePath("HealthSystem")
+hitbox_path = NodePath("Hitbox")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 offset = Vector2(0, -10)
@@ -37,9 +37,9 @@ shape = SubResource("HurtboxShape")
 
 [node name="EnemyAnimator" type="Node" parent="."]
 script = ExtResource("2")
-FramesFolder = "res://assets/sprites/enemies/crab/"
+frames_folder = "res://assets/sprites/enemies/crab/"
 
 [node name="HealthSystem" type="Node" parent="."]
 script = ExtResource("3")
-MaxHealth = 10
-InvulnerabilityDuration = 0.7
+max_health = 10
+invulnerability_duration = 0.7

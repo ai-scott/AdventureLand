@@ -15,11 +15,11 @@ size = Vector2(14, 10)
 collision_layer = 16
 collision_mask = 2
 script = ExtResource("1")
-Data = ExtResource("2_pskue")
-ContactDamage = 4
-AnimatorPath = NodePath("EnemyAnimator")
-HealthSystemPath = NodePath("HealthSystem")
-HitboxPath = NodePath("Hitbox")
+data = ExtResource("2_pskue")
+contact_damage = 4
+animator_path = NodePath("EnemyAnimator")
+health_system_path = NodePath("HealthSystem")
+hitbox_path = NodePath("Hitbox")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1340464092]
 offset = Vector2(0, -8)
@@ -37,9 +37,9 @@ shape = SubResource("HurtboxShape")
 
 [node name="EnemyAnimator" type="Node" parent="." unique_id=483571305]
 script = ExtResource("2")
-FramesFolder = "res://assets/sprites/enemies/ooze/"
+frames_folder = "res://assets/sprites/enemies/ooze/"
 
 [node name="HealthSystem" type="Node" parent="." unique_id=369404657]
 script = ExtResource("3")
-MaxHealth = 5
-InvulnerabilityDuration = 0.7
+max_health = 5
+invulnerability_duration = 0.7

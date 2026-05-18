@@ -19,7 +19,7 @@ offset = Vector2(0, -16)
 
 [node name="NpcAnimator" type="Node" parent="." unique_id=2043634748]
 script = ExtResource("3")
-Sheet = ExtResource("3_xsig2")
+sheet = ExtResource("3_xsig2")
 
 [node name="Body" type="StaticBody2D" parent="." unique_id=1800571140]
 collision_layer = 2

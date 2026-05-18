@@ -14,9 +14,9 @@ size = Vector2(14, 10)
 collision_layer = 16
 collision_mask = 1
 script = ExtResource("1")
-AnimatorPath = NodePath("EnemyAnimator")
-HealthSystemPath = NodePath("HealthSystem")
-HitboxPath = NodePath("Hitbox")
+animator_path = NodePath("EnemyAnimator")
+health_system_path = NodePath("HealthSystem")
+hitbox_path = NodePath("Hitbox")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 offset = Vector2(0, -8)
@@ -38,5 +38,5 @@ script = ExtResource("2")
 
 [node name="HealthSystem" type="Node" parent="."]
 script = ExtResource("3")
-MaxHealth = 2
-InvulnerabilityDuration = 0.7
+max_health = 2
+invulnerability_duration = 0.7

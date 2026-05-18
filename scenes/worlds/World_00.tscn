@@ -1389,19 +1389,19 @@ offset = Vector2(0, -22)
 
 [node name="Player" parent="Entities" unique_id=1472698308 instance=ExtResource("13_tvimm")]
 position = Vector2(149, 164)
-Speed = 100.0
+speed = 100.0
 
 [node name="Penny" parent="Entities" unique_id=1057141335 instance=ExtResource("18_b8jan")]
 position = Vector2(62, 355)
-NpcName = "Penny"
-Dialogue = ExtResource("13_8fufv")
-HideWhenWorldFlag = "penny_home"
+npc_name = "Penny"
+dialogue = ExtResource("13_8fufv")
+hide_when_world_flag = "penny_home"
 
 [node name="Rosie" parent="Entities" unique_id=2001897635 instance=ExtResource("17_46npq")]
 position = Vector2(655, 430)
-RequiredQuestId = "rescue_cat_quest"
-RequiredQuestStatus = "Start_Cat_Quest"
-HideWhenWorldFlag = "penny_home"
+required_quest_id = "rescue_cat_quest"
+required_quest_status = "Start_Cat_Quest"
+hide_when_world_flag = "penny_home"
 
 [node name="TreeSignTrigger" parent="Entities" unique_id=1858068204 instance=ExtResource("4_46npq")]
 position = Vector2(486, 284)
@@ -1411,21 +1411,21 @@ position = Vector2(362, 301)
 
 [node name="EdgeSouth" parent="Entities" unique_id=1170496001 instance=ExtResource("27_b4gdq")]
 position = Vector2(360, 496)
-TargetScene = "uid://cqj4q3ql7meqi"
-ExitEdge = 3
+target_scene = "uid://cqj4q3ql7meqi"
+exit_edge = 3
 
 [node name="EdgeEast" parent="Entities" unique_id=1170496002 instance=ExtResource("27_b4gdq")]
 position = Vector2(736, 240)
 rotation = 1.5707964
 scale = Vector2(0.67999876, 1)
-TargetScene = "uid://dxigcmhsa3ml6"
+target_scene = "uid://dxigcmhsa3ml6"
 
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789750]
 script = ExtResource("34_tspwn")
-TriggersResource = ExtResource("35_trres")
-DoorScene = ExtResource("33_door")
-EdgeScene = ExtResource("27_b4gdq")
-ItemScene = ExtResource("23_0vlwf")
+triggers_resource = ExtResource("35_trres")
+door_scene = ExtResource("33_door")
+edge_scene = ExtResource("27_b4gdq")
+item_scene = ExtResource("23_0vlwf")
 
 [node name="Entities_Player#Camera" type="Camera2D" parent="." unique_id=583217558]
 zoom = Vector2(2, 2)
@@ -1436,11 +1436,11 @@ script = ExtResource("6")
 
 [node name="GameOver" parent="." unique_id=1366688518 instance=ExtResource("19_ujiax")]
 visible = false
-PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
+player_health_path = NodePath("../Entities/Player/HealthSystem")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1195734101]
 script = ExtResource("32_6xkt4")
-WorldDisplayName = "Leafwood Village"
+world_display_name = "Leafwood Village"
 
 [node name="WorldMusic" type="Node" parent="." unique_id=505867836]
 script = ExtResource("27_pi473")

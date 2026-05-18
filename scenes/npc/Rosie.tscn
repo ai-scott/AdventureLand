@@ -14,8 +14,8 @@ size = Vector2(10, 5)
 [node name="Rosie" type="Area2D"]
 collision_layer = 2
 script = ExtResource("1")
-NpcName = "Rosie"
-Dialogue = ExtResource("4")
+npc_name = "Rosie"
+dialogue = ExtResource("4")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 offset = Vector2(0, -16)

@@ -547,7 +547,7 @@ script = ExtResource("12")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1867414138]
 script = ExtResource("13")
-WorldDisplayName = "Gray Mist Mountain"
+world_display_name = "Gray Mist Mountain"
 
 [node name="World_03_GrayMistMountain_Ground3underP" type="TileMapLayer" parent="." unique_id=128165535]
 z_index = -3
@@ -597,9 +597,9 @@ script = ExtResource("11")
 
 [node name="Triggers" type="Node2D" parent="." unique_id=745606505]
 script = ExtResource("14")
-TriggersResource = ExtResource("15")
-DoorScene = ExtResource("16")
-EdgeScene = ExtResource("17")
+triggers_resource = ExtResource("15")
+door_scene = ExtResource("16")
+edge_scene = ExtResource("17")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=1864947523]
 script = ExtResource("18_f8e35")

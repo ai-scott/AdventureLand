@@ -1297,7 +1297,7 @@ script = ExtResource("7")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1585399365]
 script = ExtResource("8")
-WorldDisplayName = "Leafwood Forest"
+world_display_name = "Leafwood Forest"
 
 [node name="GrassBackground" type="Sprite2D" parent="." unique_id=1438143045]
 z_index = -10
@@ -1356,8 +1356,8 @@ script = ExtResource("6")
 
 [node name="NorthTrigger" parent="Entities" unique_id=917702192 instance=ExtResource("8_msv86")]
 position = Vector2(360, -16)
-TargetScene = "uid://br5bymkhd10fi"
-ExitEdge = 2
+target_scene = "uid://br5bymkhd10fi"
+exit_edge = 2
 
 [node name="Bat1" parent="Entities" unique_id=136448943 instance=ExtResource("13_bat")]
 position = Vector2(65, 134)
@@ -1370,8 +1370,8 @@ position = Vector2(376, 130)
 
 [node name="Pete" parent="Entities" unique_id=1860381342 instance=ExtResource("14_pete")]
 position = Vector2(564, 78)
-NpcName = "Pete"
-Dialogue = ExtResource("15_petedlg")
+npc_name = "Pete"
+dialogue = ExtResource("15_petedlg")
 
 [node name="ForestSign" type="Sprite2D" parent="Entities" unique_id=1016511996]
 position = Vector2(502, 31)
@@ -1381,8 +1381,8 @@ offset = Vector2(0, -22)
 
 [node name="ForestSignTrigger" parent="Entities" unique_id=1745539750 instance=ExtResource("17_signsc")]
 position = Vector2(528, 50)
-NpcName = "Forest Sign"
-Dialogue = ExtResource("18_fsdlg")
+npc_name = "Forest Sign"
+dialogue = ExtResource("18_fsdlg")
 
 [node name="Cabin1" type="Sprite2D" parent="Entities" unique_id=1253282592]
 position = Vector2(72, 326)
@@ -1398,8 +1398,8 @@ high_track = "adventureland_danger"
 
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789751]
 script = ExtResource("10_tspwn")
-TriggersResource = ExtResource("11_trres")
+triggers_resource = ExtResource("11_trres")
 
 [node name="GameOver" parent="." unique_id=1366688519 instance=ExtResource("12_gover")]
 visible = false
-PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
+player_health_path = NodePath("../Entities/Player/HealthSystem")

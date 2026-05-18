@@ -2511,7 +2511,7 @@ animations = ExtResource("4_pl78f")
 
 [node name="WorldMeta" type="Node" parent="." unique_id=1585399365]
 script = ExtResource("8")
-WorldDisplayName = "The Bottomless Lake"
+world_display_name = "The Bottomless Lake"
 
 [node name="GrassBackground" type="Sprite2D" parent="." unique_id=1438143045]
 z_index = -10
@@ -2580,7 +2580,7 @@ y_sort_enabled = true
 [node name="Player" parent="Entities" unique_id=2033580016 instance=ExtResource("3")]
 position = Vector2(360, 40)
 collision_mask = 11
-Speed = 100.0
+speed = 100.0
 
 [node name="Camera" type="Camera2D" parent="Entities/Player" unique_id=451599535]
 zoom = Vector2(2, 2)
@@ -2591,8 +2591,8 @@ script = ExtResource("6")
 position = Vector2(-10.999999, 235)
 rotation = 1.5707964
 scale = Vector2(0.7, 0.7)
-TargetScene = "uid://br5bymkhd10fi"
-ExitEdge = 1
+target_scene = "uid://br5bymkhd10fi"
+exit_edge = 1
 
 [node name="Crab1" parent="Entities" unique_id=2142006634 instance=ExtResource("12_crab")]
 position = Vector2(650, 130)
@@ -2605,19 +2605,19 @@ position = Vector2(550, 410)
 
 [node name="SeaMonster" parent="Entities" unique_id=1721475162 instance=ExtResource("14_sm")]
 position = Vector2(560, 224)
-Dialogue = ExtResource("15_smdlg")
+dialogue = ExtResource("15_smdlg")
 
 [node name="PinkShell" parent="Entities" unique_id=1986922747 instance=ExtResource("16_shell")]
 visible = false
 position = Vector2(432, 224)
-SeaMonsterPath = NodePath("../SeaMonster")
+sea_monster_path = NodePath("../SeaMonster")
 
 [node name="PearlPickup" parent="Entities" unique_id=925832706 instance=ExtResource("17_itrig")]
 visible = false
 position = Vector2(656, 80)
 collision_mask = 0
-Data = ExtResource("18_pearl")
-TriggerID = 12300
+data = ExtResource("18_pearl")
+trigger_id = 12300
 
 [node name="Shrine" type="Sprite2D" parent="Entities" unique_id=263806718]
 position = Vector2(128, 86)
@@ -2625,9 +2625,9 @@ texture = ExtResource("19_shrine")
 
 [node name="SeaMonsterKeyPickup" parent="Entities" unique_id=1602952774 instance=ExtResource("17_itrig")]
 position = Vector2(128, 112)
-Data = ExtResource("20_smkey")
-TriggerID = 12100
-ShrineSparkle = true
+data = ExtResource("20_smkey")
+trigger_id = 12100
+shrine_sparkle = true
 
 [node name="LakeSign" type="Sprite2D" parent="Entities" unique_id=281677252]
 position = Vector2(51.362, 188.892)
@@ -2636,8 +2636,8 @@ centered = false
 
 [node name="LakeSignTrigger" parent="Entities" unique_id=600997698 instance=ExtResource("22_signsc")]
 position = Vector2(77, 222)
-NpcName = "Lake Sign"
-Dialogue = ExtResource("23_lkdlg")
+npc_name = "Lake Sign"
+dialogue = ExtResource("23_lkdlg")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=187487132]
 script = ExtResource("9_wti8o")
@@ -2647,8 +2647,8 @@ high_track = "adventureland_danger"
 
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789752]
 script = ExtResource("10_tspwn")
-TriggersResource = ExtResource("11_trres")
+triggers_resource = ExtResource("11_trres")
 
 [node name="GameOver" parent="." unique_id=1366688520 instance=ExtResource("13_gover")]
 visible = false
-PlayerHealthPath = NodePath("../Entities/Player/HealthSystem")
+player_health_path = NodePath("../Entities/Player/HealthSystem")

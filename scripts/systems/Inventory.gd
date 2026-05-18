@@ -304,23 +304,16 @@ func use_item(slot_index: int) -> bool:
 
 # ---- Save/Load Integration ----
 
-# Snapshot inventory state into SaveData (still C#). Access via Set on
-# the C# Resource fields.
+# Snapshot inventory state into SaveData. SaveData declares the
+# arrays as Array[int]; we must hand .set() a typed Array[int] or
+# Godot's strict-mode setter rejects the assignment silently and
+# the field stays empty across save/load.
 func save_to(data: Resource) -> void:
-	var ids := PackedInt32Array()
-	var qtys := PackedInt32Array()
+	var typed_ids: Array[int] = []
+	var typed_qtys: Array[int] = []
 	for i in range(SLOT_COUNT):
-		ids.append(_slot_item_ids[i])
-		qtys.append(_slot_quantities[i])
-	# SaveData stores these as Godot.Collections.Array<int>, which
-	# accepts PackedInt32Array through Variant — but to be safe, build
-	# typed arrays explicitly.
-	var typed_ids: Array = []
-	var typed_qtys: Array = []
-	for id in ids:
-		typed_ids.append(id)
-	for q in qtys:
-		typed_qtys.append(q)
+		typed_ids.append(_slot_item_ids[i])
+		typed_qtys.append(_slot_quantities[i])
 	data.set("inventory_item_ids", typed_ids)
 	data.set("inventory_quantities", typed_qtys)
 
