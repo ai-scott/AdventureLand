@@ -1,19 +1,17 @@
 [gd_resource type="Resource" script_class="AnimatedTileSet" format=3 uid="uid://dxve3qfxot7cj"]
 
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
+[ext_resource type="Script" uid="uid://cc4dhkvakswc5" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
+[ext_resource type="Script" uid="uid://b4jg160i50shk" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
 
 [sub_resource type="Resource" id="E_0"]
 script = ExtResource("2")
 frame_count = 6
-frame_duration = 0.1
 frame_columns = 1
 
 [sub_resource type="Resource" id="E_1"]
 script = ExtResource("2")
 atlas_coord = Vector2i(1, 0)
 frame_count = 6
-frame_duration = 0.1
 frame_columns = 1
 
 [resource]

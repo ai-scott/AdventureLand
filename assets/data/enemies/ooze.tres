@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://dfirehwbf0ak0"]
 
-[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/data/EnemyAction.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.gd" id="4"]
+[ext_resource type="Script" uid="uid://c6d5k1ikv0lk3" path="res://scripts/data/EnemyData.gd" id="1"]
+[ext_resource type="Script" uid="uid://de4f21nyq0jig" path="res://scripts/data/EnemyBehavior.gd" id="2"]
+[ext_resource type="Script" uid="uid://coyyrluimbljr" path="res://scripts/data/EnemyAction.gd" id="3"]
+[ext_resource type="Script" uid="uid://bqqrc5uoh56mp" path="res://scripts/data/BehaviorCondition.gd" id="4"]
 
 [sub_resource type="Resource" id="act_idle_animate"]
 script = ExtResource("3")

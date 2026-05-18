@@ -53,12 +53,10 @@ func _process(_delta: float) -> void:
 	# Block re-summon while a sequence is already in flight. The
 	# controller itself also guards this, but bailing here keeps the
 	# hint suppressed until the player walks off the shell.
-	# SeaMonsterController is still C# this cluster — access C# instance
-	# property via Variant dispatch (PascalCase per Pattern C).
-	if bool(sm.IsBusy):
+	if bool(sm.is_busy):
 		return
 
-	sm.Summon()
+	sm.summon()
 	_suppress_until_exit = true
 
 func _exit_tree() -> void:

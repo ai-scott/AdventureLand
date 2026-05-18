@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="AnimatedTileSet" format=3 uid="uid://bhcvbowlujg2o"]
 
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
+[ext_resource type="Script" uid="uid://cc4dhkvakswc5" path="res://scripts/data/AnimatedTileSet.gd" id="1"]
+[ext_resource type="Script" uid="uid://b4jg160i50shk" path="res://scripts/data/AnimatedTileEntry.gd" id="2"]
 
 [sub_resource type="Resource" id="E_0"]
 script = ExtResource("2")
