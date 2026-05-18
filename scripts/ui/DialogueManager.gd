@@ -895,7 +895,7 @@ func _handle_custom_action(a: DialogueAction) -> void:
 			var data := SaveManager.CurrentData
 			var given: String = QuestSystem.get_world_flag("PennyName")
 			if data != null and not given.strip_edges().is_empty():
-				data.set("PlayerName", given.strip_edges())
+				data.set("player_name", given.strip_edges())
 				print("[Dialogue] adoptPennyName -> '%s'" % given.strip_edges())
 		_:
 			push_warning("[Dialogue] Unknown custom action: '%s'" % a.custom_function)
@@ -1049,14 +1049,14 @@ func _submit_input(text: String) -> void:
 	if _input_variable == "PlayerName":
 		var data := SaveManager.CurrentData
 		if data != null:
-			data.set("PlayerName", text)
+			data.set("player_name", text)
 	else:
 		QuestSystem.set_world_flag(_input_variable, text)
 
 	# Penny gag: stash comparison flag.
 	if _input_variable == "PennyName":
 		var save_data := SaveManager.CurrentData
-		var title_name: String = String(save_data.PlayerName) if save_data != null else ""
+		var title_name: String = String(save_data.player_name) if save_data != null else ""
 		var matches: bool = title_name.strip_edges().is_empty() \
 				or title_name.strip_edges().to_lower() == text.strip_edges().to_lower()
 		QuestSystem.set_world_flag("PennyNameMatches", "true" if matches else "false")
@@ -1086,8 +1086,8 @@ func _substitute_variables(text: String) -> String:
 
 	var data := SaveManager.CurrentData
 	if data != null:
-		text = text.replace("|PlayerName|", String(data.PlayerName))
-		text = text.replace("|CurrentWorld|", String(data.CurrentWorld))
+		text = text.replace("|PlayerName|", String(data.player_name))
+		text = text.replace("|CurrentWorld|", String(data.current_world))
 
 	text = text.replace("|PennyName|", QuestSystem.get_world_flag("PennyName"))
 	return text

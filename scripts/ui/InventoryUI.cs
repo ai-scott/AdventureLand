@@ -1023,7 +1023,7 @@ public partial class InventoryUI : CanvasLayer
 
 			Inventory.RemoveItem(item.Id, 1);
 			CurrencySystem.AddGems(sellPrice);
-			SaveManager.Instance?.Save();
+			SaveManager.Save();
 			SFXController.Play("collectible_pickup");
 			RefreshAll();
 		});
@@ -1086,27 +1086,31 @@ public partial class InventoryUI : CanvasLayer
 
 	/// <summary>Write current cycler indices into SaveData. The next world
 	/// transition's auto-save persists them; cycling within a session sticks
-	/// across reloads as long as one transition fires before quit.</summary>
+	/// across reloads as long as one transition fires before quit.
+	/// SaveData is GDScript (Cluster 9) -- snake_case Variant Set.</summary>
 	private void PersistCustomization()
 	{
-		var data = SaveManager.Instance?.CurrentData;
+		var data = SaveManager.CurrentData;
 		if (data == null) return;
-		data.HairStyleIndex = _hairIndex;
-		data.HairColorIndex = _hairColorIndex;
-		data.SkinIndex = _skinIndex;
+		data.Set("hair_style_index", _hairIndex);
+		data.Set("hair_color_index", _hairColorIndex);
+		data.Set("skin_index", _skinIndex);
 	}
 
 	/// <summary>Pull persisted indices from SaveData onto our local state +
 	/// re-label the cyclers. Apply already happens in
-	/// CostumeController.RestoreEquipment so the player visual is correct
+	/// CostumeController.restore_equipment so the player visual is correct
 	/// before we ever open inventory; this just syncs the UI.</summary>
 	private void RestoreCustomizationFromSave()
 	{
-		var data = SaveManager.Instance?.CurrentData;
+		var data = SaveManager.CurrentData;
 		if (data == null) return;
-		if (data.HairStyleIndex >= 0) _hairIndex = data.HairStyleIndex;
-		if (data.HairColorIndex >= 0) _hairColorIndex = data.HairColorIndex;
-		if (data.SkinIndex >= 0) _skinIndex = data.SkinIndex;
+		int hair = data.Get("hair_style_index").AsInt32();
+		int hairColor = data.Get("hair_color_index").AsInt32();
+		int skin = data.Get("skin_index").AsInt32();
+		if (hair >= 0) _hairIndex = hair;
+		if (hairColor >= 0) _hairColorIndex = hairColor;
+		if (skin >= 0) _skinIndex = skin;
 		UpdateCyclerLabels();
 	}
 
@@ -1398,8 +1402,8 @@ public partial class InventoryUI : CanvasLayer
 
 	private void RefreshHeader()
 	{
-		var save = SaveManager.Instance?.CurrentData;
-		_playerNameLabel.Text = string.IsNullOrEmpty(save?.PlayerName) ? "Hero" : save.PlayerName;
+		var playerName = SaveManager.CurrentData?.Get("player_name").AsString();
+		_playerNameLabel.Text = string.IsNullOrEmpty(playerName) ? "Hero" : playerName;
 
 		foreach (var c in _heartRow.GetChildren()) c.QueueFree();
 		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;

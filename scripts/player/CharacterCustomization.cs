@@ -46,7 +46,7 @@ public static class CharacterCustomization
 
     public static void Apply(Node spriteLayers, int hairStyleIdx, int hairColorIdx, int skinIdx)
         => Get()?.Call("apply", spriteLayers, hairStyleIdx, hairColorIdx, skinIdx);
-
-    public static void Randomize(SaveData data)
-        => Get()?.Call("randomize_appearance", data);
+    // Randomize() removed in Cluster 9 — only SaveManager.cs called it,
+    // and SaveManager is now GDScript and calls
+    // CharacterCustomization.randomize_appearance(current_data) directly.
 }

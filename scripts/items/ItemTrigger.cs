@@ -202,7 +202,7 @@ public partial class ItemTrigger : Area2D
             QuestSystem.SetWorldFlag(CollectFlagKey(), "true");
         }
 
-        SaveManager.Instance?.Save();
+        SaveManager.Save();
         SFXController.Play("collectible_pickup");
         SpawnSparkles();
 
@@ -284,7 +284,7 @@ public partial class ItemTrigger : Area2D
         }
 
         // Auto-save so items persist if the player quits.
-        SaveManager.Instance?.Save();
+        SaveManager.Save();
 
         ShowPickupToast();
         SpawnSparkles();

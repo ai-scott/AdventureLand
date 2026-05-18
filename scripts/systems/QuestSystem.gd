@@ -51,7 +51,7 @@ func get_quest_status(quest_id: String) -> String:
 	var data := _get_data()
 	if data == null:
 		return "Not_Started"
-	var statuses: Dictionary = data.QuestStatuses
+	var statuses: Dictionary = data.quest_statuses
 	if not statuses.has(quest_id):
 		return "Not_Started"
 	return String(statuses[quest_id])
@@ -60,7 +60,7 @@ func set_quest_status(quest_id: String, status: String) -> void:
 	var data := _get_data()
 	if data == null:
 		return
-	var statuses: Dictionary = data.QuestStatuses
+	var statuses: Dictionary = data.quest_statuses
 	statuses[quest_id] = status
 	print("[Quest] %s → %s" % [quest_id, status])
 
@@ -79,7 +79,7 @@ func get_world_flag(key: String) -> String:
 	var data := _get_data()
 	if data == null:
 		return ""
-	var flags: Dictionary = data.WorldFlags
+	var flags: Dictionary = data.world_flags
 	if not flags.has(key):
 		return ""
 	return String(flags[key])
@@ -88,14 +88,14 @@ func set_world_flag(key: String, value: String) -> void:
 	var data := _get_data()
 	if data == null:
 		return
-	var flags: Dictionary = data.WorldFlags
+	var flags: Dictionary = data.world_flags
 	flags[key] = value
 
 func has_world_flag(key: String) -> bool:
 	var data := _get_data()
 	if data == null:
 		return false
-	var flags: Dictionary = data.WorldFlags
+	var flags: Dictionary = data.world_flags
 	return flags.has(key)
 
 # ---- NPC Memory ----
@@ -104,7 +104,7 @@ func get_npc_memory(npc_id: String, key: String) -> String:
 	var data := _get_data()
 	if data == null:
 		return ""
-	var memory: Dictionary = data.NpcMemory
+	var memory: Dictionary = data.npc_memory
 	var combined: String = "%s:%s" % [npc_id, key]
 	if not memory.has(combined):
 		return ""
@@ -114,7 +114,7 @@ func set_npc_memory(npc_id: String, key: String, value: String) -> void:
 	var data := _get_data()
 	if data == null:
 		return
-	var memory: Dictionary = data.NpcMemory
+	var memory: Dictionary = data.npc_memory
 	memory["%s:%s" % [npc_id, key]] = value
 
 # ---- Unique Items ----
@@ -139,7 +139,7 @@ func remove_unique_item(item_name: String) -> void:
 	var data := _get_data()
 	if data == null:
 		return
-	var flags: Dictionary = data.WorldFlags
+	var flags: Dictionary = data.world_flags
 	var key: String = "UniqueItem_%s" % item_name
 	if flags.has(key):
 		flags.erase(key)

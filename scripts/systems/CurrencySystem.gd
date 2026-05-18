@@ -21,7 +21,7 @@ func get_gems() -> int:
 	var data := _get_data()
 	if data == null:
 		return 0
-	return int(data.Gems)
+	return int(data.gems)
 
 func can_afford(cost: int) -> bool:
 	return cost <= 0 or get_gems() >= cost
@@ -35,9 +35,9 @@ func add_gems(amount: int) -> int:
 	if data == null:
 		return 0
 
-	var before: int = int(data.Gems)
+	var before: int = int(data.gems)
 	var after: int = min(MAX_GEMS, before + amount)
-	data.set("Gems", after)
+	data.set("gems", after)
 	var added: int = after - before
 	if added > 0:
 		print("[Currency] +%d gems (→ %d)" % [added, after])
@@ -52,11 +52,11 @@ func remove_gems(amount: int) -> bool:
 	var data := _get_data()
 	if data == null:
 		return false
-	var current: int = int(data.Gems)
+	var current: int = int(data.gems)
 	if current < amount:
 		return false
 
-	data.set("Gems", current - amount)
+	data.set("gems", current - amount)
 	print("[Currency] -%d gems (→ %d)" % [amount, current - amount])
 	gems_changed.emit(current - amount)
 	return true

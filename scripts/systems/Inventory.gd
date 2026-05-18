@@ -321,13 +321,13 @@ func save_to(data: Resource) -> void:
 		typed_ids.append(id)
 	for q in qtys:
 		typed_qtys.append(q)
-	data.set("InventoryItemIds", typed_ids)
-	data.set("InventoryQuantities", typed_qtys)
+	data.set("inventory_item_ids", typed_ids)
+	data.set("inventory_quantities", typed_qtys)
 
 	var equipped_dict: Dictionary = {}
 	for k in _equipped:
 		equipped_dict[k] = _equipped[k]
-	data.set("EquippedItems", equipped_dict)
+	data.set("equipped_items", equipped_dict)
 
 # Restore inventory state from SaveData (still C#).
 func load_from(data: Resource) -> void:
@@ -336,15 +336,15 @@ func load_from(data: Resource) -> void:
 		_slot_quantities[i] = 0
 	_equipped.clear()
 
-	var saved_ids = data.get("InventoryItemIds")
-	var saved_qtys = data.get("InventoryQuantities")
+	var saved_ids = data.get("inventory_item_ids")
+	var saved_qtys = data.get("inventory_quantities")
 	if saved_ids != null:
 		var count: int = min(saved_ids.size(), SLOT_COUNT)
 		for i in range(count):
 			_slot_item_ids[i] = int(saved_ids[i])
 			_slot_quantities[i] = int(saved_qtys[i]) if i < saved_qtys.size() else 1
 
-	var saved_equipped = data.get("EquippedItems")
+	var saved_equipped = data.get("equipped_items")
 	if saved_equipped != null:
 		for k in saved_equipped:
 			_equipped[String(k)] = int(saved_equipped[k])

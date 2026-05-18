@@ -116,9 +116,11 @@ public static class Inventory
     public static void GrantStarterEquipment()
         => Get()?.Call("grant_starter_equipment");
 
-    public static void SaveTo(SaveData data)
+    // SaveData ported to GDScript in Cluster 9 — typed param drops to
+    // Resource. Call sites pass SaveManager.CurrentData (Resource) directly.
+    public static void SaveTo(Resource data)
         => Get()?.Call("save_to", data);
 
-    public static void LoadFrom(SaveData data)
+    public static void LoadFrom(Resource data)
         => Get()?.Call("load_from", data);
 }

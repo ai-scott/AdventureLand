@@ -255,9 +255,9 @@ func restore_equipment() -> void:
 	if save != null and _sprite_layers != null:
 		CharacterCustomization.apply(
 			_sprite_layers,
-			int(save.HairStyleIndex),
-			int(save.HairColorIndex),
-			int(save.SkinIndex),
+			int(save.hair_style_index),
+			int(save.hair_color_index),
+			int(save.skin_index),
 		)
 
 # Resolve a base sheet texture from the CostumeLayer and CostumeId. The

@@ -160,8 +160,8 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 			snap_camera(player)
 			var data: Resource = SaveManager.CurrentData
 			if data != null:
-				data.set("PositionX", player.global_position.x)
-				data.set("PositionY", player.global_position.y)
+				data.set("position_x", player.global_position.x)
+				data.set("position_y", player.global_position.y)
 				# Re-save with the marker position so disk matches in-memory.
 				SaveManager.Save()
 	else:
@@ -262,8 +262,8 @@ func _clamp_player_to_world_bounds(exit_edge: String, exit_pos: Vector2) -> void
 
 	var data: Resource = SaveManager.CurrentData
 	if data != null:
-		data.set("PositionX", player.global_position.x)
-		data.set("PositionY", player.global_position.y)
+		data.set("position_x", player.global_position.x)
+		data.set("position_y", player.global_position.y)
 		# ApplySaveToPlayer just auto-saved the (X, 9999) placeholder.
 		SaveManager.Save()
 
@@ -309,7 +309,7 @@ func _prepare_banner_if_first_visit(scene_path: String) -> bool:
 		return false
 
 	var key: String = _normalize_scene_path(scene_path)
-	var visited: Array = data.get("VisitedWorlds")
+	var visited: Array = data.get("visited_worlds")
 	if visited.has(key):
 		return false
 
@@ -335,7 +335,7 @@ func show_first_world_banner(scene_path: String) -> void:
 		transition_completed.emit()
 		return
 	var key: String = _normalize_scene_path(scene_path)
-	var visited: Array = data.get("VisitedWorlds")
+	var visited: Array = data.get("visited_worlds")
 	if not visited.has(key):
 		visited.append(key)
 

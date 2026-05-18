@@ -78,7 +78,7 @@ public partial class TitleScreen : Control
     private const int HeartHpStep = 2;
     private const int MaxHeartsDisplayed = 5;
 
-    private SaveManager _saveManager;
+    // SaveManager facade is static (Cluster 9); the typed instance field is gone.
 
     // Title image is 840×840 (native 420×420 at integer 2× scale) in an
     // 840×480 viewport. Starts with the bottom 480px of the image visible
@@ -98,7 +98,7 @@ public partial class TitleScreen : Control
         // can't strand the player on the wrong button style.
         UiStyles.DetectMobile();
 
-        _saveManager = GetNode<SaveManager>("/root/SaveManager");
+        
 
         _bgImage = GetNode<TextureRect>("BgImage");
         _mainMenu = GetNode<VBoxContainer>("MainMenu");
@@ -404,7 +404,7 @@ public partial class TitleScreen : Control
     {
         for (int i = 0; i < SaveManager.SlotCount; i++)
         {
-            if (_saveManager.SlotExists(i)) return true;
+            if (SaveManager.SlotExists(i)) return true;
         }
         return false;
     }
@@ -622,7 +622,7 @@ public partial class TitleScreen : Control
         for (int i = 0; i < SaveManager.SlotCount; i++)
         {
             int slot = i;
-            var data = _saveManager.GetSlotSummary(slot);
+            var data = SaveManager.GetSlotSummary(slot);
             var row = BuildSaveSlotRow(slot, data, newGame);
             _slotButtons.Add(row);
 
@@ -684,10 +684,10 @@ public partial class TitleScreen : Control
     /// the overwrite prompt; everything else loads / starts directly.</summary>
     private void OnSlotConfirmed(int slot)
     {
-        var data = _saveManager.GetSlotSummary(slot);
+        var data = SaveManager.GetSlotSummary(slot);
         if (_slotModeNewGame && data != null)
         {
-            ConfirmOverwrite(slot, data.PlayerName);
+            ConfirmOverwrite(slot, data.Get("player_name").AsString());
         }
         else
         {
@@ -1095,7 +1095,7 @@ public partial class TitleScreen : Control
     /// name (Alagard gold) + heart row + HP text + world name. Empty slot
     /// in new-game mode shows '— Empty slot —' and stays selectable; empty
     /// in continue mode shows the same label but is disabled.</summary>
-    private Button BuildSaveSlotRow(int slot, SaveData data, bool newGame)
+    private Button BuildSaveSlotRow(int slot, Resource data, bool newGame)
     {
         var btn = new Button { Text = "" };
         btn.CustomMinimumSize = new Vector2(0, 44);
@@ -1130,9 +1130,12 @@ public partial class TitleScreen : Control
 
         if (data != null)
         {
+            // SaveData is GDScript (Cluster 9) -- Variant Get with snake_case.
+            int maxHealth = data.Get("max_health").AsInt32();
+            string currentWorld = data.Get("current_world").AsString();
             var nameLabel = new Label
             {
-                Text = data.PlayerName,
+                Text = data.Get("player_name").AsString(),
                 VerticalAlignment = VerticalAlignment.Center,
                 CustomMinimumSize = new Vector2(110, 0),
                 MouseFilter = Control.MouseFilterEnum.Ignore,
@@ -1142,17 +1145,18 @@ public partial class TitleScreen : Control
             hbox.AddChild(nameLabel);
 
             // Hearts represent the player's heart-container count, not live
-            // HP — Continue/Try Again refills to full (SaveManager.Load
-            // line ~196), so showing 4/10 on the slot would mislead the
-            // player into thinking they'd resume injured. Pass MaxHealth
-            // for both args so every heart renders full.
-            hbox.AddChild(BuildHeartRow(data.MaxHealth, data.MaxHealth));
+            // HP — Continue/Try Again refills to full (SaveManager.load_slot
+            // re-seeds current_data.health to max_health), so showing 4/10
+            // on the slot would mislead the player into thinking they'd
+            // resume injured. Pass max_health for both args so every heart
+            // renders full.
+            hbox.AddChild(BuildHeartRow(maxHealth, maxHealth));
 
             // World/area name flows naturally after HP, left-aligned, with
             // ExpandFill so it absorbs any extra row width.
             var worldLabel = new Label
             {
-                Text = SaveManager.WorldDisplayName(data.CurrentWorld),
+                Text = SaveManager.WorldDisplayName(currentWorld),
                 VerticalAlignment = VerticalAlignment.Center,
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 MouseFilter = Control.MouseFilterEnum.Ignore,
@@ -1283,7 +1287,7 @@ public partial class TitleScreen : Control
         yes.CustomMinimumSize = new Vector2(140, 40);
         yes.Pressed += () =>
         {
-            _saveManager.DeleteSlot(slot);
+            SaveManager.DeleteSlot(slot);
             OnSlotChosen(slot);
         };
         hbox.AddChild(yes);
@@ -1316,7 +1320,7 @@ public partial class TitleScreen : Control
         // Re-entry guard: pressing Space on a focused slot button fires
         // Pressed twice (Godot's native ui_accept on the Button + this
         // screen's _UnhandledInput dialogue_advance handler also emits
-        // Pressed manually). Without the guard, _saveManager.Load runs
+        // Pressed manually). Without the guard, SaveManager.Load runs
         // twice, which spawns two parallel FadeOut tweens that fight
         // each other and produce a jumpy fade-out. The flag stays true
         // for the rest of this scene's lifetime — the next title load
@@ -1332,7 +1336,7 @@ public partial class TitleScreen : Control
         }
         else
         {
-            _saveManager.Load(slot);
+            SaveManager.Load(slot);
         }
     }
 
@@ -1358,7 +1362,7 @@ public partial class TitleScreen : Control
         var name = _nameInput.Text.Trim();
         if (string.IsNullOrEmpty(name)) name = "Hero";
 
-        _saveManager.NewGame(_selectedSlot, name);
+        SaveManager.NewGame(_selectedSlot, name);
     }
 
     private void OnNewGamePressed()

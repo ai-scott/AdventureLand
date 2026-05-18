@@ -46,11 +46,13 @@ public partial class HealthBar : CanvasLayer
         if (_health == null) return;
         OnHealthChanged(_health.CurrentHealth, _health.MaxHealth);
 
-        // Show player name from the active save.
-        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
-        if (saveManager?.CurrentData != null && !string.IsNullOrEmpty(saveManager.CurrentData.PlayerName))
+        // SaveData is GDScript (Cluster 9) — facade access + Variant Get
+        // with snake_case key.
+        var data = SaveManager.CurrentData;
+        var playerName = data?.Get("player_name").AsString();
+        if (!string.IsNullOrEmpty(playerName))
         {
-            _label.Text = $"{saveManager.CurrentData.PlayerName}  {_health.CurrentHealth} / {_health.MaxHealth}";
+            _label.Text = $"{playerName}  {_health.CurrentHealth} / {_health.MaxHealth}";
         }
     }
 
@@ -59,8 +61,7 @@ public partial class HealthBar : CanvasLayer
         _bar.MaxValue = max;
         _bar.Value = current;
 
-        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
-        var name = saveManager?.CurrentData?.PlayerName;
+        var name = SaveManager.CurrentData?.Get("player_name").AsString();
         _label.Text = string.IsNullOrEmpty(name) ? $"{current} / {max}" : $"{name}  {current} / {max}";
     }
 }

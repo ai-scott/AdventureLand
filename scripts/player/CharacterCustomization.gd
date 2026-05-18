@@ -169,11 +169,11 @@ func randomize_appearance(data: Resource) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	if _hair_styles.size() > 0:
-		data.set("HairStyleIndex", rng.randi_range(0, _hair_styles.size() - 1))
+		data.set("hair_style_index", rng.randi_range(0, _hair_styles.size() - 1))
 	if _hair_colors.size() > 0:
-		data.set("HairColorIndex", rng.randi_range(0, _hair_colors.size() - 1))
+		data.set("hair_color_index", rng.randi_range(0, _hair_colors.size() - 1))
 	if _skins.size() > 0:
-		data.set("SkinIndex", rng.randi_range(0, _skins.size() - 1))
+		data.set("skin_index", rng.randi_range(0, _skins.size() - 1))
 
 func _ensure_loaded() -> void:
 	if _loaded:

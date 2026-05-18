@@ -137,13 +137,13 @@ public partial class GameOverScreen : CanvasLayer
         // Populate the menu. Try Again only when there's a save slot to reload.
         foreach (var child in _menu.GetChildren()) child.QueueFree();
 
-        var saveManager = GetNodeOrNull<SaveManager>("/root/SaveManager");
-        if (saveManager != null && saveManager.ActiveSlot >= 0)
+        // SaveManager is GDScript (Cluster 9) -- facade is static.
+        if (SaveManager.ActiveSlot >= 0)
         {
             _menu.AddChild(MakeMenuButton("Try Again", () =>
             {
                 GetTree().Paused = false;
-                saveManager.Load(saveManager.ActiveSlot);
+                SaveManager.Load(SaveManager.ActiveSlot);
             }));
         }
 

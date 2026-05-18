@@ -274,11 +274,15 @@ public partial class ItemPickupToast : CanvasLayer
     private Control BuildAttackTutorialHint(ItemData item)
     {
         if (item.Category != ItemData.ItemCategory.Weapon) return null;
-        var save = SaveManager.Instance?.CurrentData;
+        // SaveData is GDScript (Cluster 9) -- world_flags is a Dictionary
+        // accessed via Variant Get / Set with snake_case key.
+        var save = SaveManager.CurrentData;
         if (save == null) return null;
-        if (save.WorldFlags.ContainsKey("seen_attack_tutorial")) return null;
+        var flags = save.Get("world_flags").AsGodotDictionary();
+        if (flags.ContainsKey("seen_attack_tutorial")) return null;
 
-        save.WorldFlags["seen_attack_tutorial"] = "true";
+        flags["seen_attack_tutorial"] = "true";
+        save.Set("world_flags", flags);
         _autoCloseTimer = 4.0;
 
         // Centred row: pixel-art Space-key icon + "Attack!" verb. Uses
@@ -998,7 +1002,7 @@ public partial class ItemPickupToast : CanvasLayer
             }
         }
 
-        SaveManager.Instance?.Save();
+        SaveManager.Save();
         var player = GetTree().GetFirstNodeInGroup("player") as CharacterBody2D;
         var costume = player?.GetNodeOrNull<Node>("CostumeController");
         costume?.Call("equip_item", item);
