@@ -410,8 +410,10 @@ public partial class InventoryUI : CanvasLayer
 		// Snap world player to face-down idle BEFORE pausing so the mirrored
 		// preview reads as a clean character portrait. AnimationTree state
 		// persists across pause once Travel + Advance commit it.
-		var player = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-		player?.ShowIdleFacing(Vector2.Down);
+		// PlayerController is GDScript (Cluster 7b-4) — Pattern H.
+		// show_idle_facing is a snake_case method; dispatch via Variant.
+		var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+		player?.Call("show_idle_facing", Vector2.Down);
 		GetTree().Paused = true;
 		_selectedSlot = 0;
 		_focusZone = FocusZone.Grid;

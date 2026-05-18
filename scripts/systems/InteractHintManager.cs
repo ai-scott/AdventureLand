@@ -43,6 +43,29 @@ public static class InteractHintManager
     public static Node2D ActiveSource
         => Get()?.Get("active_source").As<Node2D>();
 
+    // Process-frame stamp recorded by overlays when they close. Lived on
+    // PlayerController as a static `ulong` prior to Cluster 7b-4 — moved
+    // to InteractHintManager (an existing autoload with a facade) so
+    // PlayerController.gd can read it via direct autoload access. Pattern K.
+    public static ulong LastOverlayCloseFrame
+    {
+        get => Get()?.Get("last_overlay_close_frame").AsUInt64() ?? 0UL;
+        set => Get()?.Set("last_overlay_close_frame", value);
+    }
+
+    // Modal-toast counter — replaces ItemPickupToast.IsAnyModalActive +
+    // the private `_activeModalCount` field. Same Pattern K motivation
+    // as LastOverlayCloseFrame: PlayerController.gd needs to read it
+    // and GDScript can't see C# statics.
+    public static bool IsAnyModalActive
+        => Get()?.Call("is_any_modal_active").AsBool() ?? false;
+
+    public static void NotifyModalOpened()
+        => Get()?.Call("notify_modal_opened");
+
+    public static void NotifyModalClosed()
+        => Get()?.Call("notify_modal_closed");
+
     public static void Register(Node2D source, Func<string> textProvider, float? headOffsetY = null)
     {
         var node = Get();

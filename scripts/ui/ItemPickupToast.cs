@@ -28,12 +28,11 @@ public partial class ItemPickupToast : CanvasLayer
     private bool _isUpgrade; // true when new item is stronger than currently equipped
     private double _autoCloseTimer;
 
-    // Process-wide count of toasts currently in their "waiting for choice"
-    // (modal) state. Lets PlayerController gate input even on the same frame
-    // that a modal closes, and prevents toast #1's Close from unpausing the
-    // tree out from under a chained toast #2 (purchase → compare flow).
-    private static int _activeModalCount;
-    public static bool IsAnyModalActive => _activeModalCount > 0;
+    // Modal counter + "any active" accessor moved to InteractHintManager
+    // in Cluster 7b-4 so PlayerController.gd (now GDScript) can read them
+    // directly — GDScript cannot see C# statics (Pattern K). Increment via
+    // InteractHintManager.NotifyModalOpened(); decrement via
+    // NotifyModalClosed(); read via InteractHintManager.IsAnyModalActive.
 
     // Take/Purchase mode callback — invoked when the player accepts.
     private Action _onAccept;
@@ -140,11 +139,11 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = CurrencySystem.GetGems() >= cost;
         BuildPurchaseToast(item, cost);
         _waitingForChoice = true;
-        _activeModalCount++;
+        InteractHintManager.NotifyModalOpened();
         GetTree().Paused = true;
         SetPlayerInputLocked(true);
         // Same frame guard as Close — covers the press that just opened us.
-        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+        InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Same confirm/cancel flow as ShowPurchase but for free pickups.
@@ -158,10 +157,10 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = true; // always, no cost
         BuildTakeToast(item);
         _waitingForChoice = true;
-        _activeModalCount++;
+        InteractHintManager.NotifyModalOpened();
         GetTree().Paused = true;
         SetPlayerInputLocked(true);
-        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+        InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Confirm overlay for selling an inventory item back to a shop.
@@ -177,10 +176,10 @@ public partial class ItemPickupToast : CanvasLayer
         _purchaseAffordable = true; // always — selling never fails on funds
         BuildSellToast(item, sellPrice);
         _waitingForChoice = true;
-        _activeModalCount++;
+        InteractHintManager.NotifyModalOpened();
         GetTree().Paused = true;
         SetPlayerInputLocked(true);
-        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+        InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
     }
 
     /// <summary>Show the pickup toast for the given item. Call after adding to inventory.</summary>
@@ -223,10 +222,10 @@ public partial class ItemPickupToast : CanvasLayer
                 _isUpgrade = item.Strength > _oldItem.Strength;
                 BuildCompareToast(item, _oldItem);
                 _waitingForChoice = true;
-                _activeModalCount++;
+                InteractHintManager.NotifyModalOpened();
                 GetTree().Paused = true;
                 SetPlayerInputLocked(true);
-                PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+                InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
             }
         }
         else if (item.IsConsumable)
@@ -1013,8 +1012,8 @@ public partial class ItemPickupToast : CanvasLayer
             // the purchase → compare chain spawns toast #2 from inside
             // toast #1's Accept handler, so toast #1's Close would
             // otherwise yank the pause out from under toast #2.
-            _activeModalCount = System.Math.Max(0, _activeModalCount - 1);
-            if (_activeModalCount == 0)
+            InteractHintManager.NotifyModalClosed();
+            if (!InteractHintManager.IsAnyModalActive)
             {
                 GetTree().Paused = false;
                 SetPlayerInputLocked(false);
@@ -1024,7 +1023,7 @@ public partial class ItemPickupToast : CanvasLayer
         _onAccept = null;
         // Tell PlayerController to skip the attack input on the closing
         // frame — Space-to-confirm shouldn't fall through to a swing.
-        PlayerController.LastOverlayCloseFrame = Engine.GetProcessFrames();
+        InteractHintManager.LastOverlayCloseFrame = Engine.GetProcessFrames();
         QueueFree();
     }
 
@@ -1034,7 +1033,9 @@ public partial class ItemPickupToast : CanvasLayer
     /// pause stops catching it. InputLocked zeros input regardless.</summary>
     private void SetPlayerInputLocked(bool locked)
     {
-        var player = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-        if (player != null) player.InputLocked = locked;
+        // PlayerController is GDScript (Cluster 7b-4) — Pattern H downgrade.
+        // input_locked is a snake_case @export var; set via Variant.
+        var player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+        player?.Set("input_locked", locked);
     }
 }

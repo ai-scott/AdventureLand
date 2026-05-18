@@ -303,7 +303,10 @@ public partial class EnemyController : CharacterBody2D
 		// If the player is dead, treat as absent for the rest of this tick so
 		// behaviors fall through to patrol/wander instead of locking us onto
 		// the corpse and ping-ponging the contact-damage check across it.
-		if (_player is PlayerController pcAlive && pcAlive.IsDead)
+		// PlayerController is GDScript (Cluster 7b-4) — Pattern H downgrade.
+		// is_dead is a snake_case bool on the autoload-less GDScript node;
+		// read via Variant.
+		if (_player != null && _player.Get("is_dead").AsBool())
 		{
 			_player = null;
 		}
@@ -369,9 +372,13 @@ public partial class EnemyController : CharacterBody2D
 				_contactDamageTimer -= delta;
 				if (_contactDamageTimer <= 0)
 				{
-					var pc = _player as PlayerController;
-					if (pc != null) ApplyContactKnockback(pc);
-					pc?.TakeDamage(ContactDamage);
+					// PlayerController is GDScript (Cluster 7b-4) — Pattern H.
+					// take_damage / apply_knockback are snake_case methods.
+					if (_player != null)
+					{
+						ApplyContactKnockback(_player);
+						_player.Call("take_damage", ContactDamage);
+					}
 					_contactDamageTimer = ContactDamageCooldown;
 				}
 			}
@@ -924,12 +931,11 @@ public partial class EnemyController : CharacterBody2D
 		if (_health != null && _health.IsDead) return;
 		if (!CanBeHit()) return;
 
-		if (body is PlayerController pc)
-		{
-			ApplyContactKnockback(pc);
-			pc.TakeDamage(ContactDamage);
-			_contactDamageTimer = ContactDamageCooldown;
-		}
+		// PlayerController is GDScript (Cluster 7b-4) — Pattern H. Group
+		// membership already validated above, so `body` is the player Node2D.
+		ApplyContactKnockback(body);
+		body.Call("take_damage", ContactDamage);
+		_contactDamageTimer = ContactDamageCooldown;
 	}
 
 	public void ApplyKnockback(Vector2 force)
@@ -938,11 +944,13 @@ public partial class EnemyController : CharacterBody2D
 		_knockbackTimer = KnockbackDuration;
 	}
 
-	private void ApplyContactKnockback(PlayerController pc)
+	// PlayerController is GDScript (Cluster 7b-4) — Pattern H. apply_knockback
+	// is a snake_case method; dispatch via Variant.
+	private void ApplyContactKnockback(Node2D pc)
 	{
 		var dir = (pc.GlobalPosition - GlobalPosition).Normalized();
 		if (dir == Vector2.Zero) dir = Vector2.Down;
-		pc.ApplyKnockback(dir * ContactKnockbackForce);
+		pc.Call("apply_knockback", dir * ContactKnockbackForce);
 	}
 
 	private void OnDied()

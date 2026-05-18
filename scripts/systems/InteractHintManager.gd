@@ -74,6 +74,31 @@ const TOP_MARGIN_PX: float = 8.0
 # so a Shift+M debug toggle still rebuilds the panel without a restart.
 var _is_mobile: bool = false
 
+# Process-frame number recorded by overlays (toasts, prompts) when they
+# close. PlayerController checks this in _unhandled_input to suppress
+# attack inputs for one frame after a close, so the Space key that
+# confirmed the prompt doesn't fall through into an attack swing.
+#
+# Lived on PlayerController as a C# static prior to Cluster 7b-4 — moved
+# here because GDScript cannot access C# static members (Pattern K) and
+# this autoload is the closest home with an existing C# facade.
+var last_overlay_close_frame: int = 0
+
+# Modal-toast counter — incremented by ItemPickupToast.cs each time a
+# modal opens and decremented on close. Lived as a C# static on
+# ItemPickupToast (`_activeModalCount`) prior to Cluster 7b-4; moved
+# here for the same Pattern K reason as last_overlay_close_frame.
+var _active_modal_count: int = 0
+
+func is_any_modal_active() -> bool:
+	return _active_modal_count > 0
+
+func notify_modal_opened() -> void:
+	_active_modal_count += 1
+
+func notify_modal_closed() -> void:
+	_active_modal_count = max(0, _active_modal_count - 1)
+
 func _ready() -> void:
 	layer = 8  # below dialogue (10) and toast (11), above world/HUD
 	process_mode = Node.PROCESS_MODE_ALWAYS
