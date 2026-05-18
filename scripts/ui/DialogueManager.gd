@@ -137,7 +137,7 @@ func _input(evt: InputEvent) -> void:
 
 	# Skip click-anywhere while response buttons are showing — clicks
 	# need to reach the Button widgets to pick a specific response.
-	if _current_responses != null and _current_responses.size() > 0:
+	if _current_responses.size() > 0:
 		return
 
 	var pos: Variant = null
@@ -249,7 +249,7 @@ func _process(_delta: float) -> void:
 		_just_started = false
 		return
 
-	if _current_responses != null and _current_responses.size() > 0:
+	if _current_responses.size() > 0:
 		# Arrow-key navigation through response buttons.
 		if Input.is_action_just_pressed("move_up"):
 			_select_response(_selected_response_index - 1)
@@ -602,7 +602,8 @@ static func _prettify_speaker(speaker: String) -> String:
 	return speaker.replace("_", " ")
 
 func _on_response_chosen(index: int) -> void:
-	if _current_responses == null or index >= _current_responses.size():
+	# Typed Array[DialogueResponse] is never null; just bounds-check.
+	if index < 0 or index >= _current_responses.size():
 		return
 
 	var resp: DialogueResponse = _current_responses[index]
@@ -625,7 +626,8 @@ func end_dialogue() -> void:
 	if _mobile_continue_hint != null:
 		_mobile_continue_hint.visible = false
 	_current_node = null
-	_current_responses = null
+	# Typed Array[DialogueResponse] can't take null -- clear instead.
+	_current_responses.clear()
 	_npc_data = null
 	_waiting_for_input = false
 	is_active = false
