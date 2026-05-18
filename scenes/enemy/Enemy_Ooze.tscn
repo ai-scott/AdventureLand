@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c6fiy1d6g8ct0"]
 
-[ext_resource type="Script" uid="uid://b13h6i2aa2pll" path="res://scripts/enemy/EnemyController.cs" id="1"]
-[ext_resource type="Script" uid="uid://gmxkev1xd6fq" path="res://scripts/enemy/EnemyFolderAnimator.cs" id="2"]
+[ext_resource type="Script" path="res://scripts/enemy/EnemyController.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/enemy/EnemyFolderAnimator.gd" id="2"]
 [ext_resource type="Resource" uid="uid://dfirehwbf0ak0" path="res://assets/data/enemies/ooze.tres" id="2_pskue"]
 [ext_resource type="Script" uid="uid://dtmt3uegoc48l" path="res://scripts/systems/HealthSystem.cs" id="3"]
 

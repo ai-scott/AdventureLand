@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://gxawk8hguuhw"]
 
-[ext_resource type="Script" path="res://scripts/world/SeaMonsterController.cs" id="1"]
+[ext_resource type="Script" path="res://scripts/world/SeaMonsterController.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/sea-monster/sea-monster-idle.png" id="2_idle"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/sea-monster/sea-monster-attack.png" id="3_attack"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/fx_waterswirl.png" id="4_bubble"]

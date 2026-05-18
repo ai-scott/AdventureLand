@@ -25,7 +25,7 @@
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="27_pi473"]
 [ext_resource type="Script" path="res://scripts/world/WorldMeta.gd" id="32_6xkt4"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="33_door"]
-[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.cs" id="34_tspwn"]
+[ext_resource type="Script" path="res://scripts/world/TriggerSpawner.gd" id="34_tspwn"]
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Village.tres" id="35_trres"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
