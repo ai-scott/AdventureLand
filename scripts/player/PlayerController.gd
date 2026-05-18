@@ -149,7 +149,10 @@ var _trident_effect: AnimatedSprite2D
 # values for SpriteFrames.add_frame so the swing visuals beat in sync
 # with the body animation: 0.18 windup -> 3 strike beats at 0.08 each
 # -> 0.3 recovery hold.
-const TRIDENT_FRAME_DURATIONS: PackedFloat32Array = PackedFloat32Array([0.18, 0.08, 0.08, 0.08, 0.3])
+# Array literal (not PackedFloat32Array(...) call) so it's a constant
+# expression -- Godot 4.6 rejects typed-Packed*Array constructors in
+# const declarations.
+const TRIDENT_FRAME_DURATIONS: Array[float] = [0.18, 0.08, 0.08, 0.08, 0.3]
 
 var _tree: AnimationTree
 var _state: AnimationNodeStateMachinePlayback

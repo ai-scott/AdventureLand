@@ -38,7 +38,7 @@ var is_active: bool = false
 
 var _npc_data: DialogueData
 var _current_node: DialogueNode
-var _current_responses: Array[DialogueResponse]
+var _current_responses: Array[DialogueResponse] = []
 
 # UI nodes — bound in _ready from DialogueBox.tscn.
 var _dialogue_box: Control

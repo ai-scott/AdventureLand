@@ -183,8 +183,8 @@ var _active_action_chips: Array[Button] = []
 # 2) is the active selection -- flanked by +/-1 and +/-2 wrapping
 # around the roster so the player can see what's coming next in
 # either direction.
-var _hair_color_swatches: Array[PanelContainer]
-var _skin_swatches: Array[PanelContainer]
+var _hair_color_swatches: Array[PanelContainer] = []
+var _skin_swatches: Array[PanelContainer] = []
 
 var _focus_zone: int = FocusZone.GRID
 # In a Cycler zone: true = right arrow focused, false = left arrow.

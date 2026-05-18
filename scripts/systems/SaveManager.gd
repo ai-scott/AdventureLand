@@ -535,7 +535,7 @@ func unstick_player(player: CharacterBody2D) -> void:
 # per-scene WorldMeta.world_display_name values so the save-slot list
 # shows the same banner copy a player sees on entry. Falls back to a
 # humanized filename for any scene not in the map.
-static func world_display_name(scene_path: String) -> String:
+func world_display_name(scene_path: String) -> String:
 	if scene_path.is_empty():
 		return "Unknown"
 	var key := scene_path.get_file().get_basename()
