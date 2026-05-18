@@ -7,116 +7,106 @@ The agent has no memory of prior sessions; this prompt is self-contained.
 
 ## Your task
 
-Resume the C# → GDScript port. Read in order, then start porting:
+Resume the C# → GDScript port. Read in order:
 
 1. **`docs/PORT_HANDOFF.md`** — full state snapshot (most important — read first)
 2. **`docs/PORT_PLAN.md`** — strategic plan + tracking checklist
 3. **`CLAUDE.md`** — project conventions, godot gotchas
 
-Don't re-read source files until you've absorbed the handoff.
-
-## Verify state before starting
+## Verify state
 
 ```bash
 git status                    # clean
-git log --oneline -3          # latest = 952d3f76 (Cluster 10c)
-git tag | grep port-cluster   # latest = port-cluster-10c-itemdata
-find scripts -name "*.cs" | wc -l   # should be 32
+git log --oneline -3          # latest = a8b1d241 (Cluster 10e — HUD)
+git tag | grep port-cluster   # latest = port-cluster-10e-hud
+find scripts -name "*.cs" | wc -l   # 24
 ```
 
-- **Branch:** `port/gdscript` (34 unpushed commits)
-- **All three Resource families ported** (Item / Dialogue / Save)
-- **7 real port targets left**, all in `scripts/ui/` or `scripts/systems/`
-- **~15 .cs files are facades** — deleted wholesale at Cluster 11 cutover
+- **Branch:** `port/gdscript` (41 unpushed commits)
+- **Only 2 real port targets left**: TitleScreen.cs (1,375 LOC) + InventoryUI.cs (1,776 LOC)
+- **~22 .cs files are facades/stubs** — deleted wholesale at Cluster 11 cutover
 
-## User's standing preferences (apply throughout)
+## User's standing preferences
 
 1. **"Complete the port and test at the end."** No mid-port QA cycles.
 2. **Phase-boundary check-ins**, NOT per-bash approval. Batch related ops.
-   Don't ask before each command; do ask before each cluster commit.
 3. **Apply learnings retroactively** — when a pattern bug surfaces, sweep
-   prior-cluster code for the same issue.
-4. **Don't use chained-`&&` long bash commands.** Break into individual calls.
+   prior-cluster code.
+4. **Don't use chained-`&&` long bash commands.**
 5. **Don't ask for testing mid-port.** User runs full QA at the end.
 
-## Cluster 10d (next target) — small UI leaves
+## Cluster 10f (next target) — TitleScreen
 
-Port these 7 files. Recommended order (least → most consumer impact):
+Port `scripts/ui/TitleScreen.cs` (1,375 LOC). Owns the title menu, save-slot
+row, new-game flow, name entry, settings (mobile toggle), and credits screens.
 
-1. **`scripts/systems/MobileBoot.cs`** (42 LOC autoload) — trivial port.
-2. **`scripts/systems/HelpOverlay.cs`** (183 LOC autoload) — Shift+D modal.
-3. **`scripts/ui/CurrencyHUD.cs`** (~60 LOC) — standalone.
-4. **`scripts/ui/HealthBar.cs`** (~67 LOC) — **VERIFY USAGE FIRST**.
-   Run `grep -rn "HealthBar" scenes/` — may be obsolete (HUD scene supersedes it).
-   If no .tscn references, delete instead of port.
-5. **`scripts/ui/MobileDPad.cs`** — virtual joystick. After port, downgrade
-   the typed `MobileDPad _mobileDpad` field in HUD.cs to `Node`/`Control` + Variant.
-6. **`scripts/ui/GameOverScreen.cs`** (~280 LOC) — game-over flow.
-7. **`scripts/ui/ItemPickupToast.cs`** (~1,040 LOC, heaviest in this batch) —
-   compare/equip/buy/sell modal. After port:
-   - `ItemTrigger.gd`'s `const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.cs")`
-     flips to `.gd` and the `.call("ShowTake"/"ShowPurchase"/"Show", ...)` calls
-     become direct snake_case (`.show_take(...)`, etc.).
-   - `InventoryUI.cs:1000` `new ItemPickupToast()` needs Pattern G/O:
-     `GD.Load<GDScript>("res://scripts/ui/ItemPickupToast.gd").New()`. Or keep
-     `ItemPickupToast.cs` as a thin static facade.
-   - All `item.Name()` / `item.Strength()` calls inside the port become direct
-     snake_case GDScript property access (`item.name`, `item.strength`) — no
-     more ItemDataExt extension methods on the .gd side.
+**Dependencies** (all GDScript now):
+- DesignTokens, UiFonts, UiStyles, UiFrames, BevelStyleBox
+- SaveManager (.gd facade), FadeOverlay, MusicController, CharacterCustomization
+- SaveData (snake_case fields), HUD (autoload)
 
-**Estimated 4-6 hours for all 7.** If context is tight, split:
-- **10d (6 small files)**: MobileBoot through GameOverScreen
-- **10e-prep (just ItemPickupToast)**: the 1,000 LOC port standalone
+**Pattern callouts**:
+- `new BevelStyleBox { ... }` (C#) → `BevelStyleBox.new()` with property assignment (GDScript).
+- `public static Button BuildPointerOption(...)` — referenced by `GameOverScreen.gd`
+  via inlined copy. Either keep GameOverScreen's inline, or have it call the
+  new TitleScreen.gd version.
+- `public static void StyleMenuButton(...)` — same.
+- Mobile detection: subscribe to `UiStyles.mobile_changed` signal.
+- Pattern O (preload-by-path) only needed if class_name refs cause parse
+  failures at headless boot.
 
-## After 10d
-
-| Cluster | Target | LOC |
-|---|---|---|
-| 10e | `HUD.cs` | ~757 |
-| 10f | `TitleScreen.cs` | ~1,375 |
-| 10g | `InventoryUI.cs` (biggest single file) | ~1,776 |
-| 11 | Cutover — delete facades, strip `[dotnet]`, configure Web export | — |
-
-## Pattern catalog (reference)
-
-15 patterns total. The session-3 addition:
-
-**Pattern O — class_name registration gotcha.** GDScript `class_name` may not
-be visible during headless smokes until the editor regenerates
-`.godot/global_script_class_cache.cfg`. Workaround:
-
+**Pattern O reminder** (most likely needed):
 ```gdscript
-const _XScript: Script = preload("res://path/X.gd")
-# Then use _XScript.new() instead of X.new() at instantiation sites.
+const _BevelStyleBoxScript: Script = preload("res://scripts/ui/BevelStyleBox.gd")
+# Then: var sb: StyleBox = _BevelStyleBoxScript.new()
 ```
 
-Already used in SaveManager.gd → SaveData, DamageNumber.gd → DamageNumber,
-UiFrames.gd → BevelStyleBox, ItemTrigger.gd → ItemPickupToast.
+**Pattern O-variant** (only relevant if TitleScreen is renamed):
+The C# `TitleScreen` class will be deleted entirely (no enum / static stub
+remaining), so no cache-collision risk. But if a parse error like
+"Class 'TitleScreen' hides a global script class" surfaces anyway, run:
+```bash
+rm -rf .godot/mono/temp .godot/global_script_class_cache.cfg \
+       .godot/editor/filesystem_update4 .godot/editor/quick_open_dialog_cache.cfg
+dotnet build --no-incremental
+```
 
-After deleting a .cs whose class_name was cached, run
-`rm .godot/global_script_class_cache.cfg` then re-run headless — Godot
-rebuilds it on load.
+## After 10f
 
-**Pattern J — BSD sed gotchas.** `\b` word boundary doesn't work. `()`
-alternation in `-E` mode doesn't work. Use simple per-pattern loops + explicit
-anchors (`$`, `(`, `,`, `^`). Audit-grep after every sed pass.
+| Cluster | Target | LOC | Notes |
+|---|---|---|---|
+| 10g | InventoryUI.cs | 1,776 | Biggest single file — its own session |
+| 11 | Cutover | — | Strip `[dotnet]`, delete 22 facades, install Web export templates |
 
-**Patterns C/D/M — case naming across boundary:**
-- GDScript → C# member access: PascalCase (`.get("Foo")`, `.call("Foo")`)
-- C# → GDScript method: snake_case (`.Call("foo", args)`)
-- GDScript → C# user-defined method via `.call()`: PascalCase
-- C# enum → GDScript int: serialize as ints, don't reorder either side
+## Pattern catalog (15 + variant)
 
-See `docs/PORT_HANDOFF.md` for the full catalog (A through O).
+| Pattern | One-line |
+|---|---|
+| A, AB | Autoload facade (real .gd + static C# wrapper) / per-scene variant |
+| B | Autoload `extends Node` — never declare `class_name` |
+| C | GDScript → C# member access: PascalCase via `.get("Foo")`/`.call("Foo")` |
+| D | C# → GDScript method: `.Call("snake_case", args)` |
+| E | C# Task await of GDScript signal: `await node.ToSignal(node, "name")` |
+| F | IDisposable scope → int-id begin/end pair |
+| G | Variant Set/Call instead of strong-typed `Instantiate<T>` |
+| H | Don't port a class without strong-typed C# consumers — downgrade C# to Node + Variant |
+| I | C# `event Action` over GDScript `signal` — lazy Connect in facade |
+| J | BSD sed: `\b` and `()` alternation don't work in `-E` mode |
+| K | GDScript can't access C# statics — relocate to autoload-instance vars |
+| L | C# `Func<T>` / `Action<T>` absorbed by facade as Callable |
+| M | GDScript→C# `.call("PascalCase")` for user-defined C# methods |
+| N (implicit) | GDScript can't `await` C# Task — bridge via signals |
+| **O** | GDScript class_name not visible at headless until cache regenerates → preload-by-path |
+| **O-variant** | C# class-name cache collision after port — rename C# stub (X → XC/XExt) |
 
 ## Build/verify protocol
 
 Per cluster:
 1. `dotnet build` — 0 warnings, 0 errors
-2. `/Applications/Godot_mono.app/Contents/MacOS/Godot --headless --quit` — clean
-   (ObjectDB leak + 2 resources in use are baseline noise)
-3. Pattern K audit: `grep -rn "Instance\b" --include="*.gd" scripts/` — only comments
-4. Pattern M audit: `grep -rn '\.call("[a-z]' --include="*.gd" scripts/` — verify each
+2. `/Applications/Godot_mono.app/Contents/MacOS/Godot --headless --quit` —
+   clean (`ObjectDB leaked` + `2 resources still in use` are baseline noise)
+3. Pattern K: `grep -rn "Instance\b" --include="*.gd" scripts/` — only comments
+4. Pattern M: `grep -rn '\.call("[a-z]' --include="*.gd" scripts/` — verify each
 5. Commit with descriptive message + Pattern callouts
 6. Tag `port-cluster-NNxxx`
 
@@ -151,9 +141,26 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
 ```
 
+## Pattern O preload template
+
+```gdscript
+# Preload-by-path for class_name refs that fail at headless parse.
+const _XScript: Script = preload("res://path/X.gd")
+const _YScript: Script = preload("res://path/Y.gd")
+
+# Type fields with a broader base class than the class_name.
+var _x: Node       # X instance, typed as Node to skip parse-time class lookup
+var _y: Control    # Y instance, typed as Control
+
+# Instantiate via the script Resource at runtime.
+func _ready() -> void:
+    _x = _XScript.new()
+    _y = _YScript.new() as Control
+```
+
 ---
 
 ## Start now
 
-Read `docs/PORT_HANDOFF.md` first, then begin Cluster 10d (small UI leaves).
+Read `docs/PORT_HANDOFF.md` first, then begin Cluster 10f (TitleScreen).
 Good luck.
