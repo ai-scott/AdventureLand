@@ -83,24 +83,42 @@ func _collect(pc: Node2D) -> void:
 	monitoring = false
 
 func _apply_effect() -> void:
+	# DamageNumber static spawn -- shows a floating "+N" above the
+	# player like the heal/damage popups, so gem pickups have the
+	# same visual feedback as combat events. Pattern O preload so
+	# the call doesn't require DamageNumber's class_name resolved.
+	var gem_amount: int = 0
 	match variant:
 		Kind.GEM:
-			CurrencySystem.add_gems(10)
+			gem_amount = 10
+			CurrencySystem.add_gems(gem_amount)
 			SFXController.play("collectible_pickup")
 		Kind.GOLD:
-			CurrencySystem.add_gems(5)
+			gem_amount = 5
+			CurrencySystem.add_gems(gem_amount)
 			SFXController.play("collectible_pickup")
 		Kind.COIN:
-			CurrencySystem.add_gems(1)
+			gem_amount = 1
+			CurrencySystem.add_gems(gem_amount)
 			SFXController.play("collectible_pickup")
 		Kind.HEART:
-			# HealthSystem is still C# (Cluster 10) — Pattern C
-			# PascalCase Variant Call via the child node.
 			if _player != null:
 				var hs: Node = _player.get_node_or_null("HealthSystem")
 				if hs != null:
 					hs.call("heal", 2)
 			SFXController.play("heart")
+
+	# Spawn the "+N" toast for gem/gold/coin pickups (heart already
+	# triggers a heal which shows its own HUD heart refill).
+	if gem_amount > 0 and _player != null:
+		var scene := get_tree().current_scene
+		if scene != null:
+			_GemToastScript.spawn(scene, _player.global_position, gem_amount, _GemToastScript.Kind.GEM_PICKUP)
+
+
+# Preload-by-path so this static call doesn't depend on the
+# DamageNumber class_name being parse-time resolved.
+const _GemToastScript: Script = preload("res://scripts/ui/DamageNumber.gd")
 
 # Roll a random drop type — equal weight across all four.
 static func roll_kind() -> Kind:

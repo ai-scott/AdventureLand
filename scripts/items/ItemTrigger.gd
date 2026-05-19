@@ -47,7 +47,13 @@ const SHINE_RANGE_SQ_WORLD: float = 64.0 * 64.0
 # on shelves -- 64px would light up most of the inventory at once.
 # 16px isolates the glint to the specific item the player is brushing
 # past.
-const SHINE_RANGE_SQ_SHOP: float = 16.0 * 16.0
+# Shop range was 16 px, but the pickup CollisionShape2D radius is
+# 18 px -- the player triggered Buy/Take prompts before they ever
+# crossed the shine threshold, so the glint never fired in shops.
+# 28 px gives a 1-tile zone where the item glints just before pickup
+# becomes available -- "this is interactive" feedback without
+# glinting half the room when several shelves are close together.
+const SHINE_RANGE_SQ_SHOP: float = 28.0 * 28.0
 
 var _shining: bool = false
 

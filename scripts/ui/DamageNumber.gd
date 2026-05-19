@@ -7,15 +7,16 @@ class_name DamageNumber extends Node2D
 # whatever it was spawned over.
 #
 # Usage:
-#   DamageNumber.spawn(scene, enemy.global_position, dmg)                # white "N"
-#   DamageNumber.spawn(scene, player.global_position, dmg, Kind.HURT)    # red   "N"
-#   DamageNumber.spawn(scene, player.global_position, hp, Kind.HEAL)     # green "+N HP"
+#   DamageNumber.spawn(scene, enemy.global_position, dmg)                  # white "N"
+#   DamageNumber.spawn(scene, player.global_position, dmg, Kind.HURT)      # red   "N"
+#   DamageNumber.spawn(scene, player.global_position, hp,  Kind.HEAL)      # green "+N HP"
+#   DamageNumber.spawn(scene, player.global_position, n,   Kind.GEM_PICKUP) # cyan  "+N"
 #
 # `parent` is normally `get_tree().current_scene` so the number lives at
 # world-root and draws above tiles via z_index, but any Node2D ancestor
 # in world-space works.
 
-enum Kind { DAMAGE, HURT, HEAL }
+enum Kind { DAMAGE, HURT, HEAL, GEM_PICKUP }
 
 const DRIFT_DISTANCE: float = 18.0
 const DURATION: float = 0.6
@@ -47,9 +48,10 @@ static func spawn_hurt(parent: Node, world_pos: Vector2, amount: int, is_hurt: b
 
 func _build(amount: int, kind: int) -> void:
 	# Color + formatting convention:
-	#   DAMAGE -> white "N"
-	#   HURT   -> red   "N"
-	#   HEAL   -> green "+N HP"  (food / potions; reads as restorative)
+	#   DAMAGE     -> white "N"
+	#   HURT       -> red   "N"
+	#   HEAL       -> green "+N HP" (food / potions; reads as restorative)
+	#   GEM_PICKUP -> cyan  "+N"   (matches the gem icon color family)
 	var color: Color
 	var text: String
 	match kind:
@@ -59,6 +61,9 @@ func _build(amount: int, kind: int) -> void:
 		Kind.HEAL:
 			color = Color(0.40, 0.95, 0.45)
 			text = "+%d HP" % amount
+		Kind.GEM_PICKUP:
+			color = Color(0.31, 0.78, 0.82)  # gem-cyan, matches the icon
+			text = "+%d" % amount
 		_:
 			color = Color.WHITE
 			text = str(amount)
@@ -73,8 +78,9 @@ func _build(amount: int, kind: int) -> void:
 	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.95))
 	label.add_theme_constant_override("outline_size", 4)
 	# Heal text is wider ("+N HP") than a plain combat number -- give it
-	# more horizontal room so it doesn't get clipped.
-	var width: float = 80.0 if kind == Kind.HEAL else 48.0
+	# more horizontal room so it doesn't get clipped. Gem pickup ("+N")
+	# is between -- a hair wider than damage but no "HP" suffix.
+	var width: float = 80.0 if kind == Kind.HEAL else (60.0 if kind == Kind.GEM_PICKUP else 48.0)
 	label.position = Vector2(-width * 0.5, -10)
 	label.custom_minimum_size = Vector2(width, 20)
 	label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST

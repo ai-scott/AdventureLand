@@ -129,21 +129,16 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 	# Prime the first-visit banner if this is a new world.
 	var is_first_visit: bool = _prepare_banner_if_first_visit(target_scene)
 
-	# Change scene via SaveManager (still C#) so HP/inventory/costume restore.
-	# SaveManager.TransitionToWorld is async Task in C# — from GDScript we
-	# can't await a Task across the boundary (Pattern N), so we fire-and-
-	# forget the call and poll for the scene swap via the player-in-group check.
-	# When SaveManager itself ports to GDScript (Cluster 9), make this an await.
+	# Change scene via SaveManager so HP/inventory/costume restore.
+	# Await the full transition so SaveManager._apply_save_to_player
+	# finishes BEFORE we look up the spawn marker -- otherwise apply
+	# overwrites the marker position with the stale saved coords
+	# (door exits landed the player at their previous interior
+	# coordinates instead of at the target's SpawnFromDoor marker).
 	if SaveManager.current_data != null:
-		SaveManager.transition_to_world(target_scene)
+		await SaveManager.transition_to_world(target_scene)
 
-	# Wait a few frames for Player._ready to run after the scene swap.
-	for i in range(30):
-		await get_tree().process_frame
-		if get_tree().get_first_node_in_group("player") != null:
-			break
-
-	# Find the spawn marker.
+	# Find the spawn marker in the freshly-loaded scene.
 	var scene := get_tree().current_scene
 	var marker: Marker2D = null
 	if scene != null:
@@ -152,9 +147,7 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null:
 			player.global_position = marker.global_position
-			# Door markers can land on tree/wall colliders — unstick.
-			# SaveManager.UnstickPlayer is now an instance method
-			# (promoted from static in Cluster 7b-3 for Pattern K).
+			# Door markers can land on tree/wall colliders -- unstick.
 			if player is CharacterBody2D and SaveManager.current_data != null:
 				SaveManager.unstick_player(player)
 			snap_camera(player)
@@ -191,16 +184,12 @@ func go_to_edge(target_scene: String, exit_edge: String, player_pos: Vector2) ->
 
 	# Compute intended spawn position. We don't know the target's exact
 	# map size until it loads, so set a temporary value and clamp after.
+	# Await SaveManager so _apply_save_to_player (which now reads
+	# pending_spawn_position) finishes before we re-clamp.
 	var entry_pos: Vector2 = _compute_entry_position(exit_edge, player_pos)
 	if SaveManager.current_data != null:
 		SaveManager.pending_spawn_position = entry_pos
-		SaveManager.transition_to_world(target_scene)
-
-	# Wait a few frames for Player._ready to run.
-	for i in range(30):
-		await get_tree().process_frame
-		if get_tree().get_first_node_in_group("player") != null:
-			break
+		await SaveManager.transition_to_world(target_scene)
 
 	# Clamp player position to the new world's bounds via WorldMeta.
 	_clamp_player_to_world_bounds(exit_edge, player_pos)
