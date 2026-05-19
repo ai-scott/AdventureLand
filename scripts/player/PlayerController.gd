@@ -1026,7 +1026,12 @@ func show_idle_facing(dir: Vector2) -> void:
 # ----- MSCA signal handlers (SpriteLayers emits these from GDScript) -----
 
 
-func _on_animation_set_hitbox(_counter: int, _track: int, timer_value: float, _direction: int) -> void:
+# MSCA's animation_set_hitbox signal passes (counter, track,
+# timer_value, direction) untyped. `track` is a String (animation
+# track name), not an int -- the strict-typed params here were
+# rejected at runtime: "Cannot convert argument 2 from String to
+# int". Drop the type annotations and let Variant flow through.
+func _on_animation_set_hitbox(_counter, _track, timer_value, _direction) -> void:
 	# Turn on the hitbox for `timer_value` seconds during an attack animation.
 	if _attack_hitbox == null:
 		return

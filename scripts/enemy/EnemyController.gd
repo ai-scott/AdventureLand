@@ -875,4 +875,8 @@ func _drop_loot() -> void:
 			continue
 		gem.set("variant", randi_range(0, 3))
 		gem.global_position = global_position
-		parent.add_child(gem)
+		# Gem is an Area2D -- adding it during the physics flush
+		# (which is when enemy death / drop_loot fires) raises
+		# "Can't change this state while flushing queries". Defer
+		# the add to the next idle frame.
+		parent.add_child.call_deferred(gem)

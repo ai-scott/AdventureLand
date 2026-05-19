@@ -868,13 +868,15 @@ static func _find_first_by_method(from: Node, method_name: String) -> Node:
 static func _find_first_with_data_name(from: Node, item_name: String) -> Node:
 	if from == null:
 		return null
-	# Check this node — ItemTrigger has a Data property.
-	# ItemTrigger (now GDScript, Cluster 10c) has `data` property holding
-	# an ItemData Resource with snake_case fields.
+	# Walk every node looking for one with a `data` property that's a
+	# Resource exposing a `name` field. ItemTrigger fits; EnemyController
+	# ALSO has a `data` property (EnemyData) but EnemyData has no `name`
+	# field, so use Variant `.get("name")` rather than `.name` -- the
+	# Variant accessor returns null instead of crashing on missing keys.
 	var data: Variant = from.get("data")
-	if data != null:
-		var data_resource: Resource = data
-		if data_resource != null and String(data_resource.name) == item_name:
+	if data is Resource:
+		var data_name: Variant = (data as Resource).get("name")
+		if data_name != null and String(data_name) == item_name:
 			return from
 	for c in from.get_children():
 		var r := _find_first_with_data_name(c, item_name)

@@ -51,6 +51,10 @@ window/size/window_height_override=960
 window/stretch/mode="viewport"
 window/stretch/scale_mode="integer"
 
+[dotnet]
+
+project/assembly_name="AdventureLandPrototype"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/msca/plugin.cfg", "res://addons/gut/plugin.cfg")
