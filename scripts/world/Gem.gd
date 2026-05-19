@@ -105,11 +105,22 @@ func _apply_effect() -> void:
 			if _player != null:
 				var hs: Node = _player.get_node_or_null("HealthSystem")
 				if hs != null:
+					# heal() clamps internally -- diff before/after to
+					# show the REAL amount restored in the toast, so an
+					# overhealed pickup at max HP shows "+0" instead of
+					# a misleading "+2".
+					var before: int = int(hs.get("current_health"))
 					hs.call("heal", 2)
+					var after: int = int(hs.get("current_health"))
+					var healed: int = maxi(0, after - before)
+					if healed > 0 and _player != null:
+						var hscene := get_tree().current_scene
+						if hscene != null:
+							_GemToastScript.spawn(hscene, _player.global_position, healed, _GemToastScript.Kind.HEAL)
 			SFXController.play("heart")
 
-	# Spawn the "+N" toast for gem/gold/coin pickups (heart already
-	# triggers a heal which shows its own HUD heart refill).
+	# Spawn the "+N" toast for gem/gold/coin pickups. Heart spawns
+	# its own "+N HP" toast inline above (gated on actual HP moved).
 	if gem_amount > 0 and _player != null:
 		var scene := get_tree().current_scene
 		if scene != null:

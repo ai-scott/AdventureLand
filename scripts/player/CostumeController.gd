@@ -52,7 +52,27 @@ func _ready() -> void:
 		push_error("[CostumeController] Parent has no SpriteLayers child. " +
 				"Attach under the MSCA-generated CharacterBody2D.")
 		return
+	_promote_shirt_above_lower_layers()
 	apply_all()
+
+
+# MSCA's default layer order puts shirts (05shrt) BELOW overalls (06lwr2)
+# and dresses (08lwr3), which is anatomically correct for those garments
+# but visually means an equipped shirt is invisible whenever overalls or
+# a dress are on. The user wants shirts to read on top of every leg
+# layer. Reorder the sprite tree so 05shrt sits right above 08lwr3 (and
+# therefore above 06lwr2 too) -- still under 09hand / 13hair / 14head /
+# 15over, so hats, hair, and outerwear render correctly above it.
+# Animation references sprites by node name, not tree position, so
+# reordering doesn't affect MSCA's AnimationTree.
+func _promote_shirt_above_lower_layers() -> void:
+	if _sprite_layers == null:
+		return
+	var shrt := _sprite_layers.get_node_or_null("05shrt") as Sprite2D
+	var lwr3 := _sprite_layers.get_node_or_null("08lwr3") as Sprite2D
+	if shrt == null or lwr3 == null:
+		return
+	_sprite_layers.move_child(shrt, lwr3.get_index() + 1)
 
 # Apply every costume slot to its matching layer. Call after bulk edits.
 func apply_all() -> void:
