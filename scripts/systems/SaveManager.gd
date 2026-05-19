@@ -327,7 +327,21 @@ func transition_to_world(scene_path: String) -> void:
 		# resource format mismatch). Fall back to the synchronous load
 		# so behavior degrades to "stutter" instead of "broken".
 		print("[SaveManager] threaded load fell through, using sync change_scene_to_file")
-		get_tree().change_scene_to_file(scene_path)
+		var sync_err := get_tree().change_scene_to_file(scene_path)
+		if sync_err != OK:
+			# Both load paths failed -- target scene file is missing /
+			# unresolvable (broken UID, deleted file, etc.). Bail out
+			# WITHOUT applying pending_spawn_position: otherwise we'd
+			# stamp the saved spawn point onto the player in the
+			# *current* scene (e.g. EdgeSouth fires, target scene
+			# fails to load, player teleports to "top of current
+			# world" instead of "top of target world").
+			push_error("[SaveManager] change_scene_to_file also failed for '%s' (err=%d) -- aborting transition" %
+					[scene_path, sync_err])
+			pending_spawn_position = NO_PENDING_SPAWN
+			PerfMonitor.perf_end(perf_id)
+			transition_completed.emit()
+			return
 
 	# Wait for the new scene's _ready callbacks to run before applying state.
 	await _apply_save_when_ready()

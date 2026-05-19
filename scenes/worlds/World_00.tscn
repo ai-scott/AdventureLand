@@ -1411,14 +1411,14 @@ position = Vector2(362, 301)
 
 [node name="EdgeSouth" parent="Entities" unique_id=1170496001 instance=ExtResource("27_b4gdq")]
 position = Vector2(360, 496)
-target_scene = "uid://cqj4q3ql7meqi"
+target_scene = "res://scenes/worlds/World_01.tscn"
 exit_edge = 3
 
 [node name="EdgeEast" parent="Entities" unique_id=1170496002 instance=ExtResource("27_b4gdq")]
 position = Vector2(736, 240)
 rotation = 1.5707964
 scale = Vector2(0.67999876, 1)
-target_scene = "uid://dxigcmhsa3ml6"
+target_scene = "res://scenes/worlds/World_10.tscn"
 
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789750]
 script = ExtResource("34_tspwn")

@@ -2591,7 +2591,7 @@ script = ExtResource("6")
 position = Vector2(-10.999999, 235)
 rotation = 1.5707964
 scale = Vector2(0.7, 0.7)
-target_scene = "uid://br5bymkhd10fi"
+target_scene = "res://scenes/worlds/World_00.tscn"
 exit_edge = 1
 
 [node name="Crab1" parent="Entities" unique_id=2142006634 instance=ExtResource("12_crab")]

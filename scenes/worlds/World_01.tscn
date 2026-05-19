@@ -1356,7 +1356,7 @@ script = ExtResource("6")
 
 [node name="NorthTrigger" parent="Entities" unique_id=917702192 instance=ExtResource("8_msv86")]
 position = Vector2(360, -16)
-target_scene = "uid://br5bymkhd10fi"
+target_scene = "res://scenes/worlds/World_00.tscn"
 exit_edge = 2
 
 [node name="Bat1" parent="Entities" unique_id=136448943 instance=ExtResource("13_bat")]
