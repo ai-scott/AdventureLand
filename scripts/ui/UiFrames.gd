@@ -103,7 +103,15 @@ func build_kbd_chip_icon(icon: Texture2D, scale_factor: int = 2) -> PanelContain
 # Compact keyboard-hint chip ([SPC], [↵], [ESC]) per spec §4.3 -- ink
 # fill, gold text + 1px gold border. Returned as a PanelContainer
 # with the label already attached; just add it to a parent.
+#
+# Special sentinel: text "RET" routes to the icon variant with the
+# return-arrow glyph. The ↵ glyph isn't in any bundled pixel font,
+# so we use a procedurally-drawn ImageTexture (UiStyles.return_glyph)
+# instead of font tofu.
 func build_kbd_chip(text: String) -> PanelContainer:
+	if text == "RET" or text == "↵":
+		return build_kbd_chip_icon(UiStyles.return_glyph(), 2)
+
 	var panel := PanelContainer.new()
 	var sb: StyleBox = _BevelStyleBoxScript.new()
 	sb.fill = DesignTokens.INK
