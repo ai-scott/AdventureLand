@@ -106,7 +106,7 @@ func _build() -> void:
 
 	# Rows.
 	_add_row(vbox, ["WASD", "Arrows"], "Move")
-	_add_row(vbox, ["Space", "↵"], "Interact / Advance / Attack")
+	_add_row(vbox, ["Space", "Enter"], "Interact / Advance / Attack")
 	_add_row(vbox, ["Z"], "Cancel / Close / Decline")
 	_add_row(vbox, ["Esc"], "Advance dialogue")
 	_add_row(vbox, ["I", "Tab"], "Toggle inventory")

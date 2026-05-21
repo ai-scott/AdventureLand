@@ -1027,7 +1027,7 @@ func _handle_input(variable: String) -> void:
 	ok_btn.name = "DialogueInputOk"
 	ok_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	ok_btn.custom_minimum_size = Vector2(140, 40)
-	ok_btn.text = "Enter ↵"
+	ok_btn.text = "Enter"
 	ok_btn.add_theme_font_size_override("font_size", 18)
 	ok_btn.add_theme_color_override("font_color", DESIGN_PAPER)
 	var btn_sb := StyleBoxFlat.new()

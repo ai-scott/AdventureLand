@@ -1015,7 +1015,7 @@ static func _build_sell_chip(price: int) -> Button:
 	# Skip the ↵ kbd chip on touch builds -- same rationale as
 	# UiFrames.build_chip_button's mobile branch.
 	if not UiStyles.is_mobile:
-		hbox.add_child(UiFrames.build_kbd_chip("↵"))
+		hbox.add_child(UiFrames.build_kbd_chip("RET"))
 	return btn
 
 
@@ -1677,7 +1677,7 @@ static func _build_key_item_marker() -> HBoxContainer:
 	box.size_flags_vertical = Control.SIZE_SHRINK_END
 
 	var star := Label.new()
-	star.text = "★"
+	star.text = "*"
 	star.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	star.size_flags_vertical = Control.SIZE_FILL
 	star.add_theme_font_size_override("font_size", 22)

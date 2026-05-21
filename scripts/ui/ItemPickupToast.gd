@@ -538,7 +538,7 @@ func _add_choice_buttons(primary_label: String, cancel_label: String, primary_en
 	row.add_child(cancel_btn)
 
 	# Primary takes the ↵ hint -- Return always fires it (see _input).
-	var primary_btn := UiFrames.build_chip_button(primary_label, "↵",
+	var primary_btn := UiFrames.build_chip_button(primary_label, "RET",
 			Callable(UiFrames, "apply_primary_button"))
 	primary_btn.custom_minimum_size = Vector2(160, 40)
 	primary_btn.process_mode = Node.PROCESS_MODE_ALWAYS

@@ -635,7 +635,7 @@ func show_slot_select(new_game: bool) -> void:
 	# keyboard-focusable (Enter routes through the slot row's own
 	# Pressed), but mouse users get the chip + pointing-hand cursor
 	# they expect.
-	_continue_btn = UiFrames.build_chip_button("Continue", "↵", UiFrames.apply_primary_button)
+	_continue_btn = UiFrames.build_chip_button("Continue", "RET", UiFrames.apply_primary_button)
 	_continue_btn.custom_minimum_size = Vector2(180, 40)
 	_continue_btn.focus_mode = Control.FOCUS_NONE
 	_continue_btn.pressed.connect(func() -> void:
@@ -758,7 +758,7 @@ func _build_name_entry() -> void:
 	# Confirm uses Enter (↵), not Space -- the LineEdit captures
 	# Space as a name character, so Space can't double as the submit
 	# key.
-	_name_ok = UiFrames.build_chip_button("Let's go!", "↵", UiFrames.apply_primary_button)
+	_name_ok = UiFrames.build_chip_button("Let's go!", "RET", UiFrames.apply_primary_button)
 	_name_ok.custom_minimum_size = Vector2(170, 40)
 	_name_ok.pressed.connect(_on_name_confirmed)
 	hbox.add_child(_name_ok)
@@ -846,7 +846,7 @@ func _build_settings_panel() -> void:
 	# Credits is the Settings panel's primary action -- ↵ always
 	# presses it (see _input override) regardless of focus, while
 	# Space presses whichever button currently holds focus.
-	_settings_credits_btn = UiFrames.build_chip_button("Credits", "↵", UiFrames.apply_primary_button)
+	_settings_credits_btn = UiFrames.build_chip_button("Credits", "RET", UiFrames.apply_primary_button)
 	_settings_credits_btn.custom_minimum_size = Vector2(160, 40)
 	_settings_credits_btn.pressed.connect(func() -> void: _show_credits(State.SETTINGS))
 	bottom_row.add_child(_settings_credits_btn)
@@ -1124,7 +1124,7 @@ func _build_save_slot_row(slot: int, data: Resource, new_game: bool) -> Button:
 		btn.disabled = false
 	else:
 		var empty_label := Label.new()
-		empty_label.text = "— Empty slot —"
+		empty_label.text = "- Empty slot -"
 		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1228,7 +1228,7 @@ func _confirm_overwrite(slot: int, existing_name: String) -> void:
 	# override). Space presses whichever button holds focus, so a
 	# user who has navigated to "No" can still confirm No with
 	# Space.
-	var yes := UiFrames.build_chip_button("Yes", "↵", UiFrames.apply_danger_button)
+	var yes := UiFrames.build_chip_button("Yes", "RET", UiFrames.apply_danger_button)
 	yes.custom_minimum_size = Vector2(140, 40)
 	yes.pressed.connect(func() -> void:
 		SaveManager.delete_slot(slot)
