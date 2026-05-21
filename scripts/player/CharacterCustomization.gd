@@ -183,15 +183,34 @@ func _ensure_loaded() -> void:
 	_load_palette_roster(HAIR_COLOR_BASE_RAMP_PATH, HAIR_COLOR_RAMP_SHEET_PATH, false)
 	_load_palette_roster(SKIN_BASE_RAMP_PATH, SKIN_RAMP_SHEET_PATH, true)
 
+# Statically-baked hair sheet roster. DirAccess.get_files() on
+# res:// folders returns empty in web exports (source PNGs aren't
+# in the .pck, only their imported .ctex variants), so we ship
+# the file list instead of scanning at runtime. Regenerate via:
+#   ls assets/sprites/player/farmer/sheets/13hair/*.png | sed ...
+const HAIR_SHEET_FILES: Array[String] = [
+	"fbas_13hair_afro_00.png",
+	"fbas_13hair_afropuffs_00.png",
+	"fbas_13hair_bob1_00.png",
+	"fbas_13hair_bob2_00.png",
+	"fbas_13hair_bushy_00.png",
+	"fbas_13hair_dapper_00.png",
+	"fbas_13hair_flattop_00.png",
+	"fbas_13hair_longbound_00.png",
+	"fbas_13hair_longboundclasped_00f.png",
+	"fbas_13hair_longwavy_00.png",
+	"fbas_13hair_mohawk_00_e.png",
+	"fbas_13hair_ponytail1_00.png",
+	"fbas_13hair_spiky1_00.png",
+	"fbas_13hair_spiky2_00.png",
+	"fbas_13hair_topknot_00f.png",
+	"fbas_13hair_twintail_00.png",
+	"fbas_13hair_twists_00.png",
+]
+
+
 func _load_hair_roster() -> void:
-	var dir := DirAccess.open(HAIR_SHEET_DIR)
-	if dir == null:
-		return
-	var files := dir.get_files()
-	files.sort()
-	for f in files:
-		if not f.to_lower().ends_with(".png"):
-			continue
+	for f in HAIR_SHEET_FILES:
 		var tex: Texture2D = load(HAIR_SHEET_DIR + f) as Texture2D
 		if tex == null:
 			continue

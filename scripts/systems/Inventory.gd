@@ -105,26 +105,53 @@ func grant_starter_equipment() -> void:
 
 # ---- Database ----
 
+# Statically-baked item DB file list. DirAccess.get_files() returns
+# empty in web exports (source .tres files aren't in the .pck the
+# way they are on desktop), so we ship the file list. Regenerate
+# via: ls assets/data/items/*.tres | sed 's|.*/||' | sort
+const ITEM_TRES_FILES: Array[String] = [
+	"001_axe.tres", "002_sword.tres", "003_nail_bat.tres",
+	"004_magic_trident.tres", "005_magic_wand.tres", "006_club.tres",
+	"007_cutlass.tres", "008_mace.tres", "021_wild_mushroom.tres",
+	"022_red_apple.tres", "023_fresh_strawberry.tres",
+	"024_a_whole_chicken.tres", "051_yellow_boater_hat.tres",
+	"052_blue_boater_hat.tres", "053_standard_boater.tres",
+	"054_the_wrangler.tres", "055_lavender_cloud_hat.tres",
+	"056_rosy_magical_hat.tres", "061_sunset_scarf.tres",
+	"062_cloak_of_billowing.tres", "063_pink_mantle_cloak.tres",
+	"071_green_waistcoat.tres", "072_emerald_tunic.tres",
+	"073_sunset_vest_and_top.tres", "074_red_teeshirt.tres",
+	"075_golden_teeshirt.tres", "076_purple_tunic.tres",
+	"081_gold_purple_ring.tres", "085_silver_emerald_ring.tres",
+	"091_black_pink_checkered_pants.tres",
+	"092_purple_heart_skort.tres", "093_red_shorts.tres",
+	"094_frilly_rose_dress.tres", "095_brown_shorts.tres",
+	"096_bluejean_overalls.tres", "097_brown_jeans.tres",
+	"098_blue_dress.tres", "101_blue_slippers.tres",
+	"102_big_red_boots.tres", "103_plain_brown_shoes.tres",
+	"104_ballet_slippers.tres", "105_green_flops.tres",
+	"106_red_curlytoed_shoes.tres", "107_forest_green_boots.tres",
+	"111_money_bag.tres", "121_sea_monster_key.tres",
+	"122_rosie.tres", "123_pink_oyster_pearl.tres",
+	"124_birthday_cake.tres", "126_fishing_rod.tres",
+	"141_blonde_bob.tres", "142_brown_bob.tres",
+	"143_purple_bob.tres", "144_brown_dapper_cut.tres",
+	"145_long_wavy_blonde.tres", "146_long_wavy_brown.tres",
+	"147_long_wavy_rainbow.tres", "148_blonde_spikes.tres",
+	"149_purple_rain.tres", "150_tangerine_tails.tres",
+]
+
+
 func _load_database() -> void:
 	_db.clear()
 	_db_by_name.clear()
 
-	var dir := DirAccess.open("res://assets/data/items")
-	if dir == null:
-		push_warning("[Inventory] Could not open assets/data/items/")
-		return
-
-	dir.list_dir_begin()
-	var file_name: String = dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres"):
-			var item: Resource = load("res://assets/data/items/%s" % file_name)
-			# Skip non-ItemData resources (shouldn't be any, but guard).
-			if item != null and item.get("name") != null and item.name != "":
-				_db[int(item.id)] = item
-				_db_by_name[String(item.name).to_lower()] = item
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for file_name in ITEM_TRES_FILES:
+		var item: Resource = load("res://assets/data/items/%s" % file_name)
+		# Skip non-ItemData resources (shouldn't be any, but guard).
+		if item != null and item.get("name") != null and item.name != "":
+			_db[int(item.id)] = item
+			_db_by_name[String(item.name).to_lower()] = item
 
 # Get an ItemData by integer ID, or null. Returns Resource (the
 # underlying C# ItemData while it stays C#).

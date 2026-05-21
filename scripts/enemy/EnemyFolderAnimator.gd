@@ -37,31 +37,98 @@ func _ready() -> void:
 	_build_frames()
 
 
-func _build_frames() -> void:
+# Statically-baked frame lists per known enemy folder. DirAccess
+# returns empty in web exports (source .png files aren't in the
+# .pck the way they are on desktop). Falls back to DirAccess for
+# any unlisted folder so editor-time additions still work without
+# touching this map.
+const KNOWN_FRAMES_FOLDERS: Dictionary = {
+	"res://assets/sprites/enemies/crab/": [
+		"en_crab_mask-attack_down-000.png", "en_crab_mask-attack_down-001.png", "en_crab_mask-attack_down-002.png",
+		"en_crab_mask-attack_down-003.png", "en_crab_mask-attack_left-000.png", "en_crab_mask-attack_left-001.png",
+		"en_crab_mask-attack_left-002.png", "en_crab_mask-attack_left-003.png", "en_crab_mask-attack_right-000.png",
+		"en_crab_mask-attack_right-001.png", "en_crab_mask-attack_right-002.png", "en_crab_mask-attack_right-003.png",
+		"en_crab_mask-attack_up-000.png", "en_crab_mask-attack_up-001.png", "en_crab_mask-attack_up-002.png",
+		"en_crab_mask-attack_up-003.png", "en_crab_mask-attack_upright-000.png", "en_crab_mask-attack_upright-001.png",
+		"en_crab_mask-attack_upright-002.png", "en_crab_mask-attack_upright-003.png", "en_crab_mask-cranky_left-000.png",
+		"en_crab_mask-cranky_left-001.png", "en_crab_mask-cranky_left-002.png", "en_crab_mask-cranky_left-003.png",
+		"en_crab_mask-cranky_right-000.png", "en_crab_mask-cranky_right-001.png", "en_crab_mask-cranky_right-002.png",
+		"en_crab_mask-cranky_right-003.png", "en_crab_mask-cranky_up-000.png", "en_crab_mask-cranky_up-001.png",
+		"en_crab_mask-cranky_up-002.png", "en_crab_mask-cranky_up-003.png", "en_crab_mask-cranky_upright-000.png",
+		"en_crab_mask-cranky_upright-001.png", "en_crab_mask-cranky_upright-002.png", "en_crab_mask-cranky_upright-003.png",
+		"en_crab_mask-death-000.png", "en_crab_mask-hurt-000.png", "en_crab_mask-hurt_right-000.png",
+		"en_crab_mask-hurt_up-000.png", "en_crab_mask-hurt_upright-000.png", "en_crab_mask-idle-000.png",
+		"en_crab_mask-retreat_right-000.png", "en_crab_mask-retreat_up-000.png", "en_crab_mask-retreat_upright-000.png",
+		"en_crab_mask-walk_left-000.png", "en_crab_mask-walk_left-001.png", "en_crab_mask-walk_left-002.png",
+		"en_crab_mask-walk_left-003.png", "en_crab_mask-walk_right-000.png", "en_crab_mask-walk_right-001.png",
+		"en_crab_mask-walk_right-002.png", "en_crab_mask-walk_right-003.png", "en_crab_mask-walk_up-000.png",
+		"en_crab_mask-walk_up-001.png", "en_crab_mask-walk_up-002.png", "en_crab_mask-walk_up-003.png",
+		"en_crab_mask-walk_upright-000.png", "en_crab_mask-walk_upright-001.png", "en_crab_mask-walk_upright-002.png",
+		"en_crab_mask-walk_upright-003.png",
+	],
+	"res://assets/sprites/enemies/ooze/": [
+		"en_ooze_mask-hop_down-000.png", "en_ooze_mask-hop_down-001.png", "en_ooze_mask-hop_down-002.png",
+		"en_ooze_mask-hop_down-003.png", "en_ooze_mask-hop_down-004.png", "en_ooze_mask-hop_left-000.png",
+		"en_ooze_mask-hop_left-001.png", "en_ooze_mask-hop_left-002.png", "en_ooze_mask-hop_left-003.png",
+		"en_ooze_mask-hop_right-000.png", "en_ooze_mask-hop_right-001.png", "en_ooze_mask-hop_right-002.png",
+		"en_ooze_mask-hop_right-003.png", "en_ooze_mask-hop_up-000.png", "en_ooze_mask-hop_up-001.png",
+		"en_ooze_mask-hop_up-002.png", "en_ooze_mask-hop_up-003.png", "en_ooze_mask-hurt_down-000.png",
+		"en_ooze_mask-hurt_left-000.png", "en_ooze_mask-hurt_right-000.png", "en_ooze_mask-hurt_up-000.png",
+		"en_ooze_mask-idle_down-000.png", "en_ooze_mask-idle_down-001.png", "en_ooze_mask-idle_down-002.png",
+		"en_ooze_mask-idle_down-003.png", "en_ooze_mask-idle_left-000.png", "en_ooze_mask-idle_left-001.png",
+		"en_ooze_mask-idle_left-002.png", "en_ooze_mask-idle_left-003.png", "en_ooze_mask-idle_right-000.png",
+		"en_ooze_mask-idle_right-001.png", "en_ooze_mask-idle_right-002.png", "en_ooze_mask-idle_right-003.png",
+		"en_ooze_mask-idle_up-000.png", "en_ooze_mask-idle_up-001.png", "en_ooze_mask-idle_up-002.png",
+		"en_ooze_mask-idle_up-003.png",
+	],
+	"res://assets/sprites/enemies/bat/": [
+		"en_bat_base-default-000.png", "en_bat_mask-attack_left-000.png", "en_bat_mask-attack_left-001.png",
+		"en_bat_mask-attack_up_left-000.png", "en_bat_mask-attack_up_left-001.png", "en_bat_mask-fly_left-000.png",
+		"en_bat_mask-fly_left-001.png", "en_bat_mask-fly_left-002.png", "en_bat_mask-fly_left-003.png",
+		"en_bat_mask-fly_up_left-000.png", "en_bat_mask-fly_up_left-001.png", "en_bat_mask-fly_up_left-002.png",
+		"en_bat_mask-fly_up_left-003.png", "en_bat_mask-hurt_left-000.png", "en_bat_mask-hurt_up_left-000.png",
+		"en_bat_mask-idle-000.png", "en_bat_mask-shadow-000.png",
+	],
+}
+
+
+func _enumerate_frame_files() -> PackedStringArray:
+	# Web export path: bundled .pck doesn't ship source PNGs, only
+	# imported .ctex binaries. DirAccess.get_files() returns empty
+	# in that case. Look the folder up in the baked map first.
+	var key: String = frames_folder if frames_folder.ends_with("/") else frames_folder + "/"
+	if KNOWN_FRAMES_FOLDERS.has(key):
+		return KNOWN_FRAMES_FOLDERS[key]
+	# Editor / desktop fallback -- works against the real filesystem.
 	var dir := DirAccess.open(frames_folder)
 	if dir == null:
 		push_error("[EnemyFolderAnimator] Cannot open folder: %s" % frames_folder)
+		return PackedStringArray()
+	return dir.get_files()
+
+
+func _build_frames() -> void:
+	var files := _enumerate_frame_files()
+	if files.is_empty():
+		push_error("[EnemyFolderAnimator] No files in folder: %s" % frames_folder)
 		return
 
 	# Collect anim_name -> Array of [frame_index, path] tuples.
 	var groups: Dictionary = {}
 
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if not dir.current_is_dir() and file_name.ends_with(".png") and not file_name.ends_with(".import"):
-			var parsed := _parse_frame_name(file_name)
-			if not parsed.is_empty():
-				var anim_name: String = parsed["anim_name"]
-				var frame_index: int = parsed["frame_index"]
-				if not groups.has(anim_name):
-					groups[anim_name] = []
-				var folder_norm: String = frames_folder.trim_suffix("/")
-				(groups[anim_name] as Array).append([frame_index, "%s/%s" % [folder_norm, file_name]])
-			else:
-				push_warning("[EnemyFolderAnimator] Skipping unrecognized file: %s" % file_name)
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for file_name in files:
+		if not file_name.ends_with(".png") or file_name.ends_with(".import"):
+			continue
+		var parsed := _parse_frame_name(file_name)
+		if not parsed.is_empty():
+			var anim_name: String = parsed["anim_name"]
+			var frame_index: int = parsed["frame_index"]
+			if not groups.has(anim_name):
+				groups[anim_name] = []
+			var folder_norm: String = frames_folder.trim_suffix("/")
+			(groups[anim_name] as Array).append([frame_index, "%s/%s" % [folder_norm, file_name]])
+		else:
+			push_warning("[EnemyFolderAnimator] Skipping unrecognized file: %s" % file_name)
 
 	if groups.is_empty():
 		push_error("[EnemyFolderAnimator] No animation frames found in %s" % frames_folder)

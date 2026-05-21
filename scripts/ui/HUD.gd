@@ -504,13 +504,22 @@ func _build_mute_button() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_mute_button.add_child(bg)
 
+	# Music-note glyph -- ♪ isn't in any bundled pixel font, so we
+	# use a runtime-drawn pixel-art texture instead of a Label.
+	# Centered, scaled up ~2.5x from its native 6x10 source.
+	var note := TextureRect.new()
+	note.texture = UiStyles.note_glyph()
+	note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	note.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	note.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	note.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_mute_button.add_child(note)
+	# Keep _mute_label as a hidden anchor -- some legacy code paths
+	# still reference it for layout; the visible glyph is now the
+	# TextureRect.
 	_mute_label = Label.new()
-	_mute_label.text = "M"
-	_mute_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_mute_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_mute_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_mute_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_mute_label.add_theme_font_size_override("font_size", 22)
+	_mute_label.visible = false
 	_mute_button.add_child(_mute_label)
 
 	# Prohibition overlay -- drawn on top of the ♪ when muted.
