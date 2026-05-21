@@ -14,7 +14,7 @@ status = "Not_Started"
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
 id = "node_000"
-text = "Hi there adventurer! I’m Penny."
+text = "Hi there adventurer! I'm Penny."
 speaker = "Penny"
 priority = 100
 auto_advance = "node_001"
@@ -90,7 +90,7 @@ custom_function = "adoptPennyName"
 
 [sub_resource type="Resource" id="resp_pn_jk"]
 script = ExtResource("5")
-text = "Just kidding — it's |PlayerName|."
+text = "Just kidding - it's |PlayerName|."
 leads_to = "node_003"
 
 [sub_resource type="Resource" id="resp_pn_act"]
@@ -102,7 +102,7 @@ actions = Array[ExtResource("4")]([SubResource("act_pn_adopt")])
 [sub_resource type="Resource" id="node_pn_joke"]
 script = ExtResource("2")
 id = "penny_name_check"
-text = "Oh — the villagers said your name was |PlayerName|. But maybe it's not. Which is it?"
+text = "Oh - the villagers said your name was |PlayerName|. But maybe it's not. Which is it?"
 speaker = "Penny"
 priority = 99
 auto_advance = "penny_name_response"
@@ -169,7 +169,7 @@ status = "Meet_Penny"
 [sub_resource type="Resource" id="node_13"]
 script = ExtResource("2")
 id = "node_005"
-text = "I think she’s somewhere in the village."
+text = "I think she's somewhere in the village."
 speaker = "Penny"
 priority = 95
 auto_advance = "node_006"
@@ -202,12 +202,12 @@ status = "Meet_Penny"
 
 [sub_resource type="Resource" id="resp_20"]
 script = ExtResource("5")
-text = "Sure, I’ll help you find your cat."
+text = "Sure, I'll help you find your cat."
 leads_to = "node_008"
 
 [sub_resource type="Resource" id="resp_21"]
 script = ExtResource("5")
-text = "Sorry, I don’t have time."
+text = "Sorry, I don't have time."
 leads_to = "node_009"
 
 [sub_resource type="Resource" id="node_18"]
@@ -303,7 +303,7 @@ status = "Start_Cat_Quest"
 
 [sub_resource type="Resource" id="resp_36"]
 script = ExtResource("5")
-text = "Yes! Here’s Rosie"
+text = "Yes! Here's Rosie"
 leads_to = "node_013"
 
 [sub_resource type="Resource" id="resp_37"]
@@ -377,7 +377,7 @@ status = "End_Cat_Quest"
 [sub_resource type="Resource" id="node_46"]
 script = ExtResource("2")
 id = "node_015"
-text = "I’m so happy Rosie is home!"
+text = "I'm so happy Rosie is home!"
 speaker = "Penny"
 priority = 85
 auto_advance = "node_016"

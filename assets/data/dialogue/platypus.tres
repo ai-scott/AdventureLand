@@ -125,7 +125,7 @@ leads_to = "node_hint"
 [sub_resource type="Resource" id="node_16"]
 script = ExtResource("2")
 id = "node_deal"
-text = "Tell you what — bring me something even MORE fun to play with and I'll trade you the board. Something shiny, or tasty, or... ooh, something that makes noise!"
+text = "Tell you what - bring me something even MORE fun to play with and I'll trade you the board. Something shiny, or tasty, or... ooh, something that makes noise!"
 speaker = "Silly Platypus"
 priority = 96
 conditions = Array[ExtResource("3")]([SubResource("cond_17")])

@@ -505,7 +505,7 @@ func _build_mute_button() -> void:
 	_mute_button.add_child(bg)
 
 	_mute_label = Label.new()
-	_mute_label.text = "♪"
+	_mute_label.text = "M"
 	_mute_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_mute_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_mute_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -571,7 +571,7 @@ func _apply_mute_state(muted: bool, persist: bool = false) -> void:
 		# Note glyph stays cream + visible in both states. The muted
 		# state is communicated by the prohibition overlay drawn ON
 		# TOP of the note (circle + diagonal slash).
-		_mute_label.text = "♪"
+		_mute_label.text = "M"
 		_mute_label.add_theme_color_override("font_color", DesignTokens.PAPER)
 	if _mute_slash != null:
 		_mute_slash.visible = muted

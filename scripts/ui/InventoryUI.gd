@@ -1767,7 +1767,7 @@ func _update_cycler_labels() -> void:
 		if CharacterCustomization.hair_style_count() > 0:
 			_hair_label.text = CharacterCustomization.hair_style_name(_hair_index)
 		else:
-			_hair_label.text = "Hair —"
+			_hair_label.text = "Hair -"
 
 	# Hair COLOR + SKIN show 5-swatch preview rows. The labels were
 	# hidden in _build_swatch_rows; the swatch row IS the language
