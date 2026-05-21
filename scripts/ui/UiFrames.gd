@@ -78,10 +78,12 @@ func build_kbd_chip_icon(icon: Texture2D, scale_factor: int = 2) -> PanelContain
 	sb.bevel_width = 0
 	sb.corner_gap = 1
 	sb.padding = 0
-	sb.content_margin_left = 4
-	sb.content_margin_right = 4
-	sb.content_margin_top = 2
-	sb.content_margin_bottom = 2
+	# Bumped from 4/2 to 6/4 -- the return-arrow glyph was kissing
+	# the chip border. Couple more pixels of breathing room.
+	sb.content_margin_left = 6
+	sb.content_margin_right = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	panel.add_theme_stylebox_override("panel", sb)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER

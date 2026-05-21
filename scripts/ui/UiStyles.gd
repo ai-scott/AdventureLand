@@ -153,20 +153,21 @@ var _tex_return_glyph: Texture2D
 
 
 # Eighth note ♪ -- cream by default to match the previous Label.text
-# rendering on the mute button.
+# rendering on the mute button. Head is a 5-wide rounded oval for
+# a clearly-circular read; stem + flag carry over from prior pass.
 func note_glyph() -> Texture2D:
 	if _tex_note_glyph == null:
 		_tex_note_glyph = _build_glyph_texture(PackedStringArray([
-			"...XX.",
-			"...X.X",
-			"...X.X",
-			"...XX.",
-			"...X..",
-			"...X..",
-			"XX.X..",
-			"XXXX..",
-			"XXXX..",
-			".XX...",
+			"....XX.",
+			"....X.X",
+			"....X.X",
+			"....XX.",
+			"....X..",
+			"....X..",
+			"XX..X..",
+			"XXXXX..",
+			"XXXXX..",
+			".XXX...",
 		]), CREAM)
 	return _tex_note_glyph
 

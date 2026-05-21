@@ -102,18 +102,27 @@ func notify_modal_closed() -> void:
 func _ready() -> void:
 	layer = 8  # below dialogue (10) and toast (11), above world/HUD
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_is_mobile = _detect_mobile()
+	# Read mobile flag from UiStyles (single source of truth -- it
+	# applies the viewport-width guard so M-series Mac trackpads
+	# reporting touchscreen=true don't false-trip mobile mode on web).
+	# Earlier this had its own stale duplicate of the detection logic
+	# and was showing the mobile-style hint on desktop browsers.
+	_is_mobile = UiStyles.is_mobile
+	UiStyles.mobile_changed.connect(_on_mobile_changed)
 	_build_panel()
 	_panel.visible = false
 
-# Detect mobile mode. Mirrors UiStyles.DetectMobile() logic — exported
-# mobile platform OR HTML5 build on a touch device. Doesn't read from
-# UserPrefs override yet (that path requires bridging UiStyles, deferred
-# to Cluster 10 along with the rest of the design system).
-func _detect_mobile() -> bool:
-	var platform_mobile: bool = OS.has_feature("mobile")
-	var touch_on_web: bool = OS.has_feature("web") and DisplayServer.is_touchscreen_available()
-	return platform_mobile or touch_on_web
+
+func _on_mobile_changed() -> void:
+	if _is_mobile == UiStyles.is_mobile:
+		return
+	_is_mobile = UiStyles.is_mobile
+	# Rebuild panel to apply new sizing / padding.
+	if _panel != null and _panel.is_inside_tree():
+		_panel.queue_free()
+	_build_panel()
+	if _panel != null:
+		_panel.visible = false
 
 # Register a source with the hint system. The text_provider is a Callable
 # returning a String. The C# facade absorbs the C# Func<string> →

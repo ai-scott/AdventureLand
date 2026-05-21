@@ -506,14 +506,33 @@ func _build_mute_button() -> void:
 
 	# Music-note glyph -- ♪ isn't in any bundled pixel font, so we
 	# use a runtime-drawn pixel-art texture instead of a Label.
-	# Centered, scaled up ~2.5x from its native 6x10 source.
+	# Centered at integer scale -- 7x9 source * 2 = 14x18 in the
+	# 36x36 button, leaving breathing room for the prohibition slash.
+	# If a designer drops a hand-drawn icon_note.png at the canonical
+	# path, swap to that instead.
 	var note := TextureRect.new()
-	note.texture = UiStyles.note_glyph()
+	var custom_path: String = "res://assets/sprites/ui/icon_note.png"
+	if ResourceLoader.exists(custom_path):
+		note.texture = load(custom_path)
+	else:
+		note.texture = UiStyles.note_glyph()
+	var tex_size: Vector2 = note.texture.get_size()
+	note.custom_minimum_size = tex_size * 2
 	note.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	note.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	note.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	note.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Anchor at center -- the custom_minimum_size keeps it compact.
+	note.anchor_left = 0.5
+	note.anchor_right = 0.5
+	note.anchor_top = 0.5
+	note.anchor_bottom = 0.5
+	note.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	note.grow_vertical = Control.GROW_DIRECTION_BOTH
+	note.offset_left = -tex_size.x
+	note.offset_right = tex_size.x
+	note.offset_top = -tex_size.y
+	note.offset_bottom = tex_size.y
 	_mute_button.add_child(note)
 	# Keep _mute_label as a hidden anchor -- some legacy code paths
 	# still reference it for layout; the visible glyph is now the

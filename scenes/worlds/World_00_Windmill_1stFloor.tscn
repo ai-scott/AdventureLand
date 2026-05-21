@@ -10,7 +10,7 @@
 [ext_resource type="Resource" path="res://assets/map_data/triggers/World_00_Windmill_1stFloor.tres" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/npc/Npc.tscn" id="11_npc"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Nick.tscn" id="11_npc"]
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="13_diy5c"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
@@ -191,9 +191,6 @@ edge_scene = ExtResource("10")
 position = Vector2(200, 76)
 npc_name = "Nick"
 dialogue = ExtResource("13_dlg")
-
-[node name="NpcAnimator" parent="Entities/Nick" index="1"]
-sheet = ExtResource("12_sheet")
 
 [node name="WorldMusic" type="Node" parent="." unique_id=797849896]
 script = ExtResource("13_diy5c")
