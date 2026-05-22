@@ -1,4 +1,3 @@
-@tool
 class_name MapLoader extends Node2D
 
 # Loads tile data from CSV files and populates TileMapLayer nodes at runtime.
@@ -95,9 +94,26 @@ func _load_layer_from_csv(layer: TileMapLayer, csv_path: String) -> int:
 		return 0
 
 	# CSVs are the source of truth — wipe any tile_map_data baked into
-	# the .tscn so removals in Tiled actually disappear. Without this,
-	# set_cell only adds/overwrites, leaving deleted tiles visibly stuck.
+	# the .tscn so removals in Tiled actually disappear.
+	#
+	# Three-step wipe (belt-and-suspenders, because each individual call
+	# proved insufficient in some platform/timing combos):
+	#   1. Reset tile_map_data property to an empty PackedByteArray.
+	#      Works on desktop+headless but apparently not in web export.
+	#   2. clear() the layer. Doesn't catch scene-baked cells alone.
+	#   3. Iterate get_used_cells() and explicitly erase each. This is
+	#      the only path that actually removes cells across all
+	#      platforms (web included).
+	var pre_count: int = layer.get_used_cells().size()
+	layer.tile_map_data = PackedByteArray()
 	layer.clear()
+	# Explicit per-cell erase. set_cell with source_id = -1 removes the
+	# cell from the layer's storage AND its rendered output.
+	for coord in layer.get_used_cells():
+		layer.set_cell(coord, -1)
+	var post_count: int = layer.get_used_cells().size()
+	if pre_count > 0 or post_count > 0:
+		print("[MapLoader] %s: pre=%d post=%d (target: 0)" % [layer.name, pre_count, post_count])
 
 	var file := FileAccess.open(csv_path, FileAccess.READ)
 	var tile_count: int = 0

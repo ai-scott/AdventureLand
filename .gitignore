@@ -16,6 +16,13 @@
 # one-shots, so they're fine to re-import with defaults.
 !assets/audio/music/*.ogg.import
 
+# Exception: map_data .csv.import files carry importer="keep". Without
+# them, Godot re-imports the CSVs as Translation resources, which
+# claims the .csv path at the resource layer and breaks
+# FileAccess.file_exists() in the web export — MapLoader can no longer
+# read the raw CSV. Track the .import alongside the .csv.
+!assets/map_data/*.csv.import
+
 # Mono/C#
 .mono/
 data_*/
