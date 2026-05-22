@@ -424,7 +424,15 @@ func _build_simple_toast(item: Resource, message: String) -> void:
 	_add_icon(row, item.icon, 32)
 	var text_vbox := _add_text_column(row)
 	_add_title_label(text_vbox, item.name, 18)
-	_add_body_label(text_vbox, message, DesignTokens.PAPER, false, 20, false)
+
+	# Quest items replace the "Quest item received!" body line with
+	# the cream "★ Quest Item!" marker -- it covers both jobs (story
+	# beat + key-item flag) in a single line and matches the
+	# inventory details panel's vocabulary.
+	if bool(item.quest_item):
+		text_vbox.add_child(UiFrames.quest_item_marker("Quest Item!", DesignTokens.PAPER))
+	else:
+		_add_body_label(text_vbox, message, DesignTokens.PAPER, false, 20, false)
 
 
 # ---- Stat / category row ----

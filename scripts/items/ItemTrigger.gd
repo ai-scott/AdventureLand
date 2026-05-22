@@ -24,6 +24,7 @@ class_name ItemTrigger extends Area2D
 # ItemPickupToast is GDScript (Cluster 10d-2). Preload-by-path to avoid
 # the class_name registration dance (Pattern O).
 const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")
+const _DamageNumberScript: Script = preload("res://scripts/ui/DamageNumber.gd")
 
 var _collected: bool = false
 var _player_in_range: bool = false
@@ -194,6 +195,13 @@ func _auto_collect_money() -> void:
 	var gems: int = maxi(0, int(data.cost))
 	if gems > 0:
 		CurrencySystem.add_gems(gems)
+		# Floating "+N" toast over the player so the pickup reads
+		# the same as enemy gem drops. Preload-by-path (Pattern O).
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		var scene := get_tree().current_scene
+		if player != null and scene != null:
+			_DamageNumberScript.spawn(scene, player.global_position, gems,
+					_DamageNumberScript.Kind.GEM_PICKUP)
 	print("[ItemTrigger] Money pickup: %s -> +%d gems" % [data.name, gems])
 
 	if unique:

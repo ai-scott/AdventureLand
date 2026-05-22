@@ -17,10 +17,12 @@ enum Kind { GEM = 0, GOLD = 1, COIN = 2, HEART = 3 }
 @export var variant: Kind = Kind.GEM
 @export var initial_speed: float = 80.0
 @export var friction: float = 240.0  # px/s² applied while uncollected
-@export var magnet_speed: float = 320.0  # px/s while collected
-# Pull-from-distance radius. Tight 16 px so player reads drop animation
-# before pickup. 0 disables and relies on contact-only pickup.
-@export var magnet_radius: float = 16.0
+@export var magnet_speed: float = 420.0  # px/s while collected (bumped from 320 so cluster pickups stay tight)
+# Pull-from-distance radius. Bumped from 16 to 32 so a clump of
+# drops near the player magnets together, which lets the toast
+# aggregator collapse them into a single "+N" instead of N
+# overlapping toasts.
+@export var magnet_radius: float = 32.0
 
 var _velocity: Vector2
 var _collected: bool = false

@@ -550,20 +550,18 @@ func _start_attack() -> void:
 
 	# Per-weapon swing SFX. The three starter Blacksmith weapons (Axe=1,
 	# Sword=2, Pike=3) each have their own port from Player_Sword_1/2/3.
-	# Trident's own swing cue is fired inside play_trident_swing below;
-	# suppress the generic swing for it so the magic-weapon path stays
-	# distinct.
+	# Trident reuses the nail bat (pike) cue until it gets its own.
 	var equipped_weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
 	var equipped_weapon_id: int = int(equipped_weapon.id) if equipped_weapon != null else 0
 	var is_trident := equipped_weapon_id == MAGIC_TRIDENT_ITEM_ID
-	if not is_trident:
-		var swing_sfx: String
-		match equipped_weapon_id:
-			1: swing_sfx = "player_axe"
-			2: swing_sfx = "player_sword"
-			3: swing_sfx = "player_pike"
-			_: swing_sfx = "player_sword"
-		SFXController.play(swing_sfx)
+	var swing_sfx: String
+	match equipped_weapon_id:
+		1: swing_sfx = "player_axe"
+		2: swing_sfx = "player_sword"
+		3: swing_sfx = "player_pike"
+		MAGIC_TRIDENT_ITEM_ID: swing_sfx = "player_pike"
+		_: swing_sfx = "player_sword"
+	SFXController.play(swing_sfx)
 
 	# Show the weapon immediately. Don't wait on animation_state_started
 	# from MSCA -- on rapid re-presses the state machine is mid-exit from
@@ -801,37 +799,60 @@ static func _append_direction(lines: PackedStringArray, dir: String, beats: Arra
 	lines.append("\treturn arr")
 
 
-# Build the SpriteFrames once and cache statically. Folder scan +
-# ParseFrameName mirror the EnemyFolderAnimator approach so the
-# magic_trident folder layout slots in without a custom builder.
-# 12 fps lands the swing under the body's strike anim length so the
-# FX doesn't outlast the player's recovery frames.
+# Statically-baked frame list. DirAccess returns empty in web exports
+# (source .png files aren't packed; only their imported .ctex binaries
+# are), so the runtime folder scan silently fails on web. Regenerate
+# with:
+#   ls assets/sprites/player/weapons/magic_trident/*.png | sed 's|.*/||'
+const TRIDENT_FRAME_FILES: Array[String] = [
+	"magic_trident_down-000.png", "magic_trident_down-001.png", "magic_trident_down-002.png",
+	"magic_trident_down-003.png", "magic_trident_down-004.png",
+	"magic_trident_left-000.png", "magic_trident_left-001.png", "magic_trident_left-002.png",
+	"magic_trident_right-000.png", "magic_trident_right-001.png", "magic_trident_right-002.png",
+	"magic_trident_up-000.png", "magic_trident_up-001.png", "magic_trident_up-002.png",
+	"magic_trident_up-003.png", "magic_trident_up-004.png",
+]
+
+
+# Build the SpriteFrames once and cache statically. Frame layout
+# mirrors the EnemyFolderAnimator approach so the magic_trident
+# folder layout slots in without a custom builder. 12 fps lands the
+# swing under the body's strike anim length so the FX doesn't outlast
+# the player's recovery frames.
 static func _build_trident_frames() -> SpriteFrames:
 	const FOLDER: String = "res://assets/sprites/player/weapons/magic_trident"
+
+	# Prefer the baked list (web-safe). Fall back to DirAccess so
+	# editor-time additions show up without touching this file.
+	var files: Array = TRIDENT_FRAME_FILES.duplicate()
 	var dir := DirAccess.open(FOLDER)
-	if dir == null:
-		push_warning("[PlayerController] Trident folder missing: %s" % FOLDER)
-		return null
+	if dir != null:
+		var seen := {}
+		for f in files:
+			seen[f] = true
+		dir.list_dir_begin()
+		var entry := dir.get_next()
+		while entry != "":
+			if not dir.current_is_dir() and entry.ends_with(".png") and not entry.ends_with(".import"):
+				if not seen.has(entry):
+					files.append(entry)
+			entry = dir.get_next()
+		dir.list_dir_end()
 
 	# anim_key -> Array of [idx, path]
 	var groups: Dictionary = {}
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if not dir.current_is_dir() and file_name.ends_with(".png") and not file_name.ends_with(".import"):
-			# Pattern: "magic_trident_<dir>-NNN.png"
-			var stem := file_name.replace(".png", "")
-			var dash := stem.rfind("-")
-			if dash > 0:
-				var num_part := stem.substr(dash + 1)
-				if num_part.is_valid_int():
-					var frame := int(num_part)
-					var anim_key := stem.substr(0, dash).replace("magic_trident_", "")
-					if not groups.has(anim_key):
-						groups[anim_key] = []
-					(groups[anim_key] as Array).append([frame, "%s/%s" % [FOLDER, file_name]])
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for file_name in files:
+		# Pattern: "magic_trident_<dir>-NNN.png"
+		var stem := (file_name as String).replace(".png", "")
+		var dash := stem.rfind("-")
+		if dash > 0:
+			var num_part := stem.substr(dash + 1)
+			if num_part.is_valid_int():
+				var frame := int(num_part)
+				var anim_key := stem.substr(0, dash).replace("magic_trident_", "")
+				if not groups.has(anim_key):
+					groups[anim_key] = []
+				(groups[anim_key] as Array).append([frame, "%s/%s" % [FOLDER, file_name]])
 
 	if groups.is_empty():
 		push_warning("[PlayerController] No trident frames found")

@@ -213,65 +213,69 @@ def write_tres(triggers, source_tmx_relpath, output_path):
         sub_ids.append(sub_id)
         lines.append(f'[sub_resource type="Resource" id="{sub_id}"]')
         lines.append('script = ExtResource("2")')
-        lines.append(f'Kind = {KIND_MAP[t["kind"]]}')
-        lines.append(f'Position = {format_vector2(t["x"], t["y"])}')
-        lines.append(f'Size = {format_vector2(t["w"], t["h"])}')
+        # Field names MUST match TriggerData.gd's @export var declarations
+        # (snake_case). Godot Resources are case-sensitive — PascalCase
+        # writes here silently fail to bind and every property loads as
+        # its default, so triggers spawn at (0,0) as Kind=DOOR.
+        lines.append(f'kind = {KIND_MAP[t["kind"]]}')
+        lines.append(f'position = {format_vector2(t["x"], t["y"])}')
+        lines.append(f'size = {format_vector2(t["w"], t["h"])}')
 
         props = t["props"]
         # Door / Edge
         if t["kind"] in ("door", "edge"):
             target = normalize_scene_path(str(props.get("target_scene", "")))
             if target:
-                lines.append(f'TargetScene = "{escape_tres_string(target)}"')
+                lines.append(f'target_scene = "{escape_tres_string(target)}"')
         if t["kind"] == "door" or t["kind"] == "spawn":
             door_id = int(props.get("door_id", 0))
             if door_id:
-                lines.append(f'DoorId = {door_id}')
+                lines.append(f'door_id = {door_id}')
         if t["kind"] == "edge":
             exit_edge = str(props.get("exit_edge", ""))
             if exit_edge:
-                lines.append(f'ExitEdge = "{escape_tres_string(exit_edge)}"')
+                lines.append(f'exit_edge = "{escape_tres_string(exit_edge)}"')
         # Quest gating — optional on doors (and edges, for future use).
         if t["kind"] in ("door", "edge"):
             rq_id = str(props.get("required_quest_id", ""))
             rq_status = str(props.get("required_quest_status", ""))
             rq_flag = str(props.get("required_world_flag", ""))
             if rq_id:
-                lines.append(f'RequiredQuestId = "{escape_tres_string(rq_id)}"')
+                lines.append(f'required_quest_id = "{escape_tres_string(rq_id)}"')
             if rq_status:
-                lines.append(f'RequiredQuestStatus = "{escape_tres_string(rq_status)}"')
+                lines.append(f'required_quest_status = "{escape_tres_string(rq_status)}"')
             if rq_flag:
-                lines.append(f'RequiredWorldFlag = "{escape_tres_string(rq_flag)}"')
+                lines.append(f'required_world_flag = "{escape_tres_string(rq_flag)}"')
         # NPC
         if t["kind"] == "npc":
             npc_name = str(props.get("npc_name", "") or t["name"])
             if npc_name:
-                lines.append(f'NpcName = "{escape_tres_string(npc_name)}"')
+                lines.append(f'npc_name = "{escape_tres_string(npc_name)}"')
         # Item
         if t["kind"] == "item":
             item_id = int(props.get("item_id", 0))
             if item_id:
-                lines.append(f'ItemId = {item_id}')
+                lines.append(f'item_id = {item_id}')
             if bool(props.get("requires_purchase", False)):
-                lines.append('RequiresPurchase = true')
-        # Wall — emit polygon points if present; otherwise Position/Size is a rect.
+                lines.append('requires_purchase = true')
+        # Wall — emit polygon points if present; otherwise position/size is a rect.
         if t["kind"] == "wall" and t.get("polygon"):
             pts_str = ", ".join(
                 f"Vector2({px:g}, {py:g})" for (px, py) in t["polygon"]
             )
-            lines.append(f'PolygonPoints = Array[Vector2]([{pts_str}])')
+            lines.append(f'polygon_points = Array[Vector2]([{pts_str}])')
 
         lines.append('')
 
     # Main [resource] block
     lines.append('[resource]')
     lines.append('script = ExtResource("1")')
-    lines.append(f'SourceTmx = "{escape_tres_string(source_tmx_relpath)}"')
+    lines.append(f'source_tmx = "{escape_tres_string(source_tmx_relpath)}"')
     if sub_ids:
         sub_refs = ', '.join(f'SubResource("{sid}")' for sid in sub_ids)
-        lines.append(f'Triggers = Array[ExtResource("2")]([{sub_refs}])')
+        lines.append(f'triggers = Array[ExtResource("2")]([{sub_refs}])')
     else:
-        lines.append('Triggers = Array[ExtResource("2")]([])')
+        lines.append('triggers = Array[ExtResource("2")]([])')
     lines.append('')
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

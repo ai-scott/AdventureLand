@@ -248,6 +248,43 @@ func build_stat_chip(text: String, icon: Texture2D = null, text_color: Variant =
 	return panel
 
 
+# "★ Quest Item" inline row used for key / quest items on the item
+# details panel and the pickup toast. Cream pixel star + caller-
+# supplied label text and color (defaults: "Quest Item" in moss
+# green, matching the inventory's description block). Caller
+# controls placement.
+func quest_item_marker(label_text: String = "Quest Item",
+		label_color: Color = Color(0.23529412, 0.4117647, 0.101960786)) -> HBoxContainer:
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	box.size_flags_vertical = Control.SIZE_SHRINK_END
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+
+	var star := TextureRect.new()
+	star.texture = UiStyles.star_glyph()
+	var src_size: Vector2 = star.texture.get_size()
+	star.custom_minimum_size = src_size * 2
+	star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	star.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	star.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(star)
+
+	var label := Label.new()
+	label.text = label_text
+	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	label.size_flags_vertical = Control.SIZE_FILL
+	label.add_theme_font_override("font", UiFonts.body())
+	# Match DetailsDesc font_size (20) so the line reads as part of
+	# the description block rather than a separate chip.
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", label_color)
+	box.add_child(label)
+
+	return box
+
+
 # Apply the design-system primary (teal) action button styling.
 func apply_primary_button(btn: Button) -> void:
 	_apply_action_button(btn, DesignTokens.TEAL)

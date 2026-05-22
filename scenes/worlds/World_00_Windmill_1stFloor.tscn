@@ -147,7 +147,7 @@ script = ExtResource("5")
 [node name="WorldMeta" type="Node" parent="." unique_id=1708950640]
 script = ExtResource("6")
 map_size = Vector2i(240, 192)
-world_display_name = "Windmill — Upstairs"
+world_display_name = "Windmill - Upstairs"
 
 [node name="World_00_Windmill_1stFloor_Ground3underP" type="TileMapLayer" parent="." unique_id=217211236]
 z_index = -3

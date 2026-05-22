@@ -150,24 +150,26 @@ func space() -> Texture2D:
 
 var _tex_note_glyph: Texture2D
 var _tex_return_glyph: Texture2D
+var _tex_star_glyph: Texture2D
 
 
-# Eighth note ♪ -- cream by default to match the previous Label.text
-# rendering on the mute button. Head is a 5-wide rounded oval for
-# a clearly-circular read; stem + flag carry over from prior pass.
+# Eighth note ♪ -- cream by default. Flag is OPEN on the bottom-
+# right (right edge of the curl hangs free instead of curling back
+# to the stem), matching U+266A. Head is a 5-wide round disc;
+# stem runs straight down at col 5. Drawn 8x10.
 func note_glyph() -> Texture2D:
 	if _tex_note_glyph == null:
 		_tex_note_glyph = _build_glyph_texture(PackedStringArray([
-			"....XX.",
-			"....X.X",
-			"....X.X",
-			"....XX.",
-			"....X..",
-			"....X..",
-			"XX..X..",
-			"XXXXX..",
-			"XXXXX..",
-			".XXX...",
+			".....XX.",
+			".....X.X",
+			".....X.X",
+			".....X..",
+			".....X..",
+			".....X..",
+			".XXX.X..",
+			"XXXXXX..",
+			"XXXXX...",
+			".XXX....",
 		]), CREAM)
 	return _tex_note_glyph
 
@@ -185,6 +187,30 @@ func return_glyph() -> Texture2D:
 			".X.......",
 		]), Color("#F2C84B"))  # DesignTokens.GOLD inlined to avoid autoload cycle
 	return _tex_return_glyph
+
+
+# Five-point pixel star in cream -- replaces the ASCII "*" which read
+# as a thin cross at small sizes. 11x11 source so the top point and
+# the two bottom legs each get 4 rows of taper, keeping all 5 points
+# visually equal. 2x NEAREST scaling lands at 22x22, sitting next to
+# a 20-px Quest Item label.
+func star_glyph() -> Texture2D:
+	if _tex_star_glyph == null:
+		_tex_star_glyph = _build_glyph_texture(PackedStringArray([
+			".....X.....",
+			"....XXX....",
+			"....XXX....",
+			"...XXXXX...",
+			"XXXXXXXXXXX",
+			".XXXXXXXXX.",
+			"..XXXXXXX..",
+			"...XXXXX...",
+			"..XXX.XXX..",
+			"..XX...XX..",
+			".XX.....XX.",
+			".X.......X.",
+		]), CREAM)
+	return _tex_star_glyph
 
 
 # Build a small pixel-art Texture2D from an X/. bitmap pattern.

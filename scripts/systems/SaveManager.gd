@@ -128,9 +128,7 @@ func new_game(slot: int, player_name: String) -> void:
 	current_data.position_x = 148.0
 	current_data.position_y = 153.0
 	current_data.current_world = "res://scenes/worlds/World_00.tscn"
-	# Starter gems so prototype shop purchases are testable. Bumped to
-	# 50 so testers can try multiple shop flows without grinding.
-	current_data.gems = 50
+	current_data.gems = 0
 
 	active_slot = slot
 

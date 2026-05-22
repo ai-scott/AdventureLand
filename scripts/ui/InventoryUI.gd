@@ -1608,7 +1608,7 @@ func _refresh_details() -> void:
 		# modifiers for normal gear. Gold star + moss-green label
 		# so the marker reads as related to the description, not
 		# as a separate UI chip.
-		_details_stats.add_child(_build_key_item_marker())
+		_details_stats.add_child(UiFrames.quest_item_marker())
 	# Gem cost is intentionally NOT shown in the inventory details
 	# -- the player only sees a gem amount when they're standing
 	# in a shop and the action chip flips to a Sell chip with the
@@ -1661,41 +1661,6 @@ static func _build_direction_arrow(diff: int) -> Control:
 	return wrapper
 
 
-# "★ Quest Item" inline row used for key / quest items in place of
-# a stat modifier. Cream star (matches the DetailsName title face
-# for the "pop") + moss-green label at body-text size so the marker
-# reads as part of the description block. Position is driven by the
-# scene's DetailsStats offsets -- edit those in the Godot editor to
-# move the row.
-#
-# Star and label both bottom-align inside the HBox so the glyphs
-# share a baseline regardless of the font-size delta (Alagard 22 vs
-# Jersey 20). Without this the star sits a few px high.
-static func _build_key_item_marker() -> HBoxContainer:
-	var box := HBoxContainer.new()
-	box.add_theme_constant_override("separation", 4)
-	box.size_flags_vertical = Control.SIZE_SHRINK_END
-
-	var star := Label.new()
-	star.text = "*"
-	star.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	star.size_flags_vertical = Control.SIZE_FILL
-	star.add_theme_font_size_override("font_size", 22)
-	star.add_theme_color_override("font_color", UiStyles.CREAM)
-	box.add_child(star)
-
-	var label := Label.new()
-	label.text = "Quest Item"
-	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	label.size_flags_vertical = Control.SIZE_FILL
-	label.add_theme_font_override("font", UiFonts.body())
-	# Match DetailsDesc font_size (20) so the line reads as part of
-	# the description block rather than a separate chip.
-	label.add_theme_font_size_override("font_size", 20)
-	label.add_theme_color_override("font_color", Color(0.23529412, 0.4117647, 0.101960786))
-	box.add_child(label)
-
-	return box
 
 
 static func _build_inline_stat(text: String, icon: Texture2D, arrow: Control = null) -> HBoxContainer:
