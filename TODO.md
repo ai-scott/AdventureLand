@@ -1,13 +1,13 @@
 # Adventure Land (Godot) — Active TODOs
 
-**Last updated:** 2026-05-16
-**Launch shape:** Native macOS + Windows downloads on itch.io, free. Linux as stretch goal.
+**Last updated:** 2026-05-21
+**Launch shape:** Web (itch.io HTML5) first, native macOS + Windows as follow-up.
 
-> **Why not web?** Godot 4.x cannot export C# projects to the Web (confirmed
-> against [docs.godotengine.org](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html)
-> on 2026-05-16). Web launch deferred until Godot ships .NET-on-Web support
-> or until we have appetite for a GDScript port. The mobile-web input pass
-> already shipped still has value for that future.
+> **Web is unblocked** as of the C# → GDScript port (branch `port/gdscript`).
+> Trigger baker case-sensitivity bug (commit 899fdf27) had been masking
+> collisions / item-pickup positions across all worlds; trident swing now
+> renders + has a SFX cue in web export. See "v1 Release" below for the
+> active publish checklist.
 
 This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (frozen since 2026-04-07, reference only — all active dev is in `godot-prototype/`).
 
@@ -32,8 +32,8 @@ This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (froz
 
 ### Content & polish (ship-blockers)
 - [x] **Credits screen** — Mana Seed Character Animator, Alagard font, tileset attributions, music attribution (verified shipped via title screen)
-- [ ] **Title screen version label** ("v0.1" or "Demo" — keeps later updates legible)
-- [ ] **Re-record 3 AL welcome VO lines** per [docs/VO_TRACKING.csv](docs/VO_TRACKING.csv) — script in welcome.tres is final
+- [x] **Title screen version label** — `v0.1 (Demo)` stamped at the bottom of the credits panel (2026-05-21)
+- [ ] ~~Re-record 3 AL welcome VO lines~~ — **dropped for v1.** Sea Monster VO still in scope; opening narrator skipped for this release
 - [x] **AL sign node IDs renamed** to prevent VO filename collisions
 - [ ] Final full-loop playtest on the actual release build (not editor) — Penny cat quest → Pete herbs → Sea Monster pearl → trident
 
@@ -56,7 +56,7 @@ This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (froz
 ## v2 Pass — Audio (post-publish)
 
 ### Missing SFX (reconciled 2026-05-16)
-- [ ] **Trident swing** — `PlayerController.PlayTridentSwing()` doesn't call SFXController. Currently silent; the code comment claiming a cue is misleading. Need magic/whoosh sample
+- [x] **Trident swing** — wired to `player_pike` (nail bat's cue) as of commit 899fdf27. Dedicated magic/whoosh sample still nice-to-have for the trident's own voice.
 - [ ] **Bat in-flight presence** — swoop dive, wing flap, hang-from-tree squeak. No C3 source — needs external samples
 - [ ] **Sea Monster hostile roar** — silent transition peaceful → hostile
 - [ ] **Player death cry** — currently reuses `player_hurt` at -3 dB. Needs dedicated sample

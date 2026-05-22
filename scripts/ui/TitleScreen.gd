@@ -916,6 +916,20 @@ func _build_credits_panel() -> void:
 	var spacer2 := Control.new()
 	spacer2.custom_minimum_size = Vector2(0, 12)
 	_credits_list.add_child(spacer2)
+
+	# Build / release version stamp at the bottom of the credits panel.
+	# Dim cream so it reads as a footer instead of a credit line.
+	var version := Label.new()
+	version.text = "v0.1 (Demo)"
+	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	version.add_theme_font_override("font", UiFonts.body())
+	version.add_theme_font_size_override("font_size", 16)
+	version.add_theme_color_override("font_color", UiStyles.CREAM_DIM)
+	_credits_list.add_child(version)
+	var spacer3 := Control.new()
+	spacer3.custom_minimum_size = Vector2(0, 8)
+	_credits_list.add_child(spacer3)
+
 	var back_row := HBoxContainer.new()
 	back_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	_credits_list.add_child(back_row)
