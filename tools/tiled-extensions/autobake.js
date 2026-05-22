@@ -1,19 +1,22 @@
 /*
- * Tiled auto-bake extension for Adventure Land's Godot prototype.
+ * Tiled auto-bake extension for Adventure Land.
  *
  * Hooks Tiled's `assetSaved` signal. When any .tmx file is saved, runs the
  * project's `tools/bake_all.py` script, which regenerates trigger .tres files
- * (and eventually tile CSVs) for every TMX in the project.
+ * and tile CSVs for every TMX in the project.
  *
  * INSTALL
- *   macOS:
+ *   macOS (run from the repo root):
  *     mkdir -p "$HOME/Library/Preferences/Tiled/extensions"
  *     ln -sf "$PWD/tools/tiled-extensions/autobake.js" \
  *            "$HOME/Library/Preferences/Tiled/extensions/autobake.js"
  *
- *   (Run from the godot-prototype directory.)
- *
  *   Restart Tiled. You should see "AutoBake: armed." in View → Console.
+ *
+ *   NOTE: the symlink target must be the absolute path to this script in
+ *   the current repo layout (no `godot-prototype/` subfolder — that was
+ *   collapsed to repo root on 2026-05-16). If you upgraded an old checkout,
+ *   re-run the `ln -sf` above to repair the dangling symlink.
  *
  * HOW IT WORKS
  *   The extension finds the Godot project root by walking up from the TMX's

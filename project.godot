@@ -57,7 +57,7 @@ project/assembly_name="AdventureLandPrototype"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/msca/plugin.cfg", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/msca/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/world_tile_preview/plugin.cfg")
 
 [gui]
 
