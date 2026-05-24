@@ -341,6 +341,12 @@ func show_first_world_banner(scene_path: String) -> void:
 # Ported from C3's welcome_quest — first-time player gets a two-line
 # prompt explaining movement + confirm key. Gated on the "welcome_shown"
 # world flag.
+#
+# VO note: the AL welcome .ogg lives at assets/audio/vo/al/_disabled/
+# for v1 because the recordings are out of date. VOController fails to
+# find a stream at the expected al/ path and silently no-ops, so the
+# dialogue text still shows. Restore by moving the .ogg + .import back
+# into assets/audio/vo/al/.
 func _show_welcome_dialogue_if_needed() -> void:
 	if QuestSystem.has_world_flag("welcome_shown"):
 		return
