@@ -48,6 +48,10 @@ var _hud_bg: Control
 var _buttons_row: Control
 var _mute_button: Button
 var _mute_label: Label
+# Dedicated CanvasLayer hosting only the mute button. Sits above
+# FadeOverlay (layer=100) and GameOver (layer=101) so the mute toggle
+# is reachable on every screen including game-over.
+var _mute_layer: CanvasLayer
 # Custom-drawn prohibition sign (circle + diagonal slash) shown only
 # when audio is muted. Lives as a sibling of _mute_label inside the
 # mute button so it draws ON TOP of the ♪ glyph.
@@ -78,6 +82,13 @@ const BUTTONS_ROW_HEIGHT: int = CHIP_BUTTON_SIZE * 2 + 6
 
 
 func _ready() -> void:
+	# HUD has to keep processing while the tree is paused so the M-key
+	# mute shortcut works on title screen, game over, and any other
+	# paused state. Without this the _unhandled_input handler never
+	# fires while paused (input is only delivered to ALWAYS/WHEN_PAUSED
+	# nodes during pause).
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	if _tex_full == null:
 		_tex_full = load("res://assets/sprites/ui/heart_full.png") as Texture2D
 	if _tex_half == null:
@@ -136,6 +147,17 @@ func _ready() -> void:
 	_attack_icon = _attack_button.get_node_or_null("DesignIcon") as TextureRect if _attack_button != null else null
 	_default_attack_icon = UiStyles.sword()
 
+	# Mute button lives on its own CanvasLayer above FadeOverlay (100)
+	# and GameOver (101) so it stays visible across all screens --
+	# title, gameplay, dialogue, game-over, fade transitions. The rest
+	# of HUD (hearts, gems, action chips) stays on this CanvasLayer
+	# (layer=5) where it can be cleanly hidden by FadeOverlay during
+	# transitions.
+	_mute_layer = CanvasLayer.new()
+	_mute_layer.name = "MuteLayer"
+	_mute_layer.layer = 200
+	_mute_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_mute_layer)
 	_build_mute_button()
 	_build_low_hp_warning()
 
@@ -568,7 +590,10 @@ func _build_mute_button() -> void:
 		_mute_button.mouse_exited.connect(func() -> void:
 			if _mute_kbd != null: _mute_kbd.visible = false)
 	_mute_button.pressed.connect(_toggle_mute)
-	add_child(_mute_button)
+	# Live on the dedicated MuteLayer (layer=200) rather than HUD's
+	# main CanvasLayer (layer=5) so the mute toggle is reachable on
+	# every screen, including under the GameOver overlay.
+	_mute_layer.add_child(_mute_button)
 
 	# Apply the persisted state on boot.
 	_apply_mute_state(UserPrefs.get_muted())

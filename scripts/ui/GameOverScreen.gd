@@ -36,6 +36,21 @@ var _menu: VBoxContainer
 # below.
 var _tip_label: Label
 
+# Credits corner button -- mirrors TitleScreen's bottom-right "Credits"
+# link. Built once on death, faded in alongside the menu. Click opens
+# the inline credits panel (same content as TitleScreen's, built via
+# TitleScreen.build_credits_panel).
+var _credits_corner_btn: Button
+
+# Inline credits panel + Back button. Built lazily on first Credits
+# click. Visibility toggled by _open_credits / _close_credits; nothing
+# else dismisses it.
+var _credits_panel: PanelContainer
+var _credits_back_btn: Button
+# Where focus should return when credits closes (the menu button the
+# player came from -- usually Try Again or Title Screen).
+var _credits_return_focus: Control
+
 const TIPS: PackedStringArray = [
 	"Tip: You'll find good weapons at the Blacksmith.",
 	"Tip: The General Store sells clothes that protect against enemies.",
@@ -106,6 +121,10 @@ func _on_player_died() -> void:
 	# blackout. The FadeOverlay is left at full alpha for the rest of
 	# the sequence; Try Again / Title Screen handlers below explicitly
 	# fade_in before changing scene so the next view starts visible.
+	# Bump layer to 101 so we render unambiguously above FadeOverlay
+	# (also layer=100). Same-layer tie-break by tree order is unreliable
+	# across Godot versions and the autoload-vs-scene-child distinction.
+	layer = 101
 	visible = true
 
 	# Tree order in the .tscn has Bg as the last sibling, which means
@@ -142,24 +161,33 @@ func _on_player_died() -> void:
 	_tip_label.text = TIPS[randi() % TIPS.size()]
 	_tip_label.modulate = Color(1, 1, 1, 0)
 
+	# Credits corner button -- bottom-right, mirrors the same widget
+	# on TitleScreen. Built once; subsequent deaths reuse it.
+	_ensure_credits_corner_button()
+	_credits_corner_btn.modulate = Color(1, 1, 1, 0)
+	_credits_corner_btn.visible = true
+
 	# Auto-focus the first option so keyboard nav works immediately.
 	call_deferred("_focus_first_menu_option")
 
 	# Pause the tree NOW -- freezes the player's death state in place
 	# and halts any lingering enemy AI / projectiles. The entry tweens
-	# all use PROCESS_MODE_IDLE so they continue running while paused.
+	# below set TWEEN_PAUSE_PROCESS so they keep running while paused.
+	# (TWEEN_PROCESS_IDLE controls idle-vs-physics ticks, NOT pause
+	# behavior -- earlier port confused the two and the screen stayed
+	# black because no tween advanced after pause was set.)
 	get_tree().paused = true
 
 	# --- Play the entry sequence ---
 	# Three independent tweens (scroll, OVER flash, menu fade) so the
 	# C3 concurrent-timeline behavior translates directly.
 	var scroll_tween := create_tween()
-	scroll_tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)  # run during pause
+	scroll_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	scroll_tween.tween_property(_bg, "position:y", BG_END_Y, BG_TWEEN_DURATION) \
 			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
 
 	var over_tween := create_tween()
-	over_tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
+	over_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	# 3s delay -- gives the bg scroll most of its 4s travel time.
 	over_tween.tween_interval(3.0)
 	# C3 Flash behavior: on 0.1s, off 0.15s, for duration 1.0s -> 4 cycles.
@@ -180,7 +208,7 @@ func _on_player_died() -> void:
 	)
 
 	var menu_tween := create_tween()
-	menu_tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
+	menu_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	# 1s delay -- menu pops in early alongside the bg scroll so the
 	# player isn't kept waiting.
 	menu_tween.tween_interval(1.0)
@@ -188,10 +216,95 @@ func _on_player_died() -> void:
 
 	# Tip fades in slightly after the menu so the eye lands on the
 	# action buttons first, then catches the hint underneath.
+	# Credits corner fades in on the same beat as the tip.
 	var tip_tween := create_tween()
-	tip_tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
+	tip_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tip_tween.tween_interval(1.8)
 	tip_tween.tween_property(_tip_label, "modulate:a", 1.0, 0.6)
+	tip_tween.parallel().tween_property(_credits_corner_btn, "modulate:a", 1.0, 0.6)
+
+
+# Bottom-right "Credits" corner button. Mirrors TitleScreen's widget
+# both visually (build_pointer_option) and positionally (same anchor +
+# offset preset). Click opens the inline credits panel rather than
+# transitioning to the title screen.
+func _ensure_credits_corner_button() -> void:
+	if _credits_corner_btn != null:
+		return
+	_credits_corner_btn = TitleScreen.build_pointer_option("Credits", _open_credits)
+	_credits_corner_btn.custom_minimum_size = Vector2(140, 36)
+	_credits_corner_btn.anchor_left = 1.0
+	_credits_corner_btn.anchor_right = 1.0
+	_credits_corner_btn.anchor_top = 1.0
+	_credits_corner_btn.anchor_bottom = 1.0
+	_credits_corner_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_credits_corner_btn.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_credits_corner_btn.offset_left = -156
+	_credits_corner_btn.offset_top = -50
+	_credits_corner_btn.offset_right = -16
+	_credits_corner_btn.offset_bottom = -16
+	_credits_corner_btn.visible = false
+	add_child(_credits_corner_btn)
+
+
+# Open the credits panel on top of the game-over screen. Builds the
+# panel lazily on first call (same builder used by TitleScreen) and
+# parks focus on the panel's Back button so keyboard nav works
+# immediately.
+func _open_credits() -> void:
+	if _credits_panel == null:
+		var built := TitleScreen.build_credits_panel(self)
+		_credits_panel = built["panel"]
+		_credits_back_btn = built["back_btn"]
+		_credits_back_btn.pressed.connect(_close_credits)
+	_credits_return_focus = get_viewport().gui_get_focus_owner() as Control
+	_credits_panel.visible = true
+	call_deferred("_focus_credits_back")
+
+
+func _focus_credits_back() -> void:
+	if _credits_back_btn != null:
+		_credits_back_btn.grab_focus()
+
+
+# Close the credits panel and return focus to where the player was
+# before they opened it (usually the Credits corner button or one of
+# the menu options).
+func _close_credits() -> void:
+	if _credits_panel != null:
+		_credits_panel.visible = false
+	if _credits_return_focus != null and is_instance_valid(_credits_return_focus):
+		_credits_return_focus.grab_focus()
+	elif _credits_corner_btn != null:
+		_credits_corner_btn.grab_focus()
+
+
+# Keyboard nav layer:
+#   * Right arrow on a menu button -> jump to Credits corner.
+#   * Left arrow from Credits corner -> first menu button.
+#   * Escape / Z while credits is open -> close.
+# Mirrors TitleScreen's _unhandled_input pattern.
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_pressed() or event.is_echo():
+		return
+	if _credits_panel != null and _credits_panel.visible:
+		if event.is_action("cancel"):
+			_close_credits()
+			get_viewport().set_input_as_handled()
+		return
+	# Only handle nav once the menu has been built (post-death).
+	if _menu == null or _credits_corner_btn == null or not _credits_corner_btn.visible:
+		return
+	var focus_owner: Control = get_viewport().gui_get_focus_owner() as Control
+	if event.is_action("move_right") and focus_owner != _credits_corner_btn:
+		_credits_corner_btn.grab_focus()
+		get_viewport().set_input_as_handled()
+	elif event.is_action("move_left") and focus_owner == _credits_corner_btn:
+		for child in _menu.get_children():
+			if child is Button and not (child as Button).disabled:
+				(child as Button).grab_focus()
+				get_viewport().set_input_as_handled()
+				return
 
 
 # Build the centered tip label on first use. Lives directly under the

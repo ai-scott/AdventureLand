@@ -857,33 +857,47 @@ func _build_settings_panel() -> void:
 # Reachable from the title's bottom-right link or
 # Settings -> Credits.
 func _build_credits_panel() -> void:
-	_credits_panel = PanelContainer.new()
-	_credits_panel.process_mode = Node.PROCESS_MODE_ALWAYS
-	_credits_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_credits_panel.visible = false
-	_credits_panel.anchor_left = 0.5
-	_credits_panel.anchor_right = 0.5
-	_credits_panel.anchor_top = 0.5
-	_credits_panel.anchor_bottom = 0.5
-	_credits_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_credits_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_credits_panel.custom_minimum_size = Vector2(440, 0)
-	UiFrames.apply_mossy_panel(_credits_panel, 16)
+	var built := build_credits_panel(self)
+	_credits_panel = built["panel"]
+	_credits_list = built["list"]
+	_credits_back_btn = built["back_btn"]
+	_credits_back_btn.pressed.connect(_hide_credits)
 
-	_credits_list = VBoxContainer.new()
-	_credits_list.add_theme_constant_override("separation", 6)
-	_credits_panel.add_child(_credits_list)
-	add_child(_credits_panel)
+
+# Public static factory used by both TitleScreen and GameOverScreen so
+# the credit lines + version stamp + back button stay in one place.
+# Returns a Dictionary with `panel` (the hidden PanelContainer already
+# parented to `host`), `list` (the inner VBoxContainer), and
+# `back_btn` (the Back button -- caller wires .pressed to its own
+# dismiss handler).
+static func build_credits_panel(host: Node) -> Dictionary:
+	var panel := PanelContainer.new()
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.visible = false
+	panel.anchor_left = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_bottom = 0.5
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.custom_minimum_size = Vector2(440, 0)
+	UiFrames.apply_mossy_panel(panel, 16)
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 6)
+	panel.add_child(list)
+	host.add_child(panel)
 
 	var title := Label.new()
 	title.text = "Credits"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", DesignTokens.GOLD)
-	_credits_list.add_child(title)
+	list.add_child(title)
 	var spacer1 := Control.new()
 	spacer1.custom_minimum_size = Vector2(0, 8)
-	_credits_list.add_child(spacer1)
+	list.add_child(spacer1)
 
 	var credit_lines: Array = [
 		["Game by", "Penlock Games"],
@@ -911,11 +925,11 @@ func _build_credits_panel() -> void:
 		body_label.add_theme_font_size_override("font_size", 20)
 		body_label.add_theme_color_override("font_color", DesignTokens.PAPER)
 		row.add_child(body_label)
-		_credits_list.add_child(row)
+		list.add_child(row)
 
 	var spacer2 := Control.new()
 	spacer2.custom_minimum_size = Vector2(0, 12)
-	_credits_list.add_child(spacer2)
+	list.add_child(spacer2)
 
 	# Build / release version stamp at the bottom of the credits panel.
 	# Dim cream so it reads as a footer instead of a credit line.
@@ -925,19 +939,20 @@ func _build_credits_panel() -> void:
 	version.add_theme_font_override("font", UiFonts.body())
 	version.add_theme_font_size_override("font_size", 16)
 	version.add_theme_color_override("font_color", UiStyles.CREAM_DIM)
-	_credits_list.add_child(version)
+	list.add_child(version)
 	var spacer3 := Control.new()
 	spacer3.custom_minimum_size = Vector2(0, 8)
-	_credits_list.add_child(spacer3)
+	list.add_child(spacer3)
 
 	var back_row := HBoxContainer.new()
 	back_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	_credits_list.add_child(back_row)
+	list.add_child(back_row)
 
-	_credits_back_btn = UiFrames.build_chip_button("Back", "esc", UiFrames.apply_secondary_button)
-	_credits_back_btn.custom_minimum_size = Vector2(160, 40)
-	_credits_back_btn.pressed.connect(_hide_credits)
-	back_row.add_child(_credits_back_btn)
+	var back_btn := UiFrames.build_chip_button("Back", "esc", UiFrames.apply_secondary_button)
+	back_btn.custom_minimum_size = Vector2(160, 40)
+	back_row.add_child(back_btn)
+
+	return {"panel": panel, "list": list, "back_btn": back_btn}
 
 
 # Bottom-right "Credits" jump on the title -- focusable via
