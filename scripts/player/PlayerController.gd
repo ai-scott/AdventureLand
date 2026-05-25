@@ -898,11 +898,14 @@ func _play_hurt_flash() -> void:
 		return
 	var ci := sprite as CanvasItem
 
-	# Flash white -> normal, 3 blinks over ~0.4s.
+	# Flash white -> normal, 5 blinks over 0.60s -- matched to
+	# HealthSystem.invulnerability_duration so the player visibly
+	# blinks for the full invuln window (no silent grace period).
+	# 0.05s bright + 0.07s normal = 0.12s per cycle * 5 = 0.60s.
 	var tween := create_tween()
-	for i in range(3):
+	for i in range(5):
 		tween.tween_property(ci, "modulate", Color(3.0, 3.0, 3.0, 1.0), 0.05)
-		tween.tween_property(ci, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.08)
+		tween.tween_property(ci, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.07)
 
 
 # Travel to MSCA's Death state when HP hits 0. The Death animation

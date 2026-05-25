@@ -12,7 +12,10 @@ class_name HealthSystem extends Node
 # multiple frames.
 
 @export var max_health: int = 10
-@export var invulnerability_duration: float = 1.0
+# Sync this with PlayerController._play_hurt_flash's total duration so
+# the visual feedback covers the full invuln window. 5 flash cycles
+# (0.05s bright + 0.07s normal = 0.12s × 5 = 0.60s) match this value.
+@export var invulnerability_duration: float = 0.6
 
 signal health_changed(current: int, max: int)
 signal hurt
