@@ -23,6 +23,10 @@
 # read the raw CSV. Track the .import alongside the .csv.
 !assets/map_data/*.csv.import
 
+# itch.io upload artifacts -- the zipped exports/ payload. Build by
+# hand or via butler push; never source-controlled.
+adventureland-web-*.zip
+
 # Mono/C#
 .mono/
 data_*/
