@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c6gfcajhe326m"
+
+[deps]
+
+files=["res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.23.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.18.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.22.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.1.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.0.translation"]
+
+source_file="res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.csv"
+dest_files=["res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.23.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.18.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.22.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.1.translation", "res://assets/map_data/World_10_WaterfallCave_Decor1Plevel.0.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

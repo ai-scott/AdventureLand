@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bh1n58ahuwwta"
+
+[deps]
+
+source_file="res://assets/map_data/World_10_WaterfallCave_Decor3overP.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,9 +1,38 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]
 
+[sub_resource type="Resource" id="trig_0"]
+script = ExtResource("2")
+kind = 1
+position = Vector2(16.0, 48.0)
+size = Vector2(16.0, 16.0)
+door_id = 5
+
+[sub_resource type="Resource" id="trig_1"]
+script = ExtResource("2")
+kind = 0
+position = Vector2(0.0, 32.0)
+size = Vector2(32.0, 16.0)
+target_scene = "res://scenes/worlds/World_10.tscn"
+door_id = 5
+
+[sub_resource type="Resource" id="trig_2"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(73.5, 463.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(-55.25, -0.25), Vector2(-57.25, -107.5), Vector2(-43.25, -110.75), Vector2(-42, -127.5), Vector2(-45.25, -128), Vector2(-36.5, -157.25), Vector2(10.5, -191.5), Vector2(11.25, -204.5), Vector2(5.25, -208.75), Vector2(4, -222.75), Vector2(18.25, -223), Vector2(138.25, -220.5), Vector2(139.25, -241.75), Vector2(132, -241), Vector2(131, -247.25), Vector2(-27, -249.25), Vector2(-25.5, -271.5), Vector2(37, -271.5), Vector2(38.75, -273.25), Vector2(36, -294.25), Vector2(4.75, -299.75), Vector2(9.25, -308.25), Vector2(-37.5, -352), Vector2(-42, -350.25), Vector2(-42.75, -374.25), Vector2(-73.5, -396.75), Vector2(-73, 14.75), Vector2(0.75, 15)])
+
+[sub_resource type="Resource" id="trig_3"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(1.5, 60.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(9.75, -3.25), Vector2(1.25, -34), Vector2(18.75, -42.75), Vector2(15.5, -15.25), Vector2(319.5, -14), Vector2(319.5, 46.25), Vector2(323.25, 48.75), Vector2(381.5, 50.25), Vector2(382.25, 84.25), Vector2(350.5, 114.5), Vector2(350.75, 121.25), Vector2(336.75, 132.25), Vector2(334.25, 144), Vector2(330.75, 153.5), Vector2(244, 155.75), Vector2(241, 157.75), Vector2(235, 165), Vector2(234.25, 178.5), Vector2(236.25, 180.25), Vector2(242.5, 178.5), Vector2(349.5, 177.75), Vector2(348.75, 163.25), Vector2(360, 162), Vector2(372, 162.5), Vector2(373.25, 177.5), Vector2(375.25, 194.25), Vector2(369.25, 197.25), Vector2(368.25, 201), Vector2(371.5, 202.75), Vector2(372, 210.75), Vector2(382.75, 210.5), Vector2(388, 210.75), Vector2(392.75, 242.75), Vector2(382.5, 244.25), Vector2(351.75, 271), Vector2(346.5, 237.5), Vector2(337, 236.75), Vector2(334.75, 247), Vector2(324.5, 243.75), Vector2(315.5, 243.25), Vector2(305.25, 253.5), Vector2(298.75, 237.75), Vector2(289.5, 237.25), Vector2(286.75, 253.75), Vector2(290.25, 257.5), Vector2(303, 258.75), Vector2(304, 263.25), Vector2(287.5, 275), Vector2(271.25, 262.5), Vector2(253.75, 275.75), Vector2(254, 346.75), Vector2(261, 356), Vector2(268.25, 357.75), Vector2(275.75, 367), Vector2(286.75, 367.75), Vector2(291, 371.5), Vector2(298, 371.25), Vector2(329.5, 370), Vector2(333.5, 364.5), Vector2(337.5, 370.75), Vector2(351, 371.25), Vector2(362.25, 374), Vector2(371.5, 360), Vector2(383.5, 353), Vector2(384.5, 342.5), Vector2(398.25, 337.75), Vector2(401.5, 327.5), Vector2(413.5, 323.5), Vector2(415.25, 309.75), Vector2(413.75, 323.25), Vector2(414.25, 340.5), Vector2(448.75, 340), Vector2(448.75, 326.75), Vector2(457.5, 326.75), Vector2(462.5, 335.75), Vector2(445.5, 369.75), Vector2(443.25, 376.25), Vector2(431.5, 386.75), Vector2(372.25, 389.25), Vector2(254, 388.25), Vector2(236, 403.75), Vector2(104.25, 404.5), Vector2(74, 403), Vector2(75.5, 418.5), Vector2(470, 418.75), Vector2(482.5, 324.75), Vector2(452.25, 288.5), Vector2(410.75, 288.5), Vector2(363, 341.25), Vector2(269.5, 336.5), Vector2(264.25, 280.5), Vector2(269, 276.25), Vector2(275.5, 285), Vector2(272.25, 316.75), Vector2(289.75, 334.5), Vector2(341.5, 336.75), Vector2(363.25, 315.75), Vector2(367, 279.5), Vector2(461.5, 278.5), Vector2(496.5, 249.5), Vector2(495, 242.25), Vector2(489.25, 240.25), Vector2(491.5, 139), Vector2(455.25, 94.25), Vector2(405, 96.5), Vector2(397.25, 114.5), Vector2(371, 118.25), Vector2(372.5, 112.5), Vector2(396.75, 105.25), Vector2(411.5, 85), Vector2(413.5, 29.25), Vector2(387.25, 1), Vector2(381.25, 1), Vector2(381, -9.25), Vector2(385.5, -21.75), Vector2(385.5, -45.25), Vector2(369, -59.75), Vector2(2, -59)])
+
 [resource]
 script = ExtResource("1")
 source_tmx = "assets/tiles/tilemaps/World_10_WaterfallCave.tmx"
-triggers = Array[ExtResource("2")]([])
+triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3")])

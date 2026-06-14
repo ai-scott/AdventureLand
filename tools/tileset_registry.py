@@ -20,6 +20,7 @@ TILESETS_BY_TSX = {
     "FantasyForest_Combo.tsx":            ("FantasyForest_Combo.png",                             100, 16),
     # Interiors
     "Mana_Interiors.tsx":                 ("Mana_Seed_Interiors.png",                             128, 16),
+    "muddy cave v3.tsx":                  ("muddy cave v3.png",                                    20, 16),
     # Lake — animated water/waterfall (used by World_10_Lake)
     "LakeWaterfall.tsx":                  ("tm_water.png",                                         16, 16),
     "Beach.tsx":                          ("Beach.png",                                            14, 16),

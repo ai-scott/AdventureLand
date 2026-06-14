@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1.1" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="874">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="45" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="876">
  <tileset firstgid="1" name="Forest Combo" tilewidth="16" tileheight="16" tilecount="9200" columns="100" tilerendersize="grid">
   <image source="../spritesheets/FantasyForest_Combo.png" width="1600" height="1472"/>
   <tile id="701">
@@ -690,6 +690,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="14" name="Triggers">
+  <object id="874" name="EnterWaterfallCave_5" type="door" x="351.706" y="58.5771" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+    <property name="target_scene" type="file" value="../../../scenes/worlds/World_10_WaterfallCave.tscn"/>
+   </properties>
+  </object>
+  <object id="875" name="SpawnFromDoor_5" type="spawn" x="368.416" y="58.2285" width="16" height="16">
+   <properties>
+    <property name="door_id" type="int" value="5"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="9" name="Walls">
   <object id="543" type="wall" x="112" y="64" width="16" height="16"/>
   <object id="544" type="wall" x="0" y="80" width="32" height="8.07705"/>
@@ -1047,8 +1060,8 @@
   <object id="872" type="wall" x="329.456" y="184.251">
    <polygon points="0,0 6.9145,2.23705 6.50777,-3.05052 38.4365,-35.9961 85.8212,-35.5894 102.091,-20.7435 118.767,-18.9132 130.562,-6.10103 130.155,55.1127 154.763,52.8756 141.341,-20.7435 132.189,-49.215 85.6178,-47.7914 35.386,-56.7396 -2.84715,-11.1852"/>
   </object>
-  <object id="873" type="wall" x="367.282" y="53.4857">
-   <polygon points="0,0 -22.5738,-0.203368 -22.5738,35.5894 6.10103,33.5557 0.203368,20.5401 -5.56181,20.9734 -5.62815,5.35386 0.813471,5.49093"/>
+  <object id="873" type="wall" x="359.57" y="53.6999">
+   <polygon points="8.14071,-0.214229 -22.5738,-0.203368 -22.5738,35.5894 6.10103,33.5557 8.5583,21.397 -5.56181,20.9734 -5.62815,5.35386 8.09726,5.70516"/>
   </object>
  </objectgroup>
 </map>

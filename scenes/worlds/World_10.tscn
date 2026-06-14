@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/TreeSign.tscn" id="22_signsc"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/lakesign.tres" id="23_lkdlg"]
 [ext_resource type="Script" path="res://scripts/maps/TileAnimator.gd" id="25_fob5y"]
+[ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="26_door"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -2529,10 +2530,11 @@ tile_set = SubResource("TileSet_1")
 tile_set = SubResource("TileSet_1")
 
 [node name="World_10_Lake_RockyWaterPlevel" type="TileMapLayer" parent="." unique_id=892542637]
+z_index = 2
 tile_set = SubResource("TileSet_1")
 
 [node name="World_10_Lake_WaterfalloverP" type="TileMapLayer" parent="." unique_id=1066219179]
-z_index = -2
+z_index = 1
 tile_set = SubResource("TileSet_1")
 
 [node name="World_10_Lake_Ground3underP" type="TileMapLayer" parent="." unique_id=1613545671]
@@ -2638,6 +2640,7 @@ high_track = "adventureland_danger"
 [node name="Triggers" type="Node2D" parent="." unique_id=1957789752]
 script = ExtResource("10_tspwn")
 triggers_resource = ExtResource("11_trres")
+door_scene = ExtResource("26_door")
 
 [node name="GameOver" parent="." unique_id=1366688520 instance=ExtResource("13_gover")]
 visible = false
