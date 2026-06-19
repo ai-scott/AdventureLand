@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/world/EdgeTrigger.tscn" id="11"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Bill.tscn" id="13_npc"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/bill.tres" id="15_billdlg"]
+[ext_resource type="PackedScene" path="res://scenes/enemy/Enemy_Mimic.tscn" id="16_mimic"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cave"]
 texture = ExtResource("1")
@@ -75,6 +78,14 @@ position = Vector2(24, 56)
 [node name="Camera" type="Camera2D" parent="Entities/Player"]
 zoom = Vector2(3, 3)
 script = ExtResource("5")
+
+[node name="Bill" parent="Entities" instance=ExtResource("13_npc")]
+position = Vector2(64, 414)
+npc_name = "Bill"
+dialogue = ExtResource("15_billdlg")
+
+[node name="Mimic" parent="Entities" instance=ExtResource("16_mimic")]
+position = Vector2(120, 200)
 
 [node name="Triggers" type="Node2D" parent="."]
 y_sort_enabled = true

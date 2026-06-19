@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/NpcInteract.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/npc/NpcAnimator.gd" id="3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/waterfall_bill.png" id="3_sheet"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(12, 6)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 24.0
+
+[node name="Bill" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -16)
+
+[node name="NpcAnimator" type="Node" parent="."]
+script = ExtResource("3")
+sheet = ExtResource("3_sheet")
+
+[node name="Body" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="BodyShape" type="CollisionShape2D" parent="Body"]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="InteractZone" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_interact")
+
+[node name="InteractLabel" type="Label" parent="."]
+z_index = 10
+visible = false
+offset_left = -12.0
+offset_top = -32.0
+offset_right = 16.0
+offset_bottom = -20.0
+theme_override_font_sizes/font_size = 16
+text = "RET"
+horizontal_alignment = 1

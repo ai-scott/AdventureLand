@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy/EnemyController.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/enemy/EnemyFolderAnimator.gd" id="2"]
+[ext_resource type="Resource" path="res://assets/data/enemies/mimic.tres" id="2_mimic"]
+[ext_resource type="Script" path="res://scripts/systems/HealthSystem.gd" id="3"]
+
+[sub_resource type="RectangleShape2D" id="BodyShape"]
+size = Vector2(28, 16)
+
+[sub_resource type="RectangleShape2D" id="HurtboxShape"]
+size = Vector2(34, 36)
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1")
+data = ExtResource("2_mimic")
+contact_damage = 8
+animator_path = NodePath("EnemyAnimator")
+health_system_path = NodePath("HealthSystem")
+hitbox_path = NodePath("Hitbox")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("BodyShape")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -16)
+shape = SubResource("HurtboxShape")
+
+[node name="EnemyAnimator" type="Node" parent="."]
+script = ExtResource("2")
+frames_folder = "res://assets/sprites/enemies/mimic/"
+
+[node name="HealthSystem" type="Node" parent="."]
+script = ExtResource("3")
+max_health = 20
+invulnerability_duration = 0.6

@@ -1,0 +1,121 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/EnemyBehavior.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/EnemyAction.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/BehaviorCondition.gd" id="4"]
+
+[sub_resource type="Resource" id="act_disguise_animate"]
+script = ExtResource("3")
+anim_name = "closed"
+
+[sub_resource type="Resource" id="act_disguise_stop"]
+script = ExtResource("3")
+type = 0
+pattern = 4
+
+[sub_resource type="Resource" id="cond_disguise_far"]
+script = ExtResource("4")
+operator = 1
+value = 48.0
+
+[sub_resource type="Resource" id="beh_disguise"]
+script = ExtResource("2")
+name = "disguise"
+duration_min = 0.4
+duration_max = 0.8
+weight = 5.0
+conditions = Array[ExtResource("4")]([SubResource("cond_disguise_far")])
+actions = Array[ExtResource("3")]([SubResource("act_disguise_animate"), SubResource("act_disguise_stop")])
+
+[sub_resource type="Resource" id="act_lunge_animate"]
+script = ExtResource("3")
+anim_name = "walk"
+
+[sub_resource type="Resource" id="act_lunge_move"]
+script = ExtResource("3")
+type = 0
+pattern = 1
+speed = 45.0
+
+[sub_resource type="Resource" id="cond_lunge_in_range"]
+script = ExtResource("4")
+operator = 2
+value = 48.0
+
+[sub_resource type="Resource" id="cond_lunge_not_close"]
+script = ExtResource("4")
+operator = 1
+value = 22.0
+
+[sub_resource type="Resource" id="beh_lunge"]
+script = ExtResource("2")
+name = "lunge"
+duration_min = 0.3
+duration_max = 0.6
+weight = 8.0
+conditions = Array[ExtResource("4")]([SubResource("cond_lunge_in_range"), SubResource("cond_lunge_not_close")])
+actions = Array[ExtResource("3")]([SubResource("act_lunge_animate"), SubResource("act_lunge_move")])
+
+[sub_resource type="Resource" id="act_bite_animate"]
+script = ExtResource("3")
+anim_name = "attack"
+
+[sub_resource type="Resource" id="act_bite_move"]
+script = ExtResource("3")
+type = 0
+pattern = 1
+speed = 70.0
+
+[sub_resource type="Resource" id="cond_bite_close"]
+script = ExtResource("4")
+operator = 2
+value = 22.0
+
+[sub_resource type="Resource" id="beh_bite"]
+script = ExtResource("2")
+name = "bite"
+duration_min = 0.3
+duration_max = 0.5
+weight = 10.0
+cooldown = 0.8
+conditions = Array[ExtResource("4")]([SubResource("cond_bite_close")])
+actions = Array[ExtResource("3")]([SubResource("act_bite_animate"), SubResource("act_bite_move")])
+
+[sub_resource type="Resource" id="act_hurt_animate"]
+script = ExtResource("3")
+anim_name = "idle"
+
+[sub_resource type="Resource" id="act_hurt_stop"]
+script = ExtResource("3")
+type = 0
+pattern = 4
+
+[sub_resource type="Resource" id="act_hurt_invuln"]
+script = ExtResource("3")
+type = 3
+duration = 0.5
+
+[sub_resource type="Resource" id="cond_is_hurt"]
+script = ExtResource("4")
+type = 4
+operator = 4
+value = 1.0
+
+[sub_resource type="Resource" id="beh_hurt"]
+script = ExtResource("2")
+name = "hurt"
+duration_min = 0.2
+duration_max = 0.2
+weight = 0.0
+conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
+actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
+
+[resource]
+script = ExtResource("1")
+type = "Mimic"
+health = 20
+speed = 45.0
+view_distance = 60.0
+attack_distance = 22.0
+behaviors = Array[ExtResource("2")]([SubResource("beh_disguise"), SubResource("beh_lunge"), SubResource("beh_bite"), SubResource("beh_hurt")])

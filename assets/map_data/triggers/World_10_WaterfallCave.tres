@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]
@@ -32,7 +32,84 @@ position = Vector2(1.5, 60.0)
 size = Vector2(16.0, 16.0)
 polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(9.75, -3.25), Vector2(1.25, -34), Vector2(18.75, -42.75), Vector2(15.5, -15.25), Vector2(319.5, -14), Vector2(319.5, 46.25), Vector2(323.25, 48.75), Vector2(381.5, 50.25), Vector2(382.25, 84.25), Vector2(350.5, 114.5), Vector2(350.75, 121.25), Vector2(336.75, 132.25), Vector2(334.25, 144), Vector2(330.75, 153.5), Vector2(244, 155.75), Vector2(241, 157.75), Vector2(235, 165), Vector2(234.25, 178.5), Vector2(236.25, 180.25), Vector2(242.5, 178.5), Vector2(349.5, 177.75), Vector2(348.75, 163.25), Vector2(360, 162), Vector2(372, 162.5), Vector2(373.25, 177.5), Vector2(375.25, 194.25), Vector2(369.25, 197.25), Vector2(368.25, 201), Vector2(371.5, 202.75), Vector2(372, 210.75), Vector2(382.75, 210.5), Vector2(388, 210.75), Vector2(392.75, 242.75), Vector2(382.5, 244.25), Vector2(351.75, 271), Vector2(346.5, 237.5), Vector2(337, 236.75), Vector2(334.75, 247), Vector2(324.5, 243.75), Vector2(315.5, 243.25), Vector2(305.25, 253.5), Vector2(298.75, 237.75), Vector2(289.5, 237.25), Vector2(286.75, 253.75), Vector2(290.25, 257.5), Vector2(303, 258.75), Vector2(304, 263.25), Vector2(287.5, 275), Vector2(271.25, 262.5), Vector2(253.75, 275.75), Vector2(254, 346.75), Vector2(261, 356), Vector2(268.25, 357.75), Vector2(275.75, 367), Vector2(286.75, 367.75), Vector2(291, 371.5), Vector2(298, 371.25), Vector2(329.5, 370), Vector2(333.5, 364.5), Vector2(337.5, 370.75), Vector2(351, 371.25), Vector2(362.25, 374), Vector2(371.5, 360), Vector2(383.5, 353), Vector2(384.5, 342.5), Vector2(398.25, 337.75), Vector2(401.5, 327.5), Vector2(413.5, 323.5), Vector2(415.25, 309.75), Vector2(413.75, 323.25), Vector2(414.25, 340.5), Vector2(448.75, 340), Vector2(448.75, 326.75), Vector2(457.5, 326.75), Vector2(462.5, 335.75), Vector2(445.5, 369.75), Vector2(443.25, 376.25), Vector2(431.5, 386.75), Vector2(372.25, 389.25), Vector2(254, 388.25), Vector2(236, 403.75), Vector2(104.25, 404.5), Vector2(74, 403), Vector2(75.5, 418.5), Vector2(470, 418.75), Vector2(482.5, 324.75), Vector2(452.25, 288.5), Vector2(410.75, 288.5), Vector2(363, 341.25), Vector2(269.5, 336.5), Vector2(264.25, 280.5), Vector2(269, 276.25), Vector2(275.5, 285), Vector2(272.25, 316.75), Vector2(289.75, 334.5), Vector2(341.5, 336.75), Vector2(363.25, 315.75), Vector2(367, 279.5), Vector2(461.5, 278.5), Vector2(496.5, 249.5), Vector2(495, 242.25), Vector2(489.25, 240.25), Vector2(491.5, 139), Vector2(455.25, 94.25), Vector2(405, 96.5), Vector2(397.25, 114.5), Vector2(371, 118.25), Vector2(372.5, 112.5), Vector2(396.75, 105.25), Vector2(411.5, 85), Vector2(413.5, 29.25), Vector2(387.25, 1), Vector2(381.25, 1), Vector2(381, -9.25), Vector2(385.5, -21.75), Vector2(385.5, -45.25), Vector2(369, -59.75), Vector2(2, -59)])
 
+[sub_resource type="Resource" id="trig_4"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(18.3524, 364.753)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(74.5564, 2.86755), Vector2(74.5564, 3.44107), Vector2(84.3061, 33.8371), Vector2(108.394, 36.1312), Vector2(110.688, 48.7484), Vector2(128.466, 55.0571), Vector2(120.437, 66.5273), Vector2(143.951, 69.3948), Vector2(141.084, 97.4969), Vector2(93.4823, 98.6439), Vector2(91.7618, 68.2478), Vector2(44.7339, 34.9842), Vector2(4.58809, 38.9987)])
+
+[sub_resource type="Resource" id="trig_5"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(160.257, 197.596)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(7.90385, -7.35875), Vector2(14.7175, -1.36273), Vector2(11.1744, 8.99403), Vector2(2.18037, 10.6293)])
+
+[sub_resource type="Resource" id="trig_6"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(115.832, 113.379)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(11.1744, -2.72546), Vector2(24.8017, 2.72546), Vector2(24.8017, 8.44894), Vector2(16.3528, 15.8077), Vector2(3.5431, 14.1724), Vector2(-2.18037, 8.44894)])
+
+[sub_resource type="Resource" id="trig_7"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(218.31, 79.311)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(9.26658, -0.272546), Vector2(21.8037, 17.443), Vector2(17.443, 28.3448), Vector2(5.17838, 30.2527), Vector2(-1.36273, 28.3448), Vector2(-10.0842, 20.1684), Vector2(-7.35875, 10.9019)])
+
+[sub_resource type="Resource" id="trig_8"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(207.68, 147.175)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(2.72546, -11.992), Vector2(13.6273, -13.6273), Vector2(13.0822, -8.17639), Vector2(15.2626, -7.6313), Vector2(16.6253, 9.53912), Vector2(8.72148, 14.445), Vector2(-1.09019, 12.8097)])
+
+[sub_resource type="Resource" id="trig_9"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(272.819, 136.818)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(-0.545093, 25.8919), Vector2(14.7175, 22.6214), Vector2(14.1724, -1.09019), Vector2(9.81167, -4.36074)])
+
+[sub_resource type="Resource" id="trig_10"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(319.969, 195.416)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(2.45292, -11.4469), Vector2(13.8999, -14.1724), Vector2(16.6253, -2.99801), Vector2(15.2626, 11.4469), Vector2(4.0882, 15.2626), Vector2(-3.27056, 14.7175)])
+
+[sub_resource type="Resource" id="trig_11"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(301.709, 96.2089)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(2.45292, 12.5371), Vector2(-5.17838, 18.5332), Vector2(-16.6253, 6.54111), Vector2(-10.3568, 0.817639)])
+
+[sub_resource type="Resource" id="trig_12"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(146.357, 321.06)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(7.90385, -2.99801), Vector2(10.3568, 6.81366), Vector2(13.0822, 7.6313), Vector2(8.17639, 16.3528), Vector2(1.90782, 14.1724), Vector2(-4.0882, 5.99602)])
+
+[sub_resource type="Resource" id="trig_13"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(403.914, 393.012)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(8.99403, -5.17838), Vector2(11.992, -0.817639), Vector2(11.992, 10.0842), Vector2(13.0822, 19.6233), Vector2(5.72347, 25.0743), Vector2(-5.99602, 23.1664), Vector2(-4.63329, 11.7195)])
+
+[sub_resource type="Resource" id="trig_14"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(207.953, 460.058)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(4.0882, -19.8959), Vector2(6.81366, -20.7135), Vector2(8.99403, -28.3448), Vector2(11.4469, -25.8919), Vector2(14.1724, -7.6313), Vector2(17.1704, -7.90385), Vector2(18.5332, -20.1684), Vector2(22.6214, -20.7135), Vector2(24.2566, -28.3448), Vector2(26.1645, -28.3448), Vector2(28.3448, -15.5351), Vector2(28.8899, -6.81366), Vector2(32.433, -2.45292), Vector2(43.3349, -12.8097), Vector2(34.3408, -21.2586), Vector2(35.431, -28.0723), Vector2(39.7918, -28.3448), Vector2(47.1505, -14.9901), Vector2(41.1545, -6.26857), Vector2(30.2527, 2.72546), Vector2(0.817639, 2.99801)])
+
 [resource]
 script = ExtResource("1")
 source_tmx = "assets/tiles/tilemaps/World_10_WaterfallCave.tmx"
-triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3")])
+triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14")])

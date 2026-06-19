@@ -89,6 +89,15 @@ const KNOWN_FRAMES_FOLDERS: Dictionary = {
 		"en_bat_mask-fly_up_left-003.png", "en_bat_mask-hurt_left-000.png", "en_bat_mask-hurt_up_left-000.png",
 		"en_bat_mask-idle-000.png", "en_bat_mask-shadow-000.png",
 	],
+	"res://assets/sprites/enemies/mimic/": [
+		"en_mimic_mask-idle-000.png", "en_mimic_mask-idle-001.png", "en_mimic_mask-idle-002.png",
+		"en_mimic_mask-idle-003.png", "en_mimic_mask-walk-000.png", "en_mimic_mask-walk-001.png",
+		"en_mimic_mask-walk-002.png", "en_mimic_mask-walk-003.png", "en_mimic_mask-attack-000.png",
+		"en_mimic_mask-attack-001.png", "en_mimic_mask-attack-002.png", "en_mimic_mask-attack-003.png",
+		"en_mimic_mask-death-000.png", "en_mimic_mask-death-001.png", "en_mimic_mask-death-002.png",
+		"en_mimic_mask-death-003.png", "en_mimic_mask-closed-000.png", "en_mimic_mask-closed-001.png",
+		"en_mimic_mask-closed-002.png", "en_mimic_mask-closed-003.png",
+	],
 }
 
 
