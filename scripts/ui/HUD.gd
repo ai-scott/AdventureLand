@@ -58,6 +58,9 @@ var _mute_slash: Control
 # on hover so the binding is discoverable without taking up permanent
 # visual real estate next to the button.
 var _mute_kbd: PanelContainer
+# Right inset (px) the mute button currently sits at; changes while the
+# inventory is open so it clears the inventory's close X.
+var _mute_right_inset: float = -1.0
 # Low-HP warning -- red vignette pulse on screen edges + periodic beep.
 var _low_hp_vignette: Control
 var _low_hp_beep: AudioStreamPlayer
@@ -256,6 +259,7 @@ func _process(delta: float) -> void:
 	var in_dialogue: bool = WorldManager.is_dialogue_active()
 
 	_set_world_hud_visible(in_world)
+	_place_mute_button()
 	# Hide the action chips while a dialogue is on screen -- mute stays
 	# visible so the player can still silence audio.
 	if _buttons_row != null:
@@ -473,11 +477,34 @@ func _apply_chip_action_button(path: String, icon_tex: Texture2D, kbd_chip: Cont
 # ---- Mute button ----------------------------------------------------
 
 
+# Keep the mute button in the top-right corner, except while the
+# inventory is open: its close X occupies that corner, so slide the
+# mute button just left of the X.
+func _place_mute_button() -> void:
+	if _mute_button == null:
+		return
+	var inset: float = BUTTON_EDGE_MARGIN
+	if InventoryUI.is_open():
+		var close_rect: Rect2 = InventoryUI.get_close_button_rect()
+		if close_rect.size.x > 0.0:
+			var view_w: float = get_viewport().get_visible_rect().size.x
+			inset = view_w - close_rect.position.x + MUTE_CLOSE_GAP
+	if is_equal_approx(inset, _mute_right_inset):
+		return
+	_mute_right_inset = inset
+	_mute_button.offset_right = -inset
+	_mute_button.offset_left = -(inset + MUTE_SIZE)
+
+
 # Build the global mute toggle in the top-right corner. Lives on the
 # HUD so the same instance appears across every scene. Toggles the
 # Master audio bus mute and persists the choice via UserPrefs.
+const MUTE_SIZE: int = 36
+# Gap between the mute button and the inventory close X.
+const MUTE_CLOSE_GAP: int = 8
+
 func _build_mute_button() -> void:
-	const SIZE: int = 36
+	const SIZE: int = MUTE_SIZE
 
 	_mute_button = Button.new()
 	_mute_button.text = ""

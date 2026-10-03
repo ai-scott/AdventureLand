@@ -464,6 +464,16 @@ func _update_close_highlight() -> void:
 	icon.texture = _close_x_over if _focus_zone == FocusZone.CLOSE_BUTTON else _close_x_normal
 
 
+func is_open() -> bool:
+	return _is_open
+
+
+# Screen rect of the close X (top-right). HUD slides the mute button
+# left of it while the inventory is open so the two don't overlap.
+func get_close_button_rect() -> Rect2:
+	return _close_btn.get_global_rect() if _close_btn != null else Rect2()
+
+
 func open() -> void:
 	if _is_open:
 		return

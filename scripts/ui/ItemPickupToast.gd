@@ -98,11 +98,12 @@ static func spawn_pickup(tree: SceneTree, item: Resource) -> ItemPickupToast:
 
 
 func _ready() -> void:
-	# Above InventoryUI (layer=100 in its .tscn) and DialogueManager
-	# (layer=10). Sell-confirm spawns from the inventory, so the toast
-	# MUST sit above 100 or the player can't see it. FadeOverlay
-	# (layer=100) only covers the screen during scene transitions.
-	layer = 110
+	# Above InventoryUI (layer=100 in its .tscn), DialogueManager
+	# (layer=10) and HUD's MuteLayer (layer=200). Sell-confirm spawns
+	# from the inventory, so the toast MUST sit above 100 or the player
+	# can't see it; it's temporary, so it may briefly cover the mute
+	# button rather than hide under it.
+	layer = 210
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 

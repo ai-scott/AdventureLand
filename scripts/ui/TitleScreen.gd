@@ -601,13 +601,17 @@ func show_slot_select(new_game: bool) -> void:
 		var row := _build_save_slot_row(slot, data, new_game)
 		_slot_buttons.append(row)
 
-		if data != null or new_game:
-			row.pressed.connect(_on_slot_confirmed.bind(slot))
+		# Every row confirms: saves load, and empty slots start a new
+		# game (New Game mode, or "+ Start New Game" in Continue mode).
+		row.pressed.connect(_on_slot_confirmed.bind(slot))
 		# Mirror focus into Back/Continue: when this slot is focused,
 		# Continue takes the gold "press Enter" border AND remembers
-		# this slot so a Continue click confirms it.
+		# this slot so a Continue click confirms it. Its label reads
+		# "Start" when the focused slot is empty in Continue mode.
+		var starts_new: bool = data == null and not new_game
 		row.focus_entered.connect(func() -> void:
 			_update_action_mirror(true)
+			_set_continue_label("Start" if starts_new else "Continue")
 			_focused_slot = slot
 		)
 
@@ -655,7 +659,8 @@ func show_slot_select(new_game: bool) -> void:
 
 # Direct-confirm: pressing Enter or clicking a slot acts on it
 # immediately. New-game mode over an existing save routes through
-# the overwrite prompt; everything else loads / starts directly.
+# the overwrite prompt; everything else loads / starts directly
+# (an empty slot picked from Continue starts a new game there).
 func _on_slot_confirmed(slot: int) -> void:
 	var data: Resource = SaveManager.get_slot_summary(slot)
 	if _slot_mode_new_game and data != null:
@@ -669,6 +674,16 @@ func _on_slot_confirmed(slot: int) -> void:
 # border at full opacity. When Back is focused, Continue dims (ink
 # border, half opacity) and Back gets the gold border via its own
 # focus stylebox.
+# Swap the Continue chip's verb (it's a Label inside the chip's HBox).
+func _set_continue_label(text: String) -> void:
+	if _continue_btn == null or _continue_btn.get_child_count() == 0:
+		return
+	for child in _continue_btn.get_child(0).get_children():
+		if child is Label:
+			(child as Label).text = text
+			return
+
+
 func _update_action_mirror(slot_focused: bool) -> void:
 	if _continue_btn == null:
 		return
@@ -1151,17 +1166,17 @@ func _build_save_slot_row(slot: int, data: Resource, new_game: bool) -> Button:
 		btn.disabled = false
 	else:
 		var empty_label := Label.new()
-		empty_label.text = "- Empty slot -"
+		# Continue mode: an empty slot is an entry point, not a dead end.
+		empty_label.text = "- Empty slot -" if new_game else "+ Start New Game"
 		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		empty_label.add_theme_font_size_override("font_size", 18)
-		empty_label.add_theme_color_override("font_color", DesignTokens.STONE)
+		empty_label.add_theme_color_override("font_color",
+				DesignTokens.STONE if new_game else DesignTokens.PAPER)
 		hbox.add_child(empty_label)
 
-		btn.disabled = not new_game
-		if btn.disabled:
-			btn.modulate = Color(1, 1, 1, 0.55)
+		btn.disabled = false
 
 	return btn
 
@@ -1300,7 +1315,10 @@ func _on_slot_chosen(slot: int) -> void:
 
 	_selected_slot = slot
 
-	if _slot_mode_new_game:
+	# Empty slot (or one whose save won't load) -> new game in this
+	# slot. Back from name entry returns to whichever list we came from.
+	if _slot_mode_new_game or SaveManager.get_slot_summary(slot) == null:
+		_slot_confirm_in_flight = false
 		_show_name_entry()
 	else:
 		SaveManager.load_slot(slot)
