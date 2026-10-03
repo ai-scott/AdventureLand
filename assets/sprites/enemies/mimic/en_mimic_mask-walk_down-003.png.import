@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://logjgysoigon"
-path="res://.godot/imported/en_mimic_mask-walk-003.png-d280cf94ee308002e380938e8c603f81.ctex"
+uid="uid://o00f6kct22va"
+path="res://.godot/imported/en_mimic_mask-walk_down-003.png-4c2510e0ba47a1956180ef14e86a5603.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-walk-003.png"
-dest_files=["res://.godot/imported/en_mimic_mask-walk-003.png-d280cf94ee308002e380938e8c603f81.ctex"]
+source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-walk_down-003.png"
+dest_files=["res://.godot/imported/en_mimic_mask-walk_down-003.png-4c2510e0ba47a1956180ef14e86a5603.ctex"]
 
 [params]
 

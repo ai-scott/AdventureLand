@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c824piw0dem0h"
-path="res://.godot/imported/en_mimic_mask-death-003.png-42165277148ae6f6fd3c22204e935cfd.ctex"
+uid="uid://b7ogls7weqw1m"
+path="res://.godot/imported/en_mimic_mask-walk_up-003.png-d54ce1f1fca6ec57b654d57f864545d5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-death-003.png"
-dest_files=["res://.godot/imported/en_mimic_mask-death-003.png-42165277148ae6f6fd3c22204e935cfd.ctex"]
+source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-walk_up-003.png"
+dest_files=["res://.godot/imported/en_mimic_mask-walk_up-003.png-d54ce1f1fca6ec57b654d57f864545d5.ctex"]
 
 [params]
 

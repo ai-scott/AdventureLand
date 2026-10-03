@@ -90,13 +90,13 @@ const KNOWN_FRAMES_FOLDERS: Dictionary = {
 		"en_bat_mask-idle-000.png", "en_bat_mask-shadow-000.png",
 	],
 	"res://assets/sprites/enemies/mimic/": [
-		"en_mimic_mask-idle-000.png", "en_mimic_mask-idle-001.png", "en_mimic_mask-idle-002.png",
-		"en_mimic_mask-idle-003.png", "en_mimic_mask-walk-000.png", "en_mimic_mask-walk-001.png",
-		"en_mimic_mask-walk-002.png", "en_mimic_mask-walk-003.png", "en_mimic_mask-attack-000.png",
-		"en_mimic_mask-attack-001.png", "en_mimic_mask-attack-002.png", "en_mimic_mask-attack-003.png",
-		"en_mimic_mask-death-000.png", "en_mimic_mask-death-001.png", "en_mimic_mask-death-002.png",
-		"en_mimic_mask-death-003.png", "en_mimic_mask-closed-000.png", "en_mimic_mask-closed-001.png",
-		"en_mimic_mask-closed-002.png", "en_mimic_mask-closed-003.png",
+		"en_mimic_mask-walk_down-000.png", "en_mimic_mask-walk_down-001.png", "en_mimic_mask-walk_down-002.png",
+		"en_mimic_mask-walk_down-003.png", "en_mimic_mask-walk_up-000.png", "en_mimic_mask-walk_up-001.png",
+		"en_mimic_mask-walk_up-002.png", "en_mimic_mask-walk_up-003.png", "en_mimic_mask-idle_down-000.png",
+		"en_mimic_mask-idle_up-000.png", "en_mimic_mask-attack_down-000.png", "en_mimic_mask-attack_down-001.png",
+		"en_mimic_mask-attack_down-002.png", "en_mimic_mask-attack_up-000.png", "en_mimic_mask-attack_up-001.png",
+		"en_mimic_mask-attack_up-002.png", "en_mimic_mask-hurt_down-000.png", "en_mimic_mask-death-000.png",
+		"en_mimic_mask-closed-000.png",
 	],
 }
 
@@ -225,7 +225,9 @@ func _resolve_fallback(requested: String) -> String:
 	var prefix: String = requested.substr(0, us) if us >= 0 else requested
 
 	# 1. Same prefix, any direction (walk_left, walk_right, walk_up, walk_down).
-	for dir_name in ["right", "left", "up", "down"]:
+	# Down before up: front-only/back-only sheets (mimic) read better
+	# from the front when moving sideways.
+	for dir_name in ["right", "left", "down", "up"]:
 		var candidate := "%s_%s" % [prefix, dir_name]
 		if candidate != requested and frames.has_animation(candidate):
 			return candidate

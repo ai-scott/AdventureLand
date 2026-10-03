@@ -29,6 +29,7 @@ enum ConditionType {
 	RANDOM = 3,
 	HURT = 4,
 	INVULNERABLE = 5,
+	ENGAGED = 6,
 }
 
 # Mirrors BehaviorCondition.gd's ComparisonOp.
@@ -81,6 +82,11 @@ enum MovePattern {
 # should leave this off (the flip_h override would fight their
 # directional anims).
 @export var mirror_horizontally: bool = false
+
+# When true, flip_h tracks which side the player is on (flip when the
+# player is to the right) so a left-facing 3/4-view sheet (the mimic)
+# always looks at the player. Overrides mirror_horizontally.
+@export var face_player_horizontally: bool = false
 
 # Distance to the bat's home perch under which FLEE_TO_NEAREST_TREE
 # considers itself "arrived" and ends the behavior immediately. Tuned
@@ -148,6 +154,8 @@ var _current_speed: float = 0.0
 
 # Set by player sword on hit. Consumed by the `hurt` behavior's condition.
 var _is_hurt: bool = false
+# Sticky: set on entering an `engages` behavior or on taking a hit.
+var _engaged: bool = false
 
 # Knockback stun -- while > 0, AI doesn't run and velocity decays naturally.
 var _knockback_timer: float = 0.0
@@ -179,6 +187,8 @@ const BAT_VULNERABLE_SWOOP_RADIUS: float = 143.0 # during swoop, vulnerable insi
 const BAT_SHADOW_OFFSET_IDLE: float = 60.0      # shadow Y offset at perch / flee
 const BAT_SHADOW_OFFSET_SWOOP_FAR: float = 50.0 # shadow offset at swoop start (max altitude)
 const BAT_SHADOW_OFFSET_SWOOP_NEAR: float = 15.0 # shadow offset at bite range (low altitude)
+# Radius around the perch where a bat ignores walls (wall-hung perches).
+const BAT_PERCH_WALL_CLEARANCE: float = 24.0
 const BAT_SHADOW_OFFSET_HURT: float = 30.0      # shadow offset during hurt
 const BAT_SWOOP_REF_DISTANCE: float = 200.0     # distance scale for the swoop offset lerp
 
@@ -249,6 +259,10 @@ func _try_unstick_from_walls() -> void:
 	if _spawn_unstuck_checked:
 		return
 	_spawn_unstuck_checked = true
+	# Bats perch in the air -- on a cave wall or in a tree canopy is
+	# intentional, and they fly through walls near the perch anyway.
+	if data_type() == "Bat":
+		return
 
 	var collider := get_node_or_null("CollisionShape2D") as CollisionShape2D
 	if collider == null:
@@ -359,6 +373,7 @@ func _physics_process(delta: float) -> void:
 
 	_apply_flying_phase_pass()
 	move_and_slide()
+	_apply_face_player()
 	_update_shadow(delta)
 
 
@@ -366,7 +381,10 @@ func _apply_flying_phase_pass() -> void:
 	if data_type() != "Bat":
 		return
 	var b := current_behavior_name()
-	var flying := b == "flee_to_tree" or b == "idle_hanging"
+	# Also ignore walls until a behavior starts and while still near the
+	# perch, so a bat hung on a cave wall can drop out of it to swoop.
+	var near_perch := _home_position_captured and global_position.distance_to(_home_position) < BAT_PERCH_WALL_CLEARANCE
+	var flying := b == "flee_to_tree" or b == "idle_hanging" or b.is_empty() or near_perch
 	var target: int = (_default_collision_mask & ~WALL_COLLISION_MASK) if flying else _default_collision_mask
 	if collision_mask != target:
 		collision_mask = target
@@ -531,6 +549,8 @@ func _evaluate_condition(c: Resource) -> bool:
 		ConditionType.INVULNERABLE:
 			var inv: bool = _health != null and _health.invulnerable
 			lhs = 1.0 if inv else 0.0
+		ConditionType.ENGAGED:
+			lhs = 1.0 if _engaged else 0.0
 
 	var value := float(c.get("value"))
 	var op: int = int(c.get("operator"))
@@ -550,6 +570,8 @@ func _enter_behavior(b: Resource) -> void:
 	_behavior_total = randf_range(dur_min, dur_max)
 	_behavior_timer = _behavior_total
 	_executed_actions.clear()
+	if bool(b.get("engages")):
+		_engaged = true
 	# clear _is_hurt after entering the hurt behavior (one-shot)
 	var name := String(b.get("name"))
 	if name == "hurt" or name == "hurt_flash":
@@ -785,8 +807,20 @@ func can_be_hit() -> bool:
 	return true
 
 
+func _apply_face_player() -> void:
+	if not face_player_horizontally or _player == null:
+		return
+	var sprite := get_node_or_null("Sprite2D") as AnimatedSprite2D
+	if sprite == null:
+		return
+	# 2 px dead zone so standing directly above/below doesn't flicker.
+	var dx := _player.global_position.x - global_position.x
+	if absf(dx) > 2.0:
+		sprite.flip_h = dx > 0.0
+
+
 func _apply_mirror() -> void:
-	if not mirror_horizontally:
+	if face_player_horizontally or not mirror_horizontally:
 		return
 	var sprite := get_node_or_null("Sprite2D")
 	if sprite == null:
@@ -796,6 +830,7 @@ func _apply_mirror() -> void:
 
 
 func _on_hurt() -> void:
+	_engaged = true
 	var is_bat := data_type() == "Bat"
 	if is_bat:
 		_forced_next_behavior = "flee_to_tree"

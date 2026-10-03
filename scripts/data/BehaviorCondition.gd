@@ -13,6 +13,7 @@ enum ConditionType {
 	RANDOM = 3,        ## Random roll 0..1
 	HURT = 4,          ## Currently in hurt state (0/1)
 	INVULNERABLE = 5,  ## Currently invulnerable (0/1)
+	ENGAGED = 6,       ## Has entered an `engages` behavior or been hit (0/1, sticky)
 }
 
 enum ComparisonOp {

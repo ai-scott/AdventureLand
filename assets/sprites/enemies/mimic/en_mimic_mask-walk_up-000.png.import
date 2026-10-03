@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba1t603clobj3"
-path="res://.godot/imported/en_mimic_mask-attack-000.png-99202b127971eb490e4385be504cd3e6.ctex"
+uid="uid://bdabil71ibg2"
+path="res://.godot/imported/en_mimic_mask-walk_up-000.png-b3f5ba64734e4320a9965d0b9a6b8391.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-attack-000.png"
-dest_files=["res://.godot/imported/en_mimic_mask-attack-000.png-99202b127971eb490e4385be504cd3e6.ctex"]
+source_file="res://assets/sprites/enemies/mimic/en_mimic_mask-walk_up-000.png"
+dest_files=["res://.godot/imported/en_mimic_mask-walk_up-000.png-b3f5ba64734e4320a9965d0b9a6b8391.ctex"]
 
 [params]
 

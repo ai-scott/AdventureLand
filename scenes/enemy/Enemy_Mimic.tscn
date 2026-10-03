@@ -20,6 +20,7 @@ contact_damage = 8
 animator_path = NodePath("EnemyAnimator")
 health_system_path = NodePath("HealthSystem")
 hitbox_path = NodePath("Hitbox")
+face_player_horizontally = true
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 offset = Vector2(0, -20)

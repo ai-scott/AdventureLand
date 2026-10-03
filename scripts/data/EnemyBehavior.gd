@@ -17,6 +17,9 @@ class_name EnemyBehavior extends Resource
 
 @export_group("Triggers")
 @export var conditions: Array[BehaviorCondition] = []
+## Entering this behavior latches the enemy ENGAGED for the rest of its
+## life (e.g. the mimic stays in monster form once it has revealed itself).
+@export var engages: bool = false
 
 @export_group("Effects")
 @export var actions: Array[EnemyAction] = []
