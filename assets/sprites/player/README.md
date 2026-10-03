@@ -66,7 +66,7 @@ When you click **Create Player Node** in MSCA's editor tab, set:
 
 - **Base Path for Sprites:** `res://assets/sprites/player/farmer`
 
-MSCA walks `farmer/sheets/00undr..14head` and `farmer/effects/*` to build the 20+ layer scene structure with all animations in AnimationPlayer/AnimationTree. See `godot-prototype/docs/MSCA_INTEGRATION.md` for the full integration details.
+MSCA walks `farmer/sheets/00undr..14head` and `farmer/effects/*` to build the 20+ layer scene structure with all animations in AnimationPlayer/AnimationTree. See `docs/MSCA_INTEGRATION.md` for the full integration details.
 
 ### 2. `Player.tscn` hardcodes specific texture paths
 
@@ -102,7 +102,7 @@ Select the `CostumeController` node on the Player scene — the Inspector expose
 | body `01body` | `base ramps/skin color base ramp.png` | `mana seed skin ramps.png` |
 | weapons/tools | `base ramps/weapon and tool color base ramps.png` | `mana seed tool ramps.png` |
 
-A hair recoloring example is already wired into `PlayerController.cs` via the Inspector-driven `DebugRecolorHairToRow` flag. See `godot-prototype/docs/MSCA_INTEGRATION.md` for the full pattern.
+A hair recoloring example is already wired into `PlayerController.gd` via the Inspector-driven `debug_recolor_hair_to_row` export. See `docs/MSCA_INTEGRATION.md` for the full pattern.
 
 ### 5. Special filename suffixes
 
@@ -111,9 +111,9 @@ A hair recoloring example is already wired into `PlayerController.cs` via the In
 
 ## Where to read more
 
-- **Full asset inventory + the reorg story:** `godot-prototype/docs/ASSET_CATALOG.md`
-- **MSCA plugin integration (generator + C# driving):** `godot-prototype/docs/MSCA_INTEGRATION.md`
-- **Project-wide conventions and gotchas:** `godot-prototype/CLAUDE.md`
+- **Full asset inventory + the reorg story:** `docs/ASSET_CATALOG.md`
+- **MSCA plugin integration (generator + GDScript driving):** `docs/MSCA_INTEGRATION.md`
+- **Project-wide conventions and gotchas:** `CLAUDE.md`
 - **Kit author's original documentation:** `Farmer Sprite System readme.txt` in this folder (unchanged from Seliel's download — usage tips, license terms, Discord link)
 
 ## Credits

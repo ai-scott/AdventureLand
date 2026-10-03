@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Sarah.tscn" id="11_npc"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npc/shopkeeper_sarah.png" id="12_sheet"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="13_1wb40"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/generalstore.tres" id="13_dlg"]
 

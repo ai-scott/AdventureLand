@@ -14,7 +14,7 @@ solid CSS rectangle.
 Output: assets/sprites/ui/panel_bg.png (24×24, RGBA, transparent outside
 the panel rect).
 
-Run from the godot-prototype root:  python3 tools/gen_panel_9slice.py
+Run from the repo root:  python3 tools/gen_panel_9slice.py
 """
 from PIL import Image
 from pathlib import Path

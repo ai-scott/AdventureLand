@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/EdgeTrigger.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Nick.tscn" id="11_npc"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="13_diy5c"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
 [ext_resource type="PackedScene" path="res://scenes/npc/Bill.tscn" id="14_bill"]

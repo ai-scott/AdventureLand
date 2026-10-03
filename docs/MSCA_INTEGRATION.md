@@ -1,5 +1,7 @@
 # MSCA (Mana Seed Character Animator) — Integration Findings
 
+> **Note (2026-10):** written during the C# era. The integration steps are done; the scripts named here are now GDScript (`scripts/player/PlayerController.gd`, `CostumeController.gd`, `PaletteSwapper.gd`). The plugin findings (state names, blend directions, hitbox signal) are still accurate.
+
 Notes after reading the full plugin source ([feendrache/Godot4_msca](https://github.com/feendrache/Godot4_msca)) and all documentation. For anyone planning to wire MSCA into this project.
 
 ## TL;DR

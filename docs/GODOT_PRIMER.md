@@ -1,5 +1,7 @@
 # Godot Primer — Everything you need to stop guessing
 
+> **Note (2026-10):** code samples here are C# from the pre-port era. The project is GDScript now — the concepts carry over 1:1 (`[Export]` → `@export`, `GetNode<T>()` → `get_node() as T`, PascalCase → snake_case).
+
 A focused grounding in Godot's core concepts, tuned to what Adventure Land actually uses. Written for someone coming from Construct 3 + TypeScript. Read the first four sections before touching Phase 1 work; the rest you can skim and refer back to.
 
 ## 1. The single biggest mental shift from Construct 3
@@ -198,7 +200,7 @@ In Adventure Land:
 | `assets/data/enemies/crab.tres` | `EnemyData` | Crab stats + behaviors |
 | `assets/data/enemies/bat.tres` | `EnemyData` | Bat stats + behaviors |
 
-The `EnemyData` class (in `scripts/data/EnemyData.cs`) declares `[Export]` fields — those show up as editable in the Inspector when you open a `.tres`. The `.tres` file itself is plain text (like a scene), diff-friendly in git.
+The `EnemyData` class (in `scripts/data/EnemyData.gd`) declares `[Export]` fields — those show up as editable in the Inspector when you open a `.tres`. The `.tres` file itself is plain text (like a scene), diff-friendly in git.
 
 **Why Resources over hardcoded C# constants or JSON:**
 - **Inspector-editable.** You can tune Ooze stats without opening a code editor.
@@ -291,7 +293,7 @@ Right-side panel when a node is selected. Four tabs:
 
 ### Common gotchas we've already hit
 
-1. **`TileMapLayer.SetCell()` silently fails** unless `TileSetAtlasSource.CreateTile()` was called for that atlas coord first. See `MapLoader.cs`.
+1. **`TileMapLayer.SetCell()` silently fails** unless `TileSetAtlasSource.CreateTile()` was called for that atlas coord first. See `scripts/maps/MapLoader.gd`.
 2. **AnimationTree's `anim_player` path gets stale** when scenes are re-rooted. Always rebind in `_Ready` via `_tree.AnimPlayer = _tree.GetPathTo(animPlayer)`. See `PlayerController._Ready()`.
 3. **`AnimatedSprite2D` has no `Texture` property** — the texture lives inside its `SpriteFrames` resource. Build frames programmatically when you have a sheet (see `NpcAnimator.cs`).
 4. **`[Tool]` scripts run in the editor too.** This is useful (MapLoader can show tiles in-editor) but dangerous (the scene gets re-saved when Godot runs the script). Commit often, and don't hand-edit scenes that have `[Tool]` children.
@@ -302,8 +304,7 @@ Right-side panel when a node is selected. Four tabs:
 - [Godot docs — Your First 2D Game](https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html) — 2 hour guided tutorial, highly recommended if you want one cohesive walkthrough.
 - [GDQuest — free Godot courses](https://www.gdquest.com/) — lots of focused video tutorials.
 - [Godot Forum](https://forum.godotengine.org/) — the Q&A community.
-- `godot-prototype/docs/MSCA_INTEGRATION.md` — our plugin integration notes.
-- `godot-prototype/docs/GODOT_TRANSITION_PLAN.md` — the full migration roadmap.
-- `godot-prototype/docs/PHASE_1_SETUP.md` — current-phase walkthrough.
-- `godot-prototype/CLAUDE.md` — project conventions and critical gotchas.
+- `docs/MSCA_INTEGRATION.md` — our plugin integration notes.
+- `docs/archive/` — historical migration roadmap and phase walkthroughs.
+- `CLAUDE.md` — project conventions and critical gotchas.
 

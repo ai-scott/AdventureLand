@@ -54,7 +54,7 @@ Types are placeholders; pick whichever Mana Seed enemy sprites fit the snow biom
 
 ## Object Layer anchor (exists in TMX)
 
-- `MountainSign` at `(502, 22)` — a readable sign near the top-right. Use the existing TreeSign pattern (`scripts/npc/TreeSignTrigger.cs`) with new text.
+- `MountainSign` at `(502, 22)` — a readable sign near the top-right. Use the existing TreeSign pattern (`scenes/npc/TreeSign.tscn`) with new text.
 
 ## TODO for the map itself (finish in Tiled)
 
@@ -80,7 +80,7 @@ The ground/decor layers are about 60% painted. These blocks still need hand-work
 
 When building `World_03.tscn`:
 
-1. Root `World_03` Node2D with `MapLoader.cs` script
+1. Root `World_03` Node2D with `MapLoader.gd` script
 2. `WorldMeta` child with `MapSize = (720, 480)`, `WorldDisplayName = "Gray Mist Mountain"`
 3. 7 TileMapLayer children matching the TMX layer names (same as Forest pattern):
    - `Decorations0UnderP` (optional)

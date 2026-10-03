@@ -61,7 +61,7 @@ Running list of polish items deferred from earlier phases. Most target the final
 
 ## Reference from C3 project
 
-Key asset paths (all in `/Users/saclay/Documents/GitHub/AdventureLand/images/`):
+Key asset paths (in the legacy C3 project's `images/` folder — check out git tag `c3-legacy-2026-05-16`):
 - Item icons: `itemshowcase-animation 1-XXX.png` (already copied)
 - Item slot frame: `itemslot-animation 1-000.png`
 - Equipment slot frame: `squareequip-animation 1-000.png`
@@ -75,5 +75,5 @@ Key asset paths (all in `/Users/saclay/Documents/GitHub/AdventureLand/images/`):
 - Font: `ui_font.png`, `ui_font_descr.png`
 
 C3 event sheets to reference for behavior:
-- `/Users/saclay/Documents/GitHub/AdventureLand/eventSheets/eInventory.json`
-- `/Users/saclay/Documents/GitHub/AdventureLand/eventSheets/eGlobal.json`
+- `eventSheets/eInventory.json` (C3 legacy tag)
+- `eventSheets/eGlobal.json` (C3 legacy tag)

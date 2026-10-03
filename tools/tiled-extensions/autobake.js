@@ -33,7 +33,7 @@
 
 function findProjectRoot(filePath) {
     // Walk up the directory tree until we find `project.godot`.
-    // filePath looks like: /.../godot-prototype/assets/tiles/tilemaps/World_00.tmx
+    // filePath looks like: /.../AdventureLand/assets/tiles/tilemaps/World_00.tmx
     var dir = filePath;
     // Strip filename
     var lastSlash = dir.lastIndexOf("/");

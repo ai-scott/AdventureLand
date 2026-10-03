@@ -6,7 +6,7 @@
  the map to taste, paint, save. The autobake extension regenerates the CSV/.tres
  files. Add a matching scene at scenes/worlds/World_<XY>.tscn or
  scenes/worlds/World_<XY>_<Name>.tscn whose TileMapLayer nodes are named
- "World_<XY>_<Name>_<sanitized layer>" (see Gotcha 9 in godot-prototype/CLAUDE.md).
+ "World_<XY>_<Name>_<sanitized layer>" (see Gotcha 9 in CLAUDE.md).
  This _TEMPLATE.tmx is skipped by tools/bake_all.py (underscore prefix).
  -->
  <layer id="1" name="Ground 3 - under P" width="30" height="30">

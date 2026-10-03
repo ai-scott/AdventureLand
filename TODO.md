@@ -9,7 +9,7 @@
 > renders + has a SFX cue in web export. See "v1 Release" below for the
 > active publish checklist.
 
-This is the active list. The repo-root `/TODO.md` is the legacy C3 backlog (frozen since 2026-04-07, reference only — all active dev is in `godot-prototype/`).
+This is the active list. The legacy Construct 3 backlog is preserved at git tag `c3-legacy-2026-05-16`.
 
 ---
 

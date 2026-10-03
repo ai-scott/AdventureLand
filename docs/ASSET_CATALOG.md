@@ -17,7 +17,7 @@ This matches what you see in the MSCA generator's pack dropdown — it only offe
 
 ## What MSCA can show you today
 
-All 14 FBAS layers under `farmer_base_sheets/` already work with the current Player scene + `CostumeController.cs`. Current inventory:
+All 14 FBAS layers under `farmer_base_sheets/` already work with the current Player scene + `CostumeController.gd`. Current inventory:
 
 | Layer | Purpose | Options available |
 |-------|---------|---|
@@ -142,7 +142,7 @@ Run in this order. Each step is independent — you can stop between steps.
 
 ### 1. Delete root-level leftovers (safe — duplicates)
 ```bash
-cd godot-prototype/assets/sprites/player
+cd assets/sprites/player
 rm -rf char_a_p1 char_a_pONE1 char_a_pONE2 char_a_pONE3
 rm -rf guides
 rm fbas_01body_human_00a.png
@@ -153,7 +153,7 @@ rm "this is a Character Base demo.txt"
 
 ### 2. Promote FBAS up into a `farmer/` subfolder
 ```bash
-cd godot-prototype/assets/sprites/player
+cd assets/sprites/player
 mkdir farmer
 mv farmer_base_sheets farmer/sheets
 mv farmer_base_effects farmer/effects
@@ -163,7 +163,7 @@ mv docs farmer/docs
 ```
 
 ### 3. Update code paths that reference moved folders
-After step 2, search-and-replace in `scripts/player/PlayerController.cs`:
+After step 2, search-and-replace in `scripts/player/PlayerController.gd`:
 - `_supporting files/palettes/` → `farmer/palettes/`
 - Any `farmer_base_sheets/` or `farmer_base_effects/` references
 
@@ -175,7 +175,7 @@ Also re-point the MSCA-generated Player.tscn scene: the layer sprites have `text
 
 ### 4. Move `_incoming/` packs into `legacy/`
 ```bash
-cd godot-prototype/assets/sprites/player
+cd assets/sprites/player
 mkdir -p legacy/outfits legacy/combat
 mv "_incoming/20.01a - Character Base 2.5c" legacy/character_base
 mv "_incoming/21.01a - Hairstyle Pack v0.5.3" legacy/hairstyle_pack
@@ -201,7 +201,7 @@ rmdir _incoming
 
 ### 5. Commit the cleanup
 ```bash
-git add -A godot-prototype/assets/sprites/player
+git add -A assets/sprites/player
 git commit -m "chore(assets): Organize Mana Seed kit — FBAS + legacy split"
 git push
 ```

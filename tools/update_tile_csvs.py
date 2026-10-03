@@ -55,7 +55,7 @@ def parse_tmx(tmx_path):
 
 
 def safe_layer_name(name):
-    """Match the name-sanitizing logic in tmx_to_godot.py / add_decor_layers.py."""
+    """Match the name-sanitizing logic in tmx_interior_to_csvs.py."""
     return name.replace(" ", "").replace("-", "")
 
 
@@ -99,7 +99,7 @@ def main():
     tmx_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_TMX
     if not os.path.exists(tmx_path):
         print(f"TMX not found: {tmx_path}")
-        print("Place World_00_Village.tmx in godot-prototype/ or pass the path as an argument.")
+        print("Pass the TMX path as an argument.")
         sys.exit(1)
 
     print(f"Reading: {tmx_path}")

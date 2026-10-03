@@ -5,8 +5,8 @@ One-off Python scripts and editor extensions that build data for the Godot proje
 ## Map / trigger pipeline
 
 When you edit a TMX in Tiled, these tools regenerate the Godot-side data files
-the game loads at runtime. Tile CSVs feed `MapLoader.cs`; trigger `.tres` files
-feed `TriggerSpawner.cs`.
+the game loads at runtime. Tile CSVs feed `MapLoader.gd`; trigger `.tres` files
+feed `TriggerSpawner.gd`.
 
 ### One-shot: `bake_all.py`
 
@@ -33,7 +33,7 @@ ln -sf "$PWD/tools/tiled-extensions/autobake.js" \
        "$HOME/Library/Preferences/Tiled/extensions/autobake.js"
 ```
 
-Run this from the `godot-prototype/` directory. Restart Tiled. Open View →
+Run this from the repo root. Restart Tiled. Open View →
 Console — you should see `AutoBake: armed.` on startup, and per-save log lines
 after that.
 
@@ -45,14 +45,20 @@ output.
 
 | Tool | Purpose |
 |------|---------|
-| `tmx_to_godot.py` | Convert village-scope TMX → Godot scene (.tscn) + tile CSVs. One-time, destructive — do not re-run on scenes with hand-placed content. |
-| `update_tile_csvs.py` | Convert TMX tile data → CSV only (non-destructive, for tile edits). |
-| `tmx_triggers_to_tres.py` | Convert TMX ObjectLayer → `WorldTriggers.tres`. Called by `bake_all.py`. |
-| `bake_all.py` | Run every converter across every TMX. |
-| `dialogue_to_tres.py` | Convert C3 dialogue JSON → `DialogueData.tres`. |
-| `items_to_tres.py` | Convert `ItemsLibrary.json` → per-item `.tres` Resources. |
-| `gen_objects_collision.py` | Convert C3 tile-collision JSON → per-tile polygon data baked into `MapLoader.cs`. |
-| `add_decor_layers.py` | One-off, historical. Safe to leave as reference. |
+| `bake_all.py` | Run every converter across every TMX (what autobake calls). |
+| `update_tile_csvs.py` | TMX tile data → CSV for World_00 (called by `bake_all.py`). |
+| `tmx_interior_to_csvs.py` | TMX tile data → CSV for every other map (called by `bake_all.py`). |
+| `tmx_triggers_to_tres.py` | TMX object layers → `WorldTriggers.tres` (called by `bake_all.py`). |
+| `tileset_registry.py` | TSX → column-count registry the bakers use. |
+| `pack_animated_tiles.py` | Mana Seed animated-tile folders → packed PNG + `.tsx` + TileAnimator `.tres`. |
+| `rename_tmx_layers.py`, `layer_renames/` | Rename TMX layers to the canonical template. |
+| `strip_tmx_crosses.py` | Remove stray cross-tileset references from a TMX (writes a `.tmx.bak`). |
+| `slice_mimic_sheet.py` | Slice the mimic sprite sheet into per-frame PNGs. |
+| `gen_panel_9slice.py`, `gen_menu_font_fnt.py` | Regenerate UI panel / menu font assets. |
+
+Items and dialogue are authored directly as `.tres` files (`assets/data/items/`,
+`assets/data/dialogue/`). The one-time Construct 3 importers that first
+generated them were removed; they live in git history before 2026-10-03.
 
 ## Trigger authoring in Tiled
 
