@@ -185,7 +185,7 @@ func _deploy_pearl_if_needed() -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	var pickup := _find_first_item_trigger(scene, "Pink Oyster Pearl")
+	var pickup := _find_first_item_trigger(scene, "Perle du Lac")
 	if pickup == null:
 		return
 	pickup.visible = true

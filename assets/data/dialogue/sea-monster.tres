@@ -61,7 +61,7 @@ status = "Active"
 [sub_resource type="Resource" id="act_12"]
 script = ExtResource("4")
 type = 13
-item_name = "Pink Oyster Pearl"
+item_name = "Perle du Lac"
 
 [sub_resource type="Resource" id="act_13"]
 script = ExtResource("4")
@@ -133,7 +133,7 @@ status = "Active"
 [sub_resource type="Resource" id="act_24"]
 script = ExtResource("4")
 type = 13
-item_name = "Pink Oyster Pearl"
+item_name = "Perle du Lac"
 
 [sub_resource type="Resource" id="act_25"]
 script = ExtResource("4")
@@ -162,7 +162,7 @@ status = "Active"
 [sub_resource type="Resource" id="act_29"]
 script = ExtResource("4")
 type = 13
-item_name = "Pink Oyster Pearl"
+item_name = "Perle du Lac"
 
 [sub_resource type="Resource" id="act_30"]
 script = ExtResource("4")
@@ -207,7 +207,7 @@ status = "Hostile_Encounter"
 script = ExtResource("3")
 type = 1
 negate = true
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 
 [sub_resource type="Resource" id="node_32"]
 script = ExtResource("2")
@@ -239,7 +239,7 @@ type = 14
 [sub_resource type="Resource" id="cond_39"]
 script = ExtResource("3")
 type = 1
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 
 [sub_resource type="Resource" id="cond_40"]
 script = ExtResource("3")
@@ -259,12 +259,12 @@ actions = Array[ExtResource("4")]([SubResource("act_41")])
 [sub_resource type="Resource" id="act_45"]
 script = ExtResource("4")
 type = 4
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 
 [sub_resource type="Resource" id="cond_43"]
 script = ExtResource("3")
 type = 1
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 
 [sub_resource type="Resource" id="cond_44"]
 script = ExtResource("3")
@@ -370,7 +370,7 @@ status = "Active"
 script = ExtResource("3")
 type = 1
 negate = true
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 
 [sub_resource type="Resource" id="node_58"]
 script = ExtResource("2")

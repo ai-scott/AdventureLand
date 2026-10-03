@@ -15,6 +15,11 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/Bill.tscn" id="13_npc"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/bill.tres" id="15_billdlg"]
 [ext_resource type="PackedScene" path="res://scenes/enemy/Enemy_Mimic.tscn" id="16_mimic"]
+[ext_resource type="PackedScene" path="res://scenes/enemy/Enemy_Ooze.tscn" id="17_ooze"]
+[ext_resource type="PackedScene" path="res://scenes/enemy/Enemy_Bat.tscn" id="18_bat"]
+[ext_resource type="PackedScene" path="res://scenes/world/LockedChest.tscn" id="19_chest"]
+[ext_resource type="Resource" path="res://assets/data/items/123_pink_oyster_pearl.tres" id="20_pearl"]
+[ext_resource type="Script" path="res://scripts/world/CaveClearTracker.gd" id="21_tracker"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cave"]
 texture = ExtResource("1")
@@ -83,9 +88,34 @@ script = ExtResource("5")
 position = Vector2(64, 414)
 npc_name = "Bill"
 dialogue = ExtResource("15_billdlg")
+hide_when_world_flag = "bill_left_cave"
 
 [node name="Mimic" parent="Entities" instance=ExtResource("16_mimic")]
 position = Vector2(120, 200)
+stay_dead = true
+
+[node name="Bat1" parent="Entities" instance=ExtResource("18_bat")]
+position = Vector2(248, 72)
+stay_dead = true
+
+[node name="Bat2" parent="Entities" instance=ExtResource("18_bat")]
+position = Vector2(488, 168)
+stay_dead = true
+
+[node name="Ooze1" parent="Entities" instance=ExtResource("17_ooze")]
+position = Vector2(232, 344)
+stay_dead = true
+
+[node name="Ooze2" parent="Entities" instance=ExtResource("17_ooze")]
+position = Vector2(424, 424)
+stay_dead = true
+
+[node name="TreasureChest" parent="Entities" instance=ExtResource("19_chest")]
+position = Vector2(408, 24)
+contents = ExtResource("20_pearl")
+
+[node name="CaveClearTracker" type="Node" parent="."]
+script = ExtResource("21_tracker")
 
 [node name="Triggers" type="Node2D" parent="."]
 y_sort_enabled = true

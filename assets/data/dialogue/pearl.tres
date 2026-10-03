@@ -9,7 +9,7 @@
 [sub_resource type="Resource" id="act_2"]
 script = ExtResource("4")
 type = 3
-item_id = "Pink Oyster Pearl"
+item_id = "Perle du Lac"
 quantity = 1
 destroy_trigger = true
 
@@ -22,7 +22,7 @@ status = "Pearl_Found"
 [sub_resource type="Resource" id="node_1"]
 script = ExtResource("2")
 id = "collect_pearl"
-text = "You found the Perle de la Mer!"
+text = "You found the Perle du Lac!"
 speaker = "AL"
 priority = 100
 ends_dialogue = true
@@ -31,7 +31,7 @@ actions = Array[ExtResource("4")]([SubResource("act_2"), SubResource("act_3")])
 [resource]
 script = ExtResource("1")
 npc_id = "PinkOysterPearl"
-display_name = "Pink Oyster Pearl"
+display_name = "Perle du Lac"
 default_node = "collect_pearl"
 world_id = "World10"
 quest_relations = PackedStringArray("pearl_quest")

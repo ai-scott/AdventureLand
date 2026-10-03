@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/npc/windmill_nick.png" id="12_sheet"]
 [ext_resource type="Script" path="res://scripts/world/WorldMusic.gd" id="13_diy5c"]
 [ext_resource type="Resource" path="res://assets/data/dialogue/windmillnick.tres" id="13_dlg"]
+[ext_resource type="PackedScene" path="res://scenes/npc/Bill.tscn" id="14_bill"]
+[ext_resource type="Resource" path="res://assets/data/dialogue/bill.tres" id="15_billdlg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -187,6 +189,13 @@ edge_scene = ExtResource("10")
 position = Vector2(200, 76)
 npc_name = "Nick"
 dialogue = ExtResource("13_dlg")
+
+[node name="Bill" parent="Entities" instance=ExtResource("14_bill")]
+position = Vector2(216, 92)
+npc_name = "Bill"
+dialogue = ExtResource("15_billdlg")
+required_quest_id = "rescue_bill"
+required_quest_status = "Complete"
 
 [node name="WorldMusic" type="Node" parent="." unique_id=797849896]
 script = ExtResource("13_diy5c")

@@ -98,6 +98,12 @@ enum MovePattern {
 # get_tree().get_first_node_in_group("player").
 @export var player_path: NodePath
 
+# Opt-in permanent death. When true, this enemy records its death as a
+# world flag (scene + node path) and stays gone on later visits instead
+# of respawning with the scene. Off by default so existing worlds keep
+# their respawning enemies.
+@export var stay_dead: bool = false
+
 var _animator: EnemyAnimatorBase
 var _health: Node  # HealthSystem (still C#) -- access via Variant
 var _hitbox: Area2D
@@ -190,6 +196,10 @@ func current_behavior_name() -> String:
 func _ready() -> void:
 	if data == null:
 		push_error("[EnemyController] data (EnemyData) not assigned in Inspector")
+		return
+
+	if stay_dead and QuestSystem.has_world_flag(_defeated_flag_key()):
+		queue_free()
 		return
 
 	# Group membership lets EnemyMusicDriver poll the nearest live enemy
@@ -835,7 +845,19 @@ func _apply_contact_knockback(pc: Node2D) -> void:
 	pc.call("apply_knockback", dir * contact_knockback_force)
 
 
+# World-flag key for a stay_dead enemy, unique per scene + node path so
+# two "Ooze1" nodes in different worlds don't share a flag.
+func _defeated_flag_key() -> String:
+	var scene := get_tree().current_scene
+	var world: String = scene.scene_file_path.get_file().get_basename() if scene != null else "?"
+	var path: String = String(scene.get_path_to(self)) if scene != null else String(name)
+	return "EnemyDefeated_%s_%s" % [world, path]
+
+
 func _on_died() -> void:
+	if stay_dead:
+		QuestSystem.set_world_flag(_defeated_flag_key(), "true")
+		SaveManager.save()
 	var death_sound := String(data.get("death_sound")) if data != null else ""
 	SFXController.play("enemy_destroy" if death_sound.is_empty() else death_sound)
 	_drop_loot()

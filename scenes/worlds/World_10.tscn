@@ -30,7 +30,6 @@
 [ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Large_Cliff_Sand_Dirt_Grass_Cliff_WorksForAll.png" id="16_xvr62"]
 [ext_resource type="Texture2D" path="res://assets/tiles/spritesheets/Small_Cliff_Grass.png" id="17_c5b4o"]
 [ext_resource type="PackedScene" path="res://scenes/items/ItemTrigger.tscn" id="17_itrig"]
-[ext_resource type="Resource" path="res://assets/data/items/123_pink_oyster_pearl.tres" id="18_pearl"]
 [ext_resource type="Texture2D" path="res://assets/sprites/world/shrine.png" id="19_shrine"]
 [ext_resource type="Resource" path="res://assets/data/items/121_sea_monster_key.tres" id="20_smkey"]
 [ext_resource type="Texture2D" path="res://assets/buildings/AL_LakeSign.png" id="21_lksgn"]
@@ -2603,13 +2602,6 @@ dialogue = ExtResource("15_smdlg")
 visible = false
 position = Vector2(432, 224)
 sea_monster_path = NodePath("../SeaMonster")
-
-[node name="PearlPickup" parent="Entities" unique_id=925832706 instance=ExtResource("17_itrig")]
-visible = false
-position = Vector2(656, 80)
-collision_mask = 0
-data = ExtResource("18_pearl")
-trigger_id = 12300
 
 [node name="Shrine" type="Sprite2D" parent="Entities" unique_id=263806718]
 position = Vector2(128, 86)
