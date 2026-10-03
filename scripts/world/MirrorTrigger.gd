@@ -21,13 +21,10 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("interact"):
 		# Inventory's open() is idempotent so a double-fire wouldn't
 		# break anything, but the hint should hide while the inventory
-		# is up. InventoryUI is the GDScript autoload (Cluster 10g);
-		# the autoload Node IS the singleton, so calling open() on it
-		# directly works.
+		# is up.
 		InventoryUI.open()
 
 func _on_body_entered(body: Node) -> void:
-	# PlayerController is C# (still); duck-type via group.
 	if not body.is_in_group("player"):
 		return
 	_player_in_range = true

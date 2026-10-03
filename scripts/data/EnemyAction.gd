@@ -12,8 +12,7 @@ class_name EnemyAction extends Resource
 ##  - Invulnerable: duration
 ##  - SetEffect:    effect, parameter, value, enabled
 
-## Enum integer values must stay aligned with C# EnemyController until that
-## file ports in Phase 5. Don't reorder.
+## Enum integer values serialize into enemy .tres files. Don't reorder.
 enum ActionType {
 	MOVE = 0,
 	ANIMATE = 1,

@@ -1,6 +1,6 @@
 class_name TitleScreen extends Control
 
-# Preload-by-path (Pattern O) for class_name refs that fail at
+# Preload-by-path for class_name refs that fail at
 # headless parse before global_script_class_cache.cfg regenerates.
 const _BevelStyleBoxScript: Script = preload("res://scripts/ui/BevelStyleBox.gd")
 
@@ -319,7 +319,7 @@ static func build_pointer_option(text: String, on_pressed: Callable) -> Button:
 	# Focus: 3 px gold border + dark translucent fill so the cream
 	# label pops against the colorful painted bg. Corner gap matches
 	# the rest of the design system (corners don't connect).
-	# Pattern O: instantiate via the preloaded Script Resource so the
+	# Instantiate via the preloaded Script Resource so the
 	# parser doesn't need BevelStyleBox's class_name resolved at boot.
 	var focus: StyleBox = _BevelStyleBoxScript.new()
 	focus.fill = Color(0, 0, 0, 0.55)
@@ -1117,8 +1117,6 @@ func _build_save_slot_row(slot: int, data: Resource, new_game: bool) -> Button:
 	hbox.add_child(num_label)
 
 	if data != null:
-		# SaveData is GDScript (Cluster 9) -- snake_case property
-		# access.
 		var max_health: int = int(data.get("max_health"))
 		var current_world: String = String(data.get("current_world"))
 		var name_label := Label.new()

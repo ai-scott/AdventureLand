@@ -14,8 +14,7 @@ class_name CostumeController extends Node
 # the 13hair layer should be hidden. apply_all() hides hair whenever any
 # Hat is set if HatReplacesHair is true.
 
-# ItemData is still C# this cluster; we mirror its ItemCategory enum
-# values by int. Don't reorder.
+# Mirror ItemData.ItemCategory enum values by int. Don't reorder.
 const ITEM_CATEGORY_WEAPON: int = 0
 const ITEM_CATEGORY_HEAD: int = 3
 const ITEM_CATEGORY_NECK: int = 4
@@ -135,7 +134,7 @@ func set_outerwear(tex: Texture2D) -> void:
 
 # Equip an item by resolving its CostumeLayer to a sprite sheet texture.
 # Handles mutual exclusion for leg layers (dress hides pants/overalls).
-# Item is a C# ItemData Resource — accessed via PascalCase properties.
+# Item is an ItemData Resource.
 func equip_item(item: Resource) -> void:
 	if item == null:
 		return
@@ -253,8 +252,7 @@ func restore_equipment() -> void:
 		set_layer(layer, null)
 		_clear_layer_material(layer)
 
-	# Equip whatever the inventory currently has on. Inventory is a
-	# GDScript autoload; ItemData is still C#, accessed via Resource.
+	# Equip whatever the inventory currently has on.
 	var categories: Array = [
 		ITEM_CATEGORY_HEAD, ITEM_CATEGORY_NECK, ITEM_CATEGORY_BODY,
 		ITEM_CATEGORY_HAND, ITEM_CATEGORY_LEGS, ITEM_CATEGORY_BOOT,

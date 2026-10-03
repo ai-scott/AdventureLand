@@ -322,8 +322,8 @@ func _apply_movement(joystick: Vector2) -> void:
 	_move_right_held = _update_action_axis("move_right", right, _move_right_held)
 
 
-# Returns the new held state. GDScript can't pass refs to bool the
-# way C# does, so we return + reassign at the call site.
+# Returns the new held state (bools are passed by value, so the call
+# site reassigns).
 static func _update_action_axis(action: String, strength: float, held: bool) -> bool:
 	# Threshold mirrors the keyboard input map's deadzone (0.5) so the
 	# analog/digital distinction stays consistent across input devices.

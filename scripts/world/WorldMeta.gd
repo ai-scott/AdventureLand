@@ -24,6 +24,4 @@ class_name WorldMeta extends Node
 @export var is_shop: bool = false
 
 func _ready() -> void:
-	# ShopState is a GDScript autoload (Cluster 5) — direct snake_case
-	# method call.
 	ShopState.set_active(is_shop)

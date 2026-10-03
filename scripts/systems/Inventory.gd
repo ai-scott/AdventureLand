@@ -2,13 +2,8 @@ extends Node
 
 # Autoload — no class_name (collides with the autoload singleton name).
 #
-# Player inventory + equipment + item database. ItemData stays C# this
-# cluster (deferred to Cluster 10 with InventoryUI per the strategy
-# adjustment in commit 01571f3) — Inventory.gd loads .tres files as
-# Resource and accesses fields via the runtime property dispatch.
-# Property names stay PascalCase here (Name, Cost, Category, ...) to
-# match the C# [Export] declarations; flip to snake_case when ItemData
-# itself ports.
+# Player inventory + equipment + item database. Item .tres files are
+# loaded as Resource (ItemData) and fields read via property dispatch.
 #
 # Item database loaded once from assets/data/items/*.tres at startup.
 # Inventory: 30 fixed slots (itemId + quantity pairs).
@@ -22,9 +17,13 @@ extends Node
 # grid grew a column to align with the description.
 const SLOT_COUNT: int = 30
 
-# Mirrors ItemData.ItemCategory by integer value. While ItemData stays
-# C#, GDScript reads `item.category` as an int and compares against
-# these. Don't reorder — .tres files have these baked as ints.
+# Preload-by-path so this autoload doesn't need HealthSystem's
+# class_name registered at parse time.
+const _HealthSystemScript := preload("res://scripts/systems/HealthSystem.gd")
+
+# Mirrors ItemData.ItemCategory by integer value; `item.category` is
+# compared as an int against these. Don't reorder — .tres files have
+# these baked as ints.
 enum ItemCategory {
 	WEAPON  = 0,
 	FOOD    = 1,
@@ -40,8 +39,8 @@ enum ItemCategory {
 	HAIR    = 11,
 }
 
-# Equipment category names — string form used as dict keys, matching
-# the C# enum .ToString() output ("Weapon", "Food", "Head", ...).
+# Equipment category names — string form used as dict keys (and in
+# SaveData.equipped_items): "Weapon", "Food", "Head", ...
 const CATEGORY_NAMES: PackedStringArray = [
 	"Weapon", "Food", "General", "Head", "Neck", "Body",
 	"Hand", "Legs", "Boot", "Money", "Key", "Hair",
@@ -58,8 +57,7 @@ var _slot_quantities: PackedInt32Array
 # Equipment state — category name → item ID.
 var _equipped: Dictionary = {}
 
-# Signals — mirrored from the C# class, callers from C# subscribe via
-# `node.Connect("inventory_changed", ...)`.
+# Signals.
 signal inventory_changed
 signal item_equipped(item_id: int, category: String)
 signal item_unequipped(category: String)
@@ -153,8 +151,7 @@ func _load_database() -> void:
 			_db[int(item.id)] = item
 			_db_by_name[String(item.name).to_lower()] = item
 
-# Get an ItemData by integer ID, or null. Returns Resource (the
-# underlying C# ItemData while it stays C#).
+# Get an ItemData by integer ID, or null.
 func get_item(id: int) -> Resource:
 	return _db.get(id)
 
@@ -316,13 +313,12 @@ func use_item(slot_index: int) -> bool:
 	if item == null or not _is_consumable(item):
 		return false
 
-	# Food heals for Strength amount. HealthSystem is still C# this
-	# cluster — call its Heal method via cross-language dispatch.
+	# Food heals for Strength amount.
 	if int(item.category) == ItemCategory.FOOD:
 		var player := get_tree().get_first_node_in_group("player")
-		var health := player.get_node_or_null("HealthSystem") if player != null else null
+		var health := player.get_node_or_null("HealthSystem") as _HealthSystemScript if player != null else null
 		if health != null:
-			health.call("heal", int(item.strength))
+			health.heal(int(item.strength))
 			print("[Inventory] Used %s — healed %d HP" % [item.name, int(item.strength)])
 			SFXController.play("potion")
 
@@ -349,7 +345,7 @@ func save_to(data: Resource) -> void:
 		equipped_dict[k] = _equipped[k]
 	data.set("equipped_items", equipped_dict)
 
-# Restore inventory state from SaveData (still C#).
+# Restore inventory state from SaveData.
 func load_from(data: Resource) -> void:
 	for i in range(SLOT_COUNT):
 		_slot_item_ids[i] = 0

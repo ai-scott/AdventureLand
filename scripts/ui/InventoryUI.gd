@@ -25,12 +25,13 @@ extends CanvasLayer
 #   Path: res://scenes/ui/InventoryUI.tscn
 #   Name: InventoryUI
 
-# Pattern O -- preload-by-path for class_name refs that may not be
-# registered at headless parse time. ItemPickupToast is instantiated
-# lazily for the sell-confirm overlay; DamageNumber is called as a
-# static helper.
+# Preload-by-path for class_name refs that may not be registered at
+# headless parse time (stale global_script_class_cache). ItemPickupToast
+# is spawned lazily for the sell-confirm overlay; DamageNumber is called
+# as a static helper.
 const _ItemPickupToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")
 const _DamageNumberScript: Script = preload("res://scripts/ui/DamageNumber.gd")
+const _HealthSystemScript := preload("res://scripts/systems/HealthSystem.gd")
 
 # Mirror integer constants for ItemData.ItemCategory -- avoids
 # parse-time identifier lookup of the ItemData class_name on fresh
@@ -248,8 +249,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("inventory_toggle"):
 		# The HUD touch button can synthesize inventory_toggle from a
 		# ProcessMode-Always layer, so guard against opening over a
-		# dialogue. DialogueManager is per-scene (Pattern AB) --
-		# walk current_scene.
+		# dialogue.
 		if _is_dialogue_open():
 			return
 
@@ -301,12 +301,7 @@ func _process(_delta: float) -> void:
 
 
 func _is_dialogue_open() -> bool:
-	# DialogueManager is per-scene (Pattern AB) -- walk current_scene
-	# and read is_active via Variant.
-	if get_tree() == null or get_tree().current_scene == null:
-		return false
-	var dm := get_tree().current_scene.find_child("DialogueManager", true, false)
-	return dm != null and dm.get("is_active") == true
+	return WorldManager.is_dialogue_active()
 
 
 func _nav_up() -> void:
@@ -477,8 +472,7 @@ func open() -> void:
 	# Snap world player to face-down idle BEFORE pausing so the
 	# mirrored preview reads as a clean character portrait.
 	# AnimationTree state persists across pause once Travel +
-	# Advance commit it. PlayerController is GDScript (Cluster
-	# 7b-4) -- show_idle_facing is snake_case.
+	# Advance commit it.
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	if player != null:
 		player.call("show_idle_facing", Vector2.DOWN)
@@ -502,7 +496,7 @@ func _close() -> void:
 	if _pending_heal_amount > 0:
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null:
-			# Pattern O: call static spawn helper via the preloaded
+			# Call the static spawn helper via the preloaded
 			# script Resource so class_name lookup isn't required at
 			# parse time. DamageNumber.Kind.HEAL = 2.
 			_DamageNumberScript.spawn(get_tree().current_scene, player.global_position,
@@ -539,12 +533,10 @@ func _on_action() -> void:
 		var healed: int = 0
 		if int(item.category) == ITEM_CATEGORY_FOOD:
 			var player := get_tree().get_first_node_in_group("player") as CharacterBody2D
-			# HealthSystem is GDScript (Cluster 10b) -- direct
-			# property read.
-			var health: Node = player.get_node_or_null("HealthSystem") if player != null else null
-			var before: int = int(health.get("current_health")) if health != null else 0
+			var health := player.get_node_or_null("HealthSystem") as _HealthSystemScript if player != null else null
+			var before: int = health.current_health if health != null else 0
 			Inventory.use_item(_selected_slot)
-			var after: int = int(health.get("current_health")) if health != null else before
+			var after: int = health.current_health if health != null else before
 			healed = maxi(0, after - before)
 		else:
 			Inventory.use_item(_selected_slot)
@@ -1045,10 +1037,7 @@ static func _sell_price_for(item: Resource) -> int:
 # unpauses unconditionally, which would otherwise unpause the
 # inventory beneath).
 func _open_sell_toast(item: Resource, sell_price: int) -> void:
-	# ItemPickupToast is GDScript (Cluster 10d-2) -- instantiate
-	# via the preloaded Script Resource (Pattern O).
-	var toast: CanvasLayer = _ItemPickupToastScript.new() as CanvasLayer
-	get_tree().current_scene.add_child(toast)
+	var toast: CanvasLayer = _ItemPickupToastScript.spawn(get_tree()) as CanvasLayer
 	_overlay_active = true
 	toast.tree_exited.connect(func() -> void:
 		_overlay_active = false
@@ -1134,14 +1123,13 @@ func _apply_customization_to_player() -> void:
 # Write current cycler indices into SaveData. The next world
 # transition's auto-save persists them; cycling within a session
 # sticks across reloads as long as one transition fires before quit.
-# SaveData is GDScript (Cluster 9) -- snake_case property set.
 func _persist_customization() -> void:
-	var data: Resource = SaveManager.current_data
+	var data := SaveManager.current_data
 	if data == null:
 		return
-	data.set("hair_style_index", _hair_index)
-	data.set("hair_color_index", _hair_color_index)
-	data.set("skin_index", _skin_index)
+	data.hair_style_index = _hair_index
+	data.hair_color_index = _hair_color_index
+	data.skin_index = _skin_index
 
 
 # Pull persisted indices from SaveData onto our local state +
@@ -1149,12 +1137,12 @@ func _persist_customization() -> void:
 # CostumeController.restore_equipment so the player visual is
 # correct before we ever open inventory; this just syncs the UI.
 func _restore_customization_from_save() -> void:
-	var data: Resource = SaveManager.current_data
+	var data := SaveManager.current_data
 	if data == null:
 		return
-	var hair: int = int(data.get("hair_style_index"))
-	var hair_color: int = int(data.get("hair_color_index"))
-	var skin: int = int(data.get("skin_index"))
+	var hair: int = data.hair_style_index
+	var hair_color: int = data.hair_color_index
+	var skin: int = data.skin_index
 	if hair >= 0:
 		_hair_index = hair
 	if hair_color >= 0:
@@ -1442,21 +1430,20 @@ func _refresh_all() -> void:
 
 
 func _refresh_header() -> void:
-	var data: Resource = SaveManager.current_data
-	var player_name: String = String(data.get("player_name")) if data != null else ""
+	var data := SaveManager.current_data
+	var player_name: String = data.player_name if data != null else ""
 	_player_name_label.text = "Hero" if player_name.is_empty() else player_name
 
 	for c in _heart_row.get_children():
 		c.queue_free()
 	var player := get_tree().get_first_node_in_group("player") as Node2D
-	# HealthSystem is GDScript (Cluster 10b) -- direct property read.
-	var health: Node = player.get_node_or_null("HealthSystem") if player != null else null
+	var health := player.get_node_or_null("HealthSystem") as _HealthSystemScript if player != null else null
 	if health == null:
 		return
 
 	const HP_PER_HEART: int = 2
-	var max_hp: int = int(health.get("max_health"))
-	var cur_hp: int = int(health.get("current_health"))
+	var max_hp: int = health.max_health
+	var cur_hp: int = health.current_health
 	var total_hearts: int = mini((max_hp + HP_PER_HEART - 1) / HP_PER_HEART, 5)
 	for i in range(total_hearts):
 		var heart_cap: int = (i + 1) * HP_PER_HEART
@@ -1479,11 +1466,11 @@ func _refresh_header() -> void:
 
 func _refresh_abilities() -> void:
 	var player := get_tree().get_first_node_in_group("player") as Node2D
-	var health: Node = player.get_node_or_null("HealthSystem") if player != null else null
+	var health := player.get_node_or_null("HealthSystem") as _HealthSystemScript if player != null else null
 
 	var weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
 	var attack: int = int(weapon.strength) if weapon != null else 0
-	var max_hearts: int = (int(health.get("max_health")) if health != null else 0) / 2
+	var max_hearts: int = (health.max_health if health != null else 0) / 2
 	var defense: int = _strength_of(ITEM_CATEGORY_HEAD) \
 			+ _strength_of(ITEM_CATEGORY_NECK) \
 			+ _strength_of(ITEM_CATEGORY_BODY) \

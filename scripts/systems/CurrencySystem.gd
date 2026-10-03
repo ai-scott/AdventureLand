@@ -2,9 +2,8 @@ extends Node
 
 # Autoload — no class_name (collides with the autoload singleton name).
 #
-# Gem wallet. All mutations go through SaveManager.CurrentData.Gems
-# (still C# Resource — Pattern C PascalCase property access) so
-# saves/loads persist automatically.
+# Gem wallet. All mutations go through SaveManager.current_data.gems
+# so saves/loads persist automatically.
 #
 # Register in Project → Autoload as:
 #   Path: res://scripts/systems/CurrencySystem.gd

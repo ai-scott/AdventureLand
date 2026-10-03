@@ -3,7 +3,7 @@ extends Node
 # Autoload — no class_name (collides with the autoload singleton name).
 #
 # Read-only lookup of per-item costume color ramps, baked offline by
-# tools/bake_costume_palettes.py from the C3 variant frame PNGs.
+# a one-time tool (since removed) from the C3 variant frame PNGs.
 # CostumeController calls get_palette() when equipping a clothing item and
 # applies the resulting (base, variant) ramp pair as a palette-swap
 # ShaderMaterial via PaletteSwapper.create_material.
@@ -48,7 +48,7 @@ func _ensure_loaded() -> void:
 	_loaded = true
 
 	if not FileAccess.file_exists(JSON_PATH):
-		push_warning("[CostumePalette] %s missing — run tools/bake_costume_palettes.py" % JSON_PATH)
+		push_warning("[CostumePalette] %s missing — costume palettes disabled" % JSON_PATH)
 		return
 	var file := FileAccess.open(JSON_PATH, FileAccess.READ)
 	if file == null:

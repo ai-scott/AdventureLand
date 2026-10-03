@@ -87,7 +87,7 @@ func _collect(pc: Node2D) -> void:
 func _apply_effect() -> void:
 	# DamageNumber static spawn -- shows a floating "+N" above the
 	# player like the heal/damage popups, so gem pickups have the
-	# same visual feedback as combat events. Pattern O preload so
+	# same visual feedback as combat events. Preloaded script so
 	# the call doesn't require DamageNumber's class_name resolved.
 	var gem_amount: int = 0
 	match variant:

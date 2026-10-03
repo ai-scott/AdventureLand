@@ -106,7 +106,7 @@ static func spawn(parent: Node, world_pos: Vector2, amount: int, kind: int = Kin
 
 
 # Back-compat convenience: pass a `is_hurt` bool that routes to
-# Kind.HURT vs Kind.DAMAGE. Mirrors the C# overload.
+# Kind.HURT vs Kind.DAMAGE.
 static func spawn_hurt(parent: Node, world_pos: Vector2, amount: int, is_hurt: bool = false) -> void:
 	spawn(parent, world_pos, amount, Kind.HURT if is_hurt else Kind.DAMAGE)
 

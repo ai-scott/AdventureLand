@@ -5,8 +5,7 @@ class_name BehaviorCondition extends Resource
 ## when player distance < 150.
 ## Multiple conditions on one behavior are ANDed together.
 
-## Enum integer values must stay aligned across the C# ↔ GDScript boundary
-## until EnemyController.cs ports in Phase 5. Don't reorder.
+## Enum integer values serialize into enemy .tres files. Don't reorder.
 enum ConditionType {
 	DISTANCE = 0,      ## Distance to player in pixels
 	HEALTH = 1,        ## Current enemy health

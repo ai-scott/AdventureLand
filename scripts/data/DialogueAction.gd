@@ -4,8 +4,8 @@ class_name DialogueAction extends Resource
 # An action executed when a dialogue node is displayed or a response is
 # chosen.
 
-# Mirror of C# DialogueAction.ActionType. Integer values serialize into
-# .tres files — NEVER reorder. Append new values at the end only.
+# Integer values serialize into .tres files — NEVER reorder. Append new
+# values at the end only.
 enum ActionType {
 	START_QUEST = 0,
 	COMPLETE_QUEST = 1,

@@ -8,9 +8,7 @@ extends Node
 # hand-typed hex.
 #
 # When a token changes in the handoff, update it here too. Colors are
-# named in SCREAMING_SNAKE for GDScript const idiom; the C# facade
-# (DesignTokens.cs) preserves the prior PascalCase names (Gold, Ink,
-# etc.) for unchanged C# call sites.
+# named in SCREAMING_SNAKE for GDScript const idiom.
 #
 # Register in Project -> Autoload as:
 #   Path: res://scripts/ui/DesignTokens.gd

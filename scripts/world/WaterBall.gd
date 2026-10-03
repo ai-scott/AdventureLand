@@ -43,8 +43,6 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if _splashing:
 		return
-	# PlayerController is still C# during the port. Use group membership
-	# instead of `body is PlayerController`, and dispatch hit methods via
 	if body.is_in_group("player"):
 		body.call("take_damage", damage)
 		# Light knockback away from the SM so a second ball doesn't

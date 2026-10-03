@@ -14,15 +14,12 @@ extends Node
 #   var pid := PerfMonitor.perf_begin("scene_transition", scene_path)
 #   # ... work ...
 #   PerfMonitor.perf_end(pid)
-# From C# (facade preserves the IDisposable shape):
-#   using var _ = PerfMonitor.Measure("scene_transition", scenePath);
 # Or the lighter one-shot:
 #   PerfMonitor.mark("npc_init", "Penny")
 #
-# Note: the C# PerfMonitor measured GC.CollectionCount(0/1/2) per frame.
-# That instrumentation is .NET-specific and meaningless under GDScript;
-# the gc0/gc1/gc2 columns persist for log-format compatibility but always
-# read 0. Once the port completes, these columns can be removed entirely.
+# Note: the gc0/gc1/gc2 CSV columns are a leftover from the .NET build
+# (GC.CollectionCount per frame). They persist for log-format
+# compatibility but always read 0, and can be removed.
 #
 # Register in Project → Autoload as:
 #   Path: res://scripts/systems/PerfMonitor.gd
@@ -94,9 +91,7 @@ func _ready() -> void:
 func mark(category: String, detail: String) -> void:
 	_record_mark(category, detail, MarkType.EVENT, 0)
 
-# Begin/end pair replacing the C# IDisposable Measure(). Returns an opaque
-# int id; pass it to perf_end. The C# facade wraps these into a struct
-# that disposes by calling perf_end.
+# Begin/end pair. Returns an opaque int id; pass it to perf_end.
 func perf_begin(category: String, detail: String) -> int:
 	var id := _next_scope_id
 	_next_scope_id += 1

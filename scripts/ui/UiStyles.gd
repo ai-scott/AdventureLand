@@ -262,7 +262,6 @@ var is_mobile: bool = false
 # Fires when is_mobile changes. Subscribed by autoload UI that builds
 # mobile-specific elements in _ready and would otherwise stay frozen
 # in its boot-time state when the user toggles mode at runtime.
-# Pattern I -- the C# facade exposes this as `event Action MobileChanged`.
 signal mobile_changed
 
 

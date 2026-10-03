@@ -23,12 +23,9 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 
 func _on_body_entered(body: Node) -> void:
-	# PlayerController is still C# this cluster — use group membership
-	# instead of type check.
 	if body.is_in_group("player"):
 		_player_in_range = true
-		# InteractHintManager is GDScript (Cluster 7b-2). Register a
-		# Callable for the dynamic hint text — suppressed while a sea
+		# Register a Callable for the dynamic hint text — suppressed while a sea
 		# monster sequence is in flight.
 		InteractHintManager.register(self, func() -> String:
 			return "" if _suppress_until_exit else "Touch"
@@ -66,9 +63,7 @@ func _get_sea_monster() -> Node:
 	if sea_monster_path != NodePath() and not sea_monster_path.is_empty():
 		return get_node_or_null(sea_monster_path)
 	# Fallback: walk the scene root for the first node with a `summon`
-	# method — duck-types around SeaMonsterController being C# without
-	# [GlobalClass] (so `is SeaMonsterController` doesn't work from
-	# GDScript). Pattern G mitigation.
+	# method.
 	var root := get_tree().current_scene
 	if root == null:
 		return null

@@ -158,8 +158,7 @@ func _make_door(t: Resource, center: Vector2, size: Vector2) -> Node:
 	if door_scene == null:
 		push_warning("[TriggerSpawner] door_scene not assigned")
 		return null
-	# DoorTrigger is GDScript (Cluster 4c). instantiate() returns Node;
-	# cast to Area2D for property access.
+	# instantiate() returns Node; cast to Area2D for property access.
 	var instance := door_scene.instantiate() as Area2D
 	if instance == null:
 		return null
@@ -213,8 +212,6 @@ func _make_item(t: Resource, center: Vector2, position: Vector2) -> Node:
 		push_warning("[TriggerSpawner] ItemTrigger scene unavailable")
 		return null
 
-	# ItemTrigger is still C# (Cluster 10). Pattern G -- untyped instance +
-	# Variant property writes. PascalCase property names (Pattern C).
 	var instance := scene.instantiate() as Area2D
 	if instance == null:
 		return null
@@ -265,8 +262,7 @@ func _make_edge(t: Resource, center: Vector2, size: Vector2) -> Node:
 	if edge_scene == null:
 		push_warning("[TriggerSpawner] edge_scene not assigned")
 		return null
-	# EdgeTrigger is GDScript (Cluster 4c). EdgeDirection enum mirrored
-	# in GDScript with same int values (East=0..South=3).
+	# EdgeTrigger.EdgeDirection int values: East=0..South=3.
 	var instance := edge_scene.instantiate() as Area2D
 	if instance == null:
 		return null

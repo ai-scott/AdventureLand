@@ -5,12 +5,7 @@ extends CanvasLayer
 # Autoload CanvasLayer that handles screen fades and a world-name banner
 # during transitions. Drawn above all gameplay layers.
 #
-# Usage from C# (via facade):
-#   await FadeOverlay.FadeOut(0.3);
-#   // ... change scene ...
-#   await FadeOverlay.FadeIn(0.3);
-#
-# Usage from GDScript:
+# Usage:
 #   await FadeOverlay.fade_out(0.3)
 #   # ... change scene ...
 #   await FadeOverlay.fade_in(0.3)
@@ -19,9 +14,8 @@ extends CanvasLayer
 #   Path: res://scenes/ui/FadeOverlay.tscn
 #   Name: FadeOverlay
 
-# Signals emitted at the end of each fade so the C# facade can await them
-# (C# task-await of a GDScript Variant return doesn't work cleanly;
-# ToSignal does).
+# Signals emitted at the end of each fade, for listeners that don't
+# await fade_out / fade_in directly.
 signal fade_out_finished
 signal fade_in_finished
 

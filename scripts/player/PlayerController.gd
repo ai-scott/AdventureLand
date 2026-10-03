@@ -14,7 +14,7 @@ class_name PlayerController extends CharacterBody2D
 #   |   |-- AnimationPlayer
 #   |   |-- AnimationTree  (StateMachine + BlendSpace2D per state)
 #   |   `-- 20+ Sprite2D layers (01body, 13hair, 14head, etc.)
-#   |-- HealthSystem (Node with HealthSystem.cs) -- required for damage intake
+#   |-- HealthSystem (Node with HealthSystem.gd) -- required for damage intake
 #   |-- AttackHitbox (Area2D with CollisionShape2D, layer=4, mask=8) -- required for attacks
 #   `-- CostumeController (Node with CostumeController.gd)
 #
@@ -195,7 +195,7 @@ const ANIM_WALK: String = "Walk"
 const HAIR_RAMPS_PATH: String = "res://assets/sprites/player/farmer/palettes/mana seed hair ramps.png"
 const HAIR_BASE_RAMP_PATH: String = "res://assets/sprites/player/farmer/palettes/base ramps/hair color base ramp.png"
 
-# ItemData is still C# (Cluster 10) -- mirror its ItemCategory enum
+# Mirror ItemData.ItemCategory enum
 # integer values for direct comparisons against `item.category`.
 const ITEM_CATEGORY_WEAPON: int = 0
 const ITEM_CATEGORY_HEAD: int = 3
@@ -223,7 +223,6 @@ func _ready() -> void:
 	# boots returns to exactly the authored value.
 	_base_speed = speed
 
-	# Inventory is a GDScript autoload (Cluster 6).
 	Inventory.item_equipped.connect(func(_id: int, _cat: String) -> void: _recompute_speed())
 	Inventory.item_unequipped.connect(func(_cat: String) -> void: _recompute_speed())
 	# inventory_changed fires on bulk loads (load_from) so a Continue
@@ -267,7 +266,6 @@ func _ready() -> void:
 	else:
 		push_warning("[PlayerController] No AttackHitbox Area2D found -- attacks will not deal damage.")
 
-	# HealthSystem is still C# this cluster -- access via Variant.
 	_health = get_node_or_null("HealthSystem")
 	if _health == null:
 		push_warning("[PlayerController] No HealthSystem found -- player cannot take damage.")
@@ -276,7 +274,6 @@ func _ready() -> void:
 		# The GameOverScreen takes ~8 s to play its title-style entry
 		# sequence (bg scroll + OVER flash + menu), so the player has
 		# time to fall + bounce before the menu becomes interactive.
-		# C# signal "Died" is PascalCase (Pattern C).
 		_health.connect("died", _on_player_died)
 
 	# Subscribe to MSCA's animation_set_hitbox signal. This is a GDScript
@@ -515,9 +512,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	# focused button didn't fully consume).
 	if get_tree().paused:
 		return
-	# Modal-state moved to InteractHintManager as part of the
-	# PlayerController port (Cluster 7b-4) so GDScript can read it
-	# directly. ItemPickupToast.cs writes via the C# facade.
+	# Modal toast state lives on InteractHintManager (ItemPickupToast
+	# increments/decrements it).
 	if InteractHintManager.is_any_modal_active():
 		return
 	if Engine.get_process_frames() <= InteractHintManager.last_overlay_close_frame + 15:
@@ -636,8 +632,6 @@ func take_damage(amount: int) -> void:
 		return
 	if _health == null:
 		return
-	# HealthSystem is C# (Cluster 10): PascalCase property reads via
-	# Variant, methods via .call("PascalCase").
 	if bool(_health.invulnerable) or bool(_health.is_dead):
 		return
 	var defense := _compute_defense()
@@ -1113,8 +1107,8 @@ func _on_attack_hitbox_area_entered(other: Area2D) -> void:
 
 	# Altitude-based invuln (bats high in the canopy, mid-flee, or far
 	# out on a swoop). Skip damage AND the floating number -- the swing
-	# just passes through. EnemyController is still C# (Cluster 4 tail)
-	# -- duck-type via has_method.
+	# just passes through. Duck-typed via has_method so non-enemy
+	# hittables still work.
 	if enemy_root.has_method("can_be_hit") and not bool(enemy_root.call("can_be_hit")):
 		return
 
@@ -1124,14 +1118,12 @@ func _on_attack_hitbox_area_entered(other: Area2D) -> void:
 	var weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
 	var weapon_str: int = int(weapon.strength) if weapon != null else 0
 	var damage: int = weapon_str if weapon_str > 0 else 1
-	# HealthSystem is GDScript (Cluster 10b) -- snake_case methods.
 	enemy_health.call("take_damage", damage)
 	# Floating combat number -- white over the enemy at the moment of hit.
 	if enemy_root is Node2D:
 		DamageNumber.spawn(get_tree().current_scene, (enemy_root as Node2D).global_position, damage)
 
 	# Knockback: push enemy away from player via their stun timer.
-	# EnemyController is GDScript (Cluster 4 tail) -- apply_knockback snake_case.
 	if enemy_root is Node2D and enemy_root.has_method("apply_knockback"):
 		var enemy_node := enemy_root as Node2D
 		var dir := (enemy_node.global_position - global_position).normalized()

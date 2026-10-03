@@ -40,8 +40,7 @@ func apply_world_bounds() -> void:
 	if scene == null:
 		return
 
-	# WorldMeta is GDScript (Cluster 4b) — access map_size directly.
-	var meta := scene.find_child("WorldMeta", true, false)
+	var meta := WorldManager.get_world_meta()
 	if meta == null:
 		meta = scene
 	var map_size_var: Variant = meta.get("map_size")

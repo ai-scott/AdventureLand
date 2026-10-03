@@ -4,8 +4,8 @@ class_name DialogueCondition extends Resource
 # A condition that must be true for a node to be selected.
 # All conditions on a node are AND'd together.
 
-# Mirror of C# DialogueCondition.ConditionType. Integer values serialize
-# into .tres files — NEVER reorder. Append new values at the end only.
+# Integer values serialize into .tres files — NEVER reorder. Append new
+# values at the end only.
 enum ConditionType {
 	QUEST_STATUS = 0,
 	HAS_ITEM = 1,

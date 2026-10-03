@@ -1,7 +1,7 @@
 class_name ItemData extends Resource
 
-# Data resource for a single game item. Converted from ItemsLibrary.json
-# via tools/items_to_tres.py. Covers weapons, armor, food, quest keys,
+# Data resource for a single game item. Originally converted from the C3
+# ItemsLibrary.json; now edited directly as .tres. Covers weapons, armor, food, quest keys,
 # hair.
 #
 # costume_id stores the raw C3 animation-frame string for traceability.

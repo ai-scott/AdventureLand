@@ -21,17 +21,15 @@ extends CanvasLayer
 # to either. Both buttons are also hidden while a dialogue is open.
 
 
-# Preload-by-path for class_name refs (Pattern O) -- headless smoke
+# Preload-by-path for class_name refs -- headless smoke
 # can't see GDScript class_name until the editor regenerates the
 # global_script_class_cache. Using Node/Control as the field type and
 # instantiating via the script Resource sidesteps the parse-time
 # lookup.
-const _HealthSystemScript: Script = preload("res://scripts/systems/HealthSystem.gd")
 const _MobileDPadScript: Script = preload("res://scripts/ui/MobileDPad.gd")
-const _ItemDataScript: Script = preload("res://scripts/data/ItemData.gd")
 
 # Mirror of ITEM_CATEGORY_WEAPON int value. Avoids `ItemData`
-# identifier lookup at parse time (Pattern O).
+# identifier lookup at parse time (headless class_name cache issue).
 const ITEM_CATEGORY_WEAPON: int = 0
 
 var _health: Node  # HealthSystem instance, but typed as Node to avoid class_name parse lookup
@@ -252,16 +250,10 @@ func _process(delta: float) -> void:
 	# GameOver) hide world UI but keep the persistent mute toggle.
 	var player := get_tree().get_first_node_in_group("player") as Node2D if get_tree() != null else null
 	var in_world: bool = player != null
-	# DialogueManager is per-scene (Pattern AB) -- walk current_scene.
-	var dm: Node = null
-	if get_tree() != null and get_tree().current_scene != null:
-		dm = get_tree().current_scene.find_child("DialogueManager", true, false)
-	# Use `== true` rather than bool(...) so we don't crash when
-	# dm.get("is_active") returns a non-bool Variant (e.g. when the
-	# scene's DialogueManager script failed to parse and the node has
-	# no is_active property -- bool(<unbindable variant>) raises
-	# "Nonexistent 'bool' constructor"; equality is total).
-	var in_dialogue: bool = dm != null and dm.get("is_active") == true
+	# DialogueManager is per-scene; is_dialogue_active() keeps the
+	# defensive `dm.get("is_active") == true` read so a DialogueManager
+	# whose script failed to parse doesn't crash the HUD every frame.
+	var in_dialogue: bool = WorldManager.is_dialogue_active()
 
 	_set_world_hud_visible(in_world)
 	# Hide the action chips while a dialogue is on screen -- mute stays

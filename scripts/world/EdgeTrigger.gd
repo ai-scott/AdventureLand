@@ -16,7 +16,7 @@ class_name EdgeTrigger extends Area2D
 #
 # If an edge leads nowhere (grid boundary), omit the trigger.
 
-# Mirror of C# EnumDirection — int values match declaration order.
+# Int values are baked into trigger .tres data — don't reorder.
 enum EdgeDirection { EAST = 0, WEST = 1, NORTH = 2, SOUTH = 3 }
 
 @export_file("*.tscn") var target_scene: String = ""
@@ -38,10 +38,8 @@ func _on_body_entered(body: Node) -> void:
 	if WorldManager.is_transitioning:
 		return
 
-	# Don't fire during dialogue (per-scene autoload — Pattern AB).
-	var scene := get_tree().current_scene
-	var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
-	if dm != null and dm.get("is_active") == true:
+	# Don't fire during dialogue.
+	if WorldManager.is_dialogue_active():
 		return
 
 	var edge_str: String = EdgeDirection.keys()[exit_edge].to_lower()

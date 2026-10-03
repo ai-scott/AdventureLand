@@ -3,10 +3,9 @@ class_name SaveData extends Resource
 # Persisted player state. Saved as .tres via ResourceSaver to
 # user://saves/slot_N.tres.
 #
-# PORT NOTE (Cluster 9): All fields are snake_case now. Existing save
-# files written with the prior C# (PascalCase) shape will fail to load
-# -- testers' user://saves/* should be deleted before resuming. Repo
-# does not ship any .tres referencing this script.
+# All fields are snake_case. Very old saves written with the earlier
+# PascalCase field names will not load -- delete user://saves/* if you
+# hit one. Repo does not ship any .tres referencing this script.
 
 @export var schema_version: int = 3
 

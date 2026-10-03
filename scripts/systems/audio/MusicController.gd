@@ -22,9 +22,7 @@ extends Node
 #
 # Bus: Music (configured in default_bus_layout.tres).
 
-# Enum values match the original C# MusicController.Mode enum order.
-# Don't reorder — call sites pass ints across the cross-language boundary
-# during the port.
+# Don't reorder — call sites pass the Mode value as an int.
 enum Mode { BASE, MID, HIGH }
 
 const BUS_NAME: String = "Music"
@@ -142,8 +140,7 @@ func stop_mix() -> void:
 # loaded (a single-track world ignores mode requests). Any in-flight
 # crossfade is cancelled before the new one starts.
 #
-# Accepts int (the Mode enum value). When called from C# during the
-# port window, pass (int)MusicControllerMode.Mode.Base etc.
+# Accepts int (the Mode enum value).
 func set_desired_mode(mode: int, fade_sec: float = 0.4) -> void:
 	if _base == null:
 		return

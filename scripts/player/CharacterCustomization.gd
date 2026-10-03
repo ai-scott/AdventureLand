@@ -160,7 +160,7 @@ func apply(sprite_layers: Node, hair_style_idx: int, hair_color_idx: int, skin_i
 		PaletteSwapper.apply_to_layer(sprite_layers, "01body", _skin_base, _skins[skin_idx])
 
 # Pick random indices into each roster and write them onto the supplied
-# SaveData (still a C# Resource). Used by NewGame so each fresh character
+# SaveData. Used by NewGame so each fresh character
 # has a distinct look.
 func randomize_appearance(data: Resource) -> void:
 	if data == null:

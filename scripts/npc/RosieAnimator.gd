@@ -1,7 +1,7 @@
 class_name RosieAnimator extends Node
 
 # Rosie-specific animator. Idle = tail flick (row 6, frames 0-1) at random intervals.
-# Row 8 (frames 0-2) is her sleeping animation for Penny's house (Phase 5).
+# Row 8 (frames 0-2) is her sleeping animation for Penny's house.
 
 @export var sheet: Texture2D
 @export var frame_width: int = 32

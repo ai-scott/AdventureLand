@@ -20,7 +20,6 @@ class_name GameOverScreen extends CanvasLayer
 
 @export var player_health_path: NodePath
 
-# HealthSystem is GDScript now (Cluster 10b) -- typed as the class.
 var _health: HealthSystem
 
 # Scene-authored children (see GameOver.tscn). Nodes live in the tree
@@ -145,12 +144,12 @@ func _on_player_died() -> void:
 		child.queue_free()
 
 	if SaveManager.active_slot >= 0:
-		_menu.add_child(_make_menu_button("Try Again", func() -> void:
+		_menu.add_child(TitleScreen.build_pointer_option("Try Again", func() -> void:
 			get_tree().paused = false
 			SaveManager.load_slot(SaveManager.active_slot)
 		))
 
-	_menu.add_child(_make_menu_button("Title Screen", func() -> void:
+	_menu.add_child(TitleScreen.build_pointer_option("Title Screen", func() -> void:
 		get_tree().paused = false
 		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
 	))
@@ -332,56 +331,6 @@ func _ensure_tip_label() -> void:
 	_tip_label.add_theme_constant_override("shadow_offset_x", 1)
 	_tip_label.add_theme_constant_override("shadow_offset_y", 1)
 	add_child(_tip_label)
-
-
-# Build a menu button matching the title-screen "pointer option" look:
-# gold-border-on-focus, cream text on dark bg, no chip. Inlined here
-# rather than calling TitleScreen.BuildPointerOption (still C#) so
-# GameOverScreen doesn't depend on TitleScreen porting first.
-# TitleScreen.gd (Cluster 10f) can extract this to a shared helper.
-func _make_menu_button(text: String, on_pressed: Callable) -> Button:
-	var btn := Button.new()
-	btn.text = ""
-	btn.custom_minimum_size = Vector2(220, 38)
-	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-	# Rest: fully transparent so the option reads as plain text.
-	var rest := StyleBoxEmpty.new()
-	btn.add_theme_stylebox_override("normal", rest)
-	btn.add_theme_stylebox_override("hover", rest)
-	btn.add_theme_stylebox_override("pressed", rest)
-	btn.add_theme_stylebox_override("disabled", rest)
-
-	# Focus: 3px gold border + dark translucent fill.
-	var focus := BevelStyleBox.new()
-	focus.fill = Color(0, 0, 0, 0.55)
-	focus.border = DesignTokens.GOLD
-	focus.border_width = 3
-	focus.bevel_width = 0
-	focus.corner_gap = 2
-	focus.padding = 0
-	btn.add_theme_stylebox_override("focus", focus)
-
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	label.add_theme_font_size_override("font_size", 24)
-	label.add_theme_color_override("font_color", UiStyles.GRAY)
-	# Soft shadow keeps the gray-state options legible.
-	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
-	label.add_theme_constant_override("shadow_offset_x", 2)
-	label.add_theme_constant_override("shadow_offset_y", 2)
-	btn.add_child(label)
-
-	btn.focus_entered.connect(func() -> void: label.add_theme_color_override("font_color", DesignTokens.PAPER))
-	btn.focus_exited.connect(func() -> void: label.add_theme_color_override("font_color", UiStyles.GRAY))
-	# Hover = focus on desktop so mouse + keyboard share one selection.
-	btn.mouse_entered.connect(func() -> void: btn.grab_focus())
-	btn.pressed.connect(on_pressed)
-	return btn
 
 
 func _focus_first_menu_option() -> void:

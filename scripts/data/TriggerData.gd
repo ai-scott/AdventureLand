@@ -15,9 +15,8 @@ class_name TriggerData extends Resource
 ##   Npc:        npc_name                               (scene lookup by name)
 ##   Item:       item_id, requires_purchase
 
-## Enum integer values must stay aligned with C# `TriggerData.TriggerKind`
-## (TriggerSpawner.cs still mirrors these as int literals until Phase 4
-## ports it to GDScript). Don't reorder.
+## Enum integer values serialize into the baked trigger .tres files
+## (written by tools/tmx_triggers_to_tres.py). Don't reorder.
 enum TriggerKind {
 	DOOR = 0,
 	SPAWN = 1,

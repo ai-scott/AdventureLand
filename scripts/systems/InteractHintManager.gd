@@ -5,31 +5,19 @@ extends CanvasLayer
 # Centralized floating-hint display. One hint at a time — the one whose
 # source is closest to the player.
 #
-# Usage from a trigger/NPC (from C# via facade):
-#   InteractHintManager.Register(this, () => "Take");
-# From GDScript (post-port):
+# Usage from a trigger/NPC:
 #   InteractHintManager.register(self, func(): return "Take")
 #
 # The text provider is invoked every frame so sources whose hint text
 # depends on live state (shop pricing, quest flags) don't need to re-call
 # register on change.
 #
-# PORT NOTE (Cluster 7b-2): UI styling values are inlined here from
-# DesignTokens / UiStyles / UiFrames (all still C# static utilities,
-# deferred to Cluster 10 per Pattern K — GDScript can't access C# static
-# class members). When the UI utilities port to GDScript autoloads in
-# Cluster 10, re-source these constants from DesignTokens.gold etc.
-# Until then, the panel looks slightly less polished than the C# version
-# (StyleBoxFlat instead of BevelStyleBox with corner gaps).
+# Palette comes from the DesignTokens autoload. The panel uses a plain
+# StyleBoxFlat rather than UiFrames' bevelled mossy panel.
 #
 # Register in Project → Autoload as:
 #   Path: res://scripts/systems/InteractHintManager.gd
 #   Name: InteractHintManager
-
-# Inlined from DesignTokens.cs — restore Cluster 10.
-const DESIGN_GOLD: Color = Color("F2C84B")
-const DESIGN_MOSSY_FIELD: Color = Color("3F5A47")
-const DESIGN_INK: Color = Color("10180F")
 
 const SPACE_ICON_PATH: String = "res://assets/sprites/ui/icon_space.png"
 
@@ -68,26 +56,19 @@ const HEAD_PADDING_SCREEN_PX: float = 6.0
 # pixels of the viewport top, the hint flips below the source.
 const TOP_MARGIN_PX: float = 8.0
 
-# Cached mobile detection — UiStyles is still C# and we can't subscribe
-# to its MobileChanged event (it's a C# static `event System.Action`,
-# invisible to GDScript). Poll once at boot + check each _process tick
-# so a Shift+M debug toggle still rebuilds the panel without a restart.
+# Cached mobile detection — seeded from UiStyles.is_mobile at boot and
+# refreshed via UiStyles.mobile_changed so a Shift+M debug toggle
+# rebuilds the panel without a restart.
 var _is_mobile: bool = false
 
 # Process-frame number recorded by overlays (toasts, prompts) when they
 # close. PlayerController checks this in _unhandled_input to suppress
 # attack inputs for one frame after a close, so the Space key that
 # confirmed the prompt doesn't fall through into an attack swing.
-#
-# Lived on PlayerController as a C# static prior to Cluster 7b-4 — moved
-# here because GDScript cannot access C# static members (Pattern K) and
-# this autoload is the closest home with an existing C# facade.
 var last_overlay_close_frame: int = 0
 
-# Modal-toast counter — incremented by ItemPickupToast.cs each time a
-# modal opens and decremented on close. Lived as a C# static on
-# ItemPickupToast (`_activeModalCount`) prior to Cluster 7b-4; moved
-# here for the same Pattern K reason as last_overlay_close_frame.
+# Modal-toast counter — incremented by ItemPickupToast each time a
+# modal opens and decremented on close.
 var _active_modal_count: int = 0
 
 func is_any_modal_active() -> bool:
@@ -125,8 +106,7 @@ func _on_mobile_changed() -> void:
 		_panel.visible = false
 
 # Register a source with the hint system. The text_provider is a Callable
-# returning a String. The C# facade absorbs the C# Func<string> →
-# Callable conversion so call-site shape is preserved.
+# returning a String.
 func register(source: Node2D, text_provider: Callable, head_offset_y: Variant = null) -> void:
 	if source == null or not text_provider.is_valid():
 		return
@@ -231,12 +211,11 @@ func _build_panel() -> void:
 	_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_panel.gui_input.connect(_on_panel_gui_input)
 
-	# Inlined "mossy panel" stylebox — simpler StyleBoxFlat than the C#
-	# BevelStyleBox with corner gaps. Restore via UiFrames.ApplyMossyPanel
-	# when UI utilities port (Cluster 10).
+	# "Mossy panel" stylebox — a plain StyleBoxFlat, simpler than
+	# UiFrames' bevelled panel with corner gaps.
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = DESIGN_MOSSY_FIELD if not _is_mobile else _with_alpha(DESIGN_MOSSY_FIELD, 0.55)
-	sb.border_color = DESIGN_INK
+	sb.bg_color = DesignTokens.MOSSY_FIELD if not _is_mobile else _with_alpha(DesignTokens.MOSSY_FIELD, 0.55)
+	sb.border_color = DesignTokens.INK
 	sb.border_width_left = 3
 	sb.border_width_right = 3
 	sb.border_width_top = 3
@@ -262,7 +241,7 @@ func _build_panel() -> void:
 	# in for the keypress.
 	_label = Label.new()
 	_label.add_theme_font_size_override("font_size", 26 if _is_mobile else 18)
-	_label.add_theme_color_override("font_color", DESIGN_GOLD)
+	_label.add_theme_color_override("font_color", DesignTokens.GOLD)
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_label)
