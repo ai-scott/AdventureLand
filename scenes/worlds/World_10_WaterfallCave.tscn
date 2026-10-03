@@ -85,21 +85,22 @@ zoom = Vector2(3, 3)
 script = ExtResource("5")
 
 [node name="Bill" parent="Entities" instance=ExtResource("13_npc")]
-position = Vector2(64, 414)
+position = Vector2(84, 428)
 npc_name = "Bill"
 dialogue = ExtResource("15_billdlg")
 hide_when_world_flag = "bill_left_cave"
+interact_radius = 72.0
 
 [node name="Mimic" parent="Entities" instance=ExtResource("16_mimic")]
 position = Vector2(120, 200)
 stay_dead = true
 
 [node name="Bat1" parent="Entities" instance=ExtResource("18_bat")]
-position = Vector2(248, 72)
+position = Vector2(108, 62)
 stay_dead = true
 
 [node name="Bat2" parent="Entities" instance=ExtResource("18_bat")]
-position = Vector2(488, 168)
+position = Vector2(236, 62)
 stay_dead = true
 
 [node name="Ooze1" parent="Entities" instance=ExtResource("17_ooze")]
@@ -111,7 +112,7 @@ position = Vector2(424, 424)
 stay_dead = true
 
 [node name="TreasureChest" parent="Entities" instance=ExtResource("19_chest")]
-position = Vector2(408, 24)
+position = Vector2(432, 400)
 contents = ExtResource("20_pearl")
 
 [node name="CaveClearTracker" type="Node" parent="."]

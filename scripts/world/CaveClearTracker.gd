@@ -9,19 +9,17 @@ class_name CaveClearTracker extends Node
 # linger for a short fade after death before queue_free, so a dead-but-
 # not-yet-freed enemy is filtered via its HealthSystem.is_dead.
 #
-# The flag is sticky: once set it survives re-entering the scene even
-# though statically-placed enemies respawn (existing behavior for every
-# world). Suppressing respawn after a clear is a separate feature.
+# The flag is sticky: once set it survives re-entering the scene. Pair
+# with EnemyController.stay_dead so cleared enemies don't respawn.
 
 @export var cleared_flag: String = "cave_cleared"
 @export var poll_interval: float = 0.5
 
 var _timer: float = 0.0
-var _seen_enemies: bool = false
 
 
 func _ready() -> void:
-	if QuestSystem.has_world_flag(cleared_flag):
+	if QuestSystem.is_flag_true(cleared_flag):
 		set_process(false)
 
 
@@ -40,11 +38,11 @@ func _process(delta: float) -> void:
 			continue
 		live += 1
 
+	# Enemies are placed statically, so they've joined the group in
+	# _ready before the first poll. live == 0 on entry means every
+	# stay_dead enemy was already killed (e.g. the player left within a
+	# poll interval of the last kill) -- set the flag rather than soft-lock.
 	if live > 0:
-		_seen_enemies = true
-		return
-	# Never fire before the scene's enemies have actually spawned.
-	if not _seen_enemies:
 		return
 
 	QuestSystem.set_world_flag(cleared_flag, "true")

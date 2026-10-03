@@ -21,8 +21,8 @@ class_name ItemTrigger extends Area2D
 # particle on the Shrine instead of the item itself.
 @export var shrine_sparkle: bool = false
 
-# ItemPickupToast is GDScript (Cluster 10d-2). Preload-by-path to avoid
-# the class_name registration dance (Pattern O).
+# Preload-by-path so headless parse doesn't depend on the class_name
+# cache having registered these scripts.
 const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")
 const _DamageNumberScript: Script = preload("res://scripts/ui/DamageNumber.gd")
 
@@ -69,7 +69,7 @@ func _ready() -> void:
 		return
 
 	# Check if this unique item was already collected.
-	if unique and QuestSystem.has_world_flag(_collect_flag_key()):
+	if unique and QuestSystem.is_flag_true(_collect_flag_key()):
 		queue_free()
 		return
 
@@ -196,7 +196,7 @@ func _auto_collect_money() -> void:
 	if gems > 0:
 		CurrencySystem.add_gems(gems)
 		# Floating "+N" toast over the player so the pickup reads
-		# the same as enemy gem drops. Preload-by-path (Pattern O).
+		# the same as enemy gem drops.
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		var scene := get_tree().current_scene
 		if player != null and scene != null:
@@ -245,8 +245,7 @@ func _try_take() -> void:
 
 
 func _show_take_prompt(consumes_free_grant: bool) -> void:
-	var toast: ItemPickupToast = _ToastScript.new()
-	get_tree().current_scene.add_child(toast)
+	var toast: ItemPickupToast = _ToastScript.spawn(get_tree())
 	toast.show_take(data, func() -> void:
 		if consumes_free_grant:
 			ShopState.next_item_free = false
@@ -286,8 +285,7 @@ func _complete_pickup() -> void:
 
 
 func _show_purchase_prompt() -> void:
-	var toast: ItemPickupToast = _ToastScript.new()
-	get_tree().current_scene.add_child(toast)
+	var toast: ItemPickupToast = _ToastScript.spawn(get_tree())
 	toast.show_purchase(data, int(data.cost), func() -> void:
 		# Double-check gems at confirm time (toast caches affordability
 		# at show time, but be defensive in case state changed). Only
@@ -300,10 +298,8 @@ func _show_purchase_prompt() -> void:
 
 
 func _show_pickup_toast() -> void:
-	var toast: ItemPickupToast = _ToastScript.new()
-	# Add to scene root so it persists after this node is freed.
-	get_tree().current_scene.add_child(toast)
-	toast.show_pickup(data)
+	# Parented to the scene root so it persists after this node is freed.
+	_ToastScript.spawn_pickup(get_tree(), data)
 
 
 # Build an in-place ping-pong sparkle that loops while the trigger is

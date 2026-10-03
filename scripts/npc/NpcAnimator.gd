@@ -10,6 +10,13 @@ class_name NpcAnimator extends Node
 @export var frame_height: int = 32
 @export var columns: int = 4
 
+# Idle row override. Default matches Penny's layout (row 4, cols 1-2).
+# Sheets with an empty idle row (e.g. waterfall_bill.png, walk rows
+# only) point this at a standing frame instead.
+@export var idle_row: int = 4
+@export var idle_start_col: int = 1
+@export var idle_frame_count: int = 2
+
 # (name, row, start_col, frame_count, fps, loop) — override in a subclass
 # or config if NPC sheet layout differs.
 const ANIM_DEFS := [
@@ -43,6 +50,10 @@ func _build_frames() -> void:
 		var row: int = entry[1]
 		var start_col: int = entry[2]
 		var frame_count: int = entry[3]
+		if anim_name == "idle":
+			row = idle_row
+			start_col = idle_start_col
+			frame_count = idle_frame_count
 		var fps: float = entry[4]
 		var loop: bool = entry[5]
 

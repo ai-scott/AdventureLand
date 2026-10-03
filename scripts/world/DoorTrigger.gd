@@ -27,7 +27,7 @@ class_name DoorTrigger extends Area2D
 @export var required_quest_id: String = ""
 @export var required_quest_status: String = ""
 
-# If set, the door only fires when QuestSystem.has_world_flag(required_world_flag).
+# If set, the door only fires when QuestSystem.is_flag_true(required_world_flag).
 # World flags survive save/load reliably (set in cutscenes via
 # SetWorldFlag actions) — preferred over the quest gate.
 @export var required_world_flag: String = ""
@@ -60,7 +60,7 @@ func _get_hint_text() -> String:
 
 func _is_unlocked() -> bool:
 	# World flag gate — most-reliable post-cutscene unlock check.
-	if not required_world_flag.is_empty() and not QuestSystem.has_world_flag(required_world_flag):
+	if not required_world_flag.is_empty() and not QuestSystem.is_flag_true(required_world_flag):
 		return false
 	if required_quest_id.is_empty():
 		return true
@@ -82,11 +82,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if WorldManager.is_transitioning:
 		return
 
-	# DialogueManager is a per-scene CanvasLayer (not project autoload —
-	# Pattern AB). Access via tree.current_scene.find_child.
-	var scene := get_tree().current_scene
-	var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
-	if dm != null and dm.get("is_active") == true:
+	if WorldManager.is_dialogue_active():
 		return
 
 	InteractHintManager.unregister(self)

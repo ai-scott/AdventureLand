@@ -23,7 +23,7 @@ class_name SeaMonsterController extends Node2D
 enum State { HIDDEN, RISING, NPC, HOSTILE, RETREATING }
 
 @export var sprite_path: NodePath
-# DialogueData is GDScript (Cluster 8). Accept any Resource via Inspector.
+# DialogueData. Typed as Resource so any Resource is accepted in the Inspector.
 @export var dialogue: Resource
 @export var attack_texture: Texture2D
 
@@ -73,7 +73,6 @@ var _bubbles: CPUParticles2D
 var _state: int = State.HIDDEN
 var _resting_x: float = 0.0
 var _water_ball_timer: float = 0.0
-var _pearl_deployed: bool = false
 
 
 # True while a tween or active dialogue is in progress -- PinkShell
@@ -170,45 +169,7 @@ func summon() -> void:
 		position = Vector2(_resting_x, surface_y)
 		_update_water_line_uniform()
 	_state = State.NPC
-	# Pearl deploys after the very first interaction regardless of
-	# dialogue branch. C3's flow only spawned it via accept/refuse
-	# actions, but the user's design has it surface unconditionally
-	# so even a hostile-on-greeting can come back, find the pearl,
-	# and complete the loop.
-	_deploy_pearl_if_needed()
 	_start_dialogue()
-
-
-func _deploy_pearl_if_needed() -> void:
-	if _pearl_deployed:
-		return
-	var scene := get_tree().current_scene
-	if scene == null:
-		return
-	var pickup := _find_first_item_trigger(scene, "Perle du Lac")
-	if pickup == null:
-		return
-	pickup.visible = true
-	# ItemTrigger is still C# this cluster -- PascalCase property writes
-	# via Variant (Pattern C). Monitoring + CollisionMask are inherited
-	# Godot properties on the Area2D base, but writing them through Variant
-	# Set is identical either way.
-	pickup.monitoring = true
-	pickup.collision_mask = 1  # re-enable player overlap (was zeroed in scene)
-	_pearl_deployed = true
-
-
-# Walks the scene tree looking for an ItemTrigger whose .data.name matches.
-static func _find_first_item_trigger(from: Node, item_name: String) -> Area2D:
-	if from is Area2D:
-		var d: Variant = from.get("data")
-		if d != null and String((d as Resource).get("name")) == item_name:
-			return from as Area2D
-	for c in from.get_children():
-		var r := _find_first_item_trigger(c, item_name)
-		if r != null:
-			return r
-	return null
 
 
 # Submerge and hide. Triggered from dialogue actions
@@ -283,8 +244,7 @@ func _physics_process(delta: float) -> void:
 func _fire_water_ball(player: Node2D) -> void:
 	if water_ball_scene == null:
 		return
-	# WaterBall is GDScript (Cluster 4a). Pattern G -- untyped Node2D +
-	# Variant set for the `direction` property.
+	# Untyped Node2D + Variant set for the `direction` property.
 	var ball := water_ball_scene.instantiate() as Node2D
 	if ball == null:
 		return
@@ -361,10 +321,7 @@ func _start_dialogue() -> void:
 	# the burst trails ~2.7s, but the rise tween is only 2.2s -- without
 	# this, bubbles overlap the dialogue box on screen.
 	_clear_bubbles()
-	# DialogueManager is a per-scene CanvasLayer (Pattern AB). Find via
-	# tree.current_scene -- no project autoload.
-	var scene := get_tree().current_scene
-	var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
+	var dm := WorldManager.get_dialogue_manager()
 	if dm == null:
 		push_warning("[SeaMonster] No DialogueManager in current scene")
 		return

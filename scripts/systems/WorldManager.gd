@@ -17,8 +17,7 @@ extends Node
 #   Name: WorldManager
 
 # Signal fired at the end of every transition (go_to_door / go_to_edge /
-# show_first_world_banner). C# consumers awaiting completion subscribe
-# via `await node.ToSignal(node, "transition_completed")` in the facade.
+# show_first_world_banner). Callers can `await` it for completion.
 signal transition_completed
 
 # Guard so we don't fire multiple transitions at once.
@@ -114,11 +113,8 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 
 	# Safety: if a dialogue was mid-flight when the door fired, force-end it.
 	# DialogueManager pauses the tree on start_dialogue; a scene change
-	# mid-dialogue orphans the paused state. DialogueManager is GDScript
-	# now (Cluster 8) — snake_case access via the autoload-by-scene
-	# pattern (DialogueManager is a CanvasLayer on each world's scene,
-	# so use find_child + .call rather than direct autoload reference).
-	var dm := _find_dialogue_manager()
+	# mid-dialogue orphans the paused state.
+	var dm := get_dialogue_manager()
 	if dm != null and dm.get("is_active") == true:
 		print("[WorldManager] Active dialogue detected before transition — ending it.")
 		dm.call("end_dialogue")
@@ -151,10 +147,10 @@ func go_to_door(target_scene: String, door_id: int) -> void:
 			if player is CharacterBody2D and SaveManager.current_data != null:
 				SaveManager.unstick_player(player)
 			snap_camera(player)
-			var data: Resource = SaveManager.current_data
+			var data := SaveManager.current_data
 			if data != null:
-				data.set("position_x", player.global_position.x)
-				data.set("position_y", player.global_position.y)
+				data.position_x = player.global_position.x
+				data.position_y = player.global_position.y
 				# Re-save with the marker position so disk matches in-memory.
 				SaveManager.save()
 	else:
@@ -173,7 +169,7 @@ func go_to_edge(target_scene: String, exit_edge: String, player_pos: Vector2) ->
 
 	# Same safety as go_to_door — don't leave a paused tree from
 	# mid-dialogue.
-	var dm := _find_dialogue_manager()
+	var dm := get_dialogue_manager()
 	if dm != null and dm.get("is_active") == true:
 		dm.call("end_dialogue")
 	get_tree().paused = false
@@ -249,25 +245,48 @@ func _clamp_player_to_world_bounds(exit_edge: String, exit_pos: Vector2) -> void
 		SaveManager.unstick_player(player)
 	snap_camera(player)
 
-	var data: Resource = SaveManager.current_data
+	var data := SaveManager.current_data
 	if data != null:
-		data.set("position_x", player.global_position.x)
-		data.set("position_y", player.global_position.y)
+		data.position_x = player.global_position.x
+		data.position_y = player.global_position.y
 		# ApplySaveToPlayer just auto-saved the (X, 9999) placeholder.
 		SaveManager.save()
 
-func _find_world_meta() -> Node:
+# The current scene's WorldMeta node, or null if the scene has none.
+func get_world_meta() -> Node:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return null
-	var found := scene.find_child("WorldMeta", true, false)
-	return found if found != null else scene
+	return scene.find_child("WorldMeta", true, false)
 
-func _find_dialogue_manager() -> Node:
-	var scene := get_tree().current_scene
-	if scene == null:
+# Like get_world_meta(), but falls back to the scene root so callers can
+# read optional properties off it with .get().
+func _find_world_meta() -> Node:
+	var found := get_world_meta()
+	return found if found != null else get_tree().current_scene
+
+# DialogueManager is a per-scene CanvasLayer (scenes/ui/DialogueBox.tscn
+# instanced into each world), not an autoload. It joins this group in
+# _enter_tree, so lookups are a cheap group query instead of a
+# recursive find_child over the scene.
+const DIALOGUE_MANAGER_GROUP: StringName = &"dialogue_manager"
+
+# The current scene's DialogueManager, or null (title screen, or a scene
+# without a dialogue box).
+func get_dialogue_manager() -> Node:
+	var tree := get_tree()
+	if tree == null:
 		return null
-	return scene.find_child("DialogueManager", true, false)
+	return tree.get_first_node_in_group(DIALOGUE_MANAGER_GROUP)
+
+# True while a dialogue is on screen; false when there's no
+# DialogueManager. Uses `== true` rather than bool(...) so a non-bool
+# Variant (e.g. the node's script failed to parse and has no is_active
+# property) reads as false instead of raising "Nonexistent 'bool'
+# constructor".
+func is_dialogue_active() -> bool:
+	var dm := get_dialogue_manager()
+	return dm != null and dm.get("is_active") == true
 
 # Snap any Camera2D in the scene so the new world doesn't pan across.
 # Also re-apply WorldMeta bounds since they may differ per world.
@@ -283,9 +302,8 @@ func snap_camera(player: Node2D) -> void:
 	if cam == null:
 		cam = scene.find_child("*Camera*", true, false) as Camera2D
 
-	# FollowCamera is C# (Cluster 4 closeout). Duck-typed call via has_method
-	# instead of `is FollowCamera` since FollowCamera doesn't have
-	# [GlobalClass] and GDScript can't `is` against C# Node types.
+	# Duck-typed via has_method so a plain Camera2D (no FollowCamera
+	# script) is tolerated.
 	if cam != null and cam.has_method("apply_world_bounds"):
 		cam.call("apply_world_bounds")
 	if cam != null:
@@ -293,12 +311,12 @@ func snap_camera(player: Node2D) -> void:
 
 # Returns true if this is the first visit (banner should show).
 func _prepare_banner_if_first_visit(scene_path: String) -> bool:
-	var data: Resource = SaveManager.current_data
+	var data := SaveManager.current_data
 	if data == null:
 		return false
 
 	var key: String = _normalize_scene_path(scene_path)
-	var visited: Array = data.get("visited_worlds")
+	var visited: Array = data.visited_worlds
 	if visited.has(key):
 		return false
 
@@ -319,12 +337,12 @@ static func _normalize_scene_path(scene_path: String) -> String:
 # Show the first-world banner after the initial scene load (called from
 # SaveManager's NewGame). Fades in banner, holds, then fades scene in.
 func show_first_world_banner(scene_path: String) -> void:
-	var data: Resource = SaveManager.current_data
+	var data := SaveManager.current_data
 	if data == null:
 		transition_completed.emit()
 		return
 	var key: String = _normalize_scene_path(scene_path)
-	var visited: Array = data.get("visited_worlds")
+	var visited: Array = data.visited_worlds
 	if not visited.has(key):
 		visited.append(key)
 
@@ -348,10 +366,10 @@ func show_first_world_banner(scene_path: String) -> void:
 # dialogue text still shows. Restore by moving the .ogg + .import back
 # into assets/audio/vo/al/.
 func _show_welcome_dialogue_if_needed() -> void:
-	if QuestSystem.has_world_flag("welcome_shown"):
+	if QuestSystem.is_flag_true("welcome_shown"):
 		return
 
-	var dm := _find_dialogue_manager()
+	var dm := get_dialogue_manager()
 	if dm == null:
 		push_warning("[Welcome] No DialogueManager in current scene; skipping welcome")
 		return

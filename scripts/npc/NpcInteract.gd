@@ -10,8 +10,11 @@ class_name NpcInteract extends Area2D
 # override to "Look" via TreeSign.tscn.
 @export var interact_verb: String = "Talk"
 
-# Data-driven dialogue. Typed as DialogueData (GDScript Resource since
-# Cluster 8).
+# Talk range override in px. 0 keeps the scene's InteractZone radius.
+# Use when the NPC is out of reach (e.g. cave Bill behind his holes).
+@export var interact_radius: float = 0.0
+
+# Data-driven dialogue.
 @export var dialogue: DialogueData
 
 # Legacy plain-text lines. Used if dialogue is null.
@@ -41,6 +44,14 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
+	if interact_radius > 0.0:
+		var zone := get_node_or_null("InteractZone") as CollisionShape2D
+		if zone != null and zone.shape is CircleShape2D:
+			# Duplicate so other instances of this NPC scene keep theirs.
+			var circle := zone.shape.duplicate() as CircleShape2D
+			circle.radius = interact_radius
+			zone.shape = circle
+
 	# Optional blocking body for NPCs that should stop the player.
 	_body = get_node_or_null("Body") as StaticBody2D
 	if _body != null:
@@ -56,12 +67,8 @@ func _process(_delta: float) -> void:
 		_apply_quest_gate()
 
 	if _player_in_range and not _suppress_until_exit and Input.is_action_just_pressed("interact"):
-		# DialogueManager is GDScript-by-scene (Pattern AB). Check
-		# active state directly via autoload-name-style access on the
-		# scene node — but DialogueManager IS a per-scene CanvasLayer,
-		# not a project autoload. Find by name in the current scene.
-		var scene := get_tree().current_scene
-		var dm := scene.find_child("DialogueManager", true, false) if scene != null else null
+		# DialogueManager is a per-scene CanvasLayer, not an autoload.
+		var dm := WorldManager.get_dialogue_manager()
 		if dm != null and dm.get("is_active") == true:
 			return
 
@@ -103,22 +110,17 @@ func _check_post_unlock_overlap() -> void:
 
 func _is_unlocked() -> bool:
 	# Hide if any forbidding flag is set.
-	if not hide_when_world_flag.is_empty() and _is_flag_truthy(hide_when_world_flag):
+	if not hide_when_world_flag.is_empty() and QuestSystem.is_flag_true(hide_when_world_flag):
 		return false
 	# Must-have flag — hide until set.
-	if not required_world_flag.is_empty() and not _is_flag_truthy(required_world_flag):
+	if not required_world_flag.is_empty() and not QuestSystem.is_flag_true(required_world_flag):
 		return false
 	# Quest-status gate.
 	if required_quest_id.is_empty():
 		return true
 	return QuestSystem.get_quest_status(required_quest_id) == required_quest_status
 
-static func _is_flag_truthy(key: String) -> bool:
-	var v: String = QuestSystem.get_world_flag(key)
-	return not v.is_empty() and v != "false" and v != "0"
-
 func _on_body_entered(body: Node) -> void:
-	# PlayerController is C# — duck-type via group.
 	if body.is_in_group("player"):
 		_player_in_range = true
 		InteractHintManager.register(self, _get_hint_text)

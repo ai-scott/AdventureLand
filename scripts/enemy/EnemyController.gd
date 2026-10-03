@@ -105,7 +105,10 @@ enum MovePattern {
 @export var stay_dead: bool = false
 
 var _animator: EnemyAnimatorBase
-var _health: Node  # HealthSystem (still C#) -- access via Variant
+# Preload-by-path so the type doesn't depend on HealthSystem's class_name
+# being registered at headless parse time.
+const _HealthSystemScript := preload("res://scripts/systems/HealthSystem.gd")
+var _health: _HealthSystemScript
 var _hitbox: Area2D
 var _player: Node2D
 
@@ -198,7 +201,7 @@ func _ready() -> void:
 		push_error("[EnemyController] data (EnemyData) not assigned in Inspector")
 		return
 
-	if stay_dead and QuestSystem.has_world_flag(_defeated_flag_key()):
+	if stay_dead and QuestSystem.is_flag_true(_defeated_flag_key()):
 		queue_free()
 		return
 
@@ -209,7 +212,7 @@ func _ready() -> void:
 	_default_collision_mask = collision_mask
 
 	_animator = get_node_or_null(animator_path) as EnemyAnimatorBase
-	_health = get_node_or_null(health_system_path)
+	_health = get_node_or_null(health_system_path) as _HealthSystemScript
 	_hitbox = get_node_or_null(hitbox_path) as Area2D
 	_shadow = get_node_or_null(shadow_path) as Sprite2D if shadow_path != NodePath("") else null
 	if _shadow != null:
@@ -219,12 +222,10 @@ func _ready() -> void:
 		_shadow.position = Vector2(0, _shadow_offset_y)
 
 	if _health != null:
-		# HealthSystem is still C# (Cluster 10) -- PascalCase property
-		# write + method call via Variant (Pattern C / D).
-		_health.set("max_health", int(data.get("health")))
-		_health.call("full_reset")
-		_health.connect("hurt", _on_hurt)
-		_health.connect("died", _on_died)
+		_health.max_health = int(data.get("health"))
+		_health.full_reset()
+		_health.hurt.connect(_on_hurt)
+		_health.died.connect(_on_died)
 
 	if _hitbox != null:
 		_hitbox.body_entered.connect(_on_hitbox_body_entered)
@@ -289,7 +290,7 @@ func _try_unstick_from_walls() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _health != null and bool(_health.get("is_dead")):
+	if _health != null and _health.is_dead:
 		return
 
 	# Lazy player lookup -- deferred from _ready to handle scene-tree ordering.
@@ -520,8 +521,7 @@ func _evaluate_condition(c: Resource) -> bool:
 		ConditionType.DISTANCE:
 			lhs = global_position.distance_to(_player.global_position) if _player != null else INF
 		ConditionType.HEALTH:
-			# HealthSystem.CurrentHealth is C# PascalCase.
-			lhs = float(_health.get("current_health")) if _health != null else 0.0
+			lhs = float(_health.current_health) if _health != null else 0.0
 		ConditionType.TIMER:
 			lhs = _behavior_total - _behavior_timer
 		ConditionType.RANDOM:
@@ -529,7 +529,7 @@ func _evaluate_condition(c: Resource) -> bool:
 		ConditionType.HURT:
 			lhs = 1.0 if _is_hurt else 0.0
 		ConditionType.INVULNERABLE:
-			var inv: bool = _health != null and bool(_health.get("invulnerable"))
+			var inv: bool = _health != null and _health.invulnerable
 			lhs = 1.0 if inv else 0.0
 
 	var value := float(c.get("value"))
@@ -598,8 +598,7 @@ func _execute_actions(delta: float) -> void:
 				if not _executed_actions.has("invuln"):
 					_executed_actions["invuln"] = true
 					if _health != null:
-						# HealthSystem is C# -- PascalCase method.
-						_health.call("start_invulnerability", float(a.get("duration")))
+						_health.start_invulnerability(float(a.get("duration")))
 
 			ActionType.SOUND:
 				var sound := String(a.get("sound"))
@@ -822,7 +821,7 @@ func _on_hurt() -> void:
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
-	if _health != null and bool(_health.get("is_dead")):
+	if _health != null and _health.is_dead:
 		return
 	if not can_be_hit():
 		return
@@ -888,10 +887,9 @@ func _drop_loot() -> void:
 
 	var count := randi_range(2, 3)
 	for i in range(count):
-		# Gem is GDScript (Cluster 4d). Variant int for variant assignment;
-		# Gem.roll_kind() exists as a static func but we mirror the
-		# previous C# port's choice to randomize the int directly here so
-		# the dispatch shape stays straightforward.
+		# Gem.roll_kind() exists as a static func, but the variant int is
+		# randomized directly here so the dispatch shape stays
+		# straightforward.
 		var gem := _gem_scene.instantiate() as Node2D
 		if gem == null:
 			continue

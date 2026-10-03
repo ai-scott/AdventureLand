@@ -14,37 +14,27 @@ extends CanvasLayer
 #           ├── ResponseContainer (branching choices)
 #           └── ContinueHint ("[Space] Continue")
 #
-# PORT NOTE (Cluster 8): UI styling values for the input prompt and
-# mobile continue hint are inlined from DesignTokens / UiFrames / UiStyles
-# (all still C# static utilities, deferred to Cluster 10 per Pattern K —
-# GDScript can't access C# static class members). When Cluster 10
-# lands, re-source these via DesignTokens.gold etc and swap
-# StyleBoxFlat → UiFrames.apply_primary_button.
+# Palette comes from the DesignTokens / UiStyles autoloads. The input
+# prompt still uses an inline StyleBoxFlat rather than UiFrames.
 
-# Inlined from DesignTokens.cs — restore Cluster 10.
-const DESIGN_GOLD: Color = Color("F2C84B")
-const DESIGN_TEAL: Color = Color("3FA3A8")
-const DESIGN_PAPER: Color = Color("E8E4C8")
-const DESIGN_INK: Color = Color("10180F")
-
-# Body text cream (matches UiStyles.Cream).
-const BODY_CREAM: Color = Color(0.984, 1.0, 0.741, 1.0)
+# Hover text on response buttons -- slightly warmer than UiStyles.CREAM_LIT.
 const BODY_CREAM_LIT: Color = Color(1.0, 1.0, 0.9, 1.0)
-
-# True after Penny gag substitution etc. — fired on a stale callback.
-signal _post_close_fired
 
 var is_active: bool = false
 
 var _npc_data: DialogueData
 var _current_node: DialogueNode
 var _current_responses: Array[DialogueResponse] = []
+# Responses held back while the NPC's line is on screen. The next
+# advance swaps the box to the player's turn and shows them.
+var _pending_responses: Array[DialogueResponse] = []
 
 # UI nodes — bound in _ready from DialogueBox.tscn.
 var _dialogue_box: Control
 var _frame_bg: TextureRect
 var _name_extender: NinePatchRect
 var _cameo: TextureRect
+var _player_cameo: PlayerCameo
 var _name_label: Label
 var _text_label: RichTextLabel
 var _continue_hint: Label
@@ -58,7 +48,7 @@ var _item_reveal_root: Control
 var _item_reveal_frame: TextureRect
 var _item_reveal_icon: TextureRect
 
-# Player is C# (Cluster 7b-4 deferred) — kept untyped Node + Variant.
+# Player node, found lazily by name.
 var _player: Node
 
 # One-shot callback fired after the dialogue overlay actually closes
@@ -80,11 +70,16 @@ static var _cameo_cache: Dictionary = {}
 # Cached pointer glyph for mobile continue hint.
 static var _pointer_glyph: Texture2D
 
-# Cached is_mobile detection (UiStyles is still C#, Pattern K).
+# Mirrors UiStyles.is_mobile (kept in sync via mobile_changed).
 var _is_mobile: bool = false
 
 # Font override applied per-dialogue.
 var _font_override: Font
+
+func _enter_tree() -> void:
+	# Lets WorldManager.get_dialogue_manager() find this per-scene node
+	# without walking the tree.
+	add_to_group(WorldManager.DIALOGUE_MANAGER_GROUP)
 
 func _ready() -> void:
 	_dialogue_box = get_node("DialogueBox") as Control
@@ -102,21 +97,22 @@ func _ready() -> void:
 		_tex_frame_bg_name = load("res://assets/sprites/ui/dialogue/frame_bg_name.png") as Texture2D
 
 	_build_item_reveal_overlay()
+	_build_player_cameo()
 
-	_is_mobile = _detect_mobile()
-	if _is_mobile:
-		_build_mobile_continue_hint()
+	UiStyles.mobile_changed.connect(_on_mobile_changed)
+	_on_mobile_changed()
 
 	_dialogue_box.visible = false
 
-# Detect mobile mode. Inlined from UiStyles.DetectMobile (still C#,
-# Pattern K). When UiStyles ports (Cluster 10), defer to it.
-func _detect_mobile() -> bool:
-	var platform_mobile: bool = OS.has_feature("mobile")
-	var touch_on_web: bool = OS.has_feature("web") and DisplayServer.is_touchscreen_available()
-	return platform_mobile or touch_on_web
+# Follow the shared mobile flag (boot detection + user override).
+func _on_mobile_changed() -> void:
+	_is_mobile = UiStyles.is_mobile
+	if _is_mobile and _mobile_continue_hint == null:
+		_build_mobile_continue_hint()
+	if not _is_mobile and _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
 
-# Tap / click / ESC to advance dialogue. Same logic as the C# version —
+# Tap / click to advance dialogue. Runs in _input so it
 # fires before GUI sorts the event onto its deepest hit Control, so
 # clicks on FrameBg/Cameo/NameLabel children don't get consumed first.
 func _input(evt: InputEvent) -> void:
@@ -126,14 +122,6 @@ func _input(evt: InputEvent) -> void:
 		return
 	if _waiting_for_input:
 		return  # LineEdit owns keyboard during input prompts
-
-	# ESC advances like Space/Enter.
-	if evt is InputEventKey:
-		var k: InputEventKey = evt
-		if k.pressed and not k.echo and k.keycode == KEY_ESCAPE:
-			_synth_advance()
-			get_viewport().set_input_as_handled()
-			return
 
 	# Skip click-anywhere while response buttons are showing — clicks
 	# need to reach the Button widgets to pick a specific response.
@@ -221,8 +209,7 @@ func _build_item_reveal_overlay() -> void:
 		return
 	_item_reveal_root.visible = false
 
-# item is a C# ItemData Resource (still in Cluster 10 deferred). Access
-# Icon via PascalCase per Pattern C.
+# item is an ItemData Resource.
 func _show_item_reveal(item: Resource) -> void:
 	if _item_reveal_root == null or item == null:
 		return
@@ -249,6 +236,11 @@ func _process(_delta: float) -> void:
 		_just_started = false
 		return
 
+	# Z / Escape closes the conversation early from any page.
+	if Input.is_action_just_pressed("cancel"):
+		end_dialogue()
+		return
+
 	if _current_responses.size() > 0:
 		# Arrow-key navigation through response buttons.
 		if Input.is_action_just_pressed("move_up"):
@@ -266,7 +258,7 @@ func _process(_delta: float) -> void:
 
 # Start a dialogue with an NPC. Returns false if already in dialogue.
 # `source` is the NPC trigger Node2D — used to snap the player to face
-# it as conversation opens. Player stays C# (Pattern C).
+# it as conversation opens.
 func start_dialogue(data: DialogueData, source: Node2D = null) -> bool:
 	var npc_id: String = data.npc_id if data != null else "(null)"
 	print("[Dialogue] StartDialogue called for '%s' | IsActive=%s | Paused=%s" % [
@@ -281,8 +273,7 @@ func start_dialogue(data: DialogueData, source: Node2D = null) -> bool:
 	get_tree().paused = true
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
-	# Lock player input. PlayerController is still C# — use Variant
-	# property access (Pattern C PascalCase).
+	# Lock player input.
 	if _player == null:
 		_player = get_tree().root.find_child("Player", true, false)
 	if _player != null:
@@ -391,6 +382,12 @@ func _remove_font_override() -> void:
 # ---- Navigation ----
 
 func _advance() -> void:
+	if _pending_responses.size() > 0:
+		var held: Array[DialogueResponse] = _pending_responses.duplicate()
+		_pending_responses.clear()
+		_show_responses(held)
+		return
+
 	if _current_node == null:
 		end_dialogue()
 		return
@@ -446,84 +443,104 @@ func _navigate_to_node(node: DialogueNode) -> void:
 
 	_update_speaker_visuals(speaker)
 
-	_name_label.text = _prettify_speaker(speaker)
-	_layout_name_extender()
+	if speaker != "You":
+		_name_label.text = _prettify_speaker(speaker)
+		_layout_name_extender()
 	_text_label.text = rendered_text
 	_text_label.visible = not rendered_text.is_empty()
 
-	# Build response buttons if any.
+	# Responses get their own page: an NPC line with choices shows the
+	# line first ("[Space] Continue"), then the player's turn.
 	_clear_responses()
+	_current_responses.clear()
+	_pending_responses.clear()
 	var valid_responses := _filter_responses(node.responses)
-	_current_responses = valid_responses
+	if valid_responses.size() > 0 and rendered_text.is_empty():
+		_show_responses(valid_responses)
+		return
+	_pending_responses = valid_responses
+	_show_continue_hint()
 
-	if valid_responses.size() > 0:
-		_set_player_speaking_visuals()
-		_response_container.visible = true
-		_continue_hint.visible = false
+func _show_continue_hint() -> void:
+	_response_container.visible = false
+	_continue_hint.visible = not _is_mobile
+	if _is_mobile:
 		if _mobile_continue_hint != null:
-			_mobile_continue_hint.visible = false
-
-		for i in range(valid_responses.size()):
-			var idx: int = i
-			var resp: DialogueResponse = valid_responses[i]
-
-			# Each response is a row: [Pointer Label] [Response Button].
-			var row := HBoxContainer.new()
-			row.name = "Row%d" % i
-			row.add_theme_constant_override("separation", 4)
-			row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-
-			# Pointing-hand icon — UiStyles.Arrow is still C# Pattern K.
-			# Inline-load directly.
-			var pointer := TextureRect.new()
-			pointer.name = "Pointer"
-			pointer.texture = load("res://assets/sprites/ui/icon_arrow.png") as Texture2D
-			pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			pointer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			pointer.custom_minimum_size = Vector2(24, 24)
-			pointer.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			pointer.modulate = Color(1, 1, 1, 0)  # hidden; shown on selection
-			row.add_child(pointer)
-
-			var btn := Button.new()
-			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			btn.text = _substitute_variables(resp.text)
-			btn.pressed.connect(_on_response_chosen.bind(idx))
-			btn.mouse_entered.connect(_select_response.bind(idx))
-			btn.process_mode = Node.PROCESS_MODE_ALWAYS
-			btn.focus_mode = Control.FOCUS_NONE
-			btn.add_theme_font_size_override("font_size", 24)
-			btn.add_theme_constant_override("shadow_offset_x", 0)
-			btn.add_theme_constant_override("shadow_offset_y", 0)
-			btn.flat = true
-			btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			btn.add_theme_color_override("font_color", BODY_CREAM)
-			btn.add_theme_color_override("font_focus_color", BODY_CREAM)
-			btn.add_theme_color_override("font_hover_color", BODY_CREAM_LIT)
-			row.add_child(btn)
-
-			_response_container.add_child(row)
-
-		_selected_response_index = 0
-		_highlight_selected_response()
+			_mobile_continue_hint.visible = true
 	else:
-		_response_container.visible = false
-		_continue_hint.visible = not _is_mobile
-		if _is_mobile:
-			if _mobile_continue_hint != null:
-				_mobile_continue_hint.visible = true
+		if _pending_responses.size() > 0:
+			_continue_hint.text = "[Space] Continue"
+		elif _current_node.ends_dialogue:
+			_continue_hint.text = "[Space] Close"
+		elif not _current_node.auto_advance.is_empty():
+			_continue_hint.text = "[Space] Continue"
 		else:
-			if _current_node.ends_dialogue:
-				_continue_hint.text = "[Space] Close"
-			elif not _current_node.auto_advance.is_empty():
-				_continue_hint.text = "[Space] Continue"
-			else:
-				_continue_hint.text = "[Space] Close"
-		_selected_response_index = -1
+			_continue_hint.text = "[Space] Close"
+	_selected_response_index = -1
+
+# Player's turn: hide the NPC line, show the player cameo + choices.
+func _show_responses(valid_responses: Array[DialogueResponse]) -> void:
+	_current_responses = valid_responses
+	_set_player_speaking_visuals()
+	_text_label.visible = false
+	_response_container.visible = true
+	_continue_hint.visible = false
+	if _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
+
+	for i in range(valid_responses.size()):
+		var idx: int = i
+		var resp: DialogueResponse = valid_responses[i]
+
+		# Each response is a row: [Pointer Label] [Response Button].
+		var row := HBoxContainer.new()
+		row.name = "Row%d" % i
+		row.add_theme_constant_override("separation", 4)
+		row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+
+		var pointer := TextureRect.new()
+		pointer.name = "Pointer"
+		pointer.texture = load("res://assets/sprites/ui/icon_arrow.png") as Texture2D
+		pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		pointer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pointer.custom_minimum_size = Vector2(24, 24)
+		pointer.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		pointer.modulate = Color(1, 1, 1, 0)  # hidden; shown on selection
+		row.add_child(pointer)
+
+		var btn := Button.new()
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.text = _substitute_variables(resp.text)
+		btn.pressed.connect(_on_response_chosen.bind(idx))
+		btn.mouse_entered.connect(_select_response.bind(idx))
+		btn.process_mode = Node.PROCESS_MODE_ALWAYS
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.add_theme_font_size_override("font_size", 24)
+		btn.add_theme_constant_override("shadow_offset_x", 0)
+		btn.add_theme_constant_override("shadow_offset_y", 0)
+		btn.flat = true
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		# Wrap long choices: an unwrapped Button's min width would widen
+		# TextArea past the frame (it grows both ways and shifts left).
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.add_theme_color_override("font_color", UiStyles.CREAM)
+		btn.add_theme_color_override("font_focus_color", UiStyles.CREAM)
+		btn.add_theme_color_override("font_hover_color", BODY_CREAM_LIT)
+		row.add_child(btn)
+
+		_response_container.add_child(row)
+
+	_selected_response_index = 0
+	_highlight_selected_response()
 
 # Swap frame + cameo for current speaker. Empty speaker = narrator.
 func _update_speaker_visuals(speaker: String) -> void:
+	if speaker == "You":
+		_set_player_speaking_visuals()
+		return
+	if _player_cameo != null:
+		_player_cameo.visible = false
 	var has_speaker: bool = not speaker.is_empty()
 	_frame_bg.texture = _tex_frame_bg_name if has_speaker else _tex_frame_bg
 	_name_label.visible = has_speaker
@@ -541,12 +558,34 @@ func _update_speaker_visuals(speaker: String) -> void:
 		_cameo.texture = _load_cameo("AL")
 		_cameo.visible = _cameo.texture != null
 
+# Player's turn (responses, or nodes with speaker "You"): name frame
+# with the live player cameo and the player's name on the plate.
 func _set_player_speaking_visuals() -> void:
-	_frame_bg.texture = _tex_frame_bg
+	_frame_bg.texture = _tex_frame_bg_name
 	_cameo.visible = false
-	_name_label.visible = false
-	if _name_extender != null:
-		_name_extender.visible = false
+	var data := SaveManager.current_data
+	var player_name: String = String(data.player_name) if data != null else ""
+	_name_label.text = player_name if not player_name.is_empty() else "You"
+	_name_label.visible = true
+	_layout_name_extender()
+	if _player_cameo != null:
+		_player_cameo.visible = _player_cameo.refresh()
+
+# Cameo circle on frame_bg_name.png: inner ellipse ~54x58 px centered
+# at (32.5, 33) in the 420x130 texture; FrameBg scales that to the
+# DialogueBox size, so place the cameo by the same ratio.
+func _build_player_cameo() -> void:
+	_player_cameo = PlayerCameo.new()
+	_player_cameo.name = "PlayerCameo"
+	_player_cameo.visible = false
+	_dialogue_box.add_child(_player_cameo)
+	_dialogue_box.move_child(_player_cameo, _cameo.get_index() + 1)
+	var k: Vector2 = _dialogue_box.size / Vector2(420, 130)
+	if k.x <= 0.0 or k.y <= 0.0:
+		k = Vector2(_dialogue_box.offset_right - _dialogue_box.offset_left,
+				_dialogue_box.offset_bottom - _dialogue_box.offset_top) / Vector2(420, 130)
+	_player_cameo.position = Vector2(5.5, 4.0) * k
+	_player_cameo.size = Vector2(54, 58) * k
 
 # Show hearts_frame.png extender behind speaker name when rendered text
 # overflows the small plate baked into frame_bg_name.png.
@@ -628,6 +667,7 @@ func end_dialogue() -> void:
 	_current_node = null
 	# Typed Array[DialogueResponse] can't take null -- clear instead.
 	_current_responses.clear()
+	_pending_responses.clear()
 	_npc_data = null
 	_waiting_for_input = false
 	is_active = false
@@ -645,8 +685,7 @@ func end_dialogue() -> void:
 			_player.set("input_locked", false)
 	)
 
-	# Auto-save quest state. SaveManager is the GDScript autoload
-	# (Cluster 9); call save() directly.
+	# Auto-save quest state.
 	SaveManager.save()
 
 # ---- Node Finding ----
@@ -750,17 +789,16 @@ func _execute_actions(actions: Array) -> void:
 					SFXController.play(a.sound_id)
 
 			DialogueAction.ActionType.TELEPORT_PLAYER:
-				print("[Dialogue] Teleport: %s (%f,%f) (Phase 5)" % [a.world_id, a.x, a.y])
+				print("[Dialogue] Teleport: %s (%f,%f) (not implemented)" % [a.world_id, a.x, a.y])
 
 			DialogueAction.ActionType.CUSTOM:
 				_handle_custom_action(a)
 
 			DialogueAction.ActionType.DEPLOY_NPC:
-				print("[Dialogue] Deploy NPC: %s (Phase 5)" % a.npc_id)
+				print("[Dialogue] Deploy NPC: %s (not implemented)" % a.npc_id)
 
 			DialogueAction.ActionType.SUMMON_SEA_MONSTER:
 				var smc := _find_sea_monster()
-				# SeaMonsterController is C# — Variant property access.
 				# State.Hidden enum value = 0 (first in enum declaration).
 				if smc != null and not bool(smc.is_busy) and int(smc.call("get_state")) == 0:
 					smc.call("summon")
@@ -781,7 +819,6 @@ func _execute_actions(actions: Array) -> void:
 # Pull an ItemData out of a node's GiveItem actions if the node is shaped
 # like a "You got X!" reveal: speaker == "AL" and at least one give_item
 # action with a resolvable item. Returns null for regular nodes.
-# ItemData is C# (Cluster 10) — access Icon via PascalCase.
 func _resolve_reveal_item(node: DialogueNode) -> Resource:
 	if node == null or node.actions == null:
 		return null
@@ -807,8 +844,6 @@ func _resolve_reveal_item(node: DialogueNode) -> Resource:
 	return null
 
 # Mirror of ItemTrigger.show_pickup_toast for dialogue-given items.
-# ItemPickupToast is GDScript (Cluster 10d-2) -- spawn it directly and
-# call its show() method.
 func _show_give_item_toast(item_key: String) -> void:
 	if item_key.is_empty():
 		return
@@ -821,9 +856,7 @@ func _show_give_item_toast(item_key: String) -> void:
 		item = Inventory.get_item_by_name(item_key)
 	if item == null:
 		return
-	var toast := ItemPickupToast.new()
-	get_tree().current_scene.add_child(toast)
-	toast.show_pickup(item)
+	ItemPickupToast.spawn_pickup(get_tree(), item)
 
 func _find_sea_monster() -> Node:
 	var scene := get_tree().current_scene
@@ -838,7 +871,7 @@ func _sea_monster_retreat() -> void:
 
 # Reveal a placed-but-hidden quest pickup by item name. Walks the scene
 # for an ItemTrigger whose Data.Name matches and toggles Visible +
-# Monitoring on. ItemTrigger is C# (Cluster 10) — Variant access.
+# Monitoring on.
 func _reveal_quest_pickup(item_name: String) -> bool:
 	if item_name.is_empty():
 		return false
@@ -920,11 +953,11 @@ func _run_penny_opens_home_cutscene() -> void:
 	if penny == null:
 		push_warning("[PennyOpensHome] Penny not found in scene — skipping walk")
 
-	# Lock player for duration. PlayerController is C# — Variant Set.
+	# Lock player for duration.
 	if player != null:
 		player.set("input_locked", true)
 
-	# Walk animation. NpcAnimator is GDScript (Cluster 4b) — use snake_case call.
+	# Walk animation.
 	if penny != null:
 		var animator := penny.get_node_or_null("NpcAnimator")
 		if animator != null:
@@ -939,10 +972,7 @@ func _run_penny_opens_home_cutscene() -> void:
 	# Flip "Penny is home" flag before scene swap.
 	QuestSystem.set_world_flag("penny_home", "true")
 
-	# WorldManager handles fade/swap/spawn. WorldManager is GDScript
-	# now (Cluster 7b-3) — snake_case call via autoload name (Pattern D),
-	# AND it's a coroutine, so we can await it directly without the
-	# Task↔await bridge that the C# version required.
+	# WorldManager handles fade/swap/spawn; go_to_door is a coroutine.
 	await WorldManager.go_to_door("res://scenes/worlds/World_00_PennysHouse.tscn", 4)
 
 	# Unlock the post-transition player.
@@ -1021,18 +1051,18 @@ func _handle_input(variable: String) -> void:
 	input_box.add_theme_stylebox_override("read_only", input_bg)
 	row.add_child(input_box)
 
-	# Design-system primary button — UiFrames.BuildChipButton still C#
-	# Pattern K. Inline a Button with mossy style + Enter glyph.
+	# Design-system primary button — inline Button with teal style +
+	# Enter glyph.
 	var ok_btn := Button.new()
 	ok_btn.name = "DialogueInputOk"
 	ok_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	ok_btn.custom_minimum_size = Vector2(140, 40)
 	ok_btn.text = "Enter"
 	ok_btn.add_theme_font_size_override("font_size", 18)
-	ok_btn.add_theme_color_override("font_color", DESIGN_PAPER)
+	ok_btn.add_theme_color_override("font_color", DesignTokens.PAPER)
 	var btn_sb := StyleBoxFlat.new()
-	btn_sb.bg_color = DESIGN_TEAL
-	btn_sb.border_color = DESIGN_INK
+	btn_sb.bg_color = DesignTokens.TEAL
+	btn_sb.border_color = DesignTokens.INK
 	btn_sb.border_width_left = 3
 	btn_sb.border_width_right = 3
 	btn_sb.border_width_top = 3
@@ -1102,7 +1132,8 @@ func _substitute_variables(text: String) -> String:
 	return text
 
 # Maps C3 [icon=...] markup tags to C3 TextIcons glyphs. PNG files have
-# off-by-one mapping vs filename — see comment in C# version.
+# off-by-one mapping vs filename (empty.png is the pointer slot,
+# pointer.png is space, etc.).
 const ICON_PATHS: Dictionary = {
 	"pointer":    "res://assets/sprites/ui/text_icons/empty.png",
 	"spc":        "res://assets/sprites/ui/text_icons/pointer.png",

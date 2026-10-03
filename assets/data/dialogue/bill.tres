@@ -50,6 +50,17 @@ negate = true
 flag_key = "cave_cleared"
 flag_value = "true"
 
+[sub_resource type="Resource" id="cond_has_key"]
+script = ExtResource("3")
+type = 1
+item_id = "Sea Monster Key"
+
+[sub_resource type="Resource" id="cond_no_key"]
+script = ExtResource("3")
+type = 1
+negate = true
+item_id = "Sea Monster Key"
+
 [sub_resource type="Resource" id="node_000"]
 script = ExtResource("2")
 id = "node_000"
@@ -104,6 +115,13 @@ leads_to = "node_accept"
 script = ExtResource("5")
 text = "Do you know where the key went?"
 leads_to = "node_key_hint"
+conditions = Array[ExtResource("3")]([SubResource("cond_no_key")])
+
+[sub_resource type="Resource" id="resp_have_key"]
+script = ExtResource("5")
+text = "I found a key with a sea monster on it. Is this the key for the chest?"
+leads_to = "node_key_confirm"
+conditions = Array[ExtResource("3")]([SubResource("cond_has_key")])
 
 [sub_resource type="Resource" id="node_005"]
 script = ExtResource("2")
@@ -112,11 +130,11 @@ text = "I'm too scared to leave. That sea monster is still out there, and this c
 speaker = "Bill"
 priority = 95
 conditions = Array[ExtResource("3")]([SubResource("cond_not_started")])
-responses = Array[ExtResource("5")]([SubResource("resp_accept"), SubResource("resp_key")])
+responses = Array[ExtResource("5")]([SubResource("resp_accept"), SubResource("resp_key"), SubResource("resp_have_key")])
 
 [sub_resource type="Resource" id="resp_key_accept"]
 script = ExtResource("5")
-text = "I'll deal with the sea monster. Hang tight!"
+text = "I'll go look for it at the shrine."
 leads_to = "node_accept"
 
 [sub_resource type="Resource" id="node_key_hint"]
@@ -127,6 +145,20 @@ speaker = "Bill"
 priority = 94
 conditions = Array[ExtResource("3")]([SubResource("cond_not_started")])
 responses = Array[ExtResource("5")]([SubResource("resp_key_accept")])
+
+[sub_resource type="Resource" id="resp_key_confirm_accept"]
+script = ExtResource("5")
+text = "I'll open it and get the pearl back to the sea monster."
+leads_to = "node_accept"
+
+[sub_resource type="Resource" id="node_key_confirm"]
+script = ExtResource("2")
+id = "node_key_confirm"
+text = "That's it! That's the key! The chest is in the little nook at the back of the cave, on the east side. The Perle du Lac is locked inside."
+speaker = "Bill"
+priority = 94
+conditions = Array[ExtResource("3")]([SubResource("cond_not_started")])
+responses = Array[ExtResource("5")]([SubResource("resp_key_confirm_accept")])
 
 [sub_resource type="Resource" id="act_start"]
 script = ExtResource("4")
@@ -211,6 +243,29 @@ priority = 70
 ends_dialogue = true
 conditions = Array[ExtResource("3")]([SubResource("cond_returning")])
 
+[sub_resource type="Resource" id="cond_has_pearl"]
+script = ExtResource("3")
+type = 1
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="node_pearl_creatures"]
+script = ExtResource("2")
+id = "node_pearl_creatures"
+text = "You found the Perle du Lac! Take it back to the sea monster. That should soothe it. But those creatures are still lurking in here... I'm not taking one step until they're gone."
+speaker = "Bill"
+priority = 86
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_active"), SubResource("cond_has_pearl"), SubResource("cond_monster_not_calm"), SubResource("cond_cave_not_cleared")])
+
+[sub_resource type="Resource" id="node_pearl_cleared"]
+script = ExtResource("2")
+id = "node_pearl_cleared"
+text = "You found the Perle du Lac AND cleared out the creatures! Now just give the pearl back to the sea monster. Once it's calm, I can finally go home."
+speaker = "Bill"
+priority = 89
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_active"), SubResource("cond_has_pearl"), SubResource("cond_monster_not_calm"), SubResource("cond_cave_cleared")])
+
 [resource]
 script = ExtResource("1")
 npc_id = "Cave_Bill"
@@ -218,4 +273,4 @@ display_name = "Cave_Bill"
 default_node = "node_000"
 world_id = "World10"
 quest_relations = PackedStringArray("rescue_bill")
-nodes = Array[ExtResource("2")]([SubResource("node_000"), SubResource("node_001"), SubResource("node_002"), SubResource("node_003"), SubResource("node_004"), SubResource("node_005"), SubResource("node_key_hint"), SubResource("node_accept"), SubResource("node_leave"), SubResource("node_hint_monster_calm"), SubResource("node_hint_cave_clear"), SubResource("node_waiting"), SubResource("node_home"), SubResource("node_gone")])
+nodes = Array[ExtResource("2")]([SubResource("node_000"), SubResource("node_001"), SubResource("node_002"), SubResource("node_003"), SubResource("node_004"), SubResource("node_005"), SubResource("node_key_hint"), SubResource("node_key_confirm"), SubResource("node_accept"), SubResource("node_leave"), SubResource("node_hint_monster_calm"), SubResource("node_hint_cave_clear"), SubResource("node_pearl_cleared"), SubResource("node_pearl_creatures"), SubResource("node_waiting"), SubResource("node_home"), SubResource("node_gone")])

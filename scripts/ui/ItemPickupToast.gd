@@ -25,7 +25,7 @@ var _is_upgrade: bool = false  # true when new item is stronger than equipped
 var _auto_close_timer: float = 0.0
 
 # Modal counter + "any active" accessor live on InteractHintManager
-# (moved in Cluster 7b-4 so PlayerController could read them).
+# so PlayerController can read them.
 
 # Take/Purchase mode callback -- invoked when the player accepts.
 var _on_accept: Callable
@@ -40,7 +40,7 @@ var _primary_btn: Button
 var _cancel_btn: Button
 var _cancel_selected: bool = false  # false = primary, true = cancel
 
-# Mirror integer constants for ItemData.ItemCategory (Pattern O) --
+# Mirror integer constants for ItemData.ItemCategory --
 # avoids parse-time identifier lookup of the ItemData class_name on
 # fresh clones / headless smoke. Don't reorder -- .tres files have
 # these baked as ints.
@@ -79,6 +79,22 @@ const TOAST_EDGE_MARGIN: float = 12.0
 # Matches the mute button's 14 px top margin so the toast slots into
 # the same top-right corner as the music icon.
 const TOAST_TOP_OFFSET: float = 14.0
+
+
+# Create a toast parented to the current scene (so it outlives the
+# caller, e.g. a pickup trigger that frees itself) and return it; call
+# one of the show_* methods on the result. Callers that avoid the
+# ItemPickupToast class_name reach this through a preloaded Script.
+static func spawn(tree: SceneTree) -> ItemPickupToast:
+	var toast := ItemPickupToast.new()
+	tree.current_scene.add_child(toast)
+	return toast
+
+# Shorthand for the common "You got X" toast.
+static func spawn_pickup(tree: SceneTree, item: Resource) -> ItemPickupToast:
+	var toast := spawn(tree)
+	toast.show_pickup(item)
+	return toast
 
 
 func _ready() -> void:
@@ -789,7 +805,6 @@ func _close() -> void:
 # up the player's parent chain ever gets PROCESS_MODE_ALWAYS, pause
 # stops catching it. input_locked zeros input regardless.
 func _set_player_input_locked(locked: bool) -> void:
-	# PlayerController is GDScript (Cluster 7b-4).
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	if player != null:
 		player.set("input_locked", locked)

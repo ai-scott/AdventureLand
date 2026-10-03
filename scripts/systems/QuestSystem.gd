@@ -3,7 +3,7 @@ extends Node
 # Autoload — no class_name (collides with the autoload singleton name).
 #
 # Quest state tracker. Reads/writes quest statuses, world flags, and NPC
-# memory to the active SaveData via SaveManager (still C#). Called
+# memory to the active SaveData via SaveManager. Called
 # directly by DialogueManager when evaluating conditions and executing
 # actions.
 #
@@ -11,7 +11,7 @@ extends Node
 #   Path: res://scripts/systems/QuestSystem.gd
 #   Name: QuestSystem
 
-# Mirror of ItemData.ItemCategory (C#, still in Cluster 10 deferred).
+# Mirror of ItemData.ItemCategory.
 # Match integer values exactly. NEVER reorder.
 enum ItemCategory {
 	WEAPON  = 0,
@@ -28,8 +28,7 @@ enum ItemCategory {
 	HAIR    = 11,
 }
 
-# Mirror of DialogueCondition.ConditionType (C#, still in Cluster 8 prep).
-# When DialogueCondition itself ports, this can defer to it.
+# Mirror of DialogueCondition.ConditionType. Match integer values exactly.
 enum ConditionType {
 	QUEST_STATUS = 0,
 	HAS_ITEM = 1,
@@ -98,6 +97,13 @@ func has_world_flag(key: String) -> bool:
 	var flags: Dictionary = data.world_flags
 	return flags.has(key)
 
+# True when the flag is set to anything but "", "false" or "0". Use this
+# for gating (doors, NPC visibility, one-shot pickups); has_world_flag
+# only checks the key exists, so a flag stored as "false" would pass.
+func is_flag_true(key: String) -> bool:
+	var v: String = get_world_flag(key)
+	return not v.is_empty() and v != "false" and v != "0"
+
 # ---- NPC Memory ----
 
 func get_npc_memory(npc_id: String, key: String) -> String:
@@ -162,9 +168,7 @@ func _has_equipped_category(category_name: String) -> bool:
 
 # ---- Condition Evaluation ----
 
-# c is a DialogueCondition Resource (still C# during Cluster 8 prep —
-# PascalCase property access per Pattern C). When the full Cluster 8
-# cutover lands, flip these to snake_case.
+# c is a DialogueCondition Resource.
 func evaluate_condition(c: Resource) -> bool:
 	if c == null:
 		return false
@@ -178,7 +182,7 @@ func evaluate_condition(c: Resource) -> bool:
 		ConditionType.WORLD_FLAG:
 			result = get_world_flag(String(c.flag_key)) == String(c.flag_value)
 		ConditionType.NPC_MEMORY:
-			result = get_npc_memory(String(c.NpcId), String(c.MemoryKey)) == String(c.MemoryValue)
+			result = get_npc_memory(String(c.npc_id), String(c.memory_key)) == String(c.memory_value)
 		ConditionType.PLAYER_LEVEL:
 			result = false  # Phase 6 — no player levels yet
 		ConditionType.CUSTOM:

@@ -23,18 +23,16 @@ const NO_PENDING_SPAWN: Vector2 = Vector2(INF, INF)
 # global_script_class_cache.cfg is rebuilt by the editor's filesystem
 # scan -- headless / fresh-clone smoke runs may not have it yet, and
 # referencing `SaveData.new()` directly fails parse in that window.
-const _SaveDataScript: Script = preload("res://scripts/data/SaveData.gd")
+const _SaveDataScript := preload("res://scripts/data/SaveData.gd")
+const _HealthSystemScript := preload("res://scripts/systems/HealthSystem.gd")
 
-# Fired at the end of TransitionToWorld so C# callers can `await` the
-# completion via Pattern E (ToSignal). The GDScript bridge here is
-# fire-and-forget for the body of go_to_door / go_to_edge in
-# WorldManager.gd, but a signal lets the C# facade preserve
-# `await SaveManager.TransitionToWorld(...)` call shape.
+# Fired at the end of transition_to_world so callers can
+# `await SaveManager.transition_completed` for completion.
 signal transition_completed
 
-# The live save data for the current play session. Resource (SaveData
-# class_name).
-var current_data: Resource = null
+# The live save data for the current play session (a SaveData, typed
+# through the preloaded script so no class_name lookup is needed).
+var current_data: _SaveDataScript = null
 
 # Which slot is active (-1 = none).
 var active_slot: int = -1
@@ -177,11 +175,10 @@ func save(slot: int = -1) -> bool:
 		current_data.position_x = player.global_position.x
 		current_data.position_y = player.global_position.y
 
-		# HealthSystem is still C# (Cluster 10) -- PascalCase Variant read.
-		var hs := player.get_node_or_null("HealthSystem")
+		var hs := player.get_node_or_null("HealthSystem") as _HealthSystemScript
 		if hs != null:
-			current_data.health = int(hs.get("current_health"))
-			current_data.max_health = int(hs.get("max_health"))
+			current_data.health = hs.current_health
+			current_data.max_health = hs.max_health
 
 	current_data.current_world = get_tree().current_scene.scene_file_path
 
@@ -201,7 +198,7 @@ func load_slot(slot: int) -> void:
 	if not slot_exists(slot):
 		return
 
-	current_data = ResourceLoader.load(_slot_path(slot), "", ResourceLoader.CACHE_MODE_REPLACE) as Resource
+	current_data = ResourceLoader.load(_slot_path(slot), "", ResourceLoader.CACHE_MODE_REPLACE) as _SaveDataScript
 	if current_data == null:
 		print("[SaveManager] load returned null")
 		return
@@ -264,7 +261,7 @@ func load_slot(slot: int) -> void:
 	# 0.4s fade out = 1.9s of black + banner before the world reveal).
 	# Uses WorldMeta if available, otherwise the canonical name map keyed
 	# by scene filename.
-	var meta := get_tree().current_scene.find_child("WorldMeta", true, false) if get_tree().current_scene != null else null
+	var meta := WorldManager.get_world_meta()
 	var meta_name: String = String(meta.get("world_display_name")) if meta != null else ""
 	var display_name: String = meta_name if not meta_name.is_empty() else world_display_name(current_data.current_world)
 	FadeOverlay.show_banner(display_name, 0.3, 1.2, 0.4)
@@ -288,9 +285,8 @@ func delete_slot(slot: int) -> bool:
 # Callers should `await` this so subsequent "wait for player" loops run
 # AFTER the scene actually swapped.
 func transition_to_world(scene_path: String) -> void:
-	# PerfMonitor.gd uses the perf_begin/perf_end pair (no IDisposable
-	# scope in GDScript). The C# facade wraps that as a using-disposable
-	# scope; here we mirror it with an explicit end at function exit.
+	# PerfMonitor uses a perf_begin/perf_end pair; end it explicitly at
+	# every function exit.
 	var perf_id: int = PerfMonitor.perf_begin("scene_transition", scene_path)
 	print("[SaveManager] transition_to_world: %s" % scene_path)
 	# Snapshot the live player's HP into current_data before the scene
@@ -299,10 +295,10 @@ func transition_to_world(scene_path: String) -> void:
 	# current_data.health (last touched by save() -- typically full).
 	# Net effect: every door/edge transition silently heals the player.
 	var live_player := get_tree().get_first_node_in_group("player") as Node2D
-	var live_health: Node = live_player.get_node_or_null("HealthSystem") if live_player != null else null
+	var live_health := live_player.get_node_or_null("HealthSystem") as _HealthSystemScript if live_player != null else null
 	if live_health != null and current_data != null:
-		current_data.health = int(live_health.get("current_health"))
-		current_data.max_health = int(live_health.get("max_health"))
+		current_data.health = live_health.current_health
+		current_data.max_health = live_health.max_health
 	# Same problem applies to inventory: Equip/Unequip from the UI
 	# don't write to current_data, so without this snapshot the new
 	# scene's apply_save_to_player -> Inventory.load_from(current_data)
@@ -433,7 +429,7 @@ func _apply_save_to_player() -> void:
 	# WorldManager._compute_entry_position's "clamp later" sentinel
 	# when you walk off the north edge). Without this, the player ends
 	# up far below the visible viewport on Continue.
-	var meta := get_tree().current_scene.find_child("WorldMeta", true, false) if get_tree().current_scene != null else null
+	var meta := WorldManager.get_world_meta()
 	var map_size: Vector2i = meta.get("map_size") if meta != null else Vector2i.ZERO
 	if map_size.x > 0 and map_size.y > 0:
 		const EDGE_MARGIN: float = 32.0
@@ -447,8 +443,7 @@ func _apply_save_to_player() -> void:
 			current_data.position_x = clamped.x
 			current_data.position_y = clamped.y
 
-	# HealthSystem is C# (Cluster 10) -- PascalCase method via Variant.
-	var health := player.get_node_or_null("HealthSystem")
+	var health := player.get_node_or_null("HealthSystem") as _HealthSystemScript
 	if health != null:
 		# Continue / Try Again forces a full refill regardless of what
 		# current_data.health holds. The line above in load_slot() seeds
@@ -459,7 +454,7 @@ func _apply_save_to_player() -> void:
 		# beat ran. Reading off max_health directly here is the only
 		# place the saved value never leaks through.
 		var desired_health: int = current_data.max_health if _force_full_health_on_apply else current_data.health
-		health.call("restore_state", desired_health, current_data.max_health)
+		health.restore_state(desired_health, current_data.max_health)
 		_force_full_health_on_apply = false
 
 	# Spawn-unstuck: if the saved/edge position lands on a solid (a
