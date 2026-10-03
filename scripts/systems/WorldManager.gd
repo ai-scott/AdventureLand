@@ -53,6 +53,12 @@ func _input(event: InputEvent) -> void:
 		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
 		return
 
+	# "=" — dev shortcut: jump to Waterfall Cave Bill with the sea monster
+	# calmed and the cave cleared, so talking to him starts the walk home.
+	if key.keycode == KEY_EQUAL and OS.is_debug_build():
+		_debug_jump_to_bill_leave()
+		return
+
 	if key.keycode != KEY_QUOTELEFT:
 		return
 
@@ -72,6 +78,34 @@ func _input(event: InputEvent) -> void:
 	# toggle-ON edge so a second backtick press doesn't duplicate items.
 	if debug_visible:
 		_grant_debug_loadout()
+
+func _debug_jump_to_bill_leave() -> void:
+	if is_transitioning or SaveManager.current_data == null:
+		print("[Debug] '=' needs a loaded save (start or continue a game first)")
+		return
+	print("[Debug] '=' — jumping to cave Bill, ready to head home")
+	QuestSystem.set_world_flag("nick_asked_find_bill", "true")
+	QuestSystem.set_quest_status("rescue_bill", "Active")
+	QuestSystem.set_quest_status("pearl_quest", "Complete")
+	QuestSystem.set_world_flag("cave_cleared", "true")
+	QuestSystem.set_world_flag("bill_left_cave", "false")
+
+	is_transitioning = true
+	var dm := get_dialogue_manager()
+	if dm != null and dm.get("is_active") == true:
+		dm.call("end_dialogue")
+	get_tree().paused = false
+	await FadeOverlay.fade_out(0.3)
+	# Across the holes from Bill (84, 428), inside his talk radius.
+	SaveManager.pending_spawn_position = Vector2(140, 420)
+	await SaveManager.transition_to_world("res://scenes/worlds/World_10_WaterfallCave.tscn")
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player is CharacterBody2D:
+		SaveManager.unstick_player(player)
+		snap_camera(player)
+	await FadeOverlay.fade_in(0.3)
+	is_transitioning = false
+	transition_completed.emit()
 
 func _grant_debug_loadout() -> void:
 	var player := get_tree().get_first_node_in_group("player") as Node

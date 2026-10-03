@@ -25,15 +25,34 @@ class_name WorldMusic extends Node
 @export var mid_track: String = ""
 @export var high_track: String = ""
 
+# Optional: once this world flag is true, swap to cleared_track (single).
+# E.g. the Waterfall Cave plays danger layers until every enemy is dead
+# (CaveClearTracker sets "cave_cleared"), then calms to the interior theme.
+@export var cleared_flag: String = ""
+@export var cleared_track: String = ""
+
 func _ready() -> void:
 	if base_track.is_empty():
 		return
+	if _is_cleared():
+		MusicController.start_track(cleared_track)
+		return
+	set_process(not cleared_flag.is_empty() and not cleared_track.is_empty())
 
 	# Mid + High both set = layered mix. Otherwise single track.
 	if not mid_track.is_empty() and not high_track.is_empty():
 		MusicController.start_mix(base_track, mid_track, high_track)
 	else:
 		MusicController.start_track(base_track)
+
+func _process(_delta: float) -> void:
+	if _is_cleared():
+		MusicController.start_track(cleared_track)
+		set_process(false)
+
+func _is_cleared() -> bool:
+	return not cleared_flag.is_empty() and not cleared_track.is_empty() \
+		and QuestSystem.is_flag_true(cleared_flag)
 
 func _exit_tree() -> void:
 	# The next world's WorldMusic will _ready before this one is freed

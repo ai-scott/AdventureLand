@@ -309,6 +309,10 @@ func _recolor_hair(row: int) -> void:
 	print("[Palette] hair recolored: row %d, %d colors" % [row, replace.size()])
 
 
+# Cardinal direction the player is facing (followers mirror it).
+func get_facing() -> Vector2:
+	return _facing
+
 func _physics_process(delta: float) -> void:
 	# Gate on the player's one-way is_dead flag, NOT _health.IsDead -- the
 	# GameOverScreen refills HP partway through the death beat (so the

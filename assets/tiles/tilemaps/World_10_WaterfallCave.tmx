@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="21">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="22">
  <tileset firstgid="1" source="../tilesets/muddy cave v3.tsx"/>
  <tileset firstgid="321" source="../tilesets/Mana_Interiors.tsx"/>
  <layer id="1" name="Ground 3 - under P" width="32" height="30">
@@ -292,6 +292,9 @@
    <polygon points="0,0 4.0882,-19.8959 6.81366,-20.7135 8.99403,-28.3448 11.4469,-25.8919 14.1724,-7.6313 17.1704,-7.90385 18.5332,-20.1684 22.6214,-20.7135 24.2566,-28.3448 26.1645,-28.3448 28.3448,-15.5351 28.8899,-6.81366 32.433,-2.45292 43.3349,-12.8097 34.3408,-21.2586 35.431,-28.0723 39.7918,-28.3448 47.1505,-14.9901 41.1545,-6.26857 30.2527,2.72546 0.817639,2.99801"/>
   </object>
   <object id="20" x="233.845" y="459.241" width="0.272546"/>
+  <object id="21" type="wall" x="0" y="44">
+   <polygon points="0,0 12,0 14,20 8,24 0,24"/>
+  </object>
  </objectgroup>
  <objectgroup id="9" name="Walls"/>
 </map>

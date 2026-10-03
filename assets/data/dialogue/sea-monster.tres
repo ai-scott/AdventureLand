@@ -35,73 +35,39 @@ script = ExtResource("3")
 quest_id = "pearl_quest"
 status = "Met_Sea_Monster"
 
+[sub_resource type="Resource" id="cond_greet_no_pearl"]
+script = ExtResource("3")
+type = 1
+negate = true
+item_id = "Perle du Lac"
+
 [sub_resource type="Resource" id="resp_7"]
 script = ExtResource("5")
 text = "(lie) Sure I did. Try and take it from me!"
 leads_to = "player_taunts"
+conditions = Array[ExtResource("3")]([SubResource("cond_greet_no_pearl")])
 
 [sub_resource type="Resource" id="resp_8"]
 script = ExtResource("5")
 text = "I have no idea what you're talking about."
 leads_to = "explain_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_greet_no_pearl")])
 
 [sub_resource type="Resource" id="cond_has_pearl_admit"]
 script = ExtResource("3")
 type = 1
 item_id = "Perle du Lac"
 
-[sub_resource type="Resource" id="resp_admit_give"]
-script = ExtResource("5")
-text = "Here, take it. Just please calm down."
-leads_to = "return_with_pearl"
-
-[sub_resource type="Resource" id="resp_admit_bargain"]
-script = ExtResource("5")
-text = "What will you give me in return?"
-leads_to = "bargain"
-
-[sub_resource type="Resource" id="resp_bargain_deal"]
-script = ExtResource("5")
-text = "Deal. Here's your pearl."
-leads_to = "bargain_accept"
-
-[sub_resource type="Resource" id="act_bargain_remove"]
-script = ExtResource("4")
-type = 4
-item_id = "Perle du Lac"
-
-[sub_resource type="Resource" id="node_admit"]
-script = ExtResource("2")
-id = "admit_pearl"
-text = "You... you have the Perle du Lac?! Please, return it to me. The lake has been restless without it."
-speaker = "SeaMonster"
-priority = 990
-conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
-responses = Array[ExtResource("5")]([SubResource("resp_admit_give"), SubResource("resp_admit_bargain")])
-
-[sub_resource type="Resource" id="node_bargain"]
-script = ExtResource("2")
-id = "bargain"
-text = "Hmph. Bargaining with the guardian of the lake... Very well. Return my pearl, and I will give you a magical weapon I found in the depths."
-speaker = "SeaMonster"
-priority = 989
-conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
-responses = Array[ExtResource("5")]([SubResource("resp_bargain_deal")])
-
-[sub_resource type="Resource" id="node_bargain_accept"]
-script = ExtResource("2")
-id = "bargain_accept"
-text = "My pearl, home at last! A deal is a deal. The Magic Trident is yours."
-speaker = "SeaMonster"
-priority = 988
-auto_advance = "trident_received"
-conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
-actions = Array[ExtResource("4")]([SubResource("act_bargain_remove")])
-
 [sub_resource type="Resource" id="resp_admit"]
 script = ExtResource("5")
-text = "I have your pearl. Bill locked it in a chest in the waterfall cave."
-leads_to = "admit_pearl"
+text = "Yes, I have your pearl. Will this calm you down?"
+leads_to = "return_with_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
+
+[sub_resource type="Resource" id="resp_admit_trade"]
+script = ExtResource("5")
+text = "I'll give it to you if you give me something in return."
+leads_to = "return_with_pearl"
 conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
 
 [sub_resource type="Resource" id="node_5"]
@@ -110,7 +76,7 @@ id = "greeting_response"
 speaker = "You"
 priority = 999
 conditions = Array[ExtResource("3")]([SubResource("cond_6")])
-responses = Array[ExtResource("5")]([SubResource("resp_7"), SubResource("resp_8"), SubResource("resp_admit")])
+responses = Array[ExtResource("5")]([SubResource("resp_7"), SubResource("resp_8"), SubResource("resp_admit"), SubResource("resp_admit_trade")])
 
 [sub_resource type="Resource" id="act_11"]
 script = ExtResource("4")
@@ -450,4 +416,4 @@ npc_id = "SeaMonster"
 display_name = "SeaMonster"
 default_node = "greeting"
 world_id = "World10"
-nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_5"), SubResource("node_9"), SubResource("node_15"), SubResource("node_17"), SubResource("node_21"), SubResource("node_26"), SubResource("node_32"), SubResource("node_36"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_53"), SubResource("node_56"), SubResource("node_58"), SubResource("node_62"), SubResource("node_admit"), SubResource("node_bargain"), SubResource("node_bargain_accept")])
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_5"), SubResource("node_9"), SubResource("node_15"), SubResource("node_17"), SubResource("node_21"), SubResource("node_26"), SubResource("node_32"), SubResource("node_36"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_53"), SubResource("node_56"), SubResource("node_58"), SubResource("node_62")])

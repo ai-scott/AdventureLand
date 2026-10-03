@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldTriggers" load_steps=18 format=3]
+[gd_resource type="Resource" script_class="WorldTriggers" load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/WorldTriggers.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/data/TriggerData.gd" id="2"]
@@ -109,7 +109,14 @@ position = Vector2(207.953, 460.058)
 size = Vector2(16.0, 16.0)
 polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(4.0882, -19.8959), Vector2(6.81366, -20.7135), Vector2(8.99403, -28.3448), Vector2(11.4469, -25.8919), Vector2(14.1724, -7.6313), Vector2(17.1704, -7.90385), Vector2(18.5332, -20.1684), Vector2(22.6214, -20.7135), Vector2(24.2566, -28.3448), Vector2(26.1645, -28.3448), Vector2(28.3448, -15.5351), Vector2(28.8899, -6.81366), Vector2(32.433, -2.45292), Vector2(43.3349, -12.8097), Vector2(34.3408, -21.2586), Vector2(35.431, -28.0723), Vector2(39.7918, -28.3448), Vector2(47.1505, -14.9901), Vector2(41.1545, -6.26857), Vector2(30.2527, 2.72546), Vector2(0.817639, 2.99801)])
 
+[sub_resource type="Resource" id="trig_15"]
+script = ExtResource("2")
+kind = 5
+position = Vector2(0.0, 44.0)
+size = Vector2(16.0, 16.0)
+polygon_points = Array[Vector2]([Vector2(0, 0), Vector2(12, 0), Vector2(14, 20), Vector2(8, 24), Vector2(0, 24)])
+
 [resource]
 script = ExtResource("1")
 source_tmx = "assets/tiles/tilemaps/World_10_WaterfallCave.tmx"
-triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14")])
+triggers = Array[ExtResource("2")]([SubResource("trig_0"), SubResource("trig_1"), SubResource("trig_2"), SubResource("trig_3"), SubResource("trig_4"), SubResource("trig_5"), SubResource("trig_6"), SubResource("trig_7"), SubResource("trig_8"), SubResource("trig_9"), SubResource("trig_10"), SubResource("trig_11"), SubResource("trig_12"), SubResource("trig_13"), SubResource("trig_14"), SubResource("trig_15")])

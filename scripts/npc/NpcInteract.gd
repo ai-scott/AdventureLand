@@ -32,6 +32,10 @@ class_name NpcInteract extends Area2D
 # If set, NPC is hidden until this world flag is truthy.
 @export var required_world_flag: String = ""
 
+# Runtime override: keeps the NPC hidden regardless of gates. Set by
+# FollowerSystem while a trailing copy of this NPC is on screen.
+var held_hidden: bool = false
+
 var _player_in_range: bool = false
 # Latched true once the player opens dialogue with this NPC. Cleared
 # on body exit to prevent retrigger loops.
@@ -109,6 +113,8 @@ func _check_post_unlock_overlap() -> void:
 			break
 
 func _is_unlocked() -> bool:
+	if held_hidden:
+		return false
 	# Hide if any forbidding flag is set.
 	if not hide_when_world_flag.is_empty() and QuestSystem.is_flag_true(hide_when_world_flag):
 		return false

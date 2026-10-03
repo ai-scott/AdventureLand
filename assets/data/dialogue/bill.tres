@@ -64,7 +64,7 @@ item_id = "Sea Monster Key"
 [sub_resource type="Resource" id="node_000"]
 script = ExtResource("2")
 id = "node_000"
-text = "Wh-who's there?! Oh, you're not the sea monster... Thank goodness!"
+text = "Wh-who's there?! Oh good, you're not a monster... This cave is crawling with them!"
 speaker = "Bill"
 priority = 100
 auto_advance = "node_001"
@@ -100,7 +100,7 @@ conditions = Array[ExtResource("3")]([SubResource("cond_not_started")])
 [sub_resource type="Resource" id="node_004"]
 script = ExtResource("2")
 id = "node_004"
-text = "I ran and hid in this cave behind the waterfall. I locked the pearl in a chest up above, but... I lost the key while running."
+text = "I ran and hid in this cave behind the waterfall. I locked the pearl in a chest down that pathway, but... I lost the key while running."
 speaker = "Bill"
 priority = 96
 auto_advance = "node_005"
@@ -154,7 +154,7 @@ leads_to = "node_accept"
 [sub_resource type="Resource" id="node_key_confirm"]
 script = ExtResource("2")
 id = "node_key_confirm"
-text = "That's it! That's the key! The chest is in the little nook at the back of the cave, on the east side. The Perle du Lac is locked inside."
+text = "That's it! That's the key! The chest is down that pathway, in the nook on the east side. The pearl is inside."
 speaker = "Bill"
 priority = 94
 conditions = Array[ExtResource("3")]([SubResource("cond_not_started")])
@@ -201,7 +201,7 @@ actions = Array[ExtResource("4")]([SubResource("act_returning"), SubResource("ac
 [sub_resource type="Resource" id="node_hint_monster_calm"]
 script = ExtResource("2")
 id = "node_hint_monster_calm"
-text = "You calmed the sea monster?! Amazing... but I still hear things skittering around in here. Clear out those creatures and I'll make a run for it."
+text = "You calmed the sea monster?! But I still hear things skittering around in here. Clear them out and I'll make a run for it."
 speaker = "Bill"
 priority = 88
 ends_dialogue = true
@@ -210,7 +210,7 @@ conditions = Array[ExtResource("3")]([SubResource("cond_active"), SubResource("c
 [sub_resource type="Resource" id="node_hint_cave_clear"]
 script = ExtResource("2")
 id = "node_hint_cave_clear"
-text = "It's gone quiet in here... did you get rid of those creatures? But that sea monster is still out there waiting for me!"
+text = "It's gone quiet... you cleared out the creatures! Now get the pearl from my chest and return it to calm the sea monster."
 speaker = "Bill"
 priority = 87
 ends_dialogue = true
@@ -251,7 +251,7 @@ item_id = "Perle du Lac"
 [sub_resource type="Resource" id="node_pearl_creatures"]
 script = ExtResource("2")
 id = "node_pearl_creatures"
-text = "You found the Perle du Lac! Take it back to the sea monster. That should soothe it. But those creatures are still lurking in here... I'm not taking one step until they're gone."
+text = "You found the Perle du Lac! That should soothe the sea monster. But I'm not moving until those creatures are gone."
 speaker = "Bill"
 priority = 86
 ends_dialogue = true
@@ -260,7 +260,7 @@ conditions = Array[ExtResource("3")]([SubResource("cond_active"), SubResource("c
 [sub_resource type="Resource" id="node_pearl_cleared"]
 script = ExtResource("2")
 id = "node_pearl_cleared"
-text = "You found the Perle du Lac AND cleared out the creatures! Now just give the pearl back to the sea monster. Once it's calm, I can finally go home."
+text = "The Perle du Lac AND the creatures cleared out? Just give the pearl back to the sea monster and I can go home!"
 speaker = "Bill"
 priority = 89
 ends_dialogue = true

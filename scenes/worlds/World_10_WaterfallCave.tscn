@@ -20,6 +20,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/LockedChest.tscn" id="19_chest"]
 [ext_resource type="Resource" path="res://assets/data/items/123_pink_oyster_pearl.tres" id="20_pearl"]
 [ext_resource type="Script" path="res://scripts/world/CaveClearTracker.gd" id="21_tracker"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameOver.tscn" id="22_gameover"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cave"]
 texture = ExtResource("1")
@@ -96,11 +97,13 @@ position = Vector2(120, 200)
 stay_dead = true
 
 [node name="Bat1" parent="Entities" instance=ExtResource("18_bat")]
-position = Vector2(108, 62)
+position = Vector2(384, 234)
+z_index = 1
 stay_dead = true
 
 [node name="Bat2" parent="Entities" instance=ExtResource("18_bat")]
-position = Vector2(236, 62)
+position = Vector2(236, 34)
+z_index = 1
 stay_dead = true
 
 [node name="Ooze1" parent="Entities" instance=ExtResource("17_ooze")]
@@ -127,4 +130,12 @@ edge_scene = ExtResource("11")
 
 [node name="WorldMusic" type="Node" parent="."]
 script = ExtResource("12")
-base_track = "adventureland_calm"
+base_track = "adventureland_stress"
+mid_track = "adventureland_stress"
+high_track = "adventureland_danger"
+cleared_flag = "cave_cleared"
+cleared_track = "adventureland_interior"
+
+[node name="GameOver" parent="." instance=ExtResource("22_gameover")]
+visible = false
+player_health_path = NodePath("../Entities/Player/HealthSystem")
