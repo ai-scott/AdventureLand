@@ -1,0 +1,102 @@
+name: Godot
+
+# check  -- every push / PR: import the project, boot each world scene
+#           headless, fail on any script or parse error.
+# web    -- pushes to main + manual runs: export the "Web" preset and
+#           attach the build as a downloadable artifact.
+# itch   -- manual only (Actions -> Godot -> Run workflow, tick
+#           "publish"): push the web build to itch.io with butler.
+#           Needs the BUTLER_API_KEY repo secret.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the web build to itch.io"
+        type: boolean
+        default: false
+      channel:
+        description: "itch.io channel (the upload's channel name)"
+        type: string
+        default: "html5"
+
+env:
+  GODOT_VERSION: "4.6.3"
+  GODOT_URL: https://github.com/godotengine/godot/releases/download/4.6.3-stable
+  ITCH_TARGET: penlockgames/adventureland
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot
+        run: |
+          curl -sSL -o godot.zip "$GODOT_URL/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          godot --version
+
+      - name: Import project
+        run: godot --headless --import 2>&1 | tail -20
+
+      - name: Smoke-test world scenes
+        run: |
+          fail=0
+          for scene in scenes/ui/TitleScreen.tscn scenes/worlds/*.tscn; do
+            log="smoke_$(basename "$scene" .tscn).log"
+            timeout 120 godot --headless --path . "res://$scene" --quit-after 300 > "$log" 2>&1 || true
+            if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" "$log" > /dev/null; then
+              echo "::error file=$scene::script errors while booting $scene"
+              grep -E -A3 "SCRIPT ERROR|Parse Error|Failed to load script" "$log" | head -40
+              fail=1
+            else
+              echo "ok  $scene"
+            fi
+          done
+          exit $fail
+
+  web:
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot + export templates
+        run: |
+          curl -sSL -o godot.zip "$GODOT_URL/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          curl -sSL -o templates.tpz "$GODOT_URL/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q templates.tpz
+          dest="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$dest"
+          mv templates/* "$dest/"
+
+      - name: Export Web build
+        run: |
+          godot --headless --import 2>&1 | tail -5
+          mkdir -p build/web
+          godot --headless --export-release "Web" build/web/index.html
+          ls -la build/web
+          test -f build/web/index.html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: adventureland-web
+          path: build/web
+
+      - name: Publish to itch.io
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          curl -sSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler
+          chmod +x butler/butler
+          ./butler/butler push build/web "$ITCH_TARGET:${{ inputs.channel }}" --userversion "${GITHUB_SHA::7}"

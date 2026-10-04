@@ -6,7 +6,7 @@ Guidance for Claude Code instances working in this repository.
 
 Adventure Land — a top-down action-adventure RPG. Originally built in Construct 3 (TypeScript); rebuilt in Godot 4 starting April 2026. As of **2026-05-16 the repository was reorganized** so the Godot project lives at the repo root (no more `godot-prototype/` subfolder). The legacy C3 codebase is preserved at git tag `c3-legacy-2026-05-16`.
 
-**Current state:** Active itch.io launch prep. The C# → GDScript port (done to unlock web export) is complete on branch `port/gdscript` — the project is 100% GDScript, no `.cs` files remain. See `TODO.md` for the active task list; `docs/archive/` holds the historical port and phase docs.
+**Current state:** Active itch.io launch prep. The C# → GDScript port (done to unlock web export) is complete and merged to `main` (2026-10-03) — the project is 100% GDScript, no `.cs` files remain. See `TODO.md` for the active task list; `docs/archive/` holds the historical port and phase docs.
 
 **Worlds shipped:** Leafwood Village (World_00), Leafwood Forest (World_01), Bottomless Lake (World_10), Snowy Mountain (World_20), interiors (Blacksmith, Adventure Shop, General Store, Penny's House, Windmill). Gray Mist Mountain (World_03) in progress.
 
@@ -524,7 +524,8 @@ two-option prompts use `[Space] <primary>    [Z] <cancel>`.
 - **Flag plugin requirements immediately** — user explicitly said this in the opening brief.
 - **Explicit editor instructions** when Godot UI clicks are needed (e.g., "Project → Project Settings → Input Map").
 - **No scope creep.** If it wasn't in the original brief, confirm before adding.
-- **Git flow:** active branch is `port/gdscript` on `ai-scott/AdventureLand` (default branch `Typescript-adventure`). The Godot project is the repo root. Commit or push only when asked.
+- **Git flow:** `main` is the default and active branch on `ai-scott/AdventureLand` (the Godot project is the repo root). `Typescript-adventure` is kept as the Construct 3 archive (also tagged `c3-legacy-2026-05-16`). Commit or push only when asked.
+- **CI:** `.github/workflows/godot.yml` boots every world scene headless on each push/PR and exports the Web build on pushes to `main` (downloadable artifact). Publishing to itch.io is manual: Actions → Godot → Run workflow → tick "publish" (needs the `BUTLER_API_KEY` secret).
 
 ## Known Open Issues
 
