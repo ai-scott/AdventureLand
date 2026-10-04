@@ -1,0 +1,44 @@
+{
+  "tilesets": [
+    {
+      "image": "FantasyForest_Combo.png",
+      "columns": 100,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/winter forest (clean).png",
+      "columns": 32,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/winter forest (snowy).png",
+      "columns": 32,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/winter (clean) 32x32.png",
+      "columns": 7,
+      "tile_size": 32
+    },
+    {
+      "image": "WinterSheets/winter forest wang tiles (snowy).png",
+      "columns": 64,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/winter water sparkles B 16x16.png",
+      "columns": 4,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/winter waterfall B 16x16.png",
+      "columns": 8,
+      "tile_size": 16
+    },
+    {
+      "image": "WinterSheets/bonus bridge.png",
+      "columns": 4,
+      "tile_size": 16
+    }
+  ]
+}

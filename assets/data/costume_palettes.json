@@ -1,0 +1,533 @@
+{
+  "51": {
+    "layer": "14head",
+    "base": "fbas_14head_boaterhat_00d",
+    "variant_suffix": "straw_boat",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#5B2A54",
+      "#289860",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#474CB3",
+      "#4F361D",
+      "#5371B0",
+      "#946C1E",
+      "#CCAA4C",
+      "#EDD68F"
+    ]
+  },
+  "52": {
+    "layer": "14head",
+    "base": "fbas_14head_boaterhat_00d",
+    "variant_suffix": "cornflower_blue",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#5B2A54",
+      "#289860",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#652D5F",
+      "#2C2353",
+      "#A858A8",
+      "#454995",
+      "#5371B0",
+      "#79A4D1"
+    ]
+  },
+  "53": {
+    "layer": "14head",
+    "base": "fbas_14head_boaterhat_00d",
+    "variant_suffix": "beige_green",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#5B2A54",
+      "#289860",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#205040",
+      "#403020",
+      "#289860",
+      "#786850",
+      "#B8A080",
+      "#E8D0B0"
+    ]
+  },
+  "55": {
+    "layer": "14head",
+    "base": "fbas_14head_strawhat_00d",
+    "variant_suffix": "light",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#5B2A54",
+      "#289860",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#502888",
+      "#52525F",
+      "#B090E8",
+      "#7C8989",
+      "#A7B5A7",
+      "#DCDCCB"
+    ]
+  },
+  "56": {
+    "layer": "14head",
+    "base": "fbas_14head_floppyhat_00d",
+    "variant_suffix": "rosy",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#5B2A54",
+      "#289860",
+      "#B7437B",
+      "#58E0A0",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#652D5F",
+      "#450216",
+      "#A858A8",
+      "#7F0511",
+      "#D8A0E8",
+      "#B43269",
+      "#D169A7"
+    ]
+  },
+  "61": {
+    "layer": "11neck",
+    "base": "fbas_11neck_scarf_00b",
+    "variant_suffix": "sunset",
+    "base_colors": [
+      "#181818",
+      "#5B2A54",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#681830",
+      "#A60233",
+      "#E87048",
+      "#F8C060"
+    ]
+  },
+  "62": {
+    "layer": "11neck",
+    "base": "fbas_11neck_cloakwithmantleplain_00",
+    "variant_suffix": "dark",
+    "base_colors": [
+      "#181818",
+      "#5B2A54",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#2C253E",
+      "#4C4568",
+      "#63778F",
+      "#9CB8C3"
+    ]
+  },
+  "63": {
+    "layer": "11neck",
+    "base": "fbas_11neck_cloakwithmantleplain_00b",
+    "variant_suffix": "pink",
+    "base_colors": [
+      "#181818",
+      "#5B2A54",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#5B2A54",
+      "#B7437B",
+      "#D76EA2",
+      "#FAB6C1"
+    ]
+  },
+  "71": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_tanktop_00a",
+    "variant_suffix": "green_gold_waistcoat",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#205040",
+      "#205040",
+      "#289860"
+    ]
+  },
+  "72": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_longshirt_00a",
+    "variant_suffix": "emerald",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#205858",
+      "#49A662",
+      "#A0D880"
+    ]
+  },
+  "73": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_tanktop_00a",
+    "variant_suffix": "orange_red_vest",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#6E0511",
+      "#89152C",
+      "#CF3939",
+      "#CF3939"
+    ]
+  },
+  "74": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_shortshirt_00a",
+    "variant_suffix": "red_tee",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#4D1731",
+      "#641A25",
+      "#B42831",
+      "#E55B5B"
+    ]
+  },
+  "75": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_shortshirt_00a",
+    "variant_suffix": "golden_tee",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#703828",
+      "#945816",
+      "#CD9217",
+      "#D7C448"
+    ]
+  },
+  "76": {
+    "layer": "05shrt",
+    "base": "fbas_05shrt_longshirt_00a",
+    "variant_suffix": "purple",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#502888",
+      "#7860B8",
+      "#B090E8"
+    ]
+  },
+  "91": {
+    "layer": "04lwr1",
+    "base": "fbas_04lwr1_longpants_00a",
+    "variant_suffix": "pinkblack",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#000000",
+      "#472963",
+      "#B936AB"
+    ]
+  },
+  "92": {
+    "layer": "08lwr3",
+    "base": "fbas_08lwr3_longskirt_00a",
+    "variant_suffix": "purple_heart",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#800B5B",
+      "#BF00CA",
+      "#7838C0"
+    ]
+  },
+  "93": {
+    "layer": "04lwr1",
+    "base": "fbas_04lwr1_shorts_00a",
+    "variant_suffix": "red",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#641A25",
+      "#B42831",
+      "#E55B5B"
+    ]
+  },
+  "94": {
+    "layer": "08lwr3",
+    "base": "fbas_08lwr3_frillydress_00a",
+    "variant_suffix": "rose",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#5B2A54",
+      "#802050",
+      "#C85078",
+      "#F8B0B0"
+    ]
+  },
+  "95": {
+    "layer": "04lwr1",
+    "base": "fbas_04lwr1_shorts_00a",
+    "variant_suffix": "brown",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#3F1F1B",
+      "#642F25",
+      "#8E5744"
+    ]
+  },
+  "96": {
+    "layer": "06lwr2",
+    "base": "fbas_06lwr2_overalls_00a",
+    "variant_suffix": "bluejeans",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#1D386B",
+      "#3F6C9B",
+      "#65ACC5"
+    ]
+  },
+  "97": {
+    "layer": "04lwr1",
+    "base": "fbas_04lwr1_longpants_00a",
+    "variant_suffix": "tan",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#583828",
+      "#985E34",
+      "#E19856"
+    ]
+  },
+  "98": {
+    "layer": "08lwr3",
+    "base": "fbas_08lwr3_longdress_00a",
+    "variant_suffix": "blue",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#1D386B",
+      "#3F6C9B",
+      "#65ACC5"
+    ]
+  },
+  "101": {
+    "layer": "03fot1",
+    "base": "fbas_03fot1_shoes_00a",
+    "variant_suffix": "blue",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#1D386B",
+      "#3F6C9B",
+      "#65ACC5"
+    ]
+  },
+  "102": {
+    "layer": "07fot2",
+    "base": "fbas_07fot2_cuffedboots_00a",
+    "variant_suffix": "red",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#8C2020",
+      "#D11B1B",
+      "#E43F3F"
+    ]
+  },
+  "103": {
+    "layer": "03fot1",
+    "base": "fbas_03fot1_shoes_00a",
+    "variant_suffix": "brown",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#3F1F1B",
+      "#642F25",
+      "#8E5744"
+    ]
+  },
+  "104": {
+    "layer": "03fot1",
+    "base": "fbas_03fot1_shoes_00a",
+    "variant_suffix": "ballet",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#AC3A7B",
+      "#E35499",
+      "#DC75A7",
+      "#FAB6C1"
+    ]
+  },
+  "105": {
+    "layer": "03fot1",
+    "base": "fbas_03fot1_sandals_00a",
+    "variant_suffix": "green_flops",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#295231",
+      "#5A845A",
+      "#94CE73"
+    ]
+  },
+  "106": {
+    "layer": "07fot2",
+    "base": "fbas_07fot2_curlytoeshoes_00a",
+    "variant_suffix": "red",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#205040",
+      "#B42831",
+      "#E55B5B"
+    ]
+  },
+  "107": {
+    "layer": "07fot2",
+    "base": "fbas_07fot2_cuffedboots_00a",
+    "variant_suffix": "forest_green",
+    "base_colors": [
+      "#181818",
+      "#205040",
+      "#289860",
+      "#58E0A0"
+    ],
+    "variant_colors": [
+      "#181818",
+      "#08381E",
+      "#10743D",
+      "#19B05C"
+    ]
+  }
+}

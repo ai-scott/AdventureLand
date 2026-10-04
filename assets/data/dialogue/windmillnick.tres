@@ -1,0 +1,197 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://dnm7ybst6tubi"]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
+
+[sub_resource type="Resource" id="cond_not_asked"]
+script = ExtResource("3")
+type = 2
+negate = true
+flag_key = "nick_asked_find_bill"
+flag_value = "true"
+
+[sub_resource type="Resource" id="cond_asked"]
+script = ExtResource("3")
+type = 2
+flag_key = "nick_asked_find_bill"
+flag_value = "true"
+
+[sub_resource type="Resource" id="cond_returning"]
+script = ExtResource("3")
+quest_id = "rescue_bill"
+status = "Bill_Returning"
+
+[sub_resource type="Resource" id="cond_complete"]
+script = ExtResource("3")
+quest_id = "rescue_bill"
+status = "Complete"
+
+[sub_resource type="Resource" id="act_asked"]
+script = ExtResource("4")
+type = 6
+flag_key = "nick_asked_find_bill"
+flag_value = "true"
+
+[sub_resource type="Resource" id="act_complete"]
+script = ExtResource("4")
+type = 2
+quest_id = "rescue_bill"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_home"]
+script = ExtResource("2")
+id = "node_home"
+text = "BILL! You're home! I... I don't know how to thank you. You found my brother and brought him back safe."
+speaker = "Windmill_Nick"
+priority = 110
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_returning")])
+actions = Array[ExtResource("4")]([SubResource("act_complete")])
+
+[sub_resource type="Resource" id="node_done"]
+script = ExtResource("2")
+id = "node_done"
+text = "Bill's home and safe, all thanks to you. I can't thank you enough."
+speaker = "Windmill_Nick"
+priority = 109
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_complete")])
+
+[sub_resource type="Resource" id="node_000"]
+script = ExtResource("2")
+id = "node_000"
+text = "Hello."
+speaker = "Windmill_Nick"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+
+[sub_resource type="Resource" id="resp_5"]
+script = ExtResource("5")
+text = "Are you looking for something?"
+leads_to = "node_002"
+
+[sub_resource type="Resource" id="resp_6"]
+script = ExtResource("5")
+text = "Is that a telescope?"
+leads_to = "node_003"
+
+[sub_resource type="Resource" id="node_001"]
+script = ExtResource("2")
+id = "node_001"
+speaker = "You"
+priority = 99
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+responses = Array[ExtResource("5")]([SubResource("resp_5"), SubResource("resp_6")])
+
+[sub_resource type="Resource" id="node_002"]
+script = ExtResource("2")
+id = "node_002"
+text = "My brother Bill is lost and I'm trying to find him."
+speaker = "Windmill_Nick"
+priority = 98
+auto_advance = "node_006"
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+
+[sub_resource type="Resource" id="node_003"]
+script = ExtResource("2")
+id = "node_003"
+text = "Obviously it is."
+speaker = "Windmill_Nick"
+priority = 97
+auto_advance = "node_004"
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+
+[sub_resource type="Resource" id="resp_13"]
+script = ExtResource("5")
+text = "What are you trying to find?"
+leads_to = "node_002"
+
+[sub_resource type="Resource" id="resp_14"]
+script = ExtResource("5")
+text = "Don't be rude!"
+leads_to = "node_005"
+
+[sub_resource type="Resource" id="node_004"]
+script = ExtResource("2")
+id = "node_004"
+speaker = "You"
+priority = 96
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+responses = Array[ExtResource("5")]([SubResource("resp_13"), SubResource("resp_14")])
+
+[sub_resource type="Resource" id="node_005"]
+script = ExtResource("2")
+id = "node_005"
+text = "Okay, okay! My brother Bill is missing and I'm very upset."
+speaker = "Windmill_Nick"
+priority = 95
+auto_advance = "node_006"
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+
+[sub_resource type="Resource" id="node_006"]
+script = ExtResource("2")
+id = "node_006"
+text = "I last saw him at the Shrine to the East of the Village."
+speaker = "Windmill_Nick"
+priority = 94
+auto_advance = "node_007"
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+
+[sub_resource type="Resource" id="resp_21"]
+script = ExtResource("5")
+text = "Can I help you find him?"
+leads_to = "node_008"
+
+[sub_resource type="Resource" id="resp_22"]
+script = ExtResource("5")
+text = "Oh, that's too bad."
+leads_to = "node_009"
+
+[sub_resource type="Resource" id="node_007"]
+script = ExtResource("2")
+id = "node_007"
+speaker = "You"
+priority = 93
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+responses = Array[ExtResource("5")]([SubResource("resp_21"), SubResource("resp_22")])
+
+[sub_resource type="Resource" id="node_008"]
+script = ExtResource("2")
+id = "node_008"
+text = "You'd do that for me? Thank you. "
+speaker = "Windmill_Nick"
+priority = 92
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+actions = Array[ExtResource("4")]([SubResource("act_asked")])
+
+[sub_resource type="Resource" id="node_009"]
+script = ExtResource("2")
+id = "node_009"
+text = "Yeah it is. I'll search for my brother from here. "
+speaker = "Windmill_Nick"
+priority = 91
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_not_asked")])
+actions = Array[ExtResource("4")]([SubResource("act_asked")])
+
+[sub_resource type="Resource" id="node_010"]
+script = ExtResource("2")
+id = "node_010"
+text = "I'll search for Bill from here. You could travel East to the Shrine."
+speaker = "Windmill_Nick"
+priority = 90
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_asked")])
+
+[resource]
+script = ExtResource("1")
+npc_id = "Windmill_Nick"
+display_name = "Windmill_Nick"
+world_id = "World00"
+quest_relations = PackedStringArray("rescue_bill")
+nodes = Array[ExtResource("2")]([SubResource("node_home"), SubResource("node_done"), SubResource("node_000"), SubResource("node_001"), SubResource("node_002"), SubResource("node_003"), SubResource("node_004"), SubResource("node_005"), SubResource("node_006"), SubResource("node_007"), SubResource("node_008"), SubResource("node_009"), SubResource("node_010")])

@@ -1,0 +1,1194 @@
+extends CanvasLayer
+
+# Full dialogue engine — drives priority-based node evaluation, branching
+# responses, variable substitution, condition gating, and action dispatch.
+#
+# Scene structure (authored in DialogueBox.tscn):
+#   CanvasLayer (layer=10, ProcessMode=Always)
+#   └── DialogueBox (Control, 420x130, bottom-center)
+#       ├── FrameBg (TextureRect — frame_bg_name for speakers, frame_bg for narrator)
+#       ├── Cameo   (TextureRect — cameo_<speaker>.png overlay)
+#       ├── NameLabel (speaker, positioned above cameo circle)
+#       └── TextArea / VBoxContainer
+#           ├── TextLabel (dialogue body, autowrap)
+#           ├── ResponseContainer (branching choices)
+#           └── ContinueHint ("[Space] Continue")
+#
+# Palette comes from the DesignTokens / UiStyles autoloads. The input
+# prompt still uses an inline StyleBoxFlat rather than UiFrames.
+
+# Hover text on response buttons -- slightly warmer than UiStyles.CREAM_LIT.
+const BODY_CREAM_LIT: Color = Color(1.0, 1.0, 0.9, 1.0)
+
+var is_active: bool = false
+
+var _npc_data: DialogueData
+var _current_node: DialogueNode
+var _current_responses: Array[DialogueResponse] = []
+# Responses held back while the NPC's line is on screen. The next
+# advance swaps the box to the player's turn and shows them.
+var _pending_responses: Array[DialogueResponse] = []
+
+# UI nodes — bound in _ready from DialogueBox.tscn.
+var _dialogue_box: Control
+var _frame_bg: TextureRect
+var _name_extender: NinePatchRect
+var _cameo: TextureRect
+var _player_cameo: PlayerCameo
+var _name_label: Label
+var _text_label: RichTextLabel
+var _continue_hint: Label
+var _response_container: VBoxContainer
+
+# Mobile-only "tap to continue" affordance.
+var _mobile_continue_hint: Control
+
+# Key-item reveal overlay.
+var _item_reveal_root: Control
+var _item_reveal_frame: TextureRect
+var _item_reveal_icon: TextureRect
+
+# Player node, found lazily by name.
+var _player: Node
+
+# One-shot callback fired after the dialogue overlay actually closes
+# (sea-monster retreat sync). Variant Callable so it can be null.
+var _pending_post_close: Variant = null
+var _waiting_for_input: bool = false
+var _input_variable: String = ""
+var _just_started: bool = false  # prevent advance on the same frame it opened
+
+# Keyboard-driven response selection.
+var _selected_response_index: int = -1
+
+# Cached frame textures.
+static var _tex_frame_bg: Texture2D
+static var _tex_frame_bg_name: Texture2D
+# speaker_id (lowercased) → cameo texture.
+static var _cameo_cache: Dictionary = {}
+
+# Cached pointer glyph for mobile continue hint.
+static var _pointer_glyph: Texture2D
+
+# Mirrors UiStyles.is_mobile (kept in sync via mobile_changed).
+var _is_mobile: bool = false
+
+# Font override applied per-dialogue.
+var _font_override: Font
+
+func _enter_tree() -> void:
+	# Lets WorldManager.get_dialogue_manager() find this per-scene node
+	# without walking the tree.
+	add_to_group(WorldManager.DIALOGUE_MANAGER_GROUP)
+
+func _ready() -> void:
+	_dialogue_box = get_node("DialogueBox") as Control
+	_frame_bg = get_node("DialogueBox/FrameBg") as TextureRect
+	_name_extender = get_node_or_null("DialogueBox/NameExtender") as NinePatchRect
+	_cameo = get_node("DialogueBox/Cameo") as TextureRect
+	_name_label = get_node("DialogueBox/NameLabel") as Label
+	_text_label = get_node("DialogueBox/TextArea/VBoxContainer/TextLabel") as RichTextLabel
+	_continue_hint = get_node("DialogueBox/ContinueHint") as Label
+	_response_container = get_node("DialogueBox/TextArea/VBoxContainer/ResponseContainer") as VBoxContainer
+
+	if _tex_frame_bg == null:
+		_tex_frame_bg = load("res://assets/sprites/ui/dialogue/frame_bg.png") as Texture2D
+	if _tex_frame_bg_name == null:
+		_tex_frame_bg_name = load("res://assets/sprites/ui/dialogue/frame_bg_name.png") as Texture2D
+
+	_build_item_reveal_overlay()
+	_build_player_cameo()
+
+	UiStyles.mobile_changed.connect(_on_mobile_changed)
+	_on_mobile_changed()
+
+	_dialogue_box.visible = false
+
+# Follow the shared mobile flag (boot detection + user override).
+func _on_mobile_changed() -> void:
+	_is_mobile = UiStyles.is_mobile
+	if _is_mobile and _mobile_continue_hint == null:
+		_build_mobile_continue_hint()
+	if not _is_mobile and _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
+
+# Tap / click to advance dialogue. Runs in _input so it
+# fires before GUI sorts the event onto its deepest hit Control, so
+# clicks on FrameBg/Cameo/NameLabel children don't get consumed first.
+func _input(evt: InputEvent) -> void:
+	if not is_active:
+		return
+	if _dialogue_box == null or not _dialogue_box.visible:
+		return
+	if _waiting_for_input:
+		return  # LineEdit owns keyboard during input prompts
+
+	# Skip click-anywhere while response buttons are showing — clicks
+	# need to reach the Button widgets to pick a specific response.
+	if _current_responses.size() > 0:
+		return
+
+	var pos: Variant = null
+	if evt is InputEventScreenTouch and (evt as InputEventScreenTouch).pressed:
+		pos = (evt as InputEventScreenTouch).position
+	elif evt is InputEventMouseButton:
+		var m: InputEventMouseButton = evt
+		if m.pressed and m.button_index == MOUSE_BUTTON_LEFT:
+			pos = m.position
+	if pos == null:
+		return
+	if not _dialogue_box.get_global_rect().has_point(pos):
+		return
+
+	_synth_advance()
+	get_viewport().set_input_as_handled()
+
+static func _synth_advance() -> void:
+	var press := InputEventAction.new()
+	press.action = "dialogue_advance"
+	press.pressed = true
+	Input.parse_input_event(press)
+	var release := InputEventAction.new()
+	release.action = "dialogue_advance"
+	release.pressed = false
+	Input.parse_input_event(release)
+
+# Mobile replacement for "[Space] Continue" — pointer icon + "to continue"
+# label pinned top-right inside the dialogue box.
+func _build_mobile_continue_hint() -> void:
+	if _pointer_glyph == null:
+		_pointer_glyph = load("res://assets/sprites/ui/text_icons/empty.png") as Texture2D
+
+	var row := HBoxContainer.new()
+	row.name = "MobileContinueHint"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.visible = false
+	row.add_theme_constant_override("separation", 4)
+
+	row.anchor_left = 1.0
+	row.anchor_right = 1.0
+	row.anchor_top = 1.0
+	row.anchor_bottom = 1.0
+	row.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	row.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	row.offset_right = -58.0
+	row.offset_bottom = -136.0
+
+	var pointer := TextureRect.new()
+	pointer.texture = _pointer_glyph
+	pointer.custom_minimum_size = _pointer_glyph.get_size() if _pointer_glyph != null else Vector2(22, 22)
+	pointer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pointer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pointer.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	pointer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(pointer)
+
+	var label := Label.new()
+	label.text = "to continue"
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", Color(0.9882353, 0.9411765, 0.78039217, 1.0))
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+	label.add_theme_constant_override("shadow_offset_x", 1)
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	row.add_child(label)
+
+	_dialogue_box.add_child(row)
+	_mobile_continue_hint = row
+
+# Bind scene-authored key-item reveal nodes (ItemReveal + ItemRevealFrame
+# + ItemRevealIcon). Position + size live in the scene.
+func _build_item_reveal_overlay() -> void:
+	_item_reveal_root = _dialogue_box.get_node_or_null("ItemReveal") as Control
+	_item_reveal_frame = _dialogue_box.get_node_or_null("ItemReveal/ItemRevealFrame") as TextureRect
+	_item_reveal_icon = _dialogue_box.get_node_or_null("ItemReveal/ItemRevealIcon") as TextureRect
+	if _item_reveal_root == null or _item_reveal_frame == null or _item_reveal_icon == null:
+		push_warning("[Dialogue] ItemReveal nodes missing from DialogueBox.tscn — key-item reveal disabled.")
+		return
+	_item_reveal_root.visible = false
+
+# item is an ItemData Resource.
+func _show_item_reveal(item: Resource) -> void:
+	if _item_reveal_root == null or item == null:
+		return
+	var icon: Texture2D = item.icon
+	if icon == null:
+		return
+	_item_reveal_icon.texture = icon
+	_item_reveal_root.visible = true
+	_item_reveal_root.scale = Vector2.ONE
+	_item_reveal_root.modulate = Color(1, 1, 1, 0)
+	var tween := create_tween()
+	tween.tween_property(_item_reveal_root, "modulate:a", 1.0, 0.18)
+
+func _hide_item_reveal() -> void:
+	if _item_reveal_root == null or not _item_reveal_root.visible:
+		return
+	_item_reveal_root.visible = false
+	_item_reveal_icon.texture = null
+
+func _process(_delta: float) -> void:
+	if not is_active or _waiting_for_input:
+		return
+	if _just_started:
+		_just_started = false
+		return
+
+	# Z / Escape closes the conversation early from any page.
+	if Input.is_action_just_pressed("cancel"):
+		end_dialogue()
+		return
+
+	if _current_responses.size() > 0:
+		# Arrow-key navigation through response buttons.
+		if Input.is_action_just_pressed("move_up"):
+			_select_response(_selected_response_index - 1)
+		elif Input.is_action_just_pressed("move_down"):
+			_select_response(_selected_response_index + 1)
+		elif Input.is_action_just_pressed("dialogue_advance"):
+			if _selected_response_index >= 0 and _selected_response_index < _current_responses.size():
+				_on_response_chosen(_selected_response_index)
+	else:
+		if Input.is_action_just_pressed("dialogue_advance"):
+			_advance()
+
+# ---- Public API ----
+
+# Start a dialogue with an NPC. Returns false if already in dialogue.
+# `source` is the NPC trigger Node2D — used to snap the player to face
+# it as conversation opens.
+func start_dialogue(data: DialogueData, source: Node2D = null) -> bool:
+	var npc_id: String = data.npc_id if data != null else "(null)"
+	print("[Dialogue] StartDialogue called for '%s' | IsActive=%s | Paused=%s" % [
+		npc_id, is_active, get_tree().paused,
+	])
+	if is_active or data == null:
+		return false
+
+	_npc_data = data
+	is_active = true
+
+	get_tree().paused = true
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Lock player input.
+	if _player == null:
+		_player = get_tree().root.find_child("Player", true, false)
+	if _player != null:
+		_player.set("input_locked", true)
+		if source != null:
+			_player.call("face_target", source.global_position)
+
+	# Find the best starting node via priority + conditions.
+	var start_node := _find_best_node()
+	if start_node == null:
+		print("[Dialogue] No valid node for '%s'. Dumping node conditions:" % data.npc_id)
+		for n in data.nodes:
+			if n == null:
+				continue
+			var met: bool = QuestSystem.all_conditions_met(n.conditions)
+			var cond_desc: String
+			if n.conditions.size() > 0:
+				var parts: Array = []
+				for c in n.conditions:
+					parts.append("%d:%s=%s" % [int(c.type), String(c.quest_id), String(c.status)])
+				cond_desc = " & ".join(parts)
+			else:
+				cond_desc = "(none)"
+			print("  [%s] %s (pri=%d) conditions: %s" % [
+				"PASS" if met else "FAIL", n.id, n.priority, cond_desc,
+			])
+		end_dialogue()
+		return false
+	print("[Dialogue] Selected node '%s' (pri=%d)" % [start_node.id, start_node.priority])
+
+	_just_started = true
+	_navigate_to_node(start_node)
+	_fade_in()
+	return true
+
+func _fade_in() -> void:
+	_dialogue_box.modulate = Color(1, 1, 1, 0)
+	_dialogue_box.visible = true
+	var tween := create_tween()
+	tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)  # runs during pause
+	tween.tween_property(_dialogue_box, "modulate:a", 1.0, 0.25)
+
+func _fade_out(on_done: Callable) -> void:
+	var tween := create_tween()
+	tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
+	tween.tween_property(_dialogue_box, "modulate:a", 0.0, 0.2)
+	tween.tween_callback(func() -> void:
+		_dialogue_box.visible = false
+		if on_done.is_valid():
+			on_done.call()
+	)
+
+# Legacy API — starts dialogue from an array of plain lines (no branching).
+func start_dialogue_lines(speaker_name: String, lines: Array, source: Node2D = null) -> void:
+	if is_active:
+		return
+
+	# Build a temporary DialogueData with linear nodes.
+	var data := DialogueData.new()
+	data.npc_id = speaker_name
+	data.display_name = speaker_name
+	for i in range(lines.size()):
+		var node := DialogueNode.new()
+		node.id = "line_%d" % i
+		node.text = String(lines[i])
+		node.speaker = speaker_name
+		node.priority = 100 - i
+		if i < lines.size() - 1:
+			node.auto_advance = "line_%d" % (i + 1)
+		else:
+			node.ends_dialogue = true
+		data.nodes.append(node)
+
+	start_dialogue(data, source)
+
+# Same as the lines-based legacy API but applies a one-off font override.
+func start_dialogue_with_font(speaker_name: String, lines: Array, font: Font) -> void:
+	if is_active:
+		return
+	_apply_font_override(font)
+	start_dialogue_lines(speaker_name, lines)
+
+func _apply_font_override(font: Font) -> void:
+	_font_override = font
+	if font == null:
+		return
+	if _name_label != null:
+		_name_label.add_theme_font_override("font", font)
+	# RichTextLabel keys font overrides by per-style name, not "font".
+	if _text_label != null:
+		_text_label.add_theme_font_override("normal_font", font)
+	if _continue_hint != null:
+		_continue_hint.add_theme_font_override("font", font)
+
+func _remove_font_override() -> void:
+	if _font_override == null:
+		return
+	if _name_label != null:
+		_name_label.remove_theme_font_override("font")
+	if _text_label != null:
+		_text_label.remove_theme_font_override("normal_font")
+	if _continue_hint != null:
+		_continue_hint.remove_theme_font_override("font")
+	_font_override = null
+
+# ---- Navigation ----
+
+func _advance() -> void:
+	if _pending_responses.size() > 0:
+		var held: Array[DialogueResponse] = _pending_responses.duplicate()
+		_pending_responses.clear()
+		_show_responses(held)
+		return
+
+	if _current_node == null:
+		end_dialogue()
+		return
+
+	if _current_node.ends_dialogue:
+		end_dialogue()
+		return
+
+	if not _current_node.auto_advance.is_empty():
+		var next := _find_node_by_id(_current_node.auto_advance)
+		if next != null:
+			_navigate_to_node(next)
+			return
+
+	# No auto-advance and no responses — end.
+	end_dialogue()
+
+func _navigate_to_node(node: DialogueNode) -> void:
+	_current_node = node
+	var text_preview: String = node.text
+	if text_preview.length() > 40:
+		text_preview = text_preview.substr(0, 40) + "…"
+	print("[Dialogue] → %s (pri=%d, speaker=%s, autoAdv=%s, text=\"%s\")" % [
+		node.id, node.priority, node.speaker, node.auto_advance, text_preview,
+	])
+
+	_hide_item_reveal()
+	_execute_actions(node.actions)
+
+	# Key-item reveal: surface curly TextItemFrame for AL-narrated nodes
+	# that give a quest item.
+	var reveal_item := _resolve_reveal_item(node)
+	if reveal_item != null:
+		_show_item_reveal(reveal_item)
+
+	# "System" / silent action-carrier nodes — empty text, no responses,
+	# autoAdvance to the real line. Auto-skip those.
+	var has_responses: bool = node.responses != null and node.responses.size() > 0
+	if node.text.is_empty() and not has_responses \
+			and not node.auto_advance.is_empty() \
+			and not _waiting_for_input:
+		var next := _find_node_by_id(node.auto_advance)
+		if next != null:
+			_navigate_to_node(next)
+			return
+
+	# Variable substitution + inline icon markup.
+	var rendered_text: String = _substitute_icons(_substitute_variables(node.text))
+	var speaker: String = node.speaker
+
+	# Cut any in-flight VO and start the new line.
+	VOController.play(speaker, node.id)
+
+	_update_speaker_visuals(speaker)
+
+	if speaker != "You":
+		_name_label.text = _prettify_speaker(speaker)
+		_layout_name_extender()
+	_text_label.text = rendered_text
+	_text_label.visible = not rendered_text.is_empty()
+
+	# Responses get their own page: an NPC line with choices shows the
+	# line first ("[Space] Continue"), then the player's turn.
+	_clear_responses()
+	_current_responses.clear()
+	_pending_responses.clear()
+	var valid_responses := _filter_responses(node.responses)
+	if valid_responses.size() > 0 and rendered_text.is_empty():
+		_show_responses(valid_responses)
+		return
+	_pending_responses = valid_responses
+	_show_continue_hint()
+
+func _show_continue_hint() -> void:
+	_response_container.visible = false
+	_continue_hint.visible = not _is_mobile
+	if _is_mobile:
+		if _mobile_continue_hint != null:
+			_mobile_continue_hint.visible = true
+	else:
+		if _pending_responses.size() > 0:
+			_continue_hint.text = "[Space] Continue"
+		elif _current_node.ends_dialogue:
+			_continue_hint.text = "[Space] Close"
+		elif not _current_node.auto_advance.is_empty():
+			_continue_hint.text = "[Space] Continue"
+		else:
+			_continue_hint.text = "[Space] Close"
+	_selected_response_index = -1
+
+# Player's turn: hide the NPC line, show the player cameo + choices.
+func _show_responses(valid_responses: Array[DialogueResponse]) -> void:
+	_current_responses = valid_responses
+	_set_player_speaking_visuals()
+	_text_label.visible = false
+	_response_container.visible = true
+	_continue_hint.visible = false
+	if _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
+
+	for i in range(valid_responses.size()):
+		var idx: int = i
+		var resp: DialogueResponse = valid_responses[i]
+
+		# Each response is a row: [Pointer Label] [Response Button].
+		var row := HBoxContainer.new()
+		row.name = "Row%d" % i
+		row.add_theme_constant_override("separation", 4)
+		row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+
+		var pointer := TextureRect.new()
+		pointer.name = "Pointer"
+		pointer.texture = load("res://assets/sprites/ui/icon_arrow.png") as Texture2D
+		pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		pointer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pointer.custom_minimum_size = Vector2(24, 24)
+		pointer.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		pointer.modulate = Color(1, 1, 1, 0)  # hidden; shown on selection
+		row.add_child(pointer)
+
+		var btn := Button.new()
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.text = _substitute_variables(resp.text)
+		btn.pressed.connect(_on_response_chosen.bind(idx))
+		btn.mouse_entered.connect(_select_response.bind(idx))
+		btn.process_mode = Node.PROCESS_MODE_ALWAYS
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.add_theme_font_size_override("font_size", 24)
+		btn.add_theme_constant_override("shadow_offset_x", 0)
+		btn.add_theme_constant_override("shadow_offset_y", 0)
+		btn.flat = true
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		# Wrap long choices: an unwrapped Button's min width would widen
+		# TextArea past the frame (it grows both ways and shifts left).
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.add_theme_color_override("font_color", UiStyles.CREAM)
+		btn.add_theme_color_override("font_focus_color", UiStyles.CREAM)
+		btn.add_theme_color_override("font_hover_color", BODY_CREAM_LIT)
+		row.add_child(btn)
+
+		_response_container.add_child(row)
+
+	_selected_response_index = 0
+	_highlight_selected_response()
+
+# Swap frame + cameo for current speaker. Empty speaker = narrator.
+func _update_speaker_visuals(speaker: String) -> void:
+	if speaker == "You":
+		_set_player_speaking_visuals()
+		return
+	if _player_cameo != null:
+		_player_cameo.visible = false
+	var has_speaker: bool = not speaker.is_empty()
+	_frame_bg.texture = _tex_frame_bg_name if has_speaker else _tex_frame_bg
+	_name_label.visible = has_speaker
+
+	if not has_speaker:
+		_cameo.visible = false
+		return
+
+	var tex := _load_cameo(speaker)
+	if tex != null:
+		_cameo.texture = tex
+		_cameo.visible = true
+	else:
+		# Fall back to AL (narrator mask) so circle isn't empty.
+		_cameo.texture = _load_cameo("AL")
+		_cameo.visible = _cameo.texture != null
+
+# Player's turn (responses, or nodes with speaker "You"): name frame
+# with the live player cameo and the player's name on the plate.
+func _set_player_speaking_visuals() -> void:
+	_frame_bg.texture = _tex_frame_bg_name
+	_cameo.visible = false
+	var data := SaveManager.current_data
+	var player_name: String = String(data.player_name) if data != null else ""
+	_name_label.text = player_name if not player_name.is_empty() else "You"
+	_name_label.visible = true
+	_layout_name_extender()
+	if _player_cameo != null:
+		_player_cameo.visible = _player_cameo.refresh()
+
+# Cameo circle on frame_bg_name.png: inner ellipse ~54x58 px centered
+# at (32.5, 33) in the 420x130 texture; FrameBg scales that to the
+# DialogueBox size, so place the cameo by the same ratio.
+func _build_player_cameo() -> void:
+	_player_cameo = PlayerCameo.new()
+	_player_cameo.name = "PlayerCameo"
+	_player_cameo.visible = false
+	_dialogue_box.add_child(_player_cameo)
+	_dialogue_box.move_child(_player_cameo, _cameo.get_index() + 1)
+	var k: Vector2 = _dialogue_box.size / Vector2(420, 130)
+	if k.x <= 0.0 or k.y <= 0.0:
+		k = Vector2(_dialogue_box.offset_right - _dialogue_box.offset_left,
+				_dialogue_box.offset_bottom - _dialogue_box.offset_top) / Vector2(420, 130)
+	_player_cameo.position = Vector2(5.5, 4.0) * k
+	_player_cameo.size = Vector2(54, 58) * k
+
+# Show hearts_frame.png extender behind speaker name when rendered text
+# overflows the small plate baked into frame_bg_name.png.
+func _layout_name_extender() -> void:
+	if _name_extender == null:
+		return
+	if _name_label == null or not _name_label.visible or _name_label.text.is_empty():
+		_name_extender.visible = false
+		return
+
+	var font: Font = _name_label.get_theme_font("font")
+	var font_size: int = _name_label.get_theme_font_size("font_size")
+	if font == null:
+		_name_extender.visible = false
+		return
+	var text_width: float = font.get_string_size(_name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+
+	const PLATE_WIDTH: float = 170.0
+	if text_width <= PLATE_WIDTH:
+		_name_extender.visible = false
+		return
+
+	const RIGHT_PADDING: float = 24.0
+	var scale_x: float = _name_extender.scale.x
+	if scale_x <= 0.0:
+		scale_x = 1.0
+	var target_right: float = _name_label.offset_left + text_width + RIGHT_PADDING
+	_name_extender.offset_right = _name_extender.offset_left + (target_right - _name_extender.offset_left) / scale_x
+	_name_extender.visible = true
+
+static func _load_cameo(speaker: String) -> Texture2D:
+	if speaker.is_empty():
+		return null
+	var key: String = speaker.to_lower()
+	if _cameo_cache.has(key):
+		return _cameo_cache[key]
+	var path: String = "res://assets/sprites/ui/dialogue/cameo_%s.png" % key
+	var tex: Texture2D = load(path) as Texture2D if ResourceLoader.exists(path) else null
+	_cameo_cache[key] = tex  # cache even nulls — avoid re-probing misses
+	return tex
+
+static func _prettify_speaker(speaker: String) -> String:
+	if speaker.is_empty():
+		return ""
+	# "Penny:Rosie" → "Penny".
+	var colon: int = speaker.find(":")
+	if colon > 0:
+		speaker = speaker.substr(0, colon)
+	# "AL" → "Adventure Land".
+	if speaker == "AL":
+		return "Adventure Land"
+	# "Shopkeeper_Sally" → "Shopkeeper Sally".
+	return speaker.replace("_", " ")
+
+func _on_response_chosen(index: int) -> void:
+	# Typed Array[DialogueResponse] is never null; just bounds-check.
+	if index < 0 or index >= _current_responses.size():
+		return
+
+	var resp: DialogueResponse = _current_responses[index]
+	_execute_actions(resp.actions)
+
+	if not resp.leads_to.is_empty():
+		var next := _find_node_by_id(resp.leads_to)
+		if next != null:
+			_navigate_to_node(next)
+			return
+
+	end_dialogue()
+
+func end_dialogue() -> void:
+	print("[Dialogue] EndDialogue called")
+
+	_clear_responses()
+	_remove_font_override()
+	_hide_item_reveal()
+	if _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
+	_current_node = null
+	# Typed Array[DialogueResponse] can't take null -- clear instead.
+	_current_responses.clear()
+	_pending_responses.clear()
+	_npc_data = null
+	_waiting_for_input = false
+	is_active = false
+
+	get_tree().paused = false
+
+	# Run any post-close hook (sea-monster retreat sync).
+	var post_close: Variant = _pending_post_close
+	_pending_post_close = null
+	if post_close != null and (post_close as Callable).is_valid():
+		(post_close as Callable).call()
+
+	_fade_out(func() -> void:
+		if _player != null:
+			_player.set("input_locked", false)
+	)
+
+	# Auto-save quest state.
+	SaveManager.save()
+
+# ---- Node Finding ----
+
+func _find_best_node() -> DialogueNode:
+	if _npc_data == null or _npc_data.nodes == null:
+		return null
+
+	# Build a sorted list (priority descending).
+	var sorted: Array[DialogueNode] = []
+	for n in _npc_data.nodes:
+		if n != null:
+			sorted.append(n)
+	sorted.sort_custom(func(a: DialogueNode, b: DialogueNode) -> bool: return a.priority > b.priority)
+
+	for node in sorted:
+		if QuestSystem.all_conditions_met(node.conditions):
+			return node
+
+	# Fallback to default node.
+	return _find_node_by_id(_npc_data.default_node)
+
+# Resolve a node by Id, picking the highest-priority variant whose
+# conditions currently pass. Falls back to the first node with the Id
+# if none pass — preserves single-node behavior.
+func _find_node_by_id(id: String) -> DialogueNode:
+	if id.is_empty() or _npc_data == null or _npc_data.nodes == null:
+		return null
+	var best: DialogueNode = null
+	var first_with_id: DialogueNode = null
+	for n in _npc_data.nodes:
+		if n == null or n.id != id:
+			continue
+		if first_with_id == null:
+			first_with_id = n
+		if not QuestSystem.all_conditions_met(n.conditions):
+			continue
+		if best == null or n.priority > best.priority:
+			best = n
+	return best if best != null else first_with_id
+
+func _filter_responses(responses: Array) -> Array[DialogueResponse]:
+	var result: Array[DialogueResponse] = []
+	if responses == null:
+		return result
+	for r in responses:
+		if r == null:
+			continue
+		if QuestSystem.all_conditions_met(r.conditions):
+			result.append(r)
+	return result
+
+# ---- Action Dispatch ----
+
+func _execute_actions(actions: Array) -> void:
+	if actions == null:
+		return
+
+	for a in actions:
+		if a == null:
+			continue
+
+		match int(a.type):
+			DialogueAction.ActionType.START_QUEST:
+				QuestSystem.start_quest(a.quest_id)
+
+			DialogueAction.ActionType.COMPLETE_QUEST:
+				QuestSystem.complete_quest(a.quest_id)
+
+			DialogueAction.ActionType.SET_QUEST_STATUS:
+				QuestSystem.set_quest_status(a.quest_id, a.status)
+
+			DialogueAction.ActionType.GIVE_ITEM:
+				var give_id: String = a.item_id if not a.item_id.is_empty() else a.item_name
+				if not give_id.is_empty():
+					QuestSystem.grant_unique_item(give_id)
+					_show_give_item_toast(give_id)
+					if a.destroy_trigger:
+						_destroy_current_npc_trigger()
+
+			DialogueAction.ActionType.REMOVE_ITEM:
+				QuestSystem.remove_unique_item(a.item_id)
+
+			DialogueAction.ActionType.SPAWN_UNIQUE_ITEM:
+				var spawn_name: String = a.item_name if not a.item_name.is_empty() else a.item_id
+				print("[Dialogue] Spawn unique: %s" % spawn_name)
+				if not _reveal_quest_pickup(spawn_name):
+					_show_npc_in_scene(spawn_name)
+
+			DialogueAction.ActionType.SET_FLAG, DialogueAction.ActionType.SET_WORLD_FLAG:
+				QuestSystem.set_world_flag(a.flag_key, a.flag_value)
+
+			DialogueAction.ActionType.SET_NPC_MEMORY:
+				QuestSystem.set_npc_memory(a.npc_id, a.memory_key, a.memory_value)
+
+			DialogueAction.ActionType.INPUT:
+				_handle_input(a.variable)
+
+			DialogueAction.ActionType.PLAY_SOUND:
+				if not a.sound_id.is_empty():
+					SFXController.play(a.sound_id)
+
+			DialogueAction.ActionType.TELEPORT_PLAYER:
+				print("[Dialogue] Teleport: %s (%f,%f) (not implemented)" % [a.world_id, a.x, a.y])
+
+			DialogueAction.ActionType.CUSTOM:
+				_handle_custom_action(a)
+
+			DialogueAction.ActionType.DEPLOY_NPC:
+				print("[Dialogue] Deploy NPC: %s (not implemented)" % a.npc_id)
+
+			DialogueAction.ActionType.SUMMON_SEA_MONSTER:
+				var smc := _find_sea_monster()
+				# State.Hidden enum value = 0 (first in enum declaration).
+				if smc != null and not bool(smc.is_busy) and int(smc.call("get_state")) == 0:
+					smc.call("summon")
+
+			DialogueAction.ActionType.MAKE_SEA_MONSTER_HOSTILE:
+				var smc2 := _find_sea_monster()
+				if smc2 != null:
+					smc2.call("make_hostile")
+
+			DialogueAction.ActionType.SEA_MONSTER_ACCEPT_QUEST, \
+			DialogueAction.ActionType.SEA_MONSTER_QUEST_COMPLETE, \
+			DialogueAction.ActionType.SEA_MONSTER_RETREAT:
+				# Hold retreat until overlay closes — bubble SFX+visual sync.
+				_pending_post_close = Callable(self, "_sea_monster_retreat")
+
+# ---- Sea-monster + pickup helpers ----
+
+# Pull an ItemData out of a node's GiveItem actions if the node is shaped
+# like a "You got X!" reveal: speaker == "AL" and at least one give_item
+# action with a resolvable item. Returns null for regular nodes.
+func _resolve_reveal_item(node: DialogueNode) -> Resource:
+	if node == null or node.actions == null:
+		return null
+	# Speaker check is intentionally permissive.
+	var speaker: String = node.speaker.replace("_", "").replace(" ", "")
+	var is_al: bool = speaker.to_lower() == "al" or speaker.to_lower() == "adventureland"
+	if not is_al:
+		return null
+
+	for a in node.actions:
+		if a == null or int(a.type) != DialogueAction.ActionType.GIVE_ITEM:
+			continue
+		var key: String = a.item_id if not a.item_id.is_empty() else a.item_name
+		if key.is_empty():
+			continue
+		var item: Resource = null
+		if key.is_valid_int():
+			item = Inventory.get_item(int(key))
+		if item == null:
+			item = Inventory.get_item_by_name(key)
+		if item != null and item.icon != null:
+			return item
+	return null
+
+# Mirror of ItemTrigger.show_pickup_toast for dialogue-given items.
+func _show_give_item_toast(item_key: String) -> void:
+	if item_key.is_empty():
+		return
+	# Mirror the inline lookup used by _find_giveable_item_for_toast: try
+	# numeric ID first, then fall back to lookup-by-name.
+	var item: Resource = null
+	if item_key.is_valid_int():
+		item = Inventory.get_item(int(item_key))
+	if item == null:
+		item = Inventory.get_item_by_name(item_key)
+	if item == null:
+		return
+	ItemPickupToast.spawn_pickup(get_tree(), item)
+
+func _find_sea_monster() -> Node:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return null
+	return _find_first_by_method(scene, "summon")
+
+func _sea_monster_retreat() -> void:
+	var smc := _find_sea_monster()
+	if smc != null:
+		smc.call("retreat")
+
+# Reveal a placed-but-hidden quest pickup by item name. Walks the scene
+# for an ItemTrigger whose Data.Name matches and toggles Visible +
+# Monitoring on.
+func _reveal_quest_pickup(item_name: String) -> bool:
+	if item_name.is_empty():
+		return false
+	var scene := get_tree().current_scene
+	if scene == null:
+		return false
+	var trigger := _find_first_with_data_name(scene, item_name)
+	if trigger == null:
+		return false
+	trigger.visible = true
+	trigger.set("monitoring", true)
+	# Restore the pickup mask we zeroed in the scene to keep it dormant.
+	trigger.set("collision_mask", 1)
+	return true
+
+static func _find_first_by_method(from: Node, method_name: String) -> Node:
+	if from == null:
+		return null
+	if from.has_method(method_name):
+		return from
+	for c in from.get_children():
+		var r := _find_first_by_method(c, method_name)
+		if r != null:
+			return r
+	return null
+
+static func _find_first_with_data_name(from: Node, item_name: String) -> Node:
+	if from == null:
+		return null
+	# Walk every node looking for one with a `data` property that's a
+	# Resource exposing a `name` field. ItemTrigger fits; EnemyController
+	# ALSO has a `data` property (EnemyData) but EnemyData has no `name`
+	# field, so use Variant `.get("name")` rather than `.name` -- the
+	# Variant accessor returns null instead of crashing on missing keys.
+	var data: Variant = from.get("data")
+	if data is Resource:
+		var data_name: Variant = (data as Resource).get("name")
+		if data_name != null and String(data_name) == item_name:
+			return from
+	for c in from.get_children():
+		var r := _find_first_with_data_name(c, item_name)
+		if r != null:
+			return r
+	return null
+
+# ---- Custom dialogue actions ----
+
+# Dispatcher for ActionType.CUSTOM — handles named functions the C3 side
+# invokes via `customFunction: "name"`.
+func _handle_custom_action(a: DialogueAction) -> void:
+	var func_name: String = a.custom_function.strip_edges()
+	match func_name:
+		"grantFreeItem":
+			# Mirrors C3's eGlobal.grantFreeItem: next shop item is free.
+			ShopState.next_item_free = true
+			print("[Dialogue] grantFreeItem — next shop pickup is free")
+		"PennyOpensHome":
+			# Fire-and-forget cutscene; the triggering node has ends_dialogue=true
+			# so the UI closes before the cutscene begins.
+			_run_penny_opens_home_cutscene()
+		"adoptPennyName":
+			# Promote what player typed at Penny into canonical PlayerName.
+			var data := SaveManager.current_data
+			var given: String = QuestSystem.get_world_flag("PennyName")
+			if data != null and not given.strip_edges().is_empty():
+				data.set("player_name", given.strip_edges())
+				print("[Dialogue] adoptPennyName -> '%s'" % given.strip_edges())
+		_:
+			push_warning("[Dialogue] Unknown custom action: '%s'" % a.custom_function)
+
+# Post-cat-quest handoff: Penny walks into her house, fade, player lands
+# inside with Penny and Rosie present.
+func _run_penny_opens_home_cutscene() -> void:
+	var tree := get_tree()
+	var scene := tree.current_scene if tree != null else null
+	var penny := scene.find_child("Penny", true, false) as Node2D if scene != null else null
+	var player := tree.get_first_node_in_group("player") if tree != null else null
+
+	if penny == null:
+		push_warning("[PennyOpensHome] Penny not found in scene — skipping walk")
+
+	# Lock player for duration.
+	if player != null:
+		player.set("input_locked", true)
+
+	# Walk animation.
+	if penny != null:
+		var animator := penny.get_node_or_null("NpcAnimator")
+		if animator != null:
+			animator.call("play_walk", "up")
+
+		var tween := penny.create_tween()
+		var target := penny.global_position + Vector2(0, -16)
+		tween.tween_property(penny, "global_position", target, 0.4) \
+			.set_trans(Tween.TRANS_LINEAR)
+		await tween.finished
+
+	# Flip "Penny is home" flag before scene swap.
+	QuestSystem.set_world_flag("penny_home", "true")
+
+	# WorldManager handles fade/swap/spawn; go_to_door is a coroutine.
+	await WorldManager.go_to_door("res://scenes/worlds/World_00_PennysHouse.tscn", 4)
+
+	# Unlock the post-transition player.
+	var new_player := get_tree().get_first_node_in_group("player") if get_tree() != null else null
+	if new_player != null:
+		new_player.set("input_locked", false)
+
+# ---- World Interaction ----
+
+func _show_npc_in_scene(npc_name: String) -> void:
+	var scene := get_tree().current_scene
+	var node := scene.find_child(npc_name, true, false) as Node2D
+	if node != null:
+		node.visible = true
+		node.process_mode = Node.PROCESS_MODE_INHERIT
+		print("[Dialogue] Showed NPC '%s' in scene" % npc_name)
+	else:
+		push_warning("[Dialogue] NPC '%s' not found in scene to show" % npc_name)
+
+func _destroy_current_npc_trigger() -> void:
+	if _npc_data == null:
+		return
+	var scene := get_tree().current_scene
+	var node := scene.find_child(_npc_data.npc_id, true, false)
+	if node != null:
+		print("[Dialogue] Destroying trigger '%s'" % _npc_data.npc_id)
+		node.call_deferred("queue_free")
+
+# ---- Input Handling ----
+
+func _handle_input(variable: String) -> void:
+	_waiting_for_input = true
+	_input_variable = variable
+	_continue_hint.visible = false
+	if _mobile_continue_hint != null:
+		_mobile_continue_hint.visible = false
+	_response_container.visible = false
+	_text_label.visible = false
+	_set_player_speaking_visuals()
+
+	var vbox := _text_label.get_parent() as VBoxContainer
+
+	# Helper label above input row.
+	var prompt := Label.new()
+	prompt.name = "DialogueInputPrompt"
+	prompt.text = "Type your player name:"
+	prompt.add_theme_font_size_override("font_size", 22)
+	prompt.add_theme_color_override("font_color", Color(0.99, 0.94, 0.78, 1.0))
+	vbox.add_child(prompt)
+
+	# Input + Enter row.
+	var row := HBoxContainer.new()
+	row.name = "DialogueInputRow"
+	row.add_theme_constant_override("separation", 10)
+	vbox.add_child(row)
+
+	# Gray inline input.
+	var input_bg := StyleBoxFlat.new()
+	input_bg.bg_color = Color(0.55, 0.54, 0.48, 1.0)
+	input_bg.content_margin_left = 10
+	input_bg.content_margin_right = 10
+	input_bg.content_margin_top = 6
+	input_bg.content_margin_bottom = 6
+
+	var input_box := LineEdit.new()
+	input_box.name = "DialogueInput"
+	input_box.max_length = 8
+	input_box.placeholder_text = ""
+	input_box.process_mode = Node.PROCESS_MODE_ALWAYS
+	input_box.custom_minimum_size = Vector2(200, 36)
+	input_box.add_theme_font_size_override("font_size", 22)
+	input_box.add_theme_color_override("font_color", Color(0.99, 0.94, 0.78, 1.0))
+	input_box.add_theme_color_override("caret_color", Color(0.35, 0.23, 0.08, 1.0))
+	input_box.add_theme_stylebox_override("normal", input_bg)
+	input_box.add_theme_stylebox_override("focus", input_bg)
+	input_box.add_theme_stylebox_override("read_only", input_bg)
+	row.add_child(input_box)
+
+	# Design-system primary button — inline Button with teal style +
+	# Enter glyph.
+	var ok_btn := Button.new()
+	ok_btn.name = "DialogueInputOk"
+	ok_btn.process_mode = Node.PROCESS_MODE_ALWAYS
+	ok_btn.custom_minimum_size = Vector2(140, 40)
+	ok_btn.text = "Enter"
+	ok_btn.add_theme_font_size_override("font_size", 18)
+	ok_btn.add_theme_color_override("font_color", DesignTokens.PAPER)
+	var btn_sb := StyleBoxFlat.new()
+	btn_sb.bg_color = DesignTokens.TEAL
+	btn_sb.border_color = DesignTokens.INK
+	btn_sb.border_width_left = 3
+	btn_sb.border_width_right = 3
+	btn_sb.border_width_top = 3
+	btn_sb.border_width_bottom = 3
+	btn_sb.content_margin_left = 12
+	btn_sb.content_margin_right = 12
+	btn_sb.content_margin_top = 6
+	btn_sb.content_margin_bottom = 6
+	ok_btn.add_theme_stylebox_override("normal", btn_sb)
+	ok_btn.add_theme_stylebox_override("hover", btn_sb)
+	ok_btn.add_theme_stylebox_override("pressed", btn_sb)
+	ok_btn.pressed.connect(func() -> void: _submit_input(input_box.text))
+	row.add_child(ok_btn)
+
+	input_box.grab_focus()
+	input_box.text_submitted.connect(_submit_input)
+
+func _submit_input(text: String) -> void:
+	if text.strip_edges().is_empty():
+		text = "Hero"
+
+	# Store input in SaveData.
+	if _input_variable == "PlayerName":
+		var data := SaveManager.current_data
+		if data != null:
+			data.set("player_name", text)
+	else:
+		QuestSystem.set_world_flag(_input_variable, text)
+
+	# Penny gag: stash comparison flag.
+	if _input_variable == "PennyName":
+		var save_data := SaveManager.current_data
+		var title_name: String = String(save_data.player_name) if save_data != null else ""
+		var matches: bool = title_name.strip_edges().is_empty() \
+				or title_name.strip_edges().to_lower() == text.strip_edges().to_lower()
+		QuestSystem.set_world_flag("PennyNameMatches", "true" if matches else "false")
+
+	print("[Dialogue] Input '%s' = '%s'" % [_input_variable, text])
+
+	# Remove input UI.
+	var vbox := _text_label.get_parent() as VBoxContainer
+	var prompt := vbox.get_node_or_null("DialogueInputPrompt")
+	if prompt != null:
+		prompt.queue_free()
+	var row := vbox.get_node_or_null("DialogueInputRow")
+	if row != null:
+		row.queue_free()
+
+	_waiting_for_input = false
+	_continue_hint.visible = true
+	_just_started = true  # suppress one tick of dialogue_advance
+
+	_advance()
+
+# ---- Variable Substitution ----
+
+func _substitute_variables(text: String) -> String:
+	if text.is_empty():
+		return text
+
+	var data := SaveManager.current_data
+	if data != null:
+		text = text.replace("|PlayerName|", String(data.player_name))
+		text = text.replace("|CurrentWorld|", String(data.current_world))
+
+	text = text.replace("|PennyName|", QuestSystem.get_world_flag("PennyName"))
+	return text
+
+# Maps C3 [icon=...] markup tags to C3 TextIcons glyphs. PNG files have
+# off-by-one mapping vs filename (empty.png is the pointer slot,
+# pointer.png is space, etc.).
+const ICON_PATHS: Dictionary = {
+	"pointer":    "res://assets/sprites/ui/text_icons/empty.png",
+	"spc":        "res://assets/sprites/ui/text_icons/pointer.png",
+	"space":      "res://assets/sprites/ui/text_icons/pointer.png",
+	"esc":        "res://assets/sprites/ui/text_icons/spc.png",
+	"uparrow":    "res://assets/sprites/ui/text_icons/up_arrow.png",
+	"downarrow":  "res://assets/sprites/ui/text_icons/down_arrow.png",
+	"leftarrow":  "res://assets/sprites/ui/text_icons/left_arrow.png",
+	"rightarrow": "res://assets/sprites/ui/text_icons/right_arrow.png",
+	"heart":      "res://assets/sprites/ui/text_icons/sword.png",
+	"bag":        "res://assets/sprites/ui/text_icons/heart.png",
+	"gem":        "res://assets/sprites/ui/text_icons/bag.png",
+	"sword":      "res://assets/sprites/ui/text_icons/sword.png",
+}
+const ICON_HEIGHT_PX: int = 22
+
+func _substitute_icons(text: String) -> String:
+	if text.is_empty() or not text.contains("[icon="):
+		return text
+	var regex := RegEx.new()
+	regex.compile("\\[icon=([^\\]]+)\\]")
+	var result := ""
+	var pos: int = 0
+	for m in regex.search_all(text):
+		result += text.substr(pos, m.get_start() - pos)
+		var key: String = m.get_string(1).strip_edges().to_lower()
+		if ICON_PATHS.has(key):
+			result += " [img=,%d]%s[/img]" % [ICON_HEIGHT_PX, ICON_PATHS[key]]
+		else:
+			push_warning("[Dialogue] Unknown icon marker '%s' — stripped" % m.get_string(0))
+		pos = m.get_end()
+	result += text.substr(pos)
+	return result
+
+# ---- UI Helpers ----
+
+func _select_response(index: int) -> void:
+	var count: int = _response_container.get_child_count()
+	if count == 0:
+		return
+	# Wrap around.
+	_selected_response_index = ((index % count) + count) % count
+	_highlight_selected_response()
+
+func _highlight_selected_response() -> void:
+	for i in range(_response_container.get_child_count()):
+		var row := _response_container.get_child(i) as HBoxContainer
+		if row == null:
+			continue
+		var pointer := row.get_node_or_null("Pointer") as TextureRect
+		if pointer != null:
+			pointer.modulate = Color.WHITE if i == _selected_response_index else Color(1, 1, 1, 0)
+
+func _clear_responses() -> void:
+	for child in _response_container.get_children():
+		child.queue_free()
+	_response_container.visible = false
+	_selected_response_index = -1

@@ -1,0 +1,118 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://c83bsvdar35rh"]
+
+[ext_resource type="Script" uid="uid://d33sx6yaxn506" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" uid="uid://bu4ttfvxpgnqm" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" uid="uid://urcfcaatl5tt" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" uid="uid://dcf2qjxc8c5fy" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" uid="uid://c123kgbx2aotm" path="res://scripts/data/DialogueResponse.gd" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+id = "tree_000"
+text = "The Secret of the Tree of AdventureLand is deeply mysterious."
+speaker = "AL"
+priority = 100
+auto_advance = "tree_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+id = "tree_001"
+text = "There are few who remember the living tree."
+speaker = "AL"
+priority = 99
+auto_advance = "tree_002"
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+
+[sub_resource type="Resource" id="cond_6"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_5"]
+script = ExtResource("2")
+id = "tree_002"
+text = "The tree was cut down after poison overtook it."
+speaker = "AL"
+priority = 98
+auto_advance = "tree_003"
+conditions = Array[ExtResource("3")]([SubResource("cond_6")])
+
+[sub_resource type="Resource" id="cond_8"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_7"]
+script = ExtResource("2")
+id = "tree_003"
+text = "The whole forest is still in danger..."
+speaker = "AL"
+priority = 97
+auto_advance = "tree_004"
+conditions = Array[ExtResource("3")]([SubResource("cond_8")])
+
+[sub_resource type="Resource" id="cond_10"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_9"]
+script = ExtResource("2")
+id = "tree_004"
+text = "Unless a brave adventurer can find the source of the poison."
+speaker = "AL"
+priority = 96
+auto_advance = "tree_005"
+conditions = Array[ExtResource("3")]([SubResource("cond_10")])
+
+[sub_resource type="Resource" id="act_13"]
+script = ExtResource("4")
+quest_id = "tree_poison_quest"
+status = "Read"
+
+[sub_resource type="Resource" id="cond_12"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_11"]
+script = ExtResource("2")
+id = "tree_005"
+text = "Is anyone up to the task of saving AdventureLand?"
+speaker = "AL"
+priority = 95
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_12")])
+actions = Array[ExtResource("4")]([SubResource("act_13")])
+
+[sub_resource type="Resource" id="cond_15"]
+script = ExtResource("3")
+quest_id = "tree_poison_quest"
+status = "Read"
+
+[sub_resource type="Resource" id="node_14"]
+script = ExtResource("2")
+id = "tree_006"
+text = "Can anyone find the source of the poison and save AdventureLand?"
+speaker = "AL"
+priority = 94
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_15")])
+
+[resource]
+script = ExtResource("1")
+npc_id = "TreeSign"
+display_name = "TreeSign"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3"), SubResource("node_5"), SubResource("node_7"), SubResource("node_9"), SubResource("node_11"), SubResource("node_14")])

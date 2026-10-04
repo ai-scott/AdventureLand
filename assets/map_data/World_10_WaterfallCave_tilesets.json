@@ -1,0 +1,14 @@
+{
+  "tilesets": [
+    {
+      "image": "muddy cave v3.png",
+      "columns": 20,
+      "tile_size": 16
+    },
+    {
+      "image": "Mana_Seed_Interiors.png",
+      "columns": 128,
+      "tile_size": 16
+    }
+  ]
+}

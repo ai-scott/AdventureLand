@@ -1,0 +1,9 @@
+{
+  "tilesets": [
+    {
+      "image": "FantasyForest_Combo.png",
+      "columns": 100,
+      "tile_size": 16
+    }
+  ]
+}

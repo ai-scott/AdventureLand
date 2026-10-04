@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://dveho743v53n8"
+path="res://.godot/imported/spritefont_menu.fnt-3a714b57b1aa88562a626820d78f659a.fontdata"
+
+[deps]
+
+source_file="res://assets/fonts/spritefont_menu.fnt"
+dest_files=["res://.godot/imported/spritefont_menu.fnt-3a714b57b1aa88562a626820d78f659a.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

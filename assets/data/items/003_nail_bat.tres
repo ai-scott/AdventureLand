@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://xhw83grc0frr"]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://jkxcy1o41f3v" path="res://assets/sprites/items/itemshowcase-animation 1-003.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = 3
+name = "Nail Bat"
+description = "A wooden bat with nine-inch nails driven straight through. Brutal."
+category = 0
+strength = 5
+cost = 10
+icon = ExtResource("2")
+weapon_sheet = 7

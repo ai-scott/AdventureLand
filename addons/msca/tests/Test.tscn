@@ -1,0 +1,193 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkldpx73g5hn6"]
+
+[ext_resource type="Script" path="res://addons/msca/tests/Test.gd" id="1_gim83"]
+
+[node name="Test" type="Node2D"]
+script = ExtResource("1_gim83")
+
+[node name="Walk_Run_Controls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.0
+offset_top = -102.0
+offset_right = 38.0
+offset_bottom = -47.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Walk_Run_Controls"]
+layout_mode = 1
+offset_left = 1.0
+offset_right = 73.0
+offset_bottom = 31.0
+
+[node name="WalkButton" type="Button" parent="Walk_Run_Controls/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Walk"
+
+[node name="RunButton" type="Button" parent="Walk_Run_Controls/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Run"
+
+[node name="AnimLabel" type="Label" parent="Walk_Run_Controls"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "Walk"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cloth_Controls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 272.0
+offset_top = -39.0
+offset_right = 443.0
+offset_bottom = 45.0
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="Cloth_Controls"]
+layout_mode = 0
+offset_left = -175.0
+offset_top = 30.0
+offset_right = -107.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 12
+text = "Clothings ->"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Cloth_Controls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -4.0
+offset_right = 71.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Cloth_Controls/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShirtButton" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Shirt"
+
+[node name="TrousersButton" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Trousers"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Cloth_Controls/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShirtColor1Button" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Color 1"
+
+[node name="TrousersColor1Button" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Color 1"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Cloth_Controls/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShirtColor2Button" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Color 2"
+
+[node name="TrousersColor2Button" type="Button" parent="Cloth_Controls/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Color 2"
+
+[node name="Anim_Controls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -576.0
+offset_top = -81.0
+offset_right = -268.0
+offset_bottom = 68.0
+
+[node name="Label" type="Label" parent="Anim_Controls"]
+layout_mode = 0
+offset_left = 393.0
+offset_top = 71.0
+offset_right = 474.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 12
+text = "<- Animations"
+
+[node name="FishingAnimButton" type="Button" parent="Anim_Controls"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 9.0
+offset_right = 311.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 12
+text = "Cast Fishing Rod
+"
+
+[node name="PlantSeedsButton" type="Button" parent="Anim_Controls"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 40.0
+offset_right = 311.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 12
+text = "Plant Seeds
+"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+texture_filter = 1
+zoom = Vector2(2, 2)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -185.0
+offset_top = 37.0
+offset_right = 183.0
+offset_bottom = 124.0
+theme_override_font_sizes/normal_font_size = 12
+text = "This Test Scene just contains some examples for you to check.
+
+On the right you can test equipping stuff and using the shader
+On the left you can trigger two animations that also contain switching layers to visible and using one of the signals."
+
+[connection signal="pressed" from="Walk_Run_Controls/HBoxContainer/WalkButton" to="." method="_on_walk_button_pressed"]
+[connection signal="pressed" from="Walk_Run_Controls/HBoxContainer/RunButton" to="." method="_on_run_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer/ShirtButton" to="." method="_on_shirt_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer/TrousersButton" to="." method="_on_trousers_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer2/ShirtColor1Button" to="." method="_on_shirt_color_1_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer2/TrousersColor1Button" to="." method="_on_trousers_color_1_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer3/ShirtColor2Button" to="." method="_on_shirt_color_2_button_pressed"]
+[connection signal="pressed" from="Cloth_Controls/VBoxContainer/HBoxContainer3/TrousersColor2Button" to="." method="_on_trousers_color_2_button_pressed"]
+[connection signal="pressed" from="Anim_Controls/FishingAnimButton" to="." method="_on_fishing_anim_button_pressed"]
+[connection signal="pressed" from="Anim_Controls/PlantSeedsButton" to="." method="_on_plant_seeds_button_pressed"]

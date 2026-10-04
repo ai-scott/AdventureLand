@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://b1jtg2ui4f520" path="res://assets/sprites/items/itemshowcase-animation 1-006.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = 6
+name = "Club"
+description = "A thick length of wood. Simple, but it gets the job done."
+category = 0
+strength = 3
+cost = 6
+icon = ExtResource("2")
+weapon_sheet = 4

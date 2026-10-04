@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://dfih4wma1l1gd"]
+
+[ext_resource type="Script" uid="uid://d33sx6yaxn506" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" uid="uid://bu4ttfvxpgnqm" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" uid="uid://urcfcaatl5tt" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" uid="uid://dcf2qjxc8c5fy" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" uid="uid://c123kgbx2aotm" path="res://scripts/data/DialogueResponse.gd" id="5"]
+
+[sub_resource type="Resource" id="act_3"]
+script = ExtResource("4")
+quest_id = "rescue_cat_quest"
+status = "Rosie_Found"
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+quest_id = "befriend_rosie_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+id = "node_000"
+text = "Meow"
+speaker = "Rosie"
+priority = 100
+auto_advance = "rosie_caught"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+actions = Array[ExtResource("4")]([SubResource("act_3")])
+
+[sub_resource type="Resource" id="act_6"]
+script = ExtResource("4")
+quest_id = "befriend_rosie_quest"
+status = "Found_Cat"
+
+[sub_resource type="Resource" id="act_7"]
+script = ExtResource("4")
+type = 3
+item_id = "Rosie"
+destroy_trigger = true
+
+[sub_resource type="Resource" id="cond_5"]
+script = ExtResource("3")
+quest_id = "befriend_rosie_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_4"]
+script = ExtResource("2")
+id = "rosie_caught"
+text = "You caught Rosie!"
+speaker = "AL"
+priority = 99
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_5")])
+actions = Array[ExtResource("4")]([SubResource("act_6"), SubResource("act_7")])
+
+[sub_resource type="Resource" id="cond_9"]
+script = ExtResource("3")
+quest_id = "befriend_rosie_quest"
+status = "Found_Cat"
+
+[sub_resource type="Resource" id="node_8"]
+script = ExtResource("2")
+id = "node_002"
+text = "Meow. Purr...."
+speaker = "Rosie"
+priority = 98
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_9")])
+
+[resource]
+script = ExtResource("1")
+npc_id = "Rosie"
+display_name = "Rosie"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_4"), SubResource("node_8")])

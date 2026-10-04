@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-123.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = 123
+name = "Perle du Lac"
+description = "In it, you see the depths of the lake."
+category = 10
+strength = 0
+cost = 0
+icon = ExtResource("2")
+quest_item = true

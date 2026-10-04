@@ -1,0 +1,9 @@
+{
+  "tilesets": [
+    {
+      "image": "Mana_Seed_Interiors.png",
+      "columns": 128,
+      "tile_size": 16
+    }
+  ]
+}

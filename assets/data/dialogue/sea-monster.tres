@@ -1,0 +1,419 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://q4v3hf8xtxsq"]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
+
+[sub_resource type="Resource" id="act_3"]
+script = ExtResource("4")
+type = 14
+
+[sub_resource type="Resource" id="act_4"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+id = "greeting"
+text = "Step away from that shell. Did you steal my pearl?"
+speaker = "SeaMonster"
+priority = 1000
+auto_advance = "greeting_response"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+actions = Array[ExtResource("4")]([SubResource("act_3"), SubResource("act_4")])
+
+[sub_resource type="Resource" id="cond_6"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="cond_greet_no_pearl"]
+script = ExtResource("3")
+type = 1
+negate = true
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="resp_7"]
+script = ExtResource("5")
+text = "(lie) Sure I did. Try and take it from me!"
+leads_to = "player_taunts"
+conditions = Array[ExtResource("3")]([SubResource("cond_greet_no_pearl")])
+
+[sub_resource type="Resource" id="resp_8"]
+script = ExtResource("5")
+text = "I have no idea what you're talking about."
+leads_to = "explain_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_greet_no_pearl")])
+
+[sub_resource type="Resource" id="cond_has_pearl_admit"]
+script = ExtResource("3")
+type = 1
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="resp_admit"]
+script = ExtResource("5")
+text = "Yes, I have your pearl. Will this calm you down?"
+leads_to = "return_with_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
+
+[sub_resource type="Resource" id="resp_admit_trade"]
+script = ExtResource("5")
+text = "I'll give it to you if you give me something in return."
+leads_to = "return_with_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_has_pearl_admit")])
+
+[sub_resource type="Resource" id="node_5"]
+script = ExtResource("2")
+id = "greeting_response"
+speaker = "You"
+priority = 999
+conditions = Array[ExtResource("3")]([SubResource("cond_6")])
+responses = Array[ExtResource("5")]([SubResource("resp_7"), SubResource("resp_8"), SubResource("resp_admit"), SubResource("resp_admit_trade")])
+
+[sub_resource type="Resource" id="act_11"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Active"
+
+[sub_resource type="Resource" id="act_13"]
+script = ExtResource("4")
+type = 15
+reason = "player_taunted"
+
+[sub_resource type="Resource" id="act_14"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_10"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="node_9"]
+script = ExtResource("2")
+id = "player_taunts"
+text = "GIVE ME MY PEARL OR FACE MY WRATH!"
+speaker = "SeaMonster"
+priority = 998
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_10")])
+actions = Array[ExtResource("4")]([SubResource("act_11"), SubResource("act_13"), SubResource("act_14")])
+
+[sub_resource type="Resource" id="cond_16"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="node_15"]
+script = ExtResource("2")
+id = "explain_pearl"
+text = "Someone stole my precious pearl, the jewel of the lake. Will you help find it?"
+speaker = "SeaMonster"
+priority = 997
+auto_advance = "explain_pearl_response"
+conditions = Array[ExtResource("3")]([SubResource("cond_16")])
+
+[sub_resource type="Resource" id="cond_18"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="resp_19"]
+script = ExtResource("5")
+text = "Yes! I'll help you find it."
+leads_to = "accept_quest"
+
+[sub_resource type="Resource" id="resp_20"]
+script = ExtResource("5")
+text = "No, I'll never find some funny little pearl."
+leads_to = "refuse_quest"
+
+[sub_resource type="Resource" id="node_17"]
+script = ExtResource("2")
+id = "explain_pearl_response"
+speaker = "You"
+priority = 996
+conditions = Array[ExtResource("3")]([SubResource("cond_18")])
+responses = Array[ExtResource("5")]([SubResource("resp_19"), SubResource("resp_20")])
+
+[sub_resource type="Resource" id="act_23"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Active"
+
+[sub_resource type="Resource" id="act_25"]
+script = ExtResource("4")
+type = 16
+
+[sub_resource type="Resource" id="cond_22"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="node_21"]
+script = ExtResource("2")
+id = "accept_quest"
+text = "Thank you! Once you have it touch the shell and I'll come back up."
+speaker = "SeaMonster"
+priority = 995
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_22")])
+actions = Array[ExtResource("4")]([SubResource("act_23"), SubResource("act_25")])
+
+[sub_resource type="Resource" id="act_28"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Active"
+
+[sub_resource type="Resource" id="act_30"]
+script = ExtResource("4")
+type = 15
+reason = "player_refused"
+
+[sub_resource type="Resource" id="act_31"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_27"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Met_Sea_Monster"
+
+[sub_resource type="Resource" id="node_26"]
+script = ExtResource("2")
+id = "refuse_quest"
+text = "YOU DARE REFUSE ME? THEN FACE MY WRATH!"
+speaker = "SeaMonster"
+priority = 994
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_27")])
+actions = Array[ExtResource("4")]([SubResource("act_28"), SubResource("act_30"), SubResource("act_31")])
+
+[sub_resource type="Resource" id="act_34"]
+script = ExtResource("4")
+type = 14
+
+[sub_resource type="Resource" id="act_35"]
+script = ExtResource("4")
+type = 15
+reason = "returning_after_hostile"
+
+[sub_resource type="Resource" id="cond_33"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="cond_no_pearl"]
+script = ExtResource("3")
+type = 1
+negate = true
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="node_32"]
+script = ExtResource("2")
+id = "hostile_encounter_summon"
+speaker = "System"
+priority = 994
+auto_advance = "hostile_encounter"
+conditions = Array[ExtResource("3")]([SubResource("cond_33"), SubResource("cond_no_pearl")])
+actions = Array[ExtResource("4")]([SubResource("act_34"), SubResource("act_35")])
+
+[sub_resource type="Resource" id="cond_37"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Hostile_Encounter"
+
+[sub_resource type="Resource" id="node_36"]
+script = ExtResource("2")
+id = "hostile_encounter"
+text = "YOU DARE RETURN WITHOUT MY PEARL?! FACE MY WRATH!"
+speaker = "SeaMonster"
+priority = 993
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_37"), SubResource("cond_no_pearl")])
+
+[sub_resource type="Resource" id="act_41"]
+script = ExtResource("4")
+type = 14
+
+[sub_resource type="Resource" id="cond_39"]
+script = ExtResource("3")
+type = 1
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="cond_40"]
+script = ExtResource("3")
+negate = true
+quest_id = "pearl_quest"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_38"]
+script = ExtResource("2")
+id = "return_summon"
+speaker = "System"
+priority = 994
+auto_advance = "return_with_pearl"
+conditions = Array[ExtResource("3")]([SubResource("cond_39"), SubResource("cond_40")])
+actions = Array[ExtResource("4")]([SubResource("act_41")])
+
+[sub_resource type="Resource" id="act_45"]
+script = ExtResource("4")
+type = 4
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="cond_43"]
+script = ExtResource("3")
+type = 1
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="cond_44"]
+script = ExtResource("3")
+negate = true
+quest_id = "pearl_quest"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_42"]
+script = ExtResource("2")
+id = "return_with_pearl"
+text = "Wow! My pearl! I've been waiting so long for this moment."
+speaker = "SeaMonster"
+priority = 993
+auto_advance = "give_trident"
+conditions = Array[ExtResource("3")]([SubResource("cond_43"), SubResource("cond_44")])
+actions = Array[ExtResource("4")]([SubResource("act_45")])
+
+[sub_resource type="Resource" id="cond_47"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Pearl_Found"
+
+[sub_resource type="Resource" id="node_46"]
+script = ExtResource("2")
+id = "give_trident"
+text = "I found this magical weapon in the lake. Take it for being so kind to me."
+speaker = "SeaMonster"
+priority = 992
+auto_advance = "trident_received"
+conditions = Array[ExtResource("3")]([SubResource("cond_47")])
+
+[sub_resource type="Resource" id="act_50"]
+script = ExtResource("4")
+type = 3
+item_id = "Magic Trident"
+
+[sub_resource type="Resource" id="act_51"]
+script = ExtResource("4")
+quest_id = "pearl_quest"
+status = "Complete"
+
+[sub_resource type="Resource" id="act_52"]
+script = ExtResource("4")
+type = 17
+
+[sub_resource type="Resource" id="cond_49"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Pearl_Found"
+
+[sub_resource type="Resource" id="node_48"]
+script = ExtResource("2")
+id = "trident_received"
+text = "You got a Magic Trident!"
+speaker = "AL"
+priority = 991
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_49")])
+actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_51"), SubResource("act_52")])
+
+[sub_resource type="Resource" id="act_55"]
+script = ExtResource("4")
+type = 14
+
+[sub_resource type="Resource" id="cond_54"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_53"]
+script = ExtResource("2")
+id = "already_complete_summon"
+speaker = "System"
+priority = 992
+auto_advance = "already_complete"
+conditions = Array[ExtResource("3")]([SubResource("cond_54")])
+actions = Array[ExtResource("4")]([SubResource("act_55")])
+
+[sub_resource type="Resource" id="cond_57"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_56"]
+script = ExtResource("2")
+id = "already_complete"
+text = "Thank you again for returning my pearl. The lake is at peace."
+speaker = "SeaMonster"
+priority = 991
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_57")])
+
+[sub_resource type="Resource" id="act_61"]
+script = ExtResource("4")
+type = 14
+
+[sub_resource type="Resource" id="cond_59"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Active"
+
+[sub_resource type="Resource" id="cond_60"]
+script = ExtResource("3")
+type = 1
+negate = true
+item_id = "Perle du Lac"
+
+[sub_resource type="Resource" id="node_58"]
+script = ExtResource("2")
+id = "quest_in_progress_summon"
+speaker = "System"
+priority = 993
+auto_advance = "quest_in_progress"
+conditions = Array[ExtResource("3")]([SubResource("cond_59"), SubResource("cond_60")])
+actions = Array[ExtResource("4")]([SubResource("act_61")])
+
+[sub_resource type="Resource" id="act_64"]
+script = ExtResource("4")
+type = 18
+
+[sub_resource type="Resource" id="cond_63"]
+script = ExtResource("3")
+quest_id = "pearl_quest"
+status = "Active"
+
+[sub_resource type="Resource" id="node_62"]
+script = ExtResource("2")
+id = "quest_in_progress"
+text = "Have you found my pearl yet? Remember, touch the shell when you have it."
+speaker = "SeaMonster"
+priority = 992
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_63")])
+actions = Array[ExtResource("4")]([SubResource("act_64")])
+
+[resource]
+script = ExtResource("1")
+npc_id = "SeaMonster"
+display_name = "SeaMonster"
+default_node = "greeting"
+world_id = "World10"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_5"), SubResource("node_9"), SubResource("node_15"), SubResource("node_17"), SubResource("node_21"), SubResource("node_26"), SubResource("node_32"), SubResource("node_36"), SubResource("node_38"), SubResource("node_42"), SubResource("node_46"), SubResource("node_48"), SubResource("node_53"), SubResource("node_56"), SubResource("node_58"), SubResource("node_62")])

@@ -1,0 +1,77 @@
+This is an identification list for the instrument and clothing icons found on the sheet called "farmer icons 16x16 v00.png"
+
+
+Instruments, left to right:
+
+Row 1
+	Bamboo Flute
+	Ocarina
+	Bass Flute
+	Shawm
+	Gemshorn
+	Crumhorn
+	Pan Flute
+Row 2
+	Lute
+	Sitar
+	Shamisen
+	Banjo
+	Acoustic Guitar
+	Stand-up Bass
+	Dulcian
+	Fiddle
+Row 3
+	Hand Drum
+	Hide Drum
+	Bongos
+	Goblet Drum
+	Tabla Drum
+	Handpan
+
+
+Clothing, left to right:
+(all these items correspond to clothing layers, and have matching base palettes)
+
+Row 1
+	Undies
+	Bra
+	One-piece Swimsuit
+	Bikini
+	Gloves
+	Suspenders
+	Vest
+	Scarf
+Row 2
+	Low Socks
+	High Socks
+	Stockings
+	Sandals
+	Plain Shoes
+	Plain Boots
+	Cuffed Boots
+	Curly-toed Shoes
+Row 3
+	Shorts
+	Shortalls
+	Pants
+	Overalls
+	Frilly Skirt
+	Frilly Dress
+	Long Skirt
+	Long Dress
+Row 4
+	Tanktop
+	T-Shirt
+	Long-sleeved Shirt
+	Plain Cloak
+	Plain Mantle
+	Plain Cloak with Mantle
+	Glasses
+	Sunglasses
+Row 5
+	Bandana
+	Boater Hat
+	Cowboy Hat
+	Floppy Hat
+	Head Scarf
+	Straw Hat

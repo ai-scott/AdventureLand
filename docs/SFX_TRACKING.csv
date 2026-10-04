@@ -1,0 +1,15 @@
+Category,Sound Name,File Path,Status,Triggered By,Call Site,Source/License,Priority,Notes
+Combat,player_sword,assets/audio/sfx/player_sword.ogg,Exists,Player attack swing (weapon swing fires this on every input),scripts/player/PlayerController.cs:577,,Ship-blocker,Plays on every attack — primary combat feedback
+Combat,enemy_hurt,assets/audio/sfx/enemy_hurt.ogg,Exists,Enemy takes damage (TakeDamage path; precedes hurt flash),scripts/enemy/EnemyController.cs:903,,Ship-blocker,Combat hit confirmation — needed for every enemy
+Combat,enemy_destroy,assets/audio/sfx/enemy_destroy.ogg,Exists,Enemy death (OnDied → DropLoot + fade),scripts/enemy/EnemyController.cs:953,,Ship-blocker,Death cue — pairs with destroy fade
+Enemy,slime_jump,assets/audio/sfx/slime_jump.ogg,Missing,Ooze action: Hop (Type=2 Sound action inside hop behavior),"data: ooze.tres (act_hop_sound, line 56-59)",,Polish,Wired via EnemyController.cs:610 generic Sound action — file just needs to exist
+Enemy,crab_retreat,assets/audio/sfx/crab_retreat.ogg,Missing,Crab action: Retreat (Type=2 Sound action inside retreat behavior),"data: crab.tres (act_retreat_sound, line 151-154)",,Polish,Same wiring as slime_jump — drop the file in and it plays
+Pickup,collectible_pickup,assets/audio/sfx/collectible_pickup.ogg,Exists,"Item pickup (non-food), Gem/Gold/Coin pickup, inventory sell","scripts/items/ItemTrigger.cs:160,232; scripts/world/Gem.cs:123,127,131; scripts/ui/InventoryUI.cs:994",,Ship-blocker,Most-used SFX — 6 call sites
+Pickup,heart,assets/audio/sfx/heart.ogg,Exists,Food item pickup; Heart drop heal,"scripts/items/ItemTrigger.cs:232 (Food branch); scripts/world/Gem.cs:139",,Ship-blocker,Distinct from generic pickup — heal feedback
+Pickup,potion,assets/audio/sfx/potion.ogg,Exists,Potion consumed from inventory (Inventory.UseItem heal path),scripts/systems/Inventory.cs:317,,Ship-blocker,Plays on potion drink/heal
+Player,player_hurt,assets/audio/sfx/player_hurt.ogg,Exists,"Player damaged (gated on !IsDead), Player death cue (volume -3dB)","scripts/player/PlayerController.cs:670,937",,Ship-blocker,Used for both damage and death (quieter on death)
+World,seamonster_rise,assets/audio/sfx/seamonster_rise.ogg,Exists,Sea Monster emerge + secondary bubble cue,"scripts/world/SeaMonsterController.cs:154,234",,Ship-blocker,World10 boss reveal — story beat
+World,bubble,assets/audio/sfx/bubble.ogg,Orphan,Not called anywhere in scripts/,,,Nice-to-have,Likely intended for water/swim ambience — candidate for removal or future water-tile splash
+World,destructible_destroy,assets/audio/sfx/destructible_destroy.ogg,Orphan,Not called anywhere in scripts/,,,Polish,Reserved for breakable pots/crates — wire when destructibles ship
+World,door_open,assets/audio/sfx/door_open.ogg,Orphan,Not called anywhere in scripts/,,,Polish,DoorTrigger / interior transitions should fire this — wire when door SFX pass happens
+World,room_clear,assets/audio/sfx/room_clear.ogg,Orphan,Not called anywhere in scripts/,,,Nice-to-have,Reserved for "all enemies cleared" stinger — no system fires it yet

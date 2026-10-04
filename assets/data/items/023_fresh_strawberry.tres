@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-023.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = 23
+name = "Fresh Strawberry"
+description = "Delicious and ripe. This tasty treat is best eaten fresh."
+category = 1
+strength = 6
+cost = 6
+icon = ExtResource("2")
+stackable = true

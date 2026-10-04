@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cu0627gl7uaay"
+
+[deps]
+
+files=["res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.7.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation"]
+
+source_file="res://assets/map_data/World_10_WaterfallCave_Ground2underP.csv"
+dest_files=["res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.7.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation", "res://assets/map_data/World_10_WaterfallCave_Ground2underP.0.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

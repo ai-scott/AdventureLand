@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://bwhdgd048e1p5"]
+
+[ext_resource type="Script" path="res://scripts/data/DialogueData.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/DialogueNode.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/data/DialogueCondition.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/data/DialogueAction.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/data/DialogueResponse.gd" id="5"]
+
+[sub_resource type="Resource" id="cond_2"]
+script = ExtResource("3")
+quest_id = "general_store_intro"
+status = "Not_Started"
+
+[sub_resource type="Resource" id="node_1"]
+script = ExtResource("2")
+id = "node_000"
+text = "Welcome to the General Store. We have the best clothes in town."
+speaker = "Shopkeeper_Sarah"
+priority = 100
+auto_advance = "node_001"
+conditions = Array[ExtResource("3")]([SubResource("cond_2")])
+
+[sub_resource type="Resource" id="cond_4"]
+script = ExtResource("3")
+quest_id = "general_store_intro"
+status = "Complete"
+
+[sub_resource type="Resource" id="node_3"]
+script = ExtResource("2")
+id = "node_001"
+text = " Some may even help with those weird green goos."
+speaker = "Shopkeeper_Sarah"
+priority = 99
+ends_dialogue = true
+conditions = Array[ExtResource("3")]([SubResource("cond_4")])
+
+[resource]
+script = ExtResource("1")
+npc_id = "Shopkeeper_Sarah"
+display_name = "Shopkeeper_Sarah"
+world_id = "World00"
+nodes = Array[ExtResource("2")]([SubResource("node_1"), SubResource("node_3")])

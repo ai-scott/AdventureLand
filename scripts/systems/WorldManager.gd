@@ -1,0 +1,428 @@
+extends Node
+
+# Autoload — no class_name (collides with the autoload singleton name).
+#
+# Autoload singleton orchestrating scene transitions. Two entry points:
+#   - go_to_door(scene, door_id)  — interior teleport, player spawns at
+#     Marker2D "SpawnFromDoor_{doorId}"
+#   - go_to_edge(scene, exit_edge, pos) — walk off map edge, player
+#     enters opposite edge with perpendicular coord preserved
+#
+# Both fade the screen, change the scene via SaveManager (which restores
+# HP/inventory/costume), and position the player at the correct spawn.
+# First visit to a world triggers a name banner.
+#
+# Register in Project → Autoload as:
+#   Path: res://scripts/systems/WorldManager.gd
+#   Name: WorldManager
+
+# Signal fired at the end of every transition (go_to_door / go_to_edge /
+# show_first_world_banner). Callers can `await` it for completion.
+signal transition_completed
+
+# Guard so we don't fire multiple transitions at once.
+var is_transitioning: bool = false
+
+# Edge safety margin — player enters this far inside the opposite edge.
+const EDGE_MARGIN: float = 32.0
+
+# Global debug-visualization flag. Backtick toggles this on/off.
+# Drives both Godot's built-in DebugCollisionsHint and any custom debug
+# draws (e.g., PlayerController's attack hitbox overlay).
+var debug_visible: bool = false
+
+func _ready() -> void:
+	# Process inputs even when the tree is paused (dialogue, prompts) so
+	# the debug toggle still works from any game state.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+func _input(event: InputEvent) -> void:
+	if not (event is InputEventKey):
+		return
+	var key: InputEventKey = event
+	if not key.pressed or key.echo:
+		return
+
+	# F1 — dev shortcut to bail back to the title screen without
+	# saving. Hits change_scene_to_file directly so it works
+	# mid-dialogue (DialogueManager pause state would otherwise eat
+	# key inputs).
+	if key.keycode == KEY_F1:
+		print("[Debug] F1 — returning to TitleScreen")
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+		return
+
+	# "=" — dev shortcut: jump to Waterfall Cave Bill with the sea monster
+	# calmed and the cave cleared, so talking to him starts the walk home.
+	if key.keycode == KEY_EQUAL and OS.is_debug_build():
+		_debug_jump_to_bill_leave()
+		return
+
+	if key.keycode != KEY_QUOTELEFT:
+		return
+
+	debug_visible = not debug_visible
+	var tree := get_tree()
+	if tree != null:
+		tree.debug_collisions_hint = debug_visible
+
+	# Force every CollisionShape2D / CollisionPolygon2D to repaint so
+	# the toggle also affects shapes that existed before the flag flipped.
+	if tree != null and tree.current_scene != null:
+		_repaint_shapes(tree.current_scene)
+
+	print("[Debug] Collision shapes %s" % ("ON" if debug_visible else "OFF"))
+
+	# Debug loadout — grant best-in-slot items + Magic Trident. Only on
+	# toggle-ON edge so a second backtick press doesn't duplicate items.
+	if debug_visible:
+		_grant_debug_loadout()
+
+func _debug_jump_to_bill_leave() -> void:
+	if is_transitioning or SaveManager.current_data == null:
+		print("[Debug] '=' needs a loaded save (start or continue a game first)")
+		return
+	print("[Debug] '=' — jumping to cave Bill, ready to head home")
+	QuestSystem.set_world_flag("nick_asked_find_bill", "true")
+	QuestSystem.set_quest_status("rescue_bill", "Active")
+	QuestSystem.set_quest_status("pearl_quest", "Complete")
+	QuestSystem.set_world_flag("cave_cleared", "true")
+	QuestSystem.set_world_flag("bill_left_cave", "false")
+
+	is_transitioning = true
+	var dm := get_dialogue_manager()
+	if dm != null and dm.get("is_active") == true:
+		dm.call("end_dialogue")
+	get_tree().paused = false
+	await FadeOverlay.fade_out(0.3)
+	# Across the holes from Bill (84, 428), inside his talk radius.
+	SaveManager.pending_spawn_position = Vector2(140, 420)
+	await SaveManager.transition_to_world("res://scenes/worlds/World_10_WaterfallCave.tscn")
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player is CharacterBody2D:
+		SaveManager.unstick_player(player)
+		snap_camera(player)
+	await FadeOverlay.fade_in(0.3)
+	is_transitioning = false
+	transition_completed.emit()
+
+func _grant_debug_loadout() -> void:
+	var player := get_tree().get_first_node_in_group("player") as Node
+	var costume := player.get_node_or_null("CostumeController") if player != null else null
+
+	# Best-in-slot per category — IDs lifted from assets/data/items/.
+	_try_add_and_equip(costume, 4)   # Magic Trident   (Weapon, Str 6)
+	_try_add_and_equip(costume, 54)  # The Wrangler    (Head,   Str 3)
+	_try_add_and_equip(costume, 62)  # Cloak of Billowing (Neck, Str 3)
+	_try_add_and_equip(costume, 73)  # Sunset Vest and Top (Body, Str 3)
+	_try_add_and_equip(costume, 81)  # Gold + Purple Ring (Hand, Str 2)
+	_try_add_and_equip(costume, 96)  # Bluejean Overalls (Legs, Str 3)
+	_try_add_and_equip(costume, 102) # Big Red Boots    (Boot,   Str 3)
+
+static func _try_add_and_equip(costume: Node, item_id: int) -> void:
+	if not Inventory.has_item(item_id):
+		if not Inventory.add_item(item_id):
+			return
+	for i in range(Inventory.SLOT_COUNT):
+		if Inventory.get_slot_item_id(i) == item_id:
+			Inventory.equip(i)
+			var item: Resource = Inventory.get_slot_item(i)
+			if item != null and costume != null:
+				costume.call("equip_item", item)
+			break
+
+static func _repaint_shapes(root: Node) -> void:
+	for child in root.get_children():
+		if child is CanvasItem and (child is CollisionShape2D or child is CollisionPolygon2D):
+			(child as CanvasItem).queue_redraw()
+		_repaint_shapes(child)
+
+# Transition through a door into an interior (or back out). Target scene
+# must have a Marker2D named "SpawnFromDoor_{door_id}".
+func go_to_door(target_scene: String, door_id: int) -> void:
+	if is_transitioning:
+		return
+	is_transitioning = true
+
+	# Safety: if a dialogue was mid-flight when the door fired, force-end it.
+	# DialogueManager pauses the tree on start_dialogue; a scene change
+	# mid-dialogue orphans the paused state.
+	var dm := get_dialogue_manager()
+	if dm != null and dm.get("is_active") == true:
+		print("[WorldManager] Active dialogue detected before transition — ending it.")
+		dm.call("end_dialogue")
+	get_tree().paused = false
+
+	await FadeOverlay.fade_out(0.3)
+
+	# Prime the first-visit banner if this is a new world.
+	var is_first_visit: bool = _prepare_banner_if_first_visit(target_scene)
+
+	# Change scene via SaveManager so HP/inventory/costume restore.
+	# Await the full transition so SaveManager._apply_save_to_player
+	# finishes BEFORE we look up the spawn marker -- otherwise apply
+	# overwrites the marker position with the stale saved coords
+	# (door exits landed the player at their previous interior
+	# coordinates instead of at the target's SpawnFromDoor marker).
+	if SaveManager.current_data != null:
+		await SaveManager.transition_to_world(target_scene)
+
+	# Find the spawn marker in the freshly-loaded scene.
+	var scene := get_tree().current_scene
+	var marker: Marker2D = null
+	if scene != null:
+		marker = scene.find_child("SpawnFromDoor_%d" % door_id, true, false) as Marker2D
+	if marker != null:
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		if player != null:
+			player.global_position = marker.global_position
+			# Door markers can land on tree/wall colliders -- unstick.
+			if player is CharacterBody2D and SaveManager.current_data != null:
+				SaveManager.unstick_player(player)
+			snap_camera(player)
+			var data := SaveManager.current_data
+			if data != null:
+				data.position_x = player.global_position.x
+				data.position_y = player.global_position.y
+				# Re-save with the marker position so disk matches in-memory.
+				SaveManager.save()
+	else:
+		push_warning("[WorldManager] SpawnFromDoor_%d marker not found in %s" % [door_id, target_scene])
+
+	await _show_banner_and_fade_in(is_first_visit)
+	is_transitioning = false
+	transition_completed.emit()
+
+# Transition by walking off a map edge. Player enters the target scene
+# at the opposite edge with the perpendicular coordinate preserved.
+func go_to_edge(target_scene: String, exit_edge: String, player_pos: Vector2) -> void:
+	if is_transitioning:
+		return
+	is_transitioning = true
+
+	# Same safety as go_to_door — don't leave a paused tree from
+	# mid-dialogue.
+	var dm := get_dialogue_manager()
+	if dm != null and dm.get("is_active") == true:
+		dm.call("end_dialogue")
+	get_tree().paused = false
+
+	await FadeOverlay.fade_out(0.3)
+
+	var is_first_visit: bool = _prepare_banner_if_first_visit(target_scene)
+
+	# Compute intended spawn position. We don't know the target's exact
+	# map size until it loads, so set a temporary value and clamp after.
+	# Await SaveManager so _apply_save_to_player (which now reads
+	# pending_spawn_position) finishes before we re-clamp.
+	var entry_pos: Vector2 = _compute_entry_position(exit_edge, player_pos)
+	if SaveManager.current_data != null:
+		SaveManager.pending_spawn_position = entry_pos
+		await SaveManager.transition_to_world(target_scene)
+
+	# Clamp player position to the new world's bounds via WorldMeta.
+	_clamp_player_to_world_bounds(exit_edge, player_pos)
+
+	await _show_banner_and_fade_in(is_first_visit)
+	is_transitioning = false
+	transition_completed.emit()
+
+# Show world-name banner over the black fade (if first visit), wait, fade in.
+func _show_banner_and_fade_in(is_first_visit: bool) -> void:
+	if is_first_visit:
+		var meta := _find_world_meta()
+		var display_name: String = ""
+		if meta != null:
+			display_name = String(meta.get("world_display_name"))
+		if not display_name.is_empty():
+			# 0.3 fade in + 1.2 hold + 0.4 fade out = 1.9s.
+			FadeOverlay.show_banner(display_name, 0.3, 1.2, 0.4)
+			await get_tree().create_timer(1.9).timeout
+
+	await FadeOverlay.fade_in(0.3)
+
+# Compute where in the target world the player enters, given which edge
+# they exited. Initial guess; clamped after WorldMeta available.
+static func _compute_entry_position(exit_edge: String, exit_pos: Vector2) -> Vector2:
+	match exit_edge:
+		"east":  return Vector2(EDGE_MARGIN, exit_pos.y)               # enter west side
+		"west":  return Vector2(9999, exit_pos.y)                       # enter east side (clamped later)
+		"north": return Vector2(exit_pos.x, 9999)                       # enter south side (clamped later)
+		"south": return Vector2(exit_pos.x, EDGE_MARGIN)               # enter north side
+		_: return exit_pos
+
+# Clamp player position using the target world's WorldMeta.map_size.
+func _clamp_player_to_world_bounds(exit_edge: String, exit_pos: Vector2) -> void:
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player == null:
+		return
+
+	var meta := _find_world_meta()
+	if meta == null:
+		push_warning("[WorldManager] No WorldMeta in target scene — player position may be off-map")
+		return
+	var map_size: Vector2i = meta.get("map_size")
+
+	var pos: Vector2 = player.global_position
+	match exit_edge:
+		"east":  pos = Vector2(EDGE_MARGIN, exit_pos.y)
+		"west":  pos = Vector2(map_size.x - EDGE_MARGIN, exit_pos.y)
+		"north": pos = Vector2(exit_pos.x, map_size.y - EDGE_MARGIN)
+		"south": pos = Vector2(exit_pos.x, EDGE_MARGIN)
+
+	pos.x = clamp(pos.x, EDGE_MARGIN, map_size.x - EDGE_MARGIN)
+	pos.y = clamp(pos.y, EDGE_MARGIN, map_size.y - EDGE_MARGIN)
+
+	player.global_position = pos
+	if player is CharacterBody2D and SaveManager.current_data != null:
+		SaveManager.unstick_player(player)
+	snap_camera(player)
+
+	var data := SaveManager.current_data
+	if data != null:
+		data.position_x = player.global_position.x
+		data.position_y = player.global_position.y
+		# ApplySaveToPlayer just auto-saved the (X, 9999) placeholder.
+		SaveManager.save()
+
+# The current scene's WorldMeta node, or null if the scene has none.
+func get_world_meta() -> Node:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return null
+	return scene.find_child("WorldMeta", true, false)
+
+# Like get_world_meta(), but falls back to the scene root so callers can
+# read optional properties off it with .get().
+func _find_world_meta() -> Node:
+	var found := get_world_meta()
+	return found if found != null else get_tree().current_scene
+
+# DialogueManager is a per-scene CanvasLayer (scenes/ui/DialogueBox.tscn
+# instanced into each world), not an autoload. It joins this group in
+# _enter_tree, so lookups are a cheap group query instead of a
+# recursive find_child over the scene.
+const DIALOGUE_MANAGER_GROUP: StringName = &"dialogue_manager"
+
+# The current scene's DialogueManager, or null (title screen, or a scene
+# without a dialogue box).
+func get_dialogue_manager() -> Node:
+	var tree := get_tree()
+	if tree == null:
+		return null
+	return tree.get_first_node_in_group(DIALOGUE_MANAGER_GROUP)
+
+# True while a dialogue is on screen; false when there's no
+# DialogueManager. Uses `== true` rather than bool(...) so a non-bool
+# Variant (e.g. the node's script failed to parse and has no is_active
+# property) reads as false instead of raising "Nonexistent 'bool'
+# constructor".
+func is_dialogue_active() -> bool:
+	var dm := get_dialogue_manager()
+	return dm != null and dm.get("is_active") == true
+
+# Snap any Camera2D in the scene so the new world doesn't pan across.
+# Also re-apply WorldMeta bounds since they may differ per world.
+func snap_camera(player: Node2D) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+
+	# Find the camera — child of player, or standalone in the scene.
+	var cam: Camera2D = player.get_node_or_null("Camera2D") as Camera2D
+	if cam == null:
+		cam = player.get_node_or_null("Camera") as Camera2D
+	if cam == null:
+		cam = scene.find_child("*Camera*", true, false) as Camera2D
+
+	# Duck-typed via has_method so a plain Camera2D (no FollowCamera
+	# script) is tolerated.
+	if cam != null and cam.has_method("apply_world_bounds"):
+		cam.call("apply_world_bounds")
+	if cam != null:
+		cam.reset_smoothing()
+
+# Returns true if this is the first visit (banner should show).
+func _prepare_banner_if_first_visit(scene_path: String) -> bool:
+	var data := SaveManager.current_data
+	if data == null:
+		return false
+
+	var key: String = _normalize_scene_path(scene_path)
+	var visited: Array = data.visited_worlds
+	if visited.has(key):
+		return false
+
+	visited.append(key)
+	return true
+
+# Resolve a scene reference to its canonical res:// path. Scene files
+# may reference targets as "res://..." or "uid://...".
+static func _normalize_scene_path(scene_path: String) -> String:
+	if scene_path.is_empty() or not scene_path.begins_with("uid://"):
+		return scene_path
+
+	var id: int = ResourceUID.text_to_id(scene_path)
+	if id == ResourceUID.INVALID_ID or not ResourceUID.has_id(id):
+		return scene_path
+	return ResourceUID.get_id_path(id)
+
+# Show the first-world banner after the initial scene load (called from
+# SaveManager's NewGame). Fades in banner, holds, then fades scene in.
+func show_first_world_banner(scene_path: String) -> void:
+	var data := SaveManager.current_data
+	if data == null:
+		transition_completed.emit()
+		return
+	var key: String = _normalize_scene_path(scene_path)
+	var visited: Array = data.visited_worlds
+	if not visited.has(key):
+		visited.append(key)
+
+	# Wait for the scene to load.
+	for i in range(30):
+		await get_tree().process_frame
+		if get_tree().get_first_node_in_group("player") != null:
+			break
+
+	await _show_banner_and_fade_in(true)
+	await _show_welcome_dialogue_if_needed()
+	transition_completed.emit()
+
+# Ported from C3's welcome_quest — first-time player gets a two-line
+# prompt explaining movement + confirm key. Gated on the "welcome_shown"
+# world flag.
+#
+# VO note: the AL welcome .ogg lives at assets/audio/vo/al/_disabled/
+# for v1 because the recordings are out of date. VOController fails to
+# find a stream at the expected al/ path and silently no-ops, so the
+# dialogue text still shows. Restore by moving the .ogg + .import back
+# into assets/audio/vo/al/.
+func _show_welcome_dialogue_if_needed() -> void:
+	if QuestSystem.is_flag_true("welcome_shown"):
+		return
+
+	var dm := get_dialogue_manager()
+	if dm == null:
+		push_warning("[Welcome] No DialogueManager in current scene; skipping welcome")
+		return
+
+	# Short beat after banner fade-in so the player sees the world before
+	# the prompt.
+	await get_tree().create_timer(0.3).timeout
+
+	# Use data-driven welcome.tres so VOController can match
+	# {speaker}__{node}.ogg lookups.
+	var welcome: Resource = load("res://assets/data/dialogue/welcome.tres") as Resource
+	if welcome != null:
+		dm.call("start_dialogue", welcome)
+	else:
+		push_warning("[Welcome] welcome.tres not found — falling back to inline lines")
+		dm.call("start_dialogue_lines", "Adventure_Land", [
+			"Welcome to AdventureLand! Press [Space] to continue.",
+			"Use WASD or the arrow keys to move and explore. Get ready to have fun!",
+		])
+
+	QuestSystem.set_world_flag("welcome_shown", "true")
+	SaveManager.save()

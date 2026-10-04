@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/ItemData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/itemshowcase-animation 1-075.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = 75
+name = "Golden Tee-Shirt"
+description = "The yellow is so bright, it almost blinds you."
+category = 5
+strength = 1
+cost = 5
+icon = ExtResource("2")
+costume_id = "75_fbas_05shrt_shortshirt_00a_golden_tee"
+costume_layer = "05shrt"
