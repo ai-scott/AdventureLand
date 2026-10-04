@@ -16,6 +16,7 @@ class_name LockedChest extends Area2D
 #   `-- Body (StaticBody2D, layer 2)   -- blocks the player like an NPC
 
 @export var contents: Resource          # ItemData granted on open
+@export var gems: int = 0                # gems granted on open (green "+N" pops by the chest)
 @export var key_item_id: int = 121      # Sea Monster Key
 @export var consume_key: bool = true
 @export var opened_flag: String = "cave_chest_opened"
@@ -29,6 +30,7 @@ class_name LockedChest extends Area2D
 # Preload-by-path so headless parse doesn't need ItemPickupToast's
 # class_name resolved.
 const _ToastScript: Script = preload("res://scripts/ui/ItemPickupToast.gd")
+const _GemToastScript: Script = preload("res://scripts/ui/DamageNumber.gd")
 
 var _player_in_range: bool = false
 var _opened: bool = false
@@ -102,6 +104,10 @@ func _open() -> void:
 			_ToastScript.spawn_pickup(get_tree(), contents)
 		else:
 			print("[LockedChest] Inventory full -- couldn't grant %s" % contents.name)
+
+	if gems > 0:
+		CurrencySystem.add_gems(gems)
+		_GemToastScript.spawn(get_tree().current_scene, global_position, gems, _GemToastScript.Kind.GEM_PICKUP)
 
 	SFXController.play("collectible_pickup")
 	SaveManager.save()

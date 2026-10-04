@@ -117,6 +117,7 @@ stay_dead = true
 [node name="TreasureChest" parent="Entities" instance=ExtResource("19_chest")]
 position = Vector2(432, 400)
 contents = ExtResource("20_pearl")
+gems = 50
 
 [node name="CaveClearTracker" type="Node" parent="."]
 script = ExtResource("21_tracker")
