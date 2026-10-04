@@ -13,6 +13,10 @@ config_version=5
 config/name="AdventureLandPrototype"
 run/main_scene="res://scenes/ui/TitleScreen.tscn"
 config/features=PackedStringArray("4.6")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/image="res://assets/sprites/ui/screens/boot_splash.png"
+boot_splash/stretch_mode=1
+boot_splash/use_filter=false
 
 [autoload]
 
