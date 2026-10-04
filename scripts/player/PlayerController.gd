@@ -378,7 +378,12 @@ func _physics_process(delta: float) -> void:
 		var in_attack_state: bool = String(_state.get_current_node()) == attack_anim_name
 		if in_attack_state:
 			_entered_attack_state = true
-		if _entered_attack_state and not in_attack_state:
+		# Also done once the strike's playhead reaches its last frame --
+		# backstop for a missed animation_state_finished keyframe, so we
+		# never sit frozen on the final pose waiting for the safety timer.
+		var strike_done: bool = in_attack_state and _state.get_current_length() > 0.0 \
+				and _state.get_current_play_position() >= _state.get_current_length() - 0.001
+		if (_entered_attack_state and not in_attack_state) or strike_done:
 			attacking = false
 			if _attack_hitbox != null:
 				_attack_hitbox.monitoring = false
@@ -545,7 +550,14 @@ func _start_attack() -> void:
 
 	# MSCA BlendSpace2D uses facing direction for the strike variant.
 	_set_blend(attack_anim_name, _facing)
-	_state.travel(attack_anim_name)
+	# travel() to the node we're already on is a no-op -- re-pressing on
+	# the tick a swing ends (before the Idle travel lands) would leave the
+	# playhead parked on the last strike frame until the safety timer.
+	# start(..., reset) replays the strike from frame 0 instead.
+	if String(_state.get_current_node()) == attack_anim_name:
+		_state.start(attack_anim_name, true)
+	else:
+		_state.travel(attack_anim_name)
 	attacking = true
 
 	# Per-weapon swing SFX. The three starter Blacksmith weapons (Axe=1,

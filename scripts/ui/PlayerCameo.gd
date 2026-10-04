@@ -11,7 +11,7 @@ class_name PlayerCameo extends TextureRect
 
 # World-px window rendered into the circle, centered on the head.
 # Smaller = more zoom. The head (hat brim to chin) is ~16 px tall.
-const VIEW_SIZE := Vector2i(20, 22)
+const VIEW_SIZE := Vector2i(18, 20)
 # Layer-local y of the crop center (SpriteLayers origin is the feet;
 # the head spans roughly y -34 (hat top) to -12 (chin)).
 const BUST_CENTER_Y := -22.0
