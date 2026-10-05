@@ -21,6 +21,7 @@
 [ext_resource type="Resource" path="res://assets/data/items/123_pink_oyster_pearl.tres" id="20_pearl"]
 [ext_resource type="Script" path="res://scripts/world/CaveClearTracker.gd" id="21_tracker"]
 [ext_resource type="PackedScene" path="res://scenes/ui/GameOver.tscn" id="22_gameover"]
+[ext_resource type="AudioStream" uid="uid://d4a8jk30jlgpy" path="res://assets/audio/ambience/amb_cave_drips.ogg" id="30_drips"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cave"]
 texture = ExtResource("1")
@@ -136,7 +137,15 @@ mid_track = "adventureland_stress"
 high_track = "adventureland_danger"
 cleared_flag = "cave_cleared"
 cleared_track = "adventureland_interior"
+volume_db = -6.0
 
 [node name="GameOver" parent="." instance=ExtResource("22_gameover")]
 visible = false
 player_health_path = NodePath("../Entities/Player/HealthSystem")
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("30_drips")
+volume_db = 3.0
+autoplay = true
+bus = &"SFX"

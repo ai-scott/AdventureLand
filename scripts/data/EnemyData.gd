@@ -31,5 +31,9 @@ class_name EnemyData extends Resource
 ## enemy_hurt.ogg.
 @export var hurt_sound: String = "enemy_hurt"
 
+## SFX key played once, the moment the enemy becomes ENGAGED (enters an
+## `engages` behavior or is hit) -- e.g. the mimic's reveal. Empty = none.
+@export var engage_sound: String = ""
+
 @export_group("Behaviors")
 @export var behaviors: Array[EnemyBehavior] = []

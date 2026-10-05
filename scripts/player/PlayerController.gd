@@ -562,7 +562,7 @@ func _start_attack() -> void:
 
 	# Per-weapon swing SFX. The three starter Blacksmith weapons (Axe=1,
 	# Sword=2, Pike=3) each have their own port from Player_Sword_1/2/3.
-	# Trident reuses the nail bat (pike) cue until it gets its own.
+	# Trident has its own magical slash.
 	var equipped_weapon: Resource = Inventory.get_equipped(ITEM_CATEGORY_WEAPON)
 	var equipped_weapon_id: int = int(equipped_weapon.id) if equipped_weapon != null else 0
 	var is_trident := equipped_weapon_id == MAGIC_TRIDENT_ITEM_ID
@@ -571,7 +571,7 @@ func _start_attack() -> void:
 		1: swing_sfx = "player_axe"
 		2: swing_sfx = "player_sword"
 		3: swing_sfx = "player_pike"
-		MAGIC_TRIDENT_ITEM_ID: swing_sfx = "player_pike"
+		MAGIC_TRIDENT_ITEM_ID: swing_sfx = "player_trident"
 		_: swing_sfx = "player_sword"
 	SFXController.play(swing_sfx)
 

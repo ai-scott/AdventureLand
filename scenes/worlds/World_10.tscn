@@ -37,6 +37,7 @@
 [ext_resource type="Resource" path="res://assets/data/dialogue/lakesign.tres" id="23_lkdlg"]
 [ext_resource type="Script" path="res://scripts/maps/TileAnimator.gd" id="25_fob5y"]
 [ext_resource type="PackedScene" path="res://scenes/world/DoorTrigger.tscn" id="26_door"]
+[ext_resource type="AudioStream" uid="uid://bkwijplpfmtso" path="res://assets/audio/ambience/amb_waterfall_outside.ogg" id="30_waterfall"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("1")
@@ -2444,3 +2445,12 @@ door_scene = ExtResource("26_door")
 [node name="GameOver" parent="." unique_id=1366688520 instance=ExtResource("13_gover")]
 visible = false
 player_health_path = NodePath("../Entities/Player/HealthSystem")
+
+[node name="WaterfallAmbience" type="AudioStreamPlayer2D" parent="."]
+process_mode = 3
+position = Vector2(360, 60)
+stream = ExtResource("30_waterfall")
+autoplay = true
+max_distance = 260.0
+attenuation = 1.5
+bus = &"SFX"

@@ -48,6 +48,9 @@ var _crossfade_tween: Tween
 # are subtracted from this; clear_duck restores it. Keeping the reference
 # symmetric prevents drift when set_duck is called repeatedly.
 var _nominal_bus_db: float = 0.0
+# Per-world trim on top of nominal (WorldMusic.volume_db), e.g. -6 dB in
+# the cave. Duck/clear both include it so VO ducking doesn't reset it.
+var _world_db: float = 0.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -196,13 +199,18 @@ func set_duck(db: float) -> void:
 	var idx: int = AudioServer.get_bus_index(BUS_NAME)
 	if idx < 0:
 		return
-	AudioServer.set_bus_volume_db(idx, _nominal_bus_db - absf(db))
+	AudioServer.set_bus_volume_db(idx, _nominal_bus_db + _world_db - absf(db))
 
 func clear_duck() -> void:
 	var idx: int = AudioServer.get_bus_index(BUS_NAME)
 	if idx < 0:
 		return
-	AudioServer.set_bus_volume_db(idx, _nominal_bus_db)
+	AudioServer.set_bus_volume_db(idx, _nominal_bus_db + _world_db)
+
+# Set the current world's music trim (dB, 0 = authored level).
+func set_world_volume(db: float) -> void:
+	_world_db = db
+	clear_duck()
 
 func _new_player(player_name: String) -> AudioStreamPlayer:
 	var p := AudioStreamPlayer.new()

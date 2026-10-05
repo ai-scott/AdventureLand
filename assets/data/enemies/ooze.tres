@@ -107,4 +107,6 @@ type = "Ooze"
 health = 5
 speed = 15.0
 wander_radius = 100.0
+hurt_sound = "ooze_hurt"
+death_sound = "ooze_death"
 behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_wait"), SubResource("beh_hop"), SubResource("beh_hurt")])

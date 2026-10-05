@@ -185,4 +185,6 @@ type = "Crab"
 health = 10
 view_distance = 150.0
 attack_distance = 30.0
+hurt_sound = "crab_hurt"
+death_sound = "crab_death"
 behaviors = Array[ExtResource("2")]([SubResource("beh_patrol"), SubResource("beh_cranky"), SubResource("beh_lurch"), SubResource("beh_attack"), SubResource("beh_hurt"), SubResource("beh_retreat")])

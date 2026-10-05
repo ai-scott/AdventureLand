@@ -33,6 +33,11 @@ speed = 64.0
 script = ExtResource("4")
 value = 180.0
 
+[sub_resource type="Resource" id="act_swoop_sound"]
+script = ExtResource("3")
+type = 2
+sound = "bat_wake"
+
 [sub_resource type="Resource" id="beh_swoop"]
 script = ExtResource("2")
 name = "swoop_attack"
@@ -41,7 +46,7 @@ duration_max = 2.5
 weight = 15.0
 cooldown = 5.0
 conditions = Array[ExtResource("4")]([SubResource("cond_swoop_close")])
-actions = Array[ExtResource("3")]([SubResource("act_swoop_animate"), SubResource("act_swoop_move")])
+actions = Array[ExtResource("3")]([SubResource("act_swoop_animate"), SubResource("act_swoop_move"), SubResource("act_swoop_sound")])
 
 [sub_resource type="Resource" id="act_hurt_animate"]
 script = ExtResource("3")
@@ -82,13 +87,18 @@ type = 0
 pattern = 9
 speed = 48.0
 
+[sub_resource type="Resource" id="act_flee_sound"]
+script = ExtResource("3")
+type = 2
+sound = "bat_flee"
+
 [sub_resource type="Resource" id="beh_flee"]
 script = ExtResource("2")
 name = "flee_to_tree"
 duration_min = 10.0
 duration_max = 10.0
 weight = 0.0
-actions = Array[ExtResource("3")]([SubResource("act_flee_animate"), SubResource("act_flee_move")])
+actions = Array[ExtResource("3")]([SubResource("act_flee_animate"), SubResource("act_flee_move"), SubResource("act_flee_sound")])
 
 [resource]
 script = ExtResource("1")
@@ -98,4 +108,5 @@ speed = 32.0
 view_distance = 202.0
 attack_distance = 88.0
 death_sound = "bat_destroy"
+hurt_sound = "bat_hurt"
 behaviors = Array[ExtResource("2")]([SubResource("beh_idle"), SubResource("beh_swoop"), SubResource("beh_hurt"), SubResource("beh_flee")])

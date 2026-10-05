@@ -65,6 +65,20 @@ func play(sfx_name: String, volume_db: float = 0.0) -> void:
 	_active_name[player] = sfx_name
 	player.play()
 
+# Like play(), but only if `world_pos` is inside the camera view (plus a
+# small margin), so off-screen creatures stay silent. Used for enemy SFX.
+func play_at(sfx_name: String, world_pos: Vector2, volume_db: float = 0.0, margin: float = 24.0) -> void:
+	if not is_on_screen(world_pos, margin):
+		return
+	play(sfx_name, volume_db)
+
+func is_on_screen(world_pos: Vector2, margin: float = 24.0) -> bool:
+	var vp := get_viewport()
+	if vp == null:
+		return true
+	var view: Rect2 = vp.get_canvas_transform().affine_inverse() * vp.get_visible_rect()
+	return view.grow(margin).has_point(world_pos)
+
 # Stop every player currently sounding the given name. Used when a held
 # sound (e.g. an enemy charge cue) needs to cut as the state machine
 # leaves that branch.

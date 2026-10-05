@@ -306,6 +306,11 @@ priority = 992
 auto_advance = "trident_received"
 conditions = Array[ExtResource("3")]([SubResource("cond_47")])
 
+[sub_resource type="Resource" id="act_trident_sfx"]
+script = ExtResource("4")
+type = 9
+sound_id = "player_trident"
+
 [sub_resource type="Resource" id="act_50"]
 script = ExtResource("4")
 type = 3
@@ -333,7 +338,7 @@ speaker = "AL"
 priority = 991
 ends_dialogue = true
 conditions = Array[ExtResource("3")]([SubResource("cond_49")])
-actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_51"), SubResource("act_52")])
+actions = Array[ExtResource("4")]([SubResource("act_50"), SubResource("act_trident_sfx"), SubResource("act_51"), SubResource("act_52")])
 
 [sub_resource type="Resource" id="act_55"]
 script = ExtResource("4")

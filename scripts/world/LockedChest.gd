@@ -90,6 +90,7 @@ func _try_open() -> void:
 
 	if consume_key:
 		Inventory.remove_item(key_item_id, 1)
+	SFXController.play("chest_unlock")
 	_open()
 
 
@@ -101,6 +102,7 @@ func _open() -> void:
 	if contents != null:
 		if Inventory.add_item(int(contents.id), 1):
 			print("[LockedChest] Opened -> granted %s" % contents.name)
+			SFXController.play("chest_jewel")
 			_ToastScript.spawn_pickup(get_tree(), contents)
 		else:
 			print("[LockedChest] Inventory full -- couldn't grant %s" % contents.name)
@@ -109,7 +111,6 @@ func _open() -> void:
 		CurrencySystem.add_gems(gems)
 		_GemToastScript.spawn(get_tree().current_scene, global_position, gems, _GemToastScript.Kind.GEM_PICKUP)
 
-	SFXController.play("collectible_pickup")
 	SaveManager.save()
 	_set_visual()
 

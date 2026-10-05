@@ -20,6 +20,9 @@ class_name EnemyBehavior extends Resource
 ## Entering this behavior latches the enemy ENGAGED for the rest of its
 ## life (e.g. the mimic stays in monster form once it has revealed itself).
 @export var engages: bool = false
+## Behavior name forced when this one finishes (e.g. mimic bite -> recover),
+## bypassing weights and cooldown. Empty = normal weighted pick.
+@export var next_behavior: String = ""
 
 @export_group("Effects")
 @export var actions: Array[EnemyAction] = []

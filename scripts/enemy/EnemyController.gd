@@ -352,6 +352,9 @@ func _physics_process(delta: float) -> void:
 				# and never returns to its perch.
 				if data_type() == "Bat" and current_name == "swoop_attack":
 					_forced_next_behavior = "flee_to_tree"
+				var next_name := String(_current_behavior.get("next_behavior"))
+				if not next_name.is_empty():
+					_forced_next_behavior = next_name
 			_select_next_behavior()
 
 		_execute_actions(delta)
@@ -571,11 +574,21 @@ func _enter_behavior(b: Resource) -> void:
 	_behavior_timer = _behavior_total
 	_executed_actions.clear()
 	if bool(b.get("engages")):
-		_engaged = true
+		_set_engaged()
 	# clear _is_hurt after entering the hurt behavior (one-shot)
 	var name := String(b.get("name"))
 	if name == "hurt" or name == "hurt_flash":
 		_is_hurt = false
+
+
+# Latch ENGAGED; plays the enemy's engage_sound (e.g. mimic reveal) once.
+func _set_engaged() -> void:
+	if _engaged:
+		return
+	_engaged = true
+	var engage_sound := String(data.get("engage_sound")) if data != null else ""
+	if not engage_sound.is_empty():
+		SFXController.play_at(engage_sound, global_position)
 
 
 func _execute_actions(delta: float) -> void:
@@ -613,6 +626,10 @@ func _execute_actions(delta: float) -> void:
 						and _player != null \
 						and global_position.distance_to(_player.global_position) < BAT_BITE_RANGE:
 					resolved = "attack_left"
+					# Screech once per swoop as it closes to bite range.
+					if not _executed_actions.has("bat_bite_sfx"):
+						_executed_actions["bat_bite_sfx"] = true
+						SFXController.play_at("bat_attack_%d" % randi_range(1, 2), global_position)
 				if _animator != null:
 					_animator.play(resolved)
 
@@ -627,7 +644,7 @@ func _execute_actions(delta: float) -> void:
 				var sound_key := "sound:%s" % sound
 				if not _executed_actions.has(sound_key) and not sound.is_empty():
 					_executed_actions[sound_key] = true
-					SFXController.play(sound)
+					SFXController.play_at(sound, global_position)
 
 			ActionType.SET_EFFECT:
 				pass  # No-op in this port. Effects land with VFX pass later.
@@ -830,7 +847,7 @@ func _apply_mirror() -> void:
 
 
 func _on_hurt() -> void:
-	_engaged = true
+	_set_engaged()
 	var is_bat := data_type() == "Bat"
 	if is_bat:
 		_forced_next_behavior = "flee_to_tree"
@@ -840,7 +857,7 @@ func _on_hurt() -> void:
 		_is_hurt = true
 
 	var hurt_sound := String(data.get("hurt_sound")) if data != null else ""
-	SFXController.play("enemy_hurt" if hurt_sound.is_empty() else hurt_sound)
+	SFXController.play_at("enemy_hurt" if hurt_sound.is_empty() else hurt_sound, global_position)
 	# Hurt flash -- 2 white blinks.
 	var sprite := get_node_or_null("Sprite2D")
 	if sprite is CanvasItem:
@@ -893,7 +910,7 @@ func _on_died() -> void:
 		QuestSystem.set_world_flag(_defeated_flag_key(), "true")
 		SaveManager.save()
 	var death_sound := String(data.get("death_sound")) if data != null else ""
-	SFXController.play("enemy_destroy" if death_sound.is_empty() else death_sound)
+	SFXController.play_at("enemy_destroy" if death_sound.is_empty() else death_sound, global_position)
 	_drop_loot()
 	# Brief fade, then remove.
 	var sprite := get_node_or_null("Sprite2D")
@@ -929,6 +946,7 @@ func _drop_loot() -> void:
 		if gem == null:
 			continue
 		gem.set("variant", randi_range(0, 3))
+		gem.set("from_kill", true)  # pickup plays the coins cue
 		gem.global_position = global_position
 		# Gem is an Area2D -- adding it during the physics flush
 		# (which is when enemy death / drop_loot fires) raises

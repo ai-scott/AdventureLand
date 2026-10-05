@@ -15,6 +15,8 @@ class_name Gem extends Area2D
 enum Kind { GEM = 0, GOLD = 1, COIN = 2, HEART = 3 }
 
 @export var variant: Kind = Kind.GEM
+# Set by EnemyController._drop_loot: kill drops pick up with the coins cue.
+@export var from_kill: bool = false
 @export var initial_speed: float = 80.0
 @export var friction: float = 240.0  # px/s² applied while uncollected
 @export var magnet_speed: float = 420.0  # px/s while collected (bumped from 320 so cluster pickups stay tight)
@@ -84,6 +86,10 @@ func _collect(pc: Node2D) -> void:
 	# Disable monitoring so the player doesn't re-trigger each tick.
 	monitoring = false
 
+func _pickup_sound() -> String:
+	return "gem_coins" if from_kill else "collectible_pickup"
+
+
 func _apply_effect() -> void:
 	# DamageNumber static spawn -- shows a floating "+N" above the
 	# player like the heal/damage popups, so gem pickups have the
@@ -94,15 +100,15 @@ func _apply_effect() -> void:
 		Kind.GEM:
 			gem_amount = 10
 			CurrencySystem.add_gems(gem_amount)
-			SFXController.play("collectible_pickup")
+			SFXController.play(_pickup_sound())
 		Kind.GOLD:
 			gem_amount = 5
 			CurrencySystem.add_gems(gem_amount)
-			SFXController.play("collectible_pickup")
+			SFXController.play(_pickup_sound())
 		Kind.COIN:
 			gem_amount = 1
 			CurrencySystem.add_gems(gem_amount)
-			SFXController.play("collectible_pickup")
+			SFXController.play(_pickup_sound())
 		Kind.HEART:
 			if _player != null:
 				var hs: Node = _player.get_node_or_null("HealthSystem")

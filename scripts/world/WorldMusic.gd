@@ -31,7 +31,11 @@ class_name WorldMusic extends Node
 @export var cleared_flag: String = ""
 @export var cleared_track: String = ""
 
+# Music trim for this world in dB (0 = authored level, -6 ~ half volume).
+@export var volume_db: float = 0.0
+
 func _ready() -> void:
+	MusicController.set_world_volume(volume_db)
 	if base_track.is_empty():
 		return
 	if _is_cleared():

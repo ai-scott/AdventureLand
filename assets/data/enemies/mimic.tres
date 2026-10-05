@@ -52,7 +52,12 @@ value = 48.0
 [sub_resource type="Resource" id="cond_lunge_not_close"]
 script = ExtResource("4")
 operator = 1
-value = 22.0
+value = 34.0
+
+[sub_resource type="Resource" id="act_lunge_sound"]
+script = ExtResource("3")
+type = 2
+sound = "mimic_hop"
 
 [sub_resource type="Resource" id="beh_lunge"]
 script = ExtResource("2")
@@ -62,7 +67,7 @@ duration_max = 0.6
 weight = 8.0
 engages = true
 conditions = Array[ExtResource("4")]([SubResource("cond_lunge_in_range"), SubResource("cond_lunge_not_close")])
-actions = Array[ExtResource("3")]([SubResource("act_lunge_animate"), SubResource("act_lunge_move")])
+actions = Array[ExtResource("3")]([SubResource("act_lunge_animate"), SubResource("act_lunge_move"), SubResource("act_lunge_sound")])
 
 [sub_resource type="Resource" id="act_bite_animate"]
 script = ExtResource("3")
@@ -77,7 +82,12 @@ speed = 70.0
 [sub_resource type="Resource" id="cond_bite_close"]
 script = ExtResource("4")
 operator = 2
-value = 22.0
+value = 34.0
+
+[sub_resource type="Resource" id="act_bite_sound"]
+script = ExtResource("3")
+type = 2
+sound = "mimic_bite"
 
 [sub_resource type="Resource" id="beh_bite"]
 script = ExtResource("2")
@@ -85,10 +95,11 @@ name = "bite"
 duration_min = 0.3
 duration_max = 0.5
 weight = 10.0
-cooldown = 0.8
+cooldown = 1.8
 engages = true
+next_behavior = "recover"
 conditions = Array[ExtResource("4")]([SubResource("cond_bite_close")])
-actions = Array[ExtResource("3")]([SubResource("act_bite_animate"), SubResource("act_bite_move")])
+actions = Array[ExtResource("3")]([SubResource("act_bite_animate"), SubResource("act_bite_move"), SubResource("act_bite_sound")])
 
 [sub_resource type="Resource" id="cond_engaged"]
 script = ExtResource("4")
@@ -116,6 +127,11 @@ type = 0
 pattern = 1
 speed = 40.0
 
+[sub_resource type="Resource" id="act_chase_sound"]
+script = ExtResource("3")
+type = 2
+sound = "mimic_hop"
+
 [sub_resource type="Resource" id="beh_chase"]
 script = ExtResource("2")
 name = "chase"
@@ -123,7 +139,7 @@ duration_min = 0.4
 duration_max = 0.8
 weight = 8.0
 conditions = Array[ExtResource("4")]([SubResource("cond_engaged"), SubResource("cond_chase_range"), SubResource("cond_lunge_not_close")])
-actions = Array[ExtResource("3")]([SubResource("act_chase_animate"), SubResource("act_chase_move")])
+actions = Array[ExtResource("3")]([SubResource("act_chase_animate"), SubResource("act_chase_move"), SubResource("act_chase_sound")])
 
 [sub_resource type="Resource" id="act_rest_animate"]
 script = ExtResource("3")
@@ -172,6 +188,24 @@ weight = 0.0
 conditions = Array[ExtResource("4")]([SubResource("cond_is_hurt")])
 actions = Array[ExtResource("3")]([SubResource("act_hurt_animate"), SubResource("act_hurt_stop"), SubResource("act_hurt_invuln")])
 
+[sub_resource type="Resource" id="act_recover_animate"]
+script = ExtResource("3")
+anim_name = "idle_{direction}"
+
+[sub_resource type="Resource" id="act_recover_move"]
+script = ExtResource("3")
+type = 0
+pattern = 2
+speed = 25.0
+
+[sub_resource type="Resource" id="beh_recover"]
+script = ExtResource("2")
+name = "recover"
+duration_min = 0.9
+duration_max = 1.2
+weight = 0.0
+actions = Array[ExtResource("3")]([SubResource("act_recover_animate"), SubResource("act_recover_move")])
+
 [resource]
 script = ExtResource("1")
 type = "Mimic"
@@ -179,4 +213,7 @@ health = 20
 speed = 45.0
 view_distance = 60.0
 attack_distance = 22.0
-behaviors = Array[ExtResource("2")]([SubResource("beh_disguise"), SubResource("beh_lunge"), SubResource("beh_chase"), SubResource("beh_rest"), SubResource("beh_bite"), SubResource("beh_hurt")])
+hurt_sound = "mimic_damage"
+death_sound = "mimic_damage"
+engage_sound = "mimic_reveal"
+behaviors = Array[ExtResource("2")]([SubResource("beh_disguise"), SubResource("beh_lunge"), SubResource("beh_chase"), SubResource("beh_rest"), SubResource("beh_bite"), SubResource("beh_recover"), SubResource("beh_hurt")])
