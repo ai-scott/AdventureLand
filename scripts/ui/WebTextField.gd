@@ -105,12 +105,24 @@ if(document.activeElement===s.el)s.el.blur();s.el.style.display='none';})()
 """, true)
 
 
-# Place the input over the LineEdit. Godot hands us window pixels; the
-# canvas's on-page rect converts them to CSS pixels, so device pixel
-# ratio and itch's iframe sizing both fall out.
+# Place the input over the LineEdit. We work out the LineEdit's rect in
+# window pixels by redoing the root window's stretch (viewport mode, keep
+# aspect, integer or fractional scale, centred); the canvas's on-page
+# rect then converts window pixels to CSS pixels, so device pixel ratio
+# and itch's iframe sizing both fall out.
 func _sync_rect() -> void:
-	var xf: Transform2D = target.get_viewport().get_screen_transform() * target.get_global_transform_with_canvas()
-	var rect := Rect2(xf.origin, target.size * xf.get_scale())
+	var xf: Transform2D = target.get_global_transform_with_canvas()
+	var vp_rect := Rect2(xf.origin, target.size * xf.get_scale())
+	var root := get_tree().root
+	var win := Vector2(DisplayServer.window_get_size())
+	var base := Vector2(root.content_scale_size)
+	if base.x <= 0.0 or base.y <= 0.0:
+		base = root.get_visible_rect().size
+	var s: float = minf(win.x / base.x, win.y / base.y)
+	if root.content_scale_stretch == Window.CONTENT_SCALE_STRETCH_INTEGER:
+		s = maxf(1.0, floorf(s))
+	var margin := (win - base * s) * 0.5
+	var rect := Rect2(margin + vp_rect.position * s, vp_rect.size * s)
 	if rect.is_equal_approx(_last_rect):
 		return
 	_last_rect = rect
