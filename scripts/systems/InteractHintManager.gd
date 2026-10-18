@@ -269,7 +269,7 @@ func _build_panel() -> void:
 
 # Extra tap slop around the prompt on mobile, in viewport px. A thumb
 # that lands just beside "Take" still takes.
-const MOBILE_TAP_PAD := Vector2(56, 40)
+const MOBILE_TAP_PAD := Vector2(50, 50)
 
 # Mobile taps: any finger, hit-tested against the panel grown by
 # MOBILE_TAP_PAD. Marking the touch handled keeps the floating joystick

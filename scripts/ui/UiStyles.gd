@@ -273,6 +273,22 @@ signal mobile_changed
 # happens to expose a touch surface (e.g., Mac trackpads report
 # DisplayServer.is_touchscreen_available() = true on M-series chips).
 # Caller persists choice via set_mobile_override().
+# Mobile web text entry. A Godot LineEdit can't raise the iOS keyboard
+# (only a real HTML input focused inside the tap can), so name fields ask
+# through the browser's own prompt dialog instead. iOS heads that dialog
+# with the page's domain; only the message line below it is ours.
+# Returns the typed text, or null if the player cancelled.
+func uses_web_text_prompt() -> bool:
+	return OS.has_feature("web") and is_mobile
+
+
+func web_text_prompt(message: String, default_text: String = "") -> Variant:
+	var js := "(function(){var r=window.prompt(%s,%s);return r===null?null:String(r);})()" % [
+			JSON.stringify(message), JSON.stringify(default_text)]
+	var result: Variant = JavaScriptBridge.eval(js, true)
+	return result if result is String else null
+
+
 func detect_mobile() -> bool:
 	# Real mobile build (iOS / Android export target).
 	var platform_mobile: bool = OS.has_feature("mobile")

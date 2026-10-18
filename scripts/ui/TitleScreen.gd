@@ -802,10 +802,8 @@ func _on_name_input_gui_input(event: InputEvent) -> void:
 
 
 func _prompt_name_on_web() -> void:
-	var js := "(function(){var r=window.prompt(%s,%s);return r===null?null:String(r);})()" % [
-			JSON.stringify("Name your character (%d characters max)" % _name_input.max_length),
-			JSON.stringify(_name_input.text)]
-	var result: Variant = JavaScriptBridge.eval(js, true)
+	var result: Variant = UiStyles.web_text_prompt(
+			"What's your hero's name? (up to %d letters)" % _name_input.max_length, _name_input.text)
 	if result is String:
 		_name_input.text = (result as String).strip_edges().left(_name_input.max_length)
 		_name_input.caret_column = _name_input.text.length()
