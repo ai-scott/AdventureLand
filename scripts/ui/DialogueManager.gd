@@ -131,13 +131,15 @@ func _input(evt: InputEvent) -> void:
 	var pos: Variant = null
 	if evt is InputEventScreenTouch and (evt as InputEventScreenTouch).pressed:
 		pos = (evt as InputEventScreenTouch).position
-	elif evt is InputEventMouseButton:
+	elif evt is InputEventMouseButton and not _is_mobile:
 		var m: InputEventMouseButton = evt
 		if m.pressed and m.button_index == MOUSE_BUTTON_LEFT:
 			pos = m.position
 	if pos == null:
 		return
-	if not _dialogue_box.get_global_rect().has_point(pos):
+	# Desktop: clicks must land on the box. Mobile: a tap anywhere on
+	# screen advances, since the box is a small target under a thumb.
+	if not _is_mobile and not _dialogue_box.get_global_rect().has_point(pos):
 		return
 
 	_synth_advance()
@@ -488,6 +490,12 @@ func _show_responses(valid_responses: Array[DialogueResponse]) -> void:
 	if _mobile_continue_hint != null:
 		_mobile_continue_hint.visible = false
 
+	# Mobile, two choices: two big side-by-side buttons instead of two
+	# thin text rows that are easy to mis-tap.
+	if _is_mobile and valid_responses.size() == 2:
+		_show_response_pair(valid_responses)
+		return
+
 	for i in range(valid_responses.size()):
 		var idx: int = i
 		var resp: DialogueResponse = valid_responses[i]
@@ -533,6 +541,27 @@ func _show_responses(valid_responses: Array[DialogueResponse]) -> void:
 
 	_selected_response_index = 0
 	_highlight_selected_response()
+
+func _show_response_pair(valid_responses: Array[DialogueResponse]) -> void:
+	var pair := HBoxContainer.new()
+	pair.name = "Pair"
+	pair.add_theme_constant_override("separation", 24)
+	pair.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	for i in range(valid_responses.size()):
+		var btn := Button.new()
+		btn.name = "Choice%d" % i
+		btn.text = _substitute_variables(valid_responses[i].text)
+		btn.pressed.connect(_on_response_chosen.bind(i))
+		btn.process_mode = Node.PROCESS_MODE_ALWAYS
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.custom_minimum_size = Vector2(0, 64)
+		btn.add_theme_font_size_override("font_size", 24)
+		UiFrames.apply_primary_button(btn)
+		pair.add_child(btn)
+	_response_container.add_child(pair)
+	_selected_response_index = 0
 
 # Swap frame + cameo for current speaker. Empty speaker = narrator.
 func _update_speaker_visuals(speaker: String) -> void:
@@ -1079,6 +1108,11 @@ func _handle_input(variable: String) -> void:
 
 	input_box.grab_focus()
 	input_box.text_submitted.connect(_submit_input)
+
+	# Mobile web: native phone keyboard via an HTML input over the box.
+	var web_field := WebTextField.new()
+	web_field.target = input_box
+	row.add_child(web_field)
 
 func _submit_input(text: String) -> void:
 	if text.strip_edges().is_empty():

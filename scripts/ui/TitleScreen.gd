@@ -780,6 +780,11 @@ func _build_name_entry() -> void:
 
 	_name_input.text_submitted.connect(func(_t: String) -> void: _on_name_confirmed())
 
+	# Mobile web: native phone keyboard via an HTML input over the box.
+	var web_field := WebTextField.new()
+	web_field.target = _name_input
+	add_child(web_field)
+
 
 # ---- Settings + Credits --------------------------------------------
 
