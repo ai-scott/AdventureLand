@@ -277,20 +277,27 @@ func detect_mobile() -> bool:
 	# Real mobile build (iOS / Android export target).
 	var platform_mobile: bool = OS.has_feature("mobile")
 
-	# Web heuristic: trust the viewport size as the primary signal.
-	# Mac/PC browsers report DisplayServer.is_touchscreen_available()
-	# = true on M-series chips and modern Surface devices, so that
-	# alone falsely enables mobile mode on desktop browsers. A small
-	# viewport (< 600 px wide) is a much more reliable mobile cue --
-	# desktop browser windows are virtually never that narrow, and
-	# mobile portrait viewports almost always are. Combine with
-	# touchscreen-available so a small desktop window doesn't
-	# accidentally trip it either.
+	# Web heuristic: ask the browser whether the PRIMARY pointer is a
+	# finger. CSS media queries `pointer: coarse` + `hover: none` are
+	# true on phones / tablets and false on desktops -- including
+	# touchscreen laptops and M-series Macs, whose primary pointer is
+	# still the mouse/trackpad (those report
+	# DisplayServer.is_touchscreen_available() = true, so that alone
+	# isn't enough).
+	#
+	# The old check (window width < 600) never fired on iPhones:
+	# window_get_size() is in physical pixels, so a 390-CSS-px portrait
+	# iPhone at 3x DPR reports ~1170, and itch.io runs us in landscape.
 	var touch_on_web: bool = false
 	if OS.has_feature("web"):
-		var view: Vector2i = DisplayServer.window_get_size()
-		var narrow: bool = view.x > 0 and view.x < 600
-		touch_on_web = narrow and DisplayServer.is_touchscreen_available()
+		var coarse: Variant = JavaScriptBridge.eval(
+				"window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(hover: none)').matches", true)
+		if coarse is bool:
+			touch_on_web = coarse
+		else:
+			# JS eval unavailable (shouldn't happen on web) -- fall back
+			# to the raw touchscreen probe.
+			touch_on_web = DisplayServer.is_touchscreen_available()
 
 	is_mobile = platform_mobile or touch_on_web
 	return is_mobile

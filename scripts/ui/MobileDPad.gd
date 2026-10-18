@@ -240,6 +240,31 @@ func _draw_pixel_disc(center: Vector2, radius_blocks: int, pixel_size: int, fill
 			draw_rect(rect, c, true)
 
 
+# Releases are watched in _input (not _unhandled_input) and ignore the
+# paused / hidden gates below: if a dialogue opens or the HUD hides
+# while the thumb is down, the lift-off still has to clear the latched
+# touch. Otherwise _active_touch_index stays set and every later touch
+# is rejected as "second finger" -- the dpad goes dead until reload.
+func _input(event: InputEvent) -> void:
+	if _active_touch_index == -1:
+		return
+	if event is InputEventScreenTouch:
+		var touch := event as InputEventScreenTouch
+		if not touch.pressed and touch.index == _active_touch_index:
+			_release_touch()
+
+
+# Losing focus (iOS notification, app switch, itch iframe blur) can
+# swallow the touchend entirely. Drop any held touch so we never come
+# back with a stuck joystick.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT \
+			or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT \
+			or what == NOTIFICATION_APPLICATION_PAUSED:
+		if _active_touch_index != -1:
+			_release_touch()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if get_tree().paused:
 		return  # dialogue / inventory open -- no movement
@@ -259,6 +284,11 @@ func _process(_delta: float) -> void:
 	# Re-anchor the ring each frame in case the viewport resized
 	# (browser window, phone rotation). Cheap -- 8 Vector2 assignments.
 	_layout_arrows()
+	# A dialogue / inventory / scene change mid-drag: stop moving now
+	# rather than walking the player while the modal is up. The touch
+	# itself is forgotten too, so the next press starts fresh.
+	if _active_touch_index != -1 and (get_tree().paused or not is_visible_in_tree()):
+		_release_touch()
 
 
 func _get_touch_zone_rect() -> Rect2:
@@ -281,12 +311,17 @@ func _handle_touch(touch: InputEventScreenTouch) -> void:
 		_update_arrow_tints()
 		get_viewport().set_input_as_handled()
 	elif touch.index == _active_touch_index:
-		_active_touch_index = -1
-		_drag = Vector2.ZERO
-		_normalized_joystick = Vector2.ZERO
-		_apply_movement(Vector2.ZERO)
-		_update_arrow_tints()
+		_release_touch()
 		get_viewport().set_input_as_handled()
+
+
+func _release_touch() -> void:
+	_active_touch_index = -1
+	_drag = Vector2.ZERO
+	_normalized_joystick = Vector2.ZERO
+	_apply_movement(Vector2.ZERO)
+	_update_arrow_tints()
+	queue_redraw()
 
 
 func _handle_drag(drag: InputEventScreenDrag) -> void:

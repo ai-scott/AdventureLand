@@ -622,6 +622,27 @@ func _toggle_mute() -> void:
 	_apply_mute_state(not _is_master_muted(), true)
 
 
+# Second-finger taps on the attack / bag chips. Godot only emulates a
+# mouse for the FIRST touch (index 0), and TextureButton only reacts to
+# mouse events -- so with a thumb already on the dpad, tapping attack
+# did nothing. Finger 0 still goes through the button's pressed signal;
+# every other finger is hit-tested here.
+func _input(event: InputEvent) -> void:
+	if not (event is InputEventScreenTouch):
+		return
+	var touch := event as InputEventScreenTouch
+	if not touch.pressed or touch.index == 0:
+		return
+	if get_tree().paused:
+		return
+	for entry: Array in [["Buttons/Attack/Touch", "attack"], ["Buttons/Inventory/Touch", "inventory_toggle"]]:
+		var btn := get_node_or_null(entry[0]) as Control
+		if btn != null and btn.is_visible_in_tree() and btn.get_global_rect().has_point(touch.position):
+			_send_action(entry[1])
+			get_viewport().set_input_as_handled()
+			return
+
+
 # Global M-key shortcut for the mute toggle. Lives on the HUD
 # (autoload, PROCESS_MODE_ALWAYS) so it works on every screen.
 # _unhandled_input rather than _input so a focused LineEdit (e.g.
