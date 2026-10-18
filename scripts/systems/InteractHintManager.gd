@@ -207,7 +207,10 @@ func _build_panel() -> void:
 	_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	# Panel itself becomes a click/tap target — synthesizes "interact" so
 	# the source's existing IsActionJustPressed path fires unchanged.
-	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	# On mobile the tap is hit-tested in _input against a padded rect
+	# instead, so the panel itself ignores the (emulated) mouse to avoid
+	# firing interact twice.
+	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE if _is_mobile else Control.MOUSE_FILTER_STOP
 	_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_panel.gui_input.connect(_on_panel_gui_input)
 
@@ -264,6 +267,25 @@ func _build_panel() -> void:
 
 	add_child(_panel)
 
+# Extra tap slop around the prompt on mobile, in viewport px. A thumb
+# that lands just beside "Take" still takes.
+const MOBILE_TAP_PAD := Vector2(56, 40)
+
+# Mobile taps: any finger, hit-tested against the panel grown by
+# MOBILE_TAP_PAD. Marking the touch handled keeps the floating joystick
+# (which listens in _unhandled_input) from also grabbing it.
+func _input(event: InputEvent) -> void:
+	if not _is_mobile or _panel == null or not _panel.is_visible_in_tree():
+		return
+	if not (event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed):
+		return
+	var hit := _panel.get_global_rect().grow_individual(
+			MOBILE_TAP_PAD.x, MOBILE_TAP_PAD.y, MOBILE_TAP_PAD.x, MOBILE_TAP_PAD.y)
+	if not hit.has_point((event as InputEventScreenTouch).position):
+		return
+	get_viewport().set_input_as_handled()
+	_send_interact()
+
 func _on_panel_gui_input(evt: InputEvent) -> void:
 	if not _panel.visible:
 		return
@@ -271,6 +293,9 @@ func _on_panel_gui_input(evt: InputEvent) -> void:
 			or (evt is InputEventMouseButton and evt.pressed and evt.button_index == MOUSE_BUTTON_LEFT)
 	if not tapped:
 		return
+	_send_interact()
+
+func _send_interact() -> void:
 	var press := InputEventAction.new()
 	press.action = "interact"
 	press.pressed = true

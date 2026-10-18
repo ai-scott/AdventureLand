@@ -4,8 +4,11 @@ class_name MobileDPad extends Control
 #
 # Two parts:
 #
-#   1. *Input* -- a touch zone covering the bottom-left of the viewport.
-#      First touch latches an origin point; subsequent drag computes a
+#   1. *Input* -- a floating joystick. A touch anywhere on the play
+#      area (below the top HUD strip, and not on a HUD chip or interact
+#      prompt -- those consume the touch in their own _input first)
+#      latches an origin point and the ring jumps under the thumb;
+#      subsequent drag computes a
 #      vector that is converted into move_up/down/left/right action
 #      strengths via Input.parse_input_event. PlayerController's
 #      Input.get_vector(...) reads those without modification.
@@ -22,10 +25,9 @@ class_name MobileDPad extends Control
 # true. Hidden alongside the rest of the world HUD on title / game-over /
 # dialogue screens.
 
-# Touch-zone size as a fraction of the viewport. Bottom-left corner;
-# tunable in the Inspector for testing different phone sizes.
-@export var touch_zone_fraction_width: float = 0.35
-@export var touch_zone_fraction_height: float = 0.55
+# Touches above this line (viewport px) are left for the top HUD strip
+# (hearts, gems, bag, mute) and never start the joystick.
+@export var top_reserved_px: float = 64.0
 
 # Drag distance (screen pixels, post-canvas-stretch) past which the
 # joystick reads "fully deflected." Below this threshold the strength
@@ -70,7 +72,7 @@ class_name MobileDPad extends Control
 
 # Idle alpha for inactive arrows. Color stays paper-cream so the dpad
 # reads as a "ready" UI element without competing with gameplay.
-@export var arrow_idle_alpha: float = 0.32
+@export var arrow_idle_alpha: float = 0.6
 
 # Color applied to an arrow when its direction is fully active. 8
 # entries, ordered Up, UpRight, Right, DownRight, Down, DownLeft, Left,
@@ -165,16 +167,27 @@ func _build_arrow_sprites() -> void:
 	_layout_arrows()
 
 
-# Position each arrow on the ring around the bottom-left corner.
-# Re-runs each frame so a viewport resize (mobile orientation flip,
-# browser window resize) keeps the dpad anchored. Also queues a redraw
-# so the center pixel-dot follows the ring.
+# Ring center: under the thumb while a touch is held (clamped so the
+# ring stays on screen), otherwise parked in the bottom-left corner as a
+# "touch and drag" affordance.
+func _ring_center() -> Vector2:
+	var view := get_viewport_rect().size
+	if _active_touch_index == -1:
+		return Vector2(dpad_corner_padding + arrow_ring_radius,
+				view.y - dpad_corner_padding - arrow_ring_radius)
+	var margin: float = arrow_ring_radius + 16.0
+	return Vector2(clampf(_origin.x, margin, view.x - margin),
+			clampf(_origin.y, margin, view.y - margin))
+
+
+# Position each arrow on the ring. Re-runs each frame so the ring
+# follows the floating origin and survives a viewport resize (mobile
+# orientation flip, browser window resize). Also queues a redraw so the
+# center pixel-dot follows the ring.
 func _layout_arrows() -> void:
 	if _arrow_rects.is_empty():
 		return
-	var view := get_viewport_rect().size
-	var center := Vector2(dpad_corner_padding + arrow_ring_radius,
-			view.y - dpad_corner_padding - arrow_ring_radius)
+	var center := _ring_center()
 	for i in range(8):
 		var rect := _arrow_rects[i]
 		if rect == null:
@@ -193,9 +206,7 @@ func _layout_arrows() -> void:
 # of 3x3 (center_dot_pixel_size) logical-px squares so it reads as
 # 16-bit pixel art rather than a smooth disc.
 func _draw() -> void:
-	var view := get_viewport_rect().size
-	var ring_center := Vector2(dpad_corner_padding + arrow_ring_radius,
-			view.y - dpad_corner_padding - arrow_ring_radius)
+	var ring_center := _ring_center()
 
 	var active: bool = _active_touch_index != -1
 	# Drag offset clamped so the disc never escapes the arrow ring.
@@ -209,7 +220,7 @@ func _draw() -> void:
 	var dot_center := ring_center + offset
 
 	var fill: Color = Color(1.0, 1.0, 1.0, 0.95) if active else Color(1.0, 1.0, 1.0, arrow_idle_alpha + 0.20)
-	var outline := Color(0.0, 0.0, 0.0, 0.65)
+	var outline := Color(0.0, 0.0, 0.0, 0.85)
 
 	_draw_pixel_disc(dot_center, center_dot_radius_blocks, center_dot_pixel_size, fill, outline)
 
@@ -293,8 +304,7 @@ func _process(_delta: float) -> void:
 
 func _get_touch_zone_rect() -> Rect2:
 	var view := get_viewport_rect().size
-	var size := Vector2(view.x * touch_zone_fraction_width, view.y * touch_zone_fraction_height)
-	return Rect2(Vector2(0, view.y - size.y), size)
+	return Rect2(Vector2(0, top_reserved_px), Vector2(view.x, view.y - top_reserved_px))
 
 
 func _handle_touch(touch: InputEventScreenTouch) -> void:

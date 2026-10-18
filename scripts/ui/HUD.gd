@@ -44,6 +44,7 @@ var _hearts_row: Control
 var _gems_row: Control
 var _hud_bg: Control
 var _buttons_row: Control
+var _inventory_button: Control
 var _mute_button: Button
 var _mute_label: Label
 # Dedicated CanvasLayer hosting only the mute button. Sits above
@@ -80,6 +81,13 @@ static var _tex_empty: Texture2D
 const CHIP_BUTTON_SIZE: int = 68
 const BUTTON_EDGE_MARGIN: int = 14
 const BUTTONS_ROW_HEIGHT: int = CHIP_BUTTON_SIZE * 2 + 6
+# Mobile layout: a bigger attack chip alone in the bottom-right, and the
+# bag moved up next to mute so a combat thumb can't open the inventory.
+const MOBILE_ATTACK_SIZE: int = 100
+const MOBILE_BAG_SIZE: int = 52
+const MOBILE_BAG_GAP: int = 10
+# Extra touch slop around the mobile chips, in viewport px.
+const MOBILE_TAP_PAD: int = 18
 
 
 func _ready() -> void:
@@ -121,6 +129,7 @@ func _ready() -> void:
 	# Re-anchor the action buttons to the bottom-right corner. Scene
 	# authors them top-left for layout-tool clarity; the autoload
 	# override places them where the design lives at runtime.
+	_inventory_button = get_node("Buttons/Inventory") as Control
 	if _buttons_row is VBoxContainer:
 		var buttons_box := _buttons_row as VBoxContainer
 		buttons_box.alignment = BoxContainer.ALIGNMENT_END
@@ -141,8 +150,13 @@ func _ready() -> void:
 	# mobile -- no physical key to advertise.
 	var inv_kbd: Control = null if UiStyles.is_mobile else UiFrames.build_kbd_chip("i")
 	var atk_kbd: Control = null if UiStyles.is_mobile else _build_space_glyph()
-	_apply_chip_action_button("Buttons/Inventory", UiStyles.bag(), inv_kbd, 44)
-	_apply_chip_action_button("Buttons/Attack", UiStyles.sword(), atk_kbd, 50)
+	if UiStyles.is_mobile:
+		_apply_chip_action_button("Buttons/Inventory", UiStyles.bag(), inv_kbd, 34, MOBILE_BAG_SIZE)
+		_apply_chip_action_button("Buttons/Attack", UiStyles.sword(), atk_kbd, 74, MOBILE_ATTACK_SIZE)
+		_apply_mobile_button_layout()
+	else:
+		_apply_chip_action_button("Buttons/Inventory", UiStyles.bag(), inv_kbd, 44)
+		_apply_chip_action_button("Buttons/Attack", UiStyles.sword(), atk_kbd, 50)
 
 	_attack_button = get_node("Buttons/Attack") as Control
 	_attack_icon = _attack_button.get_node_or_null("DesignIcon") as TextureRect if _attack_button != null else null
@@ -264,6 +278,10 @@ func _process(delta: float) -> void:
 	# visible so the player can still silence audio.
 	if _buttons_row != null:
 		_buttons_row.visible = in_world and not in_dialogue
+	# Mobile bag sits in the top-right outside the Buttons box; hide it
+	# while the inventory is open since its close X takes that corner.
+	if _inventory_button != null and _inventory_button.get_parent() == self:
+		_inventory_button.visible = in_world and not in_dialogue and not InventoryUI.is_open()
 	# React to runtime mobile-mode toggles (Shift+M debug shortcut) by
 	# adding/removing the dpad. Idempotent -- no-op when state matches.
 	_sync_mobile_dpad_presence()
@@ -400,12 +418,12 @@ static func _build_space_glyph() -> Control:
 
 # Restyle the scene-authored HUD action button as a square design-system
 # chip (~68x68): icon stacked vertically over a small kbd hint chip.
-func _apply_chip_action_button(path: String, icon_tex: Texture2D, kbd_chip: Control, icon_size: int) -> void:
+func _apply_chip_action_button(path: String, icon_tex: Texture2D, kbd_chip: Control, icon_size: int, chip_size: int = CHIP_BUTTON_SIZE) -> void:
 	var btn := get_node_or_null(path) as Control
 	if btn == null:
 		return
 
-	btn.custom_minimum_size = Vector2(CHIP_BUTTON_SIZE, CHIP_BUTTON_SIZE)
+	btn.custom_minimum_size = Vector2(chip_size, chip_size)
 
 	# Hide all legacy visuals (Bg TextureRect, KeyHint, Icon). Touch
 	# button stays for clicks; resized + de-focused below.
@@ -472,6 +490,32 @@ func _apply_chip_action_button(path: String, icon_tex: Texture2D, kbd_chip: Cont
 	if touch != null:
 		touch.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		touch.focus_mode = Control.FOCUS_NONE
+		# Mobile taps are hit-tested in _input (padded, any finger), so
+		# the button ignores the emulated mouse to avoid double fires.
+		if UiStyles.is_mobile:
+			touch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+# Mobile: shrink the bottom-right box to just the big attack chip and
+# move the bag out of it, up to the top-right just left of mute.
+func _apply_mobile_button_layout() -> void:
+	if _buttons_row != null:
+		_buttons_row.offset_left = -(MOBILE_ATTACK_SIZE + BUTTON_EDGE_MARGIN)
+		_buttons_row.offset_top = -(MOBILE_ATTACK_SIZE + BUTTON_EDGE_MARGIN)
+	if _inventory_button == null:
+		return
+	_inventory_button.get_parent().remove_child(_inventory_button)
+	add_child(_inventory_button)
+	_inventory_button.anchor_left = 1.0
+	_inventory_button.anchor_right = 1.0
+	_inventory_button.anchor_top = 0.0
+	_inventory_button.anchor_bottom = 0.0
+	var right: float = BUTTON_EDGE_MARGIN + MUTE_SIZE + MOBILE_BAG_GAP
+	var top: float = BUTTON_EDGE_MARGIN + MUTE_SIZE * 0.5 - MOBILE_BAG_SIZE * 0.5
+	_inventory_button.offset_right = -right
+	_inventory_button.offset_left = -(right + MOBILE_BAG_SIZE)
+	_inventory_button.offset_top = top
+	_inventory_button.offset_bottom = top + MOBILE_BAG_SIZE
 
 
 # ---- Mute button ----------------------------------------------------
@@ -622,22 +666,28 @@ func _toggle_mute() -> void:
 	_apply_mute_state(not _is_master_muted(), true)
 
 
-# Second-finger taps on the attack / bag chips. Godot only emulates a
-# mouse for the FIRST touch (index 0), and TextureButton only reacts to
-# mouse events -- so with a thumb already on the dpad, tapping attack
-# did nothing. Finger 0 still goes through the button's pressed signal;
-# every other finger is hit-tested here.
+# Touch taps on the attack / bag chips. Godot only emulates a mouse for
+# the FIRST touch (index 0), and TextureButton only reacts to mouse
+# events -- so with a thumb already on the dpad, tapping attack did
+# nothing. On mobile every finger is hit-tested here against a padded
+# rect (the buttons ignore the mouse); elsewhere finger 0 still goes
+# through the button's pressed signal. Marking the touch handled keeps
+# the floating joystick from also starting under it.
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventScreenTouch):
 		return
 	var touch := event as InputEventScreenTouch
-	if not touch.pressed or touch.index == 0:
+	if not touch.pressed:
+		return
+	if touch.index == 0 and not UiStyles.is_mobile:
 		return
 	if get_tree().paused:
 		return
-	for entry: Array in [["Buttons/Attack/Touch", "attack"], ["Buttons/Inventory/Touch", "inventory_toggle"]]:
-		var btn := get_node_or_null(entry[0]) as Control
-		if btn != null and btn.is_visible_in_tree() and btn.get_global_rect().has_point(touch.position):
+	var pad: float = MOBILE_TAP_PAD if UiStyles.is_mobile else 0.0
+	var targets: Array = [[_attack_button, "attack"], [_inventory_button, "inventory_toggle"]]
+	for entry: Array in targets:
+		var btn := entry[0] as Control
+		if btn != null and btn.is_visible_in_tree() and btn.get_global_rect().grow(pad).has_point(touch.position):
 			_send_action(entry[1])
 			get_viewport().set_input_as_handled()
 			return
