@@ -779,34 +779,11 @@ func _build_name_entry() -> void:
 	hbox.add_child(_name_ok)
 
 	_name_input.text_submitted.connect(func(_t: String) -> void: _on_name_confirmed())
-	_name_input.gui_input.connect(_on_name_input_gui_input)
 
-
-# Mobile web: a LineEdit can't raise the phone keyboard (iOS only opens
-# it for a real HTML input focused inside the tap, and Godot handles
-# taps a frame later). Ask the browser for the name with prompt()
-# instead, which brings up the native keyboard.
-func _use_web_name_prompt() -> bool:
-	return OS.has_feature("web") and UiStyles.is_mobile
-
-
-func _on_name_input_gui_input(event: InputEvent) -> void:
-	if not _use_web_name_prompt():
-		return
-	# Taps arrive as emulated mouse clicks (emulate_mouse_from_touch is
-	# on by default); listening to only these avoids a double prompt.
-	var mb := event as InputEventMouseButton
-	if mb != null and mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed:
-		_name_input.accept_event()
-		_prompt_name_on_web.call_deferred()
-
-
-func _prompt_name_on_web() -> void:
-	var result: Variant = UiStyles.web_text_prompt(
-			"What's your hero's name? (up to %d letters)" % _name_input.max_length, _name_input.text)
-	if result is String:
-		_name_input.text = (result as String).strip_edges().left(_name_input.max_length)
-		_name_input.caret_column = _name_input.text.length()
+	# Mobile web: native phone keyboard via an HTML input over the box.
+	var web_field := WebTextField.new()
+	web_field.target = _name_input
+	add_child(web_field)
 
 
 # ---- Settings + Credits --------------------------------------------
@@ -1367,8 +1344,6 @@ func _show_name_entry() -> void:
 		_credits_corner_btn.visible = false
 	_name_input.text = ""
 	_name_input.grab_focus()
-	if _use_web_name_prompt():
-		_prompt_name_on_web.call_deferred()
 
 
 func _on_name_confirmed() -> void:

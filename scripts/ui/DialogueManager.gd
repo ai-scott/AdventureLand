@@ -1109,29 +1109,10 @@ func _handle_input(variable: String) -> void:
 	input_box.grab_focus()
 	input_box.text_submitted.connect(_submit_input)
 
-	# Mobile web: a LineEdit can't raise the keyboard, so ask through the
-	# browser prompt right away, and again on a tap of the box if the
-	# player cancelled.
-	if UiStyles.uses_web_text_prompt():
-		input_box.gui_input.connect(func(ev: InputEvent) -> void:
-			var mb := ev as InputEventMouseButton
-			if mb != null and mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed:
-				input_box.accept_event()
-				_prompt_dialogue_input.call_deferred(input_box))
-		_prompt_dialogue_input.call_deferred(input_box)
-
-
-func _prompt_dialogue_input(input_box: LineEdit) -> void:
-	if not _waiting_for_input or not is_instance_valid(input_box):
-		return
-	var result: Variant = UiStyles.web_text_prompt(
-			"Type your player name (up to %d letters)" % input_box.max_length, input_box.text)
-	if not (result is String):
-		return
-	var typed: String = (result as String).strip_edges().left(input_box.max_length)
-	input_box.text = typed
-	if not typed.is_empty():
-		_submit_input(typed)
+	# Mobile web: native phone keyboard via an HTML input over the box.
+	var web_field := WebTextField.new()
+	web_field.target = input_box
+	row.add_child(web_field)
 
 func _submit_input(text: String) -> void:
 	if text.strip_edges().is_empty():
